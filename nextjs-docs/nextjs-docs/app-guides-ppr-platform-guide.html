@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Implementing Partial Prerendering on your platform (플랫폼에서 Partial Prerendering 구현하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/ppr-platform-guide" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/ppr-platform-guide" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/ppr-platform-guide.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Implementing Partial Prerendering on your platform<span class="sub">플랫폼에서 Partial Prerendering 구현하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Partial Prerendering(PPR)은 하나의 route에서 static rendering과 dynamic rendering을 결합합니다. build 시점에 Next.js는 PPR이 활성화된 각 route에 대해 static HTML shell과 <code>postponedState</code> blob을 생성합니다. request 시점에는 shell이 즉시 제공되고, dynamic 부분이 render되어 client로 stream됩니다.</p><div class="en-orig"><p>Partial Prerendering (PPR) combines static and dynamic rendering in a single route. At build time, Next.js generates a static HTML shell and a <code>postponedState</code> blob for each PPR-enabled route. At request time, the shell is served immediately and dynamic portions are rendered and streamed to the client.</p></div>
+<p>이 페이지에서는 플랫폼이 다양한 수준의 정교함으로 PPR 지원을 구현하는 방법을 설명합니다.</p><div class="en-orig"><p>This page explains how platforms can implement PPR support at different levels of sophistication.</p></div>
+<h2 class="sec" id="how-ppr-works"><a class="anchor" href="#how-ppr-works">How PPR Works<span class="ko">PPR의 동작 방식</span></a></h2>
+<h3 class="sec" id="build-time"><a class="anchor" href="#build-time">Build time<span class="ko">build 시점</span></a></h3>
+<p>각 PPR route에 대해 Next.js는 다음을 만들어 냅니다:</p><div class="en-orig"><p>For each PPR route, Next.js produces:</p></div>
+<ul>
+<li>prerender할 수 있는 모든 콘텐츠를 담고, dynamic 콘텐츠가 나타날 자리에는 <a href="app-guides-streaming.html#what-is-streaming">Suspense</a> fallback을 둔 <strong>static HTML shell</strong>.</li>
+<li><strong><code>postponedState</code></strong> 값: serialize된 문자열입니다. 이 값은 불투명한(opaque) 값으로 취급하세요. 즉, parse하거나 수정하지 말고 그대로 전달해야 합니다. <code>postponedState</code>를 변경하면 잘못된 dynamic rendering output이 만들어집니다.</li>
+<li>page의 static 부분에 대한 <strong>RSC payload</strong>.</li>
+</ul><div class="en-orig"><ul>
+<li>A <strong>static HTML shell</strong> containing all the content that can be prerendered, with <a href="app-guides-streaming.html#what-is-streaming">Suspense</a> fallbacks where dynamic content will appear.</li>
+<li>A <strong><code>postponedState</code></strong> value: a serialized string. Treat it as opaque: pass it through without parsing or modifying it. Altering <code>postponedState</code> produces incorrect dynamic rendering output.</li>
+<li>An <strong>RSC payload</strong> for the static portions of the page.</li>
+</ul></div>
+<h3 class="sec" id="request-time"><a class="anchor" href="#request-time">Request time<span class="ko">request 시점</span></a></h3>
+<p>PPR route로 request가 도착하면:</p><div class="en-orig"><p>When a request arrives for a PPR route:</p></div>
+<ol>
+<li>server가 static HTML shell을 client에 즉시 보냅니다.</li>
+<li>server가 postponed state를 사용해 dynamic 부분의 rendering을 재개(resume)합니다.</li>
+<li>dynamic 콘텐츠가 client로 stream되어, React가 미뤄 두었던 Suspense boundary를 hydrate할 수 있게 됩니다.</li>
+</ol><div class="en-orig"><ol>
+<li>The server sends the static HTML shell to the client immediately.</li>
+<li>The server resumes rendering the dynamic portions using the postponed state.</li>
+<li>Dynamic content is streamed to the client, allowing React to hydrate the deferred Suspense boundaries.</li>
+</ol></div>
+<p>client는 static shell을 즉시 보게 되고, 이후 dynamic 콘텐츠가 resolve되는 대로 나타납니다.</p><div class="en-orig"><p>The client sees the static shell instantly, then dynamic content appears as it resolves.</p></div>
+<h2 class="sec" id="storing-ppr-artifacts"><a class="anchor" href="#storing-ppr-artifacts">Storing PPR Artifacts<span class="ko">PPR artifact 저장하기</span></a></h2>
+<p>각 PPR route에는 함께 저장해야 하는 artifact 두 개가 필요합니다:</p><div class="en-orig"><p>Each PPR route requires two artifacts to be stored together:</p></div>
+<ol>
+<li>static HTML shell.</li>
+<li><code>postponedState</code> blob.</li>
+</ol><div class="en-orig"><ol>
+<li>The static HTML shell.</li>
+<li>The <code>postponedState</code> blob.</li>
+</ol></div>
+<p>이 둘은 atomic하게 저장되고 업데이트되어야 합니다. PPR route가 revalidate되면(<a href="app-guides-incremental-static-regeneration.html">time-based</a> 또는 <a href="app-api-reference-functions-revalidateTag.html">on-demand revalidation</a>을 통해), Next.js는 shell과 postponed state를 함께 다시 생성합니다. 새 shell을 예전 postponed state와 함께 제공하거나 그 반대로 하면 잘못된 dynamic 콘텐츠가 만들어집니다.</p><div class="en-orig"><p>These must be stored and updated atomically. When a PPR route is revalidated (via <a href="app-guides-incremental-static-regeneration.html">time-based</a> or <a href="app-api-reference-functions-revalidateTag.html">on-demand revalidation</a>), Next.js regenerates both the shell and the postponed state together. Serving a new shell with an old postponed state, or vice versa, will produce incorrect dynamic content.</p></div>
+<p>adapter에서 <a href="app-api-reference-adapters-implementing-ppr-in-an-adapter.html"><code>requestMeta.onCacheEntryV2</code></a>를 사용해 cache 업데이트를 관찰하고 storage backend에 전파하세요.</p><div class="en-orig"><p>Use <a href="app-api-reference-adapters-implementing-ppr-in-an-adapter.html"><code>requestMeta.onCacheEntryV2</code></a> in your adapter to observe cache updates and propagate them to your storage backend.</p></div>
+<h2 class="sec" id="origin-only-implementation"><a class="anchor" href="#origin-only-implementation">Origin-Only Implementation<span class="ko">Origin 전용 구현</span></a></h2>
+<p><strong>가장 단순한 방식이며, streaming HTTP response를 지원하는 모든 플랫폼에서 동작합니다.</strong></p><div class="en-orig"><p><strong>This is the simplest approach and works on every platform that supports streaming HTTP responses.</strong></p></div>
+<p>모든 request가 Next.js server로 직접 갑니다. server는 local cache에서 shell을 읽어 보낸 다음, dynamic 콘텐츠를 render해서 stream합니다. <code>next start</code>가 기본적으로 하는 일이 바로 이것입니다.</p><div class="en-orig"><p>All requests go directly to the Next.js server. The server reads the shell from its local cache, sends it, then renders and streams the dynamic content. This is what <code>next start</code> does by default.</p></div>
+<p>추가 인프라는 필요하지 않습니다. 플랫폼이 streaming HTTP response를 지원한다면 PPR도 지원하는 것입니다.</p><div class="en-orig"><p>No additional infrastructure is needed. If your platform supports streaming HTTP responses, it supports PPR.</p></div>
+<h2 class="sec" id="cdn-shell--origin-compute"><a class="anchor" href="#cdn-shell--origin-compute">CDN Shell + Origin Compute</a></h2>
+<p>더 나은 TTFB를 위해 static HTML shell을 CDN edge에 cache할 수 있습니다. request가 도착하면:</p><div class="en-orig"><p>For better TTFB, the static HTML shell can be cached at the CDN edge. When a request arrives:</p></div>
+<ol>
+<li>CDN이 cache된 shell을 즉시 제공합니다(edge latency).</li>
+<li>CDN이 origin server에 resume request를 보냅니다(가능하면 shell streaming과 병렬로).</li>
+<li>origin server는 dynamic 부분만 render해서 stream으로 돌려보냅니다.</li>
+<li>CDN이 shell과 dynamic 콘텐츠를 이어 붙여 client에 하나의 streaming response로 보냅니다.</li>
+</ol><div class="en-orig"><ol>
+<li>The CDN serves the cached shell immediately (edge latency).</li>
+<li>The CDN sends a resume request to the origin server (ideally in parallel with streaming the shell).</li>
+<li>The origin server renders only the dynamic portions and streams them back.</li>
+<li>The CDN concatenates the shell and dynamic content into a single streaming response to the client.</li>
+</ol></div>
+<p>이를 위해서는 CDN이 cache된 콘텐츠와 dynamic 콘텐츠를 하나의 streaming response로 합치는 메커니즘을 지원해야 합니다. static shell의 TTFB는 edge latency 수준으로 줄어들고, dynamic 콘텐츠는 여전히 origin에서 stream됩니다.</p><div class="en-orig"><p>This requires the CDN to support a mechanism for combining cached and dynamic content in a single streaming response. The static shell TTFB drops to edge latency while dynamic content still streams from origin.</p></div>
+<p>latency를 최대한 낮추려면, CDN cache 대신 edge storage(예: <code>onBuildComplete</code> 중에 채워 둔 KV store)에서 shell을 제공할 수 있습니다. 이는 플랫폼 아키텍처 차원의 결정이며 Next.js 애플리케이션을 변경할 필요는 없습니다.</p><div class="en-orig"><p>For the lowest possible latency, the shell can be served from edge storage (for example, a KV store populated during <code>onBuildComplete</code>) rather than from a CDN cache. This is a platform architecture decision and does not require any changes to the Next.js application.</p></div>
+<h2 class="sec" id="the-resume-protocol"><a class="anchor" href="#the-resume-protocol">The Resume Protocol<span class="ko">Resume Protocol</span></a></h2>
+<p><strong>resume protocol</strong>은 Next.js handler에게 shell은 건너뛰고 dynamic 부분만 render하라고 알려 줍니다. CDN-to-origin 아키텍처와 shell을 별도로 제공하는 adapter 기반 deployment에서 사용됩니다.</p><div class="en-orig"><p>The <strong>resume protocol</strong> tells the Next.js handler to skip the shell and render only the dynamic portions. It is used by CDN-to-origin architectures and adapter-based deployments that serve the shell separately.</p></div>
+<p>표준 <code>next start</code>에서는 server가 shell과 dynamic render를 한 번에 자동으로 처리합니다.</p><div class="en-orig"><p>In standard <code>next start</code>, the server handles both the shell and dynamic render in a single pass automatically.</p></div>
+<h3 class="sec" id="cdn-to-origin"><a class="anchor" href="#cdn-to-origin">CDN-to-origin</a></h3>
+<p>CDN이 별도의 Next.js origin에 HTTP request를 보낼 때:</p><div class="en-orig"><p>When the CDN makes an HTTP request to a separate Next.js origin:</p></div>
+<ul>
+<li><code>next-resume: 1</code> header와 함께 route에 <strong>POST</strong> request를 보냅니다.</li>
+<li><code>postponedState</code> blob을 <strong>request body</strong>로 포함합니다.</li>
+<li>server는 미뤄 두었던 Suspense boundary만 render하고 그 결과를 stream합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Send a <strong>POST</strong> request to the route with the header <code>next-resume: 1</code>.</li>
+<li>Include the <code>postponedState</code> blob as the <strong>request body</strong>.</li>
+<li>The server will render only the deferred Suspense boundaries and stream the result.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>POST request가 Server Action과 PPR resume을 결합하는 경우, request body에는 postponed state 뒤에 action body가 이어서 들어갑니다. <code>x-next-resume-state-length</code> header가 postponed state prefix의 byte 길이를 담고 있어서 handler가 둘을 분리할 수 있습니다. 순수한 PPR resume(일반적인 경우)에서는 request body 전체가 postponed state이므로 이 header가 필요하지 않습니다.</p><div class="en-orig"><p>When a POST request combines a Server Action with a PPR resume, the request body contains the postponed state followed by the action body. The <code>x-next-resume-state-length</code> header carries the byte length of the postponed state prefix so the handler can separate the two. For a pure PPR resume (the common case), the entire request body is the postponed state and this header is not needed.</p></div></div></div>
+<h3 class="sec" id="adapter-based"><a class="anchor" href="#adapter-based">Adapter-based<span class="ko">Adapter 기반</span></a></h3>
+<p>플랫폼이 handler 함수를 직접 호출할 때:</p><div class="en-orig"><p>When the platform invokes the handler function directly:</p></div>
+<ul>
+<li><code>req.method</code>를 <code>&#x27;POST&#x27;</code>로 설정하고, request에 <code>next-resume: 1</code> header를 넣고, <code>postponedState</code>를 request body로 하여 entrypoint handler를 호출합니다. (handler 호출의 세 번째 argument로 <code>requestMeta: { postponed: postponedState }</code>를 전달할 수도 있는데, 이는 동일하게 동작하지만 HTTP layer를 완전히 우회합니다.)</li>
+<li>handler는 미뤄 두었던 Suspense boundary만 render하고 그 결과를 <code>res</code>로 stream합니다.</li>
+<li>HTTP round-trip이 필요하지 않습니다. handler가 in-process로 호출되기 때문입니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Call the entrypoint handler with <code>req.method</code> set to <code>&#x27;POST&#x27;</code>, the <code>next-resume: 1</code> header on the request, and the <code>postponedState</code> as the request body. (You can also pass <code>requestMeta: { postponed: postponedState }</code> as the third argument to the handler invocation, which is equivalent but bypasses the HTTP layer entirely.)</li>
+<li>The handler renders only the deferred Suspense boundaries and streams the result to <code>res</code>.</li>
+<li>No HTTP round-trip is needed: the handler is invoked in-process.</li>
+</ul></div>
+<h3 class="sec" id="finding-ppr-routes-in-build-output"><a class="anchor" href="#finding-ppr-routes-in-build-output">Finding PPR routes in build output<span class="ko">build output에서 PPR route 찾기</span></a></h3>
+<p><a href="app-api-reference-adapters-output-types.html">adapter output</a>에서 PPR route는 prerenders 배열 안의 <code>renderingMode: &#x27;PARTIALLY_STATIC&#x27;</code>으로 식별됩니다. <code>outputs.prerenders</code>를 순회하며 이런 entry를 찾고 <code>fallback.postponedState</code>를 읽으세요.</p><div class="en-orig"><p>In the <a href="app-api-reference-adapters-output-types.html">adapter output</a>, PPR routes are identified by <code>renderingMode: &#x27;PARTIALLY_STATIC&#x27;</code> in the prerenders array. Iterate <code>outputs.prerenders</code> to find these entries and read <code>fallback.postponedState</code>.</p></div>
+<p><code>pprChain.headers</code>에는 resume protocol에 필요한 header인 <code>{ &#x27;next-resume&#x27;: &#x27;1&#x27; }</code>가 들어 있습니다.</p><div class="en-orig"><p><code>pprChain.headers</code> contains the headers needed for the resume protocol: <code>{ &#x27;next-resume&#x27;: &#x27;1&#x27; }</code>.</p></div>
+<p>코드 예제가 포함된 자세한 구현은 <a href="app-api-reference-adapters-implementing-ppr-in-an-adapter.html">Implementing PPR in an Adapter</a>를 참고하세요.</p><div class="en-orig"><p>For detailed implementation with code examples, see <a href="app-api-reference-adapters-implementing-ppr-in-an-adapter.html">Implementing PPR in an Adapter</a>.</p></div>
+<h2 class="sec" id="implementation-checklist"><a class="anchor" href="#implementation-checklist">Implementation Checklist<span class="ko">구현 체크리스트</span></a></h2>
+<ol>
+<li><strong>build 시점에 PPR output을 읽으세요.</strong> adapter의 <code>onBuildComplete</code>에서 <code>renderingMode: &#x27;PARTIALLY_STATIC&#x27;</code>인 prerender를 식별합니다. shell HTML과 <code>postponedState</code>를 cache에 저장합니다.</li>
+<li><strong>request 시점에 shell을 제공하세요.</strong> PPR route로 들어오는 request에 대해 cache된 shell을 즉시 제공하고 streaming을 시작합니다.</li>
+<li><strong>dynamic rendering을 재개하세요.</strong> CDN-to-origin의 경우: <code>next-resume: 1</code> header와 postponed state를 body로 하여 Next.js handler에 POST request를 보냅니다. adapter 기반의 경우: POST method와 request body의 postponed state로 handler를 직접 호출합니다(또는 handler에 <code>requestMeta: { postponed: postponedState }</code>를 전달합니다). response를 client로 stream합니다.</li>
+<li><strong>cache 업데이트를 처리하세요.</strong> <code>requestMeta.onCacheEntryV2</code>를 사용해 revalidation 이후의 새 shell + postponed state 쌍을 포착하고, cache를 atomic하게 업데이트합니다.</li>
+<li><strong>graceful degradation을 지원하세요.</strong> postponed state를 사용할 수 없거나 stale하다면 전체 server render로 fallback합니다. 사용자는 shell-first 최적화 없이 완전한 page를 받게 됩니다.</li>
+</ol><div class="en-orig"><ol>
+<li><strong>Read PPR outputs at build time.</strong> In your adapter's <code>onBuildComplete</code>, identify prerenders with <code>renderingMode: &#x27;PARTIALLY_STATIC&#x27;</code>. Store the shell HTML and <code>postponedState</code> in your cache.</li>
+<li><strong>Serve the shell at request time.</strong> For incoming requests to PPR routes, serve the cached shell immediately and begin streaming.</li>
+<li><strong>Resume dynamic rendering.</strong> For CDN-to-origin: send a POST request to the Next.js handler with the <code>next-resume: 1</code> header and the postponed state as the body. For adapter-based: call the handler directly with POST method and the postponed state in the request body (or pass <code>requestMeta: { postponed: postponedState }</code> to the handler). Stream the response back to the client.</li>
+<li><strong>Handle cache updates.</strong> Use <code>requestMeta.onCacheEntryV2</code> to capture new shell + postponed state pairs after revalidation, and update your cache atomically.</li>
+<li><strong>Support graceful degradation.</strong> If the postponed state is unavailable or stale, fall back to a full server render. The user gets a complete page without the shell-first optimization.</li>
+</ol></div>
+<p>전체 adapter API reference와 구현 예제는 <a href="app-api-reference-config-next-config-js-adapterPath.html">Deployment Adapter API</a>를 참고하세요.</p><div class="en-orig"><p>For the complete adapter API reference and implementation examples, see the <a href="app-api-reference-config-next-config-js-adapterPath.html">Deployment Adapter API</a>.</p></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><p>관련 가이드와 reference.</p><div class="rgrid"><a class="rcard" href="app-guides-rendering-philosophy.html"><div class="rt">Next.js Rendering Philosophy</div><div class="rk">Next.js Rendering 철학</div><div class="rd">Next.js가 static rendering과 dynamic rendering을 component 수준의 스펙트럼으로 다루는 방식과, 이것이 deploy에 어떤 의미를 갖는지 알아봅니다.</div></a><a class="rcard" href="app-guides-streaming.html"><div class="rt">Streaming</div><div class="rk">스트리밍</div><div class="rd">Next.js에서 streaming이 어떻게 동작하는지, 그리고 데이터가 준비되는 대로 UI를 점진적으로 render하는 데 이를 어떻게 활용하는지 알아봅니다.</div></a><a class="rcard" href="app-guides-deploying-to-platforms.html"><div class="rt">Deploying Next.js to different platforms</div><div class="rk">다양한 플랫폼에 Next.js deploy하기</div><div class="rd">어떤 Next.js 기능에 특정 플랫폼 capability가 필요한지, 그리고 알맞은 deployment target을 고르는 방법을 이해합니다.</div></a><a class="rcard" href="app-api-reference-config-next-config-js-adapterPath.html"><div class="rt">adapterPath</div><div class="rk">adapterPath</div><div class="rd">Next.js의 build process에 연결되는 custom adapter를 설정합니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/ppr-platform-guide.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/ppr-platform-guide" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-package-bundling.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Package Bundling</div><div class="ttl-ko">package bundling 최적화</div></a>
+      <a href="app-guides-prefetching.html" class="next"><div class="dir">다음 →</div><div class="ttl">Prefetching</div><div class="ttl-ko">Prefetching</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/ppr-platform-guide" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#how-ppr-works">How PPR Works</a></li><li class="l3"><a href="#build-time">Build time</a></li><li class="l3"><a href="#request-time">Request time</a></li><li class="l2"><a href="#storing-ppr-artifacts">Storing PPR Artifacts</a></li><li class="l2"><a href="#origin-only-implementation">Origin-Only Implementation</a></li><li class="l2"><a href="#cdn-shell--origin-compute">CDN Shell + Origin Compute</a></li><li class="l2"><a href="#the-resume-protocol">The Resume Protocol</a></li><li class="l3"><a href="#cdn-to-origin">CDN-to-origin</a></li><li class="l3"><a href="#adapter-based">Adapter-based</a></li><li class="l3"><a href="#finding-ppr-routes-in-build-output">Finding PPR routes in build output</a></li><li class="l2"><a href="#implementation-checklist">Implementation Checklist</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Partial Prerendering(PPR)은 하나의 route에서 static rendering과 dynamic rendering을 결합합니다. build 시점에 Next.js는 PPR이 활성화된 각 route에 대해 static HTML shell과 `postponedState` blob을 생성합니다. request 시점에는 shell이 즉시 제공되고, dynamic 부분이 render되어 client로 stream됩니다.
+
+이 페이지에서는 플랫폼이 다양한 수준의 정교함으로 PPR 지원을 구현하는 방법을 설명합니다.
+
+## How PPR Works || PPR의 동작 방식
+
+### Build time || build 시점
+
+각 PPR route에 대해 Next.js는 다음을 만들어 냅니다:
+
+- prerender할 수 있는 모든 콘텐츠를 담고, dynamic 콘텐츠가 나타날 자리에는 [Suspense](/docs/app/guides/streaming#what-is-streaming) fallback을 둔 **static HTML shell**.
+- **`postponedState`** 값: serialize된 문자열입니다. 이 값은 불투명한(opaque) 값으로 취급하세요. 즉, parse하거나 수정하지 말고 그대로 전달해야 합니다. `postponedState`를 변경하면 잘못된 dynamic rendering output이 만들어집니다.
+- page의 static 부분에 대한 **RSC payload**.
+
+### Request time || request 시점
+
+PPR route로 request가 도착하면:
+
+1. server가 static HTML shell을 client에 즉시 보냅니다.
+2. server가 postponed state를 사용해 dynamic 부분의 rendering을 재개(resume)합니다.
+3. dynamic 콘텐츠가 client로 stream되어, React가 미뤄 두었던 Suspense boundary를 hydrate할 수 있게 됩니다.
+
+client는 static shell을 즉시 보게 되고, 이후 dynamic 콘텐츠가 resolve되는 대로 나타납니다.
+
+## Storing PPR Artifacts || PPR artifact 저장하기
+
+각 PPR route에는 함께 저장해야 하는 artifact 두 개가 필요합니다:
+
+1. static HTML shell.
+2. `postponedState` blob.
+
+이 둘은 atomic하게 저장되고 업데이트되어야 합니다. PPR route가 revalidate되면([time-based](/docs/app/guides/incremental-static-regeneration) 또는 [on-demand revalidation](/docs/app/api-reference/functions/revalidateTag)을 통해), Next.js는 shell과 postponed state를 함께 다시 생성합니다. 새 shell을 예전 postponed state와 함께 제공하거나 그 반대로 하면 잘못된 dynamic 콘텐츠가 만들어집니다.
+
+adapter에서 [`requestMeta.onCacheEntryV2`](/docs/app/api-reference/adapters/implementing-ppr-in-an-adapter)를 사용해 cache 업데이트를 관찰하고 storage backend에 전파하세요.
+
+## Origin-Only Implementation || Origin 전용 구현
+
+**가장 단순한 방식이며, streaming HTTP response를 지원하는 모든 플랫폼에서 동작합니다.**
+
+모든 request가 Next.js server로 직접 갑니다. server는 local cache에서 shell을 읽어 보낸 다음, dynamic 콘텐츠를 render해서 stream합니다. `next start`가 기본적으로 하는 일이 바로 이것입니다.
+
+추가 인프라는 필요하지 않습니다. 플랫폼이 streaming HTTP response를 지원한다면 PPR도 지원하는 것입니다.
+
+## CDN Shell + Origin Compute || CDN Shell + Origin Compute
+
+더 나은 TTFB를 위해 static HTML shell을 CDN edge에 cache할 수 있습니다. request가 도착하면:
+
+1. CDN이 cache된 shell을 즉시 제공합니다(edge latency).
+2. CDN이 origin server에 resume request를 보냅니다(가능하면 shell streaming과 병렬로).
+3. origin server는 dynamic 부분만 render해서 stream으로 돌려보냅니다.
+4. CDN이 shell과 dynamic 콘텐츠를 이어 붙여 client에 하나의 streaming response로 보냅니다.
+
+이를 위해서는 CDN이 cache된 콘텐츠와 dynamic 콘텐츠를 하나의 streaming response로 합치는 메커니즘을 지원해야 합니다. static shell의 TTFB는 edge latency 수준으로 줄어들고, dynamic 콘텐츠는 여전히 origin에서 stream됩니다.
+
+latency를 최대한 낮추려면, CDN cache 대신 edge storage(예: `onBuildComplete` 중에 채워 둔 KV store)에서 shell을 제공할 수 있습니다. 이는 플랫폼 아키텍처 차원의 결정이며 Next.js 애플리케이션을 변경할 필요는 없습니다.
+
+## The Resume Protocol || Resume Protocol
+
+**resume protocol**은 Next.js handler에게 shell은 건너뛰고 dynamic 부분만 render하라고 알려 줍니다. CDN-to-origin 아키텍처와 shell을 별도로 제공하는 adapter 기반 deployment에서 사용됩니다.
+
+표준 `next start`에서는 server가 shell과 dynamic render를 한 번에 자동으로 처리합니다.
+
+### CDN-to-origin
+
+CDN이 별도의 Next.js origin에 HTTP request를 보낼 때:
+
+- `next-resume: 1` header와 함께 route에 **POST** request를 보냅니다.
+- `postponedState` blob을 **request body**로 포함합니다.
+- server는 미뤄 두었던 Suspense boundary만 render하고 그 결과를 stream합니다.
+
+&gt; **Good to know:** POST request가 Server Action과 PPR resume을 결합하는 경우, request body에는 postponed state 뒤에 action body가 이어서 들어갑니다. `x-next-resume-state-length` header가 postponed state prefix의 byte 길이를 담고 있어서 handler가 둘을 분리할 수 있습니다. 순수한 PPR resume(일반적인 경우)에서는 request body 전체가 postponed state이므로 이 header가 필요하지 않습니다.
+
+### Adapter-based || Adapter 기반
+
+플랫폼이 handler 함수를 직접 호출할 때:
+
+- `req.method`를 `&#x27;POST&#x27;`로 설정하고, request에 `next-resume: 1` header를 넣고, `postponedState`를 request body로 하여 entrypoint handler를 호출합니다. (handler 호출의 세 번째 argument로 `requestMeta: { postponed: postponedState }`를 전달할 수도 있는데, 이는 동일하게 동작하지만 HTTP layer를 완전히 우회합니다.)
+- handler는 미뤄 두었던 Suspense boundary만 render하고 그 결과를 `res`로 stream합니다.
+- HTTP round-trip이 필요하지 않습니다. handler가 in-process로 호출되기 때문입니다.
+
+### Finding PPR routes in build output || build output에서 PPR route 찾기
+
+[adapter output](/docs/app/api-reference/adapters/output-types)에서 PPR route는 prerenders 배열 안의 `renderingMode: &#x27;PARTIALLY_STATIC&#x27;`으로 식별됩니다. `outputs.prerenders`를 순회하며 이런 entry를 찾고 `fallback.postponedState`를 읽으세요.
+
+`pprChain.headers`에는 resume protocol에 필요한 header인 `{ &#x27;next-resume&#x27;: &#x27;1&#x27; }`가 들어 있습니다.
+
+코드 예제가 포함된 자세한 구현은 [Implementing PPR in an Adapter](/docs/app/api-reference/adapters/implementing-ppr-in-an-adapter)를 참고하세요.
+
+## Implementation Checklist || 구현 체크리스트
+
+1. **build 시점에 PPR output을 읽으세요.** adapter의 `onBuildComplete`에서 `renderingMode: &#x27;PARTIALLY_STATIC&#x27;`인 prerender를 식별합니다. shell HTML과 `postponedState`를 cache에 저장합니다.
+
+2. **request 시점에 shell을 제공하세요.** PPR route로 들어오는 request에 대해 cache된 shell을 즉시 제공하고 streaming을 시작합니다.
+
+3. **dynamic rendering을 재개하세요.** CDN-to-origin의 경우: `next-resume: 1` header와 postponed state를 body로 하여 Next.js handler에 POST request를 보냅니다. adapter 기반의 경우: POST method와 request body의 postponed state로 handler를 직접 호출합니다(또는 handler에 `requestMeta: { postponed: postponedState }`를 전달합니다). response를 client로 stream합니다.
+
+4. **cache 업데이트를 처리하세요.** `requestMeta.onCacheEntryV2`를 사용해 revalidation 이후의 새 shell + postponed state 쌍을 포착하고, cache를 atomic하게 업데이트합니다.
+
+5. **graceful degradation을 지원하세요.** postponed state를 사용할 수 없거나 stale하다면 전체 server render로 fallback합니다. 사용자는 shell-first 최적화 없이 완전한 page를 받게 됩니다.
+
+전체 adapter API reference와 구현 예제는 [Deployment Adapter API](/docs/app/api-reference/config/next-config-js/adapterPath)를 참고하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project structure and organization (프로젝트 구조와 구성) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/getting-started/project-structure" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/getting-started/project-structure" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/02-project-structure.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-getting-started.html">Getting Started</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Project structure and organization<span class="sub">프로젝트 구조와 구성</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>이 페이지는 Next.js의 <strong>모든</strong> 폴더·파일 convention(관례)을 한눈에 정리하고, 프로젝트를 구성하는 방법에 대한 권장 사항을 소개합니다.</p><div class="en-orig"><p>This page provides an overview of <strong>all</strong> the folder and file conventions in Next.js, and recommendations for organizing your project.</p></div>
+<h2 class="sec" id="folder-and-file-conventions"><a class="anchor" href="#folder-and-file-conventions">Folder and file conventions<span class="ko">폴더와 파일 convention</span></a></h2>
+<h3 class="sec" id="top-level-folders"><a class="anchor" href="#top-level-folders">Top-level folders<span class="ko">최상위 폴더</span></a></h3>
+<p>최상위 폴더는 애플리케이션 코드와 static asset을 정리하는 데 사용합니다.</p><div class="en-orig"><p>Top-level folders are used to organize your application's code and static assets.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/top-level-folders.png" alt="Route segment와 path segment의 대응" width="1600" height="525" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/top-level-folders.png" alt="Route segment와 path segment의 대응" width="1600" height="525" loading="lazy" /></figure>
+<div class="table-wrap"><table>
+<tbody>
+<tr><td><a href="app.html"><code>app</code></a></td><td>App Router</td></tr>
+<tr><td><a href="pages-building-your-application-routing.html"><code>pages</code></a></td><td>Pages Router</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-public-folder.html"><code>public</code></a></td><td>제공(serve)할 static asset</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-src-folder.html"><code>src</code></a></td><td>선택 사항인 애플리케이션 source 폴더</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<tbody>
+<tr><td><a href="app.html"><code>app</code></a></td><td>App Router</td></tr>
+<tr><td><a href="pages-building-your-application-routing.html"><code>pages</code></a></td><td>Pages Router</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-public-folder.html"><code>public</code></a></td><td>Static assets to be served</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-src-folder.html"><code>src</code></a></td><td>Optional application source folder</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="top-level-files"><a class="anchor" href="#top-level-files">Top-level files<span class="ko">최상위 파일</span></a></h3>
+<p>최상위 파일은 애플리케이션 설정, dependency 관리, proxy 실행, monitoring 도구 연동, environment variable 정의에 사용합니다.</p><div class="en-orig"><p>Top-level files are used to configure your application, manage dependencies, run proxy, integrate monitoring tools, and define environment variables.</p></div>
+<div class="table-wrap"><table>
+<tbody>
+<tr><td><strong>Next.js</strong></td><td></td></tr>
+<tr><td><a href="app-api-reference-config-next-config-js.html"><code>next.config.js</code></a></td><td>Next.js 설정 파일</td></tr>
+<tr><td><a href="app-getting-started-installation.html#manual-installation"><code>package.json</code></a></td><td>프로젝트 dependency와 script</td></tr>
+<tr><td><a href="app-guides-instrumentation.html"><code>instrumentation.ts</code></a></td><td>OpenTelemetry 및 Instrumentation 파일</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-proxy.html"><code>proxy.ts</code></a></td><td>Next.js request proxy</td></tr>
+<tr><td><a href="app-guides-environment-variables.html"><code>.env</code></a></td><td>Environment variable (version control로 추적하지 않아야 함)</td></tr>
+<tr><td><a href="app-guides-environment-variables.html"><code>.env.local</code></a></td><td>로컬 environment variable (version control로 추적하지 않아야 함)</td></tr>
+<tr><td><a href="app-guides-environment-variables.html"><code>.env.production</code></a></td><td>Production environment variable (version control로 추적하지 않아야 함)</td></tr>
+<tr><td><a href="app-guides-environment-variables.html"><code>.env.development</code></a></td><td>Development environment variable (version control로 추적하지 않아야 함)</td></tr>
+<tr><td><a href="app-api-reference-config-eslint.html"><code>eslint.config.mjs</code></a></td><td>ESLint 설정 파일</td></tr>
+<tr><td><code>.gitignore</code></td><td>Git에서 무시할 파일과 폴더</td></tr>
+<tr><td><a href="app-api-reference-config-typescript.html#next-envdts"><code>next-env.d.ts</code></a></td><td>Next.js용 TypeScript 선언 파일 (version control로 추적하지 않아야 함)</td></tr>
+<tr><td><code>tsconfig.json</code></td><td>TypeScript 설정 파일</td></tr>
+<tr><td><code>jsconfig.json</code></td><td>JavaScript 설정 파일</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<tbody>
+<tr><td><strong>Next.js</strong></td><td></td></tr>
+<tr><td><a href="app-api-reference-config-next-config-js.html"><code>next.config.js</code></a></td><td>Configuration file for Next.js</td></tr>
+<tr><td><a href="app-getting-started-installation.html#manual-installation"><code>package.json</code></a></td><td>Project dependencies and scripts</td></tr>
+<tr><td><a href="app-guides-instrumentation.html"><code>instrumentation.ts</code></a></td><td>OpenTelemetry and Instrumentation file</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-proxy.html"><code>proxy.ts</code></a></td><td>Next.js request proxy</td></tr>
+<tr><td><a href="app-guides-environment-variables.html"><code>.env</code></a></td><td>Environment variables (should not be tracked by version control)</td></tr>
+<tr><td><a href="app-guides-environment-variables.html"><code>.env.local</code></a></td><td>Local environment variables (should not be tracked by version control)</td></tr>
+<tr><td><a href="app-guides-environment-variables.html"><code>.env.production</code></a></td><td>Production environment variables (should not be tracked by version control)</td></tr>
+<tr><td><a href="app-guides-environment-variables.html"><code>.env.development</code></a></td><td>Development environment variables (should not be tracked by version control)</td></tr>
+<tr><td><a href="app-api-reference-config-eslint.html"><code>eslint.config.mjs</code></a></td><td>Configuration file for ESLint</td></tr>
+<tr><td><code>.gitignore</code></td><td>Git files and folders to ignore</td></tr>
+<tr><td><a href="app-api-reference-config-typescript.html#next-envdts"><code>next-env.d.ts</code></a></td><td>TypeScript declaration file for Next.js (should not be tracked by version control)</td></tr>
+<tr><td><code>tsconfig.json</code></td><td>Configuration file for TypeScript</td></tr>
+<tr><td><code>jsconfig.json</code></td><td>Configuration file for JavaScript</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="routing-files"><a class="anchor" href="#routing-files">Routing Files<span class="ko">Routing 파일</span></a></h3>
+<p>route를 공개하려면 <code>page</code>를, header·nav·footer 같은 공유 UI에는 <code>layout</code>을, skeleton에는 <code>loading</code>을, error boundary에는 <code>error</code>를, API에는 <code>route</code>를 추가하세요.</p><div class="en-orig"><p>Add <code>page</code> to expose a route, <code>layout</code> for shared UI such as header, nav, or footer, <code>loading</code> for skeletons, <code>error</code> for error boundaries, and <code>route</code> for APIs.</p></div>
+<div class="table-wrap"><table>
+<tbody>
+<tr><td><a href="app-api-reference-file-conventions-layout.html"><code>layout</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Layout</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-page.html"><code>page</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Page</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-loading.html"><code>loading</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Loading UI</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-not-found.html"><code>not-found</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Not found UI</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-error.html"><code>error</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Error UI</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-error.html#global-error"><code>global-error</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Global error UI</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-route.html"><code>route</code></a></td><td><code>.js</code> <code>.ts</code></td><td>API endpoint</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-template.html"><code>template</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>다시 render되는 layout</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-default.html"><code>default</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Parallel route fallback page</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<tbody>
+<tr><td><a href="app-api-reference-file-conventions-layout.html"><code>layout</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Layout</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-page.html"><code>page</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Page</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-loading.html"><code>loading</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Loading UI</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-not-found.html"><code>not-found</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Not found UI</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-error.html"><code>error</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Error UI</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-error.html#global-error"><code>global-error</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Global error UI</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-route.html"><code>route</code></a></td><td><code>.js</code> <code>.ts</code></td><td>API endpoint</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-template.html"><code>template</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Re-rendered layout</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-default.html"><code>default</code></a></td><td><code>.js</code> <code>.jsx</code> <code>.tsx</code></td><td>Parallel route fallback page</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="nested-routes"><a class="anchor" href="#nested-routes">Nested routes<span class="ko">중첩 route</span></a></h3>
+<p>폴더는 URL segment를 정의합니다. 폴더를 중첩하면 segment도 중첩됩니다. 어느 단계에 있든 layout은 자신의 하위 segment를 감쌉니다. <code>page</code> 또는 <code>route</code> 파일이 있어야 route가 공개됩니다.</p><div class="en-orig"><p>Folders define URL segments. Nesting folders nests segments. Layouts at any level wrap their child segments. A route becomes public when a <code>page</code> or <code>route</code> file exists.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>경로</th><th>URL 패턴</th><th>비고</th></tr></thead>
+<tbody>
+<tr><td><code>app/layout.tsx</code></td><td>—</td><td>Root layout이 모든 route를 감쌈</td></tr>
+<tr><td><code>app/blog/layout.tsx</code></td><td>—</td><td><code>/blog</code>와 그 하위 route를 감쌈</td></tr>
+<tr><td><code>app/page.tsx</code></td><td><code>/</code></td><td>공개 route</td></tr>
+<tr><td><code>app/blog/page.tsx</code></td><td><code>/blog</code></td><td>공개 route</td></tr>
+<tr><td><code>app/blog/authors/page.tsx</code></td><td><code>/blog/authors</code></td><td>공개 route</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Path</th><th>URL pattern</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><code>app/layout.tsx</code></td><td>—</td><td>Root layout wraps all routes</td></tr>
+<tr><td><code>app/blog/layout.tsx</code></td><td>—</td><td>Wraps <code>/blog</code> and descendants</td></tr>
+<tr><td><code>app/page.tsx</code></td><td><code>/</code></td><td>Public route</td></tr>
+<tr><td><code>app/blog/page.tsx</code></td><td><code>/blog</code></td><td>Public route</td></tr>
+<tr><td><code>app/blog/authors/page.tsx</code></td><td><code>/blog/authors</code></td><td>Public route</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="dynamic-routes"><a class="anchor" href="#dynamic-routes">Dynamic routes<span class="ko">Dynamic route</span></a></h3>
+<p>대괄호로 segment를 parameter화합니다. 단일 param에는 <code>[segment]</code>, catch‑all에는 <code>[...segment]</code>, optional catch‑all에는 <code>[[...segment]]</code>를 사용하세요. 값은 <a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code></a> prop으로 접근합니다.</p><div class="en-orig"><p>Parameterize segments with square brackets. Use <code>[segment]</code> for a single param, <code>[...segment]</code> for catch‑all, and <code>[[...segment]]</code> for optional catch‑all. Access values via the <a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code></a> prop.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>경로</th><th>URL 패턴</th></tr></thead>
+<tbody>
+<tr><td><code>app/blog/[slug]/page.tsx</code></td><td><code>/blog/my-first-post</code></td></tr>
+<tr><td><code>app/shop/[...slug]/page.tsx</code></td><td><code>/shop/clothing</code>, <code>/shop/clothing/shirts</code></td></tr>
+<tr><td><code>app/docs/[[...slug]]/page.tsx</code></td><td><code>/docs</code>, <code>/docs/layouts-and-pages</code>, <code>/docs/api-reference/use-router</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Path</th><th>URL pattern</th></tr></thead>
+<tbody>
+<tr><td><code>app/blog/[slug]/page.tsx</code></td><td><code>/blog/my-first-post</code></td></tr>
+<tr><td><code>app/shop/[...slug]/page.tsx</code></td><td><code>/shop/clothing</code>, <code>/shop/clothing/shirts</code></td></tr>
+<tr><td><code>app/docs/[[...slug]]/page.tsx</code></td><td><code>/docs</code>, <code>/docs/layouts-and-pages</code>, <code>/docs/api-reference/use-router</code></td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="route-groups-and-private-folders"><a class="anchor" href="#route-groups-and-private-folders">Route groups and private folders<span class="ko">Route group과 private 폴더</span></a></h3>
+<p>route group <a href="app-api-reference-file-conventions-route-groups.html#convention"><code>(group)</code></a>으로 URL을 바꾸지 않고 코드를 정리하고, private 폴더 <a href="#private-folders"><code>_folder</code></a>로 routing되지 않는 파일을 함께 배치(colocate)하세요.</p><div class="en-orig"><p>Organize code without changing URLs with route groups <a href="app-api-reference-file-conventions-route-groups.html#convention"><code>(group)</code></a>, and colocate non-routable files with private folders <a href="#private-folders"><code>_folder</code></a>.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>경로</th><th>URL 패턴</th><th>비고</th></tr></thead>
+<tbody>
+<tr><td><code>app/(marketing)/page.tsx</code></td><td><code>/</code></td><td>Group은 URL에서 생략됨</td></tr>
+<tr><td><code>app/(shop)/cart/page.tsx</code></td><td><code>/cart</code></td><td><code>(shop)</code> 안에서 layout 공유</td></tr>
+<tr><td><code>app/blog/_components/Post.tsx</code></td><td>—</td><td>Routing되지 않음. UI utility를 두기에 안전한 곳</td></tr>
+<tr><td><code>app/blog/_lib/data.ts</code></td><td>—</td><td>Routing되지 않음. util을 두기에 안전한 곳</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Path</th><th>URL pattern</th><th>Notes</th></tr></thead>
+<tbody>
+<tr><td><code>app/(marketing)/page.tsx</code></td><td><code>/</code></td><td>Group omitted from URL</td></tr>
+<tr><td><code>app/(shop)/cart/page.tsx</code></td><td><code>/cart</code></td><td>Share layouts within <code>(shop)</code></td></tr>
+<tr><td><code>app/blog/_components/Post.tsx</code></td><td>—</td><td>Not routable; safe place for UI utilities</td></tr>
+<tr><td><code>app/blog/_lib/data.ts</code></td><td>—</td><td>Not routable; safe place for utils</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="parallel-and-intercepted-routes"><a class="anchor" href="#parallel-and-intercepted-routes">Parallel and Intercepted Routes<span class="ko">Parallel Route와 Intercepted Route</span></a></h3>
+<p>이 기능들은 slot 기반 layout이나 modal routing 같은 특정 UI 패턴에 잘 맞습니다.</p><div class="en-orig"><p>These features fit specific UI patterns, such as slot-based layouts or modal routing.</p></div>
+<p>parent layout이 render하는 이름 있는 slot에는 <code>@slot</code>을 사용하세요. intercept 패턴을 사용하면 URL을 바꾸지 않고 현재 layout 안에서 다른 route를 render할 수 있습니다. 예를 들어 목록 위에 상세 화면을 modal로 띄울 때 사용합니다.</p><div class="en-orig"><p>Use <code>@slot</code> for named slots rendered by a parent layout. Use intercept patterns to render another route inside the current layout without changing the URL, for example, to show a details view as a modal over a list.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>패턴 (docs)</th><th>의미</th><th>대표 use case</th></tr></thead>
+<tbody>
+<tr><td><a href="app-api-reference-file-conventions-parallel-routes.html#slots"><code>@folder</code></a></td><td>이름 있는 slot</td><td>Sidebar + main content</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-intercepting-routes.html#convention"><code>(.)folder</code></a></td><td>같은 단계 intercept</td><td>형제 route를 modal로 미리보기</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-intercepting-routes.html#convention"><code>(..)folder</code></a></td><td>부모 단계 intercept</td><td>부모의 child를 overlay로 열기</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-intercepting-routes.html#convention"><code>(..)(..)folder</code></a></td><td>두 단계 위 intercept</td><td>깊게 중첩된 overlay</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-intercepting-routes.html#convention"><code>(...)folder</code></a></td><td>root부터 intercept</td><td>임의의 route를 현재 화면에 표시</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Pattern (docs)</th><th>Meaning</th><th>Typical use case</th></tr></thead>
+<tbody>
+<tr><td><a href="app-api-reference-file-conventions-parallel-routes.html#slots"><code>@folder</code></a></td><td>Named slot</td><td>Sidebar + main content</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-intercepting-routes.html#convention"><code>(.)folder</code></a></td><td>Intercept same level</td><td>Preview sibling route in a modal</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-intercepting-routes.html#convention"><code>(..)folder</code></a></td><td>Intercept parent</td><td>Open a child of the parent as an overlay</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-intercepting-routes.html#convention"><code>(..)(..)folder</code></a></td><td>Intercept two levels</td><td>Deeply nested overlay</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-intercepting-routes.html#convention"><code>(...)folder</code></a></td><td>Intercept from root</td><td>Show arbitrary route in current view</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="metadata-file-conventions"><a class="anchor" href="#metadata-file-conventions">Metadata file conventions<span class="ko">Metadata 파일 convention</span></a></h3>
+<h4 class="sec" id="app-icons"><a class="anchor" href="#app-icons">App icons<span class="ko">App 아이콘</span></a></h4>
+<div class="table-wrap"><table>
+<tbody>
+<tr><td><a href="app-api-reference-file-conventions-metadata-app-icons.html#favicon"><code>favicon</code></a></td><td><code>.ico</code></td><td>Favicon 파일</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-app-icons.html#icon"><code>icon</code></a></td><td><code>.ico</code> <code>.jpg</code> <code>.jpeg</code> <code>.png</code> <code>.svg</code></td><td>App Icon 파일</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-app-icons.html#generate-icons-using-code-js-ts-tsx"><code>icon</code></a></td><td><code>.js</code> <code>.ts</code> <code>.tsx</code></td><td>코드로 생성하는 App Icon</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-app-icons.html#apple-icon"><code>apple-icon</code></a></td><td><code>.jpg</code> <code>.jpeg</code> <code>.png</code></td><td>Apple App Icon 파일</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-app-icons.html#generate-icons-using-code-js-ts-tsx"><code>apple-icon</code></a></td><td><code>.js</code> <code>.ts</code> <code>.tsx</code></td><td>코드로 생성하는 Apple App Icon</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<tbody>
+<tr><td><a href="app-api-reference-file-conventions-metadata-app-icons.html#favicon"><code>favicon</code></a></td><td><code>.ico</code></td><td>Favicon file</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-app-icons.html#icon"><code>icon</code></a></td><td><code>.ico</code> <code>.jpg</code> <code>.jpeg</code> <code>.png</code> <code>.svg</code></td><td>App Icon file</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-app-icons.html#generate-icons-using-code-js-ts-tsx"><code>icon</code></a></td><td><code>.js</code> <code>.ts</code> <code>.tsx</code></td><td>Generated App Icon</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-app-icons.html#apple-icon"><code>apple-icon</code></a></td><td><code>.jpg</code> <code>.jpeg</code> <code>.png</code></td><td>Apple App Icon file</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-app-icons.html#generate-icons-using-code-js-ts-tsx"><code>apple-icon</code></a></td><td><code>.js</code> <code>.ts</code> <code>.tsx</code></td><td>Generated Apple App Icon</td></tr>
+</tbody></table></div></div>
+<h4 class="sec" id="open-graph-and-twitter-images"><a class="anchor" href="#open-graph-and-twitter-images">Open Graph and Twitter images<span class="ko">Open Graph와 Twitter 이미지</span></a></h4>
+<div class="table-wrap"><table>
+<tbody>
+<tr><td><a href="app-api-reference-file-conventions-metadata-opengraph-image.html#opengraph-image"><code>opengraph-image</code></a></td><td><code>.jpg</code> <code>.jpeg</code> <code>.png</code> <code>.gif</code></td><td>Open Graph 이미지 파일</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-opengraph-image.html#generate-images-using-code-js-ts-tsx"><code>opengraph-image</code></a></td><td><code>.js</code> <code>.ts</code> <code>.tsx</code></td><td>코드로 생성하는 Open Graph 이미지</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-opengraph-image.html#twitter-image"><code>twitter-image</code></a></td><td><code>.jpg</code> <code>.jpeg</code> <code>.png</code> <code>.gif</code></td><td>Twitter 이미지 파일</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-opengraph-image.html#generate-images-using-code-js-ts-tsx"><code>twitter-image</code></a></td><td><code>.js</code> <code>.ts</code> <code>.tsx</code></td><td>코드로 생성하는 Twitter 이미지</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<tbody>
+<tr><td><a href="app-api-reference-file-conventions-metadata-opengraph-image.html#opengraph-image"><code>opengraph-image</code></a></td><td><code>.jpg</code> <code>.jpeg</code> <code>.png</code> <code>.gif</code></td><td>Open Graph image file</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-opengraph-image.html#generate-images-using-code-js-ts-tsx"><code>opengraph-image</code></a></td><td><code>.js</code> <code>.ts</code> <code>.tsx</code></td><td>Generated Open Graph image</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-opengraph-image.html#twitter-image"><code>twitter-image</code></a></td><td><code>.jpg</code> <code>.jpeg</code> <code>.png</code> <code>.gif</code></td><td>Twitter image file</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-opengraph-image.html#generate-images-using-code-js-ts-tsx"><code>twitter-image</code></a></td><td><code>.js</code> <code>.ts</code> <code>.tsx</code></td><td>Generated Twitter image</td></tr>
+</tbody></table></div></div>
+<h4 class="sec" id="seo"><a class="anchor" href="#seo">SEO</a></h4>
+<div class="table-wrap"><table>
+<tbody>
+<tr><td><a href="app-api-reference-file-conventions-metadata-sitemap.html#sitemap-files-xml"><code>sitemap</code></a></td><td><code>.xml</code></td><td>Sitemap 파일</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-sitemap.html#generating-a-sitemap-using-code-js-ts"><code>sitemap</code></a></td><td><code>.js</code> <code>.ts</code></td><td>코드로 생성하는 Sitemap</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-robots.html#static-robotstxt"><code>robots</code></a></td><td><code>.txt</code></td><td>Robots 파일</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-robots.html#generate-a-robots-file"><code>robots</code></a></td><td><code>.js</code> <code>.ts</code></td><td>코드로 생성하는 Robots 파일</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<tbody>
+<tr><td><a href="app-api-reference-file-conventions-metadata-sitemap.html#sitemap-files-xml"><code>sitemap</code></a></td><td><code>.xml</code></td><td>Sitemap file</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-sitemap.html#generating-a-sitemap-using-code-js-ts"><code>sitemap</code></a></td><td><code>.js</code> <code>.ts</code></td><td>Generated Sitemap</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-robots.html#static-robotstxt"><code>robots</code></a></td><td><code>.txt</code></td><td>Robots file</td></tr>
+<tr><td><a href="app-api-reference-file-conventions-metadata-robots.html#generate-a-robots-file"><code>robots</code></a></td><td><code>.js</code> <code>.ts</code></td><td>Generated Robots file</td></tr>
+</tbody></table></div></div>
+<h2 class="sec" id="organizing-your-project"><a class="anchor" href="#organizing-your-project">Organizing your project<span class="ko">프로젝트 구성하기</span></a></h2>
+<p>Next.js는 프로젝트 파일을 어떻게 정리하고 함께 배치(colocate)할지에 대해 <strong>특정 방식을 강요하지 않습니다(unopinionated)</strong>. 다만 프로젝트 구성에 도움이 되는 몇 가지 기능을 제공합니다.</p><div class="en-orig"><p>Next.js is <strong>unopinionated</strong> about how you organize and colocate your project files. But it does provide several features to help you organize your project.</p></div>
+<h3 class="sec" id="component-hierarchy"><a class="anchor" href="#component-hierarchy">Component hierarchy<span class="ko">Component 계층 구조</span></a></h3>
+<p>special 파일에 정의된 component는 특정 계층 구조로 render됩니다:</p><div class="en-orig"><p>The components defined in special files are rendered in a specific hierarchy:</p></div>
+<ul>
+<li><code>layout.js</code></li>
+<li><code>template.js</code></li>
+<li><code>error.js</code> (React error boundary)</li>
+<li><code>loading.js</code> (React suspense boundary)</li>
+<li><code>not-found.js</code> ("not found" UI를 위한 React error boundary)</li>
+<li><code>page.js</code> 또는 중첩된 <code>layout.js</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>layout.js</code></li>
+<li><code>template.js</code></li>
+<li><code>error.js</code> (React error boundary)</li>
+<li><code>loading.js</code> (React suspense boundary)</li>
+<li><code>not-found.js</code> (React error boundary for "not found" UI)</li>
+<li><code>page.js</code> or nested <code>layout.js</code></li>
+</ul></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/file-conventions-component-hierarchy.png" alt="파일 convention의 Component 계층 구조" width="1600" height="643" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/file-conventions-component-hierarchy.png" alt="파일 convention의 Component 계층 구조" width="1600" height="643" loading="lazy" /></figure>
+<p>중첩 route에서는 component가 재귀적으로 render됩니다. 즉, 어떤 route segment의 component는 parent segment의 component <strong>안에</strong> 중첩됩니다.</p><div class="en-orig"><p>The components are rendered recursively in nested routes, meaning the components of a route segment will be nested <strong>inside</strong> the components of its parent segment.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/nested-file-conventions-component-hierarchy.png" alt="중첩된 파일 convention의 Component 계층 구조" width="1600" height="863" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/nested-file-conventions-component-hierarchy.png" alt="중첩된 파일 convention의 Component 계층 구조" width="1600" height="863" loading="lazy" /></figure>
+<h3 class="sec" id="colocation"><a class="anchor" href="#colocation">Colocation<span class="ko">Colocation(함께 배치하기)</span></a></h3>
+<p><code>app</code> directory에서는 중첩된 폴더가 route 구조를 정의합니다. 각 폴더는 URL path의 해당 segment에 mapping되는 route segment를 나타냅니다.</p><div class="en-orig"><p>In the <code>app</code> directory, nested folders define route structure. Each folder represents a route segment that is mapped to a corresponding segment in a URL path.</p></div>
+<p>하지만 route 구조가 폴더로 정의되더라도, route segment에 <code>page.js</code> 또는 <code>route.js</code> 파일이 추가되기 전까지는 그 route에 <strong>공개적으로 접근할 수 없습니다</strong>.</p><div class="en-orig"><p>However, even though route structure is defined through folders, a route is <strong>not publicly accessible</strong> until a <code>page.js</code> or <code>route.js</code> file is added to a route segment.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/project-organization-not-routable.png" alt="route segment에 page.js 또는 route.js 파일이 추가되기 전까지 route가 공개되지 않는 방식을 보여주는 다이어그램." width="1600" height="444" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/project-organization-not-routable.png" alt="route segment에 page.js 또는 route.js 파일이 추가되기 전까지 route가 공개되지 않는 방식을 보여주는 다이어그램." width="1600" height="444" loading="lazy" /></figure>
+<p>그리고 route가 공개된 뒤에도 client로 전송되는 것은 <code>page.js</code> 또는 <code>route.js</code>가 <strong>return하는 콘텐츠뿐</strong>입니다.</p><div class="en-orig"><p>And, even when a route is made publicly accessible, only the <strong>content returned</strong> by <code>page.js</code> or <code>route.js</code> is sent to the client.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/project-organization-routable.png" alt="page.js와 route.js 파일이 route를 공개적으로 접근 가능하게 만드는 방식을 보여주는 다이어그램." width="1600" height="687" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/project-organization-routable.png" alt="page.js와 route.js 파일이 route를 공개적으로 접근 가능하게 만드는 방식을 보여주는 다이어그램." width="1600" height="687" loading="lazy" /></figure>
+<p>따라서 <strong>프로젝트 파일</strong>을 <code>app</code> directory의 route segment 안에 실수로 routing될 걱정 없이 <strong>안전하게 함께 배치(colocate)할 수 있습니다</strong>.</p><div class="en-orig"><p>This means that <strong>project files</strong> can be <strong>safely colocated</strong> inside route segments in the <code>app</code> directory without accidentally being routable.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/project-organization-colocation.png" alt="segment에 page.js 또는 route.js 파일이 있어도 함께 배치된 프로젝트 파일은 routing되지 않음을 보여주는 다이어그램." width="1600" height="1011" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/project-organization-colocation.png" alt="segment에 page.js 또는 route.js 파일이 있어도 함께 배치된 프로젝트 파일은 routing되지 않음을 보여주는 다이어그램." width="1600" height="1011" loading="lazy" /></figure>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>프로젝트 파일을 <code>app</code> 안에 함께 배치<strong>할 수는</strong> 있지만, 반드시 그렇게 <strong>해야 하는</strong> 것은 아닙니다. 원한다면 <a href="#store-project-files-outside-of-app"><code>app</code> directory 밖에 둘 수도 있습니다</a>.</p><div class="en-orig"><p>While you <strong>can</strong> colocate your project files in <code>app</code> you don't <strong>have</strong> to. If you prefer, you can <a href="#store-project-files-outside-of-app">keep them outside the <code>app</code> directory</a>.</p></div></div></div>
+<h3 class="sec" id="private-folders"><a class="anchor" href="#private-folders">Private folders<span class="ko">Private 폴더</span></a></h3>
+<p>폴더 이름 앞에 underscore를 붙이면 private 폴더를 만들 수 있습니다: <code>_folderName</code></p><div class="en-orig"><p>Private folders can be created by prefixing a folder with an underscore: <code>_folderName</code></p></div>
+<p>이는 해당 폴더가 private한 구현 세부 사항이며 routing system이 고려하지 않아야 한다는 뜻이고, 따라서 <strong>그 폴더와 모든 하위 폴더까지</strong> routing에서 제외됩니다.</p><div class="en-orig"><p>This indicates the folder is a private implementation detail and should not be considered by the routing system, thereby <strong>opting the folder and all its subfolders</strong> out of routing.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/project-organization-private-folders.png" alt="private 폴더를 사용하는 폴더 구조 예시" width="1600" height="849" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/project-organization-private-folders.png" alt="private 폴더를 사용하는 폴더 구조 예시" width="1600" height="849" loading="lazy" /></figure>
+<p><code>app</code> directory의 파일은 <a href="#colocation">기본적으로 안전하게 함께 배치</a>할 수 있으므로 colocation을 위해 private 폴더가 꼭 필요하지는 않습니다. 하지만 다음과 같은 경우에 유용합니다:</p><div class="en-orig"><p>Since files in the <code>app</code> directory can be <a href="#colocation">safely colocated by default</a>, private folders are not required for colocation. However, they can be useful for:</p></div>
+<ul>
+<li>UI logic과 routing logic을 분리할 때.</li>
+<li>프로젝트 전체와 Next.js ecosystem에 걸쳐 내부 파일을 일관되게 정리할 때.</li>
+<li>code editor에서 파일을 정렬하고 그룹화할 때.</li>
+<li>향후 Next.js 파일 convention과 이름이 충돌할 가능성을 피할 때.</li>
+</ul><div class="en-orig"><ul>
+<li>Separating UI logic from routing logic.</li>
+<li>Consistently organizing internal files across a project and the Next.js ecosystem.</li>
+<li>Sorting and grouping files in code editors.</li>
+<li>Avoiding potential naming conflicts with future Next.js file conventions.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>framework convention은 아니지만, private 폴더 밖에 있는 파일도 같은 underscore 패턴으로 "private"이라고 표시하는 것을 고려해 볼 수 있습니다.</li>
+<li>폴더 이름 앞에 <code>%5F</code>(underscore를 URL-encoding한 형태)를 붙이면 underscore로 시작하는 URL segment를 만들 수 있습니다: <code>%5FfolderName</code>.</li>
+<li>private 폴더를 사용하지 않는다면, 예상치 못한 이름 충돌을 막기 위해 Next.js의 <a href="app-getting-started-project-structure.html#routing-files">special 파일 convention</a>을 알아 두면 도움이 됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>While not a framework convention, you might also consider marking files outside private folders as "private" using the same underscore pattern.</li>
+<li>You can create URL segments that start with an underscore by prefixing the folder name with <code>%5F</code> (the URL-encoded form of an underscore): <code>%5FfolderName</code>.</li>
+<li>If you don't use private folders, it would be helpful to know Next.js <a href="app-getting-started-project-structure.html#routing-files">special file conventions</a> to prevent unexpected naming conflicts.</li>
+</ul></div></div></div>
+<h3 class="sec" id="route-groups"><a class="anchor" href="#route-groups">Route groups<span class="ko">Route group</span></a></h3>
+<p>폴더 이름을 괄호로 감싸면 route group을 만들 수 있습니다: <code>(folderName)</code></p><div class="en-orig"><p>Route groups can be created by wrapping a folder in parenthesis: <code>(folderName)</code></p></div>
+<p>이는 해당 폴더가 정리 목적으로만 쓰이며 route의 URL path에 <strong>포함되지 않아야</strong> 한다는 뜻입니다.</p><div class="en-orig"><p>This indicates the folder is for organizational purposes and should <strong>not be included</strong> in the route's URL path.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/project-organization-route-groups.png" alt="route group을 사용하는 폴더 구조 예시" width="1600" height="849" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/project-organization-route-groups.png" alt="route group을 사용하는 폴더 구조 예시" width="1600" height="849" loading="lazy" /></figure>
+<p>Route group은 다음과 같은 경우에 유용합니다:</p><div class="en-orig"><p>Route groups are useful for:</p></div>
+<ul>
+<li>사이트 섹션, 목적, 팀별로 route를 정리할 때. 예: marketing page, admin page 등.</li>
+<li>같은 route segment 단계에서 중첩 layout을 사용할 때:<ul>
+<li><a href="#creating-multiple-root-layouts">같은 segment에 여러 중첩 layout 만들기(여러 root layout 포함)</a></li>
+<li><a href="#opting-specific-segments-into-a-layout">공통 segment 안의 일부 route에만 layout 추가하기</a></li>
+</ul></li>
+</ul><div class="en-orig"><ul>
+<li>Organizing routes by site section, intent, or team. e.g. marketing pages, admin pages, etc.</li>
+<li>Enabling nested layouts in the same route segment level:<ul>
+<li><a href="#creating-multiple-root-layouts">Creating multiple nested layouts in the same segment, including multiple root layouts</a></li>
+<li><a href="#opting-specific-segments-into-a-layout">Adding a layout to a subset of routes in a common segment</a></li>
+</ul></li>
+</ul></div>
+<h3 class="sec" id="src-folder"><a class="anchor" href="#src-folder"><code>src</code> folder<span class="ko"><code>src</code> 폴더</span></a></h3>
+<p>Next.js는 애플리케이션 코드(<code>app</code> 포함)를 선택 사항인 <a href="app-api-reference-file-conventions-src-folder.html"><code>src</code> 폴더</a> 안에 저장하는 것을 지원합니다. 이렇게 하면 대부분 프로젝트 root에 있는 프로젝트 configuration 파일과 애플리케이션 코드를 분리할 수 있습니다.</p><div class="en-orig"><p>Next.js supports storing application code (including <code>app</code>) inside an optional <a href="app-api-reference-file-conventions-src-folder.html"><code>src</code> folder</a>. This separates application code from project configuration files which mostly live in the root of a project.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/project-organization-src-directory.png" alt="src` 폴더를 사용하는 폴더 구조 예시" width="1600" height="687" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/project-organization-src-directory.png" alt="src` 폴더를 사용하는 폴더 구조 예시" width="1600" height="687" loading="lazy" /></figure>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<p>다음 섹션은 흔히 쓰이는 전략을 아주 개략적으로 정리한 것입니다. 가장 간단한 교훈은 여러분과 팀에 맞는 전략을 골라 프로젝트 전체에서 일관되게 유지하라는 것입니다.</p><div class="en-orig"><p>The following section lists a very high-level overview of common strategies. The simplest takeaway is to choose a strategy that works for you and your team and be consistent across the project.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>아래 예시에서는 <code>components</code>와 <code>lib</code> 폴더를 일반적인 placeholder로 사용합니다. 이 이름들은 framework에서 특별한 의미가 없으며, 프로젝트에서는 <code>ui</code>, <code>utils</code>, <code>hooks</code>, <code>styles</code> 같은 다른 폴더를 사용할 수도 있습니다.</p><div class="en-orig"><p>In our examples below, we're using <code>components</code> and <code>lib</code> folders as generalized placeholders, their naming has no special framework significance and your projects might use other folders like <code>ui</code>, <code>utils</code>, <code>hooks</code>, <code>styles</code>, etc.</p></div></div></div>
+<h3 class="sec" id="store-project-files-outside-of-app"><a class="anchor" href="#store-project-files-outside-of-app">Store project files outside of <code>app</code><span class="ko">프로젝트 파일을 <code>app</code> 밖에 두기</span></a></h3>
+<p>이 전략은 모든 애플리케이션 코드를 <strong>프로젝트 root에 있는</strong> 공유 폴더에 두고, <code>app</code> directory는 순수하게 routing 용도로만 사용합니다.</p><div class="en-orig"><p>This strategy stores all application code in shared folders in the <strong>root of your project</strong> and keeps the <code>app</code> directory purely for routing purposes.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/project-organization-project-root.png" alt="프로젝트 파일을 app 밖에 둔 폴더 구조 예시" width="1600" height="849" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/project-organization-project-root.png" alt="프로젝트 파일을 app 밖에 둔 폴더 구조 예시" width="1600" height="849" loading="lazy" /></figure>
+<h3 class="sec" id="store-project-files-in-top-level-folders-inside-of-app"><a class="anchor" href="#store-project-files-in-top-level-folders-inside-of-app">Store project files in top-level folders inside of <code>app</code><span class="ko">프로젝트 파일을 <code>app</code> 안의 최상위 폴더에 두기</span></a></h3>
+<p>이 전략은 모든 애플리케이션 코드를 <strong><code>app</code> directory root에 있는</strong> 공유 폴더에 둡니다.</p><div class="en-orig"><p>This strategy stores all application code in shared folders in the <strong>root of the <code>app</code> directory</strong>.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/project-organization-app-root.png" alt="프로젝트 파일을 app 안에 둔 폴더 구조 예시" width="1600" height="849" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/project-organization-app-root.png" alt="프로젝트 파일을 app 안에 둔 폴더 구조 예시" width="1600" height="849" loading="lazy" /></figure>
+<h3 class="sec" id="split-project-files-by-feature-or-route"><a class="anchor" href="#split-project-files-by-feature-or-route">Split project files by feature or route<span class="ko">기능 또는 route별로 프로젝트 파일 나누기</span></a></h3>
+<p>이 전략은 전역으로 공유되는 애플리케이션 코드는 root <code>app</code> directory에 두고, 더 구체적인 애플리케이션 코드는 그것을 사용하는 route segment로 <strong>나눠서</strong> 둡니다.</p><div class="en-orig"><p>This strategy stores globally shared application code in the root <code>app</code> directory and <strong>splits</strong> more specific application code into the route segments that use them.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/project-organization-app-root-split.png" alt="프로젝트 파일을 기능 또는 route별로 나눈 폴더 구조 예시" width="1600" height="1011" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/project-organization-app-root-split.png" alt="프로젝트 파일을 기능 또는 route별로 나눈 폴더 구조 예시" width="1600" height="1011" loading="lazy" /></figure>
+<h3 class="sec" id="organize-routes-without-affecting-the-url-path"><a class="anchor" href="#organize-routes-without-affecting-the-url-path">Organize routes without affecting the URL path<span class="ko">URL path에 영향 없이 route 정리하기</span></a></h3>
+<p>URL에 영향을 주지 않고 route를 정리하려면, 관련 route를 함께 묶는 group을 만드세요. 괄호로 감싼 폴더(예: <code>(marketing)</code> 또는 <code>(shop)</code>)는 URL에서 생략됩니다.</p><div class="en-orig"><p>To organize routes without affecting the URL, create a group to keep related routes together. The folders in parenthesis will be omitted from the URL (e.g. <code>(marketing)</code> or <code>(shop)</code>).</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/route-group-organisation.png" alt="Route Group으로 Route 정리하기" width="1600" height="930" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/route-group-organisation.png" alt="Route Group으로 Route 정리하기" width="1600" height="930" loading="lazy" /></figure>
+<p><code>(marketing)</code>과 <code>(shop)</code> 안의 route는 같은 URL 계층을 공유하지만, 각 폴더 안에 <code>layout.js</code> 파일을 추가하면 group마다 다른 layout을 만들 수 있습니다. 이 layout들은 기존 app layout 안에 중첩됩니다.</p><div class="en-orig"><p>Even though routes inside <code>(marketing)</code> and <code>(shop)</code> share the same URL hierarchy, you can create a different layout for each group by adding a <code>layout.js</code> file inside their folders. These layouts nest within the existing app layout.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/route-group-multiple-layouts.png" alt="여러 Layout을 가진 Route Group" width="1600" height="768" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/route-group-multiple-layouts.png" alt="여러 Layout을 가진 Route Group" width="1600" height="768" loading="lazy" /></figure>
+<h3 class="sec" id="opting-specific-segments-into-a-layout"><a class="anchor" href="#opting-specific-segments-into-a-layout">Opting specific segments into a layout<span class="ko">특정 segment에만 layout 적용하기</span></a></h3>
+<p>특정 route에만 layout을 적용하려면, 새 route group(예: <code>(shop)</code>)을 만들고 같은 layout을 공유할 route(예: <code>account</code>와 <code>cart</code>)를 그 group으로 옮기세요. group 밖의 route(예: <code>checkout</code>)는 그 layout을 공유하지 않습니다.</p><div class="en-orig"><p>To opt specific routes into a layout, create a new route group (e.g. <code>(shop)</code>) and move the routes that share the same layout into the group (e.g. <code>account</code> and <code>cart</code>). The routes outside of the group will not share the layout (e.g. <code>checkout</code>).</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/route-group-opt-in-layouts.png" alt="Opt-in Layout을 가진 Route Group" width="1600" height="930" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/route-group-opt-in-layouts.png" alt="Opt-in Layout을 가진 Route Group" width="1600" height="930" loading="lazy" /></figure>
+<h3 class="sec" id="opting-for-loading-skeletons-on-a-specific-route"><a class="anchor" href="#opting-for-loading-skeletons-on-a-specific-route">Opting for loading skeletons on a specific route<span class="ko">특정 route에만 loading skeleton 적용하기</span></a></h3>
+<p><code>loading.js</code> 파일을 통한 <a href="app-api-reference-file-conventions-loading.html">loading skeleton</a>을 특정 route에만 적용하려면, 새 route group(예: <code>/(overview)</code>)을 만든 다음 <code>loading.tsx</code>를 그 route group 안으로 옮기세요.</p><div class="en-orig"><p>To apply a <a href="app-api-reference-file-conventions-loading.html">loading skeleton</a> via a <code>loading.js</code> file to a specific route, create a new route group (e.g., <code>/(overview)</code>) and then move your <code>loading.tsx</code> inside that route group.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/route-group-loading.png" alt="route group 안에 loading.tsx와 page.tsx가 있는 폴더 구조" width="1600" height="444" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/route-group-loading.png" alt="route group 안에 loading.tsx와 page.tsx가 있는 폴더 구조" width="1600" height="444" loading="lazy" /></figure>
+<p>이제 <code>loading.tsx</code> 파일은 URL path 구조에 영향을 주지 않으면서, 모든 dashboard page가 아니라 dashboard → overview page에만 적용됩니다.</p><div class="en-orig"><p>Now, the <code>loading.tsx</code> file will only apply to your dashboard → overview page instead of all your dashboard pages without affecting the URL path structure.</p></div>
+<h3 class="sec" id="creating-multiple-root-layouts"><a class="anchor" href="#creating-multiple-root-layouts">Creating multiple root layouts<span class="ko">여러 root layout 만들기</span></a></h3>
+<p>여러 <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a>을 만들려면 최상위 <code>layout.js</code> 파일을 제거하고, 각 route group 안에 <code>layout.js</code> 파일을 추가하세요. 이는 UI나 경험이 완전히 다른 섹션으로 애플리케이션을 나눌 때 유용합니다. <code>&lt;html&gt;</code>과 <code>&lt;body&gt;</code> tag는 각 root layout에 추가해야 합니다.</p><div class="en-orig"><p>To create multiple <a href="app-api-reference-file-conventions-layout.html#root-layout">root layouts</a>, remove the top-level <code>layout.js</code> file, and add a <code>layout.js</code> file inside each route group. This is useful for partitioning an application into sections that have a completely different UI or experience. The <code>&lt;html&gt;</code> and <code>&lt;body&gt;</code> tags need to be added to each root layout.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/route-group-multiple-root-layouts.png" alt="여러 Root Layout을 가진 Route Group" width="1600" height="687" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/route-group-multiple-root-layouts.png" alt="여러 Root Layout을 가진 Route Group" width="1600" height="687" loading="lazy" /></figure>
+<p>위 예시에서 <code>(marketing)</code>과 <code>(shop)</code>은 각각 자신만의 root layout을 가집니다.</p><div class="en-orig"><p>In the example above, both <code>(marketing)</code> and <code>(shop)</code> have their own root layout.</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/02-project-structure.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/getting-started/project-structure" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-getting-started-installation.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Installation</div><div class="ttl-ko">설치</div></a>
+      <a href="app-getting-started-layouts-and-pages.html" class="next"><div class="dir">다음 →</div><div class="ttl">Layouts and Pages</div><div class="ttl-ko">Layout과 Page</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/getting-started/project-structure" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#folder-and-file-conventions">Folder and file conventions</a></li><li class="l3"><a href="#top-level-folders">Top-level folders</a></li><li class="l3"><a href="#top-level-files">Top-level files</a></li><li class="l3"><a href="#routing-files">Routing Files</a></li><li class="l3"><a href="#nested-routes">Nested routes</a></li><li class="l3"><a href="#dynamic-routes">Dynamic routes</a></li><li class="l3"><a href="#route-groups-and-private-folders">Route groups and private folders</a></li><li class="l3"><a href="#parallel-and-intercepted-routes">Parallel and Intercepted Routes</a></li><li class="l3"><a href="#metadata-file-conventions">Metadata file conventions</a></li><li class="l2"><a href="#organizing-your-project">Organizing your project</a></li><li class="l3"><a href="#component-hierarchy">Component hierarchy</a></li><li class="l3"><a href="#colocation">Colocation</a></li><li class="l3"><a href="#private-folders">Private folders</a></li><li class="l3"><a href="#route-groups">Route groups</a></li><li class="l3"><a href="#src-folder"><code>src</code> folder</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#store-project-files-outside-of-app">Store project files outside of <code>app</code></a></li><li class="l3"><a href="#store-project-files-in-top-level-folders-inside-of-app">Store project files in top-level folders inside of <code>app</code></a></li><li class="l3"><a href="#split-project-files-by-feature-or-route">Split project files by feature or route</a></li><li class="l3"><a href="#organize-routes-without-affecting-the-url-path">Organize routes without affecting the URL path</a></li><li class="l3"><a href="#opting-specific-segments-into-a-layout">Opting specific segments into a layout</a></li><li class="l3"><a href="#opting-for-loading-skeletons-on-a-specific-route">Opting for loading skeletons on a specific route</a></li><li class="l3"><a href="#creating-multiple-root-layouts">Creating multiple root layouts</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+이 페이지는 Next.js의 **모든** 폴더·파일 convention(관례)을 한눈에 정리하고, 프로젝트를 구성하는 방법에 대한 권장 사항을 소개합니다.
+
+## Folder and file conventions || 폴더와 파일 convention
+
+### Top-level folders || 최상위 폴더
+
+최상위 폴더는 애플리케이션 코드와 static asset을 정리하는 데 사용합니다.
+
+&lt;Image
+  alt=&quot;Route segment와 path segment의 대응&quot;
+  srcLight=&quot;/docs/light/top-level-folders.png&quot;
+  srcDark=&quot;/docs/dark/top-level-folders.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;525&quot;
+/&gt;
+
+|                                                                    |                                    |
+| ------------------------------------------------------------------ | ---------------------------------- |
+| [`app`](/docs/app)                                                 | App Router                         |
+| [`pages`](/docs/pages/building-your-application/routing)           | Pages Router                       |
+| [`public`](/docs/app/api-reference/file-conventions/public-folder) | 제공(serve)할 static asset |
+| [`src`](/docs/app/api-reference/file-conventions/src-folder)       | 선택 사항인 애플리케이션 source 폴더 |
+
+### Top-level files || 최상위 파일
+
+최상위 파일은 애플리케이션 설정, dependency 관리, proxy 실행, monitoring 도구 연동, environment variable 정의에 사용합니다.
+
+|                                                                              |                                                                                    |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| **Next.js**                                                                  |                                                                                    |
+| [`next.config.js`](/docs/app/api-reference/config/next-config-js)            | Next.js 설정 파일 |
+| [`package.json`](/docs/app/getting-started/installation#manual-installation) | 프로젝트 dependency와 script |
+| [`instrumentation.ts`](/docs/app/guides/instrumentation)                     | OpenTelemetry 및 Instrumentation 파일 |
+| [`proxy.ts`](/docs/app/api-reference/file-conventions/proxy)                 | Next.js request proxy |
+| [`.env`](/docs/app/guides/environment-variables)                             | Environment variable (version control로 추적하지 않아야 함) |
+| [`.env.local`](/docs/app/guides/environment-variables)                       | 로컬 environment variable (version control로 추적하지 않아야 함) |
+| [`.env.production`](/docs/app/guides/environment-variables)                  | Production environment variable (version control로 추적하지 않아야 함) |
+| [`.env.development`](/docs/app/guides/environment-variables)                 | Development environment variable (version control로 추적하지 않아야 함) |
+| [`eslint.config.mjs`](/docs/app/api-reference/config/eslint)                 | ESLint 설정 파일 |
+| `.gitignore`                                                                 | Git에서 무시할 파일과 폴더 |
+| [`next-env.d.ts`](/docs/app/api-reference/config/typescript#next-envdts)     | Next.js용 TypeScript 선언 파일 (version control로 추적하지 않아야 함) |
+| `tsconfig.json`                                                              | TypeScript 설정 파일 |
+| `jsconfig.json`                                                              | JavaScript 설정 파일 |
+
+
+
+### Routing Files || Routing 파일
+
+route를 공개하려면 `page`를, header·nav·footer 같은 공유 UI에는 `layout`을, skeleton에는 `loading`을, error boundary에는 `error`를, API에는 `route`를 추가하세요.
+
+|                                                                               |                     |                              |
+| ----------------------------------------------------------------------------- | ------------------- | ---------------------------- |
+| [`layout`](/docs/app/api-reference/file-conventions/layout)                   | `.js` `.jsx` `.tsx` | Layout                       |
+| [`page`](/docs/app/api-reference/file-conventions/page)                       | `.js` `.jsx` `.tsx` | Page                         |
+| [`loading`](/docs/app/api-reference/file-conventions/loading)                 | `.js` `.jsx` `.tsx` | Loading UI                   |
+| [`not-found`](/docs/app/api-reference/file-conventions/not-found)             | `.js` `.jsx` `.tsx` | Not found UI                 |
+| [`error`](/docs/app/api-reference/file-conventions/error)                     | `.js` `.jsx` `.tsx` | Error UI                     |
+| [`global-error`](/docs/app/api-reference/file-conventions/error#global-error) | `.js` `.jsx` `.tsx` | Global error UI              |
+| [`route`](/docs/app/api-reference/file-conventions/route)                     | `.js` `.ts`         | API endpoint                 |
+| [`template`](/docs/app/api-reference/file-conventions/template)               | `.js` `.jsx` `.tsx` | 다시 render되는 layout |
+| [`default`](/docs/app/api-reference/file-conventions/default)                 | `.js` `.jsx` `.tsx` | Parallel route fallback page |
+
+### Nested routes || 중첩 route
+
+폴더는 URL segment를 정의합니다. 폴더를 중첩하면 segment도 중첩됩니다. 어느 단계에 있든 layout은 자신의 하위 segment를 감쌉니다. `page` 또는 `route` 파일이 있어야 route가 공개됩니다.
+
+| 경로                        | URL 패턴     | 비고                         |
+| --------------------------- | --------------- | ----------------------------- |
+| `app/layout.tsx`            | —               | Root layout이 모든 route를 감쌈  |
+| `app/blog/layout.tsx`       | —               | `/blog`와 그 하위 route를 감쌈 |
+| `app/page.tsx`              | `/`             | 공개 route                  |
+| `app/blog/page.tsx`         | `/blog`         | 공개 route                  |
+| `app/blog/authors/page.tsx` | `/blog/authors` | 공개 route                  |
+
+### Dynamic routes || Dynamic route
+
+대괄호로 segment를 parameter화합니다. 단일 param에는 `[segment]`, catch‑all에는 `[...segment]`, optional catch‑all에는 `[[...segment]]`를 사용하세요. 값은 [`params`](/docs/app/api-reference/file-conventions/page#params-optional) prop으로 접근합니다.
+
+| 경로                            | URL 패턴                                                          |
+| ------------------------------- | -------------------------------------------------------------------- |
+| `app/blog/[slug]/page.tsx`      | `/blog/my-first-post`                                                |
+| `app/shop/[...slug]/page.tsx`   | `/shop/clothing`, `/shop/clothing/shirts`                            |
+| `app/docs/[[...slug]]/page.tsx` | `/docs`, `/docs/layouts-and-pages`, `/docs/api-reference/use-router` |
+
+### Route groups and private folders || Route group과 private 폴더
+
+route group [`(group)`](/docs/app/api-reference/file-conventions/route-groups#convention)으로 URL을 바꾸지 않고 코드를 정리하고, private 폴더 [`_folder`](#private-folders)로 routing되지 않는 파일을 함께 배치(colocate)하세요.
+
+| 경로                            | URL 패턴 | 비고                                     |
+| ------------------------------- | ----------- | ----------------------------------------- |
+| `app/(marketing)/page.tsx`      | `/`         | Group은 URL에서 생략됨                    |
+| `app/(shop)/cart/page.tsx`      | `/cart`     | `(shop)` 안에서 layout 공유             |
+| `app/blog/_components/Post.tsx` | —           | Routing되지 않음. UI utility를 두기에 안전한 곳 |
+| `app/blog/_lib/data.ts`         | —           | Routing되지 않음. util을 두기에 안전한 곳        |
+
+### Parallel and Intercepted Routes || Parallel Route와 Intercepted Route
+
+이 기능들은 slot 기반 layout이나 modal routing 같은 특정 UI 패턴에 잘 맞습니다.
+
+parent layout이 render하는 이름 있는 slot에는 `@slot`을 사용하세요. intercept 패턴을 사용하면 URL을 바꾸지 않고 현재 layout 안에서 다른 route를 render할 수 있습니다. 예를 들어 목록 위에 상세 화면을 modal로 띄울 때 사용합니다.
+
+| 패턴 (docs)                                                                              | 의미              | 대표 use case                         |
+| ------------------------------------------------------------------------------------------- | -------------------- | ---------------------------------------- |
+| [`@folder`](/docs/app/api-reference/file-conventions/parallel-routes#slots)                 | 이름 있는 slot           | Sidebar + main content                   |
+| [`(.)folder`](/docs/app/api-reference/file-conventions/intercepting-routes#convention)      | 같은 단계 intercept | 형제 route를 modal로 미리보기         |
+| [`(..)folder`](/docs/app/api-reference/file-conventions/intercepting-routes#convention)     | 부모 단계 intercept     | 부모의 child를 overlay로 열기 |
+| [`(..)(..)folder`](/docs/app/api-reference/file-conventions/intercepting-routes#convention) | 두 단계 위 intercept | 깊게 중첩된 overlay                    |
+| [`(...)folder`](/docs/app/api-reference/file-conventions/intercepting-routes#convention)    | root부터 intercept  | 임의의 route를 현재 화면에 표시     |
+
+### Metadata file conventions || Metadata 파일 convention
+
+#### App icons || App 아이콘
+
+|                                                                                                                 |                                     |                          |
+| --------------------------------------------------------------------------------------------------------------- | ----------------------------------- | ------------------------ |
+| [`favicon`](/docs/app/api-reference/file-conventions/metadata/app-icons#favicon)                                | `.ico`                              | Favicon 파일             |
+| [`icon`](/docs/app/api-reference/file-conventions/metadata/app-icons#icon)                                      | `.ico` `.jpg` `.jpeg` `.png` `.svg` | App Icon 파일            |
+| [`icon`](/docs/app/api-reference/file-conventions/metadata/app-icons#generate-icons-using-code-js-ts-tsx)       | `.js` `.ts` `.tsx`                  | 코드로 생성하는 App Icon       |
+| [`apple-icon`](/docs/app/api-reference/file-conventions/metadata/app-icons#apple-icon)                          | `.jpg` `.jpeg` `.png`               | Apple App Icon 파일      |
+| [`apple-icon`](/docs/app/api-reference/file-conventions/metadata/app-icons#generate-icons-using-code-js-ts-tsx) | `.js` `.ts` `.tsx`                  | 코드로 생성하는 Apple App Icon |
+
+#### Open Graph and Twitter images || Open Graph와 Twitter 이미지
+
+|                                                                                                                             |                              |                            |
+| --------------------------------------------------------------------------------------------------------------------------- | ---------------------------- | -------------------------- |
+| [`opengraph-image`](/docs/app/api-reference/file-conventions/metadata/opengraph-image#opengraph-image)                      | `.jpg` `.jpeg` `.png` `.gif` | Open Graph 이미지 파일      |
+| [`opengraph-image`](/docs/app/api-reference/file-conventions/metadata/opengraph-image#generate-images-using-code-js-ts-tsx) | `.js` `.ts` `.tsx`           | 코드로 생성하는 Open Graph 이미지 |
+| [`twitter-image`](/docs/app/api-reference/file-conventions/metadata/opengraph-image#twitter-image)                          | `.jpg` `.jpeg` `.png` `.gif` | Twitter 이미지 파일         |
+| [`twitter-image`](/docs/app/api-reference/file-conventions/metadata/opengraph-image#generate-images-using-code-js-ts-tsx)   | `.js` `.ts` `.tsx`           | 코드로 생성하는 Twitter 이미지    |
+
+#### SEO
+
+|                                                                                                              |             |                       |
+| ------------------------------------------------------------------------------------------------------------ | ----------- | --------------------- |
+| [`sitemap`](/docs/app/api-reference/file-conventions/metadata/sitemap#sitemap-files-xml)                     | `.xml`      | Sitemap 파일          |
+| [`sitemap`](/docs/app/api-reference/file-conventions/metadata/sitemap#generating-a-sitemap-using-code-js-ts) | `.js` `.ts` | 코드로 생성하는 Sitemap     |
+| [`robots`](/docs/app/api-reference/file-conventions/metadata/robots#static-robotstxt)                        | `.txt`      | Robots 파일           |
+| [`robots`](/docs/app/api-reference/file-conventions/metadata/robots#generate-a-robots-file)                  | `.js` `.ts` | 코드로 생성하는 Robots 파일 |
+
+
+
+
+
+
+
+## Organizing your project || 프로젝트 구성하기
+
+Next.js는 프로젝트 파일을 어떻게 정리하고 함께 배치(colocate)할지에 대해 **특정 방식을 강요하지 않습니다(unopinionated)**. 다만 프로젝트 구성에 도움이 되는 몇 가지 기능을 제공합니다.
+
+### Component hierarchy || Component 계층 구조
+
+special 파일에 정의된 component는 특정 계층 구조로 render됩니다:
+
+- `layout.js`
+- `template.js`
+- `error.js` (React error boundary)
+- `loading.js` (React suspense boundary)
+- `not-found.js` (&quot;not found&quot; UI를 위한 React error boundary)
+- `page.js` 또는 중첩된 `layout.js`
+
+&lt;Image
+  alt=&quot;파일 convention의 Component 계층 구조&quot;
+  srcLight=&quot;/docs/light/file-conventions-component-hierarchy.png&quot;
+  srcDark=&quot;/docs/dark/file-conventions-component-hierarchy.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;643&quot;
+/&gt;
+
+중첩 route에서는 component가 재귀적으로 render됩니다. 즉, 어떤 route segment의 component는 parent segment의 component **안에** 중첩됩니다.
+
+&lt;Image
+  alt=&quot;중첩된 파일 convention의 Component 계층 구조&quot;
+  srcLight=&quot;/docs/light/nested-file-conventions-component-hierarchy.png&quot;
+  srcDark=&quot;/docs/dark/nested-file-conventions-component-hierarchy.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;863&quot;
+/&gt;
+
+### Colocation || Colocation(함께 배치하기)
+
+`app` directory에서는 중첩된 폴더가 route 구조를 정의합니다. 각 폴더는 URL path의 해당 segment에 mapping되는 route segment를 나타냅니다.
+
+하지만 route 구조가 폴더로 정의되더라도, route segment에 `page.js` 또는 `route.js` 파일이 추가되기 전까지는 그 route에 **공개적으로 접근할 수 없습니다**.
+
+&lt;Image
+  alt=&quot;route segment에 page.js 또는 route.js 파일이 추가되기 전까지 route가 공개되지 않는 방식을 보여주는 다이어그램.&quot;
+  srcLight=&quot;/docs/light/project-organization-not-routable.png&quot;
+  srcDark=&quot;/docs/dark/project-organization-not-routable.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;444&quot;
+/&gt;
+
+그리고 route가 공개된 뒤에도 client로 전송되는 것은 `page.js` 또는 `route.js`가 **return하는 콘텐츠뿐**입니다.
+
+&lt;Image
+  alt=&quot;page.js와 route.js 파일이 route를 공개적으로 접근 가능하게 만드는 방식을 보여주는 다이어그램.&quot;
+  srcLight=&quot;/docs/light/project-organization-routable.png&quot;
+  srcDark=&quot;/docs/dark/project-organization-routable.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;687&quot;
+/&gt;
+
+따라서 **프로젝트 파일**을 `app` directory의 route segment 안에 실수로 routing될 걱정 없이 **안전하게 함께 배치(colocate)할 수 있습니다**.
+
+&lt;Image
+  alt=&quot;segment에 page.js 또는 route.js 파일이 있어도 함께 배치된 프로젝트 파일은 routing되지 않음을 보여주는 다이어그램.&quot;
+  srcLight=&quot;/docs/light/project-organization-colocation.png&quot;
+  srcDark=&quot;/docs/dark/project-organization-colocation.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;1011&quot;
+/&gt;
+
+&gt; **Good to know**: 프로젝트 파일을 `app` 안에 함께 배치**할 수는** 있지만, 반드시 그렇게 **해야 하는** 것은 아닙니다. 원한다면 [`app` directory 밖에 둘 수도 있습니다](#store-project-files-outside-of-app).
+
+### Private folders || Private 폴더
+
+폴더 이름 앞에 underscore를 붙이면 private 폴더를 만들 수 있습니다: `_folderName`
+
+이는 해당 폴더가 private한 구현 세부 사항이며 routing system이 고려하지 않아야 한다는 뜻이고, 따라서 **그 폴더와 모든 하위 폴더까지** routing에서 제외됩니다.
+
+&lt;Image
+  alt=&quot;private 폴더를 사용하는 폴더 구조 예시&quot;
+  srcLight=&quot;/docs/light/project-organization-private-folders.png&quot;
+  srcDark=&quot;/docs/dark/project-organization-private-folders.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;849&quot;
+/&gt;
+
+`app` directory의 파일은 [기본적으로 안전하게 함께 배치](#colocation)할 수 있으므로 colocation을 위해 private 폴더가 꼭 필요하지는 않습니다. 하지만 다음과 같은 경우에 유용합니다:
+
+- UI logic과 routing logic을 분리할 때.
+- 프로젝트 전체와 Next.js ecosystem에 걸쳐 내부 파일을 일관되게 정리할 때.
+- code editor에서 파일을 정렬하고 그룹화할 때.
+- 향후 Next.js 파일 convention과 이름이 충돌할 가능성을 피할 때.
+
+&gt; **Good to know**:
+&gt;
+&gt; - framework convention은 아니지만, private 폴더 밖에 있는 파일도 같은 underscore 패턴으로 &quot;private&quot;이라고 표시하는 것을 고려해 볼 수 있습니다.
+&gt; - 폴더 이름 앞에 `%5F`(underscore를 URL-encoding한 형태)를 붙이면 underscore로 시작하는 URL segment를 만들 수 있습니다: `%5FfolderName`.
+&gt; - private 폴더를 사용하지 않는다면, 예상치 못한 이름 충돌을 막기 위해 Next.js의 [special 파일 convention](/docs/app/getting-started/project-structure#routing-files)을 알아 두면 도움이 됩니다.
+
+### Route groups || Route group
+
+폴더 이름을 괄호로 감싸면 route group을 만들 수 있습니다: `(folderName)`
+
+이는 해당 폴더가 정리 목적으로만 쓰이며 route의 URL path에 **포함되지 않아야** 한다는 뜻입니다.
+
+&lt;Image
+  alt=&quot;route group을 사용하는 폴더 구조 예시&quot;
+  srcLight=&quot;/docs/light/project-organization-route-groups.png&quot;
+  srcDark=&quot;/docs/dark/project-organization-route-groups.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;849&quot;
+/&gt;
+
+Route group은 다음과 같은 경우에 유용합니다:
+
+- 사이트 섹션, 목적, 팀별로 route를 정리할 때. 예: marketing page, admin page 등.
+- 같은 route segment 단계에서 중첩 layout을 사용할 때:
+  - [같은 segment에 여러 중첩 layout 만들기(여러 root layout 포함)](#creating-multiple-root-layouts)
+  - [공통 segment 안의 일부 route에만 layout 추가하기](#opting-specific-segments-into-a-layout)
+
+### `src` folder || `src` 폴더
+
+Next.js는 애플리케이션 코드(`app` 포함)를 선택 사항인 [`src` 폴더](/docs/app/api-reference/file-conventions/src-folder) 안에 저장하는 것을 지원합니다. 이렇게 하면 대부분 프로젝트 root에 있는 프로젝트 configuration 파일과 애플리케이션 코드를 분리할 수 있습니다.
+
+&lt;Image
+  alt=&quot;`src` 폴더를 사용하는 폴더 구조 예시&quot;
+  srcLight=&quot;/docs/light/project-organization-src-directory.png&quot;
+  srcDark=&quot;/docs/dark/project-organization-src-directory.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;687&quot;
+/&gt;
+
+## Examples || 예시
+
+다음 섹션은 흔히 쓰이는 전략을 아주 개략적으로 정리한 것입니다. 가장 간단한 교훈은 여러분과 팀에 맞는 전략을 골라 프로젝트 전체에서 일관되게 유지하라는 것입니다.
+
+&gt; **Good to know**: 아래 예시에서는 `components`와 `lib` 폴더를 일반적인 placeholder로 사용합니다. 이 이름들은 framework에서 특별한 의미가 없으며, 프로젝트에서는 `ui`, `utils`, `hooks`, `styles` 같은 다른 폴더를 사용할 수도 있습니다.
+
+### Store project files outside of `app` || 프로젝트 파일을 `app` 밖에 두기
+
+이 전략은 모든 애플리케이션 코드를 **프로젝트 root에 있는** 공유 폴더에 두고, `app` directory는 순수하게 routing 용도로만 사용합니다.
+
+&lt;Image
+  alt=&quot;프로젝트 파일을 app 밖에 둔 폴더 구조 예시&quot;
+  srcLight=&quot;/docs/light/project-organization-project-root.png&quot;
+  srcDark=&quot;/docs/dark/project-organization-project-root.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;849&quot;
+/&gt;
+
+### Store project files in top-level folders inside of `app` || 프로젝트 파일을 `app` 안의 최상위 폴더에 두기
+
+이 전략은 모든 애플리케이션 코드를 **`app` directory root에 있는** 공유 폴더에 둡니다.
+
+&lt;Image
+  alt=&quot;프로젝트 파일을 app 안에 둔 폴더 구조 예시&quot;
+  srcLight=&quot;/docs/light/project-organization-app-root.png&quot;
+  srcDark=&quot;/docs/dark/project-organization-app-root.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;849&quot;
+/&gt;
+
+### Split project files by feature or route || 기능 또는 route별로 프로젝트 파일 나누기
+
+이 전략은 전역으로 공유되는 애플리케이션 코드는 root `app` directory에 두고, 더 구체적인 애플리케이션 코드는 그것을 사용하는 route segment로 **나눠서** 둡니다.
+
+&lt;Image
+  alt=&quot;프로젝트 파일을 기능 또는 route별로 나눈 폴더 구조 예시&quot;
+  srcLight=&quot;/docs/light/project-organization-app-root-split.png&quot;
+  srcDark=&quot;/docs/dark/project-organization-app-root-split.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;1011&quot;
+/&gt;
+
+### Organize routes without affecting the URL path || URL path에 영향 없이 route 정리하기
+
+URL에 영향을 주지 않고 route를 정리하려면, 관련 route를 함께 묶는 group을 만드세요. 괄호로 감싼 폴더(예: `(marketing)` 또는 `(shop)`)는 URL에서 생략됩니다.
+
+&lt;Image
+  alt=&quot;Route Group으로 Route 정리하기&quot;
+  srcLight=&quot;/docs/light/route-group-organisation.png&quot;
+  srcDark=&quot;/docs/dark/route-group-organisation.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;930&quot;
+/&gt;
+
+`(marketing)`과 `(shop)` 안의 route는 같은 URL 계층을 공유하지만, 각 폴더 안에 `layout.js` 파일을 추가하면 group마다 다른 layout을 만들 수 있습니다. 이 layout들은 기존 app layout 안에 중첩됩니다.
+
+&lt;Image
+  alt=&quot;여러 Layout을 가진 Route Group&quot;
+  srcLight=&quot;/docs/light/route-group-multiple-layouts.png&quot;
+  srcDark=&quot;/docs/dark/route-group-multiple-layouts.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;768&quot;
+/&gt;
+
+### Opting specific segments into a layout || 특정 segment에만 layout 적용하기
+
+특정 route에만 layout을 적용하려면, 새 route group(예: `(shop)`)을 만들고 같은 layout을 공유할 route(예: `account`와 `cart`)를 그 group으로 옮기세요. group 밖의 route(예: `checkout`)는 그 layout을 공유하지 않습니다.
+
+&lt;Image
+  alt=&quot;Opt-in Layout을 가진 Route Group&quot;
+  srcLight=&quot;/docs/light/route-group-opt-in-layouts.png&quot;
+  srcDark=&quot;/docs/dark/route-group-opt-in-layouts.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;930&quot;
+/&gt;
+
+### Opting for loading skeletons on a specific route || 특정 route에만 loading skeleton 적용하기
+
+`loading.js` 파일을 통한 [loading skeleton](/docs/app/api-reference/file-conventions/loading)을 특정 route에만 적용하려면, 새 route group(예: `/(overview)`)을 만든 다음 `loading.tsx`를 그 route group 안으로 옮기세요.
+
+&lt;Image
+  alt=&quot;route group 안에 loading.tsx와 page.tsx가 있는 폴더 구조&quot;
+  srcLight=&quot;/docs/light/route-group-loading.png&quot;
+  srcDark=&quot;/docs/dark/route-group-loading.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;444&quot;
+/&gt;
+
+이제 `loading.tsx` 파일은 URL path 구조에 영향을 주지 않으면서, 모든 dashboard page가 아니라 dashboard → overview page에만 적용됩니다.
+
+### Creating multiple root layouts || 여러 root layout 만들기
+
+여러 [root layout](/docs/app/api-reference/file-conventions/layout#root-layout)을 만들려면 최상위 `layout.js` 파일을 제거하고, 각 route group 안에 `layout.js` 파일을 추가하세요. 이는 UI나 경험이 완전히 다른 섹션으로 애플리케이션을 나눌 때 유용합니다. `&lt;html&gt;`과 `&lt;body&gt;` tag는 각 root layout에 추가해야 합니다.
+
+&lt;Image
+  alt=&quot;여러 Root Layout을 가진 Route Group&quot;
+  srcLight=&quot;/docs/light/route-group-multiple-root-layouts.png&quot;
+  srcDark=&quot;/docs/dark/route-group-multiple-root-layouts.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;687&quot;
+/&gt;
+
+위 예시에서 `(marketing)`과 `(shop)`은 각각 자신만의 root layout을 가집니다.
+
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

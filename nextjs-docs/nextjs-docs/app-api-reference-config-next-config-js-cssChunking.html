@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cssChunking (cssChunking) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/config/next-config-js/cssChunking" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/config/next-config-js/cssChunking" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/cssChunking.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config.html">Configuration</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config-next-config-js.html">next.config.js</a></div>
+    <div class="title-row">
+      <h1 class="page-title">cssChunking<span class="vbadge">experimental</span><span class="sub">cssChunking</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>CSS Chunking은 CSS 파일을 chunk로 나누고 순서를 재배치하여 웹 애플리케이션의 성능을 개선하는 전략입니다. 이를 통해 route는 애플리케이션의 모든 CSS를 한 번에 불러오는 대신, 필요한 CSS에 가까운 양만 불러올 수 있습니다.</p><div class="en-orig"><p>CSS Chunking is a strategy used to improve the performance of your web application by splitting and re-ordering CSS files into chunks. This lets a route load close to only the CSS it needs, instead of loading all the application's CSS at once.</p></div>
+<p><code>next.config.js</code> 파일의 <code>experimental.cssChunking</code> option을 사용해 CSS 파일이 chunk로 나뉘는 방식을 제어할 수 있습니다:</p><div class="en-orig"><p>You can control how CSS files are chunked using the <code>experimental.cssChunking</code> option in your <code>next.config.js</code> file:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig = {
+  experimental: {
+    cssChunking: true, // default
+  },
+} satisfies NextConfig
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  experimental: {
+    cssChunking: true, // default
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<h2 class="sec" id="options"><a class="anchor" href="#options">Options</a></h2>
+<ul>
+<li><strong><code>true</code> (default)</strong> (<strong>webpack 및 Turbopack</strong>): Next.js는 가능할 때마다 CSS 파일을 merge하려고 시도하며, import 순서로부터 파일 간의 명시적·암묵적 dependency를 판단하여 chunk 수, 즉 request 수를 줄입니다.</li>
+<li><strong><code>false</code></strong> (<strong>webpack 전용</strong>): Next.js는 CSS 파일을 merge하거나 순서를 재배치하지 않습니다.</li>
+<li><strong><code>&#x27;strict&#x27;</code></strong> (<strong>webpack 전용</strong>): Next.js는 CSS 파일을 파일에 import된 정확한 순서대로 불러오며, 이로 인해 chunk와 request가 더 많아질 수 있습니다.</li>
+<li><strong><code>&#x27;graph&#x27;</code></strong> (<strong>Turbopack 전용</strong>): Next.js는 비용 기반 graph algorithm을 사용해 여러 route에 걸쳐 CSS를 group으로 묶고, 각 route가 download하는 byte와 보내는 request 사이의 균형을 맞춥니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>true</code> (default)</strong> (<strong>webpack and Turbopack</strong>): Next.js will try to merge CSS files whenever possible, determining explicit and implicit dependencies between files from import order to reduce the number of chunks and therefore the number of requests.</li>
+<li><strong><code>false</code></strong> (<strong>webpack only</strong>): Next.js will not attempt to merge or re-order your CSS files.</li>
+<li><strong><code>&#x27;strict&#x27;</code></strong> (<strong>webpack only</strong>): Next.js will load CSS files in the correct order they are imported into your files, which can lead to more chunks and requests.</li>
+<li><strong><code>&#x27;graph&#x27;</code></strong> (<strong>Turbopack only</strong>): Next.js uses a cost-based graph algorithm to group CSS across your routes, balancing the bytes each route downloads and the requests it makes.</li>
+</ul></div>
+<h2 class="sec" id="choosing-a-strategy"><a class="anchor" href="#choosing-a-strategy">Choosing a strategy<span class="ko">전략 선택하기</span></a></h2>
+<p>대부분의 애플리케이션에서는 어느 bundler를 사용하든 기본값(<code>true</code>)이 올바른 선택입니다. CSS를 merge하여 request를 줄여 줍니다. 다른 전략은 특별한 이유가 있을 때만 사용하세요.</p><div class="en-orig"><p>For most applications, the default (<code>true</code>) is the right choice in either bundler: it merges CSS to make fewer requests. Reach for another strategy only for a specific reason.</p></div>
+<p>Turbopack에서 그 이유는 보통 성능입니다. route 간에 CSS가 공유되는 방식을 조정하려면 <code>graph</code>로 전환하세요. request가 늘어나는 대신 route가 download하는 사용되지 않는 CSS를 줄일 수 있습니다(<a href="#balancing-requests-and-grouping">Balancing requests and grouping</a> 참고).</p><div class="en-orig"><p>In Turbopack, that reason is usually performance. Switch to <code>graph</code> to tune how CSS is shared across routes, cutting the unused CSS a route downloads at the cost of more requests (see <a href="#balancing-requests-and-grouping">Balancing requests and grouping</a>).</p></div>
+<p>webpack에서 그 이유는 보통 정확성입니다. 예상치 못한 CSS 동작을 겪는다면 <code>&#x27;strict&#x27;</code>로 전환하세요. 예를 들어 서로 다른 파일에서 <code>a.css</code>와 <code>b.css</code>를 다른 <code>import</code> 순서(<code>a</code> 다음 <code>b</code>, 또는 <code>b</code> 다음 <code>a</code>)로 import하면, <code>true</code>는 둘 사이에 dependency가 없다고 가정하고 임의의 순서로 merge합니다. <code>b.css</code>가 <code>a.css</code>에 의존한다면, <code>&#x27;strict&#x27;</code>는 chunk와 request가 늘어나는 대신 merge를 막고 import 순서대로 불러옵니다. merge를 완전히 비활성화하려면 <code>false</code>를 사용하세요.</p><div class="en-orig"><p>In webpack, that reason is usually correctness. Switch to <code>&#x27;strict&#x27;</code> if you run into unexpected CSS behavior. For example, if you import <code>a.css</code> and <code>b.css</code> in different files using a different <code>import</code> order (<code>a</code> before <code>b</code>, or <code>b</code> before <code>a</code>), <code>true</code> merges them in any order and assumes there are no dependencies between them; if <code>b.css</code> depends on <code>a.css</code>, <code>&#x27;strict&#x27;</code> prevents the merge and loads them in import order, at the cost of more chunks and requests. Use <code>false</code> to disable merging entirely.</p></div>
+<h2 class="sec" id="debugging-what-a-route-actually-uses"><a class="anchor" href="#debugging-what-a-route-actually-uses">Debugging what a route actually uses<span class="ko">route가 실제로 사용하는 CSS debugging</span></a></h2>
+<p>사용되지 않는 CSS가 어느 정도 있는 것은 괜찮고 대부분의 앱은 아무것도 바꿀 필요가 없지만, render-blocking CSS는 관리해 두는 것이 좋습니다. <a href="https://developer.chrome.com/docs/lighthouse/performance/unused-css-rules" target="_blank" rel="noopener">Lighthouse</a>는 이를 예상 절감량과 함께 <strong>Reduce unused CSS</strong> 항목(opportunity)으로 표시하며, Chrome DevTools는 <a href="https://developer.chrome.com/docs/devtools/coverage" target="_blank" rel="noopener">Coverage panel</a>에서 stylesheet별로 보여 줍니다. 이 panel의 usage bar는 각 stylesheet에서 적용된 CSS를 초록색으로, 사용되지 않은 CSS를 회색으로 표시합니다.</p><div class="en-orig"><p>While some unused CSS is acceptable, and most apps do not need to change anything, it is worth keeping render-blocking CSS in check. <a href="https://developer.chrome.com/docs/lighthouse/performance/unused-css-rules" target="_blank" rel="noopener">Lighthouse</a> flags this as a <strong>Reduce unused CSS</strong> opportunity with an estimated saving, and Chrome DevTools shows it per stylesheet in its <a href="https://developer.chrome.com/docs/devtools/coverage" target="_blank" rel="noopener">Coverage panel</a>, where a usage bar shows each stylesheet's applied CSS in green and unused CSS in gray.</p></div>
+<p>report를 볼 때는 <code>:hover</code>, <code>:focus</code>, 또는 menu와 modal을 위해 JavaScript로 toggle되는 class처럼 상호작용 시에만 적용되는 style에 주의하세요. Coverage는 이런 style을 실제로 trigger하기 전까지 사용되지 않은 것으로 계산합니다.</p><div class="en-orig"><p>When reading the report, watch out for styles that only apply on interaction, such as <code>:hover</code>, <code>:focus</code>, or classes toggled by JavaScript for menus and modals, since Coverage counts them as unused until you trigger them.</p></div>
+<p>사용되지 않는 CSS의 원인은 둘 중 하나입니다. 하나는 route가 import하는 stylesheet 안의 dead CSS로, source에서 사용되지 않는 rule을 제거하거나 이를 사용하는 route만 import하는 stylesheet로 옮겨서 해결합니다(<a href="app-getting-started-css.html#css-modules">CSS Modules</a>는 style을 import하는 component로 scope를 한정하므로 이를 자연스럽게 해 줍니다).</p><div class="en-orig"><p>The source of this unused CSS is one of two things. Either it is dead CSS in a stylesheet your route imports, which you fix in your source by removing the unused rules or moving them into a stylesheet only the routes that use them import (<a href="app-getting-started-css.html#css-modules">CSS Modules</a> make this natural by scoping styles to the component that imports them).</p></div>
+<p>다른 하나는 bundler가 다른 stylesheet를 route가 불러오는 shared chunk에 merge한 경우입니다. 이는 <a href="#choosing-a-strategy">chunking strategy</a>에 의해 결정됩니다. Turbopack에서는 <a href="#balancing-requests-and-grouping"><code>graph</code> mode</a>를 사용해 CSS를 얼마나 적극적으로 merge할지 세밀하게 조정할 수 있습니다.</p><div class="en-orig"><p>Or the bundler merged another stylesheet into a shared chunk that your route loads. That is governed by your <a href="#choosing-a-strategy">chunking strategy</a>. In Turbopack, <a href="#balancing-requests-and-grouping"><code>graph</code> mode</a> lets you fine-tune how aggressively CSS merges.</p></div>
+<h2 class="sec" id="balancing-requests-and-grouping"><a class="anchor" href="#balancing-requests-and-grouping">Balancing requests and grouping<span class="ko">Request와 grouping의 균형 맞추기</span></a></h2>
+<p><code>graph</code> 전략은 request를 줄이기 위해 CSS를 shared chunk로 묶습니다. 기본 tuning을 사용하는 문자열 형태로 활성화하세요:</p><div class="en-orig"><p>The <code>graph</code> strategy groups CSS into shared chunks to cut requests. Turn it on with the string form, which uses the default tuning:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig = {
+  experimental: {
+    cssChunking: &#x27;graph&#x27;,
+  },
+} satisfies NextConfig
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  experimental: {
+    cssChunking: &#x27;graph&#x27;,
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p>균형을 조정하려면 대신 object를 전달하세요. <code>requestCost</code>와 <code>weightDistribution</code>은 모두 선택 사항이므로, 바꾸고 싶은 것만 포함하면 됩니다:</p><div class="en-orig"><p>To shift that balance, pass an object instead. Both <code>requestCost</code> and <code>weightDistribution</code> are optional, so include only the one you want to change:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig = {
+  experimental: {
+    cssChunking: {
+      type: &#x27;graph&#x27;,
+      requestCost: 100000,
+      weightDistribution: 0.1,
+    },
+  },
+} satisfies NextConfig
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  experimental: {
+    cssChunking: {
+      type: &#x27;graph&#x27;,
+      requestCost: 100000,
+      weightDistribution: 0.1,
+    },
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<ul>
+<li><strong><code>requestCost</code></strong> (기본값 <code>20000</code>): 추가 CSS request 하나의 예상 비용(byte 단위)입니다. 값이 클수록 더 적고 큰 shared chunk, 그리고 전체적으로 더 적은 request 쪽으로 기웁니다.</li>
+<li><strong><code>weightDistribution</code></strong> (기본값 <code>0.1</code>): shared chunk의 비용이 이를 불러오는 route들에 어떻게 분배되는지를 각 route가 import하는 CSS 양을 가중치로 하여 제어합니다. <code>0</code>은 모든 route에 동일한 가중치를 줍니다. 값이 높을수록 CSS를 적게 import하는 route에 더 큰 가중치를 주므로, 큰 route에서는 추가 CSS가 덜 눈에 띈다는 가정하에 algorithm이 CSS가 적은 route를 우선시합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>requestCost</code></strong> (default <code>20000</code>): the estimated cost, in bytes, of each additional CSS request. Larger values bias toward fewer, larger shared chunks, and fewer requests overall.</li>
+<li><strong><code>weightDistribution</code></strong> (default <code>0.1</code>): controls how a shared chunk's cost is distributed across the routes that load it, weighted by how much CSS each route imports. <code>0</code> weights every route equally; higher values give more weight to routes that import less CSS, so the algorithm prioritizes routes with less CSS, assuming extra CSS is less noticeable on large routes.</li>
+</ul></div>
+<h3 class="sec" id="how-graph-decides-what-to-merge"><a class="anchor" href="#how-graph-decides-what-to-merge">How <code>graph</code> decides what to merge<span class="ko"><code>graph</code>가 merge 대상을 결정하는 방식</span></a></h3>
+<p>CSS를 shared chunk로 merge하는 것은 기본값(<code>true</code>)이 이미 하는 일입니다. <code>graph</code>는 merge와 split 사이의 경계를 어디에 둘지 제어할 수 있게 해 줄 뿐입니다.</p><div class="en-orig"><p>Merging CSS into shared chunks is what the default (<code>true</code>) already does; <code>graph</code> just lets you control where it draws the line between merging and splitting.</p></div>
+<p>stylesheet를 공유하는 두 route를 예로 들어 보겠습니다:</p><div class="en-orig"><p>Take two routes that share a stylesheet:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-plaintext">/a → [shared.css, only-a.css]
+/b → [shared.css]</code></pre></div></div>
+<p>여기서 <code>/b</code>는 <code>only-a.css</code>를 import하지 않으므로, 내려야 할 결정은 하나입니다. <code>only-a.css</code>를 shared chunk에 남겨 둘지, 별도의 chunk로 분리할지입니다.</p><div class="en-orig"><p>Here, <code>/b</code> never imports <code>only-a.css</code>, so there is one decision to make: keep <code>only-a.css</code> in the shared chunk, or give it its own.</p></div>
+<p>merge된 상태로 두면 <code>/a</code>는 모든 CSS를 한 번의 request로 불러올 수 있습니다. 대신 그 shared chunk를 함께 불러오는 <code>/b</code>는 <code>only-a.css</code>를 import하지 않았는데도 이를 download하게 됩니다.</p><div class="en-orig"><p>Keeping it merged lets <code>/a</code> load all its CSS in a single request. The cost is that <code>/b</code>, which also loads that shared chunk, now downloads <code>only-a.css</code> even though it never imported it.</p></div>
+<p>분리하면 <code>/b</code>는 그만큼의 byte를 아낄 수 있지만, 이제 <code>/a</code>는 request를 두 번 보내야 합니다. 기본값은 고정된 heuristic으로 둘 중 하나를 선택합니다.</p><div class="en-orig"><p>Splitting it out spares <code>/b</code> those bytes, but now <code>/a</code> has to make two requests. The default picks between these with a fixed heuristic.</p></div>
+<p><code>requestCost</code> option은 <code>graph</code>가 이 trade-off에 가격을 매기는 방법으로, request 하나와 맞먹는 import되지 않은 CSS의 양을 뜻합니다. <code>only-a.css</code>가 <code>requestCost</code>보다 충분히 작은 동안에는 merge된 상태로 두고, request 비용을 넘어설 만큼 커지면 분리합니다.</p><div class="en-orig"><p>The <code>requestCost</code> option is how <code>graph</code> prices that trade: the amount of un-imported CSS worth one extra request. It keeps <code>only-a.css</code> merged while <code>only-a.css</code> stays well under <code>requestCost</code>, and splits it out once it grows large enough to outweigh the request.</p></div>
+<p>결정을 좌우하는 것은 merge가 route에 떠넘기게 될 import되지 않은 CSS의 크기이며, 합류하는 shared chunk의 크기는 그보다 훨씬 덜 중요합니다. 기본 <code>requestCost</code>가 약 20 KB이므로, <code>only-a.css</code>는 대략 그 크기를 넘어야 자체 chunk를 갖게 되며, 작은 stylesheet는 merge된 상태로 남습니다.</p><div class="en-orig"><p>What drives the decision is the size of the un-imported CSS a merge would push onto a route, much more than the size of the shared chunk it joins. With the default <code>requestCost</code> of about 20 KB, <code>only-a.css</code> would have to exceed roughly that size before it earns its own chunk, so small stylesheets stay merged.</p></div>
+<details><summary>Graph algorithm 개요</summary><div class="details-body"><p>큰 틀에서 보면 algorithm은 개별 CSS 파일 단위로 동작합니다. 각 route가 import하는 CSS의 순서 있는 목록에서 시작합니다:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-plaintext">/dashboard  → [reset.css, theme.css, layout.css, dashboard.css]
+/settings   → [reset.css, theme.css, layout.css, settings.css]
+/login      → [reset.css, login.css]</code></pre></div></div>
+<p>이로부터 weighted graph를 만드는데, 두 CSS 파일을 같은 순서로 함께 import하는 route가 많을수록 두 파일 사이의 edge가 무거워집니다. 그런 다음 자주 짝지어지는 파일이 인접하도록 graph를 한 줄로 펼치고, 그 줄을 chunk로 나누는 <em>cut</em>(구분점)을 배치합니다. 예를 들면 다음과 같습니다:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-plaintext">reset theme layout │ dashboard │ settings │ login
+└──── chunk 1 ────┘   chunk 2     chunk 3    chunk 4</code></pre></div></div>
+<p>route는 자신이 import하는 파일이 들어 있는 모든 chunk를 불러오므로, <code>/dashboard</code>는 chunk 1과 2를, <code>/login</code>은 chunk 1과 4를 불러옵니다.</p>
+<p>algorithm은 byte와 request의 균형을 맞추면서 모든 route에 걸친 총 download 비용이 최소가 되도록 chunk를 나눌 위치를 선택합니다. 각 route를 개별로 최적화하는 것이 아니라 총합을 최적화하므로, 전체 비용을 낮출 수 있다면 route가 import하지 않은 CSS를 일부 떠안게 될 수도 있습니다. 두 option은 이 가중치를 제어합니다:</p>
+<ul>
+<li><strong><code>requestCost</code></strong>: <code>reset.css</code>, <code>theme.css</code>, <code>layout.css</code>가 하나의 chunk를 공유하므로, 이들이 필요한 route는 세 번이 아니라 한 번의 request만 보냅니다. <code>requestCost</code>는 request 하나의 가격을 byte로 나타낸 것입니다. 값을 높이면 algorithm은 이런 식으로 더 많이 merge하여 download가 커지는 대신 request를 줄이고, <code>0</code>에 가깝게 낮추면 chunk를 쪼개서 route가 import하는 것에 가까운 양만 download하는 대신 request가 늘어납니다.</li>
+<li><strong><code>weightDistribution</code></strong>: <code>/login</code>은 chunk 1에서 <code>reset.css</code>만 필요하지만, <code>theme.css</code>와 <code>layout.css</code>가 같은 chunk를 공유하므로 이들도 download합니다. 이 option은 algorithm이 이 점을 얼마나 신경 쓸지 결정합니다. <code>0</code>이면 <code>/login</code>과 <code>/dashboard</code>가 동일하게 계산되므로 추가 CSS가 함께 따라가도록 허용합니다. 값을 높이면 <code>/login</code>처럼 CSS를 적게 import하는 route가 더 중요하게 계산되므로, algorithm은 전체 request가 늘어나는 대가를 치르더라도 이런 route가 import하지 않은 CSS를 떠안지 않도록 합니다.</li>
+</ul></div></details>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/cssChunking.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/cssChunking" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-config-next-config-js-crossOrigin.html" class="prev"><div class="dir">← 이전</div><div class="ttl">crossOrigin</div><div class="ttl-ko">crossOrigin</div></a>
+      <a href="app-api-reference-config-next-config-js-deploymentId.html" class="next"><div class="dir">다음 →</div><div class="ttl">deploymentId</div><div class="ttl-ko">deploymentId</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/cssChunking" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#options">Options</a></li><li class="l2"><a href="#choosing-a-strategy">Choosing a strategy</a></li><li class="l2"><a href="#debugging-what-a-route-actually-uses">Debugging what a route actually uses</a></li><li class="l2"><a href="#balancing-requests-and-grouping">Balancing requests and grouping</a></li><li class="l3"><a href="#how-graph-decides-what-to-merge">How <code>graph</code> decides what to merge</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+CSS Chunking은 CSS 파일을 chunk로 나누고 순서를 재배치하여 웹 애플리케이션의 성능을 개선하는 전략입니다. 이를 통해 route는 애플리케이션의 모든 CSS를 한 번에 불러오는 대신, 필요한 CSS에 가까운 양만 불러올 수 있습니다.
+
+`next.config.js` 파일의 `experimental.cssChunking` option을 사용해 CSS 파일이 chunk로 나뉘는 방식을 제어할 수 있습니다:
+
+[[CODE 1]]
+
+## Options
+
+- **`true` (default)** (**webpack 및 Turbopack**): Next.js는 가능할 때마다 CSS 파일을 merge하려고 시도하며, import 순서로부터 파일 간의 명시적·암묵적 dependency를 판단하여 chunk 수, 즉 request 수를 줄입니다.
+- **`false`** (**webpack 전용**): Next.js는 CSS 파일을 merge하거나 순서를 재배치하지 않습니다.
+- **`&#x27;strict&#x27;`** (**webpack 전용**): Next.js는 CSS 파일을 파일에 import된 정확한 순서대로 불러오며, 이로 인해 chunk와 request가 더 많아질 수 있습니다.
+- **`&#x27;graph&#x27;`** (**Turbopack 전용**): Next.js는 비용 기반 graph algorithm을 사용해 여러 route에 걸쳐 CSS를 group으로 묶고, 각 route가 download하는 byte와 보내는 request 사이의 균형을 맞춥니다.
+
+## Choosing a strategy || 전략 선택하기
+
+대부분의 애플리케이션에서는 어느 bundler를 사용하든 기본값(`true`)이 올바른 선택입니다. CSS를 merge하여 request를 줄여 줍니다. 다른 전략은 특별한 이유가 있을 때만 사용하세요.
+
+Turbopack에서 그 이유는 보통 성능입니다. route 간에 CSS가 공유되는 방식을 조정하려면 `graph`로 전환하세요. request가 늘어나는 대신 route가 download하는 사용되지 않는 CSS를 줄일 수 있습니다([Balancing requests and grouping](#balancing-requests-and-grouping) 참고).
+
+webpack에서 그 이유는 보통 정확성입니다. 예상치 못한 CSS 동작을 겪는다면 `&#x27;strict&#x27;`로 전환하세요. 예를 들어 서로 다른 파일에서 `a.css`와 `b.css`를 다른 `import` 순서(`a` 다음 `b`, 또는 `b` 다음 `a`)로 import하면, `true`는 둘 사이에 dependency가 없다고 가정하고 임의의 순서로 merge합니다. `b.css`가 `a.css`에 의존한다면, `&#x27;strict&#x27;`는 chunk와 request가 늘어나는 대신 merge를 막고 import 순서대로 불러옵니다. merge를 완전히 비활성화하려면 `false`를 사용하세요.
+
+## Debugging what a route actually uses || route가 실제로 사용하는 CSS debugging
+
+사용되지 않는 CSS가 어느 정도 있는 것은 괜찮고 대부분의 앱은 아무것도 바꿀 필요가 없지만, render-blocking CSS는 관리해 두는 것이 좋습니다. [Lighthouse](https://developer.chrome.com/docs/lighthouse/performance/unused-css-rules)는 이를 예상 절감량과 함께 **Reduce unused CSS** 항목(opportunity)으로 표시하며, Chrome DevTools는 [Coverage panel](https://developer.chrome.com/docs/devtools/coverage)에서 stylesheet별로 보여 줍니다. 이 panel의 usage bar는 각 stylesheet에서 적용된 CSS를 초록색으로, 사용되지 않은 CSS를 회색으로 표시합니다.
+
+report를 볼 때는 `:hover`, `:focus`, 또는 menu와 modal을 위해 JavaScript로 toggle되는 class처럼 상호작용 시에만 적용되는 style에 주의하세요. Coverage는 이런 style을 실제로 trigger하기 전까지 사용되지 않은 것으로 계산합니다.
+
+사용되지 않는 CSS의 원인은 둘 중 하나입니다. 하나는 route가 import하는 stylesheet 안의 dead CSS로, source에서 사용되지 않는 rule을 제거하거나 이를 사용하는 route만 import하는 stylesheet로 옮겨서 해결합니다([CSS Modules](/docs/app/getting-started/css#css-modules)는 style을 import하는 component로 scope를 한정하므로 이를 자연스럽게 해 줍니다).
+
+다른 하나는 bundler가 다른 stylesheet를 route가 불러오는 shared chunk에 merge한 경우입니다. 이는 [chunking strategy](#choosing-a-strategy)에 의해 결정됩니다. Turbopack에서는 [`graph` mode](#balancing-requests-and-grouping)를 사용해 CSS를 얼마나 적극적으로 merge할지 세밀하게 조정할 수 있습니다.
+
+## Balancing requests and grouping || Request와 grouping의 균형 맞추기
+
+`graph` 전략은 request를 줄이기 위해 CSS를 shared chunk로 묶습니다. 기본 tuning을 사용하는 문자열 형태로 활성화하세요:
+
+[[CODE 2]]
+
+균형을 조정하려면 대신 object를 전달하세요. `requestCost`와 `weightDistribution`은 모두 선택 사항이므로, 바꾸고 싶은 것만 포함하면 됩니다:
+
+[[CODE 3]]
+
+- **`requestCost`** (기본값 `20000`): 추가 CSS request 하나의 예상 비용(byte 단위)입니다. 값이 클수록 더 적고 큰 shared chunk, 그리고 전체적으로 더 적은 request 쪽으로 기웁니다.
+- **`weightDistribution`** (기본값 `0.1`): shared chunk의 비용이 이를 불러오는 route들에 어떻게 분배되는지를 각 route가 import하는 CSS 양을 가중치로 하여 제어합니다. `0`은 모든 route에 동일한 가중치를 줍니다. 값이 높을수록 CSS를 적게 import하는 route에 더 큰 가중치를 주므로, 큰 route에서는 추가 CSS가 덜 눈에 띈다는 가정하에 algorithm이 CSS가 적은 route를 우선시합니다.
+
+### How `graph` decides what to merge || `graph`가 merge 대상을 결정하는 방식
+
+CSS를 shared chunk로 merge하는 것은 기본값(`true`)이 이미 하는 일입니다. `graph`는 merge와 split 사이의 경계를 어디에 둘지 제어할 수 있게 해 줄 뿐입니다.
+
+stylesheet를 공유하는 두 route를 예로 들어 보겠습니다:
+
+[[CODE 4]]
+
+여기서 `/b`는 `only-a.css`를 import하지 않으므로, 내려야 할 결정은 하나입니다. `only-a.css`를 shared chunk에 남겨 둘지, 별도의 chunk로 분리할지입니다.
+
+merge된 상태로 두면 `/a`는 모든 CSS를 한 번의 request로 불러올 수 있습니다. 대신 그 shared chunk를 함께 불러오는 `/b`는 `only-a.css`를 import하지 않았는데도 이를 download하게 됩니다.
+
+분리하면 `/b`는 그만큼의 byte를 아낄 수 있지만, 이제 `/a`는 request를 두 번 보내야 합니다. 기본값은 고정된 heuristic으로 둘 중 하나를 선택합니다.
+
+`requestCost` option은 `graph`가 이 trade-off에 가격을 매기는 방법으로, request 하나와 맞먹는 import되지 않은 CSS의 양을 뜻합니다. `only-a.css`가 `requestCost`보다 충분히 작은 동안에는 merge된 상태로 두고, request 비용을 넘어설 만큼 커지면 분리합니다.
+
+결정을 좌우하는 것은 merge가 route에 떠넘기게 될 import되지 않은 CSS의 크기이며, 합류하는 shared chunk의 크기는 그보다 훨씬 덜 중요합니다. 기본 `requestCost`가 약 20 KB이므로, `only-a.css`는 대략 그 크기를 넘어야 자체 chunk를 갖게 되며, 작은 stylesheet는 merge된 상태로 남습니다.
+
+&lt;details&gt;
+  &lt;summary&gt;Graph algorithm 개요&lt;/summary&gt;
+
+큰 틀에서 보면 algorithm은 개별 CSS 파일 단위로 동작합니다. 각 route가 import하는 CSS의 순서 있는 목록에서 시작합니다:
+
+[[CODE 5]]
+
+이로부터 weighted graph를 만드는데, 두 CSS 파일을 같은 순서로 함께 import하는 route가 많을수록 두 파일 사이의 edge가 무거워집니다. 그런 다음 자주 짝지어지는 파일이 인접하도록 graph를 한 줄로 펼치고, 그 줄을 chunk로 나누는 _cut_(구분점)을 배치합니다. 예를 들면 다음과 같습니다:
+
+[[CODE 6]]
+
+route는 자신이 import하는 파일이 들어 있는 모든 chunk를 불러오므로, `/dashboard`는 chunk 1과 2를, `/login`은 chunk 1과 4를 불러옵니다.
+
+algorithm은 byte와 request의 균형을 맞추면서 모든 route에 걸친 총 download 비용이 최소가 되도록 chunk를 나눌 위치를 선택합니다. 각 route를 개별로 최적화하는 것이 아니라 총합을 최적화하므로, 전체 비용을 낮출 수 있다면 route가 import하지 않은 CSS를 일부 떠안게 될 수도 있습니다. 두 option은 이 가중치를 제어합니다:
+
+- **`requestCost`**: `reset.css`, `theme.css`, `layout.css`가 하나의 chunk를 공유하므로, 이들이 필요한 route는 세 번이 아니라 한 번의 request만 보냅니다. `requestCost`는 request 하나의 가격을 byte로 나타낸 것입니다. 값을 높이면 algorithm은 이런 식으로 더 많이 merge하여 download가 커지는 대신 request를 줄이고, `0`에 가깝게 낮추면 chunk를 쪼개서 route가 import하는 것에 가까운 양만 download하는 대신 request가 늘어납니다.
+- **`weightDistribution`**: `/login`은 chunk 1에서 `reset.css`만 필요하지만, `theme.css`와 `layout.css`가 같은 chunk를 공유하므로 이들도 download합니다. 이 option은 algorithm이 이 점을 얼마나 신경 쓸지 결정합니다. `0`이면 `/login`과 `/dashboard`가 동일하게 계산되므로 추가 CSS가 함께 따라가도록 허용합니다. 값을 높이면 `/login`처럼 CSS를 적게 import하는 route가 더 중요하게 계산되므로, algorithm은 전체 request가 늘어나는 대가를 치르더라도 이런 route가 import하지 않은 CSS를 떠안지 않도록 합니다.
+
+&lt;/details&gt;
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

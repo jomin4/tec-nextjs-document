@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ensuring instant navigations (즉각적인 navigation 보장하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/instant-navigation" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/instant-navigation" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/instant-navigation.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Ensuring instant navigations<span class="sub">즉각적인 navigation 보장하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>이 가이드에서는 instant navigation을 이해하고, 즉시 navigate되는 route를 작성하고, initial UI에 무엇이 들어가는지 시각화하고, end-to-end test로 그 동작을 고정하는 과정을 단계별로 살펴봅니다.</p><div class="en-orig"><p>This guide walks through understanding instant navigations, writing a route that navigates instantly, visualizing what's in the initial UI, and locking the behavior in with end-to-end tests.</p></div>
+<h2 class="sec" id="what-instant-means"><a class="anchor" href="#what-instant-means">What "instant" means<span class="ko">"instant"의 의미</span></a></h2>
+<p>사용자가 클릭하는 순간 브라우저가 새 페이지 rendering을 시작할 수 있고, static·cache된·fallback 콘텐츠가 바로 표시되며, 그동안 server가 나머지 콘텐츠를 fallback 자리로 stream한다면 그 navigation을 <strong>instant</strong> navigation이라고 합니다.</p><div class="en-orig"><p>A navigation is <strong>instant</strong> when the browser can start rendering the new page the moment the user clicks, with static, cached, and fallback content showing up right away, while the server streams the remaining content into its fallbacks.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 정의는 cache가 warm 상태라고 가정합니다. cache가 cold 상태라면 server가 cache된 결과를 한 번은 계산해야 하므로, route로의 첫 navigation은 여전히 기다려야 할 수 있습니다.</p><div class="en-orig"><p>This definition assumes caches are warm. Cold caches still require the server to compute the cached result once, so the first navigation to a route may still wait.</p></div></div></div>
+<p>같은 route라도 직접 방문과 client navigation은 서로 다른 initial UI를 만들 수 있습니다. <strong>Direct visit</strong> 시에는 보통 CDN에서 <a href="app-glossary.html#static-shell"><strong>static shell</strong></a>을 HTML로 받습니다. <strong>Client navigation</strong> 시에는 현재 route와 목적지 route가 공유하는 layout 아래만 다시 render하므로, 그 지점보다 위에 있는 <code>&lt;Suspense&gt;</code> boundary가 정의한 fallback UI는 전환 중에 사용할 수 없습니다.</p><div class="en-orig"><p>A direct visit and a client navigation to the same route can produce different initial UI. <strong>Direct visits</strong> get the <a href="app-glossary.html#static-shell"><strong>static shell</strong></a> as HTML, typically from a CDN. <strong>Client navigations</strong> only re-render below the layout the current and destination routes share, so the fallback UI defined by a <code>&lt;Suspense&gt;</code> boundary above that point can't be used during the transition.</p></div>
+<p>새 페이지가 즉시 나타나는지는 공유 layout 아래에 있는 <code>&lt;Suspense&gt;</code> boundary와 caching에 달려 있습니다.</p><div class="en-orig"><p>Whether the new page appears instantly depends on the <code>&lt;Suspense&gt;</code> boundaries and caching present below the shared layout.</p></div>
+<details><summary>페이지 로드와 client navigation이 서로 다른 initial UI를 만드는 이유</summary><div class="details-body"><p>페이지 로드 시에는 전체 페이지가 document root부터 render됩니다. 모든 component가 server에서 실행되고, suspend되는 것은 무엇이든 전체 tree에서 가장 가까운 <code>&lt;Suspense&gt;</code> boundary가 잡아냅니다.</p>
+<p><code>/store/shoes</code>와 <code>/store/hats</code> 사이의 client navigation에서는 <code>/store</code> layout 아래의 component만 다시 render됩니다. root layout의 <code>&lt;Suspense&gt;</code> boundary는 페이지 로드 시에는 모든 것을 감싸지만, 이 navigation에서는 re-render 범위보다 위에 있으므로 trigger되지 않습니다.</p>
+<p>client-side hook이 다르게 동작하는 이유도 이것입니다. <code>useSearchParams()</code>는 build 시점에 search param을 알 수 없으므로 prerender 중에 suspend됩니다. 하지만 client navigation에서는 router가 이미 URL에서 param을 가지고 있으므로 hook이 동기적으로 resolve됩니다. 같은 component라도 client navigation에서는 즉시 render되지만 페이지 로드 시에는 fallback 뒤에 머무를 수 있습니다.</p></div></details>
+<p><code>prefetch={true}</code>를 사용하면 link별 prefetching이 navigation 전에 link의 URL 데이터(<code>searchParams</code>와 <code>params</code>)를 resolve합니다. 먼저 App Shell로 route를 instant하게 만드세요. App Shell 없이 block되는 route는 link별 prefetching으로 고칠 수 없습니다. 관련 패턴은 <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching</a>을 참고하세요.</p><div class="en-orig"><p>With <code>prefetch={true}</code>, per-link prefetching resolves a link's URL data (<code>searchParams</code> and <code>params</code>) before navigation. First make the route instant with its App Shell. Per-link prefetching cannot fix a route that blocks without it. See <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching</a> for the patterns.</p></div>
+<h2 class="sec" id="quick-start"><a class="anchor" href="#quick-start">Quick start<span class="ko">빠른 시작</span></a></h2>
+<p>Instant Navigation을 최대한 활용하려면 <a href="app-guides-migrating-to-cache-components.html">Cache Components</a>와 <a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching</a>을 활성화한 다음, 나타나는 <a href="#validate-instant-navigation">validation error</a>를 따라 해결해야 합니다:</p><div class="en-orig"><p>Getting the most out of Instant Navigation requires enabling <a href="app-guides-migrating-to-cache-components.html">Cache Components</a> and <a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching</a>, then following the <a href="#validate-instant-navigation">validation errors</a> that appear:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+  partialPrefetching: true,
+}
+
+export default nextConfig</code></pre></div></div>
+<p>agent로 이 과정을 자동화할 수 있도록 각 부분마다 Skill이 준비되어 있습니다: <a href="https://www.skills.sh/vercel/next.js/next-cache-components-adoption" target="_blank" rel="noopener">next-cache-components-adoption</a>과 <a href="https://www.skills.sh/vercel/next.js/next-partial-prefetching-adoption" target="_blank" rel="noopener">next-partial-prefetching-adoption</a>. 모든 것을 활성화하고 싶다면 agent에게 다음 prompt를 주세요:</p><div class="en-orig"><p>To help you automate this process with an agent, there's a Skill for each part, <a href="https://www.skills.sh/vercel/next.js/next-cache-components-adoption" target="_blank" rel="noopener">next-cache-components-adoption</a> and <a href="https://www.skills.sh/vercel/next.js/next-partial-prefetching-adoption" target="_blank" rel="noopener">next-partial-prefetching-adoption</a>. If you'd like to enable everything, give your agent this prompt:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-plaintext">Adopt Cache Components and Partial Prefetching in this app so its navigations become instant. There is a Skill for each migration.
+
+1. Before you change anything, explain to me in plain terms what Instant Navigation is and what adopting it will change.
+
+2. Install the Skills you need, then verify your changes against a running dev server with next-dev-loop and agent-browser as you go:
+   - next-cache-components-adoption: https://www.skills.sh/vercel/next.js/next-cache-components-adoption
+   - next-partial-prefetching-adoption: https://www.skills.sh/vercel/next.js/next-partial-prefetching-adoption
+   - next-dev-loop: https://www.skills.sh/vercel/next.js/next-dev-loop
+
+3. Each Skill leaves decisions to me, like how much of the work lands in each pull request. Put those questions to me and wait for my answers instead of deciding on my behalf. Adopt Cache Components first, then Partial Prefetching, following the workflow each Skill lays out. Don&#x27;t rush to a passing build.
+
+4. When you finish a step, show me a table of the routes you touched and what changed on each, and talk me through what it means for the app. Keep it to the outcome, not the implementation details.</code></pre></div></div>
+<p>이 가이드의 나머지 부분에서는 이 migration들이 사용하는 도구를 다루고, block되는 navigation을 instant하게 바꾸는 과정을 따라가 보고, initial UI에 무엇이 들어가는지 살펴본 뒤, end-to-end test로 그 결과를 고정합니다.</p><div class="en-orig"><p>The rest of this guide covers the tools these migrations use, walks a navigation that blocks to instant, inspects what lands in the initial UI, and locks the result in with end-to-end tests.</p></div>
+<h2 class="sec" id="the-tools"><a class="anchor" href="#the-tools">The tools<span class="ko">도구</span></a></h2>
+<h3 class="sec" id="build-the-static-shell"><a class="anchor" href="#build-the-static-shell">Build the static shell<span class="ko">static shell 만들기</span></a></h3>
+<p>Cache Components에서 <strong>caching directive</strong>(<code>&quot;use cache&quot;</code>와 그 변형)는 async 함수의 결과에 lifetime을 지정합니다. 이 덕분에 Next.js가 그 결과를 static shell에 포함할 수 있습니다.</p><div class="en-orig"><p>With Cache Components, <strong>caching directives</strong> (<code>&quot;use cache&quot;</code> and its variants) assign a lifetime to an async function's result, which is what lets Next.js include it in the static shell.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="app-api-reference-directives-use-cache-private.html"><code>&quot;use cache: private&quot;</code></a>는 <code>cookies()</code>, <code>headers()</code> 같은 runtime API를 읽는 함수를 cache하기 위한 변형입니다. 결과는 server가 아니라 브라우저에만 cache됩니다. <strong>static shell의 일부가 될 수는 없습니다.</strong> prefetching과 어떻게 함께 쓰이는지는 Optimizing prefetching 가이드의 <a href="app-guides-optimizing-prefetching.html#use-cache-private"><code>&quot;use cache: private&quot;</code></a>를 참고하세요.</p><div class="en-orig"><p><a href="app-api-reference-directives-use-cache-private.html"><code>&quot;use cache: private&quot;</code></a> is a variant for caching functions that read runtime APIs like <code>cookies()</code> and <code>headers()</code>. The result is cached in the browser only, not on the server. <strong>It can't be part of the static shell.</strong> See <a href="app-guides-optimizing-prefetching.html#use-cache-private"><code>&quot;use cache: private&quot;</code></a> in the Optimizing prefetching guide for how it pairs with prefetching.</p></div></div></div>
+<p>cache되지 않은 데이터나 <code>cookies()</code>, <code>headers()</code> 같은 runtime API를 읽는 tree 부분에 대한 fallback UI는 <strong><code>&lt;Suspense&gt;</code></strong> boundary로 선언합니다. 콘텐츠가 resolve되면 fallback 자리로 stream됩니다.</p><div class="en-orig"><p><strong><code>&lt;Suspense&gt;</code></strong> declares fallback UI for parts of the tree that read uncached data or runtime APIs like <code>cookies()</code> and <code>headers()</code>; the content streams into the fallback when it resolves.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>fallback이 <code>cookies()</code>, <code>headers()</code> 또는 전체 URL에 접근할 수도 있습니다. 그러면 build 시점에 fallback 자체가 suspend되므로, tree에서 더 위쪽에 <code>&lt;Suspense&gt;</code> boundary가 필요합니다. <code>prefetch={true}</code>가 있는 link의 경우 <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a>이 navigation 전에 URL 데이터를 사용할 수 있게 해 주므로, fallback이 prefetch된 UI의 일부가 될 수 있습니다. timestamp나 데이터 fetch 같은 cache된 값은 fallback 안에 바로 둘 수 있습니다.</p><div class="en-orig"><p>A fallback may access <code>cookies()</code>, <code>headers()</code>, or the full URL. At build time, the fallback itself suspends, and a <code>&lt;Suspense&gt;</code> boundary further up the tree is needed. For a link with <code>prefetch={true}</code>, <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a> makes URL data available before navigation, so the fallback can become part of the prefetched UI. Cached values like timestamps or data fetches can sit directly inside the fallback.</p></div></div></div>
+<p>Next.js는 route마다 <a href="app-glossary.html#app-shell"><strong>App Shell</strong></a>을 생성할 수도 있습니다. App Shell은 나머지 콘텐츠가 stream되는 동안 client navigation 중에 render됩니다. Partial Prefetching은 App Shell을 기본 <code>&lt;Link&gt;</code> prefetch로 사용합니다. <code>prefetch={true}</code>가 있는 link는 해당 link의 URL 데이터에 의존하는 cache된 콘텐츠도 resolve할 수 있습니다.</p><div class="en-orig"><p>Next.js can also generate an <a href="app-glossary.html#app-shell"><strong>App Shell</strong></a> per route, which renders during client navigations while remaining content streams. Partial Prefetching uses the App Shell as the default <code>&lt;Link&gt;</code> prefetch. A link with <code>prefetch={true}</code> can also resolve cached content that depends on that link's URL data.</p></div>
+<h3 class="sec" id="prefetch-url-data-for-a-link"><a class="anchor" href="#prefetch-url-data-for-a-link">Prefetch URL data for a link<span class="ko">link의 URL 데이터 prefetch하기</span></a></h3>
+<p><a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching</a>에서는 화면에 보이는 각 <code>&lt;Link&gt;</code>가 기본적으로 목적지의 App Shell을 prefetch합니다. 같은 route로 가는 link들은 link마다 별도의 App Shell request를 보내는 대신 하나의 App Shell을 공유합니다.</p><div class="en-orig"><p>Under <a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching</a>, each visible <code>&lt;Link&gt;</code> prefetches the destination's App Shell by default. Links to the same route share one App Shell instead of triggering a separate App Shell request for each link.</p></div>
+<p>특정 link에 대해 shell과 함께 페이지 콘텐츠까지 prefetch하려면 <a href="app-api-reference-components-link.html#prefetch"><code>prefetch={true}</code></a>를 설정하세요:</p><div class="en-orig"><p>To prefetch the page content alongside the shell for a specific link, set <a href="app-api-reference-components-link.html#prefetch"><code>prefetch={true}</code></a>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&lt;Link href=&quot;/checkout&quot; prefetch&gt;
+  Checkout
+&lt;/Link&gt;</code></pre></div></div>
+<p>Partial Prefetching이 활성화된 상태에서 <code>prefetch={true}</code>는 해당 link를 <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a>에도 참여시킵니다. per-link prefetching은 클릭 전에 link별 URL 데이터(<code>params</code>, <code>searchParams</code>, 전체 URL)를 resolve합니다.</p><div class="en-orig"><p>With Partial Prefetching enabled, <code>prefetch={true}</code> also opts the link into <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a>, which resolves the per-link URL data (<code>params</code>, <code>searchParams</code>, the full URL) ahead of the click.</p></div>
+<h3 class="sec" id="validate-instant-navigation"><a class="anchor" href="#validate-instant-navigation">Validate instant navigation<span class="ko">instant navigation 검증하기</span></a></h3>
+<p><strong>default</strong> 설정(<code>validationLevel: &#x27;warning&#x27;</code>)에서 Cache Components 앱은 development 중에 모든 Page와 Default segment를 검증합니다. 검증은 segment로의 navigation이 instant해지지 못하게 막는 요소를 드러냅니다. 즉, 어떤 navigation이 block될지, 어디에 <code>&lt;Suspense&gt;</code> boundary가 빠져 있는지, 어떤 데이터가 cache되지 않은 채 사용자에게 도달하는지를 보여 줍니다.</p><div class="en-orig"><p>By <strong>default</strong> (<code>validationLevel: &#x27;warning&#x27;</code>), Cache Components apps validate every Page and Default segment in development. Validation surfaces what would keep navigations into a segment from being instant — which navigations would block, where a <code>&lt;Suspense&gt;</code> boundary is missing, and which data is reaching the user uncached.</p></div>
+<p>자동 검증을 끄고 <code>instant</code>를 명시적으로 export한 segment만 검증하려면 <a href="app-api-reference-file-conventions-route-segment-config-instant.html#configuring-validation-defaults"><code>validationLevel</code></a>을 <code>&#x27;manual-warning&#x27;</code>으로 설정하세요:</p><div class="en-orig"><p>To opt out of automatic validation and only validate segments that explicitly export <code>instant</code>, set <a href="app-api-reference-file-conventions-route-segment-config-instant.html#configuring-validation-defaults"><code>validationLevel</code></a> to <code>&#x27;manual-warning&#x27;</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+  experimental: {
+    instantInsights: {
+      validationLevel: &#x27;manual-warning&#x27;,
+    },
+  },
+}
+
+export default nextConfig</code></pre></div></div>
+<details><summary>검증이 서로 다른 navigation을 시뮬레이션하는 방법</summary><div class="details-body"><p>검증 대상 route마다 Next.js는 initial page load와, route 계층의 여러 지점에서 일어나는 client navigation을 모두 확인합니다.</p>
+<p><code>/shop/[slug]</code> 같은 route의 경우 검증은 다음을 확인합니다:</p>
+<ul>
+<li><strong>Page load</strong>: 전체 tree가 root부터 render됩니다. root layout의 <code>&lt;Suspense&gt;</code>가 모든 것을 잡아냅니다.</li>
+<li><strong>Client navigation</strong> (예: <code>/shop/shoes</code>에서 <code>/shop/hats</code>로): <code>/shop</code> layout은 이미 mount되어 있고 그 아래 page만 다시 render됩니다. root layout의 <code>&lt;Suspense&gt;</code> boundary는 이 navigation을 감싸지 않습니다.</li>
+</ul>
+<p>각 경우는 독립적으로 검증됩니다. 어떤 navigation 경로를 감싸는 <code>&lt;Suspense&gt;</code> boundary가 다른 경로는 감싸지 않을 수도 있습니다. 그래서 페이지가 page load 검사는 통과해도 client navigation에서는 실패할 수 있고, route 수가 늘어날수록 이런 문제를 손으로 잡아내기가 어려워집니다.</p></div></details>
+<h3 class="sec" id="test-it-in-ci"><a class="anchor" href="#test-it-in-ci">Test it in CI<span class="ko">CI에서 테스트하기</span></a></h3>
+<p><code>@next/playwright</code> package는 <a href="app-api-reference-file-conventions-route-segment-config-instant.html#testing-instant-navigation"><code>instant()</code></a> helper를 제공합니다. 이 helper는 assertion의 범위를 navigation 시 즉시 사용할 수 있는 UI로 한정하므로, regression이 CI에서 드러납니다. 패턴은 <a href="#prevent-regressions-with-e2e-tests">Prevent regressions with e2e tests</a>를 참고하세요.</p><div class="en-orig"><p>The <code>@next/playwright</code> package provides an <a href="app-api-reference-file-conventions-route-segment-config-instant.html#testing-instant-navigation"><code>instant()</code></a> helper that scopes your assertions to the UI that's immediately available on navigation, so regressions surface in CI. See <a href="#prevent-regressions-with-e2e-tests">Prevent regressions with e2e tests</a> for the pattern.</p></div>
+<h3 class="sec" id="inspect-loading-states"><a class="anchor" href="#inspect-loading-states">Inspect loading states<span class="ko">loading state 살펴보기</span></a></h3>
+<p>Next.js DevTools의 <strong>Navigation Inspector</strong> 기능은 페이지를 initial loading state에서 멈추고, 직접 방문 시에는 static shell을, client navigation 시에는 prefetch된 목적지를 보여 줍니다. inspector를 사용해 의미 있는 콘텐츠가 shell에 얼마나 들어가는지 확인하세요.</p><div class="en-orig"><p>The <strong>Navigation Inspector</strong> in the Next.js DevTools freezes the page at its initial loading state, showing the static shell on direct visits and the prefetched destination on client navigations. Use the inspector to see how much meaningful content lands in the shell.</p></div>
+<p>React DevTools의 Suspense panel과 함께 사용하면 어떤 boundary가 페이지의 어느 부분을 감싸는지 정확히 볼 수 있습니다. 작업 흐름은 <a href="#visualize-loading-states-with-the-nextjs-devtools">Visualize loading states with the Next.js DevTools</a>를 참고하세요.</p><div class="en-orig"><p>Pair it with the React DevTools Suspense panel to see exactly which boundary covers which part of the page. See <a href="#visualize-loading-states-with-the-nextjs-devtools">Visualize loading states with the Next.js DevTools</a> for the workflow.</p></div>
+<p>fallback이 차지하는 범위를 줄이고 더 많은 완성된 UI를 즉시 제공하는 패턴은 <a href="app-guides-optimizing-the-static-shell.html">Optimizing the static shell</a>을 참고하세요.</p><div class="en-orig"><p>See <a href="app-guides-optimizing-the-static-shell.html">Optimizing the static shell</a> for patterns to reduce fallback coverage and make more completed UI available immediately.</p></div>
+<h2 class="sec" id="a-page-that-navigates-instantly"><a class="anchor" href="#a-page-that-navigates-instantly">A page that navigates instantly<span class="ko">즉시 navigate되는 페이지</span></a></h2>
+<p>이 기본 요소들이 실제로 동작하는 모습을 보기 위해 작은 store 앱을 생각해 봅시다. 각 product는 <code>/store/[slug]</code>에 자체 페이지가 있고, 홈페이지와 다른 product 페이지에서 이동할 수 있습니다. 목표는 product로, 그리고 product 사이를 navigate하는 것이 instant하게 이루어지는 것입니다.</p><div class="en-orig"><p>To see the primitives in action, consider a small store app. Each product has its own page at <code>/store/[slug]</code>, reachable from the homepage and from other product pages. The goal is that navigating to and between products is instant.</p></div>
+<p>product 페이지는 두 가지 데이터를 fetch합니다: product 상세 정보(이름, 가격)와 실시간 재고입니다.</p><div class="en-orig"><p>The product page fetches two pieces of data: product details (name, price) and live inventory.</p></div>
+<ul>
+<li><code>generateStaticParams</code>가 없으므로 <code>slug</code>는 request 시점에만 알 수 있습니다</li>
+<li>두 component 모두 <code>slug</code>를 얻기 위해 <code>params</code>를 await하며, 이때 suspend됩니다. 각 component는 자체 <code>&lt;Suspense&gt;</code> boundary를 가집니다</li>
+<li><strong>Product info</strong> 데이터는 거의 바뀌지 않으며, cache된 함수를 사용해 db에서 조회합니다</li>
+<li><strong>Inventory</strong> 데이터는 request마다 최신이어야 합니다. db query는 <code>&lt;Suspense&gt;</code> boundary 안에 있습니다</li>
+</ul><div class="en-orig"><ul>
+<li>There is no <code>generateStaticParams</code>, meaning <code>slug</code> is only known at request time</li>
+<li>Both components await <code>params</code> to get the <code>slug</code>, which suspends. Each has its own <code>&lt;Suspense&gt;</code> boundary</li>
+<li><strong>Product info</strong> rarely changes and is queried from the db using a cached function</li>
+<li><strong>Inventory</strong> must be fresh on each request. The db query is inside a <code>&lt;Suspense&gt;</code> boundary</li>
+</ul></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/store/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { db } from &#x27;@/lib/db&#x27;
+
+export default function ProductPage(props: PageProps&lt;&#x27;/store/[slug]&#x27;&gt;) {
+  return (
+    &lt;div&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading product...&lt;/p&gt;}&gt;
+        &lt;ProductInfo params={props.params} /&gt;
+      &lt;/Suspense&gt;
+      &lt;Suspense fallback={&lt;p&gt;Checking availability...&lt;/p&gt;}&gt;
+        &lt;Inventory params={props.params} /&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}
+
+type Params = PageProps&lt;&#x27;/store/[slug]&#x27;&gt;[&#x27;params&#x27;]
+
+async function ProductInfo({ params }: { params: Params }) {
+  const { slug } = await params
+  const product = await getProduct(slug)
+  return (
+    &lt;&gt;
+      &lt;h1&gt;{product.name}&lt;/h1&gt;
+      &lt;p&gt;${product.price}&lt;/p&gt;
+    &lt;/&gt;
+  )
+}
+
+async function getProduct(slug: string) {
+  &#x27;use cache&#x27;
+  return db.products.findBySlug(slug)
+}
+
+async function Inventory({ params }: { params: Params }) {
+  const { slug } = await params
+  const item = await db.inventory.findBySlug(slug)
+  return &lt;p&gt;{item.count} in stock&lt;/p&gt;
+}</code></pre></div></div>
+<p>Cache Components는 development 중에 이 route를 자동으로 검증합니다. navigation을 block할 만한 것이 있으면 dev overlay가 <strong>blocking-route</strong> insight를 표시하는데, 문제가 되는 component의 이름을 알려 주고 다음 해결책을 가리킵니다:</p><div class="en-orig"><p>Cache Components validates this route automatically in development. If something would block a navigation, the dev overlay surfaces a <strong>blocking-route</strong> insight that names the offending component and points at these fixes:</p></div>
+<div class="fixgrid"><a class="fixcard" href="https://nextjs.org/docs/messages/blocking-prerender-dynamic#cache-the-component-or-data" target="_blank" rel="noopener"><div class="fc-t">Cache the component or data</div><div class="fc-c"><div class="fl">async function Posts() {</div><div class="fl hl">  &quot;use cache&quot;</div></div></a><a class="fixcard" href="https://nextjs.org/docs/messages/blocking-prerender-dynamic#wrap-in-or-move-into-suspense" target="_blank" rel="noopener"><div class="fc-t">Wrap in or move into Suspense</div><div class="fc-c"><div class="fl hl">&lt;Suspense fallback={…}&gt;</div></div></a></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>각 fix card는 패턴, 코드 샘플, trade-off를 담은 자세한 walkthrough로 연결됩니다. card를 클릭해 자세히 살펴보거나, <strong>Copy prompt</strong> 버튼으로 해결 작업을 agent에게 넘기세요. 그 반복 과정은 <a href="#ai-workflow">AI workflow</a>를 참고하세요.</p><div class="en-orig"><p>Each fix card links to a detailed walkthrough with patterns, code samples, and trade-offs. Click a card to dive in, or use <strong>Copy prompt</strong> to hand the fix to your agent. See <a href="#ai-workflow">AI workflow</a> for the loop.</p></div></div></div>
+<p>검증은 브라우저의 실제 request를 사용해 페이지가 로드될 때마다 실행되므로, <code>[slug]</code> 같은 dynamic param은 navigate하는 동안 실제 값으로 검사됩니다.</p><div class="en-orig"><p>Validation runs on every page load using the real request from your browser, so dynamic params like <code>[slug]</code> are checked against actual values as you navigate.</p></div>
+<h3 class="sec" id="client-component-pages"><a class="anchor" href="#client-component-pages">Client Component Pages<span class="ko">Client Component 페이지</span></a></h3>
+<p>맨 위에 <code>&quot;use client&quot;</code>가 있는 페이지로의 soft navigation은 single-page app 전환처럼 동작합니다. navigation 시점에 server render가 없으므로 instant합니다. dev overlay는 이 방법을 fix card에 포함하지 않는데, 페이지를 server-component model 안에 유지하는 권장 방식들보다 영향이 크기 때문입니다. 페이지가 완전히 interactive해서 반드시 client component여야 할 때 <code>&quot;use client&quot;</code>를 사용하세요.</p><div class="en-orig"><p>A soft navigation into a page with <code>&quot;use client&quot;</code> at the top behaves like a single-page app transition, with no server render at navigation time, which makes it instant. The dev overlay doesn't include this in its fix cards because it has bigger implications than the recommended approaches, which keep the page in the server-component model. Reach for <code>&quot;use client&quot;</code> when the page is fully interactive and must be a client component.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>&quot;use client&quot;</code>를 써도 static shell에 대한 검증을 건너뛰지 않습니다. <code>useSearchParams()</code> 같은 hook에는 여전히 <code>&lt;Suspense&gt;</code> boundary가 필요합니다.</p><div class="en-orig"><p><code>&quot;use client&quot;</code> doesn't skip validation for the static shell. Hooks like <code>useSearchParams()</code> still need a <code>&lt;Suspense&gt;</code> boundary.</p></div></div></div>
+<h2 class="sec" id="visualize-loading-states-with-the-nextjs-devtools"><a class="anchor" href="#visualize-loading-states-with-the-nextjs-devtools">Visualize loading states with the Next.js DevTools<span class="ko">Next.js DevTools로 loading state 시각화하기</span></a></h2>
+<p>route를 개발하는 동안 Next.js DevTools를 사용하면, dynamic 데이터가 stream되기 전에 사용자가 페이지 로드와 client navigation에서 무엇을 보게 되는지 확인할 수 있습니다. 이를 사용해 loading state가 제대로 보이는지 검증하고, 기대한 콘텐츠가 즉시 나타나는지 확인하고, <code>&lt;Suspense&gt;</code> boundary를 어디에 둘지 반복해서 다듬으세요.</p><div class="en-orig"><p>As you develop a route, the Next.js DevTools let you see what your users see on page loads and client navigations before dynamic data streams in. Use it to verify that your loading states look right, confirm the content you expect appears immediately, and iterate on where to place <code>&lt;Suspense&gt;</code> boundaries.</p></div>
+<p><a href="https://react.dev/learn/react-developer-tools" target="_blank" rel="noopener">React DevTools Suspense panel</a>이 이를 보완합니다. 이 panel은 tree의 <code>&lt;Suspense&gt;</code> boundary 목록을 보여 주고 각 boundary를 fallback 상태와 resolve된 상태 사이에서 전환할 수 있게 해 주므로, 어떤 boundary가 페이지의 어느 부분을 감싸는지 정확히 볼 수 있습니다.</p><div class="en-orig"><p>The <a href="https://react.dev/learn/react-developer-tools" target="_blank" rel="noopener">React DevTools Suspense panel</a> complements this: it lists the <code>&lt;Suspense&gt;</code> boundaries in the tree and lets you toggle each one between its fallback and resolved state, so you can see exactly which boundary covers which part of the page.</p></div>
+<p>Navigation Inspector는 Cache Components가 활성화되어 있을 때 사용할 수 있습니다:</p><div class="en-orig"><p>The Navigation Inspector is available when Cache Components is enabled:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+}
+
+export default nextConfig</code></pre></div></div>
+<p>Next.js DevTools를 열고 <strong>Navigation Inspector</strong> 항목을 선택한 다음 <strong>Pause on navigations</strong> toggle을 켜세요. panel에 <strong>Awaiting navigation...</strong> 문구가 표시됩니다. toggle이 켜져 있으면 다음 새로고침이나 link 클릭 시 페이지가 멈추므로 shell을 살펴볼 수 있습니다.</p><div class="en-orig"><p>Open the Next.js DevTools and select <strong>Navigation Inspector</strong>, then toggle <strong>Pause on navigations</strong>. The panel shows <strong>Awaiting navigation...</strong> With the toggle on, the next refresh or link click freezes the page so you can inspect the shell.</p></div>
+<p>product 페이지를 새로고침하세요. Inspector가 멈추고 target URL과 함께 <strong>Page load</strong> label이 붙은 <strong>Loading shell</strong> 상태를 보여 줍니다. 앱에는 "Loading product..."와 "Checking availability..." 두 개의 fallback이 나타납니다. 첫 방문에서는 cache가 cold 상태이므로 둘 다 보입니다.</p><div class="en-orig"><p>Refresh the product page. The Inspector freezes and shows <strong>Loading shell</strong> labeled <strong>Page load</strong> with the target URL. In the app, two fallbacks appear: "Loading product..." and "Checking availability...". On the first visit the cache is cold and both are visible.</p></div>
+<div
+>
+  <figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/inspector-load.png" alt="target URL과 함께 &#x27;Page load&#x27; label이 붙은 &#x27;Loading shell&#x27;을 보여 주는 Navigation Inspector panel" width="472" height="389" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/inspector-load.png" alt="target URL과 함께 &#x27;Page load&#x27; label이 붙은 &#x27;Loading shell&#x27;을 보여 주는 Navigation Inspector panel" width="472" height="389" loading="lazy" /></figure>
+  <span>
+    페이지 새로고침 후.
+  </span>
+</div>
+<p><strong>Resume</strong> 버튼을 클릭해 navigation을 완료하세요. 다시 새로고침하면 product 이름이 cache에서 즉시 나타납니다.</p><div class="en-orig"><p>Click <strong>Resume</strong> to complete the navigation. Refresh again, and the product name appears immediately from cache.</p></div>
+<p>이제 <code>/store/shoes</code>에서 <code>/store/hats</code>로 가는 link를 클릭하세요. Inspector는 source URL과 target URL을 모두 포함해 <strong>Client nav</strong> label이 붙은 <strong>Loading shell</strong> 상태를 보여 줍니다. 앱에서는 product 이름과 가격이 즉시(cache된 상태로) 나타납니다. "Checking availability..."는 재고 정보가 stream될 위치를 보여 줍니다.</p><div class="en-orig"><p>Now click a link from <code>/store/shoes</code> to <code>/store/hats</code>. The Inspector shows <strong>Loading shell</strong> labeled <strong>Client nav</strong> with both source and target URLs. In the app, the product name and price appear immediately (cached). "Checking availability..." shows where inventory will stream in.</p></div>
+<div
+>
+  <figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/inspector-client.png" alt="source URL과 target URL과 함께 &#x27;Client nav&#x27; label이 붙은 &#x27;Loading shell&#x27;을 보여 주는 Navigation Inspector panel" width="481" height="395" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/inspector-client.png" alt="source URL과 target URL과 함께 &#x27;Client nav&#x27; label이 붙은 &#x27;Loading shell&#x27;을 보여 주는 Navigation Inspector panel" width="481" height="395" loading="lazy" /></figure>
+  <span>
+    client navigation 후.
+  </span>
+</div>
+<p>loading state 확인을 마쳤다면 <strong>Pause on navigations</strong> toggle을 끄세요. toggle이 켜져 있는 동안에는 모든 navigation이 일시 정지됩니다.</p><div class="en-orig"><p>Toggle <strong>Pause on navigations</strong> off when you're done inspecting loading states. Each navigation pauses as long as the toggle is on.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>페이지 로드와 client navigation은 서로 다른 shell을 만들 수 있습니다. <code>useSearchParams</code> 같은 client-side hook은 페이지 로드 시에는 suspend되지만(build 시점에 search param을 알 수 없음), client navigation에서는 동기적으로 resolve됩니다(router가 이미 param을 가지고 있음).</p><div class="en-orig"><p>Page loads and client navigations can produce different shells. Client-side hooks like <code>useSearchParams</code> suspend on page loads (search params are not known at build time) but resolve synchronously on client navigations (the router already has the params).</p></div></div></div>
+<h2 class="sec" id="prevent-regressions-with-e2e-tests"><a class="anchor" href="#prevent-regressions-with-e2e-tests">Prevent regressions with e2e tests<span class="ko">e2e test로 regression 방지하기</span></a></h2>
+<p>검증은 development 중에 구조적인 문제를 잡아내지만, codebase가 커지면 구조 검사는 shell이 존재한다는 것만 알려 줄 수 있습니다. 그 안에 올바른 콘텐츠가 들어 있는지는 알려 주지 못합니다. E2E test가 이 빈틈을 메웁니다. navigation이 완료될 때 사용자가 실제로 보는 것을 assert해서, 배포되기 전에 regression을 잡아냅니다.</p><div class="en-orig"><p>Validation catches structural problems during development, but as the codebase grows, the structural checks can only tell you that a shell exists. They can't tell you whether the right content is in it. E2E tests close that gap: they assert on what the user actually sees when the navigation completes, catching regressions before they ship.</p></div>
+<p><a href="https://www.npmjs.com/package/@next/playwright" target="_blank" rel="noopener"><code>@next/playwright</code></a> package에는 이를 위한 <code>instant()</code> helper가 포함되어 있습니다. <code>@playwright/test</code>와 함께 설치하세요:</p><div class="en-orig"><p>The <a href="https://www.npmjs.com/package/@next/playwright" target="_blank" rel="noopener"><code>@next/playwright</code></a> package includes an <code>instant()</code> helper for this. Install it alongside <code>@playwright/test</code>:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add -D @next/playwright @playwright/test</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install -D @next/playwright @playwright/test</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add -D @next/playwright @playwright/test</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add -D @next/playwright @playwright/test</code></pre></div></div>
+<p>route에 도달하는 방법은 두 가지이며, <code>&lt;Suspense&gt;</code> boundary가 한쪽은 감싸면서 다른 쪽은 감싸지 않을 수 있습니다:</p><div class="en-orig"><p>A route can be reached two ways, and a <code>&lt;Suspense&gt;</code> boundary can cover one without covering the other:</p></div>
+<ul>
+<li><strong>Initial page load</strong>: <code>page.goto()</code>를 사용해 document response의 static UI를 테스트합니다.</li>
+<li><strong>Client navigation</strong>: <code>&lt;Link&gt;</code>를 클릭해 목적지의 prefetch된 UI를 테스트합니다. <a href="app-guides-optimizing-prefetching.html">Per-link prefetching</a>은 이 UI에 request별 콘텐츠를 추가할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Initial page load</strong>: Use <code>page.goto()</code> to test the static UI from the document response.</li>
+<li><strong>Client navigation</strong>: Click a <code>&lt;Link&gt;</code> to test the destination's prefetched UI. <a href="app-guides-optimizing-prefetching.html">Per-link prefetching</a> can add request-specific content to this UI.</li>
+</ul></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">e2e/navigation.test.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { test, expect } from &#x27;@playwright/test&#x27;
+import { instant } from &#x27;@next/playwright&#x27;
+
+test.describe(&#x27;Product page (/store/[slug])&#x27;, () =&gt; {
+  test(&#x27;is instant on an initial page load&#x27;, async ({ page, baseURL }) =&gt; {
+    await instant(
+      page,
+      async () =&gt; {
+        await page.goto(&#x27;/store/hats&#x27;)
+        await expect(page.locator(&#x27;h1&#x27;)).toContainText(&#x27;Baseball Cap&#x27;)
+        await expect(page.getByText(&#x27;In stock&#x27;)).toHaveCount(0)
+      },
+      { baseURL }
+    )
+    await expect(page.getByText(&#x27;In stock&#x27;)).toBeVisible()
+  })
+
+  test(&#x27;is instant on a client navigation&#x27;, async ({ page }) =&gt; {
+    await page.goto(&#x27;/store/shoes&#x27;)
+    await instant(page, async () =&gt; {
+      await page.click(&#x27;a[href=&quot;/store/hats&quot;]&#x27;)
+      await page.waitForURL((url) =&gt; url.pathname === &#x27;/store/hats&#x27;)
+      await expect(page.locator(&#x27;h1&#x27;)).toContainText(&#x27;Baseball Cap&#x27;)
+      await expect(page.getByText(&#x27;In stock&#x27;)).toHaveCount(0)
+    })
+    await expect(page.getByText(&#x27;In stock&#x27;)).toBeVisible()
+  })
+})</code></pre></div></div>
+<p><code>page.goto()</code>가 첫 navigation이라면 Playwright의 <code>baseURL</code>을 <code>instant()</code>에 전달하세요. helper는 document를 request하기 전에 origin을 알아야 합니다.</p><div class="en-orig"><p>Pass Playwright's <code>baseURL</code> to <code>instant()</code> when <code>page.goto()</code> is the first navigation. The helper needs the origin before requesting the document.</p></div>
+<p>callback 안에서 initial page load는 static UI를, client navigation은 목적지의 prefetch된 UI를 보여 줍니다. 그 밖의 dynamic 콘텐츠는 callback이 끝날 때까지 block된 상태로 남습니다.</p><div class="en-orig"><p>Inside the callback, an initial page load shows the static UI and a client navigation shows the destination's prefetched UI. Other dynamic content remains blocked until the callback finishes.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>instant()</code> scope의 시작은 Navigation Inspector에서 <strong>Pause on navigations</strong> toggle을 켜는 것과 같고, scope의 끝은 <strong>Resume</strong> 버튼처럼 일시 정지를 해제합니다.</p><div class="en-orig"><p>The start of the <code>instant()</code> scope is the same as turning on <strong>Pause on navigations</strong> in the Navigation Inspector, and the end of the scope releases the pause the way <strong>Resume</strong> does.</p></div></div></div>
+<p>client navigation의 경우 목적지 UI를 assert하기 전에 목적지 URL을 기다리세요. 그렇지 않으면 공통 selector가 목적지가 commit되기 전에 source 페이지와 match될 수 있습니다. prefetch된 목적지가 commit되지 못하면 URL 대기가 timeout되어 test가 실패합니다.</p><div class="en-orig"><p>For client navigations, wait for the destination URL before asserting on its UI. Otherwise, a shared selector can match the source page before the destination commits. If the prefetched destination cannot commit, the URL wait times out and the test fails.</p></div>
+<p>이 test들은 testing API가 자동으로 활성화되는 <code>next dev</code>에서 실행하세요. production build로 CI를 돌린다면 test build에서만 <a href="app-api-reference-config-next-config-js-exposeTestingApiInProductionBuild.html"><code>exposeTestingApiInProductionBuild</code></a>를 활성화하세요:</p><div class="en-orig"><p>Run these against <code>next dev</code>, where the testing API is enabled automatically. For CI with a production build, enable <a href="app-api-reference-config-next-config-js-exposeTestingApiInProductionBuild.html"><code>exposeTestingApiInProductionBuild</code></a> only for the test build:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const exposeTestingApi = process.env.EXPOSE_TESTING_API === &#x27;1&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+  experimental: {
+    exposeTestingApiInProductionBuild: exposeTestingApi,
+  },
+}
+
+export default nextConfig</code></pre></div></div>
+<p><code>next build</code>를 실행할 때 <code>EXPOSE_TESTING_API=1</code>을 설정하세요. <code>next start</code>에만 설정하면 이미 만들어진 build에 testing API가 추가되지 않습니다.</p><div class="en-orig"><p>Set <code>EXPOSE_TESTING_API=1</code> when running <code>next build</code>. Setting it only for <code>next start</code> does not add the testing API to an existing build.</p></div>
+<p>이 test는 가장 중요한 user flow에 집중하세요.</p><div class="en-orig"><p>Focus these tests on the user flows that matter most.</p></div>
+<h2 class="sec" id="fixing-a-navigation-that-blocks"><a class="anchor" href="#fixing-a-navigation-that-blocks">Fixing a navigation that blocks<span class="ko">block되는 navigation 고치기</span></a></h2>
+<p>public API에서 product 데이터를 fetch하고 옆에 featured 목록을 보여 주는 다른 route, <code>/products/[slug]</code>를 생각해 봅시다:</p><div class="en-orig"><p>Consider a different route, <code>/products/[slug]</code>, that fetches product data from a public API and shows a featured list alongside:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/products/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export default async function ProductPage(
+  props: PageProps&lt;&#x27;/products/[slug]&#x27;&gt;
+) {
+  const featured = await getFeatured()
+  const { slug } = await props.params
+  const res = await fetch(`https://next-recipe-api.vercel.dev/products/${slug}`)
+  const product = await res.json()
+
+  return (
+    &lt;div&gt;
+      &lt;FeaturedSection items={featured} /&gt;
+      &lt;h1&gt;{product.name}&lt;/h1&gt;
+      &lt;p&gt;${product.price}&lt;/p&gt;
+      &lt;p&gt;{product.description}&lt;/p&gt;
+    &lt;/div&gt;
+  )
+}
+
+async function getFeatured() {
+  const res = await fetch(&#x27;https://next-recipe-api.vercel.dev/products?limit=3&#x27;)
+  return res.json()
+}</code></pre></div></div>
+<p>두 개의 <code>fetch()</code> 호출이 최상위에서 block됩니다: cache되지 않은 featured 목록 fetch와, slug별 product fetch(이 역시 <code>params</code>를 await함)입니다. 둘 다 Instant validation error로 하나씩 차례로 드러납니다.</p><div class="en-orig"><p>Two <code>fetch()</code> calls block at the top level: an uncached featured-list fetch and a per-slug product fetch (which also awaits <code>params</code>). Both will surface as Instant validation errors, one at a time.</p></div>
+<h3 class="sec" id="step-1-move-the-slug-dependent-work-into-suspense"><a class="anchor" href="#step-1-move-the-slug-dependent-work-into-suspense">Step 1: Move the slug-dependent work into Suspense<span class="ko">1단계: slug에 의존하는 작업을 Suspense 안으로 옮기기</span></a></h3>
+<p>검증은 먼저 slug별 product fetch를 드러냅니다.</p><div class="en-orig"><p>Validation surfaces the per-slug product fetch first.</p></div>
+<div
+>
+  <figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/instant-insight.png" alt="app/products/[slug]/page.tsx의 cache되지 않은 데이터 접근과 Stream, Cache, Block fix card를 보여 주는 blocking-route dev overlay insight" width="960" height="760" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/instant-insight.png" alt="app/products/[slug]/page.tsx의 cache되지 않은 데이터 접근과 Stream, Cache, Block fix card를 보여 주는 blocking-route dev overlay insight" width="960" height="760" loading="lazy" /></figure>
+</div>
+<p>slug에 의존하는 작업을 하위 component로 추출하고 <code>&lt;Suspense&gt;</code>로 감싸세요:</p><div class="en-orig"><p>Extract the slug-dependent work into a sub-component and wrap it with <code>&lt;Suspense&gt;</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/products/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+
+async function ProductInfo({ params }: { params: Promise&lt;{ slug: string }&gt; }) {
+  const { slug } = await params
+  const res = await fetch(`https://next-recipe-api.vercel.dev/products/${slug}`)
+  const product = await res.json()
+  return (
+    &lt;&gt;
+      &lt;h1&gt;{product.name}&lt;/h1&gt;
+      &lt;p&gt;${product.price}&lt;/p&gt;
+      &lt;p&gt;{product.description}&lt;/p&gt;
+    &lt;/&gt;
+  )
+}
+
+export default async function ProductPage(
+  props: PageProps&lt;&#x27;/products/[slug]&#x27;&gt;
+) {
+  const featured = await getFeatured()
+  return (
+    &lt;div&gt;
+      &lt;FeaturedSection items={featured} /&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading product...&lt;/p&gt;}&gt;
+        &lt;ProductInfo params={props.params} /&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>이제 <code>await props.params</code>와 product fetch가 함께 suspend됩니다. product fetch error가 사라지고, 검증은 다음 blocker로 넘어갑니다.</p><div class="en-orig"><p>Now <code>await props.params</code> and the product fetch suspend together. The product-fetch error clears, and validation moves on to the next blocker.</p></div>
+<h3 class="sec" id="step-2-cache-the-featured-fetch"><a class="anchor" href="#step-2-cache-the-featured-fetch">Step 2: Cache the featured fetch<span class="ko">2단계: featured fetch를 cache하기</span></a></h3>
+<p>이제 검증이 <code>getFeatured()</code>에서 발생합니다.</p><div class="en-orig"><p>Validation now fires on <code>getFeatured()</code>.</p></div>
+<div
+>
+  <figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/instant-insight-4.png" alt="cache되지 않은 getFeatured() fetch에 대한 dev overlay insight와 Stream, Cache, Block fix card" width="960" height="760" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/instant-insight-4.png" alt="cache되지 않은 getFeatured() fetch에 대한 dev overlay insight와 Stream, Cache, Block fix card" width="960" height="760" loading="lazy" /></figure>
+</div>
+<p>fetch하는 함수에 <code>&quot;use cache&quot;</code> directive를 추가하세요:</p><div class="en-orig"><p>Add a <code>&quot;use cache&quot;</code> directive to the fetching function:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/products/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">async function getFeatured() {
+  &#x27;use cache&#x27;
+  const res = await fetch(&#x27;https://next-recipe-api.vercel.dev/products?limit=3&#x27;)
+  return res.json()
+}</code></pre></div></div>
+<p>결과가 fetch 수준에서 cache됩니다. featured 목록은 App Shell과 함께 전달됩니다.</p><div class="en-orig"><p>The result is cached at the fetch level. The featured list ships with the App Shell.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>serverless deploy 환경에서는 <code>&quot;use cache&quot;</code>의 in-memory caching이 instance 간에 유지되지 않습니다. 영구적인 caching을 원한다면 <a href="app-api-reference-directives-use-cache-remote.html"><code>&quot;use cache: remote&quot;</code></a> 사용을 고려하세요.</p><div class="en-orig"><p>In serverless deployments, in-memory caching with <code>&quot;use cache&quot;</code> will not persist across instances. Consider using <a href="app-api-reference-directives-use-cache-remote.html"><code>&quot;use cache: remote&quot;</code></a> for persistent caching.</p></div></div></div>
+<p>검증이 통과합니다. DevTools를 열고 client navigation을 해 보세요. featured 섹션이 즉시 나타나고, <strong>"Loading product..."</strong> 문구가 product 상세 정보가 stream될 위치를 보여 줍니다.</p><div class="en-orig"><p>Validation passes. Open the DevTools and try a client navigation. The featured section appears immediately, and <strong>"Loading product..."</strong> shows where the product details will stream in.</p></div>
+<h3 class="sec" id="iterate-on-loading-states"><a class="anchor" href="#iterate-on-loading-states">Iterate on loading states<span class="ko">loading state 반복 개선하기</span></a></h3>
+<p>검증을 통과했다는 것은 navigation이 instant하다는 뜻입니다. loading state가 좋다는 뜻은 아닙니다. tree의 높은 곳에 둔 <code>&lt;Suspense&gt;</code> boundary(예를 들어 페이지 전체를 감싸는 boundary)는 검증을 통과할 수 있지만, navigation할 때마다 페이지 대부분을 하나의 fallback으로 대체합니다.</p><div class="en-orig"><p>Validation passing means the navigation is instant. It does not mean the loading states are good. A <code>&lt;Suspense&gt;</code> boundary placed high in the tree (say, wrapping the whole page) might satisfy validation, but it replaces most of the page with a single fallback on every navigation.</p></div>
+<p>가장 좋은 loading state는 실제 cache된 콘텐츠를 가능한 한 많이 보이게 유지하고, 데이터가 실제로 전송 중인 곳에만 fallback을 보여 줍니다. header, 이미지, 설명은 보이게 두고 가격과 재고만 fallback 뒤에 둔 product 페이지는, 전체 로드 시간이 같더라도 전체 페이지 skeleton보다 더 빠르게 느껴집니다.</p><div class="en-orig"><p>The best loading states keep as much real, cached content visible as possible and only show fallbacks where data is actually in flight. A product page that keeps the header, image, and description visible with only the price and availability behind a fallback feels faster than a full-page skeleton, even at the same total load time.</p></div>
+<p><a href="#visualize-loading-states-with-the-nextjs-devtools">DevTools</a>를 사용해 사용자가 보는 화면을 확인하거나, agent로 이 반복 과정을 자동화하려면 <a href="#ai-workflow">AI workflow</a>를 참고하세요.</p><div class="en-orig"><p>Use the <a href="#visualize-loading-states-with-the-nextjs-devtools">DevTools</a> to see what your users see, or see the <a href="#ai-workflow">AI workflow</a> for automating the loop with an agent.</p></div>
+<h2 class="sec" id="ai-workflow"><a class="anchor" href="#ai-workflow">AI workflow</a></h2>
+<p>큰 흐름에서 보면 agent는 하나의 navigation을 다음과 같이 최적화합니다:</p><div class="en-orig"><p>At a high level, an agent optimizes a single navigation like this:</p></div>
+<ul>
+<li><strong>Observe</strong>: 검증 insight를 읽고, 즉시 나타나야 할 정확한 navigation과 UI를 정합니다.</li>
+<li><strong>Test</strong>: 대상 UI가 정상적으로 render되는지 확인한 다음, <code>instant()</code> test를 작성하고 route를 바꾸기 전에 그 test가 실패하는지 검증합니다.</li>
+<li><strong>Fix</strong>: validation error는 특정 component를 지목하고 해결책(<code>use cache</code> 또는 <code>&lt;Suspense&gt;</code>)을 제안합니다. agent가 해결책을 적용하고 검증을 다시 실행합니다.</li>
+<li><strong>Verify</strong>: production과 유사한 build에서 test를 실행하고, 통과한 test를 regression 방지 장치로 유지합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Observe</strong>: read validation insights and choose the exact navigation and UI that should appear immediately.</li>
+<li><strong>Test</strong>: confirm the target UI renders normally, then write an <code>instant()</code> test and verify that it fails before changing the route.</li>
+<li><strong>Fix</strong>: validation errors name a specific component and suggest a fix (<code>use cache</code> or <code>&lt;Suspense&gt;</code>). The agent applies the fix and re-runs validation.</li>
+<li><strong>Verify</strong>: run the test against a production-like build and keep the passing test as a regression guard.</li>
+</ul></div>
+<p>agent가 전체 caching model을 이해할 필요는 없습니다. insight와 error가 사라질 때까지 따라가기만 하면 됩니다. 다만 앱에 특화된 의도는 알아야 합니다. 무엇이 즉시 나타나야 하는지, 무엇이 stream되어도 되는지, 무엇이 항상 최신이어야 하는지 알려 주세요. caching 결정이 불분명할 때는 cache lifetime을 추측하기보다 데이터를 <code>&lt;Suspense&gt;</code> 뒤에서 최신 상태로 유지하세요.</p><div class="en-orig"><p>The agent doesn't need to understand the full caching model, only to follow the insights and errors until they're gone. It does need your app-specific intent, though. Tell it what should appear immediately, what can stream in, and what must stay fresh. When a caching decision is unclear, keep the data fresh behind <code>&lt;Suspense&gt;</code> rather than guessing a cache lifetime.</p></div>
+<p><a href="#iterate-on-loading-states">loading state를 반복 개선할 때</a>는 "콘텐츠를 최대화하고, spinner 뒤에 있어야 하는 부분을 줄여 줘" 같은 prompt가 boundary를 아래로 내리는 데 효과적입니다.</p><div class="en-orig"><p>For <a href="#iterate-on-loading-states">iterating on loading states</a>, a prompt like "maximize my content, and reduce the amount that needs to be behind a spinner" works well for pushing boundaries down.</p></div>
+<p>Cache Components route를 다루는 agent는 보통 세 가지 수단을 사용합니다:</p><div class="en-orig"><p>Agents working on a Cache Components route typically reach for three levers:</p></div>
+<ul>
+<li><strong>Push down</strong>: I/O를 Suspense로 감싼 하위 component로 추출해 부모는 static하게 유지하고, static한 형제 component들이 shell로 올라가게 합니다.</li>
+<li><strong>Cache</strong>: <code>&#x27;use cache&#x27;</code>와 <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a>를 함께 사용해 freshness profile을 지정합니다.</li>
+<li><strong>Per-link prefetching</strong> (nav 전용): route가 URL 데이터(<code>searchParams</code> 또는 <code>params</code>)를 읽는다면, framework가 link prefetch 시점에 그 데이터를 resolve하도록 <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a>에 참여시킵니다. <code>cookies()</code>나 <code>headers()</code>에서 오는 session 데이터는 이것 없이도 이미 App Shell에 들어갑니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Push down</strong>: extract I/O into a Suspense-wrapped child so the parent stays static and static siblings lift into the shell.</li>
+<li><strong>Cache</strong>: pair <code>&#x27;use cache&#x27;</code> with <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a> to assign a freshness profile.</li>
+<li><strong>Per-link prefetching</strong> (nav-only): when a route reads URL data (<code>searchParams</code> or <code>params</code>), opt it into <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a> so the framework resolves that data at link-prefetch time. Session data from <code>cookies()</code> or <code>headers()</code> already lands in the App Shell without it.</li>
+</ul></div>
+<p>각 refactor는 변경이 실제로 반영되었는지 검증하기 위해 전후 capture와 함께 진행해야 합니다. capture가 똑같아 보인다면 refactor가 효과를 내지 못한 것입니다.</p><div class="en-orig"><p>Each refactor should pair with a before/after capture to verify the change actually landed. Identical-looking captures mean the refactor didn't take effect.</p></div>
+<p>agent가 변경 사항이 실제로 무엇을 render하는지 볼 수 있도록 <a href="https://github.com/vercel-labs/agent-browser" target="_blank" rel="noopener">agent-browser</a>와 함께 사용하세요. React DevTools가 활성화되어 있으면 agent-browser는 component tree와 아직 pending 상태인 <code>&lt;Suspense&gt;</code> boundary를 보고하므로, agent가 변경을 하고, shell의 snapshot을 찍고, 무엇이 반영되었는지 확인하고, 조정할 수 있습니다. 설정 방법은 AI agents 가이드의 <a href="app-guides-ai-agents.html#runtime-visibility">Runtime visibility</a>를 참고하세요.</p><div class="en-orig"><p>For agents to see what their changes actually render, pair this with <a href="https://github.com/vercel-labs/agent-browser" target="_blank" rel="noopener">agent-browser</a>. With React DevTools enabled it reports the component tree and which <code>&lt;Suspense&gt;</code> boundaries are still pending, so an agent can make a change, snapshot the shell, check what landed, and adjust. See <a href="app-guides-ai-agents.html#runtime-visibility">Runtime visibility</a> in the AI agents guide for the setup.</p></div>
+<p><a href="app-guides-ai-agents.html#next-cache-components-optimizer"><code>next-cache-components-optimizer</code></a> Skill은 이 반복 과정을 패키지로 묶어 둔 것입니다. 대상 UI가 정상적으로 render되는지 확인하고, 수정 전에 실패하는 <code>instant()</code> test를 작성한 다음, production과 유사한 build에서 test가 통과할 때까지 작업하고 이를 regression 방지 장치로 남깁니다. initial load(hard navigation), client-side navigation(soft navigation), 또는 둘 다에 사용하세요.</p><div class="en-orig"><p>The <a href="app-guides-ai-agents.html#next-cache-components-optimizer"><code>next-cache-components-optimizer</code></a> Skill packages this loop. It confirms the target UI renders normally, writes an <code>instant()</code> test that fails before the fix, then works it to green against a production-like build and ships it as a regression guard. Use it for the initial load (hard navigation), client-side navigation (soft navigation), or both.</p></div>
+<h2 class="sec" id="opting-out"><a class="anchor" href="#opting-out">Opting out<span class="ko">제외하기</span></a></h2>
+<p>모든 layout이나 page가 instant할 수 있거나 instant해야 하는 것은 아닙니다. 구조적인 수정이 그만한 노력의 가치가 없거나, route가 instant navigation의 우선순위가 아니라면 두 가지 범위 중 하나에서 검증을 조정하세요.</p><div class="en-orig"><p>Not every layout or page can or should be instant. When the structural fix isn't worth the work, or when a route isn't a priority for instant navigation, refine validation at one of two scopes.</p></div>
+<p>dev overlay는 모든 insight 옆에 이를 <strong>Block</strong> fix로 표시합니다:</p><div class="en-orig"><p>The dev overlay surfaces this as the <strong>Block</strong> fix alongside every insight:</p></div>
+<div class="fixgrid"><a class="fixcard" href="https://nextjs.org/docs/messages/blocking-prerender-dynamic#allow-blocking-route" target="_blank" rel="noopener"><div class="fc-t">Allow blocking route</div><div class="fc-c"><div class="fl">// page.tsx or layout.tsx</div><div class="fl hl">export const instant = false</div></div></a></div>
+<p>page 또는 layout 파일에 <code>instant = false</code>를 설정하세요. 이렇게 하면 해당 segment가 검증 피드백에서 제외됩니다. 구조가 뒷받침된다면 segment는 여전히 instant하게 navigate될 수 있으며, framework가 그 segment에 대한 insight를 표시하지 않을 뿐입니다. 그 아래 형제 segment 사이의 navigation은 여전히 검증됩니다.</p><div class="en-orig"><p>Set <code>instant = false</code> on the page or layout file. This opts the segment out of validation feedback. The segment may still navigate instantly if its structure supports it; the framework just won't surface insights for it. Navigations between sibling segments below are still validated.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/dashboard/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export const instant = false</code></pre></div></div>
+<p><code>/dashboard/layout.tsx</code>에 <code>false</code>를 설정하면, 검증은 더 이상 외부에서 <code>/dashboard</code>로 들어오는 navigation을 지적하지 않습니다. <code>/dashboard/a</code>와 <code>/dashboard/b</code> 사이의 navigation은 여전히 검사됩니다.</p><div class="en-orig"><p>With <code>false</code> on <code>/dashboard/layout.tsx</code>, validation no longer flags navigations into <code>/dashboard</code> from outside; navigations between <code>/dashboard/a</code> and <code>/dashboard/b</code> are still checked.</p></div>
+<p>제외된 segment의 경우 navigation은 server에서 block됩니다. 콘텐츠가 cookie나 header에 의존하지만 cache lifetime을 알 수 있다면, 제외하는 대신 <a href="app-api-reference-directives-use-cache-private.html"><code>use cache: private</code></a>로 cache해서 App Shell이 클릭 전에 그 콘텐츠를 실어 나르게 할 수 있습니다. 단, <a href="app-api-reference-functions-cacheLife.html#stale"><code>stale</code></a> 시간이 최소 5분이어야 합니다.</p><div class="en-orig"><p>For opted-out segments, the navigation blocks on the server. If the content depends on cookies or headers but has a known cache lifetime, caching it with <a href="app-api-reference-directives-use-cache-private.html"><code>use cache: private</code></a> lets the App Shell carry it ahead of the click instead of opting out, as long as its <a href="app-api-reference-functions-cacheLife.html#stale"><code>stale</code></a> time is at least 5 minutes.</p></div>
+<h2 class="sec" id="next-steps"><a class="anchor" href="#next-steps">Next steps<span class="ko">다음 단계</span></a></h2>
+<ul>
+<li>권장 <code>&lt;Link&gt;</code> 기본값과 단계별 도입 방법은 <a href="app-guides-adopting-partial-prefetching.html">Adopting Partial Prefetching</a>을 참고하세요</li>
+<li>전체 configuration은 <a href="app-api-reference-file-conventions-route-segment-config-instant.html"><code>instant</code> API reference</a>를 참고하세요</li>
+<li>route의 일부가 URL 데이터(<code>searchParams</code> 또는 <code>params</code>)에 의존하고 navigation 전에 resolve되어야 한다면 <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching</a>을 참고하세요</li>
+<li><code>use cache</code>, Suspense, Partial Prerendering에 대한 배경 지식은 <a href="app-getting-started-caching.html">Caching</a>을 참고하세요</li>
+<li><code>cacheLife</code>와 <code>updateTag</code>로 cache된 데이터를 만료시키는 방법은 <a href="app-getting-started-revalidating.html">Revalidating</a>을 참고하세요</li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-guides-adopting-partial-prefetching.html">Adopting Partial Prefetching</a> for the recommended <code>&lt;Link&gt;</code> defaults and a step-by-step adoption path</li>
+<li><a href="app-api-reference-file-conventions-route-segment-config-instant.html"><code>instant</code> API reference</a> for the full configuration</li>
+<li><a href="app-guides-optimizing-prefetching.html">Optimizing prefetching</a> when parts of your route depend on URL data (<code>searchParams</code> or <code>params</code>) and should resolve before navigation</li>
+<li><a href="app-getting-started-caching.html">Caching</a> for background on <code>use cache</code>, Suspense, and Partial Prerendering</li>
+<li><a href="app-getting-started-revalidating.html">Revalidating</a> for how to expire cached data with <code>cacheLife</code> and <code>updateTag</code></li>
+</ul></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">더 알아보기</h2><p>instant API 전체와 caching, revalidation을 살펴보세요.</p><div class="rgrid"><a class="rcard" href="app-api-reference-file-conventions-route-segment-config-instant.html"><div class="rt">instant</div><div class="rk">instant</div><div class="rd">route segment의 instant navigation validation을 설정합니다.</div></a><a class="rcard" href="app-guides-optimizing-prefetching.html"><div class="rt">Optimizing prefetching</div><div class="rk">prefetching 최적화</div><div class="rd">link별 URL data를 resolve하거나, session data를 App Shell에 포함하거나, 비용이 큰 작업을 이후 navigation 단계로 미루는 방법을 알아봅니다.</div></a><a class="rcard" href="app-getting-started-caching.html"><div class="rt">Caching</div><div class="rk">캐싱</div><div class="rd">Next.js에서 데이터와 UI를 cache하는 방법을 알아봅니다</div></a><a class="rcard" href="app-getting-started-revalidating.html"><div class="rt">Revalidating</div><div class="rk">Revalidation</div><div class="rd">시간 기반 전략과 on-demand 전략으로 cache된 데이터를 revalidate하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-prefetching.html"><div class="rt">Prefetching</div><div class="rk">Prefetching</div><div class="rd">Next.js에서 prefetching을 설정하는 방법을 알아봅니다</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/instant-navigation.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/instant-navigation" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-incremental-static-regeneration.html" class="prev"><div class="dir">← 이전</div><div class="ttl">ISR</div><div class="ttl-ko">Incremental Static Regeneration (ISR) 구현하기</div></a>
+      <a href="app-guides-instrumentation.html" class="next"><div class="dir">다음 →</div><div class="ttl">Instrumentation</div><div class="ttl-ko">instrumentation 설정하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/instant-navigation" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#what-instant-means">What "instant" means</a></li><li class="l2"><a href="#quick-start">Quick start</a></li><li class="l2"><a href="#the-tools">The tools</a></li><li class="l3"><a href="#build-the-static-shell">Build the static shell</a></li><li class="l3"><a href="#prefetch-url-data-for-a-link">Prefetch URL data for a link</a></li><li class="l3"><a href="#validate-instant-navigation">Validate instant navigation</a></li><li class="l3"><a href="#test-it-in-ci">Test it in CI</a></li><li class="l3"><a href="#inspect-loading-states">Inspect loading states</a></li><li class="l2"><a href="#a-page-that-navigates-instantly">A page that navigates instantly</a></li><li class="l3"><a href="#client-component-pages">Client Component Pages</a></li><li class="l2"><a href="#visualize-loading-states-with-the-nextjs-devtools">Visualize loading states with the Next.js DevTools</a></li><li class="l2"><a href="#prevent-regressions-with-e2e-tests">Prevent regressions with e2e tests</a></li><li class="l2"><a href="#fixing-a-navigation-that-blocks">Fixing a navigation that blocks</a></li><li class="l3"><a href="#step-1-move-the-slug-dependent-work-into-suspense">Step 1: Move the slug-dependent work into Suspense</a></li><li class="l3"><a href="#step-2-cache-the-featured-fetch">Step 2: Cache the featured fetch</a></li><li class="l3"><a href="#iterate-on-loading-states">Iterate on loading states</a></li><li class="l2"><a href="#ai-workflow">AI workflow</a></li><li class="l2"><a href="#opting-out">Opting out</a></li><li class="l2"><a href="#next-steps">Next steps</a></li><li class="l2"><a href="#next-steps">더 알아보기</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+이 가이드에서는 instant navigation을 이해하고, 즉시 navigate되는 route를 작성하고, initial UI에 무엇이 들어가는지 시각화하고, end-to-end test로 그 동작을 고정하는 과정을 단계별로 살펴봅니다.
+
+## What &quot;instant&quot; means || &quot;instant&quot;의 의미
+
+사용자가 클릭하는 순간 브라우저가 새 페이지 rendering을 시작할 수 있고, static·cache된·fallback 콘텐츠가 바로 표시되며, 그동안 server가 나머지 콘텐츠를 fallback 자리로 stream한다면 그 navigation을 **instant** navigation이라고 합니다.
+
+&gt; **Good to know:** 이 정의는 cache가 warm 상태라고 가정합니다. cache가 cold 상태라면 server가 cache된 결과를 한 번은 계산해야 하므로, route로의 첫 navigation은 여전히 기다려야 할 수 있습니다.
+
+같은 route라도 직접 방문과 client navigation은 서로 다른 initial UI를 만들 수 있습니다. **Direct visit** 시에는 보통 CDN에서 [**static shell**](/docs/app/glossary#static-shell)을 HTML로 받습니다. **Client navigation** 시에는 현재 route와 목적지 route가 공유하는 layout 아래만 다시 render하므로, 그 지점보다 위에 있는 `&lt;Suspense&gt;` boundary가 정의한 fallback UI는 전환 중에 사용할 수 없습니다.
+
+새 페이지가 즉시 나타나는지는 공유 layout 아래에 있는 `&lt;Suspense&gt;` boundary와 caching에 달려 있습니다.
+
+&lt;details&gt;
+&lt;summary&gt;페이지 로드와 client navigation이 서로 다른 initial UI를 만드는 이유&lt;/summary&gt;
+
+페이지 로드 시에는 전체 페이지가 document root부터 render됩니다. 모든 component가 server에서 실행되고, suspend되는 것은 무엇이든 전체 tree에서 가장 가까운 `&lt;Suspense&gt;` boundary가 잡아냅니다.
+
+`/store/shoes`와 `/store/hats` 사이의 client navigation에서는 `/store` layout 아래의 component만 다시 render됩니다. root layout의 `&lt;Suspense&gt;` boundary는 페이지 로드 시에는 모든 것을 감싸지만, 이 navigation에서는 re-render 범위보다 위에 있으므로 trigger되지 않습니다.
+
+client-side hook이 다르게 동작하는 이유도 이것입니다. `useSearchParams()`는 build 시점에 search param을 알 수 없으므로 prerender 중에 suspend됩니다. 하지만 client navigation에서는 router가 이미 URL에서 param을 가지고 있으므로 hook이 동기적으로 resolve됩니다. 같은 component라도 client navigation에서는 즉시 render되지만 페이지 로드 시에는 fallback 뒤에 머무를 수 있습니다.
+
+&lt;/details&gt;
+
+`prefetch={true}`를 사용하면 link별 prefetching이 navigation 전에 link의 URL 데이터(`searchParams`와 `params`)를 resolve합니다. 먼저 App Shell로 route를 instant하게 만드세요. App Shell 없이 block되는 route는 link별 prefetching으로 고칠 수 없습니다. 관련 패턴은 [Optimizing prefetching](/docs/app/guides/optimizing-prefetching)을 참고하세요.
+
+## Quick start || 빠른 시작
+
+Instant Navigation을 최대한 활용하려면 [Cache Components](/docs/app/guides/migrating-to-cache-components)와 [Partial Prefetching](/docs/app/guides/adopting-partial-prefetching)을 활성화한 다음, 나타나는 [validation error](#validate-instant-navigation)를 따라 해결해야 합니다:
+
+[[CODE 1]]
+
+agent로 이 과정을 자동화할 수 있도록 각 부분마다 Skill이 준비되어 있습니다: [next-cache-components-adoption](https://www.skills.sh/vercel/next.js/next-cache-components-adoption)과 [next-partial-prefetching-adoption](https://www.skills.sh/vercel/next.js/next-partial-prefetching-adoption). 모든 것을 활성화하고 싶다면 agent에게 다음 prompt를 주세요:
+
+[[CODE 2]]
+
+이 가이드의 나머지 부분에서는 이 migration들이 사용하는 도구를 다루고, block되는 navigation을 instant하게 바꾸는 과정을 따라가 보고, initial UI에 무엇이 들어가는지 살펴본 뒤, end-to-end test로 그 결과를 고정합니다.
+
+## The tools || 도구
+
+### Build the static shell || static shell 만들기
+
+Cache Components에서 **caching directive**(`&quot;use cache&quot;`와 그 변형)는 async 함수의 결과에 lifetime을 지정합니다. 이 덕분에 Next.js가 그 결과를 static shell에 포함할 수 있습니다.
+
+&gt; **Good to know:** [`&quot;use cache: private&quot;`](/docs/app/api-reference/directives/use-cache-private)는 `cookies()`, `headers()` 같은 runtime API를 읽는 함수를 cache하기 위한 변형입니다. 결과는 server가 아니라 브라우저에만 cache됩니다. **static shell의 일부가 될 수는 없습니다.** prefetching과 어떻게 함께 쓰이는지는 Optimizing prefetching 가이드의 [`&quot;use cache: private&quot;`](/docs/app/guides/optimizing-prefetching#use-cache-private)를 참고하세요.
+
+cache되지 않은 데이터나 `cookies()`, `headers()` 같은 runtime API를 읽는 tree 부분에 대한 fallback UI는 **`&lt;Suspense&gt;`** boundary로 선언합니다. 콘텐츠가 resolve되면 fallback 자리로 stream됩니다.
+
+&gt; **Good to know:** fallback이 `cookies()`, `headers()` 또는 전체 URL에 접근할 수도 있습니다. 그러면 build 시점에 fallback 자체가 suspend되므로, tree에서 더 위쪽에 `&lt;Suspense&gt;` boundary가 필요합니다. `prefetch={true}`가 있는 link의 경우 [per-link prefetching](/docs/app/guides/optimizing-prefetching)이 navigation 전에 URL 데이터를 사용할 수 있게 해 주므로, fallback이 prefetch된 UI의 일부가 될 수 있습니다. timestamp나 데이터 fetch 같은 cache된 값은 fallback 안에 바로 둘 수 있습니다.
+
+Next.js는 route마다 [**App Shell**](/docs/app/glossary#app-shell)을 생성할 수도 있습니다. App Shell은 나머지 콘텐츠가 stream되는 동안 client navigation 중에 render됩니다. Partial Prefetching은 App Shell을 기본 `&lt;Link&gt;` prefetch로 사용합니다. `prefetch={true}`가 있는 link는 해당 link의 URL 데이터에 의존하는 cache된 콘텐츠도 resolve할 수 있습니다.
+
+### Prefetch URL data for a link || link의 URL 데이터 prefetch하기
+
+[Partial Prefetching](/docs/app/guides/adopting-partial-prefetching)에서는 화면에 보이는 각 `&lt;Link&gt;`가 기본적으로 목적지의 App Shell을 prefetch합니다. 같은 route로 가는 link들은 link마다 별도의 App Shell request를 보내는 대신 하나의 App Shell을 공유합니다.
+
+특정 link에 대해 shell과 함께 페이지 콘텐츠까지 prefetch하려면 [`prefetch={true}`](/docs/app/api-reference/components/link#prefetch)를 설정하세요:
+
+[[CODE 3]]
+
+Partial Prefetching이 활성화된 상태에서 `prefetch={true}`는 해당 link를 [per-link prefetching](/docs/app/guides/optimizing-prefetching)에도 참여시킵니다. per-link prefetching은 클릭 전에 link별 URL 데이터(`params`, `searchParams`, 전체 URL)를 resolve합니다.
+
+### Validate instant navigation || instant navigation 검증하기
+
+**default** 설정(`validationLevel: &#x27;warning&#x27;`)에서 Cache Components 앱은 development 중에 모든 Page와 Default segment를 검증합니다. 검증은 segment로의 navigation이 instant해지지 못하게 막는 요소를 드러냅니다. 즉, 어떤 navigation이 block될지, 어디에 `&lt;Suspense&gt;` boundary가 빠져 있는지, 어떤 데이터가 cache되지 않은 채 사용자에게 도달하는지를 보여 줍니다.
+
+자동 검증을 끄고 `instant`를 명시적으로 export한 segment만 검증하려면 [`validationLevel`](/docs/app/api-reference/file-conventions/route-segment-config/instant#configuring-validation-defaults)을 `&#x27;manual-warning&#x27;`으로 설정하세요:
+
+[[CODE 4]]
+
+&lt;details&gt;
+&lt;summary&gt;검증이 서로 다른 navigation을 시뮬레이션하는 방법&lt;/summary&gt;
+
+검증 대상 route마다 Next.js는 initial page load와, route 계층의 여러 지점에서 일어나는 client navigation을 모두 확인합니다.
+
+`/shop/[slug]` 같은 route의 경우 검증은 다음을 확인합니다:
+
+- **Page load**: 전체 tree가 root부터 render됩니다. root layout의 `&lt;Suspense&gt;`가 모든 것을 잡아냅니다.
+- **Client navigation** (예: `/shop/shoes`에서 `/shop/hats`로): `/shop` layout은 이미 mount되어 있고 그 아래 page만 다시 render됩니다. root layout의 `&lt;Suspense&gt;` boundary는 이 navigation을 감싸지 않습니다.
+
+각 경우는 독립적으로 검증됩니다. 어떤 navigation 경로를 감싸는 `&lt;Suspense&gt;` boundary가 다른 경로는 감싸지 않을 수도 있습니다. 그래서 페이지가 page load 검사는 통과해도 client navigation에서는 실패할 수 있고, route 수가 늘어날수록 이런 문제를 손으로 잡아내기가 어려워집니다.
+
+&lt;/details&gt;
+
+### Test it in CI || CI에서 테스트하기
+
+`@next/playwright` package는 [`instant()`](/docs/app/api-reference/file-conventions/route-segment-config/instant#testing-instant-navigation) helper를 제공합니다. 이 helper는 assertion의 범위를 navigation 시 즉시 사용할 수 있는 UI로 한정하므로, regression이 CI에서 드러납니다. 패턴은 [Prevent regressions with e2e tests](#prevent-regressions-with-e2e-tests)를 참고하세요.
+
+### Inspect loading states || loading state 살펴보기
+
+Next.js DevTools의 **Navigation Inspector** 기능은 페이지를 initial loading state에서 멈추고, 직접 방문 시에는 static shell을, client navigation 시에는 prefetch된 목적지를 보여 줍니다. inspector를 사용해 의미 있는 콘텐츠가 shell에 얼마나 들어가는지 확인하세요.
+
+React DevTools의 Suspense panel과 함께 사용하면 어떤 boundary가 페이지의 어느 부분을 감싸는지 정확히 볼 수 있습니다. 작업 흐름은 [Visualize loading states with the Next.js DevTools](#visualize-loading-states-with-the-nextjs-devtools)를 참고하세요.
+
+fallback이 차지하는 범위를 줄이고 더 많은 완성된 UI를 즉시 제공하는 패턴은 [Optimizing the static shell](/docs/app/guides/optimizing-the-static-shell)을 참고하세요.
+
+## A page that navigates instantly || 즉시 navigate되는 페이지
+
+이 기본 요소들이 실제로 동작하는 모습을 보기 위해 작은 store 앱을 생각해 봅시다. 각 product는 `/store/[slug]`에 자체 페이지가 있고, 홈페이지와 다른 product 페이지에서 이동할 수 있습니다. 목표는 product로, 그리고 product 사이를 navigate하는 것이 instant하게 이루어지는 것입니다.
+
+product 페이지는 두 가지 데이터를 fetch합니다: product 상세 정보(이름, 가격)와 실시간 재고입니다.
+
+- `generateStaticParams`가 없으므로 `slug`는 request 시점에만 알 수 있습니다
+- 두 component 모두 `slug`를 얻기 위해 `params`를 await하며, 이때 suspend됩니다. 각 component는 자체 `&lt;Suspense&gt;` boundary를 가집니다
+- **Product info** 데이터는 거의 바뀌지 않으며, cache된 함수를 사용해 db에서 조회합니다
+- **Inventory** 데이터는 request마다 최신이어야 합니다. db query는 `&lt;Suspense&gt;` boundary 안에 있습니다
+
+[[CODE 5]]
+
+Cache Components는 development 중에 이 route를 자동으로 검증합니다. navigation을 block할 만한 것이 있으면 dev overlay가 **blocking-route** insight를 표시하는데, 문제가 되는 component의 이름을 알려 주고 다음 해결책을 가리킵니다:
+
+&lt;FixCardGrid&gt;
+  &lt;FixCard
+    group=&quot;cache&quot;
+    title=&quot;Cache the component or data&quot;
+    href=&quot;/docs/messages/blocking-prerender-dynamic#cache-the-component-or-data&quot;
+    snippets={[
+      { text: &#x27;async function Posts() {&#x27; },
+      { text: &#x27;  &quot;use cache&quot;&#x27;, highlight: true },
+      { text: &#x27;  return &lt;List items={…} /&gt;&#x27; },
+    ]}
+  /&gt;
+  &lt;FixCard
+    group=&quot;stream&quot;
+    title=&quot;Wrap in or move into Suspense&quot;
+    href=&quot;/docs/messages/blocking-prerender-dynamic#wrap-in-or-move-into-suspense&quot;
+    snippets={[
+      { text: &#x27;&lt;Suspense fallback={…}&gt;&#x27;, highlight: true },
+      { text: &#x27;  &lt;DataChild /&gt;&#x27; },
+      { text: &#x27;&lt;/Suspense&gt;&#x27;, highlight: true },
+    ]}
+  /&gt;
+&lt;/FixCardGrid&gt;
+
+&gt; **Good to know:** 각 fix card는 패턴, 코드 샘플, trade-off를 담은 자세한 walkthrough로 연결됩니다. card를 클릭해 자세히 살펴보거나, **Copy prompt** 버튼으로 해결 작업을 agent에게 넘기세요. 그 반복 과정은 [AI workflow](#ai-workflow)를 참고하세요.
+
+검증은 브라우저의 실제 request를 사용해 페이지가 로드될 때마다 실행되므로, `[slug]` 같은 dynamic param은 navigate하는 동안 실제 값으로 검사됩니다.
+
+### Client Component Pages || Client Component 페이지
+
+맨 위에 `&quot;use client&quot;`가 있는 페이지로의 soft navigation은 single-page app 전환처럼 동작합니다. navigation 시점에 server render가 없으므로 instant합니다. dev overlay는 이 방법을 fix card에 포함하지 않는데, 페이지를 server-component model 안에 유지하는 권장 방식들보다 영향이 크기 때문입니다. 페이지가 완전히 interactive해서 반드시 client component여야 할 때 `&quot;use client&quot;`를 사용하세요.
+
+&gt; **Good to know**: `&quot;use client&quot;`를 써도 static shell에 대한 검증을 건너뛰지 않습니다. `useSearchParams()` 같은 hook에는 여전히 `&lt;Suspense&gt;` boundary가 필요합니다.
+
+## Visualize loading states with the Next.js DevTools || Next.js DevTools로 loading state 시각화하기
+
+route를 개발하는 동안 Next.js DevTools를 사용하면, dynamic 데이터가 stream되기 전에 사용자가 페이지 로드와 client navigation에서 무엇을 보게 되는지 확인할 수 있습니다. 이를 사용해 loading state가 제대로 보이는지 검증하고, 기대한 콘텐츠가 즉시 나타나는지 확인하고, `&lt;Suspense&gt;` boundary를 어디에 둘지 반복해서 다듬으세요.
+
+[React DevTools Suspense panel](https://react.dev/learn/react-developer-tools)이 이를 보완합니다. 이 panel은 tree의 `&lt;Suspense&gt;` boundary 목록을 보여 주고 각 boundary를 fallback 상태와 resolve된 상태 사이에서 전환할 수 있게 해 주므로, 어떤 boundary가 페이지의 어느 부분을 감싸는지 정확히 볼 수 있습니다.
+
+
+Navigation Inspector는 Cache Components가 활성화되어 있을 때 사용할 수 있습니다:
+
+[[CODE 6]]
+
+Next.js DevTools를 열고 **Navigation Inspector** 항목을 선택한 다음 **Pause on navigations** toggle을 켜세요. panel에 **Awaiting navigation...** 문구가 표시됩니다. toggle이 켜져 있으면 다음 새로고침이나 link 클릭 시 페이지가 멈추므로 shell을 살펴볼 수 있습니다.
+
+product 페이지를 새로고침하세요. Inspector가 멈추고 target URL과 함께 **Page load** label이 붙은 **Loading shell** 상태를 보여 줍니다. 앱에는 &quot;Loading product...&quot;와 &quot;Checking availability...&quot; 두 개의 fallback이 나타납니다. 첫 방문에서는 cache가 cold 상태이므로 둘 다 보입니다.
+
+&lt;div
+  style={{
+    display: &#x27;flex&#x27;,
+    flexDirection: &#x27;column&#x27;,
+    alignItems: &#x27;center&#x27;,
+    gap: &#x27;0.5rem&#x27;,
+  }}
+&gt;
+  &lt;Image
+    alt=&quot;target URL과 함께 &#x27;Page load&#x27; label이 붙은 &#x27;Loading shell&#x27;을 보여 주는 Navigation Inspector panel&quot;
+    srcLight=&quot;/docs/light/inspector-load.png&quot;
+    srcDark=&quot;/docs/dark/inspector-load.png&quot;
+    width=&quot;472&quot;
+    height=&quot;389&quot;
+  /&gt;
+  &lt;span style={{ fontSize: &#x27;0.875rem&#x27;, opacity: 0.7 }}&gt;
+    페이지 새로고침 후.
+  &lt;/span&gt;
+&lt;/div&gt;
+
+**Resume** 버튼을 클릭해 navigation을 완료하세요. 다시 새로고침하면 product 이름이 cache에서 즉시 나타납니다.
+
+이제 `/store/shoes`에서 `/store/hats`로 가는 link를 클릭하세요. Inspector는 source URL과 target URL을 모두 포함해 **Client nav** label이 붙은 **Loading shell** 상태를 보여 줍니다. 앱에서는 product 이름과 가격이 즉시(cache된 상태로) 나타납니다. &quot;Checking availability...&quot;는 재고 정보가 stream될 위치를 보여 줍니다.
+
+&lt;div
+  style={{
+    display: &#x27;flex&#x27;,
+    flexDirection: &#x27;column&#x27;,
+    alignItems: &#x27;center&#x27;,
+    gap: &#x27;0.5rem&#x27;,
+  }}
+&gt;
+  &lt;Image
+    alt=&quot;source URL과 target URL과 함께 &#x27;Client nav&#x27; label이 붙은 &#x27;Loading shell&#x27;을 보여 주는 Navigation Inspector panel&quot;
+    srcLight=&quot;/docs/light/inspector-client.png&quot;
+    srcDark=&quot;/docs/dark/inspector-client.png&quot;
+    width=&quot;481&quot;
+    height=&quot;395&quot;
+  /&gt;
+  &lt;span style={{ fontSize: &#x27;0.875rem&#x27;, opacity: 0.7 }}&gt;
+    client navigation 후.
+  &lt;/span&gt;
+&lt;/div&gt;
+
+loading state 확인을 마쳤다면 **Pause on navigations** toggle을 끄세요. toggle이 켜져 있는 동안에는 모든 navigation이 일시 정지됩니다.
+
+&gt; **Good to know:** 페이지 로드와 client navigation은 서로 다른 shell을 만들 수 있습니다. `useSearchParams` 같은 client-side hook은 페이지 로드 시에는 suspend되지만(build 시점에 search param을 알 수 없음), client navigation에서는 동기적으로 resolve됩니다(router가 이미 param을 가지고 있음).
+
+## Prevent regressions with e2e tests || e2e test로 regression 방지하기
+
+검증은 development 중에 구조적인 문제를 잡아내지만, codebase가 커지면 구조 검사는 shell이 존재한다는 것만 알려 줄 수 있습니다. 그 안에 올바른 콘텐츠가 들어 있는지는 알려 주지 못합니다. E2E test가 이 빈틈을 메웁니다. navigation이 완료될 때 사용자가 실제로 보는 것을 assert해서, 배포되기 전에 regression을 잡아냅니다.
+
+[`@next/playwright`](https://www.npmjs.com/package/@next/playwright) package에는 이를 위한 `instant()` helper가 포함되어 있습니다. `@playwright/test`와 함께 설치하세요:
+
+[[CODE 7]]
+
+route에 도달하는 방법은 두 가지이며, `&lt;Suspense&gt;` boundary가 한쪽은 감싸면서 다른 쪽은 감싸지 않을 수 있습니다:
+
+- **Initial page load**: `page.goto()`를 사용해 document response의 static UI를 테스트합니다.
+- **Client navigation**: `&lt;Link&gt;`를 클릭해 목적지의 prefetch된 UI를 테스트합니다. [Per-link prefetching](/docs/app/guides/optimizing-prefetching)은 이 UI에 request별 콘텐츠를 추가할 수 있습니다.
+
+[[CODE 8]]
+
+`page.goto()`가 첫 navigation이라면 Playwright의 `baseURL`을 `instant()`에 전달하세요. helper는 document를 request하기 전에 origin을 알아야 합니다.
+
+callback 안에서 initial page load는 static UI를, client navigation은 목적지의 prefetch된 UI를 보여 줍니다. 그 밖의 dynamic 콘텐츠는 callback이 끝날 때까지 block된 상태로 남습니다.
+
+&gt; **Good to know:** `instant()` scope의 시작은 Navigation Inspector에서 **Pause on navigations** toggle을 켜는 것과 같고, scope의 끝은 **Resume** 버튼처럼 일시 정지를 해제합니다.
+
+client navigation의 경우 목적지 UI를 assert하기 전에 목적지 URL을 기다리세요. 그렇지 않으면 공통 selector가 목적지가 commit되기 전에 source 페이지와 match될 수 있습니다. prefetch된 목적지가 commit되지 못하면 URL 대기가 timeout되어 test가 실패합니다.
+
+이 test들은 testing API가 자동으로 활성화되는 `next dev`에서 실행하세요. production build로 CI를 돌린다면 test build에서만 [`exposeTestingApiInProductionBuild`](/docs/app/api-reference/config/next-config-js/exposeTestingApiInProductionBuild)를 활성화하세요:
+
+[[CODE 9]]
+
+`next build`를 실행할 때 `EXPOSE_TESTING_API=1`을 설정하세요. `next start`에만 설정하면 이미 만들어진 build에 testing API가 추가되지 않습니다.
+
+이 test는 가장 중요한 user flow에 집중하세요.
+
+## Fixing a navigation that blocks || block되는 navigation 고치기
+
+public API에서 product 데이터를 fetch하고 옆에 featured 목록을 보여 주는 다른 route, `/products/[slug]`를 생각해 봅시다:
+
+[[CODE 10]]
+
+두 개의 `fetch()` 호출이 최상위에서 block됩니다: cache되지 않은 featured 목록 fetch와, slug별 product fetch(이 역시 `params`를 await함)입니다. 둘 다 Instant validation error로 하나씩 차례로 드러납니다.
+
+### Step 1: Move the slug-dependent work into Suspense || 1단계: slug에 의존하는 작업을 Suspense 안으로 옮기기
+
+검증은 먼저 slug별 product fetch를 드러냅니다.
+
+&lt;div
+  style={{
+    display: &#x27;flex&#x27;,
+    flexDirection: &#x27;column&#x27;,
+    alignItems: &#x27;center&#x27;,
+    gap: &#x27;0.5rem&#x27;,
+  }}
+&gt;
+  &lt;Image
+    alt=&quot;app/products/[slug]/page.tsx의 cache되지 않은 데이터 접근과 Stream, Cache, Block fix card를 보여 주는 blocking-route dev overlay insight&quot;
+    srcLight=&quot;/docs/light/instant-insight.png&quot;
+    srcDark=&quot;/docs/dark/instant-insight.png&quot;
+    width=&quot;960&quot;
+    height=&quot;760&quot;
+  /&gt;
+&lt;/div&gt;
+
+slug에 의존하는 작업을 하위 component로 추출하고 `&lt;Suspense&gt;`로 감싸세요:
+
+[[CODE 11]]
+
+이제 `await props.params`와 product fetch가 함께 suspend됩니다. product fetch error가 사라지고, 검증은 다음 blocker로 넘어갑니다.
+
+### Step 2: Cache the featured fetch || 2단계: featured fetch를 cache하기
+
+이제 검증이 `getFeatured()`에서 발생합니다.
+
+&lt;div
+  style={{
+    display: &#x27;flex&#x27;,
+    flexDirection: &#x27;column&#x27;,
+    alignItems: &#x27;center&#x27;,
+    gap: &#x27;0.5rem&#x27;,
+  }}
+&gt;
+  &lt;Image
+    alt=&quot;cache되지 않은 getFeatured() fetch에 대한 dev overlay insight와 Stream, Cache, Block fix card&quot;
+    srcLight=&quot;/docs/light/instant-insight-4.png&quot;
+    srcDark=&quot;/docs/dark/instant-insight-4.png&quot;
+    width=&quot;960&quot;
+    height=&quot;760&quot;
+  /&gt;
+&lt;/div&gt;
+
+fetch하는 함수에 `&quot;use cache&quot;` directive를 추가하세요:
+
+[[CODE 12]]
+
+결과가 fetch 수준에서 cache됩니다. featured 목록은 App Shell과 함께 전달됩니다.
+
+&gt; **Good to know:** serverless deploy 환경에서는 `&quot;use cache&quot;`의 in-memory caching이 instance 간에 유지되지 않습니다. 영구적인 caching을 원한다면 [`&quot;use cache: remote&quot;`](/docs/app/api-reference/directives/use-cache-remote) 사용을 고려하세요.
+
+검증이 통과합니다. DevTools를 열고 client navigation을 해 보세요. featured 섹션이 즉시 나타나고, **&quot;Loading product...&quot;** 문구가 product 상세 정보가 stream될 위치를 보여 줍니다.
+
+### Iterate on loading states || loading state 반복 개선하기
+
+
+검증을 통과했다는 것은 navigation이 instant하다는 뜻입니다. loading state가 좋다는 뜻은 아닙니다. tree의 높은 곳에 둔 `&lt;Suspense&gt;` boundary(예를 들어 페이지 전체를 감싸는 boundary)는 검증을 통과할 수 있지만, navigation할 때마다 페이지 대부분을 하나의 fallback으로 대체합니다.
+
+가장 좋은 loading state는 실제 cache된 콘텐츠를 가능한 한 많이 보이게 유지하고, 데이터가 실제로 전송 중인 곳에만 fallback을 보여 줍니다. header, 이미지, 설명은 보이게 두고 가격과 재고만 fallback 뒤에 둔 product 페이지는, 전체 로드 시간이 같더라도 전체 페이지 skeleton보다 더 빠르게 느껴집니다.
+
+[DevTools](#visualize-loading-states-with-the-nextjs-devtools)를 사용해 사용자가 보는 화면을 확인하거나, agent로 이 반복 과정을 자동화하려면 [AI workflow](#ai-workflow)를 참고하세요.
+
+## AI workflow
+
+큰 흐름에서 보면 agent는 하나의 navigation을 다음과 같이 최적화합니다:
+
+- **Observe**: 검증 insight를 읽고, 즉시 나타나야 할 정확한 navigation과 UI를 정합니다.
+- **Test**: 대상 UI가 정상적으로 render되는지 확인한 다음, `instant()` test를 작성하고 route를 바꾸기 전에 그 test가 실패하는지 검증합니다.
+- **Fix**: validation error는 특정 component를 지목하고 해결책(`use cache` 또는 `&lt;Suspense&gt;`)을 제안합니다. agent가 해결책을 적용하고 검증을 다시 실행합니다.
+- **Verify**: production과 유사한 build에서 test를 실행하고, 통과한 test를 regression 방지 장치로 유지합니다.
+
+agent가 전체 caching model을 이해할 필요는 없습니다. insight와 error가 사라질 때까지 따라가기만 하면 됩니다. 다만 앱에 특화된 의도는 알아야 합니다. 무엇이 즉시 나타나야 하는지, 무엇이 stream되어도 되는지, 무엇이 항상 최신이어야 하는지 알려 주세요. caching 결정이 불분명할 때는 cache lifetime을 추측하기보다 데이터를 `&lt;Suspense&gt;` 뒤에서 최신 상태로 유지하세요.
+
+[loading state를 반복 개선할 때](#iterate-on-loading-states)는 &quot;콘텐츠를 최대화하고, spinner 뒤에 있어야 하는 부분을 줄여 줘&quot; 같은 prompt가 boundary를 아래로 내리는 데 효과적입니다.
+
+Cache Components route를 다루는 agent는 보통 세 가지 수단을 사용합니다:
+
+- **Push down**: I/O를 Suspense로 감싼 하위 component로 추출해 부모는 static하게 유지하고, static한 형제 component들이 shell로 올라가게 합니다.
+- **Cache**: `&#x27;use cache&#x27;`와 [`cacheLife`](/docs/app/api-reference/functions/cacheLife)를 함께 사용해 freshness profile을 지정합니다.
+- **Per-link prefetching** (nav 전용): route가 URL 데이터(`searchParams` 또는 `params`)를 읽는다면, framework가 link prefetch 시점에 그 데이터를 resolve하도록 [per-link prefetching](/docs/app/guides/optimizing-prefetching)에 참여시킵니다. `cookies()`나 `headers()`에서 오는 session 데이터는 이것 없이도 이미 App Shell에 들어갑니다.
+
+각 refactor는 변경이 실제로 반영되었는지 검증하기 위해 전후 capture와 함께 진행해야 합니다. capture가 똑같아 보인다면 refactor가 효과를 내지 못한 것입니다.
+
+agent가 변경 사항이 실제로 무엇을 render하는지 볼 수 있도록 [agent-browser](https://github.com/vercel-labs/agent-browser)와 함께 사용하세요. React DevTools가 활성화되어 있으면 agent-browser는 component tree와 아직 pending 상태인 `&lt;Suspense&gt;` boundary를 보고하므로, agent가 변경을 하고, shell의 snapshot을 찍고, 무엇이 반영되었는지 확인하고, 조정할 수 있습니다. 설정 방법은 AI agents 가이드의 [Runtime visibility](/docs/app/guides/ai-agents#runtime-visibility)를 참고하세요.
+
+[`next-cache-components-optimizer`](/docs/app/guides/ai-agents#next-cache-components-optimizer) Skill은 이 반복 과정을 패키지로 묶어 둔 것입니다. 대상 UI가 정상적으로 render되는지 확인하고, 수정 전에 실패하는 `instant()` test를 작성한 다음, production과 유사한 build에서 test가 통과할 때까지 작업하고 이를 regression 방지 장치로 남깁니다. initial load(hard navigation), client-side navigation(soft navigation), 또는 둘 다에 사용하세요.
+
+## Opting out || 제외하기
+
+모든 layout이나 page가 instant할 수 있거나 instant해야 하는 것은 아닙니다. 구조적인 수정이 그만한 노력의 가치가 없거나, route가 instant navigation의 우선순위가 아니라면 두 가지 범위 중 하나에서 검증을 조정하세요.
+
+dev overlay는 모든 insight 옆에 이를 **Block** fix로 표시합니다:
+
+&lt;FixCardGrid&gt;
+  &lt;FixCard
+    group=&quot;block&quot;
+    title=&quot;Allow blocking route&quot;
+    href=&quot;/docs/messages/blocking-prerender-dynamic#allow-blocking-route&quot;
+    snippets={[
+      { text: &#x27;// page.tsx or layout.tsx&#x27; },
+      { text: &#x27;export const instant = false&#x27;, highlight: true },
+    ]}
+  /&gt;
+&lt;/FixCardGrid&gt;
+
+page 또는 layout 파일에 `instant = false`를 설정하세요. 이렇게 하면 해당 segment가 검증 피드백에서 제외됩니다. 구조가 뒷받침된다면 segment는 여전히 instant하게 navigate될 수 있으며, framework가 그 segment에 대한 insight를 표시하지 않을 뿐입니다. 그 아래 형제 segment 사이의 navigation은 여전히 검증됩니다.
+
+[[CODE 13]]
+
+`/dashboard/layout.tsx`에 `false`를 설정하면, 검증은 더 이상 외부에서 `/dashboard`로 들어오는 navigation을 지적하지 않습니다. `/dashboard/a`와 `/dashboard/b` 사이의 navigation은 여전히 검사됩니다.
+
+제외된 segment의 경우 navigation은 server에서 block됩니다. 콘텐츠가 cookie나 header에 의존하지만 cache lifetime을 알 수 있다면, 제외하는 대신 [`use cache: private`](/docs/app/api-reference/directives/use-cache-private)로 cache해서 App Shell이 클릭 전에 그 콘텐츠를 실어 나르게 할 수 있습니다. 단, [`stale`](/docs/app/api-reference/functions/cacheLife#stale) 시간이 최소 5분이어야 합니다.
+
+## Next steps || 다음 단계
+
+- 권장 `&lt;Link&gt;` 기본값과 단계별 도입 방법은 [Adopting Partial Prefetching](/docs/app/guides/adopting-partial-prefetching)을 참고하세요
+- 전체 configuration은 [`instant` API reference](/docs/app/api-reference/file-conventions/route-segment-config/instant)를 참고하세요
+- route의 일부가 URL 데이터(`searchParams` 또는 `params`)에 의존하고 navigation 전에 resolve되어야 한다면 [Optimizing prefetching](/docs/app/guides/optimizing-prefetching)을 참고하세요
+- `use cache`, Suspense, Partial Prerendering에 대한 배경 지식은 [Caching](/docs/app/getting-started/caching)을 참고하세요
+- `cacheLife`와 `updateTag`로 cache된 데이터를 만료시키는 방법은 [Revalidating](/docs/app/getting-started/revalidating)을 참고하세요
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

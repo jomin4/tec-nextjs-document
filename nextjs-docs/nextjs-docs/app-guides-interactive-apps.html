@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Building interactive apps (인터랙티브 앱 만들기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/interactive-apps" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/interactive-apps" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/interactive-apps.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Building interactive apps<span class="sub">인터랙티브 앱 만들기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>사용자 interaction에 server-side 작업이 필요하면 결과를 즉시 얻을 수 없습니다. network request는 완료되기까지 얼마나 걸릴지 알 수 없고, 성공할 수도 실패할 수도 있습니다. 기다리는 동안 client는 feedback을 제공하고 이런 state에 대응해야 합니다. 그렇지 않으면 사용자는 오래된(stale) 데이터를 바라보며 무언가 진행되고 있는지 궁금해하게 됩니다.</p><div class="en-orig"><p>When a user interaction requires server-side work, the result is not available immediately. Network requests take an unknown amount of time to complete and may succeed or fail. While waiting, the client should provide feedback and respond to those states. Otherwise, users are left looking at stale data and may wonder whether anything is happening.</p></div>
+<p>이 가이드는 *Taskboard*라는 task 관리 앱에 반응성 있는 feedback을 추가합니다. 각 단계는 느린 read를 streaming하는 것부터 server가 응답하기 전에 mutation을 확정된 것처럼 보여 주는 것까지, 서로 다른 종류의 pending 작업을 다룹니다.</p><div class="en-orig"><p>This guide adds responsive feedback to a task management app called <em>Taskboard</em>. Each step handles a different kind of pending work, from streaming slow reads to confirming mutations before the server responds.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 가이드의 패턴은 <a href="https://web.dev/articles/vitals" target="_blank" rel="noopener">Core Web Vitals</a>도 개선합니다. <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a>를 사용한 streaming은 느린 read가 끝나는 동안 shell을 먼저 그리게 해서 <a href="https://web.dev/articles/fcp" target="_blank" rel="noopener">FCP</a>와 <a href="https://web.dev/articles/lcp" target="_blank" rel="noopener">LCP</a>를 낮춥니다. Optimistic UI와 transition은 click frame을 빠르게 유지해 <a href="https://web.dev/articles/inp" target="_blank" rel="noopener">INP</a>를 낮춥니다. 다음 route를 prefetch하면 목적지 페이지의 FCP, LCP, INP가 거의 즉각적이 됩니다. 이 패턴들이 도움이 되긴 하지만, 일반적인 INP 개선 작업, 즉 client JavaScript를 덜 보내고 interaction 중 blocking roundtrip을 피하는 일을 대체하지는 않습니다.</p><div class="en-orig"><p>The patterns in this guide also improve <a href="https://web.dev/articles/vitals" target="_blank" rel="noopener">Core Web Vitals</a>. Streaming with <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> lowers <a href="https://web.dev/articles/fcp" target="_blank" rel="noopener">FCP</a> and <a href="https://web.dev/articles/lcp" target="_blank" rel="noopener">LCP</a> by letting the shell paint while slow reads finish. Optimistic UI and transitions lower <a href="https://web.dev/articles/inp" target="_blank" rel="noopener">INP</a> by keeping the click frame fast. Prefetching the next route makes FCP, LCP, and INP on the destination page near-instant. These patterns help, but they don't replace the usual INP work: shipping less client JavaScript and avoiding blocking roundtrips during interactions.</p></div></div></div>
+<h2 class="sec" id="example"><a class="anchor" href="#example">Example<span class="ko">예제</span></a></h2>
+<p>패턴은 순서대로 쌓여 갑니다: loading boundary 뒤에서 느린 데이터를 streaming하고, 즉시 반응하는 priority toggle을 추가하고, callback prop을 받는 재사용 가능한 filter를 만들고, 확정되기 전에 comment를 보여 주고, drop 시 card를 column 사이로 옮기고, create dialog에서 form lifecycle을 관리하고, pending 중인 삭제를 parent에 알립니다. 마지막 단계에서는 재사용 가능한 read를 cache해서 navigation이 즉각적으로 유지되게 합니다.</p><div class="en-orig"><p>The patterns build in order: stream slow data behind loading boundaries, add an instant priority toggle, build a reusable filter with a callback prop, show comments before they're confirmed, move cards between columns on drop, manage form lifecycle in a create dialog, and signal pending deletion to a parent. The final step caches the reusable reads so navigations stay instant.</p></div>
+<p>함께 제공되는 <a href="https://async-react-demo.labs.vercel.dev" target="_blank" rel="noopener">Taskboard 데모</a>(<a href="https://github.com/nextjs/async-react-demo" target="_blank" rel="noopener">source</a>)에서 이 가이드의 각 패턴이 실제로 동작하는 모습을 볼 수 있습니다.</p><div class="en-orig"><p>The companion <a href="https://async-react-demo.labs.vercel.dev" target="_blank" rel="noopener">Taskboard demo</a> (<a href="https://github.com/nextjs/async-react-demo" target="_blank" rel="noopener">source</a>) lets you see each pattern from this guide in action.</p></div>
+<p>앱은 feature 단위로 구성되어 있습니다. task 도메인에 관한 모든 것(query, Server Function, component)은 <code>features/task/</code> 아래에 있습니다. 공유 UI primitive는 <code>components/ui/</code>에 있고, <code>app/</code>의 page들이 feature component를 조합합니다. 이 가이드 전체의 파일 경로는 이 구조를 따릅니다.</p><div class="en-orig"><p>The app is organized by feature. Everything for the task domain (queries, Server Functions, and components) lives under <code>features/task/</code>. Shared UI primitives live in <code>components/ui/</code>, and pages in <code>app/</code> compose feature components. The file paths throughout this guide follow that structure.</p></div>
+<p>출발점은 database에서 task와 comment를 읽는 Server Component 앱이며, <a href="app-guides-streaming.html"><code>&lt;Suspense&gt;</code></a> boundary도 caching도 없습니다. Client Component는 <a href="app-getting-started-mutating-data.html">Server Function</a>을 호출해 데이터를 mutate합니다. 각 mutation이 끝나면 Server Function이 <a href="app-api-reference-functions-refresh.html"><code>refresh()</code></a>를 호출해 server가 최신 데이터로 다시 render하게 합니다:</p><div class="en-orig"><p>The starting point is a Server Component app that reads tasks and comments from a database, with no <a href="app-guides-streaming.html"><code>&lt;Suspense&gt;</code></a> boundaries and no caching. Client Components call <a href="app-getting-started-mutating-data.html">Server Functions</a> to mutate that data. After each mutation, the Server Function calls <a href="app-api-reference-functions-refresh.html"><code>refresh()</code></a> so the server re-renders with fresh data:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/task-actions.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use server&#x27;
+
+import { refresh } from &#x27;next/cache&#x27;
+import { PRIORITY_CYCLE } from &#x27;@/lib/data&#x27;
+import { getTaskById, updateTaskPriority } from &#x27;@/lib/db&#x27;
+
+export async function cyclePriority(taskId: string) {
+  const task = await getTaskById(taskId)
+  if (!task) return null
+  const newPriority = PRIORITY_CYCLE[task.priority]
+  await updateTaskPriority(taskId, newPriority)
+  refresh()
+  return newPriority
+}</code></pre></div></div>
+<h3 class="sec" id="step-1-stream-slow-data-with-suspense"><a class="anchor" href="#step-1-stream-slow-data-with-suspense">Step 1: Stream slow data with Suspense<span class="ko">1단계: Suspense로 느린 데이터 streaming하기</span></a></h3>
+<p>task 상세 페이지는 task와 그 comment를 읽습니다. 두 read를 page component 맨 위에서 모두 await하면, 가장 느린 read가 resolve될 때까지 페이지 전체가 block됩니다.</p><div class="en-orig"><p>The task detail page reads the task and its comments. When both are awaited at the top of the page component, the whole page blocks until the slowest read resolves.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/task/[id]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { getTask } from &#x27;@/features/task/task-queries&#x27;
+import { TaskDetail } from &#x27;@/features/task/components/task-detail&#x27;
+import { CommentSection } from &#x27;@/features/task/components/comment-section&#x27;
+
+export default async function TaskPage({ params }) {
+  const { id } = await params
+  const task = await getTask(id)
+
+  return (
+    &lt;div&gt;
+      &lt;TaskDetail task={task} /&gt;
+      &lt;CommentSection taskId={id} /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>이 버전에서는 <code>getTask</code>가 resolve될 때까지 아무것도 render되지 않고, comment read는 그 이후에야 시작됩니다.</p><div class="en-orig"><p>With this version, nothing renders until <code>getTask</code> resolves, and the comments read starts only after that.</p></div>
+<p>read를 별도의 component로 나누고, 각각에 promise를 넘기고, <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a>로 감싸세요. 페이지는 동기(synchronous)가 되어 shell을 즉시 반환하고, server는 각 section의 데이터가 resolve되는 대로 streaming합니다:</p><div class="en-orig"><p>Split the reads into separate components, pass each one a promise, and wrap them in <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a>. The page becomes synchronous, returns the shell immediately, and the server streams each section in as its data resolves:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/task/[id]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import {
+  TaskDetail,
+  TaskDetailSkeleton,
+} from &#x27;@/features/task/components/task-detail&#x27;
+import {
+  CommentSection,
+  CommentSectionSkeleton,
+} from &#x27;@/features/task/components/comment-section&#x27;
+
+export default function TaskPage({ params }) {
+  return (
+    &lt;div&gt;
+      &lt;Suspense fallback={&lt;TaskDetailSkeleton /&gt;}&gt;
+        {params.then(({ id }) =&gt; (
+          &lt;&gt;
+            &lt;TaskDetail id={id} /&gt;
+            &lt;Suspense fallback={&lt;CommentSectionSkeleton /&gt;}&gt;
+              &lt;CommentSection taskId={id} /&gt;
+            &lt;/Suspense&gt;
+          &lt;/&gt;
+        ))}
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>각 section component는 자기 데이터를 await합니다:</p><div class="en-orig"><p>Each section component awaits its own data:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/task-detail.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export async function TaskDetail({ id }) {
+  const task = await getTask(id)
+  return &lt;TaskHeader task={task} /&gt;
+}</code></pre></div></div>
+<p>JSX 안에서 <code>params.then()</code>을 inline으로 호출하면 페이지가 동기로 유지됩니다. 바깥쪽 <code>&lt;Suspense&gt;</code>는 params resolve와 task 상세 read를 감쌉니다. <code>TaskDetail</code>이 resolve되면 React는 task header와 중첩된 <code>&lt;Suspense&gt;</code> boundary를 보여 주고, 이 boundary는 comment가 load되는 동안 <code>CommentSectionSkeleton</code>을 표시합니다.</p><div class="en-orig"><p>Calling <code>params.then()</code> inline in JSX keeps the page synchronous. The outer <code>&lt;Suspense&gt;</code> covers the params resolution and the task detail read. Once <code>TaskDetail</code> resolves, React reveals the task header and the nested <code>&lt;Suspense&gt;</code> boundary, which shows <code>CommentSectionSkeleton</code> while comments load.</p></div>
+<p>이제 page shell은 즉시 그려지고, task header는 <code>getTask</code>가 resolve되면 streaming되어 들어오며, comment section은 <code>getComments</code>가 resolve되면 뒤따라 들어옵니다.</p><div class="en-orig"><p>The page shell now paints immediately, the task header streams in when <code>getTask</code> resolves, and the comments section follows when <code>getComments</code> resolves.</p></div>
+<p>streaming 패턴에 대한 자세한 내용은 <a href="app-guides-streaming.html">Streaming</a> 가이드를 참고하세요.</p><div class="en-orig"><p>For more on streaming patterns, see the <a href="app-guides-streaming.html">Streaming</a> guide.</p></div>
+<h3 class="sec" id="step-2-respond-instantly-to-a-toggle"><a class="anchor" href="#step-2-respond-instantly-to-a-toggle">Step 2: Respond instantly to a toggle<span class="ko">2단계: toggle에 즉시 반응하기</span></a></h3>
+<p>각 task card에는 click할 때마다 low, medium, high를 순환하는 priority 표시가 있습니다.</p><div class="en-orig"><p>Each task card has a priority indicator that cycles through low, medium, and high on click.</p></div>
+<p>button은 server에서 받은 <code>priority</code> prop을 render합니다. Server Function을 호출하면 mutation이 시작되지만, 현재 render의 그 prop은 바뀌지 않습니다.</p><div class="en-orig"><p>The button renders the <code>priority</code> prop from the server. Calling a Server Function starts the mutation, but it doesn't change that prop in the current render.</p></div>
+<p>여기서는 Server Function을 직접 호출합니다:</p><div class="en-orig"><p>Here the Server Function is called directly:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/task-card.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { cyclePriority } from &#x27;@/features/task/task-actions&#x27;
+
+export function TaskCard({ id, priority }) {
+  return (
+    &lt;button onClick={() =&gt; cyclePriority(id)} className={priorityDot[priority]}&gt;
+      {priority}
+    &lt;/button&gt;
+  )
+}</code></pre></div></div>
+<p>점을 click하면 Server Function이 실행되지만, 다음 server render가 도착할 때까지 button은 예전 <code>priority</code> prop을 계속 render합니다.</p><div class="en-orig"><p>If you click the dot, the Server Function runs, but the button keeps rendering the old <code>priority</code> prop until the next server render arrives.</p></div>
+<p>직접 호출을 <a href="https://react.dev/reference/react/useOptimistic" target="_blank" rel="noopener"><code>useOptimistic</code></a>과 <a href="https://react.dev/reference/react/useTransition" target="_blank" rel="noopener"><code>useTransition</code></a>으로 바꾸세요. <code>useOptimistic</code>은 stale prop 대신 render할 값을 제공하고, <code>useTransition</code>은 Server Function을 transition의 일부로 실행합니다. optimistic 값은 그 transition이 pending인 동안 적용됩니다:</p><div class="en-orig"><p>Replace the direct call with <a href="https://react.dev/reference/react/useOptimistic" target="_blank" rel="noopener"><code>useOptimistic</code></a> and <a href="https://react.dev/reference/react/useTransition" target="_blank" rel="noopener"><code>useTransition</code></a>. <code>useOptimistic</code> provides a value to render in place of the stale prop, and <code>useTransition</code> runs the Server Function as part of a transition. The optimistic value applies for as long as that transition is pending:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/task-card.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useOptimistic, useTransition } from &#x27;react&#x27;
+import { cyclePriority } from &#x27;@/features/task/task-actions&#x27;
+import { PRIORITY_CYCLE } from &#x27;@/lib/data&#x27;
+
+export function TaskCard({ id, priority }) {
+  const [optimisticPriority, setOptimisticPriority] = useOptimistic(priority)
+  const [, startTransition] = useTransition()
+
+  function handlePriority() {
+    startTransition(async () =&gt; {
+      setOptimisticPriority(PRIORITY_CYCLE[optimisticPriority])
+      await cyclePriority(id)
+    })
+  }
+
+  return (
+    &lt;button
+      onClick={handlePriority}
+      className={priorityDot[optimisticPriority]}
+    &gt;
+      {optimisticPriority}
+    &lt;/button&gt;
+  )
+}</code></pre></div></div>
+<p><code>setOptimisticPriority</code> 호출은 순환 순서상 다음 값으로 현재 frame에서 UI를 업데이트합니다. prop 대신 <code>optimisticPriority</code>에서 값을 읽기 때문에, 빠르게 double-click해도 stale closure 값을 읽지 않고 올바르게 순환합니다.</p><div class="en-orig"><p>The <code>setOptimisticPriority</code> call updates the UI on the current frame with the next value in the cycle. Reading from <code>optimisticPriority</code> instead of the prop means rapid double-clicks cycle correctly rather than reading a stale closure value.</p></div>
+<p>transition이 끝나고 최신 데이터가 도착하면 optimistic 값은 server가 새로 render한 prop으로 되돌아갑니다. <code>useTransition</code> 안의 Server Function이 throw하면, 수동 <code>try</code>/<code>catch</code> 없이도 error가 가장 가까운 <a href="app-api-reference-file-conventions-error.html">error boundary</a>로 전달됩니다.</p><div class="en-orig"><p>When the transition ends and fresh data arrives, the optimistic value reverts to the new server-rendered prop. If the Server Function inside <code>useTransition</code> throws, the error is forwarded to the nearest <a href="app-api-reference-file-conventions-error.html">error boundary</a> without a manual <code>try</code>/<code>catch</code>.</p></div>
+<p>이제 마우스 버튼을 떼는 순간 색이 바뀝니다. 다시 click하면 첫 mutation이 끝나기를 기다리지 않고 다음 값으로 순환합니다.</p><div class="en-orig"><p>The color now changes the moment the mouse lifts. Clicking again cycles to the next value without waiting for the first mutation to finish.</p></div>
+<h3 class="sec" id="step-3-filter-with-pending-feedback"><a class="anchor" href="#step-3-filter-with-pending-feedback">Step 3: Filter with pending feedback<span class="ko">3단계: pending feedback이 있는 filter</span></a></h3>
+<p>board에는 label filter chip(Design, Frontend, Backend)이 있습니다. chip을 click하면 query param이 업데이트되어 task 목록을 filter합니다.</p><div class="en-orig"><p>The board has label filter chips (Design, Frontend, Backend). Clicking a chip updates a query param to filter the task list.</p></div>
+<p>선택된 filter는 URL에서 옵니다. <code>router.push()</code>를 호출하면 client navigation이 시작되고, server는 새 search params로 board를 다시 render합니다. 그 navigation이 완료될 때까지 페이지는 예전 URL state를 계속 render합니다.</p><div class="en-orig"><p>The selected filter comes from the URL. Calling <code>router.push()</code> starts a client navigation, and the server re-renders the board with the new search params. Until that navigation completes, the page keeps rendering the old URL state.</p></div>
+<p>여기서는 <code>router.push()</code>를 직접 호출합니다:</p><div class="en-orig"><p>Here <code>router.push()</code> is called directly:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/label-filter.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useRouter, useSearchParams } from &#x27;next/navigation&#x27;
+
+export function LabelFilter() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+
+  function handleFilter(value: string | null) {
+    const params = new URLSearchParams(searchParams.toString())
+    if (value) params.set(&#x27;label&#x27;, value)
+    else params.delete(&#x27;label&#x27;)
+    router.push(`/?${params.toString()}`)
+  }
+
+  // ...render chips with onClick={handleFilter}
+}</code></pre></div></div>
+<p>이 버전에서는 <code>router.push()</code>가 navigation을 시작하지만 local pending state가 없습니다. chip은 예전 URL 값을 계속 render하고, board는 새 server render가 load 중이라는 신호를 전혀 주지 않습니다.</p><div class="en-orig"><p>With this version, <code>router.push()</code> starts the navigation, but there's no local pending state. The chip keeps rendering the old URL value, and the board gives no sign that a new server render is loading.</p></div>
+<p>filter를 두 component로 나누세요. <code>LabelFilter</code>는 query string 업데이트를 담당하고, navigation callback을 재사용 가능한 <code>ChipGroup</code>에 넘깁니다. <code>ChipGroup</code>이 모든 pending feedback을 처리합니다:</p><div class="en-orig"><p>Separate the filter into two components. <code>LabelFilter</code> owns the query string update and passes the navigation callback to a reusable <code>ChipGroup</code>, which handles all the pending feedback:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/label-filter.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useRouter, useSearchParams } from &#x27;next/navigation&#x27;
+import { ChipGroup } from &#x27;@/components/ui/chip-group&#x27;
+
+const labels = [
+  { label: &#x27;Design&#x27;, value: &#x27;design&#x27; },
+  { label: &#x27;Frontend&#x27;, value: &#x27;frontend&#x27; },
+  { label: &#x27;Backend&#x27;, value: &#x27;backend&#x27; },
+]
+
+export function LabelFilter() {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const current = searchParams.get(&#x27;label&#x27;) ?? null
+
+  function filterAction(value: string | null) {
+    const params = new URLSearchParams(searchParams.toString())
+    if (value) {
+      params.set(&#x27;label&#x27;, value)
+    } else {
+      params.delete(&#x27;label&#x27;)
+    }
+    router.push(`/?${params.toString()}`)
+  }
+
+  return (
+    &lt;ChipGroup items={labels} value={current} changeAction={filterAction} /&gt;
+  )
+}</code></pre></div></div>
+<p><code>LabelFilter</code>는 앱이 어디로 navigate할지를 결정하며, 자체 pending state는 갖지 않습니다.</p><div class="en-orig"><p><code>LabelFilter</code> decides where the app navigates and holds no pending state of its own.</p></div>
+<h4 class="sec" id="handle-pending-feedback-internally"><a class="anchor" href="#handle-pending-feedback-internally">Handle pending feedback internally<span class="ko">pending feedback을 내부에서 처리하기</span></a></h4>
+<p><code>ChipGroup</code>은 <code>changeAction</code> prop을 받아 자신의 <code>startTransition</code> 안에서 호출합니다. <code>useOptimistic</code> hook을 두 개 사용하는데, 하나는 선택된 chip용이고, 다른 하나는 ancestor component가 style 기준으로 삼을 수 있는 <code>data-pending</code> attribute용입니다:</p><div class="en-orig"><p><code>ChipGroup</code> accepts a <code>changeAction</code> prop and calls it inside its own <code>startTransition</code>. It uses two <code>useOptimistic</code> hooks: one for the selected chip, and one for the <code>data-pending</code> attribute that ancestor components can style against:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">components/ui/chip-group.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { startTransition, useOptimistic } from &#x27;react&#x27;
+
+export function ChipGroup({ items, value, changeAction }) {
+  const [optimisticValue, setOptimisticValue] = useOptimistic(value)
+  const [isPending, setIsPending] = useOptimistic(false)
+
+  function handleClick(newValue) {
+    startTransition(async () =&gt; {
+      setOptimisticValue(newValue)
+      setIsPending(true)
+      await changeAction(newValue)
+    })
+  }
+
+  return (
+    &lt;div className=&quot;flex gap-1.5&quot; data-pending={isPending ? &#x27;&#x27; : undefined}&gt;
+      {items.map((item) =&gt; (
+        &lt;button
+          key={item.value}
+          onClick={() =&gt;
+            handleClick(item.value === optimisticValue ? null : item.value)
+          }
+          className={item.value === optimisticValue ? &#x27;active&#x27; : &#x27;&#x27;}
+        &gt;
+          {item.label}
+        &lt;/button&gt;
+      ))}
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>consumer는 callback(<code>changeAction</code>)을 넘기고, design component가 그것을 transition 안에서 실행합니다. 관례상 <code>action</code>이라는 이름이거나 <code>Action</code>으로 끝나는 prop은 이런 동작을 나타냅니다. 이 패턴은 React 문서의 <a href="https://react.dev/reference/react/useTransition#exposing-action-props-from-components" target="_blank" rel="noopener">Exposing <code>action</code> props from components</a>를 참고하세요.</p><div class="en-orig"><p>The consumer passes a callback (<code>changeAction</code>), and the design component runs it inside a transition. By convention, props named <code>action</code> or suffixed with <code>Action</code> signal this behavior. See <a href="https://react.dev/reference/react/useTransition#exposing-action-props-from-components" target="_blank" rel="noopener">Exposing <code>action</code> props from components</a> in the React docs for this pattern.</p></div>
+<p><code>ChipGroup</code> root element의 <code>data-pending</code> attribute 덕분에 ancestor component는 별도의 조율 없이 CSS로 반응할 수 있습니다. home page의 board는 <code>group-has-data-pending:opacity-50</code>을 사용해 transition이 실행되는 동안 board를 skeleton으로 바꾸지 않고 흐리게 표시합니다. <code>ChipGroup</code>이 <code>group</code> element 안에서 render되므로, 어떤 ancestor든 이 attribute를 styling에 사용할 수 있습니다.</p><div class="en-orig"><p>The <code>data-pending</code> attribute on the <code>ChipGroup</code> root element lets ancestor components react through CSS without any coordination. The board on the home page uses <code>group-has-data-pending:opacity-50</code> to dim while the transition runs, without replacing the board with a skeleton. Because <code>ChipGroup</code> renders inside the <code>group</code> element, the attribute is available to any ancestor for styling.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>group-has-data-pending:</code>과 <code>has-data-pending:</code>은 CSS <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:has" target="_blank" rel="noopener"><code>:has()</code></a> selector로 compile되며, 브라우저는 <code>data-pending</code>이 toggle될 때마다 기준이 되는 subtree 전체를 다시 평가합니다. 여기서는 board가 filter 한 번당 두 번만 toggle하고 dragging(5단계)은 의도적으로 이를 건너뛰기 때문에 비용이 적습니다. 범위가 넓은 <code>:has()</code> anchor가 dragging이나 scrolling처럼 빈번한 interaction에서 toggle된다면 큰 subtree에 대한 반복 재계산이 누적되므로, 그럴 때는 대신 client state를 사용하세요.</p><div class="en-orig"><p><code>group-has-data-pending:</code> and <code>has-data-pending:</code> compile to the CSS <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/:has" target="_blank" rel="noopener"><code>:has()</code></a> selector, which the browser re-evaluates over the anchored subtree whenever <code>data-pending</code> toggles. That stays cheap here because the board toggles it only twice per filter, and dragging (Step 5) deliberately skips it. Reach for client state instead when a broad <code>:has()</code> anchor toggles on a high-frequency interaction like dragging or scrolling, where repeated recalculation over a large subtree adds up.</p></div></div></div>
+<p>이제 "Frontend" chip이 현재 frame에서 바로 강조 표시됩니다. filter된 데이터가 load되는 동안 board가 흐려졌다가, filter된 task로 업데이트됩니다.</p><div class="en-orig"><p>The "Frontend" chip now highlights on the current frame. The board dims while the filtered data loads, then updates with the filtered tasks.</p></div>
+<h3 class="sec" id="step-4-add-comments-with-instant-feedback"><a class="anchor" href="#step-4-add-comments-with-instant-feedback">Step 4: Add comments with instant feedback<span class="ko">4단계: 즉각적인 feedback과 함께 comment 추가하기</span></a></h3>
+<p>task 상세 페이지에는 comment section이 있습니다. comment를 제출하면 server에 새 데이터가 기록되지만, 저장된 목록은 server component가 render하므로 다음 server render가 도착하기 전까지는 새 comment를 포함할 수 없습니다.</p><div class="en-orig"><p>The task detail page has a comment section. Submitting a comment writes new data on the server, but a server component renders the persisted list, so it can't include the new comment until the next server render arrives.</p></div>
+<p>여기서 comment form은 input에 controlled state를 사용하고 Server Function을 직접 호출합니다:</p><div class="en-orig"><p>Here a comment form uses controlled state for the input and calls the Server Function directly:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/comment-form.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useState } from &#x27;react&#x27;
+import { addComment } from &#x27;@/features/task/task-actions&#x27;
+
+export function CommentForm({ taskId }) {
+  const [content, setContent] = useState(&#x27;&#x27;)
+
+  async function handleSubmit() {
+    if (!content.trim()) return
+    await addComment(taskId, content)
+    setContent(&#x27;&#x27;)
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;input
+        value={content}
+        onChange={(e) =&gt; setContent(e.target.value)}
+        placeholder=&quot;Write a comment...&quot;
+      /&gt;
+      &lt;button onClick={handleSubmit}&gt;Send&lt;/button&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>이 버전에서는 submit 시 Server Function이 실행되지만, server가 응답할 때까지 input은 채워진 채로 남아 있고 목록도 바뀌지 않습니다.</p><div class="en-orig"><p>With this version, the Server Function runs on submit, but the input stays filled and the list doesn't change until the server responds.</p></div>
+<p>comment 목록을 두 부분으로 나누세요. server component는 저장된 comment를 render하고, client component는 빈 초기 배열을 넣은 <code>useOptimistic([])</code>로 <strong>pending</strong> 상태인 comment만 추적합니다. transition이 완료되고 최신 데이터와 함께 새 render가 도착하면 pending 목록은 빈 상태로 초기화되고, 실제 comment가 server가 render한 목록에 나타납니다:</p><div class="en-orig"><p>Split the comment list into two parts. A server component renders the persisted comments, and a client component tracks only the <strong>pending</strong> comments using <code>useOptimistic([])</code> with an empty initial array. When the transition completes and a new render arrives with fresh data, the pending list resets to empty and the real comment appears in the server-rendered list:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/optimistic-comments.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useOptimistic, useRef } from &#x27;react&#x27;
+import { addComment } from &#x27;@/features/task/task-actions&#x27;
+import { CommentCard } from &#x27;./comment-card&#x27;
+
+export function OptimisticComments({ taskId }) {
+  const [pendingComments, setPendingComments] = useOptimistic([])
+  const formRef = useRef(null)
+
+  return (
+    &lt;&gt;
+      &lt;form
+        ref={formRef}
+        action={async (formData) =&gt; {
+          const content = formData.get(&#x27;content&#x27;)?.trim()
+          if (!content) return
+          formRef.current?.reset()
+
+          const id = crypto.randomUUID()
+          setPendingComments((current) =&gt; [
+            {
+              id,
+              content,
+              userName: &#x27;You&#x27;,
+              createdAt: new Date().toISOString(),
+            },
+            ...current,
+          ])
+
+          await addComment(taskId, content)
+        }}
+      &gt;
+        &lt;input name=&quot;content&quot; placeholder=&quot;Write a comment...&quot; required /&gt;
+        &lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
+      &lt;/form&gt;
+      {pendingComments.map((comment) =&gt; (
+        &lt;CommentCard key={comment.id} comment={comment} pending /&gt;
+      ))}
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p>submit 시 세 가지 일이 일어납니다:</p><div class="en-orig"><p>Three things happen on submit:</p></div>
+<ol>
+<li><code>formRef.current?.reset()</code>이 DOM을 직접 조작해 input을 비웁니다. transition 안에서 <a href="https://react.dev/reference/react/useState" target="_blank" rel="noopener"><code>useState</code></a> setter는 transition이 완료될 때까지 지연되지만, <code>useOptimistic</code> setter와 <code>formRef.reset()</code> 같은 직접 DOM 호출은 현재 frame에 적용됩니다.</li>
+<li><code>setPendingComments</code>가 client에서 생성한 UUID와 함께 새 comment를 pending 목록에 추가합니다.</li>
+<li>form <code>action</code>이 transition 안에서 handler를 실행합니다.</li>
+</ol><div class="en-orig"><ol>
+<li><code>formRef.current?.reset()</code> clears the input through direct DOM manipulation. Inside a transition, <a href="https://react.dev/reference/react/useState" target="_blank" rel="noopener"><code>useState</code></a> setters are deferred until the transition completes, but <code>useOptimistic</code> setters and direct DOM calls like <code>formRef.reset()</code> apply on the current frame.</li>
+<li><code>setPendingComments</code> adds the new comment to the pending list with a client-generated UUID.</li>
+<li>The form <code>action</code> runs the handler inside a transition.</li>
+</ol></div>
+<p>server component는 그 옆에 실제 목록을 render합니다:</p><div class="en-orig"><p>The server component renders the real list alongside it:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/comment-section.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { getComments } from &#x27;@/features/task/task-queries&#x27;
+import { CommentCard } from &#x27;./comment-card&#x27;
+import { OptimisticComments } from &#x27;./optimistic-comments&#x27;
+
+async function CommentSection({ taskId }) {
+  const comments = await getComments(taskId)
+
+  return (
+    &lt;div&gt;
+      &lt;OptimisticComments taskId={taskId} /&gt;
+      {comments.map((comment) =&gt; (
+        &lt;CommentCard key={comment.id} comment={comment} /&gt;
+      ))}
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>이제 submit하면 input이 비워지고 목록 맨 위에 흐릿한 comment card가 나타납니다. server가 확인하면 흐릿한 card는 사라지고 server가 render한 목록에 실제 comment가 그 자리를 대신합니다.</p><div class="en-orig"><p>The input now clears on submit and a faded comment card appears at the top of the list. When the server confirms, the faded card disappears and the real comment takes its place in the server-rendered list.</p></div>
+<h3 class="sec" id="step-5-move-cards-between-columns"><a class="anchor" href="#step-5-move-cards-between-columns">Step 5: Move cards between columns<span class="ko">5단계: column 사이로 card 옮기기</span></a></h3>
+<p>board에는 Todo, In Progress, Done 세 개의 column이 있습니다. 각 column은 server가 제공한 <code>tasks</code> prop의 task를 render합니다.</p><div class="en-orig"><p>The board has three columns: Todo, In Progress, and Done. Each column renders tasks from the server-provided <code>tasks</code> prop.</p></div>
+<p>card를 drop하면 새 status를 기록하는 Server Function이 시작됩니다. 다음 server render가 도착할 때까지 <code>tasks</code> prop은 바뀌지 않으므로, client에는 pending 중인 이동을 위한 임시 task 목록이 필요합니다.</p><div class="en-orig"><p>Dropping a card starts a Server Function that writes the new status. The <code>tasks</code> prop doesn't change until the next server render arrives, so the client needs a temporary task list for the pending move.</p></div>
+<p>여기서는 drop 시 Server Function을 호출합니다:</p><div class="en-orig"><p>Here the Server Function is called on drop:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/board.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { use } from &#x27;react&#x27;
+import { updateStatus } from &#x27;@/features/task/task-actions&#x27;
+
+export function Board({ tasksPromise }) {
+  const tasks = use(tasksPromise)
+
+  function handleDrop(targetStatus, taskId) {
+    updateStatus(taskId, targetStatus)
+  }
+
+  // ...render columns from tasks
+}</code></pre></div></div>
+<p>component는 parent server component에서 promise를 받아(1단계의 <code>&lt;Suspense&gt;</code> boundary 참고) <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use</code></a>로 unwrap합니다. 이 버전에서는 "Todo"에서 "In Progress"로 drag한 card가 server가 업데이트를 처리하는 동안 예전 column에 머물러 있다가, response가 도착한 뒤에야 새 column으로 점프합니다.</p><div class="en-orig"><p>The component receives a promise from the parent server component (see Step 1's <code>&lt;Suspense&gt;</code> boundary) and unwraps it with <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use</code></a>. With this version, a card dragged from "Todo" to "In Progress" stays in the old column while the server processes the update, then jumps to the new column after the response arrives.</p></div>
+<p>reducer와 함께 <code>useOptimistic</code>을 추가해 현재 frame에서 card의 status를 다시 매핑하세요. reducer는 전체 task 목록과, 어떤 card가 어디로 이동했는지 설명하는 action을 받습니다:</p><div class="en-orig"><p>Add <code>useOptimistic</code> with a reducer to remap the card's status on the current frame. The reducer receives the full task list and an action describing which card moved where:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/board.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { startTransition, use, useOptimistic } from &#x27;react&#x27;
+import { toast } from &#x27;sonner&#x27;
+import { updateStatus } from &#x27;@/features/task/task-actions&#x27;
+
+export function Board({ tasksPromise }) {
+  const tasks = use(tasksPromise)
+  const [optimisticTasks, moveTask] = useOptimistic(
+    tasks,
+    (currentTasks, action: { taskId: string; status: Status }) =&gt;
+      currentTasks.map((t) =&gt;
+        t.id === action.taskId ? { ...t, status: action.status } : t
+      )
+  )
+
+  function handleDrop(targetStatus, taskId) {
+    startTransition(async () =&gt; {
+      moveTask({ taskId, status: targetStatus })
+      const result = await updateStatus(taskId, targetStatus)
+      if (!result.success) toast.error(result.error)
+    })
+  }
+
+  return (
+    &lt;div className=&quot;grid grid-cols-3 gap-4&quot;&gt;
+      {columns.map((col) =&gt; (
+        &lt;Column
+          key={col.status}
+          tasks={optimisticTasks.filter((t) =&gt; t.status === col.status)}
+          onDrop={(taskId) =&gt; handleDrop(col.status, taskId)}
+        /&gt;
+      ))}
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>reducer는 task 목록을 map하면서 drag된 card의 status만 업데이트하고 나머지는 그대로 둡니다. drag 도중에 polling이나 다른 사용자의 mutation 등으로 background refresh가 도착하면, React는 업데이트된 base 데이터로 reducer를 다시 실행하므로 optimistic 이동이 최신 데이터 위에 얹혀집니다. task가 더 이상 존재하지 않으면 Server Function은 error 결과를 반환하고, client는 이를 toast로 표시합니다.</p><div class="en-orig"><p>The reducer maps over the task list and updates the status of the dragged card, leaving the rest unchanged. If a background refresh arrives mid-drag, for example from polling or another user's mutation, React re-runs the reducer with the updated base data so the optimistic move sits on top of fresh data. The Server Function returns an error result when the task no longer exists, which the client displays in a toast.</p></div>
+<p>이 단계에서는 <code>useTransition</code> 대신 독립형 <code>startTransition</code>을 사용합니다. hook의 <code>isPending</code>이 3단계의 board fade를 trigger하기 때문입니다. optimistic 이동이 이미 시각적 feedback을 제공하므로 pending 표시는 필요 없습니다. Server Function이 예상된 error를 반환하면 card는 원래 위치로 되돌아갑니다. 예상치 못한 error는 가장 가까운 <a href="app-getting-started-error-handling.html">error boundary</a>로 전달됩니다.</p><div class="en-orig"><p>This step uses the standalone <code>startTransition</code> instead of <code>useTransition</code> because the hook's <code>isPending</code> would trigger the board fade from Step 3. The optimistic move already covers the visual feedback, so no pending indicator is needed. If the Server Function returns an expected error, the card reverts. Unexpected errors are forwarded to the nearest <a href="app-getting-started-error-handling.html">error boundary</a>.</p></div>
+<p>이제 "Todo"에서 "In Progress"로 drag한 card는 손을 떼는 순간 대상 column에 놓입니다.</p><div class="en-orig"><p>A card dragged from "Todo" to "In Progress" now lands in the target column the moment you release.</p></div>
+<h3 class="sec" id="step-6-manage-form-lifecycle"><a class="anchor" href="#step-6-manage-form-lifecycle">Step 6: Manage form lifecycle<span class="ko">6단계: form lifecycle 관리하기</span></a></h3>
+<p>board에는 create dialog를 여는 "New Task" button이 있습니다. form action은 server에서 task를 만든 다음 board를 refresh합니다.</p><div class="en-orig"><p>The board has a "New Task" button that opens a create dialog. The form action creates the task on the server, then refreshes the board.</p></div>
+<p>dialog는 action이 pending인 동안 세 가지 client state를 조율합니다: submit button, field 값, 그리고 dialog가 열려 있는지 여부입니다. <a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener"><code>useActionState</code></a>가 이 세 가지를 모두 처리합니다.</p><div class="en-orig"><p>The dialog coordinates three pieces of client state while the action is pending: the submit button, the field values, and whether the dialog is open. <a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener"><code>useActionState</code></a> handles all three.</p></div>
+<p>여기서는 form이 submission state를 수동으로 관리하고 <code>onSubmit</code> handler에서 Server Function을 호출합니다:</p><div class="en-orig"><p>Here a form manages submission state manually and calls the Server Function in an <code>onSubmit</code> handler:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/create-task-modal.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useState } from &#x27;react&#x27;
+import { createTask } from &#x27;@/features/task/task-actions&#x27;
+
+export function CreateTaskModal() {
+  const [isOpen, setIsOpen] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  async function handleSubmit(e) {
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    const title = formData.get(&#x27;title&#x27;)
+    if (!title.trim()) return
+
+    setIsSubmitting(true)
+    await createTask({ title /* ... */ })
+    setIsSubmitting(false)
+    setIsOpen(false)
+  }
+
+  return (
+    &lt;Dialog open={isOpen} onOpenChange={setIsOpen}&gt;
+      &lt;form onSubmit={handleSubmit}&gt;
+        &lt;input name=&quot;title&quot; placeholder=&quot;Task title...&quot; required /&gt;
+        &lt;button type=&quot;submit&quot; disabled={isSubmitting}&gt;
+          {isSubmitting ? &#x27;Creating...&#x27; : &#x27;Create Task&#x27;}
+        &lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/Dialog&gt;
+  )
+}</code></pre></div></div>
+<p>이 버전에서는 submit handler가 실행되지만, 두 개의 별도 <code>useState</code> 호출이 pending state를 관리합니다. <code>setIsOpen(false)</code>가 transition 밖에서 실행되기 때문에, board에 새 task가 보이기 전에 dialog가 닫힙니다. 또한 reset key를 직접 추적하지 않으면 form field는 submission이 끝난 뒤에도 값을 그대로 유지합니다.</p><div class="en-orig"><p>With this version, the submit handler runs, but two separate <code>useState</code> calls manage the pending state. The dialog closes before the board shows the new task, because <code>setIsOpen(false)</code> fires outside of a transition. The form fields also keep their values across submissions unless you track a reset key yourself.</p></div>
+<p><code>useActionState</code>는 세 가지 관심사를 모두 처리합니다: button을 위한 <code>isPending</code>, field를 위한 key 기반 reset, 그리고 dialog 닫기를 감싸는 처리입니다:</p><div class="en-orig"><p><code>useActionState</code> handles all three concerns: <code>isPending</code> for the button, key-based reset for the fields, and a wrap around the dialog close:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/create-task-modal.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useActionState, startTransition, useState } from &#x27;react&#x27;
+import { createTask } from &#x27;@/features/task/task-actions&#x27;
+
+export function CreateTaskModal() {
+  const [isOpen, setIsOpen] = useState(false)
+
+  const [{ key }, formAction, isPending] = useActionState(
+    async (prev, formData) =&gt; {
+      const title = String(formData.get(&#x27;title&#x27;))
+      if (!title.trim()) return prev
+
+      await createTask({
+        title,
+        description: String(formData.get(&#x27;description&#x27;)),
+        status: &#x27;todo&#x27;,
+        priority: &#x27;medium&#x27;,
+      })
+
+      startTransition(() =&gt; setIsOpen(false))
+      return { key: prev.key + 1 }
+    },
+    { key: 0 }
+  )
+
+  return (
+    &lt;Dialog open={isOpen} onOpenChange={setIsOpen}&gt;
+      &lt;form action={formAction}&gt;
+        &lt;div key={key}&gt;
+          &lt;input name=&quot;title&quot; placeholder=&quot;Task title...&quot; required /&gt;
+          &lt;input name=&quot;description&quot; placeholder=&quot;Describe the task...&quot; /&gt;
+        &lt;/div&gt;
+        &lt;button type=&quot;submit&quot; disabled={isPending}&gt;
+          {isPending ? &#x27;Creating...&#x27; : &#x27;Create Task&#x27;}
+        &lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/Dialog&gt;
+  )
+}</code></pre></div></div>
+<p>반환된 state의 <code>key</code>가 form reset을 제어합니다. 성공하면 <code>key</code>가 증가하고, 이에 따라 <code>&lt;div key={key}&gt;</code>가 다시 mount되면서 그 안의 모든 input이 초기화됩니다.</p><div class="en-orig"><p>The <code>key</code> in the returned state controls form reset. On success, <code>key</code> increments, which remounts the <code>&lt;div key={key}&gt;</code> and resets every input inside it.</p></div>
+<p><code>useActionState</code>는 action을 transition으로 실행하므로, <code>createTask</code>가 실행되는 동안 dialog는 열린 채로 있고 <code>isPending</code>은 <code>true</code>로 유지됩니다. <code>await</code> 이후의 state 업데이트는 자동으로 그 transition에 포함되지 않으므로, <code>setIsOpen(false)</code>를 <code>startTransition</code>으로 감싸야 닫기 동작이 transition의 일부로 실행됩니다.</p><div class="en-orig"><p><code>useActionState</code> runs the action as a transition, so the dialog stays open and <code>isPending</code> stays <code>true</code> while <code>createTask</code> runs. State updates after the <code>await</code> aren't automatically part of that transition, so wrapping <code>setIsOpen(false)</code> in <code>startTransition</code> runs the close as part of the transition.</p></div>
+<p>이렇게 감싸 두면 React는 dialog 닫기와 <code>createTask</code> 안의 <code>refresh()</code>가 trigger하는 board 업데이트를 batch 처리하므로, dialog가 닫히는 순간 새 task가 나타납니다. 감싸지 않으면 dialog가 먼저 닫히고 board는 한 frame 뒤에 업데이트됩니다.</p><div class="en-orig"><p>With that wrap in place, React batches the dialog close with the board update that <code>refresh()</code> triggers inside <code>createTask</code>, so the new task appears at the moment the dialog closes. Without it, the dialog closes first and the board updates a frame later.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 한계는 React 문서의 <a href="https://react.dev/reference/react/useTransition#react-doesnt-treat-my-state-update-after-await-as-a-transition" target="_blank" rel="noopener">React doesn't treat my state update after <code>await</code> as a transition</a>에 설명되어 있습니다. 이 문제가 고쳐지기 전까지는 <code>await</code> 이후의 state 업데이트를 <code>startTransition</code>으로 감싸는 것이 권장 workaround입니다.</p><div class="en-orig"><p>This limitation is documented in React under <a href="https://react.dev/reference/react/useTransition#react-doesnt-treat-my-state-update-after-await-as-a-transition" target="_blank" rel="noopener">React doesn't treat my state update after <code>await</code> as a transition</a>. Until it's fixed, wrapping post-<code>await</code> state updates in <code>startTransition</code> is the recommended workaround.</p></div></div></div>
+<p>toast 같은 side effect도 바로 이 <code>await</code> 이후 구간에 두어야 합니다:</p><div class="en-orig"><p>The same post-<code>await</code> window is where side effects like toasts belong:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">await createTask({
+  /* … */
+})
+
+startTransition(() =&gt; setIsOpen(false))
+toast.success(&#x27;Task created&#x27;)</code></pre></div></div>
+<p>analytics, toast, focus 변경처럼 render되는 state에 영향을 주지 않는 side effect는 <code>await</code>가 resolve된 뒤에 실행됩니다. 이들은 React state를 업데이트하지 않으므로 transition이 필요 없습니다.</p><div class="en-orig"><p>Side effects that don't affect rendered state, such as analytics, toasts, and focus changes, run after the <code>await</code> resolves. They don't need a transition because they don't update React state.</p></div>
+<p>이제 submit하면 button 텍스트가 "Creating..."으로 바뀌고 흐려집니다. server가 응답하면 field가 비워지고, dialog가 닫히고, board에 새 task가 나타나며, toast가 action을 확인해 줍니다.</p><div class="en-orig"><p>The button text now changes to "Creating..." and dims on submit. When the server responds, the fields clear, the dialog closes, the new task appears on the board, and a toast confirms the action.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>함께 제공되는 앱은 modal에 status, priority, assignee, label picker를 추가합니다. 패턴은 같습니다: hidden input이 각 picker의 state를 추적하고, 성공하면 <code>key</code>가 이들을 모두 초기화합니다.</p><div class="en-orig"><p>The companion app adds status, priority, assignee, and label pickers to the modal. The pattern is the same: hidden inputs track each picker's state, and <code>key</code> resets them all on success.</p></div></div></div>
+<h3 class="sec" id="step-7-signal-pending-deletion-to-a-parent"><a class="anchor" href="#step-7-signal-pending-deletion-to-a-parent">Step 7: Signal pending deletion to a parent<span class="ko">7단계: pending 중인 삭제를 parent에 알리기</span></a></h3>
+<p>각 comment card에는 server에서 comment를 삭제하는 delete button이 있으며, comment는 다음 render 이후 목록에서 사라집니다.</p><div class="en-orig"><p>Each comment card has a delete button that removes the comment on the server, and the comment disappears from the list after the next render.</p></div>
+<p>click과 그 render 사이에도 card는 여전히 예전 데이터를 보여 줍니다. 목록 자체는 pending 중인 삭제를 표시할 수 없으므로, 신호는 button에서 나와야 합니다.</p><div class="en-orig"><p>Between the click and that render, the card still shows the old data. The list itself can't show the pending removal, so the signal has to come from the button.</p></div>
+<p>이 단계는 3단계의 <code>data-pending</code> CSS hook을 재사용하지만, <code>useTransition</code>의 <code>isPending</code> 대신 <code>useOptimistic(false)</code>로 이를 구동합니다.</p><div class="en-orig"><p>This step reuses the <code>data-pending</code> CSS hook from Step 3, but drives it from <code>useOptimistic(false)</code> instead of the <code>isPending</code> from <code>useTransition</code>.</p></div>
+<p>여기서는 Server Function을 직접 호출합니다:</p><div class="en-orig"><p>Here the Server Function is called directly:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/delete-button.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { Trash2 } from &#x27;lucide-react&#x27;
+import { deleteComment } from &#x27;@/features/task/task-actions&#x27;
+
+export function DeleteButton({ commentId }) {
+  return (
+    &lt;button
+      onClick={() =&gt; deleteComment(commentId)}
+      aria-label=&quot;Delete comment&quot;
+    &gt;
+      &lt;Trash2 className=&quot;size-3&quot; /&gt;
+    &lt;/button&gt;
+  )
+}</code></pre></div></div>
+<p>이 버전에서는 다음 server render까지 comment가 완전히 보이는 상태로 남아 있습니다.</p><div class="en-orig"><p>With this version, the comment stays fully visible until the next server render.</p></div>
+<p>action을 <code>&lt;form&gt;</code>으로 감싸고, <code>useOptimistic(false)</code>로 pending state를 추적하고, 이를 <code>data-pending</code> attribute로 노출하세요. action을 <code>deleteAction</code> prop으로 받아서 parent comment card가 CSS로 반응할 수 있게 합니다:</p><div class="en-orig"><p>Wrap the action in a <code>&lt;form&gt;</code>, track pending state with <code>useOptimistic(false)</code>, and expose it through a <code>data-pending</code> attribute. Accept the action as a <code>deleteAction</code> prop so the parent comment card can react with CSS:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/delete-button.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useOptimistic } from &#x27;react&#x27;
+import { Trash2 } from &#x27;lucide-react&#x27;
+
+export function DeleteButton({
+  deleteAction,
+}: {
+  deleteAction: () =&gt; void | Promise&lt;void&gt;
+}) {
+  const [isPending, setIsPending] = useOptimistic(false)
+
+  return (
+    &lt;form
+      action={async () =&gt; {
+        setIsPending(true)
+        await deleteAction()
+      }}
+    &gt;
+      &lt;button
+        type=&quot;submit&quot;
+        disabled={isPending}
+        data-pending={isPending ? &#x27;&#x27; : undefined}
+        aria-label=&quot;Delete comment&quot;
+      &gt;
+        &lt;Trash2 className=&quot;size-3&quot; /&gt;
+      &lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</code></pre></div></div>
+<p>parent comment card는 Tailwind의 <code>has-data-pending:</code> variant를 사용해, 어떤 descendant든 <code>data-pending</code> attribute를 설정하면 자신을 흐리게 만듭니다. 삭제가 pending인지 아는 component는 button뿐이므로, 그 state를 CSS attribute로 노출하면 state를 끌어올리거나 callback을 여러 단계로 전달하지 않고도 어떤 ancestor든 스스로 흐려질 수 있습니다:</p><div class="en-orig"><p>The parent comment card uses Tailwind's <code>has-data-pending:</code> variant to fade itself when any descendant sets the <code>data-pending</code> attribute. The button is the only component that knows when deletion is pending, so exposing that state as a CSS attribute lets any ancestor dim itself without lifting state or threading callbacks:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/comment-card.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&lt;div className=&quot;rounded-lg px-3 transition-all has-data-pending:opacity-30&quot;&gt;
+  {/* comment content */}
+  {deleteAction &amp;&amp; &lt;DeleteButton deleteAction={deleteAction} /&gt;}
+&lt;/div&gt;</code></pre></div></div>
+<p>parent server component는 Server Function을 comment ID에 bind하므로 <code>DeleteButton</code>은 재사용 가능하게 유지됩니다:</p><div class="en-orig"><p>The parent server component binds the Server Function to the comment ID, which keeps <code>DeleteButton</code> reusable:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/comment-section.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&lt;CommentCard
+  comment={comment}
+  deleteAction={
+    comment.userName === &#x27;You&#x27;
+      ? deleteComment.bind(null, comment.id)
+      : undefined
+  }
+/&gt;</code></pre></div></div>
+<p>이제 click이 인식되는 순간 card가 30% opacity로 흐려집니다. server가 확인하고 다음 render가 도착하면 card는 목록에서 unmount됩니다.</p><div class="en-orig"><p>The card now fades to 30% opacity the moment the click registers. When the server confirms and the next render arrives, the card unmounts from the list.</p></div>
+<h3 class="sec" id="step-8-make-repeat-navigation-instant"><a class="anchor" href="#step-8-make-repeat-navigation-instant">Step 8: Make repeat navigation instant<span class="ko">8단계: 반복 navigation을 즉각적으로 만들기</span></a></h3>
+<p>지금까지의 모든 패턴은 단일 interaction을 매끄럽게 만듭니다. navigation을 오가면 같은 read가 다시 실행되고 같은 fallback이 다시 그려집니다. 재사용 가능한 read를 <a href="app-getting-started-caching.html">caching</a>하고 실제 request와 함께 <a href="app-guides-prefetching.html">prefetching</a>하면, 데이터 모델을 브라우저로 옮기지 않고도 그 간극을 메울 수 있습니다.</p><div class="en-orig"><p>Every pattern so far smooths a single interaction. Across navigations, the same reads rerun and the same fallbacks paint again. <a href="app-getting-started-caching.html">Caching</a> the reusable reads and <a href="app-guides-prefetching.html">prefetching</a> them with the real request closes that gap without moving the data model into the browser.</p></div>
+<p>이 단계는 Next.js 16에 도입된 <a href="app-api-reference-config-next-config-js-cacheComponents.html">Cache Components</a>를 사용합니다. 1단계부터 7단계까지는 이것 없이도 동작합니다. Cache Components를 사용하지 않는다면 <a href="app-guides-caching-without-cache-components.html">Caching without Cache Components</a>를 참고하세요.</p><div class="en-orig"><p>This step uses <a href="app-api-reference-config-next-config-js-cacheComponents.html">Cache Components</a>, introduced in Next.js 16. Steps 1 through 7 work without it. If you aren't using Cache Components, see <a href="app-guides-caching-without-cache-components.html">Caching without Cache Components</a>.</p></div>
+<p><code>next.config.ts</code>에서 활성화하세요:</p><div class="en-orig"><p>Enable it in <code>next.config.ts</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+}
+
+export default nextConfig</code></pre></div></div>
+<p>Cache Components를 활성화하면 이 단계의 route뿐 아니라 모든 route에 prerender 검증이 적용됩니다. <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> 밖에서 <code>cookies()</code>, <code>headers()</code>, <code>searchParams</code> 같은 request 데이터를 읽는 route는 이제 prerendering을 block하므로 1단계와 같은 처리가 필요합니다. 기존 앱에서 이를 켜려면 <a href="app-guides-migrating-to-cache-components.html">Migrating to Cache Components</a>를 참고하세요.</p><div class="en-orig"><p>Enabling Cache Components applies prerender validation across every route, not just the ones in this step. A route that reads request data such as <code>cookies()</code>, <code>headers()</code>, or <code>searchParams</code> outside <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> now blocks prerendering and needs the Step 1 treatment. To turn it on in an existing app, see <a href="app-guides-migrating-to-cache-components.html">Migrating to Cache Components</a>.</p></div>
+<h4 class="sec" id="cache-reusable-reads"><a class="anchor" href="#cache-reusable-reads">Cache reusable reads<span class="ko">재사용 가능한 read cache하기</span></a></h4>
+<p>각 server read마다 여러 request에 걸쳐 재사용해야 하는지, 그리고 각 write가 그것을 정확하게 invalidate할 수 있는지 따져 보세요. task는 cache하기에 충분히 안정적이고 id별로 명확한 tag를 가집니다:</p><div class="en-orig"><p>For each server read, ask whether it should be reused across requests and whether each write can invalidate it precisely. A task is stable enough to cache and has a clear per-id tag:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/task-queries.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife, cacheTag } from &#x27;next/cache&#x27;
+import { getTaskById } from &#x27;@/lib/db&#x27;
+
+export async function getTask(id: string) {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;hours&#x27;)
+  cacheTag(&#x27;tasks&#x27;, `task-${id}`)
+
+  return getTaskById(id)
+}</code></pre></div></div>
+<p>id별 tag <code>task-${id}</code>는 개별 task에 고유한 handle을 부여합니다. 더 넓은 범위의 <code>tasks</code> tag는 목록을 담당합니다. cache scoping(<code>&#x27;use cache: private&#x27;</code>, <code>&#x27;use cache: remote&#x27;</code>), cache lifetime, tag 패턴은 <a href="app-getting-started-caching.html">Caching 가이드</a>를 참고하세요.</p><div class="en-orig"><p>The per-id tag <code>task-${id}</code> gives a single task its own handle. The broader <code>tasks</code> tag covers the list. See the <a href="app-getting-started-caching.html">Caching guide</a> for cache scoping (<code>&#x27;use cache: private&#x27;</code>, <code>&#x27;use cache: remote&#x27;</code>), cache lifetimes, and tag patterns.</p></div>
+<h4 class="sec" id="invalidate-from-mutations"><a class="anchor" href="#invalidate-from-mutations">Invalidate from mutations<span class="ko">mutation에서 invalidate하기</span></a></h4>
+<p><a href="app-api-reference-functions-refresh.html"><code>refresh()</code></a>는 dynamic 작업을 다시 실행하지만 cache된 entry는 그대로 둡니다. 각 write가 건드린 tag에 대해서는 이를 <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>로 바꾸세요:</p><div class="en-orig"><p><a href="app-api-reference-functions-refresh.html"><code>refresh()</code></a> reruns dynamic work but leaves cached entries in place. Replace it with <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a> for the tags each write touched:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/task-actions.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use server&#x27;
+
+import { updateTag } from &#x27;next/cache&#x27;
+import { updateTaskStatus } from &#x27;@/lib/db&#x27;
+
+export async function updateStatus(taskId: string, newStatus: Status) {
+  const updated = await updateTaskStatus(taskId, newStatus)
+  if (!updated) {
+    return { success: false as const, error: &#x27;Task no longer exists&#x27; }
+  }
+
+  updateTag(&#x27;tasks&#x27;)
+  updateTag(`task-${taskId}`)
+  return { success: true as const, status: newStatus }
+}</code></pre></div></div>
+<p>모든 Server Function은 같은 형태를 따릅니다: write를 실행한 다음, 바뀐 cache된 read에 대해 <code>updateTag</code>를 호출합니다. dynamic read에는 invalidate할 tag가 없으므로, 그런 mutation에는 <code>refresh()</code>를 사용하세요.</p><div class="en-orig"><p>Every Server Function follows the same shape: run the write, then call <code>updateTag</code> for the cached reads that changed. Dynamic reads do not have tags to invalidate, so use <code>refresh()</code> for those mutations.</p></div>
+<p>이 데모에서 comment thread는 dynamic으로 유지됩니다. 사용자는 열려 있는 task 페이지에서 현재 토론이 즉시 업데이트되기를 기대하기 때문입니다. comment를 추가하거나 삭제하면 <code>refresh()</code>가 호출되어, task cache는 그대로 둔 채 현재 route의 dynamic comment read를 다시 실행합니다. tag 패턴, 시간 기반 revalidation, route handler에서의 on-demand invalidation은 <a href="app-getting-started-revalidating.html">Revalidating 가이드</a>를 참고하세요.</p><div class="en-orig"><p>In this demo, the comment thread stays dynamic because readers expect the current discussion to update immediately on the open task page. Adding or deleting a comment calls <code>refresh()</code>, which reruns the dynamic comment read for the current route while leaving the task caches in place. See the <a href="app-getting-started-revalidating.html">Revalidating guide</a> for tag patterns, time-based revalidation, and on-demand invalidation from route handlers.</p></div>
+<h4 class="sec" id="prefetch-the-destination-with-the-real-request"><a class="anchor" href="#prefetch-the-destination-with-the-real-request">Prefetch the destination with the real request<span class="ko">실제 request로 목적지 prefetch하기</span></a></h4>
+<p><a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching</a>(Next.js 16.3 이상)에서 <code>&lt;Link&gt;</code>는 목적지의 <a href="app-glossary.html#app-shell">App Shell</a>, 즉 현재 사용자에 대해 여러 link가 공유하는 route 출력을 prefetch합니다. <code>params</code>와 <code>searchParams</code>는 link마다 다르기 때문에 shell에는 <a href="app-glossary.html#url-data">URL data</a>가 포함되지 않습니다. <code>prefetch={true}</code>로 link를 <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a>에 opt in하면 click 전에 그 URL data를 resolve할 수 있습니다:</p><div class="en-orig"><p>Under <a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching</a> (Next.js 16.3 and later), <code>&lt;Link&gt;</code> prefetches the destination's <a href="app-glossary.html#app-shell">App Shell</a>: the route output that is shared across links for the current user. The shell does not include <a href="app-glossary.html#url-data">URL data</a>, because <code>params</code> and <code>searchParams</code> are link-specific. Opt the link into <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a> with <code>prefetch={true}</code> to resolve that URL data ahead of the click:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">features/task/components/task-card.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&lt;Link href={`/task/${id}`} prefetch={true}&gt;
+  {/* … */}
+&lt;/Link&gt;</code></pre></div></div>
+<p>per-link prefetching은 사용자가 다음에 필요로 할 가능성이 높은 URL별 작업이 목적지에 있을 때 가장 유용합니다. cache된 read는 prefetch된 출력을 <a href="app-glossary.html#client-cache">Client Cache</a>에서 재사용하고 tag로 invalidate할 수 있게 해 줍니다. dynamic read도 click 전에 resolve될 수 있지만, prefetch할 때마다 실제 server 작업이 일어날 수 있습니다. 함께 제공되는 앱에서는 task card가 화면에 scroll되어 들어올 때 상세 페이지를 prefetch하므로, 사용자가 click할 즈음에는 즉시 그려집니다.</p><div class="en-orig"><p>Per-link prefetching is most valuable when the destination has URL-specific work that users are likely to need next. Cached reads make the prefetched output reusable and tag-invalidatable in the <a href="app-glossary.html#client-cache">Client Cache</a>; dynamic reads can still resolve before the click, but each prefetch can do real server work. In the companion app, the task cards prefetch the detail page as they scroll into view, so it paints instantly by the time the user clicks.</p></div>
+<h2 class="sec" id="next-steps"><a class="anchor" href="#next-steps">Next steps<span class="ko">다음 단계</span></a></h2>
+<p>이 가이드의 패턴은 몇 가지 primitive를 조합한 것입니다:</p><div class="en-orig"><p>The patterns in this guide combine a handful of primitives:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>상황</th><th>사용할 것</th></tr></thead>
+<tbody>
+<tr><td>느린 데이터를 페이지를 block하지 않고 streaming해야 할 때</td><td><a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a></td></tr>
+<tr><td>async 작업이 실행되는 동안 값을 업데이트해야 할 때</td><td><a href="https://react.dev/reference/react/useOptimistic" target="_blank" rel="noopener"><code>useOptimistic</code></a></td></tr>
+<tr><td>async 작업에 pending state, error 처리, 조율된 UI 업데이트가 필요할 때</td><td><a href="https://react.dev/reference/react/useTransition" target="_blank" rel="noopener"><code>useTransition</code></a></td></tr>
+<tr><td>form에 pending, reset, 결과 state가 필요할 때</td><td><a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener"><code>useActionState</code></a></td></tr>
+<tr><td>다른 곳에서 일어나는 작업의 pending state를 ancestor가 표시해야 할 때</td><td>CSS로 style한 <a href="https://react.dev/reference/react-dom/components/form#props" target="_blank" rel="noopener"><code>data-pending</code></a> attribute</td></tr>
+<tr><td>재사용 가능한 read가 여러 request에 걸쳐 유지되고 write 후에도 최신 상태여야 할 때</td><td><a href="app-api-reference-functions-cacheTag.html"><code>cacheTag</code></a>와 함께 쓰는 <a href="app-api-reference-directives-use-cache.html"><code>&#x27;use cache&#x27;</code></a>, <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a> 또는 <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>로 revalidate</td></tr>
+<tr><td>인터랙티브 앱의 페이지 간 navigation이 즉각적으로 느껴져야 할 때</td><td><a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching</a>을 사용한 <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code></a> prefetching, 그리고 URL data에 의존하는 콘텐츠에는 <code>prefetch={true}</code>를 통한 <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Situation</th><th>Use</th></tr></thead>
+<tbody>
+<tr><td>Slow data should stream in without blocking the page</td><td><a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a></td></tr>
+<tr><td>A value should update while async work runs</td><td><a href="https://react.dev/reference/react/useOptimistic" target="_blank" rel="noopener"><code>useOptimistic</code></a></td></tr>
+<tr><td>Async work needs pending state, error handling, or coordinated UI updates</td><td><a href="https://react.dev/reference/react/useTransition" target="_blank" rel="noopener"><code>useTransition</code></a></td></tr>
+<tr><td>A form needs pending, reset, and result state</td><td><a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener"><code>useActionState</code></a></td></tr>
+<tr><td>An ancestor should show pending state for work happening elsewhere</td><td><a href="https://react.dev/reference/react-dom/components/form#props" target="_blank" rel="noopener"><code>data-pending</code></a> attribute styled with CSS</td></tr>
+<tr><td>Reusable reads should survive across requests and stay fresh after writes</td><td><a href="app-api-reference-directives-use-cache.html"><code>&#x27;use cache&#x27;</code></a> with <a href="app-api-reference-functions-cacheTag.html"><code>cacheTag</code></a>, revalidated by <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a> or <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a></td></tr>
+<tr><td>Navigation between pages of an interactive app should feel instant</td><td><a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code></a> prefetching with <a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching</a>, and <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a> via <code>prefetch={true}</code> for content that depends on URL data</td></tr>
+</tbody></table></div></div>
+<p>대부분의 패턴은 이 중 두 가지 이상을 섞어 씁니다. 해결하려는 제약에 맞는 primitive를 골라 사용하세요.</p><div class="en-orig"><p>Most patterns mix two or more of these. Reach for whichever primitive fits the constraint you're solving.</p></div>
+<p>관련 가이드:</p><div class="en-orig"><p>Related guides:</p></div>
+<ul>
+<li><a href="app-guides-client-side-data-fetching.html">Client-side data fetching</a>: 브라우저에서 직접 fetch하기, Server Component에서 초기 데이터 제공하기, client cache 조율</li>
+<li><a href="app-guides-streaming.html">Streaming</a>: loading boundary와 <code>&lt;Suspense&gt;</code> 패턴</li>
+<li><a href="app-guides-instant-navigation.html">Instant Navigation</a>: navigation이 즉각적으로 유지되는지 검증하기</li>
+<li><a href="app-guides-view-transitions.html">View Transitions</a>: state 변화에 animation 적용하기</li>
+<li><a href="app-guides-single-page-applications.html#mutating-data-with-server-actions">Single-page applications</a>: client와 server의 목록 업데이트를 동기화하는 shared-reducer <code>useOptimistic</code> 예제</li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-guides-client-side-data-fetching.html">Client-side data fetching</a> for direct browser fetching, providing initial data from a Server Component, and client cache coordination</li>
+<li><a href="app-guides-streaming.html">Streaming</a> for loading boundaries and <code>&lt;Suspense&gt;</code> patterns</li>
+<li><a href="app-guides-instant-navigation.html">Instant Navigation</a> for validating that navigations stay instant</li>
+<li><a href="app-guides-view-transitions.html">View Transitions</a> for animating state changes</li>
+<li><a href="app-guides-single-page-applications.html#mutating-data-with-server-actions">Single-page applications</a> for a shared-reducer <code>useOptimistic</code> example that keeps client and server list updates in sync</li>
+</ul></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><p>이 가이드에서 사용한 API에 대해 더 알아보세요.</p><div class="rgrid"><a class="rcard" href="app-api-reference-functions-refresh.html"><div class="rt">refresh</div><div class="rk">refresh</div><div class="rd">refresh 함수의 API Reference입니다.</div></a><a class="rcard" href="app-api-reference-directives-use-cache.html"><div class="rt">use cache</div><div class="rk">use cache</div><div class="rd">\"use cache\" directive로 Next.js 애플리케이션의 데이터를 cache하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-functions-cacheTag.html"><div class="rt">cacheTag</div><div class="rk">cacheTag</div><div class="rd">cacheTag 함수를 사용해 Next.js 애플리케이션의 cache 무효화(invalidation)를 관리하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-functions-updateTag.html"><div class="rt">updateTag</div><div class="rk">updateTag</div><div class="rd">updateTag 함수에 대한 API Reference입니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/interactive-apps.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/interactive-apps" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-instrumentation.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Instrumentation</div><div class="ttl-ko">instrumentation 설정하기</div></a>
+      <a href="app-guides-internationalization.html" class="next"><div class="dir">다음 →</div><div class="ttl">Internationalization</div><div class="ttl-ko">국제화</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/interactive-apps" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#example">Example</a></li><li class="l3"><a href="#step-1-stream-slow-data-with-suspense">Step 1: Stream slow data with Suspense</a></li><li class="l3"><a href="#step-2-respond-instantly-to-a-toggle">Step 2: Respond instantly to a toggle</a></li><li class="l3"><a href="#step-3-filter-with-pending-feedback">Step 3: Filter with pending feedback</a></li><li class="l3"><a href="#step-4-add-comments-with-instant-feedback">Step 4: Add comments with instant feedback</a></li><li class="l3"><a href="#step-5-move-cards-between-columns">Step 5: Move cards between columns</a></li><li class="l3"><a href="#step-6-manage-form-lifecycle">Step 6: Manage form lifecycle</a></li><li class="l3"><a href="#step-7-signal-pending-deletion-to-a-parent">Step 7: Signal pending deletion to a parent</a></li><li class="l3"><a href="#step-8-make-repeat-navigation-instant">Step 8: Make repeat navigation instant</a></li><li class="l2"><a href="#next-steps">Next steps</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+사용자 interaction에 server-side 작업이 필요하면 결과를 즉시 얻을 수 없습니다. network request는 완료되기까지 얼마나 걸릴지 알 수 없고, 성공할 수도 실패할 수도 있습니다. 기다리는 동안 client는 feedback을 제공하고 이런 state에 대응해야 합니다. 그렇지 않으면 사용자는 오래된(stale) 데이터를 바라보며 무언가 진행되고 있는지 궁금해하게 됩니다.
+
+이 가이드는 *Taskboard*라는 task 관리 앱에 반응성 있는 feedback을 추가합니다. 각 단계는 느린 read를 streaming하는 것부터 server가 응답하기 전에 mutation을 확정된 것처럼 보여 주는 것까지, 서로 다른 종류의 pending 작업을 다룹니다.
+
+&gt; **Good to know:** 이 가이드의 패턴은 [Core Web Vitals](https://web.dev/articles/vitals)도 개선합니다. [`&lt;Suspense&gt;`](https://react.dev/reference/react/Suspense)를 사용한 streaming은 느린 read가 끝나는 동안 shell을 먼저 그리게 해서 [FCP](https://web.dev/articles/fcp)와 [LCP](https://web.dev/articles/lcp)를 낮춥니다. Optimistic UI와 transition은 click frame을 빠르게 유지해 [INP](https://web.dev/articles/inp)를 낮춥니다. 다음 route를 prefetch하면 목적지 페이지의 FCP, LCP, INP가 거의 즉각적이 됩니다. 이 패턴들이 도움이 되긴 하지만, 일반적인 INP 개선 작업, 즉 client JavaScript를 덜 보내고 interaction 중 blocking roundtrip을 피하는 일을 대체하지는 않습니다.
+
+## Example || 예제
+
+패턴은 순서대로 쌓여 갑니다: loading boundary 뒤에서 느린 데이터를 streaming하고, 즉시 반응하는 priority toggle을 추가하고, callback prop을 받는 재사용 가능한 filter를 만들고, 확정되기 전에 comment를 보여 주고, drop 시 card를 column 사이로 옮기고, create dialog에서 form lifecycle을 관리하고, pending 중인 삭제를 parent에 알립니다. 마지막 단계에서는 재사용 가능한 read를 cache해서 navigation이 즉각적으로 유지되게 합니다.
+
+함께 제공되는 [Taskboard 데모](https://async-react-demo.labs.vercel.dev)([source](https://github.com/nextjs/async-react-demo))에서 이 가이드의 각 패턴이 실제로 동작하는 모습을 볼 수 있습니다.
+
+앱은 feature 단위로 구성되어 있습니다. task 도메인에 관한 모든 것(query, Server Function, component)은 `features/task/` 아래에 있습니다. 공유 UI primitive는 `components/ui/`에 있고, `app/`의 page들이 feature component를 조합합니다. 이 가이드 전체의 파일 경로는 이 구조를 따릅니다.
+
+출발점은 database에서 task와 comment를 읽는 Server Component 앱이며, [`&lt;Suspense&gt;`](/docs/app/guides/streaming) boundary도 caching도 없습니다. Client Component는 [Server Function](/docs/app/getting-started/mutating-data)을 호출해 데이터를 mutate합니다. 각 mutation이 끝나면 Server Function이 [`refresh()`](/docs/app/api-reference/functions/refresh)를 호출해 server가 최신 데이터로 다시 render하게 합니다:
+
+[[CODE 1]]
+
+### Step 1: Stream slow data with Suspense || 1단계: Suspense로 느린 데이터 streaming하기
+
+task 상세 페이지는 task와 그 comment를 읽습니다. 두 read를 page component 맨 위에서 모두 await하면, 가장 느린 read가 resolve될 때까지 페이지 전체가 block됩니다.
+
+[[CODE 2]]
+
+이 버전에서는 `getTask`가 resolve될 때까지 아무것도 render되지 않고, comment read는 그 이후에야 시작됩니다.
+
+read를 별도의 component로 나누고, 각각에 promise를 넘기고, [`&lt;Suspense&gt;`](https://react.dev/reference/react/Suspense)로 감싸세요. 페이지는 동기(synchronous)가 되어 shell을 즉시 반환하고, server는 각 section의 데이터가 resolve되는 대로 streaming합니다:
+
+[[CODE 3]]
+
+각 section component는 자기 데이터를 await합니다:
+
+[[CODE 4]]
+
+JSX 안에서 `params.then()`을 inline으로 호출하면 페이지가 동기로 유지됩니다. 바깥쪽 `&lt;Suspense&gt;`는 params resolve와 task 상세 read를 감쌉니다. `TaskDetail`이 resolve되면 React는 task header와 중첩된 `&lt;Suspense&gt;` boundary를 보여 주고, 이 boundary는 comment가 load되는 동안 `CommentSectionSkeleton`을 표시합니다.
+
+이제 page shell은 즉시 그려지고, task header는 `getTask`가 resolve되면 streaming되어 들어오며, comment section은 `getComments`가 resolve되면 뒤따라 들어옵니다.
+
+streaming 패턴에 대한 자세한 내용은 [Streaming](/docs/app/guides/streaming) 가이드를 참고하세요.
+
+### Step 2: Respond instantly to a toggle || 2단계: toggle에 즉시 반응하기
+
+각 task card에는 click할 때마다 low, medium, high를 순환하는 priority 표시가 있습니다.
+
+button은 server에서 받은 `priority` prop을 render합니다. Server Function을 호출하면 mutation이 시작되지만, 현재 render의 그 prop은 바뀌지 않습니다.
+
+여기서는 Server Function을 직접 호출합니다:
+
+[[CODE 5]]
+
+점을 click하면 Server Function이 실행되지만, 다음 server render가 도착할 때까지 button은 예전 `priority` prop을 계속 render합니다.
+
+직접 호출을 [`useOptimistic`](https://react.dev/reference/react/useOptimistic)과 [`useTransition`](https://react.dev/reference/react/useTransition)으로 바꾸세요. `useOptimistic`은 stale prop 대신 render할 값을 제공하고, `useTransition`은 Server Function을 transition의 일부로 실행합니다. optimistic 값은 그 transition이 pending인 동안 적용됩니다:
+
+[[CODE 6]]
+
+`setOptimisticPriority` 호출은 순환 순서상 다음 값으로 현재 frame에서 UI를 업데이트합니다. prop 대신 `optimisticPriority`에서 값을 읽기 때문에, 빠르게 double-click해도 stale closure 값을 읽지 않고 올바르게 순환합니다.
+
+transition이 끝나고 최신 데이터가 도착하면 optimistic 값은 server가 새로 render한 prop으로 되돌아갑니다. `useTransition` 안의 Server Function이 throw하면, 수동 `try`/`catch` 없이도 error가 가장 가까운 [error boundary](/docs/app/api-reference/file-conventions/error)로 전달됩니다.
+
+이제 마우스 버튼을 떼는 순간 색이 바뀝니다. 다시 click하면 첫 mutation이 끝나기를 기다리지 않고 다음 값으로 순환합니다.
+
+### Step 3: Filter with pending feedback || 3단계: pending feedback이 있는 filter
+
+board에는 label filter chip(Design, Frontend, Backend)이 있습니다. chip을 click하면 query param이 업데이트되어 task 목록을 filter합니다.
+
+선택된 filter는 URL에서 옵니다. `router.push()`를 호출하면 client navigation이 시작되고, server는 새 search params로 board를 다시 render합니다. 그 navigation이 완료될 때까지 페이지는 예전 URL state를 계속 render합니다.
+
+여기서는 `router.push()`를 직접 호출합니다:
+
+[[CODE 7]]
+
+이 버전에서는 `router.push()`가 navigation을 시작하지만 local pending state가 없습니다. chip은 예전 URL 값을 계속 render하고, board는 새 server render가 load 중이라는 신호를 전혀 주지 않습니다.
+
+filter를 두 component로 나누세요. `LabelFilter`는 query string 업데이트를 담당하고, navigation callback을 재사용 가능한 `ChipGroup`에 넘깁니다. `ChipGroup`이 모든 pending feedback을 처리합니다:
+
+[[CODE 8]]
+
+`LabelFilter`는 앱이 어디로 navigate할지를 결정하며, 자체 pending state는 갖지 않습니다.
+
+#### Handle pending feedback internally || pending feedback을 내부에서 처리하기
+
+`ChipGroup`은 `changeAction` prop을 받아 자신의 `startTransition` 안에서 호출합니다. `useOptimistic` hook을 두 개 사용하는데, 하나는 선택된 chip용이고, 다른 하나는 ancestor component가 style 기준으로 삼을 수 있는 `data-pending` attribute용입니다:
+
+[[CODE 9]]
+
+consumer는 callback(`changeAction`)을 넘기고, design component가 그것을 transition 안에서 실행합니다. 관례상 `action`이라는 이름이거나 `Action`으로 끝나는 prop은 이런 동작을 나타냅니다. 이 패턴은 React 문서의 [Exposing `action` props from components](https://react.dev/reference/react/useTransition#exposing-action-props-from-components)를 참고하세요.
+
+`ChipGroup` root element의 `data-pending` attribute 덕분에 ancestor component는 별도의 조율 없이 CSS로 반응할 수 있습니다. home page의 board는 `group-has-data-pending:opacity-50`을 사용해 transition이 실행되는 동안 board를 skeleton으로 바꾸지 않고 흐리게 표시합니다. `ChipGroup`이 `group` element 안에서 render되므로, 어떤 ancestor든 이 attribute를 styling에 사용할 수 있습니다.
+
+&gt; **Good to know:** `group-has-data-pending:`과 `has-data-pending:`은 CSS [`:has()`](https://developer.mozilla.org/en-US/docs/Web/CSS/:has) selector로 compile되며, 브라우저는 `data-pending`이 toggle될 때마다 기준이 되는 subtree 전체를 다시 평가합니다. 여기서는 board가 filter 한 번당 두 번만 toggle하고 dragging(5단계)은 의도적으로 이를 건너뛰기 때문에 비용이 적습니다. 범위가 넓은 `:has()` anchor가 dragging이나 scrolling처럼 빈번한 interaction에서 toggle된다면 큰 subtree에 대한 반복 재계산이 누적되므로, 그럴 때는 대신 client state를 사용하세요.
+
+이제 &quot;Frontend&quot; chip이 현재 frame에서 바로 강조 표시됩니다. filter된 데이터가 load되는 동안 board가 흐려졌다가, filter된 task로 업데이트됩니다.
+
+### Step 4: Add comments with instant feedback || 4단계: 즉각적인 feedback과 함께 comment 추가하기
+
+task 상세 페이지에는 comment section이 있습니다. comment를 제출하면 server에 새 데이터가 기록되지만, 저장된 목록은 server component가 render하므로 다음 server render가 도착하기 전까지는 새 comment를 포함할 수 없습니다.
+
+여기서 comment form은 input에 controlled state를 사용하고 Server Function을 직접 호출합니다:
+
+[[CODE 10]]
+
+이 버전에서는 submit 시 Server Function이 실행되지만, server가 응답할 때까지 input은 채워진 채로 남아 있고 목록도 바뀌지 않습니다.
+
+comment 목록을 두 부분으로 나누세요. server component는 저장된 comment를 render하고, client component는 빈 초기 배열을 넣은 `useOptimistic([])`로 **pending** 상태인 comment만 추적합니다. transition이 완료되고 최신 데이터와 함께 새 render가 도착하면 pending 목록은 빈 상태로 초기화되고, 실제 comment가 server가 render한 목록에 나타납니다:
+
+[[CODE 11]]
+
+submit 시 세 가지 일이 일어납니다:
+
+1. `formRef.current?.reset()`이 DOM을 직접 조작해 input을 비웁니다. transition 안에서 [`useState`](https://react.dev/reference/react/useState) setter는 transition이 완료될 때까지 지연되지만, `useOptimistic` setter와 `formRef.reset()` 같은 직접 DOM 호출은 현재 frame에 적용됩니다.
+2. `setPendingComments`가 client에서 생성한 UUID와 함께 새 comment를 pending 목록에 추가합니다.
+3. form `action`이 transition 안에서 handler를 실행합니다.
+
+server component는 그 옆에 실제 목록을 render합니다:
+
+[[CODE 12]]
+
+이제 submit하면 input이 비워지고 목록 맨 위에 흐릿한 comment card가 나타납니다. server가 확인하면 흐릿한 card는 사라지고 server가 render한 목록에 실제 comment가 그 자리를 대신합니다.
+
+### Step 5: Move cards between columns || 5단계: column 사이로 card 옮기기
+
+board에는 Todo, In Progress, Done 세 개의 column이 있습니다. 각 column은 server가 제공한 `tasks` prop의 task를 render합니다.
+
+card를 drop하면 새 status를 기록하는 Server Function이 시작됩니다. 다음 server render가 도착할 때까지 `tasks` prop은 바뀌지 않으므로, client에는 pending 중인 이동을 위한 임시 task 목록이 필요합니다.
+
+여기서는 drop 시 Server Function을 호출합니다:
+
+[[CODE 13]]
+
+component는 parent server component에서 promise를 받아(1단계의 `&lt;Suspense&gt;` boundary 참고) [`use`](https://react.dev/reference/react/use)로 unwrap합니다. 이 버전에서는 &quot;Todo&quot;에서 &quot;In Progress&quot;로 drag한 card가 server가 업데이트를 처리하는 동안 예전 column에 머물러 있다가, response가 도착한 뒤에야 새 column으로 점프합니다.
+
+reducer와 함께 `useOptimistic`을 추가해 현재 frame에서 card의 status를 다시 매핑하세요. reducer는 전체 task 목록과, 어떤 card가 어디로 이동했는지 설명하는 action을 받습니다:
+
+[[CODE 14]]
+
+reducer는 task 목록을 map하면서 drag된 card의 status만 업데이트하고 나머지는 그대로 둡니다. drag 도중에 polling이나 다른 사용자의 mutation 등으로 background refresh가 도착하면, React는 업데이트된 base 데이터로 reducer를 다시 실행하므로 optimistic 이동이 최신 데이터 위에 얹혀집니다. task가 더 이상 존재하지 않으면 Server Function은 error 결과를 반환하고, client는 이를 toast로 표시합니다.
+
+이 단계에서는 `useTransition` 대신 독립형 `startTransition`을 사용합니다. hook의 `isPending`이 3단계의 board fade를 trigger하기 때문입니다. optimistic 이동이 이미 시각적 feedback을 제공하므로 pending 표시는 필요 없습니다. Server Function이 예상된 error를 반환하면 card는 원래 위치로 되돌아갑니다. 예상치 못한 error는 가장 가까운 [error boundary](/docs/app/getting-started/error-handling)로 전달됩니다.
+
+이제 &quot;Todo&quot;에서 &quot;In Progress&quot;로 drag한 card는 손을 떼는 순간 대상 column에 놓입니다.
+
+### Step 6: Manage form lifecycle || 6단계: form lifecycle 관리하기
+
+board에는 create dialog를 여는 &quot;New Task&quot; button이 있습니다. form action은 server에서 task를 만든 다음 board를 refresh합니다.
+
+dialog는 action이 pending인 동안 세 가지 client state를 조율합니다: submit button, field 값, 그리고 dialog가 열려 있는지 여부입니다. [`useActionState`](https://react.dev/reference/react/useActionState)가 이 세 가지를 모두 처리합니다.
+
+여기서는 form이 submission state를 수동으로 관리하고 `onSubmit` handler에서 Server Function을 호출합니다:
+
+[[CODE 15]]
+
+이 버전에서는 submit handler가 실행되지만, 두 개의 별도 `useState` 호출이 pending state를 관리합니다. `setIsOpen(false)`가 transition 밖에서 실행되기 때문에, board에 새 task가 보이기 전에 dialog가 닫힙니다. 또한 reset key를 직접 추적하지 않으면 form field는 submission이 끝난 뒤에도 값을 그대로 유지합니다.
+
+`useActionState`는 세 가지 관심사를 모두 처리합니다: button을 위한 `isPending`, field를 위한 key 기반 reset, 그리고 dialog 닫기를 감싸는 처리입니다:
+
+[[CODE 16]]
+
+반환된 state의 `key`가 form reset을 제어합니다. 성공하면 `key`가 증가하고, 이에 따라 `&lt;div key={key}&gt;`가 다시 mount되면서 그 안의 모든 input이 초기화됩니다.
+
+`useActionState`는 action을 transition으로 실행하므로, `createTask`가 실행되는 동안 dialog는 열린 채로 있고 `isPending`은 `true`로 유지됩니다. `await` 이후의 state 업데이트는 자동으로 그 transition에 포함되지 않으므로, `setIsOpen(false)`를 `startTransition`으로 감싸야 닫기 동작이 transition의 일부로 실행됩니다.
+
+이렇게 감싸 두면 React는 dialog 닫기와 `createTask` 안의 `refresh()`가 trigger하는 board 업데이트를 batch 처리하므로, dialog가 닫히는 순간 새 task가 나타납니다. 감싸지 않으면 dialog가 먼저 닫히고 board는 한 frame 뒤에 업데이트됩니다.
+
+&gt; **Good to know:** 이 한계는 React 문서의 [React doesn&#x27;t treat my state update after `await` as a transition](https://react.dev/reference/react/useTransition#react-doesnt-treat-my-state-update-after-await-as-a-transition)에 설명되어 있습니다. 이 문제가 고쳐지기 전까지는 `await` 이후의 state 업데이트를 `startTransition`으로 감싸는 것이 권장 workaround입니다.
+
+toast 같은 side effect도 바로 이 `await` 이후 구간에 두어야 합니다:
+
+[[CODE 17]]
+
+analytics, toast, focus 변경처럼 render되는 state에 영향을 주지 않는 side effect는 `await`가 resolve된 뒤에 실행됩니다. 이들은 React state를 업데이트하지 않으므로 transition이 필요 없습니다.
+
+이제 submit하면 button 텍스트가 &quot;Creating...&quot;으로 바뀌고 흐려집니다. server가 응답하면 field가 비워지고, dialog가 닫히고, board에 새 task가 나타나며, toast가 action을 확인해 줍니다.
+
+&gt; **Good to know:** 함께 제공되는 앱은 modal에 status, priority, assignee, label picker를 추가합니다. 패턴은 같습니다: hidden input이 각 picker의 state를 추적하고, 성공하면 `key`가 이들을 모두 초기화합니다.
+
+### Step 7: Signal pending deletion to a parent || 7단계: pending 중인 삭제를 parent에 알리기
+
+각 comment card에는 server에서 comment를 삭제하는 delete button이 있으며, comment는 다음 render 이후 목록에서 사라집니다.
+
+click과 그 render 사이에도 card는 여전히 예전 데이터를 보여 줍니다. 목록 자체는 pending 중인 삭제를 표시할 수 없으므로, 신호는 button에서 나와야 합니다.
+
+이 단계는 3단계의 `data-pending` CSS hook을 재사용하지만, `useTransition`의 `isPending` 대신 `useOptimistic(false)`로 이를 구동합니다.
+
+여기서는 Server Function을 직접 호출합니다:
+
+[[CODE 18]]
+
+이 버전에서는 다음 server render까지 comment가 완전히 보이는 상태로 남아 있습니다.
+
+action을 `&lt;form&gt;`으로 감싸고, `useOptimistic(false)`로 pending state를 추적하고, 이를 `data-pending` attribute로 노출하세요. action을 `deleteAction` prop으로 받아서 parent comment card가 CSS로 반응할 수 있게 합니다:
+
+[[CODE 19]]
+
+parent comment card는 Tailwind의 `has-data-pending:` variant를 사용해, 어떤 descendant든 `data-pending` attribute를 설정하면 자신을 흐리게 만듭니다. 삭제가 pending인지 아는 component는 button뿐이므로, 그 state를 CSS attribute로 노출하면 state를 끌어올리거나 callback을 여러 단계로 전달하지 않고도 어떤 ancestor든 스스로 흐려질 수 있습니다:
+
+[[CODE 20]]
+
+parent server component는 Server Function을 comment ID에 bind하므로 `DeleteButton`은 재사용 가능하게 유지됩니다:
+
+[[CODE 21]]
+
+이제 click이 인식되는 순간 card가 30% opacity로 흐려집니다. server가 확인하고 다음 render가 도착하면 card는 목록에서 unmount됩니다.
+
+### Step 8: Make repeat navigation instant || 8단계: 반복 navigation을 즉각적으로 만들기
+
+지금까지의 모든 패턴은 단일 interaction을 매끄럽게 만듭니다. navigation을 오가면 같은 read가 다시 실행되고 같은 fallback이 다시 그려집니다. 재사용 가능한 read를 [caching](/docs/app/getting-started/caching)하고 실제 request와 함께 [prefetching](/docs/app/guides/prefetching)하면, 데이터 모델을 브라우저로 옮기지 않고도 그 간극을 메울 수 있습니다.
+
+이 단계는 Next.js 16에 도입된 [Cache Components](/docs/app/api-reference/config/next-config-js/cacheComponents)를 사용합니다. 1단계부터 7단계까지는 이것 없이도 동작합니다. Cache Components를 사용하지 않는다면 [Caching without Cache Components](/docs/app/guides/caching-without-cache-components)를 참고하세요.
+
+`next.config.ts`에서 활성화하세요:
+
+[[CODE 22]]
+
+Cache Components를 활성화하면 이 단계의 route뿐 아니라 모든 route에 prerender 검증이 적용됩니다. [`&lt;Suspense&gt;`](https://react.dev/reference/react/Suspense) 밖에서 `cookies()`, `headers()`, `searchParams` 같은 request 데이터를 읽는 route는 이제 prerendering을 block하므로 1단계와 같은 처리가 필요합니다. 기존 앱에서 이를 켜려면 [Migrating to Cache Components](/docs/app/guides/migrating-to-cache-components)를 참고하세요.
+
+#### Cache reusable reads || 재사용 가능한 read cache하기
+
+각 server read마다 여러 request에 걸쳐 재사용해야 하는지, 그리고 각 write가 그것을 정확하게 invalidate할 수 있는지 따져 보세요. task는 cache하기에 충분히 안정적이고 id별로 명확한 tag를 가집니다:
+
+[[CODE 23]]
+
+id별 tag `task-${id}`는 개별 task에 고유한 handle을 부여합니다. 더 넓은 범위의 `tasks` tag는 목록을 담당합니다. cache scoping(`&#x27;use cache: private&#x27;`, `&#x27;use cache: remote&#x27;`), cache lifetime, tag 패턴은 [Caching 가이드](/docs/app/getting-started/caching)를 참고하세요.
+
+#### Invalidate from mutations || mutation에서 invalidate하기
+
+[`refresh()`](/docs/app/api-reference/functions/refresh)는 dynamic 작업을 다시 실행하지만 cache된 entry는 그대로 둡니다. 각 write가 건드린 tag에 대해서는 이를 [`updateTag`](/docs/app/api-reference/functions/updateTag)로 바꾸세요:
+
+[[CODE 24]]
+
+모든 Server Function은 같은 형태를 따릅니다: write를 실행한 다음, 바뀐 cache된 read에 대해 `updateTag`를 호출합니다. dynamic read에는 invalidate할 tag가 없으므로, 그런 mutation에는 `refresh()`를 사용하세요.
+
+이 데모에서 comment thread는 dynamic으로 유지됩니다. 사용자는 열려 있는 task 페이지에서 현재 토론이 즉시 업데이트되기를 기대하기 때문입니다. comment를 추가하거나 삭제하면 `refresh()`가 호출되어, task cache는 그대로 둔 채 현재 route의 dynamic comment read를 다시 실행합니다. tag 패턴, 시간 기반 revalidation, route handler에서의 on-demand invalidation은 [Revalidating 가이드](/docs/app/getting-started/revalidating)를 참고하세요.
+
+#### Prefetch the destination with the real request || 실제 request로 목적지 prefetch하기
+
+[Partial Prefetching](/docs/app/guides/adopting-partial-prefetching)(Next.js 16.3 이상)에서 `&lt;Link&gt;`는 목적지의 [App Shell](/docs/app/glossary#app-shell), 즉 현재 사용자에 대해 여러 link가 공유하는 route 출력을 prefetch합니다. `params`와 `searchParams`는 link마다 다르기 때문에 shell에는 [URL data](/docs/app/glossary#url-data)가 포함되지 않습니다. `prefetch={true}`로 link를 [per-link prefetching](/docs/app/guides/optimizing-prefetching)에 opt in하면 click 전에 그 URL data를 resolve할 수 있습니다:
+
+[[CODE 25]]
+
+per-link prefetching은 사용자가 다음에 필요로 할 가능성이 높은 URL별 작업이 목적지에 있을 때 가장 유용합니다. cache된 read는 prefetch된 출력을 [Client Cache](/docs/app/glossary#client-cache)에서 재사용하고 tag로 invalidate할 수 있게 해 줍니다. dynamic read도 click 전에 resolve될 수 있지만, prefetch할 때마다 실제 server 작업이 일어날 수 있습니다. 함께 제공되는 앱에서는 task card가 화면에 scroll되어 들어올 때 상세 페이지를 prefetch하므로, 사용자가 click할 즈음에는 즉시 그려집니다.
+
+## Next steps || 다음 단계
+
+이 가이드의 패턴은 몇 가지 primitive를 조합한 것입니다:
+
+| 상황 | 사용할 것 |
+| --- | --- |
+| 느린 데이터를 페이지를 block하지 않고 streaming해야 할 때 | [`&lt;Suspense&gt;`](https://react.dev/reference/react/Suspense) |
+| async 작업이 실행되는 동안 값을 업데이트해야 할 때 | [`useOptimistic`](https://react.dev/reference/react/useOptimistic) |
+| async 작업에 pending state, error 처리, 조율된 UI 업데이트가 필요할 때 | [`useTransition`](https://react.dev/reference/react/useTransition) |
+| form에 pending, reset, 결과 state가 필요할 때 | [`useActionState`](https://react.dev/reference/react/useActionState) |
+| 다른 곳에서 일어나는 작업의 pending state를 ancestor가 표시해야 할 때 | CSS로 style한 [`data-pending`](https://react.dev/reference/react-dom/components/form#props) attribute |
+| 재사용 가능한 read가 여러 request에 걸쳐 유지되고 write 후에도 최신 상태여야 할 때 | [`cacheTag`](/docs/app/api-reference/functions/cacheTag)와 함께 쓰는 [`&#x27;use cache&#x27;`](/docs/app/api-reference/directives/use-cache), [`updateTag`](/docs/app/api-reference/functions/updateTag) 또는 [`revalidateTag`](/docs/app/api-reference/functions/revalidateTag)로 revalidate |
+| 인터랙티브 앱의 페이지 간 navigation이 즉각적으로 느껴져야 할 때 | [Partial Prefetching](/docs/app/guides/adopting-partial-prefetching)을 사용한 [`&lt;Link&gt;`](/docs/app/api-reference/components/link) prefetching, 그리고 URL data에 의존하는 콘텐츠에는 `prefetch={true}`를 통한 [per-link prefetching](/docs/app/guides/optimizing-prefetching) |
+
+대부분의 패턴은 이 중 두 가지 이상을 섞어 씁니다. 해결하려는 제약에 맞는 primitive를 골라 사용하세요.
+
+관련 가이드:
+
+- [Client-side data fetching](/docs/app/guides/client-side-data-fetching): 브라우저에서 직접 fetch하기, Server Component에서 초기 데이터 제공하기, client cache 조율
+- [Streaming](/docs/app/guides/streaming): loading boundary와 `&lt;Suspense&gt;` 패턴
+- [Instant Navigation](/docs/app/guides/instant-navigation): navigation이 즉각적으로 유지되는지 검증하기
+- [View Transitions](/docs/app/guides/view-transitions): state 변화에 animation 적용하기
+- [Single-page applications](/docs/app/guides/single-page-applications#mutating-data-with-server-actions): client와 server의 목록 업데이트를 동기화하는 shared-reducer `useOptimistic` 예제
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

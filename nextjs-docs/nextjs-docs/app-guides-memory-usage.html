@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to optimize memory usage (memory 사용량 최적화하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/memory-usage" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/memory-usage" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/memory-usage.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to optimize memory usage<span class="sub">memory 사용량 최적화하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>애플리케이션이 커지고 기능이 많아질수록 로컬에서 개발하거나 production build를 만들 때 더 많은 리소스가 필요할 수 있습니다.</p><div class="en-orig"><p>As applications grow and become more feature rich, they can demand more resources when developing locally or creating production builds.</p></div>
+<p>Next.js에서 memory를 최적화하고 흔히 발생하는 memory 문제를 해결하는 몇 가지 전략과 기법을 살펴보겠습니다.</p><div class="en-orig"><p>Let's explore some strategies and techniques to optimize memory and address common memory issues in Next.js.</p></div>
+<h2 class="sec" id="reduce-number-of-dependencies"><a class="anchor" href="#reduce-number-of-dependencies">Reduce number of dependencies<span class="ko">dependency 개수 줄이기</span></a></h2>
+<p>dependency가 많은 애플리케이션일수록 memory를 더 많이 사용합니다.</p><div class="en-orig"><p>Applications with a large amount of dependencies will use more memory.</p></div>
+<p><a href="app-guides-package-bundling.html">Bundle Analyzer</a>를 사용하면 애플리케이션에서 제거해 performance와 memory 사용량을 개선할 수 있는 큰 dependency를 조사할 수 있습니다.</p><div class="en-orig"><p>The <a href="app-guides-package-bundling.html">Bundle Analyzer</a> can help you investigate large dependencies in your application that may be able to be removed to improve performance and memory usage.</p></div>
+<h2 class="sec" id="try-experimentalwebpackmemoryoptimizations"><a class="anchor" href="#try-experimentalwebpackmemoryoptimizations">Try <code>experimental.webpackMemoryOptimizations</code><span class="ko"><code>experimental.webpackMemoryOptimizations</code> 사용해 보기</span></a></h2>
+<p><code>v15.0.0</code>부터 <code>next.config.js</code> 파일에 <code>experimental.webpackMemoryOptimizations: true</code>를 추가해 Webpack의 동작을 바꿀 수 있습니다. 이렇게 하면 최대 memory 사용량이 줄어들지만 compile 시간이 약간 늘어날 수 있습니다.</p><div class="en-orig"><p>Starting in <code>v15.0.0</code>, you can add <code>experimental.webpackMemoryOptimizations: true</code> to your <code>next.config.js</code> file to change behavior in Webpack that reduces max memory usage but may increase compilation times by a slight amount.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 기능은 먼저 더 많은 프로젝트에서 테스트하기 위해 현재 experimental 상태이지만, 위험도는 낮은 것으로 간주됩니다.</p><div class="en-orig"><p>This feature is currently experimental to test on more projects first, but it is considered to be low-risk.</p></div></div></div>
+<h2 class="sec" id="run-next-build-with---experimental-debug-memory-usage"><a class="anchor" href="#run-next-build-with---experimental-debug-memory-usage">Run <code>next build</code> with <code>--experimental-debug-memory-usage</code><span class="ko"><code>--experimental-debug-memory-usage</code>로 <code>next build</code> 실행하기</span></a></h2>
+<p><code>14.2.0</code>부터 <code>next build --experimental-debug-memory-usage</code>를 실행하면, build 내내 heap 사용량과 garbage collection 통계 같은 memory 사용 정보를 Next.js가 계속 출력하는 모드로 build를 실행할 수 있습니다. memory 사용량이 설정된 한도에 가까워지면 heap snapshot도 자동으로 생성됩니다.</p><div class="en-orig"><p>Starting in <code>14.2.0</code>, you can run <code>next build --experimental-debug-memory-usage</code> to run the build in a mode where Next.js will print out information about memory usage continuously throughout the build, such as heap usage and garbage collection statistics. Heap snapshots will also be taken automatically when memory usage gets close to the configured limit.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 기능은 Webpack build worker option과 호환되지 않습니다. 이 option은 custom webpack config가 없으면 자동으로 활성화됩니다.</p><div class="en-orig"><p>This feature is not compatible with the Webpack build worker option which is auto-enabled unless you have custom webpack config.</p></div></div></div>
+<h2 class="sec" id="record-a-heap-profile"><a class="anchor" href="#record-a-heap-profile">Record a heap profile<span class="ko">heap profile 기록하기</span></a></h2>
+<p>memory 문제를 찾으려면 Node.js에서 heap profile을 기록하고 Chrome DevTools에서 불러와 memory leak의 잠재적인 원인을 파악할 수 있습니다.</p><div class="en-orig"><p>To look for memory issues, you can record a heap profile from Node.js and load it in Chrome DevTools to identify potential sources of memory leaks.</p></div>
+<p>터미널에서 Next.js build를 시작할 때 Node.js에 <code>--heap-prof</code> flag를 전달하세요:</p><div class="en-orig"><p>In your terminal, pass the <code>--heap-prof</code> flag to Node.js when starting your Next.js build:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-bash">node --heap-prof node_modules/next/dist/bin/next build</code></pre></div></div>
+<p>build가 끝나면 Node.js가 <code>.heapprofile</code> 파일을 생성합니다.</p><div class="en-orig"><p>At the end of the build, a <code>.heapprofile</code> file will be created by Node.js.</p></div>
+<p>Chrome DevTools에서 Memory tab을 열고 "Load Profile" 버튼을 클릭하면 이 파일을 시각화할 수 있습니다.</p><div class="en-orig"><p>In Chrome DevTools, you can open the Memory tab and click on the "Load Profile" button to visualize the file.</p></div>
+<h2 class="sec" id="analyze-a-snapshot-of-the-heap"><a class="anchor" href="#analyze-a-snapshot-of-the-heap">Analyze a snapshot of the heap<span class="ko">heap snapshot 분석하기</span></a></h2>
+<p>inspector 도구를 사용해 애플리케이션의 memory 사용량을 분석할 수 있습니다.</p><div class="en-orig"><p>You can use an inspector tool to analyze the memory usage of the application.</p></div>
+<p><code>next build</code> 또는 <code>next dev</code> command를 실행할 때 command 앞에 <code>NODE_OPTIONS=--inspect</code>를 붙이세요. 그러면 기본 port에서 inspector agent가 노출됩니다.
+사용자 코드가 시작되기 전에 멈추고 싶다면 대신 <code>--inspect-brk</code>를 전달할 수 있습니다. process가 실행되는 동안 Chrome DevTools 같은 도구로 debugging port에 연결해 heap snapshot을 기록하고 분석하면 어떤 memory가 유지되고 있는지 확인할 수 있습니다.</p><div class="en-orig"><p>When running the <code>next build</code> or <code>next dev</code> command, add <code>NODE_OPTIONS=--inspect</code> to the beginning of the command. This will expose the inspector agent on the default port.
+If you wish to break before any user code starts, you can pass <code>--inspect-brk</code> instead. While the process is running, you can use a tool such as Chrome DevTools to connect to the debugging port to record and analyze a snapshot of the heap to see what memory is being retained.</p></div>
+<p><code>14.2.0</code>부터는 <code>--experimental-debug-memory-usage</code> flag와 함께 <code>next build</code>를 실행해 heap snapshot을 더 쉽게 생성할 수도 있습니다.</p><div class="en-orig"><p>Starting in <code>14.2.0</code>, you can also run <code>next build</code> with the <code>--experimental-debug-memory-usage</code> flag to make it easier to take heap snapshots.</p></div>
+<p>이 모드로 실행하는 동안에는 언제든 process에 <code>SIGUSR2</code> signal을 보내면 process가 heap snapshot을 생성합니다.</p><div class="en-orig"><p>While running in this mode, you can send a <code>SIGUSR2</code> signal to the process at any point, and the process will take a heap snapshot.</p></div>
+<p>heap snapshot은 Next.js 애플리케이션의 프로젝트 root에 저장되며, Chrome DevTools 같은 아무 heap analyzer에서나 불러와 어떤 memory가 유지되고 있는지 확인할 수 있습니다. 이 모드는 아직 Webpack build worker와 호환되지 않습니다.</p><div class="en-orig"><p>The heap snapshot will be saved to the project root of the Next.js application and can be loaded in any heap analyzer, such as Chrome DevTools, to see what memory is retained. This mode is not yet compatible with Webpack build workers.</p></div>
+<p>자세한 내용은 <a href="https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots" target="_blank" rel="noopener">heap snapshot을 기록하고 분석하는 방법</a>을 참고하세요.</p><div class="en-orig"><p>See <a href="https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots" target="_blank" rel="noopener">how to record and analyze heap snapshots</a> for more information.</p></div>
+<h2 class="sec" id="webpack-build-worker"><a class="anchor" href="#webpack-build-worker">Webpack build worker</a></h2>
+<p>Webpack build worker를 사용하면 Webpack compile을 별도의 Node.js worker 안에서 실행할 수 있어, build 중 애플리케이션의 memory 사용량이 줄어듭니다.</p><div class="en-orig"><p>The Webpack build worker allows you to run Webpack compilations inside a separate Node.js worker which will decrease memory usage of your application during builds.</p></div>
+<p><code>v14.1.0</code>부터는 애플리케이션에 custom Webpack configuration이 없으면 이 option이 기본으로 활성화됩니다.</p><div class="en-orig"><p>This option is enabled by default if your application does not have a custom Webpack configuration starting in <code>v14.1.0</code>.</p></div>
+<p>이전 버전의 Next.js를 사용하거나 custom Webpack configuration이 있다면 <code>next.config.js</code>에서 <code>experimental.webpackBuildWorker: true</code>를 설정해 이 option을 활성화할 수 있습니다.</p><div class="en-orig"><p>If you are using an older version of Next.js or you have a custom Webpack configuration, you can enable this option by setting <code>experimental.webpackBuildWorker: true</code> inside your <code>next.config.js</code>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 기능은 일부 custom Webpack plugin과 호환되지 않을 수 있습니다.</p><div class="en-orig"><p>This feature may not be compatible with all custom Webpack plugins.</p></div></div></div>
+<h2 class="sec" id="disable-webpack-cache"><a class="anchor" href="#disable-webpack-cache">Disable Webpack cache<span class="ko">Webpack cache 비활성화하기</span></a></h2>
+<p><a href="https://webpack.js.org/configuration/cache/" target="_blank" rel="noopener">Webpack cache</a>는 build 속도를 높이기 위해 생성된 Webpack module을 memory 및/또는 디스크에 저장합니다. 이는
+performance에 도움이 되지만, cache된 데이터를 저장하느라 애플리케이션의 memory 사용량도 늘어납니다.</p><div class="en-orig"><p>The <a href="https://webpack.js.org/configuration/cache/" target="_blank" rel="noopener">Webpack cache</a> saves generated Webpack modules in memory and/or to disk to improve the speed of builds. This can
+help with performance, but it will also increase the memory usage of your application to store the cached data.</p></div>
+<p>애플리케이션에 <a href="app-api-reference-config-next-config-js-webpack.html">custom Webpack configuration</a>을 추가해 이 동작을 비활성화할 수 있습니다:</p><div class="en-orig"><p>You can disable this behavior by adding a <a href="app-api-reference-config-next-config-js-webpack.html">custom Webpack configuration</a> to your application:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  webpack: (
+    config,
+    { buildId, dev, isServer, defaultLoaders, nextRuntime, webpack }
+  ) =&gt; {
+    if (config.cache &amp;&amp; !dev) {
+      config.cache = Object.freeze({
+        type: &#x27;memory&#x27;,
+      })
+    }
+    // Important: return the modified config
+    return config
+  },
+}
+
+export default nextConfig</code></pre></div></div>
+<h2 class="sec" id="disable-static-analysis"><a class="anchor" href="#disable-static-analysis">Disable static analysis<span class="ko">static analysis 비활성화하기</span></a></h2>
+<p>type checking은 특히 큰 프로젝트에서 memory를 많이 필요로 할 수 있습니다.
+하지만 대부분의 프로젝트에는 이런 작업을 이미 처리하는 전용 CI runner가 있습니다.
+build의 "Running TypeScript" 단계에서 out-of-memory 문제가 발생하면 build 중에 이 작업을 비활성화할 수 있습니다:</p><div class="en-orig"><p>Typechecking may require a lot of memory, especially in large projects.
+However, most projects have a dedicated CI runner that already handles these tasks.
+When the build produces out-of-memory issues during the "Running TypeScript" step, you can disable this task during builds:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
+  },
+}
+
+export default nextConfig</code></pre></div></div>
+<ul>
+<li><a href="app-api-reference-config-typescript.html#disabling-typescript-errors-in-production">TypeScript Error 무시하기</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-config-typescript.html#disabling-typescript-errors-in-production">Ignoring TypeScript Errors</a></li>
+</ul></div>
+<p>이렇게 하면 type error 때문에 잘못된 deploy가 만들어질 수 있다는 점을 기억하세요.
+static analysis가 완료된 뒤에만 build를 production으로 promote하기를 강력히 권장합니다.
+Vercel에 deploy한다면 <a href="https://vercel.com/docs/deployments/managing-deployments#staging-and-promoting-a-production-deployment" target="_blank" rel="noopener">staging deployment 가이드</a>를 참고해 custom 작업이 성공한 뒤 build를 production으로 promote하는 방법을 알아보세요.</p><div class="en-orig"><p>Keep in mind that this may produce faulty deploys due to type errors.
+We strongly recommend only promoting builds to production after static analysis has completed.
+If you deploy to Vercel, you can check out the <a href="https://vercel.com/docs/deployments/managing-deployments#staging-and-promoting-a-production-deployment" target="_blank" rel="noopener">guide for staging deployments</a> to learn how to promote builds to production after custom tasks have succeeded.</p></div>
+<h2 class="sec" id="disable-source-maps"><a class="anchor" href="#disable-source-maps">Disable source maps<span class="ko">source map 비활성화하기</span></a></h2>
+<p>source map을 생성하면 build 과정에서 추가 memory가 소모됩니다.</p><div class="en-orig"><p>Generating source maps consumes extra memory during the build process.</p></div>
+<p>Next.js configuration에 <code>productionBrowserSourceMaps: false</code>와 <code>experimental.serverSourceMaps: false</code>를 추가해 source map 생성을 비활성화할 수 있습니다.</p><div class="en-orig"><p>You can disable source map generation by adding <code>productionBrowserSourceMaps: false</code> and <code>experimental.serverSourceMaps: false</code> to your Next.js configuration.</p></div>
+<p>Next.js는 <code>next build</code>의 prerender 단계에서 기본적으로 source map을 사용합니다.
+그 단계("Generating static pages" 이후)에서 계속 memory 문제가 발생한다면,
+Next.js configuration에 <code>enablePrerenderSourceMaps: false</code>를 추가해 그 단계의 source map을 비활성화해 볼 수 있습니다.</p><div class="en-orig"><p>Next.js will use source maps by default during the prerender phase of <code>next build</code>.
+If you consistently encounter memory issues during that phase (after "Generating static pages"),
+you can try disabling source maps in that phase by adding <code>enablePrerenderSourceMaps: false</code> to your Next.js configuration.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>일부 plugin은 source map을 켤 수 있으며, 이를 비활성화하려면 custom configuration이 필요할 수 있습니다.</p><div class="en-orig"><p>Some plugins may turn on source maps and may require custom configuration to disable.</p></div></div></div>
+<h2 class="sec" id="edge-memory-issues"><a class="anchor" href="#edge-memory-issues">Edge memory issues<span class="ko">Edge memory 문제</span></a></h2>
+<p>Next.js <code>v14.1.3</code>에서 Edge runtime 사용 시의 memory 문제가 수정되었습니다. 이 버전(또는 그 이후 버전)으로 업데이트해 문제가 해결되는지 확인해 보세요.</p><div class="en-orig"><p>Next.js <code>v14.1.3</code> fixed a memory issue when using the Edge runtime. Please update to this version (or later) to see if it addresses your issue.</p></div>
+<h2 class="sec" id="preloading-entries"><a class="anchor" href="#preloading-entries">Preloading Entries<span class="ko">entry preload</span></a></h2>
+<p>Next.js server는 시작될 때 각 page의 JavaScript module을 request 시점이 아니라 미리 memory에 preload합니다.</p><div class="en-orig"><p>When the Next.js server starts, it preloads each page's JavaScript modules into memory, rather than at request time.</p></div>
+<p>이 최적화 덕분에 response 시간이 빨라지는 대신, 초기 memory footprint가 커집니다.</p><div class="en-orig"><p>This optimization allows for faster response times, in exchange for a larger initial memory footprint.</p></div>
+<p>이 최적화를 비활성화하려면 <code>experimental.preloadEntriesOnStart</code> flag를 <code>false</code>로 설정하세요.</p><div class="en-orig"><p>To disable this optimization, set the <code>experimental.preloadEntriesOnStart</code> flag to <code>false</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.mjs">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const config: NextConfig = {
+  experimental: {
+    preloadEntriesOnStart: false,
+  },
+}
+
+export default config</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const config = {
+  experimental: {
+    preloadEntriesOnStart: false,
+  },
+}
+
+export default config</code></pre></div></div>
+<p>Next.js는 이 JavaScript module들을 unload하지 않습니다. 즉, 이 최적화를 비활성화하더라도 결국 모든 page가 request되면 Next.js server의 memory footprint는 결국 같아집니다.</p><div class="en-orig"><p>Next.js doesn't unload these JavaScript modules, meaning that even with this optimization disabled, the memory footprint of your Next.js server will eventually be the same if all pages are eventually requested.</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/memory-usage.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/memory-usage" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-mdx.html" class="prev"><div class="dir">← 이전</div><div class="ttl">MDX</div><div class="ttl-ko">Next.js에서 markdown과 MDX 사용하기</div></a>
+      <a href="app-guides-migrating.html" class="next"><div class="dir">다음 →</div><div class="ttl">Migrating</div><div class="ttl-ko">Migration</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/memory-usage" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#reduce-number-of-dependencies">Reduce number of dependencies</a></li><li class="l2"><a href="#try-experimentalwebpackmemoryoptimizations">Try <code>experimental.webpackMemoryOptimizations</code></a></li><li class="l2"><a href="#run-next-build-with---experimental-debug-memory-usage">Run <code>next build</code> with <code>--experimental-debug-memory-usage</code></a></li><li class="l2"><a href="#record-a-heap-profile">Record a heap profile</a></li><li class="l2"><a href="#analyze-a-snapshot-of-the-heap">Analyze a snapshot of the heap</a></li><li class="l2"><a href="#webpack-build-worker">Webpack build worker</a></li><li class="l2"><a href="#disable-webpack-cache">Disable Webpack cache</a></li><li class="l2"><a href="#disable-static-analysis">Disable static analysis</a></li><li class="l2"><a href="#disable-source-maps">Disable source maps</a></li><li class="l2"><a href="#edge-memory-issues">Edge memory issues</a></li><li class="l2"><a href="#preloading-entries">Preloading Entries</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+애플리케이션이 커지고 기능이 많아질수록 로컬에서 개발하거나 production build를 만들 때 더 많은 리소스가 필요할 수 있습니다.
+
+Next.js에서 memory를 최적화하고 흔히 발생하는 memory 문제를 해결하는 몇 가지 전략과 기법을 살펴보겠습니다.
+
+## Reduce number of dependencies || dependency 개수 줄이기
+
+dependency가 많은 애플리케이션일수록 memory를 더 많이 사용합니다.
+
+[Bundle Analyzer](/docs/app/guides/package-bundling)를 사용하면 애플리케이션에서 제거해 performance와 memory 사용량을 개선할 수 있는 큰 dependency를 조사할 수 있습니다.
+
+## Try `experimental.webpackMemoryOptimizations` || `experimental.webpackMemoryOptimizations` 사용해 보기
+
+`v15.0.0`부터 `next.config.js` 파일에 `experimental.webpackMemoryOptimizations: true`를 추가해 Webpack의 동작을 바꿀 수 있습니다. 이렇게 하면 최대 memory 사용량이 줄어들지만 compile 시간이 약간 늘어날 수 있습니다.
+
+&gt; **Good to know**: 이 기능은 먼저 더 많은 프로젝트에서 테스트하기 위해 현재 experimental 상태이지만, 위험도는 낮은 것으로 간주됩니다.
+
+## Run `next build` with `--experimental-debug-memory-usage` || `--experimental-debug-memory-usage`로 `next build` 실행하기
+
+`14.2.0`부터 `next build --experimental-debug-memory-usage`를 실행하면, build 내내 heap 사용량과 garbage collection 통계 같은 memory 사용 정보를 Next.js가 계속 출력하는 모드로 build를 실행할 수 있습니다. memory 사용량이 설정된 한도에 가까워지면 heap snapshot도 자동으로 생성됩니다.
+
+&gt; **Good to know**: 이 기능은 Webpack build worker option과 호환되지 않습니다. 이 option은 custom webpack config가 없으면 자동으로 활성화됩니다.
+
+## Record a heap profile || heap profile 기록하기
+
+memory 문제를 찾으려면 Node.js에서 heap profile을 기록하고 Chrome DevTools에서 불러와 memory leak의 잠재적인 원인을 파악할 수 있습니다.
+
+터미널에서 Next.js build를 시작할 때 Node.js에 `--heap-prof` flag를 전달하세요:
+
+[[CODE 1]]
+
+build가 끝나면 Node.js가 `.heapprofile` 파일을 생성합니다.
+
+Chrome DevTools에서 Memory tab을 열고 &quot;Load Profile&quot; 버튼을 클릭하면 이 파일을 시각화할 수 있습니다.
+
+## Analyze a snapshot of the heap || heap snapshot 분석하기
+
+inspector 도구를 사용해 애플리케이션의 memory 사용량을 분석할 수 있습니다.
+
+`next build` 또는 `next dev` command를 실행할 때 command 앞에 `NODE_OPTIONS=--inspect`를 붙이세요. 그러면 기본 port에서 inspector agent가 노출됩니다.
+사용자 코드가 시작되기 전에 멈추고 싶다면 대신 `--inspect-brk`를 전달할 수 있습니다. process가 실행되는 동안 Chrome DevTools 같은 도구로 debugging port에 연결해 heap snapshot을 기록하고 분석하면 어떤 memory가 유지되고 있는지 확인할 수 있습니다.
+
+`14.2.0`부터는 `--experimental-debug-memory-usage` flag와 함께 `next build`를 실행해 heap snapshot을 더 쉽게 생성할 수도 있습니다.
+
+이 모드로 실행하는 동안에는 언제든 process에 `SIGUSR2` signal을 보내면 process가 heap snapshot을 생성합니다.
+
+heap snapshot은 Next.js 애플리케이션의 프로젝트 root에 저장되며, Chrome DevTools 같은 아무 heap analyzer에서나 불러와 어떤 memory가 유지되고 있는지 확인할 수 있습니다. 이 모드는 아직 Webpack build worker와 호환되지 않습니다.
+
+자세한 내용은 [heap snapshot을 기록하고 분석하는 방법](https://developer.chrome.com/docs/devtools/memory-problems/heap-snapshots)을 참고하세요.
+
+## Webpack build worker
+
+Webpack build worker를 사용하면 Webpack compile을 별도의 Node.js worker 안에서 실행할 수 있어, build 중 애플리케이션의 memory 사용량이 줄어듭니다.
+
+`v14.1.0`부터는 애플리케이션에 custom Webpack configuration이 없으면 이 option이 기본으로 활성화됩니다.
+
+이전 버전의 Next.js를 사용하거나 custom Webpack configuration이 있다면 `next.config.js`에서 `experimental.webpackBuildWorker: true`를 설정해 이 option을 활성화할 수 있습니다.
+
+&gt; **Good to know**: 이 기능은 일부 custom Webpack plugin과 호환되지 않을 수 있습니다.
+
+## Disable Webpack cache || Webpack cache 비활성화하기
+
+[Webpack cache](https://webpack.js.org/configuration/cache/)는 build 속도를 높이기 위해 생성된 Webpack module을 memory 및/또는 디스크에 저장합니다. 이는
+performance에 도움이 되지만, cache된 데이터를 저장하느라 애플리케이션의 memory 사용량도 늘어납니다.
+
+애플리케이션에 [custom Webpack configuration](/docs/app/api-reference/config/next-config-js/webpack)을 추가해 이 동작을 비활성화할 수 있습니다:
+
+[[CODE 2]]
+
+## Disable static analysis || static analysis 비활성화하기
+
+type checking은 특히 큰 프로젝트에서 memory를 많이 필요로 할 수 있습니다.
+하지만 대부분의 프로젝트에는 이런 작업을 이미 처리하는 전용 CI runner가 있습니다.
+build의 &quot;Running TypeScript&quot; 단계에서 out-of-memory 문제가 발생하면 build 중에 이 작업을 비활성화할 수 있습니다:
+
+[[CODE 3]]
+
+- [TypeScript Error 무시하기](/docs/app/api-reference/config/typescript#disabling-typescript-errors-in-production)
+
+이렇게 하면 type error 때문에 잘못된 deploy가 만들어질 수 있다는 점을 기억하세요.
+static analysis가 완료된 뒤에만 build를 production으로 promote하기를 강력히 권장합니다.
+Vercel에 deploy한다면 [staging deployment 가이드](https://vercel.com/docs/deployments/managing-deployments#staging-and-promoting-a-production-deployment)를 참고해 custom 작업이 성공한 뒤 build를 production으로 promote하는 방법을 알아보세요.
+
+## Disable source maps || source map 비활성화하기
+
+source map을 생성하면 build 과정에서 추가 memory가 소모됩니다.
+
+Next.js configuration에 `productionBrowserSourceMaps: false`와 `experimental.serverSourceMaps: false`를 추가해 source map 생성을 비활성화할 수 있습니다.
+
+Next.js는 `next build`의 prerender 단계에서 기본적으로 source map을 사용합니다.
+그 단계(&quot;Generating static pages&quot; 이후)에서 계속 memory 문제가 발생한다면,
+Next.js configuration에 `enablePrerenderSourceMaps: false`를 추가해 그 단계의 source map을 비활성화해 볼 수 있습니다.
+
+&gt; **Good to know**: 일부 plugin은 source map을 켤 수 있으며, 이를 비활성화하려면 custom configuration이 필요할 수 있습니다.
+
+## Edge memory issues || Edge memory 문제
+
+Next.js `v14.1.3`에서 Edge runtime 사용 시의 memory 문제가 수정되었습니다. 이 버전(또는 그 이후 버전)으로 업데이트해 문제가 해결되는지 확인해 보세요.
+
+## Preloading Entries || entry preload
+
+Next.js server는 시작될 때 각 page의 JavaScript module을 request 시점이 아니라 미리 memory에 preload합니다.
+
+이 최적화 덕분에 response 시간이 빨라지는 대신, 초기 memory footprint가 커집니다.
+
+이 최적화를 비활성화하려면 `experimental.preloadEntriesOnStart` flag를 `false`로 설정하세요.
+
+[[CODE 4]]
+
+Next.js는 이 JavaScript module들을 unload하지 않습니다. 즉, 이 최적화를 비활성화하더라도 결국 모든 page가 request되면 Next.js server의 memory footprint는 결국 같아집니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

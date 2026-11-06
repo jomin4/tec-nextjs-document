@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proxy (proxy.js) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/api-reference/file-conventions/proxy" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/api-reference/file-conventions/proxy" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/03-file-conventions/proxy.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference-file-conventions.html">File-system conventions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Proxy<span class="sub">proxy.js</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p><code>middleware</code> file convention은 deprecated되었으며 <code>proxy</code>로 이름이 바뀌었습니다. 자세한 내용은 <a href="#migration-to-proxy">Migration to Proxy</a>를 참고하세요.</p><div class="en-orig"><p>The <code>middleware</code> file convention is deprecated and has been renamed to <code>proxy</code>. See <a href="#migration-to-proxy">Migration to Proxy</a> for more details.</p></div></div></div>
+<p><code>proxy.js|ts</code> 파일은 <a href="app-getting-started-proxy.html">Proxy</a>를 작성해 request가 완료되기 전에 서버에서 코드를 실행하는 데 사용합니다. 그런 다음 들어오는 request를 기반으로 rewrite, redirect, request 또는 response header 수정, 직접 응답하기 등의 방식으로 response를 변경할 수 있습니다.</p><div class="en-orig"><p>The <code>proxy.js|ts</code> file is used to write <a href="app-getting-started-proxy.html">Proxy</a> and run code on the server before a request is completed. Then, based on the incoming request, you can modify the response by rewriting, redirecting, modifying the request or response headers, or responding directly.</p></div>
+<p>Proxy는 route가 rendering되기 전에 실행됩니다. 인증(authentication), 로깅, redirect 처리 같은 custom server-side 로직을 구현할 때 특히 유용합니다.</p><div class="en-orig"><p>Proxy executes before routes are rendered. It's particularly useful for implementing custom server-side logic like authentication, logging, or handling redirects.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Proxy는 rendering 코드와 별도로 호출되도록 설계되었고, 최적화된 경우 빠른 redirect/rewrite 처리를 위해 CDN에 deploy되므로, 공유 module이나 global에 의존하려고 해서는 안 됩니다.</p>
+<p>Proxy에서 애플리케이션으로 정보를 전달하려면 <a href="#setting-headers">headers</a>, <a href="#using-cookies">cookies</a>, <a href="app-api-reference-functions-next-response.html#rewrite">rewrites</a>, <a href="app-api-reference-functions-next-response.html#redirect">redirects</a> 또는 URL을 사용하세요.</p><div class="en-orig"><p>Proxy is meant to be invoked separately of your render code and in optimized cases deployed to your CDN for fast redirect/rewrite handling, you should not attempt relying on shared modules or globals.</p>
+<p>To pass information from Proxy to your application, use <a href="#setting-headers">headers</a>, <a href="#using-cookies">cookies</a>, <a href="app-api-reference-functions-next-response.html#rewrite">rewrites</a>, <a href="app-api-reference-functions-next-response.html#redirect">redirects</a>, or the URL.</p></div></div></div>
+<p>프로젝트 루트(해당하는 경우 <code>src</code> 안)에 <code>proxy.ts</code>(또는 <code>.js</code>) 파일을 만들어 <code>pages</code>나 <code>app</code>과 같은 레벨에 위치하도록 하세요.</p><div class="en-orig"><p>Create a <code>proxy.ts</code> (or <code>.js</code>) file in the project root, or inside <code>src</code> if applicable, so that it is located at the same level as <code>pages</code> or <code>app</code>.</p></div>
+<p><a href="app-api-reference-config-next-config-js-pageExtensions.html"><code>pageExtensions</code></a>를 예를 들어 <code>.page.ts</code>나 <code>.page.js</code>로 customize했다면, 파일 이름도 그에 맞게 <code>proxy.page.ts</code> 또는 <code>proxy.page.js</code>로 지정하세요.</p><div class="en-orig"><p>If you’ve customized <a href="app-api-reference-config-next-config-js-pageExtensions.html"><code>pageExtensions</code></a>, for example to <code>.page.ts</code> or <code>.page.js</code>, name your file <code>proxy.page.ts</code> or <code>proxy.page.js</code> accordingly.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { NextResponse } from &#x27;next/server&#x27;
+import type { NextRequest } from &#x27;next/server&#x27;
+
+// This function can be marked `async` if using `await` inside
+export function proxy(request: NextRequest) {
+  return NextResponse.redirect(new URL(&#x27;/home&#x27;, request.url))
+}
+
+export const config = {
+  matcher: &#x27;/about/:path*&#x27;,
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { NextResponse } from &#x27;next/server&#x27;
+
+// This function can be marked `async` if using `await` inside
+export function proxy(request) {
+  return NextResponse.redirect(new URL(&#x27;/home&#x27;, request.url))
+}
+
+export const config = {
+  matcher: &#x27;/about/:path*&#x27;,
+}</code></pre></div></div>
+<h2 class="sec" id="exports"><a class="anchor" href="#exports">Exports</a></h2>
+<h3 class="sec" id="proxy-function"><a class="anchor" href="#proxy-function">Proxy function<span class="ko">Proxy 함수</span></a></h3>
+<p>파일은 default export 또는 <code>proxy</code>라는 이름의 named export로 단 하나의 함수를 export해야 합니다. 같은 파일에서 여러 proxy를 export하는 것은 지원되지 않습니다.</p><div class="en-orig"><p>The file must export a single function, either as a default export or named <code>proxy</code>. Note that multiple proxy from the same file are not supported.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">proxy.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// Example of default export
+export default function proxy(request) {
+  // Proxy logic
+}</code></pre></div></div>
+<h3 class="sec" id="config-object-optional"><a class="anchor" href="#config-object-optional">Config object (optional)<span class="ko">Config 객체 (선택)</span></a></h3>
+<p>선택적으로 Proxy 함수와 함께 config 객체를 export할 수 있습니다. 이 객체에는 Proxy가 적용될 경로를 지정하는 <a href="#matcher">matcher</a>가 포함됩니다.</p><div class="en-orig"><p>Optionally, a config object can be exported alongside the Proxy function. This object includes the <a href="#matcher">matcher</a> to specify paths where the Proxy applies.</p></div>
+<h3 class="sec" id="matcher"><a class="anchor" href="#matcher">Matcher</a></h3>
+<p><code>matcher</code> option을 사용하면 Proxy가 실행될 특정 경로를 target으로 지정할 수 있습니다.</p><div class="en-orig"><p>The <code>matcher</code> option allows you to target specific paths for the Proxy to run on.</p></div>
+<p><code>matcher</code>가 없으면 Proxy는 static 파일(<code>_next/static</code>), 이미지 최적화(<code>_next/image</code>), <code>public/</code> 폴더의 asset을 포함한 <strong>모든 request</strong>에서 실행됩니다. 이 경로들을 제외하려면 <a href="#negative-matching">negative match pattern</a> 사용을 고려하세요. 그렇지 않으면 인증 로직이나 redirect가 의도치 않게 CSS, JS, 이미지 로딩을 막을 수 있습니다.</p><div class="en-orig"><p>Without a <code>matcher</code>, Proxy runs on <strong>every request</strong>, including static files (<code>_next/static</code>), image optimizations (<code>_next/image</code>), and assets in the <code>public/</code> folder. Consider using a <a href="#negative-matching">negative match pattern</a> to exclude these paths, otherwise auth logic or redirects can unintentionally block CSS, JS, or images from loading.</p></div>
+<p>경로는 여러 방식으로 지정할 수 있습니다:</p><div class="en-orig"><p>You can specify paths in several ways:</p></div>
+<ul>
+<li>단일 경로: <code>&#x27;/about&#x27;</code>처럼 문자열을 직접 사용해 경로를 정의합니다.</li>
+<li>여러 경로: <code>matcher: [&#x27;/about&#x27;, &#x27;/contact&#x27;]</code>처럼 배열로 여러 경로를 나열하면 <code>/about</code>과 <code>/contact</code> 모두에 Proxy가 적용됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>For a single path: Directly use a string to define the path, like <code>&#x27;/about&#x27;</code>.</li>
+<li>For multiple paths: Use an array to list multiple paths, such as <code>matcher: [&#x27;/about&#x27;, &#x27;/contact&#x27;]</code>, which applies the Proxy to both <code>/about</code> and <code>/contact</code>.</li>
+</ul></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">proxy.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const config = {
+  matcher: [&#x27;/about/:path*&#x27;, &#x27;/dashboard/:path*&#x27;],
+}</code></pre></div></div>
+<p>또한 <code>matcher</code> option은 정규 표현식(regular expression)을 사용한 복잡한 경로 지정도 지원합니다. 예를 들어 정규 표현식 matcher로 특정 경로를 제외할 수 있습니다:</p><div class="en-orig"><p>Additionally, the <code>matcher</code> option supports complex path specifications using regular expressions. For example, you can exclude certain paths with a regular expression matcher:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">proxy.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const config = {
+  matcher: [
+    // Exclude API routes, static files, image optimizations, and .png files
+    &#x27;/((?!api|_next/static|_next/image|.*\\.png$).*)&#x27;,
+  ],
+}</code></pre></div></div>
+<p>이를 통해 포함하거나 제외할 경로를 정밀하게 제어할 수 있습니다.</p><div class="en-orig"><p>This enables precise control over which paths to include or exclude.</p></div>
+<p><code>matcher</code> option은 다음 key를 가진 객체의 배열도 받습니다:</p><div class="en-orig"><p>The <code>matcher</code> option accepts an array of objects with the following keys:</p></div>
+<ul>
+<li><code>source</code>: request 경로를 매칭하는 데 사용하는 경로 또는 패턴입니다. 직접 경로 매칭을 위한 문자열이거나 더 복잡한 매칭을 위한 패턴일 수 있습니다.</li>
+<li><code>locale</code> (선택): <code>false</code>로 설정하면 경로 매칭에서 locale 기반 routing을 무시하는 boolean입니다.</li>
+<li><code>has</code> (선택): header, query parameter, cookie 같은 특정 request 요소의 존재 여부에 따른 조건을 지정합니다.</li>
+<li><code>missing</code> (선택): header나 cookie가 없는 경우처럼 특정 request 요소가 없는 조건에 초점을 맞춥니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>source</code>: The path or pattern used to match the request paths. It can be a string for direct path matching or a pattern for more complex matching.</li>
+<li><code>locale</code> (optional): A boolean that, when set to <code>false</code>, ignores locale-based routing in path matching.</li>
+<li><code>has</code> (optional): Specifies conditions based on the presence of specific request elements such as headers, query parameters, or cookies.</li>
+<li><code>missing</code> (optional): Focuses on conditions where certain request elements are absent, like missing headers or cookies.</li>
+</ul></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">proxy.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const config = {
+  matcher: [
+    {
+      source: &#x27;/api/:path*&#x27;,
+      locale: false,
+      has: [
+        { type: &#x27;header&#x27;, key: &#x27;Authorization&#x27;, value: &#x27;Bearer Token&#x27; },
+        { type: &#x27;query&#x27;, key: &#x27;userId&#x27;, value: &#x27;123&#x27; },
+      ],
+      missing: [{ type: &#x27;cookie&#x27;, key: &#x27;session&#x27;, value: &#x27;active&#x27; }],
+    },
+  ],
+}</code></pre></div></div>
+<p><code>source</code> 경로 패턴은:</p><div class="en-orig"><p>The <code>source</code> path patterns:</p></div>
+<ol>
+<li>반드시 <code>/</code>로 시작해야 합니다</li>
+<li>named parameter를 포함할 수 있습니다: <code>/about/:path</code>는 <code>/about/a</code>, <code>/about/b</code>와 매칭되지만 <code>/about/a/c</code>와는 매칭되지 않습니다</li>
+<li>named parameter(<code>:</code>로 시작)에 modifier를 붙일 수 있습니다: <code>*</code>는 <em>0개 이상</em> 이므로 <code>/about/:path*</code>는 <code>/about/a/b/c</code>와 매칭됩니다. <code>?</code>는 <em>0개 또는 1개</em>, <code>+</code>는 <em>1개 이상</em> 입니다</li>
+<li>괄호로 감싼 정규 표현식을 사용할 수 있습니다: <code>/about/(.*)</code>는 <code>/about/:path*</code>와 같습니다</li>
+<li>경로의 시작 부분에 고정(anchor)됩니다: <code>/about</code>은 <code>/about</code>, <code>/about/team</code>과 매칭되지만 <code>/blog/about</code>과는 매칭되지 않습니다</li>
+</ol><div class="en-orig"><ol>
+<li>MUST start with <code>/</code></li>
+<li>Can include named parameters: <code>/about/:path</code> matches <code>/about/a</code> and <code>/about/b</code> but not <code>/about/a/c</code></li>
+<li>Can have modifiers on named parameters (starting with <code>:</code>): <code>/about/:path*</code> matches <code>/about/a/b/c</code> because <code>*</code> is <em>zero or more</em>. <code>?</code> is <em>zero or one</em> and <code>+</code> <em>one or more</em></li>
+<li>Can use regular expression enclosed in parenthesis: <code>/about/(.*)</code> is the same as <code>/about/:path*</code></li>
+<li>Are anchored to the start of the path: <code>/about</code> matches <code>/about</code> and <code>/about/team</code> but not <code>/blog/about</code></li>
+</ol></div>
+<p>자세한 내용은 <a href="https://github.com/pillarjs/path-to-regexp#path-to-regexp-1" target="_blank" rel="noopener">path-to-regexp</a> 문서를 참고하세요.</p><div class="en-orig"><p>Read more details on <a href="https://github.com/pillarjs/path-to-regexp#path-to-regexp-1" target="_blank" rel="noopener">path-to-regexp</a> documentation.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>matcher</code> 값은 build 시점에 정적으로 분석될 수 있도록 상수여야 합니다. 변수 같은 동적 값은 무시됩니다.</li>
+<li>하위 호환성을 위해 Next.js는 항상 <code>/public</code>을 <code>/public/index</code>로 간주합니다. 따라서 <code>/public/:path</code> matcher는 매칭됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The <code>matcher</code> values need to be constants so they can be statically analyzed at build-time. Dynamic values such as variables will be ignored.</li>
+<li>For backward compatibility, Next.js always considers <code>/public</code> as <code>/public/index</code>. Therefore, a matcher of <code>/public/:path</code> will match.</li>
+</ul></div></div></div>
+<h2 class="sec" id="params"><a class="anchor" href="#params">Params</a></h2>
+<p>Next.js는 Proxy 함수를 <a href="#request"><code>request</code></a>와 <a href="#event"><code>event</code></a> 두 개의 인자로 이 순서대로 호출합니다. 사용하는 것만 선언하세요.</p><div class="en-orig"><p>Next.js calls the Proxy function with two arguments, <a href="#request"><code>request</code></a> and <a href="#event"><code>event</code></a>, in that order. Declare only the ones you use.</p></div>
+<h3 class="sec" id="request"><a class="anchor" href="#request"><code>request</code></a></h3>
+<p>첫 번째 parameter는 들어오는 HTTP request를 나타내는 <code>NextRequest</code>의 instance입니다.</p><div class="en-orig"><p>The first parameter is an instance of <code>NextRequest</code>, which represents the incoming HTTP request.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextRequest } from &#x27;next/server&#x27;
+
+export function proxy(request: NextRequest) {
+  // Proxy logic goes here
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export function proxy(request) {
+  // Proxy logic goes here
+}</code></pre></div></div>
+<h3 class="sec" id="event"><a class="anchor" href="#event"><code>event</code></a></h3>
+<p>두 번째 parameter는 <code>NextFetchEvent</code>의 instance입니다. 이 객체는 <code>waitUntil(promise)</code>라는 단 하나의 method를 제공하며, promise가 settle될 때까지 Proxy 호출을 유지하므로 로깅이나 analytics 같은 background 작업이 response가 전송된 뒤에도 완료될 수 있습니다. 전체 예시는 <a href="#waituntil-and-nextfetchevent"><code>waitUntil</code> and <code>NextFetchEvent</code></a>를 참고하세요.</p><div class="en-orig"><p>The second parameter is an instance of <code>NextFetchEvent</code>. It exposes a single method, <code>waitUntil(promise)</code>, which keeps the Proxy invocation alive until the promise settles, so background work like logging or analytics can finish after the response is sent. See <a href="#waituntil-and-nextfetchevent"><code>waitUntil</code> and <code>NextFetchEvent</code></a> for a full example.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextFetchEvent, NextRequest } from &#x27;next/server&#x27;
+
+export function proxy(request: NextRequest, event: NextFetchEvent) {
+  event.waitUntil(
+    fetch(&#x27;https://example.com/log&#x27;, {
+      method: &#x27;POST&#x27;,
+      body: JSON.stringify({ pathname: request.nextUrl.pathname }),
+    })
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export function proxy(request, event) {
+  event.waitUntil(
+    fetch(&#x27;https://example.com/log&#x27;, {
+      method: &#x27;POST&#x27;,
+      body: JSON.stringify({ pathname: request.nextUrl.pathname }),
+    })
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="nextproxy-type"><a class="anchor" href="#nextproxy-type"><code>NextProxy</code> type</a></h3>
+<p>간결한 표현을 선호한다면 <code>NextProxy</code> type을 사용할 수 있습니다. 이 type은 <code>request</code>(<code>NextRequest</code>)와 <code>event</code>(<code>NextFetchEvent</code>) 모두의 parameter type을 자동으로 추론합니다:</p><div class="en-orig"><p>If you prefer a shorthand, you can use the <code>NextProxy</code> type. It infers the parameter types for both <code>request</code> (<code>NextRequest</code>) and <code>event</code> (<code>NextFetchEvent</code>) automatically:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">proxy.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextProxy } from &#x27;next/server&#x27;
+
+export const proxy: NextProxy = (request, event) =&gt; {
+  event.waitUntil(Promise.resolve())
+  return Response.json({ pathname: request.nextUrl.pathname })
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>NextRequest</code>는 Next.js Proxy에서 들어오는 HTTP request를 나타내는 type이고, <a href="#nextresponse"><code>NextResponse</code></a>는 HTTP response를 조작하고 돌려보내는 데 사용하는 class입니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>NextRequest</code> is a type that represents incoming HTTP requests in Next.js Proxy, whereas <a href="#nextresponse"><code>NextResponse</code></a> is a class used to manipulate and send back HTTP responses.</li>
+</ul></div></div></div>
+<h2 class="sec" id="nextresponse"><a class="anchor" href="#nextresponse">NextResponse</a></h2>
+<p><code>NextResponse</code> API로 다음을 할 수 있습니다:</p><div class="en-orig"><p>The <code>NextResponse</code> API allows you to:</p></div>
+<ul>
+<li>들어오는 request를 다른 URL로 <code>redirect</code></li>
+<li>주어진 URL을 표시하도록 response를 <code>rewrite</code></li>
+<li>API Routes, <code>getServerSideProps</code>, <code>rewrite</code> destination을 위한 request header 설정</li>
+<li>response cookie 설정</li>
+<li>response header 설정</li>
+</ul><div class="en-orig"><ul>
+<li><code>redirect</code> the incoming request to a different URL</li>
+<li><code>rewrite</code> the response by displaying a given URL</li>
+<li>Set request headers for API Routes, <code>getServerSideProps</code>, and <code>rewrite</code> destinations</li>
+<li>Set response cookies</li>
+<li>Set response headers</li>
+</ul></div>
+<p>Proxy에서 response를 생성하려면 다음을 할 수 있습니다:</p><div class="en-orig"><p>To produce a response from Proxy, you can:</p></div>
+<ol>
+<li>response를 생성하는 route(<a href="pages-building-your-application-routing-pages-and-layouts.html">Page</a> 또는 <a href="pages-building-your-application-routing-api-routes.html">Edge API Route</a>)로 <code>rewrite</code></li>
+<li><code>NextResponse</code>를 직접 return. <a href="#producing-a-response">Producing a Response</a>를 참고하세요</li>
+</ol><div class="en-orig"><ol>
+<li><code>rewrite</code> to a route (<a href="pages-building-your-application-routing-pages-and-layouts.html">Page</a> or <a href="pages-building-your-application-routing-api-routes.html">Edge API Route</a>) that produces a response</li>
+<li>return a <code>NextResponse</code> directly. See <a href="#producing-a-response">Producing a Response</a></li>
+</ol></div>
+<h2 class="sec" id="execution-order"><a class="anchor" href="#execution-order">Execution order<span class="ko">실행 순서</span></a></h2>
+<p>Proxy는 <strong>프로젝트의 모든 route</strong>에 대해 호출됩니다. 따라서 <a href="#matcher">matchers</a>를 사용해 특정 route를 정확히 target하거나 제외하는 것이 매우 중요합니다. 실행 순서는 다음과 같습니다:</p><div class="en-orig"><p>Proxy will be invoked for <strong>every route in your project</strong>. Given this, it's crucial to use <a href="#matcher">matchers</a> to precisely target or exclude specific routes. The following is the execution order:</p></div>
+<ol>
+<li><code>next.config.js</code>의 <code>headers</code></li>
+<li><code>next.config.js</code>의 <code>redirects</code></li>
+<li>Proxy (<code>rewrites</code>, <code>redirects</code> 등)</li>
+<li><code>next.config.js</code>의 <code>beforeFiles</code> (<code>rewrites</code>)</li>
+<li>Filesystem route (<code>public/</code>, <code>_next/static/</code>, <code>pages/</code>, <code>app/</code> 등)</li>
+<li><code>next.config.js</code>의 <code>afterFiles</code> (<code>rewrites</code>)</li>
+<li>Dynamic Routes (<code>/blog/[slug]</code>)</li>
+<li><code>next.config.js</code>의 <code>fallback</code> (<code>rewrites</code>)</li>
+</ol><div class="en-orig"><ol>
+<li><code>headers</code> from <code>next.config.js</code></li>
+<li><code>redirects</code> from <code>next.config.js</code></li>
+<li>Proxy (<code>rewrites</code>, <code>redirects</code>, etc.)</li>
+<li><code>beforeFiles</code> (<code>rewrites</code>) from <code>next.config.js</code></li>
+<li>Filesystem routes (<code>public/</code>, <code>_next/static/</code>, <code>pages/</code>, <code>app/</code>, etc.)</li>
+<li><code>afterFiles</code> (<code>rewrites</code>) from <code>next.config.js</code></li>
+<li>Dynamic Routes (<code>/blog/[slug]</code>)</li>
+<li><code>fallback</code> (<code>rewrites</code>) from <code>next.config.js</code></li>
+</ol></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="app-api-reference-directives-use-server.html">Server Functions</a>는 이 체인에서 별도의 route가 아닙니다. Server Function은 사용되는 route로의 POST request로 처리되므로, 어떤 경로를 제외하는 Proxy matcher는 그 경로의 Server Function 호출도 건너뜁니다.</p>
+<p>matcher 변경이나 Server Function을 다른 route로 옮기는 리팩터링으로 인해 Proxy 적용 범위가 조용히 사라질 수 있습니다. Proxy에만 의존하지 말고 항상 각 Server Function 내부에서 authentication과 authorization을 검증하세요. 권장 패턴은 <a href="app-guides-data-security.html#authentication-and-authorization">Data Security guide</a>를 참고하세요.</p><div class="en-orig"><p><a href="app-api-reference-directives-use-server.html">Server Functions</a> are not separate routes in this chain. They are handled as POST requests to the route where they are used, so a Proxy matcher that excludes a path will also skip Server Function calls on that path.</p>
+<p>A matcher change or a refactor that moves a Server Function to a different route can silently remove Proxy coverage. Always verify authentication and authorization inside each Server Function rather than relying on Proxy alone. See the <a href="app-guides-data-security.html#authentication-and-authorization">Data Security guide</a> for recommended patterns.</p></div></div></div>
+<h2 class="sec" id="runtime"><a class="anchor" href="#runtime">Runtime</a></h2>
+<p>Proxy는 기본적으로 Node.js runtime을 사용합니다. <a href="app-api-reference-file-conventions-route-segment-config-runtime.html"><code>runtime</code></a> config option은 Proxy 파일에서 사용할 수 없습니다. Proxy에서 <code>runtime</code> config option을 설정하면 error가 발생합니다.</p><div class="en-orig"><p>Proxy defaults to using the Node.js runtime. The <a href="app-api-reference-file-conventions-route-segment-config-runtime.html"><code>runtime</code></a> config option is not available in Proxy files. Setting the <code>runtime</code> config option in Proxy will throw an error.</p></div>
+<h2 class="sec" id="advanced-proxy-flags"><a class="anchor" href="#advanced-proxy-flags">Advanced Proxy flags<span class="ko">고급 Proxy flag</span></a></h2>
+<p>Next.js <code>v13.1</code>에서 고급 use case를 처리하기 위해 proxy용 flag 두 개, <a href="app-api-reference-config-next-config-js-skipProxyUrlNormalize.html"><code>skipProxyUrlNormalize</code></a>(이전 이름 <code>skipMiddlewareUrlNormalize</code>)와 <a href="app-api-reference-config-next-config-js-skipTrailingSlashRedirect.html"><code>skipTrailingSlashRedirect</code></a>가 도입되었습니다.</p><div class="en-orig"><p>In <code>v13.1</code> of Next.js two additional flags were introduced for proxy, <a href="app-api-reference-config-next-config-js-skipProxyUrlNormalize.html"><code>skipProxyUrlNormalize</code></a> (formerly <code>skipMiddlewareUrlNormalize</code>) and <a href="app-api-reference-config-next-config-js-skipTrailingSlashRedirect.html"><code>skipTrailingSlashRedirect</code></a> to handle advanced use cases.</p></div>
+<p><code>skipTrailingSlashRedirect</code>는 trailing slash를 추가하거나 제거하는 Next.js redirect를 비활성화합니다. 이를 통해 proxy 내부에서 custom 처리를 하여 일부 경로에서는 trailing slash를 유지하고 다른 경로에서는 유지하지 않을 수 있어, 점진적인 migration을 더 쉽게 만들 수 있습니다.</p><div class="en-orig"><p><code>skipTrailingSlashRedirect</code> disables Next.js redirects for adding or removing trailing slashes. This allows custom handling inside proxy to maintain the trailing slash for some paths but not others, which can make incremental migrations easier.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  skipTrailingSlashRedirect: true,
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">proxy.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">const legacyPrefixes = [&#x27;/docs&#x27;, &#x27;/blog&#x27;]
+
+export default async function proxy(req) {
+  const { pathname } = req.nextUrl
+
+  if (legacyPrefixes.some((prefix) =&gt; pathname.startsWith(prefix))) {
+    return NextResponse.next()
+  }
+
+  // apply trailing slash handling
+  if (
+    !pathname.endsWith(&#x27;/&#x27;) &amp;&amp;
+    !pathname.match(/((?!\.well-known(?:\/.*)?)(?:[^/]+\/)*[^/]+\.\w+)/)
+  ) {
+    return NextResponse.redirect(
+      new URL(`${req.nextUrl.pathname}/`, req.nextUrl)
+    )
+  }
+}</code></pre></div></div>
+<p><code>skipProxyUrlNormalize</code>는 Next.js의 URL 정규화(normalization)를 비활성화하여 직접 방문과 client 전환(client-transition)을 동일하게 처리할 수 있게 합니다. 일부 고급 사례에서 이 option은 원래 URL을 사용해 완전한 제어권을 제공합니다.</p><div class="en-orig"><p><code>skipProxyUrlNormalize</code> allows for disabling the URL normalization in Next.js to make handling direct visits and client-transitions the same. In some advanced cases, this option provides full control by using the original URL.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  skipProxyUrlNormalize: true,
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">proxy.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export default async function proxy(req) {
+  const { pathname } = req.nextUrl
+
+  // GET /_next/data/build-id/hello.json
+
+  console.log(pathname)
+  // with the flag this now /_next/data/build-id/hello.json
+  // without the flag this would be normalized to /hello
+}</code></pre></div></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<h3 class="sec" id="conditional-statements"><a class="anchor" href="#conditional-statements">Conditional Statements<span class="ko">조건문</span></a></h3>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { NextResponse } from &#x27;next/server&#x27;
+import type { NextRequest } from &#x27;next/server&#x27;
+
+export function proxy(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith(&#x27;/about&#x27;)) {
+    return NextResponse.rewrite(new URL(&#x27;/about-2&#x27;, request.url))
+  }
+
+  if (request.nextUrl.pathname.startsWith(&#x27;/dashboard&#x27;)) {
+    return NextResponse.rewrite(new URL(&#x27;/dashboard/user&#x27;, request.url))
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { NextResponse } from &#x27;next/server&#x27;
+
+export function proxy(request) {
+  if (request.nextUrl.pathname.startsWith(&#x27;/about&#x27;)) {
+    return NextResponse.rewrite(new URL(&#x27;/about-2&#x27;, request.url))
+  }
+
+  if (request.nextUrl.pathname.startsWith(&#x27;/dashboard&#x27;)) {
+    return NextResponse.rewrite(new URL(&#x27;/dashboard/user&#x27;, request.url))
+  }
+}</code></pre></div></div>
+<h3 class="sec" id="using-cookies"><a class="anchor" href="#using-cookies">Using Cookies<span class="ko">Cookie 사용하기</span></a></h3>
+<p>Cookie는 일반 header입니다. <code>Request</code>에서는 <code>Cookie</code> header에, <code>Response</code>에서는 <code>Set-Cookie</code> header에 저장됩니다. Next.js는 <code>NextRequest</code>와 <code>NextResponse</code>의 <code>cookies</code> extension을 통해 이 cookie에 편리하게 접근하고 조작하는 방법을 제공합니다.</p><div class="en-orig"><p>Cookies are regular headers. On a <code>Request</code>, they are stored in the <code>Cookie</code> header. On a <code>Response</code> they are in the <code>Set-Cookie</code> header. Next.js provides a convenient way to access and manipulate these cookies through the <code>cookies</code> extension on <code>NextRequest</code> and <code>NextResponse</code>.</p></div>
+<ol>
+<li>들어오는 request의 경우 <code>cookies</code>는 <code>get</code>, <code>getAll</code>, <code>set</code>, <code>delete</code> method를 제공합니다. <code>has</code>로 cookie 존재 여부를 확인하거나 <code>clear</code>로 모든 cookie를 제거할 수 있습니다.</li>
+<li>나가는 response의 경우 <code>cookies</code>는 <code>get</code>, <code>getAll</code>, <code>set</code>, <code>delete</code> method를 제공합니다.</li>
+</ol><div class="en-orig"><ol>
+<li>For incoming requests, <code>cookies</code> comes with the following methods: <code>get</code>, <code>getAll</code>, <code>set</code>, and <code>delete</code> cookies. You can check for the existence of a cookie with <code>has</code> or remove all cookies with <code>clear</code>.</li>
+<li>For outgoing responses, <code>cookies</code> have the following methods <code>get</code>, <code>getAll</code>, <code>set</code>, and <code>delete</code>.</li>
+</ol></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { NextResponse } from &#x27;next/server&#x27;
+import type { NextRequest } from &#x27;next/server&#x27;
+
+export function proxy(request: NextRequest) {
+  // Assume a &quot;Cookie:nextjs=fast&quot; header to be present on the incoming request
+  // Getting cookies from the request using the `RequestCookies` API
+  let cookie = request.cookies.get(&#x27;nextjs&#x27;)
+  console.log(cookie) // =&gt; { name: &#x27;nextjs&#x27;, value: &#x27;fast&#x27;, Path: &#x27;/&#x27; }
+  const allCookies = request.cookies.getAll()
+  console.log(allCookies) // =&gt; [{ name: &#x27;nextjs&#x27;, value: &#x27;fast&#x27; }]
+
+  request.cookies.has(&#x27;nextjs&#x27;) // =&gt; true
+  request.cookies.delete(&#x27;nextjs&#x27;)
+  request.cookies.has(&#x27;nextjs&#x27;) // =&gt; false
+
+  // Setting cookies on the response using the `ResponseCookies` API
+  const response = NextResponse.next()
+  response.cookies.set(&#x27;vercel&#x27;, &#x27;fast&#x27;)
+  response.cookies.set({
+    name: &#x27;vercel&#x27;,
+    value: &#x27;fast&#x27;,
+    path: &#x27;/&#x27;,
+  })
+  cookie = response.cookies.get(&#x27;vercel&#x27;)
+  console.log(cookie) // =&gt; { name: &#x27;vercel&#x27;, value: &#x27;fast&#x27;, Path: &#x27;/&#x27; }
+  // The outgoing response will have a `Set-Cookie:vercel=fast;path=/` header.
+
+  return response
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { NextResponse } from &#x27;next/server&#x27;
+
+export function proxy(request) {
+  // Assume a &quot;Cookie:nextjs=fast&quot; header to be present on the incoming request
+  // Getting cookies from the request using the `RequestCookies` API
+  let cookie = request.cookies.get(&#x27;nextjs&#x27;)
+  console.log(cookie) // =&gt; { name: &#x27;nextjs&#x27;, value: &#x27;fast&#x27;, Path: &#x27;/&#x27; }
+  const allCookies = request.cookies.getAll()
+  console.log(allCookies) // =&gt; [{ name: &#x27;nextjs&#x27;, value: &#x27;fast&#x27; }]
+
+  request.cookies.has(&#x27;nextjs&#x27;) // =&gt; true
+  request.cookies.delete(&#x27;nextjs&#x27;)
+  request.cookies.has(&#x27;nextjs&#x27;) // =&gt; false
+
+  // Setting cookies on the response using the `ResponseCookies` API
+  const response = NextResponse.next()
+  response.cookies.set(&#x27;vercel&#x27;, &#x27;fast&#x27;)
+  response.cookies.set({
+    name: &#x27;vercel&#x27;,
+    value: &#x27;fast&#x27;,
+    path: &#x27;/&#x27;,
+  })
+  cookie = response.cookies.get(&#x27;vercel&#x27;)
+  console.log(cookie) // =&gt; { name: &#x27;vercel&#x27;, value: &#x27;fast&#x27;, Path: &#x27;/&#x27; }
+  // The outgoing response will have a `Set-Cookie:vercel=fast;path=/` header.
+
+  return response
+}</code></pre></div></div>
+<h3 class="sec" id="setting-headers"><a class="anchor" href="#setting-headers">Setting Headers<span class="ko">Header 설정하기</span></a></h3>
+<p><code>NextResponse</code> API를 사용해 request header와 response header를 설정할 수 있습니다(<em>request</em> header 설정은 Next.js v13.0.0부터 가능).</p><div class="en-orig"><p>You can set request and response headers using the <code>NextResponse</code> API (setting <em>request</em> headers is available since Next.js v13.0.0).</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { NextResponse } from &#x27;next/server&#x27;
+import type { NextRequest } from &#x27;next/server&#x27;
+
+export function proxy(request: NextRequest) {
+  // Clone the request headers and set a new header `x-hello-from-proxy1`
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set(&#x27;x-hello-from-proxy1&#x27;, &#x27;hello&#x27;)
+
+  // You can also set request headers in NextResponse.next
+  const response = NextResponse.next({
+    request: {
+      // New request headers
+      headers: requestHeaders,
+    },
+  })
+
+  // Set a new response header `x-hello-from-proxy2`
+  response.headers.set(&#x27;x-hello-from-proxy2&#x27;, &#x27;hello&#x27;)
+  return response
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { NextResponse } from &#x27;next/server&#x27;
+
+export function proxy(request) {
+  // Clone the request headers and set a new header `x-hello-from-proxy1`
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set(&#x27;x-hello-from-proxy1&#x27;, &#x27;hello&#x27;)
+
+  // You can also set request headers in NextResponse.next
+  const response = NextResponse.next({
+    request: {
+      // New request headers
+      headers: requestHeaders,
+    },
+  })
+
+  // Set a new response header `x-hello-from-proxy2`
+  response.headers.set(&#x27;x-hello-from-proxy2&#x27;, &#x27;hello&#x27;)
+  return response
+}</code></pre></div></div>
+<p>이 snippet에서는 다음을 사용한다는 점에 유의하세요:</p><div class="en-orig"><p>Note that the snippet uses:</p></div>
+<ul>
+<li><code>requestHeaders</code>를 upstream에서 사용할 수 있게 하는 <code>NextResponse.next({ request: { headers: requestHeaders } })</code></li>
+<li><code>requestHeaders</code>를 client가 사용할 수 있게 하는 <code>NextResponse.next({ headers: requestHeaders })</code>는 <strong>사용하지 않음</strong></li>
+</ul><div class="en-orig"><ul>
+<li><code>NextResponse.next({ request: { headers: requestHeaders } })</code> to make <code>requestHeaders</code> available upstream</li>
+<li><strong>NOT</strong> <code>NextResponse.next({ headers: requestHeaders })</code> which makes <code>requestHeaders</code> available to clients</li>
+</ul></div>
+<p>자세한 내용은 <a href="app-api-reference-functions-next-response.html#next">NextResponse headers in Proxy</a>를 참고하세요.</p><div class="en-orig"><p>Learn more in <a href="app-api-reference-functions-next-response.html#next">NextResponse headers in Proxy</a>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>backend web server 설정에 따라 <a href="https://developer.mozilla.org/docs/Web/HTTP/Status/431" target="_blank" rel="noopener">431 Request Header Fields Too Large</a> error가 발생할 수 있으므로 큰 header를 설정하지 마세요.</p><div class="en-orig"><p>Avoid setting large headers as it might cause <a href="https://developer.mozilla.org/docs/Web/HTTP/Status/431" target="_blank" rel="noopener">431 Request Header Fields Too Large</a> error depending on your backend web server configuration.</p></div></div></div>
+<h4 class="sec" id="rsc-requests-and-rewrites"><a class="anchor" href="#rsc-requests-and-rewrites">RSC requests and rewrites<span class="ko">RSC request와 rewrite</span></a></h4>
+<p>RSC request 중에 Next.js는 Proxy의 <code>request</code> instance에서 내부 Flight header를 제거합니다. 예를 들어 <code>rsc</code>, <code>next-router-state-tree</code>, <code>next-router-prefetch</code> 같은 header는 <code>request.headers</code>를 통해 노출되지 않습니다. 이는 RSC request와 HTML request가 서로 일치해야 하므로, RSC request를 HTML request와 다르게 실수로 처리하는 것을 방지하기 위함입니다.</p><div class="en-orig"><p>During RSC requests, Next.js strips internal Flight headers from the <code>request</code> instance in Proxy. For example, headers like <code>rsc</code>, <code>next-router-state-tree</code>, and <code>next-router-prefetch</code> are not exposed through <code>request.headers</code>. This is to prevent accidentally handling an RSC request differently than the HTML request as both need to align.</p></div>
+<p><code>NextResponse.rewrite()</code>를 사용하면 Next.js가 필요한 RSC rewrite header를 upstream으로 자동 전파합니다.</p><div class="en-orig"><p>When you use <code>NextResponse.rewrite()</code>, Next.js automatically propagates the required RSC rewrite headers upstream.</p></div>
+<p><code>NextResponse.rewrite()</code> 대신 <code>fetch()</code>로 custom rewrite 로직을 구현하면, RSC header를 직접 전달(forward)하지 않는 한 RSC header가 누락되는 문제를 겪을 수 있습니다.</p><div class="en-orig"><p>If you implement custom rewrite logic with <code>fetch()</code> instead of <code>NextResponse.rewrite()</code>, you can run into missing RSC headers unless you forward them manually.</p></div>
+<p>custom <code>fetch</code> rewrite 구성에서는 <code>next.config.js</code>에서 <a href="app-api-reference-config-next-config-js-skipProxyUrlNormalize.html"><code>skipProxyUrlNormalize</code></a>를 활성화하여 rewrite 로직이 제공된 request 객체로부터 필요한 URL 형태와 RSC header를 받을 수 있게 할 수도 있습니다:</p><div class="en-orig"><p>For custom <code>fetch</code> rewrite setups, you can also enable <a href="app-api-reference-config-next-config-js-skipProxyUrlNormalize.html"><code>skipProxyUrlNormalize</code></a> in <code>next.config.js</code> so your rewrite logic can receive the necessary URL shape and RSC headers from the provided request object:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  skipProxyUrlNormalize: true,
+}</code></pre></div></div>
+<h3 class="sec" id="cors"><a class="anchor" href="#cors">CORS</a></h3>
+<p>Proxy에서 CORS header를 설정해 <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests" target="_blank" rel="noopener">simple</a> request와 <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#preflighted_requests" target="_blank" rel="noopener">preflighted</a> request를 포함한 cross-origin request를 허용할 수 있습니다.</p><div class="en-orig"><p>You can set CORS headers in Proxy to allow cross-origin requests, including <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests" target="_blank" rel="noopener">simple</a> and <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#preflighted_requests" target="_blank" rel="noopener">preflighted</a> requests.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { NextResponse } from &#x27;next/server&#x27;
+import type { NextRequest } from &#x27;next/server&#x27;
+
+const allowedOrigins = [&#x27;https://acme.com&#x27;, &#x27;https://my-app.org&#x27;]
+
+const corsOptions = {
+  &#x27;Access-Control-Allow-Methods&#x27;: &#x27;GET, POST, PUT, DELETE, OPTIONS&#x27;,
+  &#x27;Access-Control-Allow-Headers&#x27;: &#x27;Content-Type, Authorization&#x27;,
+}
+
+export function proxy(request: NextRequest) {
+  // Check the origin from the request
+  const origin = request.headers.get(&#x27;origin&#x27;) ?? &#x27;&#x27;
+  const isAllowedOrigin = allowedOrigins.includes(origin)
+
+  // Handle preflighted requests
+  const isPreflight = request.method === &#x27;OPTIONS&#x27;
+
+  if (isPreflight) {
+    const preflightHeaders = {
+      ...(isAllowedOrigin &amp;&amp; { &#x27;Access-Control-Allow-Origin&#x27;: origin }),
+      ...corsOptions,
+    }
+    return NextResponse.json({}, { headers: preflightHeaders })
+  }
+
+  // Handle simple requests
+  const response = NextResponse.next()
+
+  if (isAllowedOrigin) {
+    response.headers.set(&#x27;Access-Control-Allow-Origin&#x27;, origin)
+  }
+
+  Object.entries(corsOptions).forEach(([key, value]) =&gt; {
+    response.headers.set(key, value)
+  })
+
+  return response
+}
+
+export const config = {
+  matcher: &#x27;/api/:path*&#x27;,
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { NextResponse } from &#x27;next/server&#x27;
+
+const allowedOrigins = [&#x27;https://acme.com&#x27;, &#x27;https://my-app.org&#x27;]
+
+const corsOptions = {
+  &#x27;Access-Control-Allow-Methods&#x27;: &#x27;GET, POST, PUT, DELETE, OPTIONS&#x27;,
+  &#x27;Access-Control-Allow-Headers&#x27;: &#x27;Content-Type, Authorization&#x27;,
+}
+
+export function proxy(request) {
+  // Check the origin from the request
+  const origin = request.headers.get(&#x27;origin&#x27;) ?? &#x27;&#x27;
+  const isAllowedOrigin = allowedOrigins.includes(origin)
+
+  // Handle preflighted requests
+  const isPreflight = request.method === &#x27;OPTIONS&#x27;
+
+  if (isPreflight) {
+    const preflightHeaders = {
+      ...(isAllowedOrigin &amp;&amp; { &#x27;Access-Control-Allow-Origin&#x27;: origin }),
+      ...corsOptions,
+    }
+    return NextResponse.json({}, { headers: preflightHeaders })
+  }
+
+  // Handle simple requests
+  const response = NextResponse.next()
+
+  if (isAllowedOrigin) {
+    response.headers.set(&#x27;Access-Control-Allow-Origin&#x27;, origin)
+  }
+
+  Object.entries(corsOptions).forEach(([key, value]) =&gt; {
+    response.headers.set(key, value)
+  })
+
+  return response
+}
+
+export const config = {
+  matcher: &#x27;/api/:path*&#x27;,
+}</code></pre></div></div>
+<h3 class="sec" id="producing-a-response"><a class="anchor" href="#producing-a-response">Producing a response<span class="ko">Response 생성하기</span></a></h3>
+<p><code>Response</code> 또는 <code>NextResponse</code> instance를 return하여 Proxy에서 직접 응답할 수 있습니다. (이 기능은 <a href="https://nextjs.org/blog/next-13-1#nextjs-advanced-proxy" target="_blank" rel="noopener">Next.js v13.1.0</a>부터 사용할 수 있습니다)</p><div class="en-orig"><p>You can respond from Proxy directly by returning a <code>Response</code> or <code>NextResponse</code> instance. (This is available since <a href="https://nextjs.org/blog/next-13-1#nextjs-advanced-proxy" target="_blank" rel="noopener">Next.js v13.1.0</a>)</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextRequest } from &#x27;next/server&#x27;
+import { isAuthenticated } from &#x27;@lib/auth&#x27;
+
+// Limit the proxy to paths starting with `/api/`
+export const config = {
+  matcher: &#x27;/api/:function*&#x27;,
+}
+
+export function proxy(request: NextRequest) {
+  // Call our authentication function to check the request
+  if (!isAuthenticated(request)) {
+    // Respond with JSON indicating an error message
+    return Response.json(
+      { success: false, message: &#x27;authentication failed&#x27; },
+      { status: 401 }
+    )
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { isAuthenticated } from &#x27;@lib/auth&#x27;
+
+// Limit the proxy to paths starting with `/api/`
+export const config = {
+  matcher: &#x27;/api/:function*&#x27;,
+}
+
+export function proxy(request) {
+  // Call our authentication function to check the request
+  if (!isAuthenticated(request)) {
+    // Respond with JSON indicating an error message
+    return Response.json(
+      { success: false, message: &#x27;authentication failed&#x27; },
+      { status: 401 }
+    )
+  }
+}</code></pre></div></div>
+<h3 class="sec" id="negative-matching"><a class="anchor" href="#negative-matching">Negative matching</a></h3>
+<p><code>matcher</code> config는 완전한 정규 표현식을 지원하므로 negative lookahead나 문자 매칭 같은 매칭이 가능합니다. 특정 경로를 제외한 모든 경로와 매칭하는 negative lookahead 예시는 다음과 같습니다:</p><div class="en-orig"><p>The <code>matcher</code> config allows full regex so matching like negative lookaheads or character matching is supported. An example of a negative lookahead to match all except specific paths can be seen here:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">proxy.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     */
+    &#x27;/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)&#x27;,
+  ],
+}</code></pre></div></div>
+<p><code>missing</code> 또는 <code>has</code> 배열, 혹은 둘의 조합을 사용해 특정 request에 대해 Proxy를 우회할 수도 있습니다:</p><div class="en-orig"><p>You can also bypass Proxy for certain requests by using the <code>missing</code> or <code>has</code> arrays, or a combination of both:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">proxy.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     */
+    {
+      source:
+        &#x27;/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)&#x27;,
+      missing: [
+        { type: &#x27;header&#x27;, key: &#x27;next-router-prefetch&#x27; },
+        { type: &#x27;header&#x27;, key: &#x27;purpose&#x27;, value: &#x27;prefetch&#x27; },
+      ],
+    },
+
+    {
+      source:
+        &#x27;/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)&#x27;,
+      has: [
+        { type: &#x27;header&#x27;, key: &#x27;next-router-prefetch&#x27; },
+        { type: &#x27;header&#x27;, key: &#x27;purpose&#x27;, value: &#x27;prefetch&#x27; },
+      ],
+    },
+
+    {
+      source:
+        &#x27;/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)&#x27;,
+      has: [{ type: &#x27;header&#x27;, key: &#x27;x-present&#x27; }],
+      missing: [{ type: &#x27;header&#x27;, key: &#x27;x-missing&#x27;, value: &#x27;prefetch&#x27; }],
+    },
+  ],
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>negative matcher 패턴에서 <code>_next/data</code>를 제외하더라도 <code>_next/data</code> route에 대해서는 proxy가 여전히 호출됩니다. 이는 page는 보호했지만 대응하는 data route 보호를 잊어버리는 실수로 인한 보안 문제를 방지하기 위한 의도된 동작입니다.</p><div class="en-orig"><p>Even when <code>_next/data</code> is excluded in a negative matcher pattern, proxy will still be invoked for <code>_next/data</code> routes. This is intentional behavior to prevent accidental security issues where you might protect a page but forget to protect the corresponding data route.</p></div></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">proxy.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const config = {
+  matcher:
+    &#x27;/((?!api|_next/data|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)&#x27;,
+}
+
+// Proxy will still run for /_next/data/* routes despite being excluded</code></pre></div></div>
+<h3 class="sec" id="waituntil-and-nextfetchevent"><a class="anchor" href="#waituntil-and-nextfetchevent"><code>waitUntil</code> and <code>NextFetchEvent</code></a></h3>
+<p><code>NextFetchEvent</code> 객체는 native <a href="https://developer.mozilla.org/docs/Web/API/FetchEvent" target="_blank" rel="noopener"><code>FetchEvent</code></a> 객체를 확장하며 <a href="https://developer.mozilla.org/docs/Web/API/ExtendableEvent/waitUntil" target="_blank" rel="noopener"><code>waitUntil()</code></a> method를 포함합니다.</p><div class="en-orig"><p>The <code>NextFetchEvent</code> object extends the native <a href="https://developer.mozilla.org/docs/Web/API/FetchEvent" target="_blank" rel="noopener"><code>FetchEvent</code></a> object, and includes the <a href="https://developer.mozilla.org/docs/Web/API/ExtendableEvent/waitUntil" target="_blank" rel="noopener"><code>waitUntil()</code></a> method.</p></div>
+<p><code>waitUntil()</code> method는 promise를 인자로 받아 promise가 settle될 때까지 Proxy의 수명을 연장합니다. background에서 작업을 수행할 때 유용합니다.</p><div class="en-orig"><p>The <code>waitUntil()</code> method takes a promise as an argument, and extends the lifetime of the Proxy until the promise settles. This is useful for performing work in the background.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">proxy.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { NextResponse } from &#x27;next/server&#x27;
+import type { NextFetchEvent, NextRequest } from &#x27;next/server&#x27;
+
+export function proxy(req: NextRequest, event: NextFetchEvent) {
+  event.waitUntil(
+    fetch(&#x27;https://my-analytics-platform.com&#x27;, {
+      method: &#x27;POST&#x27;,
+      body: JSON.stringify({ pathname: req.nextUrl.pathname }),
+    })
+  )
+
+  return NextResponse.next()
+}</code></pre></div></div>
+<h3 class="sec" id="unit-testing-experimental"><a class="anchor" href="#unit-testing-experimental">Unit testing (experimental)<span class="ko">Unit testing (실험적)</span></a></h3>
+<p>Next.js 15.1부터 <code>next/experimental/testing/server</code> package에는 proxy 파일의 unit test를 돕는 유틸리티가 포함되어 있습니다. proxy를 unit test하면 코드가 production에 도달하기 전에 proxy가 원하는 경로에서만 실행되고 custom routing 로직이 의도대로 동작하는지 확인하는 데 도움이 됩니다.</p><div class="en-orig"><p>Starting in Next.js 15.1, the <code>next/experimental/testing/server</code> package contains utilities to help unit test proxy files. Unit testing proxy can help ensure that it's only run on desired paths and that custom routing logic works as intended before code reaches production.</p></div>
+<p><code>unstable_doesMiddlewareMatch</code> 함수는 주어진 URL, header, cookie에 대해 proxy가 실행될지 assert하는 데 사용할 수 있습니다.</p><div class="en-orig"><p>The <code>unstable_doesMiddlewareMatch</code> function can be used to assert whether proxy will run for the provided URL, headers, and cookies.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { unstable_doesMiddlewareMatch } from &#x27;next/experimental/testing/server&#x27;
+
+expect(
+  unstable_doesMiddlewareMatch({
+    config,
+    nextConfig,
+    url: &#x27;/test&#x27;,
+  })
+).toEqual(false)</code></pre></div></div>
+<p>proxy 함수 전체도 테스트할 수 있습니다.</p><div class="en-orig"><p>The entire proxy function can also be tested.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { isRewrite, getRewrittenUrl } from &#x27;next/experimental/testing/server&#x27;
+
+const request = new NextRequest(&#x27;https://nextjs.org/docs&#x27;)
+const response = await proxy(request)
+expect(isRewrite(response)).toEqual(true)
+expect(getRewrittenUrl(response)).toEqual(&#x27;https://other-domain.com/docs&#x27;)
+// getRedirectUrl could also be used if the response were a redirect</code></pre></div></div>
+<h2 class="sec" id="platform-support"><a class="anchor" href="#platform-support">Platform support<span class="ko">플랫폼 지원</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Deployment Option</th><th>Supported</th></tr></thead>
+<tbody>
+<tr><td><a href="app-getting-started-deploying.html#nodejs-server">Node.js server</a></td><td>Yes</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#docker">Docker container</a></td><td>Yes</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#static-export">Static export</a></td><td>No</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#adapters">Adapters</a></td><td>플랫폼별 상이</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Deployment Option</th><th>Supported</th></tr></thead>
+<tbody>
+<tr><td><a href="app-getting-started-deploying.html#nodejs-server">Node.js server</a></td><td>Yes</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#docker">Docker container</a></td><td>Yes</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#static-export">Static export</a></td><td>No</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#adapters">Adapters</a></td><td>Platform-specific</td></tr>
+</tbody></table></div></div>
+<p>Next.js를 self-hosting할 때 <a href="app-guides-self-hosting.html#proxy">Proxy를 설정하는 방법</a>을 알아보세요.</p><div class="en-orig"><p>Learn how to <a href="app-guides-self-hosting.html#proxy">configure Proxy</a> when self-hosting Next.js.</p></div>
+<h2 class="sec" id="migration-to-proxy"><a class="anchor" href="#migration-to-proxy">Migration to Proxy<span class="ko">Proxy로 migration</span></a></h2>
+<h3 class="sec" id="why-the-change"><a class="anchor" href="#why-the-change">Why the Change<span class="ko">변경 이유</span></a></h3>
+<p><code>middleware</code>의 이름을 바꾼 이유는 "middleware"라는 용어가 Express.js middleware와 혼동되어 그 목적이 잘못 해석되는 경우가 많기 때문입니다. 또한 Middleware는 매우 강력해서 사용을 부추길 수 있지만, 이 기능은 최후의 수단으로 사용하는 것이 권장됩니다.</p><div class="en-orig"><p>The reason behind the renaming of <code>middleware</code> is that the term "middleware" can often be confused with Express.js middleware, leading to a misinterpretation of its purpose. Also, Middleware is highly capable, so it may encourage the usage; however, this feature is recommended to be used as a last resort.</p></div>
+<p>Next.js는 개발자가 Middleware 없이도 목표를 달성할 수 있도록 더 나은 사용성(ergonomics)을 갖춘 더 좋은 API를 제공하는 방향으로 나아가고 있습니다. 이것이 <code>middleware</code>의 이름을 바꾼 이유입니다.</p><div class="en-orig"><p>Next.js is moving forward to provide better APIs with better ergonomics so that developers can achieve their goals without Middleware. This is the reason behind the renaming of <code>middleware</code>.</p></div>
+<h3 class="sec" id="why-proxy"><a class="anchor" href="#why-proxy">Why "Proxy"<span class="ko">왜 "Proxy"인가</span></a></h3>
+<p>Proxy라는 이름은 Middleware가 할 수 있는 일을 명확히 보여 줍니다. "proxy"라는 용어는 앱 앞단의 네트워크 경계를 의미하며, 이 기능이 바로 그렇게 동작합니다. 이 기능은 애플리케이션의 main runtime 바깥에서 실행될 수 있고 request가 앱에 도달하기 전에 처리할 수 있습니다. 이러한 특성은 "proxy"라는 용어와 더 잘 맞으며 기능의 목적을 더 명확하게 해 줍니다.</p><div class="en-orig"><p>The name Proxy clarifies what Middleware is capable of. The term "proxy" implies a network boundary in front of the app, which is how this feature behaves. It can run outside of your application’s main runtime and handle requests before they reach your app. These characteristics align better with the term "proxy" and provide a clearer purpose for the feature.</p></div>
+<h3 class="sec" id="how-to-migrate"><a class="anchor" href="#how-to-migrate">How to Migrate<span class="ko">Migration 방법</span></a></h3>
+<p>다른 방법이 없는 경우가 아니라면 Middleware에 의존하지 않기를 권장합니다. 저희의 목표는 사용자가 Middleware 없이도 목표를 달성할 수 있도록 더 나은 사용성을 갖춘 API를 제공하는 것입니다.</p><div class="en-orig"><p>We recommend users avoid relying on Middleware unless no other options exist. Our goal is to give them APIs with better ergonomics so they can achieve their goals without Middleware.</p></div>
+<p>"middleware"라는 용어는 사용자에게 Express.js middleware와 혼동을 주어 오용을 부추길 수 있습니다. 방향성을 명확히 하기 위해 file convention의 이름을 "proxy"로 바꿉니다. 이는 저희가 Middleware에서 벗어나 과도하게 많은 기능을 분리하고 Proxy의 목적을 명확히 하고 있음을 보여 줍니다.</p><div class="en-orig"><p>The term “middleware” often confuses users with Express.js middleware, which can encourage misuse. To clarify our direction, we are renaming the file convention to “proxy.” This highlights that we are moving away from Middleware, breaking down its overloaded features, and making the Proxy clear in its purpose.</p></div>
+<p>Next.js는 <code>middleware.ts</code>에서 <code>proxy.ts</code>로 migration하는 codemod를 제공합니다. 다음 명령어를 실행해 migration할 수 있습니다:</p><div class="en-orig"><p>Next.js provides a codemod to migrate from <code>middleware.ts</code> to <code>proxy.ts</code>. You can run the following command to migrate:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-bash">npx @next/codemod@canary middleware-to-proxy .</code></pre></div></div>
+<p>codemod는 파일 이름과 함수 이름을 <code>middleware</code>에서 <code>proxy</code>로 바꿉니다.</p><div class="en-orig"><p>The codemod will rename the file and the function name from <code>middleware</code> to <code>proxy</code>.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-diff">// middleware.ts -&gt; proxy.ts
+
+- export function middleware() {
++ export function proxy() {</code></pre></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version history<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.0.0</code></td><td>Middleware가 deprecated되고 Proxy로 이름이 바뀜. Proxy는 기본적으로 Node.js runtime 사용</td></tr>
+<tr><td><code>v15.5.0</code></td><td>Middleware에서 Node.js runtime 사용 가능 (stable)</td></tr>
+<tr><td><code>v15.2.0</code></td><td>Middleware에서 Node.js runtime 사용 가능 (experimental)</td></tr>
+<tr><td><code>v13.1.0</code></td><td>고급 Middleware flag 추가</td></tr>
+<tr><td><code>v13.0.0</code></td><td>Middleware에서 request header, response header 수정 및 response 전송 가능</td></tr>
+<tr><td><code>v12.2.0</code></td><td>Middleware stable, <a href="https://nextjs.org/docs/messages/middleware-upgrade-guide" target="_blank" rel="noopener">upgrade guide</a>를 참고하세요</td></tr>
+<tr><td><code>v12.0.9</code></td><td>Edge Runtime에서 절대 URL 강제 (<a href="https://github.com/vercel/next.js/pull/33410" target="_blank" rel="noopener">PR</a>)</td></tr>
+<tr><td><code>v12.0.0</code></td><td>Middleware (Beta) 추가</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.0.0</code></td><td>Middleware is deprecated and renamed to Proxy. Proxy defaults to the Node.js runtime</td></tr>
+<tr><td><code>v15.5.0</code></td><td>Middleware can now use the Node.js runtime (stable)</td></tr>
+<tr><td><code>v15.2.0</code></td><td>Middleware can now use the Node.js runtime (experimental)</td></tr>
+<tr><td><code>v13.1.0</code></td><td>Advanced Middleware flags added</td></tr>
+<tr><td><code>v13.0.0</code></td><td>Middleware can modify request headers, response headers, and send responses</td></tr>
+<tr><td><code>v12.2.0</code></td><td>Middleware is stable, please see the <a href="https://nextjs.org/docs/messages/middleware-upgrade-guide" target="_blank" rel="noopener">upgrade guide</a></td></tr>
+<tr><td><code>v12.0.9</code></td><td>Enforce absolute URLs in Edge Runtime (<a href="https://github.com/vercel/next.js/pull/33410" target="_blank" rel="noopener">PR</a>)</td></tr>
+<tr><td><code>v12.0.0</code></td><td>Middleware (Beta) added</td></tr>
+</tbody></table></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Proxy 더 알아보기</h2><div class="rgrid"><a class="rcard" href="app-api-reference-functions-next-request.html"><div class="rt">NextRequest</div><div class="rk">NextRequest</div><div class="rd">NextRequest의 API Reference입니다.</div></a><a class="rcard" href="app-api-reference-functions-next-response.html"><div class="rt">NextResponse</div><div class="rk">NextResponse</div><div class="rd">NextResponse의 API Reference입니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/03-file-conventions/proxy.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/api-reference/file-conventions/proxy" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-api-reference-file-conventions-instrumentation.html" class="prev"><div class="dir">← 이전</div><div class="ttl">instrumentation.js</div><div class="ttl-ko">instrumentation.js</div></a>
+      <a href="pages-api-reference-file-conventions-public-folder.html" class="next"><div class="dir">다음 →</div><div class="ttl">public</div><div class="ttl-ko">public 폴더</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/api-reference/file-conventions/proxy" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#exports">Exports</a></li><li class="l3"><a href="#proxy-function">Proxy function</a></li><li class="l3"><a href="#config-object-optional">Config object (optional)</a></li><li class="l3"><a href="#matcher">Matcher</a></li><li class="l2"><a href="#params">Params</a></li><li class="l3"><a href="#request"><code>request</code></a></li><li class="l3"><a href="#event"><code>event</code></a></li><li class="l3"><a href="#nextproxy-type"><code>NextProxy</code> type</a></li><li class="l2"><a href="#nextresponse">NextResponse</a></li><li class="l2"><a href="#execution-order">Execution order</a></li><li class="l2"><a href="#runtime">Runtime</a></li><li class="l2"><a href="#advanced-proxy-flags">Advanced Proxy flags</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#conditional-statements">Conditional Statements</a></li><li class="l3"><a href="#using-cookies">Using Cookies</a></li><li class="l3"><a href="#setting-headers">Setting Headers</a></li><li class="l3"><a href="#cors">CORS</a></li><li class="l3"><a href="#producing-a-response">Producing a response</a></li><li class="l3"><a href="#negative-matching">Negative matching</a></li><li class="l3"><a href="#waituntil-and-nextfetchevent"><code>waitUntil</code> and <code>NextFetchEvent</code></a></li><li class="l3"><a href="#unit-testing-experimental">Unit testing (experimental)</a></li><li class="l2"><a href="#platform-support">Platform support</a></li><li class="l2"><a href="#migration-to-proxy">Migration to Proxy</a></li><li class="l3"><a href="#why-the-change">Why the Change</a></li><li class="l3"><a href="#why-proxy">Why "Proxy"</a></li><li class="l3"><a href="#how-to-migrate">How to Migrate</a></li><li class="l2"><a href="#version-history">Version history</a></li><li class="l2"><a href="#next-steps">Proxy 더 알아보기</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+&gt; **Note**: `middleware` file convention은 deprecated되었으며 `proxy`로 이름이 바뀌었습니다. 자세한 내용은 [Migration to Proxy](#migration-to-proxy)를 참고하세요.
+
+`proxy.js|ts` 파일은 [Proxy](/docs/app/getting-started/proxy)를 작성해 request가 완료되기 전에 서버에서 코드를 실행하는 데 사용합니다. 그런 다음 들어오는 request를 기반으로 rewrite, redirect, request 또는 response header 수정, 직접 응답하기 등의 방식으로 response를 변경할 수 있습니다.
+
+Proxy는 route가 rendering되기 전에 실행됩니다. 인증(authentication), 로깅, redirect 처리 같은 custom server-side 로직을 구현할 때 특히 유용합니다.
+
+&gt; **Good to know**:
+&gt;
+&gt; Proxy는 rendering 코드와 별도로 호출되도록 설계되었고, 최적화된 경우 빠른 redirect/rewrite 처리를 위해 CDN에 deploy되므로, 공유 module이나 global에 의존하려고 해서는 안 됩니다.
+&gt;
+&gt; Proxy에서 애플리케이션으로 정보를 전달하려면 [headers](#setting-headers), [cookies](#using-cookies), [rewrites](/docs/app/api-reference/functions/next-response#rewrite), [redirects](/docs/app/api-reference/functions/next-response#redirect) 또는 URL을 사용하세요.
+
+프로젝트 루트(해당하는 경우 `src` 안)에 `proxy.ts`(또는 `.js`) 파일을 만들어 `pages`나 `app`과 같은 레벨에 위치하도록 하세요.
+
+[`pageExtensions`](/docs/app/api-reference/config/next-config-js/pageExtensions)를 예를 들어 `.page.ts`나 `.page.js`로 customize했다면, 파일 이름도 그에 맞게 `proxy.page.ts` 또는 `proxy.page.js`로 지정하세요.
+
+[[CODE 1]]
+
+## Exports
+
+### Proxy function || Proxy 함수
+
+파일은 default export 또는 `proxy`라는 이름의 named export로 단 하나의 함수를 export해야 합니다. 같은 파일에서 여러 proxy를 export하는 것은 지원되지 않습니다.
+
+[[CODE 2]]
+
+### Config object (optional) || Config 객체 (선택)
+
+선택적으로 Proxy 함수와 함께 config 객체를 export할 수 있습니다. 이 객체에는 Proxy가 적용될 경로를 지정하는 [matcher](#matcher)가 포함됩니다.
+
+### Matcher
+
+`matcher` option을 사용하면 Proxy가 실행될 특정 경로를 target으로 지정할 수 있습니다.
+
+`matcher`가 없으면 Proxy는 static 파일(`_next/static`), 이미지 최적화(`_next/image`), `public/` 폴더의 asset을 포함한 **모든 request**에서 실행됩니다. 이 경로들을 제외하려면 [negative match pattern](#negative-matching) 사용을 고려하세요. 그렇지 않으면 인증 로직이나 redirect가 의도치 않게 CSS, JS, 이미지 로딩을 막을 수 있습니다.
+
+경로는 여러 방식으로 지정할 수 있습니다:
+
+- 단일 경로: `&#x27;/about&#x27;`처럼 문자열을 직접 사용해 경로를 정의합니다.
+- 여러 경로: `matcher: [&#x27;/about&#x27;, &#x27;/contact&#x27;]`처럼 배열로 여러 경로를 나열하면 `/about`과 `/contact` 모두에 Proxy가 적용됩니다.
+
+[[CODE 3]]
+
+또한 `matcher` option은 정규 표현식(regular expression)을 사용한 복잡한 경로 지정도 지원합니다. 예를 들어 정규 표현식 matcher로 특정 경로를 제외할 수 있습니다:
+
+[[CODE 4]]
+
+이를 통해 포함하거나 제외할 경로를 정밀하게 제어할 수 있습니다.
+
+`matcher` option은 다음 key를 가진 객체의 배열도 받습니다:
+
+- `source`: request 경로를 매칭하는 데 사용하는 경로 또는 패턴입니다. 직접 경로 매칭을 위한 문자열이거나 더 복잡한 매칭을 위한 패턴일 수 있습니다.
+- `locale` (선택): `false`로 설정하면 경로 매칭에서 locale 기반 routing을 무시하는 boolean입니다.
+- `has` (선택): header, query parameter, cookie 같은 특정 request 요소의 존재 여부에 따른 조건을 지정합니다.
+- `missing` (선택): header나 cookie가 없는 경우처럼 특정 request 요소가 없는 조건에 초점을 맞춥니다.
+
+[[CODE 5]]
+
+`source` 경로 패턴은:
+
+1. 반드시 `/`로 시작해야 합니다
+2. named parameter를 포함할 수 있습니다: `/about/:path`는 `/about/a`, `/about/b`와 매칭되지만 `/about/a/c`와는 매칭되지 않습니다
+3. named parameter(`:`로 시작)에 modifier를 붙일 수 있습니다: `*`는 _0개 이상_ 이므로 `/about/:path*`는 `/about/a/b/c`와 매칭됩니다. `?`는 _0개 또는 1개_, `+`는 _1개 이상_ 입니다
+4. 괄호로 감싼 정규 표현식을 사용할 수 있습니다: `/about/(.*)`는 `/about/:path*`와 같습니다
+5. 경로의 시작 부분에 고정(anchor)됩니다: `/about`은 `/about`, `/about/team`과 매칭되지만 `/blog/about`과는 매칭되지 않습니다
+
+자세한 내용은 [path-to-regexp](https://github.com/pillarjs/path-to-regexp#path-to-regexp-1) 문서를 참고하세요.
+
+&gt; **Good to know**:
+&gt;
+&gt; - `matcher` 값은 build 시점에 정적으로 분석될 수 있도록 상수여야 합니다. 변수 같은 동적 값은 무시됩니다.
+&gt; - 하위 호환성을 위해 Next.js는 항상 `/public`을 `/public/index`로 간주합니다. 따라서 `/public/:path` matcher는 매칭됩니다.
+
+## Params
+
+Next.js는 Proxy 함수를 [`request`](#request)와 [`event`](#event) 두 개의 인자로 이 순서대로 호출합니다. 사용하는 것만 선언하세요.
+
+### `request`
+
+첫 번째 parameter는 들어오는 HTTP request를 나타내는 `NextRequest`의 instance입니다.
+
+[[CODE 6]]
+
+### `event`
+
+두 번째 parameter는 `NextFetchEvent`의 instance입니다. 이 객체는 `waitUntil(promise)`라는 단 하나의 method를 제공하며, promise가 settle될 때까지 Proxy 호출을 유지하므로 로깅이나 analytics 같은 background 작업이 response가 전송된 뒤에도 완료될 수 있습니다. 전체 예시는 [`waitUntil` and `NextFetchEvent`](#waituntil-and-nextfetchevent)를 참고하세요.
+
+[[CODE 7]]
+
+### `NextProxy` type
+
+간결한 표현을 선호한다면 `NextProxy` type을 사용할 수 있습니다. 이 type은 `request`(`NextRequest`)와 `event`(`NextFetchEvent`) 모두의 parameter type을 자동으로 추론합니다:
+
+[[CODE 8]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - `NextRequest`는 Next.js Proxy에서 들어오는 HTTP request를 나타내는 type이고, [`NextResponse`](#nextresponse)는 HTTP response를 조작하고 돌려보내는 데 사용하는 class입니다.
+
+## NextResponse
+
+`NextResponse` API로 다음을 할 수 있습니다:
+
+- 들어오는 request를 다른 URL로 `redirect`
+- 주어진 URL을 표시하도록 response를 `rewrite`
+- API Routes, `getServerSideProps`, `rewrite` destination을 위한 request header 설정
+- response cookie 설정
+- response header 설정
+
+
+
+
+
+Proxy에서 response를 생성하려면 다음을 할 수 있습니다:
+
+1. response를 생성하는 route([Page](/docs/pages/building-your-application/routing/pages-and-layouts) 또는 [Edge API Route](/docs/pages/building-your-application/routing/api-routes))로 `rewrite`
+2. `NextResponse`를 직접 return. [Producing a Response](#producing-a-response)를 참고하세요
+
+
+
+## Execution order || 실행 순서
+
+Proxy는 **프로젝트의 모든 route**에 대해 호출됩니다. 따라서 [matchers](#matcher)를 사용해 특정 route를 정확히 target하거나 제외하는 것이 매우 중요합니다. 실행 순서는 다음과 같습니다:
+
+1. `next.config.js`의 `headers`
+2. `next.config.js`의 `redirects`
+3. Proxy (`rewrites`, `redirects` 등)
+4. `next.config.js`의 `beforeFiles` (`rewrites`)
+5. Filesystem route (`public/`, `_next/static/`, `pages/`, `app/` 등)
+6. `next.config.js`의 `afterFiles` (`rewrites`)
+7. Dynamic Routes (`/blog/[slug]`)
+8. `next.config.js`의 `fallback` (`rewrites`)
+
+&gt; **Good to know:** [Server Functions](/docs/app/api-reference/directives/use-server)는 이 체인에서 별도의 route가 아닙니다. Server Function은 사용되는 route로의 POST request로 처리되므로, 어떤 경로를 제외하는 Proxy matcher는 그 경로의 Server Function 호출도 건너뜁니다.
+&gt;
+&gt; matcher 변경이나 Server Function을 다른 route로 옮기는 리팩터링으로 인해 Proxy 적용 범위가 조용히 사라질 수 있습니다. Proxy에만 의존하지 말고 항상 각 Server Function 내부에서 authentication과 authorization을 검증하세요. 권장 패턴은 [Data Security guide](/docs/app/guides/data-security#authentication-and-authorization)를 참고하세요.
+
+## Runtime
+
+Proxy는 기본적으로 Node.js runtime을 사용합니다. [`runtime`](/docs/app/api-reference/file-conventions/route-segment-config/runtime) config option은 Proxy 파일에서 사용할 수 없습니다. Proxy에서 `runtime` config option을 설정하면 error가 발생합니다.
+
+## Advanced Proxy flags || 고급 Proxy flag
+
+Next.js `v13.1`에서 고급 use case를 처리하기 위해 proxy용 flag 두 개, [`skipProxyUrlNormalize`](/docs/app/api-reference/config/next-config-js/skipProxyUrlNormalize)(이전 이름 `skipMiddlewareUrlNormalize`)와 [`skipTrailingSlashRedirect`](/docs/app/api-reference/config/next-config-js/skipTrailingSlashRedirect)가 도입되었습니다.
+
+`skipTrailingSlashRedirect`는 trailing slash를 추가하거나 제거하는 Next.js redirect를 비활성화합니다. 이를 통해 proxy 내부에서 custom 처리를 하여 일부 경로에서는 trailing slash를 유지하고 다른 경로에서는 유지하지 않을 수 있어, 점진적인 migration을 더 쉽게 만들 수 있습니다.
+
+[[CODE 9]]
+
+[[CODE 10]]
+
+`skipProxyUrlNormalize`는 Next.js의 URL 정규화(normalization)를 비활성화하여 직접 방문과 client 전환(client-transition)을 동일하게 처리할 수 있게 합니다. 일부 고급 사례에서 이 option은 원래 URL을 사용해 완전한 제어권을 제공합니다.
+
+[[CODE 11]]
+
+[[CODE 12]]
+
+## Examples || 예시
+
+### Conditional Statements || 조건문
+
+[[CODE 13]]
+
+### Using Cookies || Cookie 사용하기
+
+Cookie는 일반 header입니다. `Request`에서는 `Cookie` header에, `Response`에서는 `Set-Cookie` header에 저장됩니다. Next.js는 `NextRequest`와 `NextResponse`의 `cookies` extension을 통해 이 cookie에 편리하게 접근하고 조작하는 방법을 제공합니다.
+
+1. 들어오는 request의 경우 `cookies`는 `get`, `getAll`, `set`, `delete` method를 제공합니다. `has`로 cookie 존재 여부를 확인하거나 `clear`로 모든 cookie를 제거할 수 있습니다.
+2. 나가는 response의 경우 `cookies`는 `get`, `getAll`, `set`, `delete` method를 제공합니다.
+
+[[CODE 14]]
+
+### Setting Headers || Header 설정하기
+
+`NextResponse` API를 사용해 request header와 response header를 설정할 수 있습니다(_request_ header 설정은 Next.js v13.0.0부터 가능).
+
+[[CODE 15]]
+
+이 snippet에서는 다음을 사용한다는 점에 유의하세요:
+
+- `requestHeaders`를 upstream에서 사용할 수 있게 하는 `NextResponse.next({ request: { headers: requestHeaders } })`
+- `requestHeaders`를 client가 사용할 수 있게 하는 `NextResponse.next({ headers: requestHeaders })`는 **사용하지 않음**
+
+자세한 내용은 [NextResponse headers in Proxy](/docs/app/api-reference/functions/next-response#next)를 참고하세요.
+
+&gt; **Good to know**: backend web server 설정에 따라 [431 Request Header Fields Too Large](https://developer.mozilla.org/docs/Web/HTTP/Status/431) error가 발생할 수 있으므로 큰 header를 설정하지 마세요.
+
+#### RSC requests and rewrites || RSC request와 rewrite
+
+RSC request 중에 Next.js는 Proxy의 `request` instance에서 내부 Flight header를 제거합니다. 예를 들어 `rsc`, `next-router-state-tree`, `next-router-prefetch` 같은 header는 `request.headers`를 통해 노출되지 않습니다. 이는 RSC request와 HTML request가 서로 일치해야 하므로, RSC request를 HTML request와 다르게 실수로 처리하는 것을 방지하기 위함입니다.
+
+`NextResponse.rewrite()`를 사용하면 Next.js가 필요한 RSC rewrite header를 upstream으로 자동 전파합니다.
+
+`NextResponse.rewrite()` 대신 `fetch()`로 custom rewrite 로직을 구현하면, RSC header를 직접 전달(forward)하지 않는 한 RSC header가 누락되는 문제를 겪을 수 있습니다.
+
+custom `fetch` rewrite 구성에서는 `next.config.js`에서 [`skipProxyUrlNormalize`](/docs/app/api-reference/config/next-config-js/skipProxyUrlNormalize)를 활성화하여 rewrite 로직이 제공된 request 객체로부터 필요한 URL 형태와 RSC header를 받을 수 있게 할 수도 있습니다:
+
+[[CODE 16]]
+
+### CORS
+
+Proxy에서 CORS header를 설정해 [simple](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#simple_requests) request와 [preflighted](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS#preflighted_requests) request를 포함한 cross-origin request를 허용할 수 있습니다.
+
+[[CODE 17]]
+
+
+
+### Producing a response || Response 생성하기
+
+`Response` 또는 `NextResponse` instance를 return하여 Proxy에서 직접 응답할 수 있습니다. (이 기능은 [Next.js v13.1.0](https://nextjs.org/blog/next-13-1#nextjs-advanced-proxy)부터 사용할 수 있습니다)
+
+[[CODE 18]]
+
+### Negative matching
+
+`matcher` config는 완전한 정규 표현식을 지원하므로 negative lookahead나 문자 매칭 같은 매칭이 가능합니다. 특정 경로를 제외한 모든 경로와 매칭하는 negative lookahead 예시는 다음과 같습니다:
+
+[[CODE 19]]
+
+`missing` 또는 `has` 배열, 혹은 둘의 조합을 사용해 특정 request에 대해 Proxy를 우회할 수도 있습니다:
+
+[[CODE 20]]
+
+&gt; **Good to know**:
+&gt;
+&gt; negative matcher 패턴에서 `_next/data`를 제외하더라도 `_next/data` route에 대해서는 proxy가 여전히 호출됩니다. 이는 page는 보호했지만 대응하는 data route 보호를 잊어버리는 실수로 인한 보안 문제를 방지하기 위한 의도된 동작입니다.
+
+[[CODE 21]]
+
+### `waitUntil` and `NextFetchEvent`
+
+`NextFetchEvent` 객체는 native [`FetchEvent`](https://developer.mozilla.org/docs/Web/API/FetchEvent) 객체를 확장하며 [`waitUntil()`](https://developer.mozilla.org/docs/Web/API/ExtendableEvent/waitUntil) method를 포함합니다.
+
+`waitUntil()` method는 promise를 인자로 받아 promise가 settle될 때까지 Proxy의 수명을 연장합니다. background에서 작업을 수행할 때 유용합니다.
+
+[[CODE 22]]
+
+### Unit testing (experimental) || Unit testing (실험적)
+
+Next.js 15.1부터 `next/experimental/testing/server` package에는 proxy 파일의 unit test를 돕는 유틸리티가 포함되어 있습니다. proxy를 unit test하면 코드가 production에 도달하기 전에 proxy가 원하는 경로에서만 실행되고 custom routing 로직이 의도대로 동작하는지 확인하는 데 도움이 됩니다.
+
+`unstable_doesMiddlewareMatch` 함수는 주어진 URL, header, cookie에 대해 proxy가 실행될지 assert하는 데 사용할 수 있습니다.
+
+[[CODE 23]]
+
+proxy 함수 전체도 테스트할 수 있습니다.
+
+[[CODE 24]]
+
+## Platform support || 플랫폼 지원
+
+| Deployment Option                                                   | Supported         |
+| ------------------------------------------------------------------- | ----------------- |
+| [Node.js server](/docs/app/getting-started/deploying#nodejs-server) | Yes               |
+| [Docker container](/docs/app/getting-started/deploying#docker)      | Yes               |
+| [Static export](/docs/app/getting-started/deploying#static-export)  | No                |
+| [Adapters](/docs/app/getting-started/deploying#adapters)            | 플랫폼별 상이 |
+
+Next.js를 self-hosting할 때 [Proxy를 설정하는 방법](/docs/app/guides/self-hosting#proxy)을 알아보세요.
+
+## Migration to Proxy || Proxy로 migration
+
+### Why the Change || 변경 이유
+
+`middleware`의 이름을 바꾼 이유는 &quot;middleware&quot;라는 용어가 Express.js middleware와 혼동되어 그 목적이 잘못 해석되는 경우가 많기 때문입니다. 또한 Middleware는 매우 강력해서 사용을 부추길 수 있지만, 이 기능은 최후의 수단으로 사용하는 것이 권장됩니다.
+
+Next.js는 개발자가 Middleware 없이도 목표를 달성할 수 있도록 더 나은 사용성(ergonomics)을 갖춘 더 좋은 API를 제공하는 방향으로 나아가고 있습니다. 이것이 `middleware`의 이름을 바꾼 이유입니다.
+
+### Why &quot;Proxy&quot; || 왜 &quot;Proxy&quot;인가
+
+Proxy라는 이름은 Middleware가 할 수 있는 일을 명확히 보여 줍니다. &quot;proxy&quot;라는 용어는 앱 앞단의 네트워크 경계를 의미하며, 이 기능이 바로 그렇게 동작합니다. 이 기능은 애플리케이션의 main runtime 바깥에서 실행될 수 있고 request가 앱에 도달하기 전에 처리할 수 있습니다. 이러한 특성은 &quot;proxy&quot;라는 용어와 더 잘 맞으며 기능의 목적을 더 명확하게 해 줍니다.
+
+### How to Migrate || Migration 방법
+
+다른 방법이 없는 경우가 아니라면 Middleware에 의존하지 않기를 권장합니다. 저희의 목표는 사용자가 Middleware 없이도 목표를 달성할 수 있도록 더 나은 사용성을 갖춘 API를 제공하는 것입니다.
+
+&quot;middleware&quot;라는 용어는 사용자에게 Express.js middleware와 혼동을 주어 오용을 부추길 수 있습니다. 방향성을 명확히 하기 위해 file convention의 이름을 &quot;proxy&quot;로 바꿉니다. 이는 저희가 Middleware에서 벗어나 과도하게 많은 기능을 분리하고 Proxy의 목적을 명확히 하고 있음을 보여 줍니다.
+
+Next.js는 `middleware.ts`에서 `proxy.ts`로 migration하는 codemod를 제공합니다. 다음 명령어를 실행해 migration할 수 있습니다:
+
+[[CODE 25]]
+
+codemod는 파일 이름과 함수 이름을 `middleware`에서 `proxy`로 바꿉니다.
+
+[[CODE 26]]
+
+## Version history || 버전 기록
+
+| Version   | Changes                                                                                       |
+| --------- | --------------------------------------------------------------------------------------------- |
+| `v16.0.0` | Middleware가 deprecated되고 Proxy로 이름이 바뀜. Proxy는 기본적으로 Node.js runtime 사용          |
+| `v15.5.0` | Middleware에서 Node.js runtime 사용 가능 (stable)                                           |
+| `v15.2.0` | Middleware에서 Node.js runtime 사용 가능 (experimental)                                     |
+| `v13.1.0` | 고급 Middleware flag 추가                                                               |
+| `v13.0.0` | Middleware에서 request header, response header 수정 및 response 전송 가능                   |
+| `v12.2.0` | Middleware stable, [upgrade guide](/docs/messages/middleware-upgrade-guide)를 참고하세요 |
+| `v12.0.9` | Edge Runtime에서 절대 URL 강제 ([PR](https://github.com/vercel/next.js/pull/33410))    |
+| `v12.0.0` | Middleware (Beta) 추가                                                                       |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Parallel Routes (Parallel Route) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/file-conventions/parallel-routes" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/file-conventions/parallel-routes" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/03-file-conventions/parallel-routes.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-file-conventions.html">File-system conventions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Parallel Routes<span class="sub">Parallel Route</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Parallel Route를 사용하면 같은 layout 안에서 하나 이상의 page를 동시에 또는 조건부로 render할 수 있습니다. dashboard나 소셜 사이트의 feed처럼 앱에서 매우 dynamic한 영역에 유용합니다.</p><div class="en-orig"><p>Parallel Routes allows you to simultaneously or conditionally render one or more pages within the same layout. They are useful for highly dynamic sections of an app, such as dashboards and feeds on social sites.</p></div>
+<p>예를 들어 dashboard에서 parallel route를 사용해 <code>team</code> page와 <code>analytics</code> page를 동시에 render할 수 있습니다:</p><div class="en-orig"><p>For example, considering a dashboard, you can use parallel routes to simultaneously render the <code>team</code> and <code>analytics</code> pages:</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/parallel-routes.png" alt="Parallel Route 다이어그램" width="1600" height="942" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/parallel-routes.png" alt="Parallel Route 다이어그램" width="1600" height="942" loading="lazy" /></figure>
+<h2 class="sec" id="convention"><a class="anchor" href="#convention">Convention<span class="ko">규칙</span></a></h2>
+<h3 class="sec" id="slots"><a class="anchor" href="#slots">Slots<span class="ko">Slot</span></a></h3>
+<p>Parallel route는 이름이 붙은 <strong>slot</strong>으로 만듭니다. slot은 <code>@folder</code> convention으로 정의합니다. 예를 들어 다음 파일 구조는 <code>@analytics</code>와 <code>@team</code> 두 개의 slot을 정의합니다:</p><div class="en-orig"><p>Parallel routes are created using named <strong>slots</strong>. Slots are defined with the <code>@folder</code> convention. For example, the following file structure defines two slots: <code>@analytics</code> and <code>@team</code>:</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/parallel-routes-file-system.png" alt="Parallel Route 파일 시스템 구조" width="1600" height="687" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/parallel-routes-file-system.png" alt="Parallel Route 파일 시스템 구조" width="1600" height="687" loading="lazy" /></figure>
+<p>slot은 공유 상위 layout에 props로 전달됩니다. 위 예시에서 <code>app/layout.js</code>의 component는 이제 <code>@analytics</code>와 <code>@team</code> slot props를 받으며, 이를 <code>children</code> prop과 함께 병렬로 render할 수 있습니다:</p><div class="en-orig"><p>Slots are passed as props to the shared parent layout. For the example above, the component in <code>app/layout.js</code> now accepts the <code>@analytics</code> and <code>@team</code> slots props, and can render them in parallel alongside the <code>children</code> prop:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function Layout({
+  children,
+  team,
+  analytics,
+}: {
+  children: React.ReactNode
+  analytics: React.ReactNode
+  team: React.ReactNode
+}) {
+  return (
+    &lt;&gt;
+      {children}
+      {team}
+      {analytics}
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function Layout({ children, team, analytics }) {
+  return (
+    &lt;&gt;
+      {children}
+      {team}
+      {analytics}
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p>하지만 slot은 route segment가 <strong>아니며</strong> URL 구조에 영향을 주지 않습니다. 예를 들어 <code>/@analytics/views</code>의 경우 <code>@analytics</code>가 slot이므로 URL은 <code>/views</code>가 됩니다. slot은 일반 <a href="app-api-reference-file-conventions-page.html">Page</a> component와 결합되어 해당 route segment에 연결된 최종 page를 구성합니다. 이 때문에 같은 route segment level에서 <a href="app-glossary.html#prerendering">prerender</a>되는 slot과 <a href="app-glossary.html#dynamic-rendering">dynamic하게 render</a>되는 slot을 따로 둘 수 없습니다. 하나의 slot이 dynamic이면 그 level의 모든 slot이 dynamic이어야 합니다.</p><div class="en-orig"><p>However, slots are <strong>not</strong> route segments and do not affect the URL structure. For example, for <code>/@analytics/views</code>, the URL will be <code>/views</code> since <code>@analytics</code> is a slot. Slots are combined with the regular <a href="app-api-reference-file-conventions-page.html">Page</a> component to form the final page associated with the route segment. Because of this, you cannot have separate <a href="app-glossary.html#prerendering">prerendered</a> and <a href="app-glossary.html#dynamic-rendering">dynamically rendered</a> slots at the same route segment level. If one slot is dynamic, all slots at that level must be dynamic.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>children</code> prop은 폴더에 mapping할 필요가 없는 암묵적인(implicit) slot입니다. 즉, <code>app/page.js</code>는 <code>app/@children/page.js</code>와 동일합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The <code>children</code> prop is an implicit slot that does not need to be mapped to a folder. This means <code>app/page.js</code> is equivalent to <code>app/@children/page.js</code>.</li>
+</ul></div></div></div>
+<h3 class="sec" id="defaultjs"><a class="anchor" href="#defaultjs"><code>default.js</code></a></h3>
+<p>초기 load나 full-page reload 시 match되지 않는 slot에 대한 fallback으로 render할 <code>default.js</code> 파일을 정의할 수 있습니다.</p><div class="en-orig"><p>You can define a <code>default.js</code> file to render as a fallback for unmatched slots during the initial load or full-page reload.</p></div>
+<p>다음 폴더 구조를 생각해 보세요. <code>@team</code> slot에는 <code>/settings</code> page가 있지만 <code>@analytics</code>에는 없습니다.</p><div class="en-orig"><p>Consider the following folder structure. The <code>@team</code> slot has a <code>/settings</code> page, but <code>@analytics</code> does not.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/parallel-routes-unmatched-routes.png" alt="Parallel Route의 match되지 않는 route" width="1600" height="930" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/parallel-routes-unmatched-routes.png" alt="Parallel Route의 match되지 않는 route" width="1600" height="930" loading="lazy" /></figure>
+<p><code>/settings</code>로 이동하면 <code>@team</code> slot은 <code>/settings</code> page를 render하고, <code>@analytics</code> slot은 현재 활성 page를 유지합니다.</p><div class="en-orig"><p>When navigating to <code>/settings</code>, the <code>@team</code> slot will render the <code>/settings</code> page while maintaining the currently active page for the <code>@analytics</code> slot.</p></div>
+<p>새로고침하면 Next.js는 <code>@analytics</code>에 대해 <code>default.js</code>를 render합니다. <code>default.js</code>가 없으면 대신 <code>404</code>가 render됩니다.</p><div class="en-orig"><p>On refresh, Next.js will render a <code>default.js</code> for <code>@analytics</code>. If <code>default.js</code> doesn't exist, a <code>404</code> is rendered instead.</p></div>
+<p>또한 <code>children</code>은 암묵적인 slot이므로, Next.js가 상위 page의 활성 상태를 복구할 수 없을 때 <code>children</code>에 대한 fallback을 render하려면 <code>default.js</code> 파일도 만들어야 합니다.</p><div class="en-orig"><p>Additionally, since <code>children</code> is an implicit slot, you also need to create a <code>default.js</code> file to render a fallback for <code>children</code> when Next.js cannot recover the active state of the parent page.</p></div>
+<h2 class="sec" id="behavior"><a class="anchor" href="#behavior">Behavior<span class="ko">동작</span></a></h2>
+<p>기본적으로 Next.js는 각 slot의 활성 <em>state</em>(또는 subpage)를 추적합니다. 하지만 slot 안에 render되는 content는 navigation의 종류에 따라 달라집니다:</p><div class="en-orig"><p>By default, Next.js keeps track of the active <em>state</em> (or subpage) for each slot. However, the content rendered within a slot will depend on the type of navigation:</p></div>
+<ul>
+<li><a href="app-getting-started-linking-and-navigating.html#client-side-transitions"><strong>Soft Navigation</strong></a>: client-side navigation 중에 Next.js는 <a href="app-getting-started-linking-and-navigating.html#client-side-transitions">partial render</a>를 수행해, 다른 slot의 활성 subpage가 현재 URL과 match되지 않더라도 이를 유지한 채 해당 slot 안의 subpage만 바꿉니다.</li>
+<li><strong>Hard Navigation</strong>: full-page load(브라우저 새로고침) 후에는 Next.js가 현재 URL과 match되지 않는 slot의 활성 상태를 알 수 없습니다. 대신 match되지 않는 slot에 대해 <a href="#defaultjs"><code>default.js</code></a> 파일을 render하고, <code>default.js</code>가 없으면 <code>404</code>를 render합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-getting-started-linking-and-navigating.html#client-side-transitions"><strong>Soft Navigation</strong></a>: During client-side navigation, Next.js will perform a <a href="app-getting-started-linking-and-navigating.html#client-side-transitions">partial render</a>, changing the subpage within the slot, while maintaining the other slot's active subpages, even if they don't match the current URL.</li>
+<li><strong>Hard Navigation</strong>: After a full-page load (browser refresh), Next.js cannot determine the active state for the slots that don't match the current URL. Instead, it will render a <a href="#defaultjs"><code>default.js</code></a> file for the unmatched slots, or <code>404</code> if <code>default.js</code> doesn't exist.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>match되지 않는 route에 대한 <code>404</code>는 의도하지 않은 page에서 parallel route가 실수로 render되지 않도록 보장하는 데 도움이 됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The <code>404</code> for unmatched routes helps ensure that you don't accidentally render a parallel route on a page that it was not intended for.</li>
+</ul></div></div></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<h3 class="sec" id="with-useselectedlayoutsegments"><a class="anchor" href="#with-useselectedlayoutsegments">With <code>useSelectedLayoutSegment(s)</code><span class="ko"><code>useSelectedLayoutSegment(s)</code>와 함께</span></a></h3>
+<p><a href="app-api-reference-functions-use-selected-layout-segment.html"><code>useSelectedLayoutSegment</code></a>와 <a href="app-api-reference-functions-use-selected-layout-segments.html"><code>useSelectedLayoutSegments</code></a>는 모두 <code>parallelRouteKey</code> parameter를 받으며, 이를 통해 slot 안의 활성 route segment를 읽을 수 있습니다.</p><div class="en-orig"><p>Both <a href="app-api-reference-functions-use-selected-layout-segment.html"><code>useSelectedLayoutSegment</code></a> and <a href="app-api-reference-functions-use-selected-layout-segments.html"><code>useSelectedLayoutSegments</code></a> accept a <code>parallelRouteKey</code> parameter, which allows you to read the active route segment within a slot.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useSelectedLayoutSegment } from &#x27;next/navigation&#x27;
+
+export default function Layout({ auth }: { auth: React.ReactNode }) {
+  const loginSegment = useSelectedLayoutSegment(&#x27;auth&#x27;)
+  // ...
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useSelectedLayoutSegment } from &#x27;next/navigation&#x27;
+
+export default function Layout({ auth }) {
+  const loginSegment = useSelectedLayoutSegment(&#x27;auth&#x27;)
+  // ...
+}</code></pre></div></div>
+<p>사용자가 <code>app/@auth/login</code>(또는 주소창의 <code>/login</code>)으로 이동하면 <code>loginSegment</code>는 문자열 <code>&quot;login&quot;</code>이 됩니다.</p><div class="en-orig"><p>When a user navigates to <code>app/@auth/login</code> (or <code>/login</code> in the URL bar), <code>loginSegment</code> will be equal to the string <code>&quot;login&quot;</code>.</p></div>
+<h3 class="sec" id="conditional-routes"><a class="anchor" href="#conditional-routes">Conditional Routes<span class="ko">조건부 Route</span></a></h3>
+<p>Parallel Route를 사용하면 사용자 role 같은 특정 조건에 따라 route를 조건부로 render할 수 있습니다. 예를 들어 <code>/admin</code> role과 <code>/user</code> role에 서로 다른 dashboard page를 render하려면 다음과 같이 합니다:</p><div class="en-orig"><p>You can use Parallel Routes to conditionally render routes based on certain conditions, such as user role. For example, to render a different dashboard page for the <code>/admin</code> or <code>/user</code> roles:</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/conditional-routes-ui.png" alt="조건부 route 다이어그램" width="1600" height="898" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/conditional-routes-ui.png" alt="조건부 route 다이어그램" width="1600" height="898" loading="lazy" /></figure>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/layout.tsx" data-js="app/dashboard/layout.js">app/dashboard/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { checkUserRole } from &#x27;@/lib/auth&#x27;
+
+export default function Layout({
+  user,
+  admin,
+}: {
+  user: React.ReactNode
+  admin: React.ReactNode
+}) {
+  const role = checkUserRole()
+  return role === &#x27;admin&#x27; ? admin : user
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { checkUserRole } from &#x27;@/lib/auth&#x27;
+
+export default function Layout({ user, admin }) {
+  const role = checkUserRole()
+  return role === &#x27;admin&#x27; ? admin : user
+}</code></pre></div></div>
+<p>layout이 어느 쪽을 반환하든 두 slot 모두 server에서 render됩니다. 조건문은 사용자가 무엇을 보는지를 결정할 뿐, 무엇이 실행되는지를 결정하지 않습니다. <code>@admin/page.js</code>는 모든 사용자에 대해 data fetch를 실행하며, 그 결과는 브라우저로 전송되는 response에 포함됩니다. 각 slot의 page 안에서, 또는 <a href="app-guides-authentication.html#creating-a-data-access-layer-dal">Data Access Layer</a>에서 권한을 확인하세요:</p><div class="en-orig"><p>Both slots render on the server, regardless of which one the layout returns. The conditional decides what the user sees, not what runs: <code>@admin/page.js</code> executes its data fetches for every user, and its output is included in the response sent to the browser. Authorize inside each slot's page, or in your <a href="app-guides-authentication.html#creating-a-data-access-layer-dal">Data Access Layer</a>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/@admin/page.tsx" data-js="app/dashboard/@admin/page.js">app/dashboard/@admin/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { getAdminStats } from &#x27;@/lib/dal&#x27;
+
+export default async function AdminPage() {
+  const stats = await getAdminStats()
+  return &lt;Stats stats={stats} /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { getAdminStats } from &#x27;@/lib/dal&#x27;
+
+export default async function AdminPage() {
+  const stats = await getAdminStats()
+  return &lt;Stats stats={stats} /&gt;
+}</code></pre></div></div>
+<h3 class="sec" id="tab-groups"><a class="anchor" href="#tab-groups">Tab Groups<span class="ko">Tab Group</span></a></h3>
+<p>slot 안에 <code>layout</code>을 추가하면 사용자가 그 slot을 독립적으로 navigate할 수 있습니다. tab을 만들 때 유용합니다.</p><div class="en-orig"><p>You can add a <code>layout</code> inside a slot to allow users to navigate the slot independently. This is useful for creating tabs.</p></div>
+<p>예를 들어 <code>@analytics</code> slot에 <code>/page-views</code>와 <code>/visitors</code> 두 개의 subpage가 있다고 해 봅시다.</p><div class="en-orig"><p>For example, the <code>@analytics</code> slot has two subpages: <code>/page-views</code> and <code>/visitors</code>.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/parallel-routes-tab-groups.png" alt="두 개의 subpage와 layout이 있는 analytics slot" width="1600" height="768" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/parallel-routes-tab-groups.png" alt="두 개의 subpage와 layout이 있는 analytics slot" width="1600" height="768" loading="lazy" /></figure>
+<p><code>@analytics</code> 안에 <a href="app-api-reference-file-conventions-layout.html"><code>layout</code></a> 파일을 만들어 두 page가 tab을 공유하게 하세요:</p><div class="en-orig"><p>Within <code>@analytics</code>, create a <a href="app-api-reference-file-conventions-layout.html"><code>layout</code></a> file to share the tabs between the two pages:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/@analytics/layout.tsx" data-js="app/@analytics/layout.js">app/@analytics/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    &lt;&gt;
+      &lt;nav&gt;
+        &lt;Link href=&quot;/page-views&quot;&gt;Page Views&lt;/Link&gt;
+        &lt;Link href=&quot;/visitors&quot;&gt;Visitors&lt;/Link&gt;
+      &lt;/nav&gt;
+      &lt;div&gt;{children}&lt;/div&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Layout({ children }) {
+  return (
+    &lt;&gt;
+      &lt;nav&gt;
+        &lt;Link href=&quot;/page-views&quot;&gt;Page Views&lt;/Link&gt;
+        &lt;Link href=&quot;/visitors&quot;&gt;Visitors&lt;/Link&gt;
+      &lt;/nav&gt;
+      &lt;div&gt;{children}&lt;/div&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="modals"><a class="anchor" href="#modals">Modals<span class="ko">Modal</span></a></h3>
+<p>Parallel Route는 <a href="app-api-reference-file-conventions-intercepting-routes.html">Intercepting Routes</a>와 함께 사용해 deep linking을 지원하는 modal을 만들 수 있습니다. 이를 통해 modal을 만들 때 흔히 겪는 다음과 같은 문제를 해결할 수 있습니다:</p><div class="en-orig"><p>Parallel Routes can be used together with <a href="app-api-reference-file-conventions-intercepting-routes.html">Intercepting Routes</a> to create modals that support deep linking. This allows you to solve common challenges when building modals, such as:</p></div>
+<ul>
+<li>modal content를 <strong>URL로 공유 가능</strong>하게 만들기.</li>
+<li>page를 새로고침했을 때 modal을 닫지 않고 <strong>context를 유지</strong>하기.</li>
+<li>뒤로 가기 navigation 시 이전 route로 이동하는 대신 <strong>modal 닫기</strong>.</li>
+<li>앞으로 가기 navigation 시 <strong>modal 다시 열기</strong>.</li>
+</ul><div class="en-orig"><ul>
+<li>Making the modal content <strong>shareable through a URL</strong>.</li>
+<li><strong>Preserving context</strong> when the page is refreshed, instead of closing the modal.</li>
+<li><strong>Closing the modal on backwards navigation</strong> rather than going to the previous route.</li>
+<li><strong>Reopening the modal on forwards navigation</strong>.</li>
+</ul></div>
+<p>사용자가 client-side navigation으로 layout에서 login modal을 열거나, 별도의 <code>/login</code> page에 접근할 수 있는 다음 UI pattern을 생각해 보세요:</p><div class="en-orig"><p>Consider the following UI pattern, where a user can open a login modal from a layout using client-side navigation, or access a separate <code>/login</code> page:</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/parallel-routes-auth-modal.png" alt="Parallel Route 다이어그램" width="1600" height="687" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/parallel-routes-auth-modal.png" alt="Parallel Route 다이어그램" width="1600" height="687" loading="lazy" /></figure>
+<p>이 pattern을 구현하려면 먼저 <strong>main</strong> login page를 render하는 <code>/login</code> route를 만드세요.</p><div class="en-orig"><p>To implement this pattern, start by creating a <code>/login</code> route that renders your <strong>main</strong> login page.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/parallel-routes-modal-login-page.png" alt="Parallel Route 다이어그램" width="1600" height="768" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/parallel-routes-modal-login-page.png" alt="Parallel Route 다이어그램" width="1600" height="768" loading="lazy" /></figure>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/login/page.tsx" data-js="app/login/page.js">app/login/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { Login } from &#x27;@/app/ui/login&#x27;
+
+export default function Page() {
+  return &lt;Login /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { Login } from &#x27;@/app/ui/login&#x27;
+
+export default function Page() {
+  return &lt;Login /&gt;
+}</code></pre></div></div>
+<p>그다음 <code>@auth</code> slot 안에 <code>null</code>을 반환하는 <a href="app-api-reference-file-conventions-default.html"><code>default.js</code></a> 파일을 추가하세요. 이렇게 하면 modal이 활성 상태가 아닐 때 render되지 않습니다.</p><div class="en-orig"><p>Then, inside the <code>@auth</code> slot, add <a href="app-api-reference-file-conventions-default.html"><code>default.js</code></a> file that returns <code>null</code>. This ensures that the modal is not rendered when it's not active.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/@auth/default.tsx" data-js="app/@auth/default.js">app/@auth/default.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function Default() {
+  return null
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function Default() {
+  return null
+}</code></pre></div></div>
+<p><code>@auth</code> slot 안에서 <code>&lt;Modal&gt;</code> component와 그 children을 <code>@auth/(.)login/page.tsx</code> 파일에 import하고, 폴더 이름을 <code>/@auth/(.)login/page.tsx</code>로 바꿔 <code>/login</code> route를 intercept하세요.</p><div class="en-orig"><p>Inside your <code>@auth</code> slot, intercept the <code>/login</code> route by importing the <code>&lt;Modal&gt;</code> component and its children into the <code>@auth/(.)login/page.tsx</code> file, and updating the folder name to <code>/@auth/(.)login/page.tsx</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/@auth/(.)login/page.tsx" data-js="app/@auth/(.)login/page.js">app/@auth/(.)login/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { Modal } from &#x27;@/app/ui/modal&#x27;
+import { Login } from &#x27;@/app/ui/login&#x27;
+
+export default function Page() {
+  return (
+    &lt;Modal&gt;
+      &lt;Login /&gt;
+    &lt;/Modal&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { Modal } from &#x27;@/app/ui/modal&#x27;
+import { Login } from &#x27;@/app/ui/login&#x27;
+
+export default function Page() {
+  return (
+    &lt;Modal&gt;
+      &lt;Login /&gt;
+    &lt;/Modal&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>(.)</code> convention은 intercepting route에 사용됩니다. 자세한 내용은 <a href="app-api-reference-file-conventions-intercepting-routes.html#convention">Intercepting Routes</a> 문서를 참고하세요.</li>
+<li><code>&lt;Modal&gt;</code> 기능을 modal content(<code>&lt;Login&gt;</code>)와 분리하면, modal 안의 모든 content(예: <a href="app-guides-forms.html">form</a>)가 Server Component가 되도록 보장할 수 있습니다. 자세한 내용은 <a href="app-getting-started-server-and-client-components.html#interleaving-server-and-client-components">Interleaving Client and Server Components</a>를 참고하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>The convention <code>(.)</code> is used for intercepting routes. See <a href="app-api-reference-file-conventions-intercepting-routes.html#convention">Intercepting Routes</a> docs for more information.</li>
+<li>By separating the <code>&lt;Modal&gt;</code> functionality from the modal content (<code>&lt;Login&gt;</code>), you can ensure any content inside the modal, e.g. <a href="app-guides-forms.html">forms</a>, are Server Components. See <a href="app-getting-started-server-and-client-components.html#interleaving-server-and-client-components">Interleaving Client and Server Components</a> for more information.</li>
+</ul></div></div></div>
+<h4 class="sec" id="opening-the-modal"><a class="anchor" href="#opening-the-modal">Opening the modal<span class="ko">modal 열기</span></a></h4>
+<p>이제 Next.js router를 활용해 modal을 열고 닫을 수 있습니다. 이렇게 하면 modal이 열릴 때와 뒤로/앞으로 이동할 때 URL이 올바르게 업데이트됩니다.</p><div class="en-orig"><p>Now, you can leverage the Next.js router to open and close the modal. This ensures the URL is correctly updated when the modal is open, and when navigating backwards and forwards.</p></div>
+<p>modal을 열려면 <code>@auth</code> slot을 상위 layout에 prop으로 전달하고 <code>children</code> prop과 함께 render하세요.</p><div class="en-orig"><p>To open the modal, pass the <code>@auth</code> slot as a prop to the parent layout and render it alongside the <code>children</code> prop.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export default function Layout({
+  auth,
+  children,
+}: {
+  auth: React.ReactNode
+  children: React.ReactNode
+}) {
+  return (
+    &lt;&gt;
+      &lt;nav&gt;
+        &lt;Link href=&quot;/login&quot;&gt;Open modal&lt;/Link&gt;
+      &lt;/nav&gt;
+      &lt;div&gt;{auth}&lt;/div&gt;
+      &lt;div&gt;{children}&lt;/div&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Layout({ auth, children }) {
+  return (
+    &lt;&gt;
+      &lt;nav&gt;
+        &lt;Link href=&quot;/login&quot;&gt;Open modal&lt;/Link&gt;
+      &lt;/nav&gt;
+      &lt;div&gt;{auth}&lt;/div&gt;
+      &lt;div&gt;{children}&lt;/div&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p>사용자가 <code>&lt;Link&gt;</code>를 클릭하면 <code>/login</code> page로 이동하는 대신 modal이 열립니다. 하지만 새로고침하거나 초기 load 시에는 <code>/login</code>으로 이동하면 사용자가 main login page로 가게 됩니다.</p><div class="en-orig"><p>When the user clicks the <code>&lt;Link&gt;</code>, the modal will open instead of navigating to the <code>/login</code> page. However, on refresh or initial load, navigating to <code>/login</code> will take the user to the main login page.</p></div>
+<h4 class="sec" id="closing-the-modal"><a class="anchor" href="#closing-the-modal">Closing the modal<span class="ko">modal 닫기</span></a></h4>
+<p><code>router.back()</code>을 호출하거나 <code>Link</code> component를 사용해 modal을 닫을 수 있습니다.</p><div class="en-orig"><p>You can close the modal by calling <code>router.back()</code> or by using the <code>Link</code> component.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/ui/modal.tsx" data-js="app/ui/modal.js">app/ui/modal.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useRouter } from &#x27;next/navigation&#x27;
+
+export function Modal({ children }: { children: React.ReactNode }) {
+  const router = useRouter()
+
+  return (
+    &lt;&gt;
+      &lt;button
+        onClick={() =&gt; {
+          router.back()
+        }}
+      &gt;
+        Close modal
+      &lt;/button&gt;
+      &lt;div&gt;{children}&lt;/div&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useRouter } from &#x27;next/navigation&#x27;
+
+export function Modal({ children }) {
+  const router = useRouter()
+
+  return (
+    &lt;&gt;
+      &lt;button
+        onClick={() =&gt; {
+          router.back()
+        }}
+      &gt;
+        Close modal
+      &lt;/button&gt;
+      &lt;div&gt;{children}&lt;/div&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p>더 이상 <code>@auth</code> slot을 render하지 않아야 하는 page로 <code>Link</code> component를 사용해 이동할 때는, parallel route가 <code>null</code>을 반환하는 component와 match되도록 해야 합니다. 예를 들어 root page로 돌아갈 때를 위해 <code>@auth/page.tsx</code> component를 만듭니다:</p><div class="en-orig"><p>When using the <code>Link</code> component to navigate away from a page that shouldn't render the <code>@auth</code> slot anymore, we need to make sure the parallel route matches to a component that returns <code>null</code>. For example, when navigating back to the root page, we create a <code>@auth/page.tsx</code> component:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/ui/modal.tsx" data-js="app/ui/modal.js">app/ui/modal.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export function Modal({ children }: { children: React.ReactNode }) {
+  return (
+    &lt;&gt;
+      &lt;Link href=&quot;/&quot;&gt;Close modal&lt;/Link&gt;
+      &lt;div&gt;{children}&lt;/div&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export function Modal({ children }) {
+  return (
+    &lt;&gt;
+      &lt;Link href=&quot;/&quot;&gt;Close modal&lt;/Link&gt;
+      &lt;div&gt;{children}&lt;/div&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/@auth/page.tsx" data-js="app/@auth/page.js">app/@auth/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function Page() {
+  return null
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function Page() {
+  return null
+}</code></pre></div></div>
+<p>또는 다른 page(<code>/foo</code>, <code>/foo/bar</code> 등)로 이동하는 경우에는 catch-all slot을 사용할 수 있습니다:</p><div class="en-orig"><p>Or if navigating to any other page (such as <code>/foo</code>, <code>/foo/bar</code>, etc), you can use a catch-all slot:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/@auth/[...catchAll]/page.tsx" data-js="app/@auth/[...catchAll]/page.js">app/@auth/[...catchAll]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function CatchAll() {
+  return null
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function CatchAll() {
+  return null
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>parallel route의 동작 방식 때문에 <code>@auth</code> slot에서 catch-all route를 사용해 modal을 닫습니다. slot과 더 이상 match되지 않는 route로 client-side navigation을 해도 slot이 계속 보이므로, modal을 닫으려면 slot을 <code>null</code>을 반환하는 route와 match시켜야 합니다.</li>
+<li>다른 예로는 별도의 <code>/photo/[id]</code> page를 두면서 gallery에서 사진 modal을 여는 경우, 또는 side modal로 장바구니를 여는 경우가 있습니다.</li>
+<li>Intercepted Route와 Parallel Route로 만든 modal <a href="https://github.com/nextjs/nextgram" target="_blank" rel="noopener">예시를 확인하세요</a>.</li>
+</ul><div class="en-orig"><ul>
+<li>We use a catch-all route in our <code>@auth</code> slot to close the modal because of how parallel routes behave. Since client-side navigations to a route that no longer match the slot will remain visible, we need to match the slot to a route that returns <code>null</code> to close the modal.</li>
+<li>Other examples could include opening a photo modal in a gallery while also having a dedicated <code>/photo/[id]</code> page, or opening a shopping cart in a side modal.</li>
+<li><a href="https://github.com/nextjs/nextgram" target="_blank" rel="noopener">View an example</a> of modals with Intercepted and Parallel Routes.</li>
+</ul></div></div></div>
+<h3 class="sec" id="loading-and-error-ui"><a class="anchor" href="#loading-and-error-ui">Loading and Error UI<span class="ko">Loading 및 Error UI</span></a></h3>
+<p>Parallel Route는 독립적으로 stream될 수 있으므로, 각 route마다 독립적인 error state와 loading state를 정의할 수 있습니다:</p><div class="en-orig"><p>Parallel Routes can be streamed independently, allowing you to define independent error and loading states for each route:</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/parallel-routes-cinematic-universe.png" alt="Parallel route로 custom error 및 loading state 구현" width="1600" height="1218" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/parallel-routes-cinematic-universe.png" alt="Parallel route로 custom error 및 loading state 구현" width="1600" height="1218" loading="lazy" /></figure>
+<p>자세한 내용은 <a href="app-api-reference-file-conventions-loading.html">Loading UI</a>와 <a href="app-getting-started-error-handling.html">Error Handling</a> 문서를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-api-reference-file-conventions-loading.html">Loading UI</a> and <a href="app-getting-started-error-handling.html">Error Handling</a> documentation for more information.</p></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><div class="rgrid"><a class="rcard" href="app-api-reference-file-conventions-default.html"><div class="rt">default.js</div><div class="rk">default.js</div><div class="rd">default.js 파일에 대한 API Reference입니다.</div></a><a class="rcard" href="app-guides-authentication.html"><div class="rt">How to implement authentication in Next.js</div><div class="rk">Next.js에서 인증 구현하기</div><div class="rd">Next.js 애플리케이션에서 authentication을 구현하는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/03-file-conventions/parallel-routes.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/file-conventions/parallel-routes" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-file-conventions-page.html" class="prev"><div class="dir">← 이전</div><div class="ttl">page.js</div><div class="ttl-ko">page.js</div></a>
+      <a href="app-api-reference-file-conventions-proxy.html" class="next"><div class="dir">다음 →</div><div class="ttl">proxy.js</div><div class="ttl-ko">proxy.js</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/file-conventions/parallel-routes" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#convention">Convention</a></li><li class="l3"><a href="#slots">Slots</a></li><li class="l3"><a href="#defaultjs"><code>default.js</code></a></li><li class="l2"><a href="#behavior">Behavior</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#with-useselectedlayoutsegments">With <code>useSelectedLayoutSegment(s)</code></a></li><li class="l3"><a href="#conditional-routes">Conditional Routes</a></li><li class="l3"><a href="#tab-groups">Tab Groups</a></li><li class="l3"><a href="#modals">Modals</a></li><li class="l3"><a href="#loading-and-error-ui">Loading and Error UI</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Parallel Route를 사용하면 같은 layout 안에서 하나 이상의 page를 동시에 또는 조건부로 render할 수 있습니다. dashboard나 소셜 사이트의 feed처럼 앱에서 매우 dynamic한 영역에 유용합니다.
+
+예를 들어 dashboard에서 parallel route를 사용해 `team` page와 `analytics` page를 동시에 render할 수 있습니다:
+
+&lt;Image
+  alt=&quot;Parallel Route 다이어그램&quot;
+  srcLight=&quot;/docs/light/parallel-routes.png&quot;
+  srcDark=&quot;/docs/dark/parallel-routes.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;942&quot;
+/&gt;
+
+## Convention || 규칙
+
+### Slots || Slot
+
+Parallel route는 이름이 붙은 **slot**으로 만듭니다. slot은 `@folder` convention으로 정의합니다. 예를 들어 다음 파일 구조는 `@analytics`와 `@team` 두 개의 slot을 정의합니다:
+
+&lt;Image
+  alt=&quot;Parallel Route 파일 시스템 구조&quot;
+  srcLight=&quot;/docs/light/parallel-routes-file-system.png&quot;
+  srcDark=&quot;/docs/dark/parallel-routes-file-system.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;687&quot;
+/&gt;
+
+slot은 공유 상위 layout에 props로 전달됩니다. 위 예시에서 `app/layout.js`의 component는 이제 `@analytics`와 `@team` slot props를 받으며, 이를 `children` prop과 함께 병렬로 render할 수 있습니다:
+
+[[CODE 1]]
+
+하지만 slot은 route segment가 **아니며** URL 구조에 영향을 주지 않습니다. 예를 들어 `/@analytics/views`의 경우 `@analytics`가 slot이므로 URL은 `/views`가 됩니다. slot은 일반 [Page](/docs/app/api-reference/file-conventions/page) component와 결합되어 해당 route segment에 연결된 최종 page를 구성합니다. 이 때문에 같은 route segment level에서 [prerender](/docs/app/glossary#prerendering)되는 slot과 [dynamic하게 render](/docs/app/glossary#dynamic-rendering)되는 slot을 따로 둘 수 없습니다. 하나의 slot이 dynamic이면 그 level의 모든 slot이 dynamic이어야 합니다.
+
+&gt; **Good to know**:
+&gt;
+&gt; - `children` prop은 폴더에 mapping할 필요가 없는 암묵적인(implicit) slot입니다. 즉, `app/page.js`는 `app/@children/page.js`와 동일합니다.
+
+### `default.js`
+
+초기 load나 full-page reload 시 match되지 않는 slot에 대한 fallback으로 render할 `default.js` 파일을 정의할 수 있습니다.
+
+다음 폴더 구조를 생각해 보세요. `@team` slot에는 `/settings` page가 있지만 `@analytics`에는 없습니다.
+
+&lt;Image
+  alt=&quot;Parallel Route의 match되지 않는 route&quot;
+  srcLight=&quot;/docs/light/parallel-routes-unmatched-routes.png&quot;
+  srcDark=&quot;/docs/dark/parallel-routes-unmatched-routes.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;930&quot;
+/&gt;
+
+`/settings`로 이동하면 `@team` slot은 `/settings` page를 render하고, `@analytics` slot은 현재 활성 page를 유지합니다.
+
+새로고침하면 Next.js는 `@analytics`에 대해 `default.js`를 render합니다. `default.js`가 없으면 대신 `404`가 render됩니다.
+
+또한 `children`은 암묵적인 slot이므로, Next.js가 상위 page의 활성 상태를 복구할 수 없을 때 `children`에 대한 fallback을 render하려면 `default.js` 파일도 만들어야 합니다.
+
+## Behavior || 동작
+
+기본적으로 Next.js는 각 slot의 활성 _state_(또는 subpage)를 추적합니다. 하지만 slot 안에 render되는 content는 navigation의 종류에 따라 달라집니다:
+
+- [**Soft Navigation**](/docs/app/getting-started/linking-and-navigating#client-side-transitions): client-side navigation 중에 Next.js는 [partial render](/docs/app/getting-started/linking-and-navigating#client-side-transitions)를 수행해, 다른 slot의 활성 subpage가 현재 URL과 match되지 않더라도 이를 유지한 채 해당 slot 안의 subpage만 바꿉니다.
+- **Hard Navigation**: full-page load(브라우저 새로고침) 후에는 Next.js가 현재 URL과 match되지 않는 slot의 활성 상태를 알 수 없습니다. 대신 match되지 않는 slot에 대해 [`default.js`](#defaultjs) 파일을 render하고, `default.js`가 없으면 `404`를 render합니다.
+
+&gt; **Good to know**:
+&gt;
+&gt; - match되지 않는 route에 대한 `404`는 의도하지 않은 page에서 parallel route가 실수로 render되지 않도록 보장하는 데 도움이 됩니다.
+
+## Examples || 예시
+
+### With `useSelectedLayoutSegment(s)` || `useSelectedLayoutSegment(s)`와 함께
+
+[`useSelectedLayoutSegment`](/docs/app/api-reference/functions/use-selected-layout-segment)와 [`useSelectedLayoutSegments`](/docs/app/api-reference/functions/use-selected-layout-segments)는 모두 `parallelRouteKey` parameter를 받으며, 이를 통해 slot 안의 활성 route segment를 읽을 수 있습니다.
+
+[[CODE 2]]
+
+사용자가 `app/@auth/login`(또는 주소창의 `/login`)으로 이동하면 `loginSegment`는 문자열 `&quot;login&quot;`이 됩니다.
+
+### Conditional Routes || 조건부 Route
+
+Parallel Route를 사용하면 사용자 role 같은 특정 조건에 따라 route를 조건부로 render할 수 있습니다. 예를 들어 `/admin` role과 `/user` role에 서로 다른 dashboard page를 render하려면 다음과 같이 합니다:
+
+&lt;Image
+  alt=&quot;조건부 route 다이어그램&quot;
+  srcLight=&quot;/docs/light/conditional-routes-ui.png&quot;
+  srcDark=&quot;/docs/dark/conditional-routes-ui.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;898&quot;
+/&gt;
+
+[[CODE 3]]
+
+layout이 어느 쪽을 반환하든 두 slot 모두 server에서 render됩니다. 조건문은 사용자가 무엇을 보는지를 결정할 뿐, 무엇이 실행되는지를 결정하지 않습니다. `@admin/page.js`는 모든 사용자에 대해 data fetch를 실행하며, 그 결과는 브라우저로 전송되는 response에 포함됩니다. 각 slot의 page 안에서, 또는 [Data Access Layer](/docs/app/guides/authentication#creating-a-data-access-layer-dal)에서 권한을 확인하세요:
+
+[[CODE 4]]
+
+### Tab Groups || Tab Group
+
+slot 안에 `layout`을 추가하면 사용자가 그 slot을 독립적으로 navigate할 수 있습니다. tab을 만들 때 유용합니다.
+
+예를 들어 `@analytics` slot에 `/page-views`와 `/visitors` 두 개의 subpage가 있다고 해 봅시다.
+
+&lt;Image
+  alt=&quot;두 개의 subpage와 layout이 있는 analytics slot&quot;
+  srcLight=&quot;/docs/light/parallel-routes-tab-groups.png&quot;
+  srcDark=&quot;/docs/dark/parallel-routes-tab-groups.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;768&quot;
+/&gt;
+
+`@analytics` 안에 [`layout`](/docs/app/api-reference/file-conventions/layout) 파일을 만들어 두 page가 tab을 공유하게 하세요:
+
+[[CODE 5]]
+
+### Modals || Modal
+
+Parallel Route는 [Intercepting Routes](/docs/app/api-reference/file-conventions/intercepting-routes)와 함께 사용해 deep linking을 지원하는 modal을 만들 수 있습니다. 이를 통해 modal을 만들 때 흔히 겪는 다음과 같은 문제를 해결할 수 있습니다:
+
+- modal content를 **URL로 공유 가능**하게 만들기.
+- page를 새로고침했을 때 modal을 닫지 않고 **context를 유지**하기.
+- 뒤로 가기 navigation 시 이전 route로 이동하는 대신 **modal 닫기**.
+- 앞으로 가기 navigation 시 **modal 다시 열기**.
+
+사용자가 client-side navigation으로 layout에서 login modal을 열거나, 별도의 `/login` page에 접근할 수 있는 다음 UI pattern을 생각해 보세요:
+
+&lt;Image
+  alt=&quot;Parallel Route 다이어그램&quot;
+  srcLight=&quot;/docs/light/parallel-routes-auth-modal.png&quot;
+  srcDark=&quot;/docs/dark/parallel-routes-auth-modal.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;687&quot;
+/&gt;
+
+이 pattern을 구현하려면 먼저 **main** login page를 render하는 `/login` route를 만드세요.
+
+&lt;Image
+  alt=&quot;Parallel Route 다이어그램&quot;
+  srcLight=&quot;/docs/light/parallel-routes-modal-login-page.png&quot;
+  srcDark=&quot;/docs/dark/parallel-routes-modal-login-page.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;768&quot;
+/&gt;
+
+[[CODE 6]]
+
+그다음 `@auth` slot 안에 `null`을 반환하는 [`default.js`](/docs/app/api-reference/file-conventions/default) 파일을 추가하세요. 이렇게 하면 modal이 활성 상태가 아닐 때 render되지 않습니다.
+
+[[CODE 7]]
+
+`@auth` slot 안에서 `&lt;Modal&gt;` component와 그 children을 `@auth/(.)login/page.tsx` 파일에 import하고, 폴더 이름을 `/@auth/(.)login/page.tsx`로 바꿔 `/login` route를 intercept하세요.
+
+[[CODE 8]]
+
+&gt; **Good to know:**
+&gt;
+&gt; - `(.)` convention은 intercepting route에 사용됩니다. 자세한 내용은 [Intercepting Routes](/docs/app/api-reference/file-conventions/intercepting-routes#convention) 문서를 참고하세요.
+&gt; - `&lt;Modal&gt;` 기능을 modal content(`&lt;Login&gt;`)와 분리하면, modal 안의 모든 content(예: [form](/docs/app/guides/forms))가 Server Component가 되도록 보장할 수 있습니다. 자세한 내용은 [Interleaving Client and Server Components](/docs/app/getting-started/server-and-client-components#interleaving-server-and-client-components)를 참고하세요.
+
+#### Opening the modal || modal 열기
+
+이제 Next.js router를 활용해 modal을 열고 닫을 수 있습니다. 이렇게 하면 modal이 열릴 때와 뒤로/앞으로 이동할 때 URL이 올바르게 업데이트됩니다.
+
+modal을 열려면 `@auth` slot을 상위 layout에 prop으로 전달하고 `children` prop과 함께 render하세요.
+
+[[CODE 9]]
+
+사용자가 `&lt;Link&gt;`를 클릭하면 `/login` page로 이동하는 대신 modal이 열립니다. 하지만 새로고침하거나 초기 load 시에는 `/login`으로 이동하면 사용자가 main login page로 가게 됩니다.
+
+#### Closing the modal || modal 닫기
+
+`router.back()`을 호출하거나 `Link` component를 사용해 modal을 닫을 수 있습니다.
+
+[[CODE 10]]
+
+더 이상 `@auth` slot을 render하지 않아야 하는 page로 `Link` component를 사용해 이동할 때는, parallel route가 `null`을 반환하는 component와 match되도록 해야 합니다. 예를 들어 root page로 돌아갈 때를 위해 `@auth/page.tsx` component를 만듭니다:
+
+[[CODE 11]]
+
+[[CODE 12]]
+
+또는 다른 page(`/foo`, `/foo/bar` 등)로 이동하는 경우에는 catch-all slot을 사용할 수 있습니다:
+
+[[CODE 13]]
+
+&gt; **Good to know:**
+&gt;
+&gt; - parallel route의 동작 방식 때문에 `@auth` slot에서 catch-all route를 사용해 modal을 닫습니다. slot과 더 이상 match되지 않는 route로 client-side navigation을 해도 slot이 계속 보이므로, modal을 닫으려면 slot을 `null`을 반환하는 route와 match시켜야 합니다.
+&gt; - 다른 예로는 별도의 `/photo/[id]` page를 두면서 gallery에서 사진 modal을 여는 경우, 또는 side modal로 장바구니를 여는 경우가 있습니다.
+&gt; - Intercepted Route와 Parallel Route로 만든 modal [예시를 확인하세요](https://github.com/nextjs/nextgram).
+
+### Loading and Error UI || Loading 및 Error UI
+
+Parallel Route는 독립적으로 stream될 수 있으므로, 각 route마다 독립적인 error state와 loading state를 정의할 수 있습니다:
+
+&lt;Image
+  alt=&quot;Parallel route로 custom error 및 loading state 구현&quot;
+  srcLight=&quot;/docs/light/parallel-routes-cinematic-universe.png&quot;
+  srcDark=&quot;/docs/dark/parallel-routes-cinematic-universe.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;1218&quot;
+/&gt;
+
+자세한 내용은 [Loading UI](/docs/app/api-reference/file-conventions/loading)와 [Error Handling](/docs/app/getting-started/error-handling) 문서를 참고하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

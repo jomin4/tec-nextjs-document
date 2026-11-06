@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to create a static export of your Next.js application (Next.js 애플리케이션을 static export하는 방법) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/static-exports" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/static-exports" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/static-exports.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to create a static export of your Next.js application<span class="sub">Next.js 애플리케이션을 static export하는 방법</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js는 static site나 Single-Page Application(SPA)으로 시작한 뒤, 나중에 필요하면 server가 필요한 기능을 사용하도록 upgrade할 수 있게 해 줍니다.</p><div class="en-orig"><p>Next.js enables starting as a static site or Single-Page Application (SPA), then later optionally upgrading to use features that require a server.</p></div>
+<p><code>next build</code>를 실행하면 Next.js는 route마다 HTML 파일을 하나씩 생성합니다. 엄격한 SPA를 개별 HTML 파일로 나누면 Next.js는 client-side에서 불필요한 JavaScript 코드를 로드하지 않을 수 있어서, bundle 크기가 줄고 페이지 로드가 빨라집니다.</p><div class="en-orig"><p>When running <code>next build</code>, Next.js generates an HTML file per route. By breaking a strict SPA into individual HTML files, Next.js can avoid loading unnecessary JavaScript code on the client-side, reducing the bundle size and enabling faster page loads.</p></div>
+<p>Next.js가 이런 static export를 지원하므로, HTML/CSS/JS static asset을 제공할 수 있는 웹 서버라면 어디든 deploy하고 hosting할 수 있습니다.</p><div class="en-orig"><p>Since Next.js supports this static export, it can be deployed and hosted on any web server that can serve HTML/CSS/JS static assets.</p></div>
+<h2 class="sec" id="configuration"><a class="anchor" href="#configuration">Configuration<span class="ko">설정</span></a></h2>
+<p>static export를 활성화하려면 <code>next.config.js</code> 안의 output mode를 변경하세요:</p><div class="en-orig"><p>To enable a static export, change the output mode inside <code>next.config.js</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/**
+ * @type {import(&#x27;next&#x27;).NextConfig}
+ */
+const nextConfig = {
+  output: &#x27;export&#x27;,
+
+  // Optional: Change links `/me` -&gt; `/me/` and emit `/me.html` -&gt; `/me/index.html`
+  // trailingSlash: true,
+
+  // Optional: Prevent automatic `/me` -&gt; `/me/`, instead preserve `href`
+  // skipTrailingSlashRedirect: true,
+
+  // Optional: Change the output directory `out` -&gt; `dist`
+  // distDir: &#x27;dist&#x27;,
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p><code>next build</code>를 실행하면 Next.js가 애플리케이션의 HTML/CSS/JS asset이 담긴 <code>out</code> 폴더를 만듭니다.</p><div class="en-orig"><p>After running <code>next build</code>, Next.js will create an <code>out</code> folder with the HTML/CSS/JS assets for your application.</p></div>
+<h2 class="sec" id="supported-features"><a class="anchor" href="#supported-features">Supported Features<span class="ko">지원되는 기능</span></a></h2>
+<p>Next.js의 핵심은 static export를 지원하도록 설계되어 있습니다.</p><div class="en-orig"><p>The core of Next.js has been designed to support static exports.</p></div>
+<h3 class="sec" id="server-components"><a class="anchor" href="#server-components">Server Components</a></h3>
+<p>static export를 생성하려고 <code>next build</code>를 실행하면, <code>app</code> directory 안에서 사용되는 Server Component는 기존의 static-site generation처럼 build 중에 실행됩니다.</p><div class="en-orig"><p>When you run <code>next build</code> to generate a static export, Server Components consumed inside the <code>app</code> directory will run during the build, similar to traditional static-site generation.</p></div>
+<p>그 결과 component는 초기 페이지 로드를 위한 static HTML과, route 간 client navigation을 위한 static payload로 render됩니다. static export를 사용할 때 Server Component가 <a href="#unsupported-features">dynamic server function</a>을 사용하지 않는다면 Server Component를 변경할 필요가 없습니다.</p><div class="en-orig"><p>The resulting component will be rendered into static HTML for the initial page load and a static payload for client navigation between routes. No changes are required for your Server Components when using the static export, unless they consume <a href="#unsupported-features">dynamic server functions</a>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export default async function Page() {
+  // This fetch will run on the server during `next build`
+  const res = await fetch(&#x27;https://api.example.com/...&#x27;)
+  const data = await res.json()
+
+  return &lt;main&gt;...&lt;/main&gt;
+}</code></pre></div></div>
+<h3 class="sec" id="client-components"><a class="anchor" href="#client-components">Client Components</a></h3>
+<p>client에서 data fetching을 하고 싶다면 Client Component에서 <a href="https://github.com/vercel/swr" target="_blank" rel="noopener">SWR</a>을 사용해 request를 memoize할 수 있습니다.</p><div class="en-orig"><p>If you want to perform data fetching on the client, you can use a Client Component with <a href="https://github.com/vercel/swr" target="_blank" rel="noopener">SWR</a> to memoize requests.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/other/page.tsx" data-js="app/other/page.js">app/other/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import useSWR from &#x27;swr&#x27;
+
+const fetcher = (url: string) =&gt; fetch(url).then((r) =&gt; r.json())
+
+export default function Page() {
+  const { data, error } = useSWR(
+    `https://jsonplaceholder.typicode.com/posts/1`,
+    fetcher
+  )
+  if (error) return &#x27;Failed to load&#x27;
+  if (!data) return &#x27;Loading...&#x27;
+
+  return data.title
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import useSWR from &#x27;swr&#x27;
+
+const fetcher = (url) =&gt; fetch(url).then((r) =&gt; r.json())
+
+export default function Page() {
+  const { data, error } = useSWR(
+    `https://jsonplaceholder.typicode.com/posts/1`,
+    fetcher
+  )
+  if (error) return &#x27;Failed to load&#x27;
+  if (!data) return &#x27;Loading...&#x27;
+
+  return data.title
+}</code></pre></div></div>
+<p>route 전환이 client-side에서 일어나므로 기존 SPA처럼 동작합니다. 예를 들어 다음 index route에서는 client에서 여러 post로 이동할 수 있습니다:</p><div class="en-orig"><p>Since route transitions happen client-side, this behaves like a traditional SPA. For example, the following index route allows you to navigate to different posts on the client:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export default function Page() {
+  return (
+    &lt;&gt;
+      &lt;h1&gt;Index Page&lt;/h1&gt;
+      &lt;hr /&gt;
+      &lt;ul&gt;
+        &lt;li&gt;
+          &lt;Link href=&quot;/post/1&quot;&gt;Post 1&lt;/Link&gt;
+        &lt;/li&gt;
+        &lt;li&gt;
+          &lt;Link href=&quot;/post/2&quot;&gt;Post 2&lt;/Link&gt;
+        &lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Page() {
+  return (
+    &lt;&gt;
+      &lt;h1&gt;Index Page&lt;/h1&gt;
+      &lt;p&gt;
+        &lt;Link href=&quot;/other&quot;&gt;Other Page&lt;/Link&gt;
+      &lt;/p&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="image-optimization"><a class="anchor" href="#image-optimization">Image Optimization</a></h3>
+<p><code>next.config.js</code>에 custom image loader를 정의하면 <code>next/image</code>를 통한 <a href="app-api-reference-components-image.html">Image Optimization</a>을 static export와 함께 사용할 수 있습니다. 예를 들어 Cloudinary 같은 서비스로 이미지를 최적화할 수 있습니다:</p><div class="en-orig"><p><a href="app-api-reference-components-image.html">Image Optimization</a> through <code>next/image</code> can be used with a static export by defining a custom image loader in <code>next.config.js</code>. For example, you can optimize images with a service like Cloudinary:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  output: &#x27;export&#x27;,
+  images: {
+    loader: &#x27;custom&#x27;,
+    loaderFile: &#x27;./my-loader.ts&#x27;,
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p>이 custom loader는 remote source에서 이미지를 가져오는 방법을 정의합니다. 예를 들어 다음 loader는 Cloudinary용 URL을 구성합니다:</p><div class="en-orig"><p>This custom loader will define how to fetch images from a remote source. For example, the following loader will construct the URL for Cloudinary:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="my-loader.ts" data-js="my-loader.js">my-loader.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function cloudinaryLoader({
+  src,
+  width,
+  quality,
+}: {
+  src: string
+  width: number
+  quality?: number
+}) {
+  const params = [&#x27;f_auto&#x27;, &#x27;c_limit&#x27;, `w_${width}`, `q_${quality || &#x27;auto&#x27;}`]
+  return `https://res.cloudinary.com/demo/image/upload/${params.join(
+    &#x27;,&#x27;
+  )}${src}`
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function cloudinaryLoader({ src, width, quality }) {
+  const params = [&#x27;f_auto&#x27;, &#x27;c_limit&#x27;, `w_${width}`, `q_${quality || &#x27;auto&#x27;}`]
+  return `https://res.cloudinary.com/demo/image/upload/${params.join(
+    &#x27;,&#x27;
+  )}${src}`
+}</code></pre></div></div>
+<p>그런 다음 애플리케이션에서 <code>next/image</code>를 사용하고, Cloudinary에 있는 이미지의 상대 경로를 지정하면 됩니다:</p><div class="en-orig"><p>You can then use <code>next/image</code> in your application, defining relative paths to the image in Cloudinary:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Image from &#x27;next/image&#x27;
+
+export default function Page() {
+  return &lt;Image alt=&quot;turtles&quot; src=&quot;/turtles.jpg&quot; width={300} height={300} /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Image from &#x27;next/image&#x27;
+
+export default function Page() {
+  return &lt;Image alt=&quot;turtles&quot; src=&quot;/turtles.jpg&quot; width={300} height={300} /&gt;
+}</code></pre></div></div>
+<h3 class="sec" id="route-handlers"><a class="anchor" href="#route-handlers">Route Handlers</a></h3>
+<p>Route Handler는 <code>next build</code>를 실행할 때 static response를 render합니다. <code>GET</code> HTTP verb만 지원됩니다. 이를 이용해 cache된 데이터나 cache되지 않은 데이터로부터 static HTML, JSON, TXT 등의 파일을 생성할 수 있습니다. static export가 활성화되어 있을 때 Route Handler가 prerender되도록 하려면 <code>export const dynamic = &#x27;force-static&#x27;</code>을 추가해 handler를 명시적으로 static으로 표시해야 합니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>Route Handlers will render a static response when running <code>next build</code>. Only the <code>GET</code> HTTP verb is supported. This can be used to generate static HTML, JSON, TXT, or other files from cached or uncached data. To ensure Route Handlers are prerendered, you must explicitly mark the handler as static by adding <code>export const dynamic = &#x27;force-static&#x27;</code> when a static export is enabled. For example:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/data.json/route.ts" data-js="app/data.json/route.js">app/data.json/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export const dynamic = &#x27;force-static&#x27;
+
+export async function GET() {
+  return Response.json({ name: &#x27;Lee&#x27; })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const dynamic = &#x27;force-static&#x27;
+
+export async function GET() {
+  return Response.json({ name: &#x27;Lee&#x27; })
+}</code></pre></div></div>
+<p>위의 <code>app/data.json/route.ts</code> 파일은 <code>next build</code> 중에 static 파일로 render되어, <code>{ name: &#x27;Lee&#x27; }</code>를 담은 <code>data.json</code>을 만들어 냅니다.</p><div class="en-orig"><p>The above file <code>app/data.json/route.ts</code> will render to a static file during <code>next build</code>, producing <code>data.json</code> containing <code>{ name: &#x27;Lee&#x27; }</code>.</p></div>
+<p>들어오는 request에서 dynamic 값을 읽어야 한다면 static export를 사용할 수 없습니다.</p><div class="en-orig"><p>If you need to read dynamic values from the incoming request, you cannot use a static export.</p></div>
+<h3 class="sec" id="browser-apis"><a class="anchor" href="#browser-apis">Browser APIs</a></h3>
+<p>Client Component는 <code>next build</code> 중에 HTML로 prerender됩니다. <code>window</code>, <code>localStorage</code>, <code>navigator</code> 같은 <a href="https://developer.mozilla.org/docs/Web/API" target="_blank" rel="noopener">Web API</a>는 server에서 사용할 수 없으므로, 이 API들은 브라우저에서 실행될 때만 안전하게 접근해야 합니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>Client Components are prerendered to HTML during <code>next build</code>. Because <a href="https://developer.mozilla.org/docs/Web/API" target="_blank" rel="noopener">Web APIs</a> like <code>window</code>, <code>localStorage</code>, and <code>navigator</code> are not available on the server, you need to safely access these APIs only when running in the browser. For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&#x27;use client&#x27;;
+
+import { useEffect } from &#x27;react&#x27;;
+
+export default function ClientComponent() {
+  useEffect(() =&gt; {
+    // You now have access to `window`
+    console.log(window.innerHeight);
+  }, [])
+
+  return ...;
+}</code></pre></div></div>
+<h2 class="sec" id="unsupported-features"><a class="anchor" href="#unsupported-features">Unsupported Features<span class="ko">지원되지 않는 기능</span></a></h2>
+<p>Node.js server가 필요한 기능이나 build 과정에서 계산할 수 없는 dynamic 로직은 지원되지 <strong>않습니다</strong>:</p><div class="en-orig"><p>Features that require a Node.js server, or dynamic logic that cannot be computed during the build process, are <strong>not</strong> supported:</p></div>
+<ul>
+<li><code>dynamicParams: true</code>를 사용하는 <a href="app-api-reference-file-conventions-dynamic-routes.html">Dynamic Routes</a></li>
+<li><code>generateStaticParams()</code>가 없는 <a href="app-api-reference-file-conventions-dynamic-routes.html">Dynamic Routes</a></li>
+<li>Request에 의존하는 <a href="app-api-reference-file-conventions-route.html">Route Handlers</a></li>
+<li><a href="app-api-reference-functions-cookies.html">Cookies</a></li>
+<li><a href="app-api-reference-config-next-config-js-rewrites.html">Rewrites</a></li>
+<li><a href="app-api-reference-config-next-config-js-redirects.html">Redirects</a></li>
+<li><a href="app-api-reference-config-next-config-js-headers.html">Headers</a></li>
+<li><a href="app-api-reference-file-conventions-proxy.html">Proxy</a></li>
+<li><a href="app-guides-incremental-static-regeneration.html">Incremental Static Regeneration</a></li>
+<li>기본 <code>loader</code>를 사용하는 <a href="app-api-reference-components-image.html">Image Optimization</a></li>
+<li><a href="app-guides-draft-mode.html">Draft Mode</a></li>
+<li><a href="app-getting-started-mutating-data.html">Server Actions</a></li>
+<li><a href="app-api-reference-file-conventions-intercepting-routes.html">Intercepting Routes</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-file-conventions-dynamic-routes.html">Dynamic Routes</a> with <code>dynamicParams: true</code></li>
+<li><a href="app-api-reference-file-conventions-dynamic-routes.html">Dynamic Routes</a> without <code>generateStaticParams()</code></li>
+<li><a href="app-api-reference-file-conventions-route.html">Route Handlers</a> that rely on Request</li>
+<li><a href="app-api-reference-functions-cookies.html">Cookies</a></li>
+<li><a href="app-api-reference-config-next-config-js-rewrites.html">Rewrites</a></li>
+<li><a href="app-api-reference-config-next-config-js-redirects.html">Redirects</a></li>
+<li><a href="app-api-reference-config-next-config-js-headers.html">Headers</a></li>
+<li><a href="app-api-reference-file-conventions-proxy.html">Proxy</a></li>
+<li><a href="app-guides-incremental-static-regeneration.html">Incremental Static Regeneration</a></li>
+<li><a href="app-api-reference-components-image.html">Image Optimization</a> with the default <code>loader</code></li>
+<li><a href="app-guides-draft-mode.html">Draft Mode</a></li>
+<li><a href="app-getting-started-mutating-data.html">Server Actions</a></li>
+<li><a href="app-api-reference-file-conventions-intercepting-routes.html">Intercepting Routes</a></li>
+</ul></div>
+<p><code>next dev</code>에서 이 기능들 중 하나라도 사용하려고 하면, root layout에서 <a href="app-guides-caching-without-cache-components.html#dynamic"><code>dynamic</code></a> option을 <code>error</code>로 설정한 것과 비슷하게 error가 발생합니다.</p><div class="en-orig"><p>Attempting to use any of these features with <code>next dev</code> will result in an error, similar to setting the <a href="app-guides-caching-without-cache-components.html#dynamic"><code>dynamic</code></a> option to <code>error</code> in the root layout.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export const dynamic = &#x27;error&#x27;</code></pre></div></div>
+<h2 class="sec" id="deploying"><a class="anchor" href="#deploying">Deploying<span class="ko">배포하기</span></a></h2>
+<p>static export를 사용하면 HTML/CSS/JS static asset을 제공할 수 있는 웹 서버라면 어디든 Next.js를 deploy하고 hosting할 수 있습니다.</p><div class="en-orig"><p>With a static export, Next.js can be deployed and hosted on any web server that can serve HTML/CSS/JS static assets.</p></div>
+<p><code>next build</code>를 실행하면 Next.js는 static export를 <code>out</code> 폴더에 생성합니다. 예를 들어 다음과 같은 route가 있다고 해 봅시다:</p><div class="en-orig"><p>When running <code>next build</code>, Next.js generates the static export into the <code>out</code> folder. For example, let's say you have the following routes:</p></div>
+<ul>
+<li><code>/</code></li>
+<li><code>/blog/[id]</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>/</code></li>
+<li><code>/blog/[id]</code></li>
+</ul></div>
+<p><code>next build</code>를 실행하면 Next.js는 다음 파일들을 생성합니다:</p><div class="en-orig"><p>After running <code>next build</code>, Next.js will generate the following files:</p></div>
+<ul>
+<li><code>/out/index.html</code></li>
+<li><code>/out/404.html</code></li>
+<li><code>/out/blog/post-1.html</code></li>
+<li><code>/out/blog/post-2.html</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>/out/index.html</code></li>
+<li><code>/out/404.html</code></li>
+<li><code>/out/blog/post-1.html</code></li>
+<li><code>/out/blog/post-2.html</code></li>
+</ul></div>
+<p>Nginx 같은 static host를 사용한다면, 들어오는 request를 올바른 파일로 연결하는 rewrite를 설정할 수 있습니다:</p><div class="en-orig"><p>If you are using a static host like Nginx, you can configure rewrites from incoming requests to the correct files:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">nginx.conf</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-nginx">server {
+  listen 80;
+  server_name acme.com;
+
+  root /var/www/out;
+
+  location / {
+      try_files $uri $uri.html $uri/ =404;
+  }
+
+  # This is necessary when `trailingSlash: false`.
+  # You can omit this when `trailingSlash: true`.
+  location /blog/ {
+      rewrite ^/blog/(.*)$ /blog/$1.html break;
+  }
+
+  error_page 404 /404.html;
+  location = /404.html {
+      internal;
+  }
+}</code></pre></div></div>
+<p>GitHub Pages에 deploy하려면 <a href="https://github.com/nextjs/deploy-github-pages" target="_blank" rel="noopener">template</a>을 사용해 새 프로젝트를 만들거나, 기존 프로젝트를 설정할 때 참고 자료로 활용하세요.</p><div class="en-orig"><p>To deploy to GitHub Pages, use our <a href="https://github.com/nextjs/deploy-github-pages" target="_blank" rel="noopener">template</a> to create a new project or as a reference for configuring an existing project.</p></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v14.0.0</code></td><td><code>next export</code>가 제거되고 <code>&quot;output&quot;: &quot;export&quot;</code>로 대체되었습니다</td></tr>
+<tr><td><code>v13.4.0</code></td><td>App Router(Stable)가 React Server Component와 Route Handler 사용을 포함해 향상된 static export 지원을 추가했습니다.</td></tr>
+<tr><td><code>v13.3.0</code></td><td><code>next export</code>가 deprecated되고 <code>&quot;output&quot;: &quot;export&quot;</code>로 대체되었습니다</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v14.0.0</code></td><td><code>next export</code> has been removed in favor of <code>&quot;output&quot;: &quot;export&quot;</code></td></tr>
+<tr><td><code>v13.4.0</code></td><td>App Router (Stable) adds enhanced static export support, including using React Server Components and Route Handlers.</td></tr>
+<tr><td><code>v13.3.0</code></td><td><code>next export</code> is deprecated and replaced with <code>&quot;output&quot;: &quot;export&quot;</code></td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/static-exports.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/static-exports" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-single-page-applications.html" class="prev"><div class="dir">← 이전</div><div class="ttl">SPAs</div><div class="ttl-ko">Next.js로 Single-Page Application 만들기</div></a>
+      <a href="app-guides-streaming.html" class="next"><div class="dir">다음 →</div><div class="ttl">Streaming</div><div class="ttl-ko">스트리밍</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/static-exports" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#configuration">Configuration</a></li><li class="l2"><a href="#supported-features">Supported Features</a></li><li class="l3"><a href="#server-components">Server Components</a></li><li class="l3"><a href="#client-components">Client Components</a></li><li class="l3"><a href="#image-optimization">Image Optimization</a></li><li class="l3"><a href="#route-handlers">Route Handlers</a></li><li class="l3"><a href="#browser-apis">Browser APIs</a></li><li class="l2"><a href="#unsupported-features">Unsupported Features</a></li><li class="l2"><a href="#deploying">Deploying</a></li><li class="l2"><a href="#version-history">Version History</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js는 static site나 Single-Page Application(SPA)으로 시작한 뒤, 나중에 필요하면 server가 필요한 기능을 사용하도록 upgrade할 수 있게 해 줍니다.
+
+`next build`를 실행하면 Next.js는 route마다 HTML 파일을 하나씩 생성합니다. 엄격한 SPA를 개별 HTML 파일로 나누면 Next.js는 client-side에서 불필요한 JavaScript 코드를 로드하지 않을 수 있어서, bundle 크기가 줄고 페이지 로드가 빨라집니다.
+
+Next.js가 이런 static export를 지원하므로, HTML/CSS/JS static asset을 제공할 수 있는 웹 서버라면 어디든 deploy하고 hosting할 수 있습니다.
+
+## Configuration || 설정
+
+static export를 활성화하려면 `next.config.js` 안의 output mode를 변경하세요:
+
+[[CODE 1]]
+
+`next build`를 실행하면 Next.js가 애플리케이션의 HTML/CSS/JS asset이 담긴 `out` 폴더를 만듭니다.
+
+
+
+
+
+## Supported Features || 지원되는 기능
+
+Next.js의 핵심은 static export를 지원하도록 설계되어 있습니다.
+
+### Server Components
+
+static export를 생성하려고 `next build`를 실행하면, `app` directory 안에서 사용되는 Server Component는 기존의 static-site generation처럼 build 중에 실행됩니다.
+
+그 결과 component는 초기 페이지 로드를 위한 static HTML과, route 간 client navigation을 위한 static payload로 render됩니다. static export를 사용할 때 Server Component가 [dynamic server function](#unsupported-features)을 사용하지 않는다면 Server Component를 변경할 필요가 없습니다.
+
+[[CODE 2]]
+
+### Client Components
+
+client에서 data fetching을 하고 싶다면 Client Component에서 [SWR](https://github.com/vercel/swr)을 사용해 request를 memoize할 수 있습니다.
+
+[[CODE 3]]
+
+route 전환이 client-side에서 일어나므로 기존 SPA처럼 동작합니다. 예를 들어 다음 index route에서는 client에서 여러 post로 이동할 수 있습니다:
+
+[[CODE 4]]
+
+
+
+
+
+### Image Optimization
+
+`next.config.js`에 custom image loader를 정의하면 `next/image`를 통한 [Image Optimization](/docs/app/api-reference/components/image)을 static export와 함께 사용할 수 있습니다. 예를 들어 Cloudinary 같은 서비스로 이미지를 최적화할 수 있습니다:
+
+[[CODE 5]]
+
+이 custom loader는 remote source에서 이미지를 가져오는 방법을 정의합니다. 예를 들어 다음 loader는 Cloudinary용 URL을 구성합니다:
+
+[[CODE 6]]
+
+그런 다음 애플리케이션에서 `next/image`를 사용하고, Cloudinary에 있는 이미지의 상대 경로를 지정하면 됩니다:
+
+[[CODE 7]]
+
+
+
+### Route Handlers
+
+Route Handler는 `next build`를 실행할 때 static response를 render합니다. `GET` HTTP verb만 지원됩니다. 이를 이용해 cache된 데이터나 cache되지 않은 데이터로부터 static HTML, JSON, TXT 등의 파일을 생성할 수 있습니다. static export가 활성화되어 있을 때 Route Handler가 prerender되도록 하려면 `export const dynamic = &#x27;force-static&#x27;`을 추가해 handler를 명시적으로 static으로 표시해야 합니다. 예를 들면 다음과 같습니다:
+
+[[CODE 8]]
+
+위의 `app/data.json/route.ts` 파일은 `next build` 중에 static 파일로 render되어, `{ name: &#x27;Lee&#x27; }`를 담은 `data.json`을 만들어 냅니다.
+
+들어오는 request에서 dynamic 값을 읽어야 한다면 static export를 사용할 수 없습니다.
+
+### Browser APIs
+
+Client Component는 `next build` 중에 HTML로 prerender됩니다. `window`, `localStorage`, `navigator` 같은 [Web API](https://developer.mozilla.org/docs/Web/API)는 server에서 사용할 수 없으므로, 이 API들은 브라우저에서 실행될 때만 안전하게 접근해야 합니다. 예를 들면 다음과 같습니다:
+
+[[CODE 9]]
+
+
+
+## Unsupported Features || 지원되지 않는 기능
+
+Node.js server가 필요한 기능이나 build 과정에서 계산할 수 없는 dynamic 로직은 지원되지 **않습니다**:
+
+
+
+- `dynamicParams: true`를 사용하는 [Dynamic Routes](/docs/app/api-reference/file-conventions/dynamic-routes)
+- `generateStaticParams()`가 없는 [Dynamic Routes](/docs/app/api-reference/file-conventions/dynamic-routes)
+- Request에 의존하는 [Route Handlers](/docs/app/api-reference/file-conventions/route)
+- [Cookies](/docs/app/api-reference/functions/cookies)
+- [Rewrites](/docs/app/api-reference/config/next-config-js/rewrites)
+- [Redirects](/docs/app/api-reference/config/next-config-js/redirects)
+- [Headers](/docs/app/api-reference/config/next-config-js/headers)
+- [Proxy](/docs/app/api-reference/file-conventions/proxy)
+- [Incremental Static Regeneration](/docs/app/guides/incremental-static-regeneration)
+- 기본 `loader`를 사용하는 [Image Optimization](/docs/app/api-reference/components/image)
+- [Draft Mode](/docs/app/guides/draft-mode)
+- [Server Actions](/docs/app/getting-started/mutating-data)
+- [Intercepting Routes](/docs/app/api-reference/file-conventions/intercepting-routes)
+
+`next dev`에서 이 기능들 중 하나라도 사용하려고 하면, root layout에서 [`dynamic`](/docs/app/guides/caching-without-cache-components#dynamic) option을 `error`로 설정한 것과 비슷하게 error가 발생합니다.
+
+[[CODE 10]]
+
+
+
+
+
+## Deploying || 배포하기
+
+static export를 사용하면 HTML/CSS/JS static asset을 제공할 수 있는 웹 서버라면 어디든 Next.js를 deploy하고 hosting할 수 있습니다.
+
+`next build`를 실행하면 Next.js는 static export를 `out` 폴더에 생성합니다. 예를 들어 다음과 같은 route가 있다고 해 봅시다:
+
+- `/`
+- `/blog/[id]`
+
+`next build`를 실행하면 Next.js는 다음 파일들을 생성합니다:
+
+- `/out/index.html`
+- `/out/404.html`
+- `/out/blog/post-1.html`
+- `/out/blog/post-2.html`
+
+Nginx 같은 static host를 사용한다면, 들어오는 request를 올바른 파일로 연결하는 rewrite를 설정할 수 있습니다:
+
+[[CODE 11]]
+
+GitHub Pages에 deploy하려면 [template](https://github.com/nextjs/deploy-github-pages)을 사용해 새 프로젝트를 만들거나, 기존 프로젝트를 설정할 때 참고 자료로 활용하세요.
+
+## Version History || 버전 기록
+
+| Version   | Changes                                                                                                              |
+| --------- | -------------------------------------------------------------------------------------------------------------------- |
+| `v14.0.0` | `next export`가 제거되고 `&quot;output&quot;: &quot;export&quot;`로 대체되었습니다                                                      |
+| `v13.4.0` | App Router(Stable)가 React Server Component와 Route Handler 사용을 포함해 향상된 static export 지원을 추가했습니다. |
+| `v13.3.0` | `next export`가 deprecated되고 `&quot;output&quot;: &quot;export&quot;`로 대체되었습니다                                                   |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>inlineCss (inlineCss) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/config/next-config-js/inlineCss" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/config/next-config-js/inlineCss" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/inlineCss.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config.html">Configuration</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config-next-config-js.html">next.config.js</a></div>
+    <div class="title-row">
+      <h1 class="page-title">inlineCss<span class="vbadge">experimental</span><span class="sub">inlineCss</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<h2 class="sec" id="usage"><a class="anchor" href="#usage">Usage<span class="ko">사용법</span></a></h2>
+<p><code>&lt;head&gt;</code>에 CSS를 inline으로 넣는 experimental 지원입니다. 이 flag를 활성화하면, 평소 <code>&lt;link&gt;</code> tag를 생성하던 모든 위치에 대신 <code>&lt;style&gt;</code> tag가 생성됩니다.</p><div class="en-orig"><p>Experimental support for inlining CSS in the <code>&lt;head&gt;</code>. When this flag is enabled, all places where we normally generate a <code>&lt;link&gt;</code> tag will instead have a generated <code>&lt;style&gt;</code> tag.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  experimental: {
+    inlineCss: true,
+  },
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  experimental: {
+    inlineCss: true,
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<h2 class="sec" id="trade-offs"><a class="anchor" href="#trade-offs">Trade-Offs<span class="ko">장단점</span></a></h2>
+<ul>
+<li>atomic CSS(Tailwind 등)를 사용하고 새 방문자의 first-load 성능을 최적화하고 싶다면 <strong>활성화</strong>하세요</li>
+<li>재방문자가 많고 그들이 cache된 stylesheet의 이점을 누리기를 원한다면 <strong>건너뛰세요</strong></li>
+</ul><div class="en-orig"><ul>
+<li><strong>Enable</strong> if you use atomic CSS (like Tailwind) and want to optimize first-load performance for new visitors</li>
+<li><strong>Skip</strong> if returning visitors are common and you want them to benefit from cached stylesheets</li>
+</ul></div>
+<h3 class="sec" id="when-inline-css-helps"><a class="anchor" href="#when-inline-css-helps">When Inline CSS Helps<span class="ko">inline CSS가 도움이 되는 경우</span></a></h3>
+<p>보통 브라우저는 render하기 전에 HTML을 다운로드하고, parse하고, CSS <code>&lt;link&gt;</code> tag를 발견한 다음 stylesheet를 request해야 합니다. inline으로 넣으면 <a href="https://web.dev/learn/performance/optimize-resource-loading#inline_critical_css" target="_blank" rel="noopener">이 request waterfall이 사라져</a> style이 HTML과 함께 도착하므로 브라우저가 즉시 render할 수 있습니다.</p><div class="en-orig"><p>Normally, the browser must download HTML, parse it, discover CSS <code>&lt;link&gt;</code> tags, then request stylesheets before it can render. Inlining <a href="https://web.dev/learn/performance/optimize-resource-loading#inline_critical_css" target="_blank" rel="noopener">eliminates this request waterfall</a>, so that styles arrive with the HTML, so the browser can render immediately.</p></div>
+<p>이 이점은 다음 경우에 가장 큽니다:</p><div class="en-orig"><p>This benefit is strongest with:</p></div>
+<ul>
+<li><strong>처음 방문하는 사용자</strong>: CSS 파일은 render-blocking이므로, inline으로 넣으면 처음 방문하는 사용자가 겪는 초기 다운로드 지연이 사라집니다. cache된 stylesheet를 가진 재방문자는 이 이점을 보지 못합니다.</li>
+<li><strong>성능 지표</strong>: CSS 파일에 대한 추가 network request를 없애므로, inline으로 넣으면 <a href="https://web.dev/articles/fcp" target="_blank" rel="noopener">First Contentful Paint (FCP)</a>와 <a href="https://web.dev/articles/lcp" target="_blank" rel="noopener">Largest Contentful Paint (LCP)</a>가 크게 개선될 수 있습니다.</li>
+<li><strong>느린 연결</strong>: latency가 높은 network의 사용자에게는 추가 request 하나하나가 지연을 더합니다. inline으로 넣으면 round trip이 줄어들며, 이는 연결이 느릴 때 가장 중요합니다.</li>
+<li><strong>Atomic CSS (Tailwind)</strong>: utility-first framework는 사용하는 class만 생성하므로 CSS가 작게 유지됩니다. page의 style은 page 복잡도에 비례해 커지지 않으며, UI를 얼마나 많이 만들든 보통 작게 유지됩니다. 따라서 HTML을 크게 부풀리지 않고도 성능 이점을 얻을 수 있어 inline으로 넣는 것이 실용적입니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>First-time visitors</strong>: Since CSS files are render-blocking, inlining eliminates the initial download delay that first-time visitors experience. Returning visitors with cached stylesheets won't see this benefit.</li>
+<li><strong>Performance metrics</strong>: By removing additional network requests for CSS files, inlining can significantly improve <a href="https://web.dev/articles/fcp" target="_blank" rel="noopener">First Contentful Paint (FCP)</a> and <a href="https://web.dev/articles/lcp" target="_blank" rel="noopener">Largest Contentful Paint (LCP)</a>.</li>
+<li><strong>Slow connections</strong>: For users on high-latency networks, each additional request adds delay. Inlining reduces round trips, which matters most when connections are slow.</li>
+<li><strong>Atomic CSS (Tailwind)</strong>: Utility-first frameworks generate only the classes you use, keeping CSS small. The styles for a page don't grow proportionally with page complexity—they're typically compact regardless of how much UI you build. This makes inlining practical since you get the performance benefit without significantly bloating HTML.</li>
+</ul></div>
+<h3 class="sec" id="when-external-css-is-better"><a class="anchor" href="#when-external-css-is-better">When External CSS is Better<span class="ko">external CSS가 더 나은 경우</span></a></h3>
+<p>inline style은 HTML과 별도로 cache될 수 없습니다. page를 load할 때마다 같은 CSS를 다시 다운로드합니다.</p><div class="en-orig"><p>Inlined styles cannot be cached separately from HTML. Every page load re-downloads the same CSS.</p></div>
+<p>이 장단점은 다음 경우에 가장 중요합니다:</p><div class="en-orig"><p>This trade-off matters most with:</p></div>
+<ul>
+<li><strong>재방문자</strong>: 사이트를 반복해서 방문하는 사용자는 cache된 external stylesheet의 이점을 누릴 수 있습니다. inline으로 넣으면 방문할 때마다 style을 다시 다운로드합니다.</li>
+<li><strong>큰 CSS bundle</strong>: external stylesheet는 독립적으로 cache되며 최신 infrastructure에서 효율적으로 load됩니다. inline CSS는 모든 HTML response와 함께 전달되므로 <a href="https://web.dev/articles/ttfb" target="_blank" rel="noopener">Time to First Byte (TTFB)</a>가 늘어나고, 브라우저가 style을 따로 cache할 수 없게 됩니다. 이 방식은 작은 CSS(Tailwind 같은 atomic framework)에는 잘 맞지만, 더 큰 bundle(Bootstrap이나 Material UI 같은 component library)에는 overhead를 더합니다.</li>
+<li><strong>style을 공유하는 많은 page</strong>: 한 page에서 cache된 external stylesheet는 다른 page로의 navigation을 빠르게 해 줍니다. inline style은 page 간 caching 이점을 제공하지 않습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Returning visitors</strong>: Users who visit your site repeatedly would benefit from cached external stylesheets. With inlining, they re-download styles on every visit.</li>
+<li><strong>Large CSS bundles</strong>: External stylesheets cache independently and load efficiently on modern infrastructure. Inlined CSS arrives with every HTML response, increasing <a href="https://web.dev/articles/ttfb" target="_blank" rel="noopener">Time to First Byte (TTFB)</a> and preventing browsers from caching styles separately. This trade-off works for small CSS (atomic frameworks like Tailwind), but adds overhead for larger bundles (component libraries like Bootstrap or Material UI).</li>
+<li><strong>Many pages sharing styles</strong>: External stylesheets cached on one page speed up navigation to other pages. Inlined styles provide no cross-page caching benefit.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 기능은 현재 experimental이며 몇 가지 알려진 제약이 있습니다:</p>
+<ul>
+<li>CSS inlining은 전역으로 적용되며 page 단위로 설정할 수 없습니다</li>
+<li>초기 page load 중에 style이 중복됩니다. SSR을 위해 <code>&lt;style&gt;</code> tag 안에 한 번, RSC payload 안에 한 번 들어갑니다</li>
+<li>prerender된 page로 navigation할 때는 중복을 피하기 위해 inline CSS 대신 <code>&lt;link&gt;</code> tag를 사용합니다</li>
+<li>이 기능은 development mode에서는 사용할 수 없고 production build에서만 동작합니다</li>
+</ul><div class="en-orig"><p>This feature is currently experimental and has some known limitations:</p>
+<ul>
+<li>CSS inlining is applied globally and cannot be configured on a per-page basis</li>
+<li>Styles are duplicated during initial page load - once within <code>&lt;style&gt;</code> tags for SSR and once in the RSC payload</li>
+<li>When navigating to prerendered pages, styles will use <code>&lt;link&gt;</code> tags instead of inline CSS to avoid duplication</li>
+<li>This feature is not available in development mode and only works in production builds</li>
+</ul></div></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/inlineCss.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/inlineCss" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-config-next-config-js-incrementalCacheHandlerPath.html" class="prev"><div class="dir">← 이전</div><div class="ttl">cacheHandler</div><div class="ttl-ko">Custom Next.js Cache Handler</div></a>
+      <a href="app-api-reference-config-next-config-js-instrumentationClientInject.html" class="next"><div class="dir">다음 →</div><div class="ttl">instrumentationClientInject</div><div class="ttl-ko">instrumentationClientInject</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/inlineCss" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#usage">Usage</a></li><li class="l2"><a href="#trade-offs">Trade-Offs</a></li><li class="l3"><a href="#when-inline-css-helps">When Inline CSS Helps</a></li><li class="l3"><a href="#when-external-css-is-better">When External CSS is Better</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+## Usage || 사용법
+
+`&lt;head&gt;`에 CSS를 inline으로 넣는 experimental 지원입니다. 이 flag를 활성화하면, 평소 `&lt;link&gt;` tag를 생성하던 모든 위치에 대신 `&lt;style&gt;` tag가 생성됩니다.
+
+[[CODE 1]]
+
+## Trade-Offs || 장단점
+
+- atomic CSS(Tailwind 등)를 사용하고 새 방문자의 first-load 성능을 최적화하고 싶다면 **활성화**하세요
+- 재방문자가 많고 그들이 cache된 stylesheet의 이점을 누리기를 원한다면 **건너뛰세요**
+
+### When Inline CSS Helps || inline CSS가 도움이 되는 경우
+
+보통 브라우저는 render하기 전에 HTML을 다운로드하고, parse하고, CSS `&lt;link&gt;` tag를 발견한 다음 stylesheet를 request해야 합니다. inline으로 넣으면 [이 request waterfall이 사라져](https://web.dev/learn/performance/optimize-resource-loading#inline_critical_css) style이 HTML과 함께 도착하므로 브라우저가 즉시 render할 수 있습니다.
+
+이 이점은 다음 경우에 가장 큽니다:
+
+- **처음 방문하는 사용자**: CSS 파일은 render-blocking이므로, inline으로 넣으면 처음 방문하는 사용자가 겪는 초기 다운로드 지연이 사라집니다. cache된 stylesheet를 가진 재방문자는 이 이점을 보지 못합니다.
+
+- **성능 지표**: CSS 파일에 대한 추가 network request를 없애므로, inline으로 넣으면 [First Contentful Paint (FCP)](https://web.dev/articles/fcp)와 [Largest Contentful Paint (LCP)](https://web.dev/articles/lcp)가 크게 개선될 수 있습니다.
+
+- **느린 연결**: latency가 높은 network의 사용자에게는 추가 request 하나하나가 지연을 더합니다. inline으로 넣으면 round trip이 줄어들며, 이는 연결이 느릴 때 가장 중요합니다.
+
+- **Atomic CSS (Tailwind)**: utility-first framework는 사용하는 class만 생성하므로 CSS가 작게 유지됩니다. page의 style은 page 복잡도에 비례해 커지지 않으며, UI를 얼마나 많이 만들든 보통 작게 유지됩니다. 따라서 HTML을 크게 부풀리지 않고도 성능 이점을 얻을 수 있어 inline으로 넣는 것이 실용적입니다.
+
+### When External CSS is Better || external CSS가 더 나은 경우
+
+inline style은 HTML과 별도로 cache될 수 없습니다. page를 load할 때마다 같은 CSS를 다시 다운로드합니다.
+
+이 장단점은 다음 경우에 가장 중요합니다:
+
+- **재방문자**: 사이트를 반복해서 방문하는 사용자는 cache된 external stylesheet의 이점을 누릴 수 있습니다. inline으로 넣으면 방문할 때마다 style을 다시 다운로드합니다.
+
+- **큰 CSS bundle**: external stylesheet는 독립적으로 cache되며 최신 infrastructure에서 효율적으로 load됩니다. inline CSS는 모든 HTML response와 함께 전달되므로 [Time to First Byte (TTFB)](https://web.dev/articles/ttfb)가 늘어나고, 브라우저가 style을 따로 cache할 수 없게 됩니다. 이 방식은 작은 CSS(Tailwind 같은 atomic framework)에는 잘 맞지만, 더 큰 bundle(Bootstrap이나 Material UI 같은 component library)에는 overhead를 더합니다.
+
+- **style을 공유하는 많은 page**: 한 page에서 cache된 external stylesheet는 다른 page로의 navigation을 빠르게 해 줍니다. inline style은 page 간 caching 이점을 제공하지 않습니다.
+
+&gt; **Good to know**:
+&gt;
+&gt; 이 기능은 현재 experimental이며 몇 가지 알려진 제약이 있습니다:
+&gt;
+&gt; - CSS inlining은 전역으로 적용되며 page 단위로 설정할 수 없습니다
+&gt; - 초기 page load 중에 style이 중복됩니다. SSR을 위해 `&lt;style&gt;` tag 안에 한 번, RSC payload 안에 한 번 들어갑니다
+&gt; - prerender된 page로 navigation할 때는 중복을 피하기 위해 inline CSS 대신 `&lt;link&gt;` tag를 사용합니다
+&gt; - 이 기능은 development mode에서는 사용할 수 없고 production build에서만 동작합니다
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

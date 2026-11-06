@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Script (Script 컴포넌트) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/api-reference/components/script" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/api-reference/components/script" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/02-components/script.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference-components.html">Components</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Script<span class="sub">Script 컴포넌트</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>이 API reference는 Script Component에서 사용할 수 있는 <a href="#props">props</a>를 이해하는 데 도움을 줍니다. 기능과 사용법은 <a href="app-guides-scripts.html">Optimizing Scripts</a> 페이지를 참고하세요.</p><div class="en-orig"><p>This API reference will help you understand how to use <a href="#props">props</a> available for the Script Component. For features and usage, please see the <a href="app-guides-scripts.html">Optimizing Scripts</a> page.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/page.tsx" data-js="app/dashboard/page.js">app/dashboard/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Script from &#x27;next/script&#x27;
+
+export default function Dashboard() {
+  return (
+    &lt;&gt;
+      &lt;Script src=&quot;https://example.com/script.js&quot; /&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Script from &#x27;next/script&#x27;
+
+export default function Dashboard() {
+  return (
+    &lt;&gt;
+      &lt;Script src=&quot;https://example.com/script.js&quot; /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="props"><a class="anchor" href="#props">Props</a></h2>
+<p>Script Component에서 사용할 수 있는 props를 요약하면 다음과 같습니다:</p><div class="en-orig"><p>Here's a summary of the props available for the Script Component:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Prop</th><th>예시</th><th>Type</th><th>필수 여부</th></tr></thead>
+<tbody>
+<tr><td><a href="#src"><code>src</code></a></td><td><code>src=&quot;http://example.com/script&quot;</code></td><td>String</td><td>inline script를 사용하지 않는 한 필수</td></tr>
+<tr><td><a href="#strategy"><code>strategy</code></a></td><td><code>strategy=&quot;lazyOnload&quot;</code></td><td>String</td><td>-</td></tr>
+<tr><td><a href="#onload"><code>onLoad</code></a></td><td><code>onLoad={onLoadFunc}</code></td><td>Function</td><td>-</td></tr>
+<tr><td><a href="#onready"><code>onReady</code></a></td><td><code>onReady={onReadyFunc}</code></td><td>Function</td><td>-</td></tr>
+<tr><td><a href="#onerror"><code>onError</code></a></td><td><code>onError={onErrorFunc}</code></td><td>Function</td><td>-</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Prop</th><th>Example</th><th>Type</th><th>Required</th></tr></thead>
+<tbody>
+<tr><td><a href="#src"><code>src</code></a></td><td><code>src=&quot;http://example.com/script&quot;</code></td><td>String</td><td>Required unless inline script is used</td></tr>
+<tr><td><a href="#strategy"><code>strategy</code></a></td><td><code>strategy=&quot;lazyOnload&quot;</code></td><td>String</td><td>-</td></tr>
+<tr><td><a href="#onload"><code>onLoad</code></a></td><td><code>onLoad={onLoadFunc}</code></td><td>Function</td><td>-</td></tr>
+<tr><td><a href="#onready"><code>onReady</code></a></td><td><code>onReady={onReadyFunc}</code></td><td>Function</td><td>-</td></tr>
+<tr><td><a href="#onerror"><code>onError</code></a></td><td><code>onError={onErrorFunc}</code></td><td>Function</td><td>-</td></tr>
+</tbody></table></div></div>
+<h2 class="sec" id="required-props"><a class="anchor" href="#required-props">Required Props<span class="ko">필수 Props</span></a></h2>
+<p><code>&lt;Script /&gt;</code> component에는 다음 property가 필요합니다.</p><div class="en-orig"><p>The <code>&lt;Script /&gt;</code> component requires the following properties.</p></div>
+<h3 class="sec" id="src"><a class="anchor" href="#src"><code>src</code></a></h3>
+<p>외부 script의 URL을 지정하는 path 문자열입니다. 절대 외부 URL이나 내부 path 모두 사용할 수 있습니다. inline script를 사용하지 않는 한 <code>src</code> property는 필수입니다.</p><div class="en-orig"><p>A path string specifying the URL of an external script. This can be either an absolute external URL or an internal path. The <code>src</code> property is required unless an inline script is used.</p></div>
+<h2 class="sec" id="optional-props"><a class="anchor" href="#optional-props">Optional Props<span class="ko">선택 Props</span></a></h2>
+<p><code>&lt;Script /&gt;</code> component는 필수 property 외에도 여러 추가 property를 받습니다.</p><div class="en-orig"><p>The <code>&lt;Script /&gt;</code> component accepts a number of additional properties beyond those which are required.</p></div>
+<h3 class="sec" id="strategy"><a class="anchor" href="#strategy"><code>strategy</code></a></h3>
+<p>script의 loading strategy입니다. 사용할 수 있는 strategy는 네 가지입니다:</p><div class="en-orig"><p>The loading strategy of the script. There are four different strategies that can be used:</p></div>
+<ul>
+<li><code>beforeInteractive</code>: 모든 Next.js 코드보다 먼저, 그리고 page hydration이 일어나기 전에 load합니다.</li>
+<li><code>afterInteractive</code>: (<strong>default</strong>) 일찍 load하되, page에서 hydration이 어느 정도 일어난 뒤에 load합니다.</li>
+<li><code>lazyOnload</code>: 브라우저의 idle time 동안 load합니다.</li>
+<li><code>worker</code>: (experimental) web worker에서 load합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>beforeInteractive</code>: Load before any Next.js code and before any page hydration occurs.</li>
+<li><code>afterInteractive</code>: (<strong>default</strong>) Load early but after some hydration on the page occurs.</li>
+<li><code>lazyOnload</code>: Load during browser idle time.</li>
+<li><code>worker</code>: (experimental) Load in a web worker.</li>
+</ul></div>
+<h3 class="sec" id="beforeinteractive"><a class="anchor" href="#beforeinteractive"><code>beforeInteractive</code></a></h3>
+<p><code>beforeInteractive</code> strategy로 load되는 script는 server에서 initial HTML에 inject되고, 모든 Next.js module보다 먼저 download되며, 배치된 순서대로 실행됩니다.</p><div class="en-orig"><p>Scripts that load with the <code>beforeInteractive</code> strategy are injected into the initial HTML from the server, downloaded before any Next.js module, and executed in the order they are placed.</p></div>
+<p>이 strategy가 지정된 script는 모든 first-party 코드보다 먼저 preload되고 fetch되지만, 그 실행이 <strong>page hydration이 일어나는 것을 막지는 않습니다</strong>.</p><div class="en-orig"><p>Scripts denoted with this strategy are preloaded and fetched before any first-party code, but their execution <strong>does not block page hydration from occurring</strong>.</p></div>
+<p><code>beforeInteractive</code> script는 <code>Document</code> Component(<code>pages/_document.js</code>) 안에 배치해야 하며, 사이트 전체에 필요한 script를 load하도록 설계되었습니다(즉, 애플리케이션의 어떤 page든 server-side에서 load되면 script가 load됩니다).</p><div class="en-orig"><p><code>beforeInteractive</code> scripts must be placed inside the <code>Document</code> Component (<code>pages/_document.js</code>) and are designed to load scripts that are needed by the entire site (i.e. the script will load when any page in the application has been loaded server-side).</p></div>
+<p><strong>이 strategy는 가능한 한 빨리 fetch해야 하는 중요한 script에만 사용해야 합니다.</strong></p><div class="en-orig"><p><strong>This strategy should only be used for critical scripts that need to be fetched as soon as possible.</strong></p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/_document.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { Html, Head, Main, NextScript } from &#x27;next/document&#x27;
+import Script from &#x27;next/script&#x27;
+
+export default function Document() {
+  return (
+    &lt;Html&gt;
+      &lt;Head /&gt;
+      &lt;body&gt;
+        &lt;Main /&gt;
+        &lt;NextScript /&gt;
+        &lt;Script
+          src=&quot;https://example.com/script.js&quot;
+          strategy=&quot;beforeInteractive&quot;
+        /&gt;
+      &lt;/body&gt;
+    &lt;/Html&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>beforeInteractive</code> script는 component 안 어디에 배치하든 항상 HTML document의 <code>head</code> 안에 inject됩니다.</p><div class="en-orig"><p>Scripts with <code>beforeInteractive</code> will always be injected inside the <code>head</code> of the HTML document regardless of where it's placed in the component.</p></div></div></div>
+<p><code>beforeInteractive</code>로 가능한 한 빨리 fetch해야 하는 script의 예는 다음과 같습니다:</p><div class="en-orig"><p>Some examples of scripts that should be fetched as soon as possible with <code>beforeInteractive</code> include:</p></div>
+<ul>
+<li>Bot detector</li>
+<li>Cookie consent manager</li>
+</ul><div class="en-orig"><ul>
+<li>Bot detectors</li>
+<li>Cookie consent managers</li>
+</ul></div>
+<h3 class="sec" id="afterinteractive"><a class="anchor" href="#afterinteractive"><code>afterInteractive</code></a></h3>
+<p><code>afterInteractive</code> strategy를 사용하는 script는 client-side에서 HTML에 inject되며, page에서 hydration이 일부(또는 전부) 일어난 뒤에 load됩니다. <strong>이것이 Script component의 default strategy이며</strong>, 가능한 한 빨리 load해야 하지만 first-party Next.js 코드보다 먼저 load될 필요는 없는 script에 사용해야 합니다.</p><div class="en-orig"><p>Scripts that use the <code>afterInteractive</code> strategy are injected into the HTML client-side and will load after some (or all) hydration occurs on the page. <strong>This is the default strategy</strong> of the Script component and should be used for any script that needs to load as soon as possible but not before any first-party Next.js code.</p></div>
+<p><code>afterInteractive</code> script는 어떤 page나 layout 안에든 배치할 수 있으며, 해당 page(또는 page 그룹)가 브라우저에서 열릴 때만 load되고 실행됩니다.</p><div class="en-orig"><p><code>afterInteractive</code> scripts can be placed inside of any page or layout and will only load and execute when that page (or group of pages) is opened in the browser.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import Script from &#x27;next/script&#x27;
+
+export default function Page() {
+  return (
+    &lt;&gt;
+      &lt;Script src=&quot;https://example.com/script.js&quot; strategy=&quot;afterInteractive&quot; /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p><code>afterInteractive</code>에 적합한 script의 예는 다음과 같습니다:</p><div class="en-orig"><p>Some examples of scripts that are good candidates for <code>afterInteractive</code> include:</p></div>
+<ul>
+<li>Tag manager</li>
+<li>Analytics</li>
+</ul><div class="en-orig"><ul>
+<li>Tag managers</li>
+<li>Analytics</li>
+</ul></div>
+<h3 class="sec" id="lazyonload"><a class="anchor" href="#lazyonload"><code>lazyOnload</code></a></h3>
+<p><code>lazyOnload</code> strategy를 사용하는 script는 브라우저의 idle time 동안 client-side에서 HTML에 inject되며, page의 모든 resource가 fetch된 뒤에 load됩니다. 이 strategy는 일찍 load할 필요가 없는 background 또는 우선순위가 낮은 script에 사용해야 합니다.</p><div class="en-orig"><p>Scripts that use the <code>lazyOnload</code> strategy are injected into the HTML client-side during browser idle time and will load after all resources on the page have been fetched. This strategy should be used for any background or low priority scripts that do not need to load early.</p></div>
+<p><code>lazyOnload</code> script는 어떤 page나 layout 안에든 배치할 수 있으며, 해당 page(또는 page 그룹)가 브라우저에서 열릴 때만 load되고 실행됩니다.</p><div class="en-orig"><p><code>lazyOnload</code> scripts can be placed inside of any page or layout and will only load and execute when that page (or group of pages) is opened in the browser.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import Script from &#x27;next/script&#x27;
+
+export default function Page() {
+  return (
+    &lt;&gt;
+      &lt;Script src=&quot;https://example.com/script.js&quot; strategy=&quot;lazyOnload&quot; /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p>즉시 load할 필요가 없어서 <code>lazyOnload</code>로 fetch할 수 있는 script의 예는 다음과 같습니다:</p><div class="en-orig"><p>Examples of scripts that do not need to load immediately and can be fetched with <code>lazyOnload</code> include:</p></div>
+<ul>
+<li>Chat support plugin</li>
+<li>Social media widget</li>
+</ul><div class="en-orig"><ul>
+<li>Chat support plugins</li>
+<li>Social media widgets</li>
+</ul></div>
+<h3 class="sec" id="worker"><a class="anchor" href="#worker"><code>worker</code></a></h3>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Warning</div><p><code>worker</code> strategy는 아직 stable하지 않으며 App Router에서는 아직 동작하지 않습니다. 주의해서 사용하세요.</p><div class="en-orig"><p>The <code>worker</code> strategy is not yet stable and does not yet work with the App Router. Use with caution.</p></div></div></div>
+<p><code>worker</code> strategy를 사용하는 script는 main thread의 부담을 덜고 중요한 first-party resource만 main thread에서 처리되도록 web worker로 off-load됩니다. 이 strategy는 어떤 script에든 사용할 수 있지만, 모든 third-party script를 지원한다고 보장할 수 없는 고급 사용 사례입니다.</p><div class="en-orig"><p>Scripts that use the <code>worker</code> strategy are off-loaded to a web worker in order to free up the main thread and ensure that only critical, first-party resources are processed on it. While this strategy can be used for any script, it is an advanced use case that is not guaranteed to support all third-party scripts.</p></div>
+<p><code>worker</code>를 strategy로 사용하려면 <code>next.config.js</code>에서 <code>nextScriptWorkers</code> flag를 활성화해야 합니다:</p><div class="en-orig"><p>To use <code>worker</code> as a strategy, the <code>nextScriptWorkers</code> flag must be enabled in <code>next.config.js</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  experimental: {
+    nextScriptWorkers: true,
+  },
+}</code></pre></div></div>
+<p><code>worker</code> script는 <strong>현재 <code>pages/</code> directory에서만 사용할 수 있습니다</strong>:</p><div class="en-orig"><p><code>worker</code> scripts can <strong>only currently be used in the <code>pages/</code> directory</strong>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/home.tsx" data-js="pages/home.js">pages/home.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Script from &#x27;next/script&#x27;
+
+export default function Home() {
+  return (
+    &lt;&gt;
+      &lt;Script src=&quot;https://example.com/script.js&quot; strategy=&quot;worker&quot; /&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Script from &#x27;next/script&#x27;
+
+export default function Home() {
+  return (
+    &lt;&gt;
+      &lt;Script src=&quot;https://example.com/script.js&quot; strategy=&quot;worker&quot; /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="onload"><a class="anchor" href="#onload"><code>onLoad</code></a></h3>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Warning</div><p><code>onLoad</code>는 아직 Server Component에서 동작하지 않으며 Client Component에서만 사용할 수 있습니다. 또한 <code>onLoad</code>는 <code>beforeInteractive</code>와 함께 사용할 수 없으니, 대신 <code>onReady</code> 사용을 고려하세요.</p><div class="en-orig"><p><code>onLoad</code> does not yet work with Server Components and can only be used in Client Components. Further, <code>onLoad</code> can't be used with <code>beforeInteractive</code> – consider using <code>onReady</code> instead.</p></div></div></div>
+<p>일부 third-party script는 콘텐츠를 instantiate하거나 함수를 호출하기 위해, script load가 끝난 뒤 사용자가 JavaScript 코드를 한 번 실행해야 합니다. loading strategy로 <code>afterInteractive</code>나 <code>lazyOnload</code>를 사용해 script를 load한다면, <code>onLoad</code> property로 load가 끝난 뒤 코드를 실행할 수 있습니다.</p><div class="en-orig"><p>Some third-party scripts require users to run JavaScript code once after the script has finished loading in order to instantiate content or call a function. If you are loading a script with either <code>afterInteractive</code> or <code>lazyOnload</code> as a loading strategy, you can execute code after it has loaded using the <code>onLoad</code> property.</p></div>
+<p>다음은 library가 load된 뒤에만 lodash method를 실행하는 예시입니다.</p><div class="en-orig"><p>Here's an example of executing a lodash method only after the library has been loaded.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import Script from &#x27;next/script&#x27;
+
+export default function Page() {
+  return (
+    &lt;&gt;
+      &lt;Script
+        src=&quot;https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js&quot;
+        onLoad={() =&gt; {
+          console.log(_.sample([1, 2, 3, 4]))
+        }}
+      /&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import Script from &#x27;next/script&#x27;
+
+export default function Page() {
+  return (
+    &lt;&gt;
+      &lt;Script
+        src=&quot;https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.20/lodash.min.js&quot;
+        onLoad={() =&gt; {
+          console.log(_.sample([1, 2, 3, 4]))
+        }}
+      /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="onready"><a class="anchor" href="#onready"><code>onReady</code></a></h3>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Warning</div><p><code>onReady</code>는 아직 Server Component에서 동작하지 않으며 Client Component에서만 사용할 수 있습니다.</p><div class="en-orig"><p><code>onReady</code> does not yet work with Server Components and can only be used in Client Components.</p></div></div></div>
+<p>일부 third-party script는 script load가 끝난 뒤, 그리고 component가 mount될 때마다(예: route navigation 이후) 사용자가 JavaScript 코드를 실행해야 합니다. <code>onReady</code> property를 사용하면 처음 load될 때 script의 load event 이후에, 그리고 이후 component가 re-mount될 때마다 코드를 실행할 수 있습니다.</p><div class="en-orig"><p>Some third-party scripts require users to run JavaScript code after the script has finished loading and every time the component is mounted (after a route navigation for example). You can execute code after the script's load event when it first loads and then after every subsequent component re-mount using the <code>onReady</code> property.</p></div>
+<p>다음은 component가 mount될 때마다 Google Maps JS embed를 다시 instantiate하는 예시입니다:</p><div class="en-orig"><p>Here's an example of how to re-instantiate a Google Maps JS embed every time the component is mounted:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useRef } from &#x27;react&#x27;
+import Script from &#x27;next/script&#x27;
+
+export default function Page() {
+  const mapRef = useRef()
+
+  return (
+    &lt;&gt;
+      &lt;div ref={mapRef}&gt;&lt;/div&gt;
+      &lt;Script
+        id=&quot;google-maps&quot;
+        src=&quot;https://maps.googleapis.com/maps/api/js&quot;
+        onReady={() =&gt; {
+          new google.maps.Map(mapRef.current, {
+            center: { lat: -34.397, lng: 150.644 },
+            zoom: 8,
+          })
+        }}
+      /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="onerror"><a class="anchor" href="#onerror"><code>onError</code></a></h3>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Warning</div><p><code>onError</code>는 아직 Server Component에서 동작하지 않으며 Client Component에서만 사용할 수 있습니다. <code>onError</code>는 <code>beforeInteractive</code> loading strategy와 함께 사용할 수 없습니다.</p><div class="en-orig"><p><code>onError</code> does not yet work with Server Components and can only be used in Client Components. <code>onError</code> cannot be used with the <code>beforeInteractive</code> loading strategy.</p></div></div></div>
+<p>script load가 실패했을 때 이를 잡아내는 것이 도움이 될 때가 있습니다. 이런 error는 <code>onError</code> property로 처리할 수 있습니다:</p><div class="en-orig"><p>Sometimes it is helpful to catch when a script fails to load. These errors can be handled with the <code>onError</code> property:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import Script from &#x27;next/script&#x27;
+
+export default function Page() {
+  return (
+    &lt;&gt;
+      &lt;Script
+        src=&quot;https://example.com/script.js&quot;
+        onError={(e: Error) =&gt; {
+          console.error(&#x27;Script failed to load&#x27;, e)
+        }}
+      /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v13.0.0</code></td><td><code>beforeInteractive</code>와 <code>afterInteractive</code>가 <code>app</code>을 지원하도록 수정되었습니다.</td></tr>
+<tr><td><code>v12.2.4</code></td><td><code>onReady</code> prop이 추가되었습니다.</td></tr>
+<tr><td><code>v12.2.2</code></td><td><code>beforeInteractive</code>를 사용한 <code>next/script</code>를 <code>_document</code>에 배치할 수 있게 되었습니다.</td></tr>
+<tr><td><code>v11.0.0</code></td><td><code>next/script</code>가 도입되었습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v13.0.0</code></td><td><code>beforeInteractive</code> and <code>afterInteractive</code> is modified to support <code>app</code>.</td></tr>
+<tr><td><code>v12.2.4</code></td><td><code>onReady</code> prop added.</td></tr>
+<tr><td><code>v12.2.2</code></td><td>Allow <code>next/script</code> with <code>beforeInteractive</code> to be placed in <code>_document</code>.</td></tr>
+<tr><td><code>v11.0.0</code></td><td><code>next/script</code> introduced.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/02-components/script.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/api-reference/components/script" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-api-reference-components-link.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Link</div><div class="ttl-ko">Link 컴포넌트</div></a>
+      <a href="pages-api-reference-file-conventions.html" class="next"><div class="dir">다음 →</div><div class="ttl">File-system conventions</div><div class="ttl-ko">File-system convention</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/api-reference/components/script" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#props">Props</a></li><li class="l2"><a href="#required-props">Required Props</a></li><li class="l3"><a href="#src"><code>src</code></a></li><li class="l2"><a href="#optional-props">Optional Props</a></li><li class="l3"><a href="#strategy"><code>strategy</code></a></li><li class="l3"><a href="#beforeinteractive"><code>beforeInteractive</code></a></li><li class="l3"><a href="#afterinteractive"><code>afterInteractive</code></a></li><li class="l3"><a href="#lazyonload"><code>lazyOnload</code></a></li><li class="l3"><a href="#worker"><code>worker</code></a></li><li class="l3"><a href="#onload"><code>onLoad</code></a></li><li class="l3"><a href="#onready"><code>onReady</code></a></li><li class="l3"><a href="#onerror"><code>onError</code></a></li><li class="l2"><a href="#version-history">Version History</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+이 API reference는 Script Component에서 사용할 수 있는 [props](#props)를 이해하는 데 도움을 줍니다. 기능과 사용법은 [Optimizing Scripts](/docs/app/guides/scripts) 페이지를 참고하세요.
+
+[[CODE 1]]
+
+## Props
+
+Script Component에서 사용할 수 있는 props를 요약하면 다음과 같습니다:
+
+| Prop                    | 예시                              | Type     | 필수 여부                              |
+| ----------------------- | --------------------------------- | -------- | ------------------------------------- |
+| [`src`](#src)           | `src=&quot;http://example.com/script&quot;` | String   | inline script를 사용하지 않는 한 필수 |
+| [`strategy`](#strategy) | `strategy=&quot;lazyOnload&quot;`           | String   | -                                     |
+| [`onLoad`](#onload)     | `onLoad={onLoadFunc}`             | Function | -                                     |
+| [`onReady`](#onready)   | `onReady={onReadyFunc}`           | Function | -                                     |
+| [`onError`](#onerror)   | `onError={onErrorFunc}`           | Function | -                                     |
+
+## Required Props || 필수 Props
+
+`&lt;Script /&gt;` component에는 다음 property가 필요합니다.
+
+### `src`
+
+외부 script의 URL을 지정하는 path 문자열입니다. 절대 외부 URL이나 내부 path 모두 사용할 수 있습니다. inline script를 사용하지 않는 한 `src` property는 필수입니다.
+
+## Optional Props || 선택 Props
+
+`&lt;Script /&gt;` component는 필수 property 외에도 여러 추가 property를 받습니다.
+
+### `strategy`
+
+script의 loading strategy입니다. 사용할 수 있는 strategy는 네 가지입니다:
+
+- `beforeInteractive`: 모든 Next.js 코드보다 먼저, 그리고 page hydration이 일어나기 전에 load합니다.
+- `afterInteractive`: (**default**) 일찍 load하되, page에서 hydration이 어느 정도 일어난 뒤에 load합니다.
+- `lazyOnload`: 브라우저의 idle time 동안 load합니다.
+- `worker`: (experimental) web worker에서 load합니다.
+
+### `beforeInteractive`
+
+`beforeInteractive` strategy로 load되는 script는 server에서 initial HTML에 inject되고, 모든 Next.js module보다 먼저 download되며, 배치된 순서대로 실행됩니다.
+
+이 strategy가 지정된 script는 모든 first-party 코드보다 먼저 preload되고 fetch되지만, 그 실행이 **page hydration이 일어나는 것을 막지는 않습니다**.
+
+
+
+
+
+`beforeInteractive` script는 `Document` Component(`pages/_document.js`) 안에 배치해야 하며, 사이트 전체에 필요한 script를 load하도록 설계되었습니다(즉, 애플리케이션의 어떤 page든 server-side에서 load되면 script가 load됩니다).
+
+
+
+**이 strategy는 가능한 한 빨리 fetch해야 하는 중요한 script에만 사용해야 합니다.**
+
+
+
+
+
+[[CODE 3]]
+
+
+
+&gt; **Good to know**: `beforeInteractive` script는 component 안 어디에 배치하든 항상 HTML document의 `head` 안에 inject됩니다.
+
+
+
+`beforeInteractive`로 가능한 한 빨리 fetch해야 하는 script의 예는 다음과 같습니다:
+
+- Bot detector
+- Cookie consent manager
+
+### `afterInteractive`
+
+`afterInteractive` strategy를 사용하는 script는 client-side에서 HTML에 inject되며, page에서 hydration이 일부(또는 전부) 일어난 뒤에 load됩니다. **이것이 Script component의 default strategy이며**, 가능한 한 빨리 load해야 하지만 first-party Next.js 코드보다 먼저 load될 필요는 없는 script에 사용해야 합니다.
+
+`afterInteractive` script는 어떤 page나 layout 안에든 배치할 수 있으며, 해당 page(또는 page 그룹)가 브라우저에서 열릴 때만 load되고 실행됩니다.
+
+[[CODE 4]]
+
+`afterInteractive`에 적합한 script의 예는 다음과 같습니다:
+
+- Tag manager
+- Analytics
+
+### `lazyOnload`
+
+`lazyOnload` strategy를 사용하는 script는 브라우저의 idle time 동안 client-side에서 HTML에 inject되며, page의 모든 resource가 fetch된 뒤에 load됩니다. 이 strategy는 일찍 load할 필요가 없는 background 또는 우선순위가 낮은 script에 사용해야 합니다.
+
+`lazyOnload` script는 어떤 page나 layout 안에든 배치할 수 있으며, 해당 page(또는 page 그룹)가 브라우저에서 열릴 때만 load되고 실행됩니다.
+
+[[CODE 5]]
+
+즉시 load할 필요가 없어서 `lazyOnload`로 fetch할 수 있는 script의 예는 다음과 같습니다:
+
+- Chat support plugin
+- Social media widget
+
+### `worker`
+
+&gt; **Warning:** `worker` strategy는 아직 stable하지 않으며 App Router에서는 아직 동작하지 않습니다. 주의해서 사용하세요.
+
+`worker` strategy를 사용하는 script는 main thread의 부담을 덜고 중요한 first-party resource만 main thread에서 처리되도록 web worker로 off-load됩니다. 이 strategy는 어떤 script에든 사용할 수 있지만, 모든 third-party script를 지원한다고 보장할 수 없는 고급 사용 사례입니다.
+
+`worker`를 strategy로 사용하려면 `next.config.js`에서 `nextScriptWorkers` flag를 활성화해야 합니다:
+
+[[CODE 6]]
+
+`worker` script는 **현재 `pages/` directory에서만 사용할 수 있습니다**:
+
+[[CODE 7]]
+
+### `onLoad`
+
+&gt; **Warning:** `onLoad`는 아직 Server Component에서 동작하지 않으며 Client Component에서만 사용할 수 있습니다. 또한 `onLoad`는 `beforeInteractive`와 함께 사용할 수 없으니, 대신 `onReady` 사용을 고려하세요.
+
+일부 third-party script는 콘텐츠를 instantiate하거나 함수를 호출하기 위해, script load가 끝난 뒤 사용자가 JavaScript 코드를 한 번 실행해야 합니다. loading strategy로 `afterInteractive`나 `lazyOnload`를 사용해 script를 load한다면, `onLoad` property로 load가 끝난 뒤 코드를 실행할 수 있습니다.
+
+다음은 library가 load된 뒤에만 lodash method를 실행하는 예시입니다.
+
+[[CODE 8]]
+
+### `onReady`
+
+&gt; **Warning:** `onReady`는 아직 Server Component에서 동작하지 않으며 Client Component에서만 사용할 수 있습니다.
+
+일부 third-party script는 script load가 끝난 뒤, 그리고 component가 mount될 때마다(예: route navigation 이후) 사용자가 JavaScript 코드를 실행해야 합니다. `onReady` property를 사용하면 처음 load될 때 script의 load event 이후에, 그리고 이후 component가 re-mount될 때마다 코드를 실행할 수 있습니다.
+
+다음은 component가 mount될 때마다 Google Maps JS embed를 다시 instantiate하는 예시입니다:
+
+
+
+
+
+[[CODE 10]]
+
+
+
+### `onError`
+
+&gt; **Warning:** `onError`는 아직 Server Component에서 동작하지 않으며 Client Component에서만 사용할 수 있습니다. `onError`는 `beforeInteractive` loading strategy와 함께 사용할 수 없습니다.
+
+script load가 실패했을 때 이를 잡아내는 것이 도움이 될 때가 있습니다. 이런 error는 `onError` property로 처리할 수 있습니다:
+
+
+
+
+
+[[CODE 12]]
+
+
+
+## Version History || 버전 기록
+
+| Version   | Changes                                                                   |
+| --------- | ------------------------------------------------------------------------- |
+| `v13.0.0` | `beforeInteractive`와 `afterInteractive`가 `app`을 지원하도록 수정되었습니다.  |
+| `v12.2.4` | `onReady` prop이 추가되었습니다.                                                     |
+| `v12.2.2` | `beforeInteractive`를 사용한 `next/script`를 `_document`에 배치할 수 있게 되었습니다. |
+| `v11.0.0` | `next/script`가 도입되었습니다.                                                 |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

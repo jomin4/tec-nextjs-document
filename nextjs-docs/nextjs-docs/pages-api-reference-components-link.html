@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Link (Link 컴포넌트) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/api-reference/components/link" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/api-reference/components/link" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/02-components/link.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference-components.html">Components</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Link<span class="sub">Link 컴포넌트</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>&lt;Link&gt;</code>는 HTML <code>&lt;a&gt;</code> element를 확장해 route 간 <a href="app-getting-started-linking-and-navigating.html#prefetching">prefetching</a>과 client-side navigation을 제공하는 React component입니다. Next.js에서 route 간에 이동하는 주된 방법입니다.</p><div class="en-orig"><p><code>&lt;Link&gt;</code> is a React component that extends the HTML <code>&lt;a&gt;</code> element to provide <a href="app-getting-started-linking-and-navigating.html#prefetching">prefetching</a> and client-side navigation between routes. It is the primary way to navigate between routes in Next.js.</p></div>
+<p>기본 사용법:</p><div class="en-orig"><p>Basic usage:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/index.tsx" data-js="pages/index.js">pages/index.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return &lt;Link href=&quot;/dashboard&quot;&gt;Dashboard&lt;/Link&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return &lt;Link href=&quot;/dashboard&quot;&gt;Dashboard&lt;/Link&gt;
+}</code></pre></div></div>
+<h2 class="sec" id="reference"><a class="anchor" href="#reference">Reference<span class="ko">레퍼런스</span></a></h2>
+<p><code>&lt;Link&gt;</code> component에는 다음 props를 전달할 수 있습니다:</p><div class="en-orig"><p>The following props can be passed to the <code>&lt;Link&gt;</code> component:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Prop</th><th>예시</th><th>Type</th><th>필수</th></tr></thead>
+<tbody>
+<tr><td><a href="#href-required"><code>href</code></a></td><td><code>href=&quot;/dashboard&quot;</code></td><td>String or Object</td><td>Yes</td></tr>
+<tr><td><a href="#as"><code>as</code></a></td><td><code>as=&quot;/post/abc&quot;</code></td><td>String or Object</td><td>-</td></tr>
+<tr><td><a href="#replace"><code>replace</code></a></td><td><code>replace={false}</code></td><td>Boolean</td><td>-</td></tr>
+<tr><td><a href="#scroll"><code>scroll</code></a></td><td><code>scroll={false}</code></td><td>Boolean</td><td>-</td></tr>
+<tr><td><a href="#prefetch"><code>prefetch</code></a></td><td><code>prefetch={false}</code></td><td>Boolean</td><td>-</td></tr>
+<tr><td><a href="#shallow"><code>shallow</code></a></td><td><code>shallow={false}</code></td><td>Boolean</td><td>-</td></tr>
+<tr><td><a href="#locale"><code>locale</code></a></td><td><code>locale=&quot;fr&quot;</code></td><td>String or Boolean</td><td>-</td></tr>
+<tr><td><a href="#onnavigate"><code>onNavigate</code></a></td><td><code>onNavigate={(e) =&gt; {}}</code></td><td>Function</td><td>-</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Prop</th><th>Example</th><th>Type</th><th>Required</th></tr></thead>
+<tbody>
+<tr><td><a href="#href-required"><code>href</code></a></td><td><code>href=&quot;/dashboard&quot;</code></td><td>String or Object</td><td>Yes</td></tr>
+<tr><td><a href="#as"><code>as</code></a></td><td><code>as=&quot;/post/abc&quot;</code></td><td>String or Object</td><td>-</td></tr>
+<tr><td><a href="#replace"><code>replace</code></a></td><td><code>replace={false}</code></td><td>Boolean</td><td>-</td></tr>
+<tr><td><a href="#scroll"><code>scroll</code></a></td><td><code>scroll={false}</code></td><td>Boolean</td><td>-</td></tr>
+<tr><td><a href="#prefetch"><code>prefetch</code></a></td><td><code>prefetch={false}</code></td><td>Boolean</td><td>-</td></tr>
+<tr><td><a href="#shallow"><code>shallow</code></a></td><td><code>shallow={false}</code></td><td>Boolean</td><td>-</td></tr>
+<tr><td><a href="#locale"><code>locale</code></a></td><td><code>locale=&quot;fr&quot;</code></td><td>String or Boolean</td><td>-</td></tr>
+<tr><td><a href="#onnavigate"><code>onNavigate</code></a></td><td><code>onNavigate={(e) =&gt; {}}</code></td><td>Function</td><td>-</td></tr>
+</tbody></table></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>className</code>이나 <code>target=&quot;_blank&quot;</code> 같은 <code>&lt;a&gt;</code> tag attribute는 <code>&lt;Link&gt;</code>에 props로 추가할 수 있으며, 내부 <code>&lt;a&gt;</code> element로 전달됩니다.</p><div class="en-orig"><p><code>&lt;a&gt;</code> tag attributes such as <code>className</code> or <code>target=&quot;_blank&quot;</code> can be added to <code>&lt;Link&gt;</code> as props and will be passed to the underlying <code>&lt;a&gt;</code> element.</p></div></div></div>
+<h3 class="sec" id="href-required"><a class="anchor" href="#href-required"><code>href</code> (required)<span class="ko"><code>href</code> (필수)</span></a></h3>
+<p>이동할 경로 또는 URL입니다.</p><div class="en-orig"><p>The path or URL to navigate to.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/index.tsx" data-js="pages/index.js">pages/index.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+// Navigate to /about?name=test
+export default function Home() {
+  return (
+    &lt;Link
+      href={{
+        pathname: &#x27;/about&#x27;,
+        query: { name: &#x27;test&#x27; },
+      }}
+    &gt;
+      About
+    &lt;/Link&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+// Navigate to /about?name=test
+export default function Home() {
+  return (
+    &lt;Link
+      href={{
+        pathname: &#x27;/about&#x27;,
+        query: { name: &#x27;test&#x27; },
+      }}
+    &gt;
+      About
+    &lt;/Link&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="replace"><a class="anchor" href="#replace"><code>replace</code></a></h3>
+<p><strong>기본값은 <code>false</code>입니다.</strong> <code>true</code>이면 <code>next/link</code>는 <a href="https://developer.mozilla.org/docs/Web/API/History_API" target="_blank" rel="noopener">브라우저 history</a> stack에 새 URL을 추가하는 대신 현재 history state를 교체합니다.</p><div class="en-orig"><p><strong>Defaults to <code>false</code>.</strong> When <code>true</code>, <code>next/link</code> will replace the current history state instead of adding a new URL into the <a href="https://developer.mozilla.org/docs/Web/API/History_API" target="_blank" rel="noopener">browser's history</a> stack.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/index.tsx" data-js="pages/index.js">pages/index.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return (
+    &lt;Link href=&quot;/dashboard&quot; replace&gt;
+      Dashboard
+    &lt;/Link&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return (
+    &lt;Link href=&quot;/dashboard&quot; replace&gt;
+      Dashboard
+    &lt;/Link&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="scroll"><a class="anchor" href="#scroll"><code>scroll</code></a></h3>
+<p><strong>기본값은 <code>true</code>입니다.</strong> Next.js에서 <code>&lt;Link&gt;</code>의 기본 scroll 동작은 브라우저가 뒤로 가기/앞으로 가기 navigation을 처리하는 방식과 비슷하게 <strong>scroll 위치를 유지하는 것</strong>입니다. 새 <a href="app-api-reference-file-conventions-page.html">Page</a>로 이동할 때, Page가 viewport에 보이는 한 scroll 위치는 그대로 유지됩니다. 하지만 Page가 viewport에 보이지 않으면 Next.js는 첫 번째 Page element의 맨 위로 scroll합니다.</p><div class="en-orig"><p><strong>Defaults to <code>true</code>.</strong> The default scrolling behavior of <code>&lt;Link&gt;</code> in Next.js <strong>is to maintain scroll position</strong>, similar to how browsers handle back and forwards navigation. When you navigate to a new <a href="app-api-reference-file-conventions-page.html">Page</a>, scroll position will stay the same as long as the Page is visible in the viewport. However, if the Page is not visible in the viewport, Next.js will scroll to the top of the first Page element.</p></div>
+<p><code>scroll = {false}</code>이면 Next.js는 첫 번째 Page element로 scroll하려고 시도하지 않습니다.</p><div class="en-orig"><p>When <code>scroll = {false}</code>, Next.js will not attempt to scroll to the first Page element.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Next.js는 scroll 동작을 관리하기 전에 <code>scroll: false</code>인지 확인합니다. scroll이 활성화되어 있으면 navigation에 관련된 DOM node를 찾아 각 top-level element를 검사합니다. scroll할 수 없는 element와 렌더링된 HTML이 없는 element는 모두 건너뛰며, 여기에는 sticky 또는 fixed로 position이 지정된 element와 <code>getBoundingClientRect</code>로 계산했을 때 보이지 않는 element 등이 포함됩니다. 그런 다음 Next.js는 viewport에 보이는 scroll 가능한 element를 찾을 때까지 sibling element를 계속 탐색합니다.</p><div class="en-orig"><p>Next.js checks if <code>scroll: false</code> before managing scroll behavior. If scrolling is enabled, it identifies the relevant DOM node for navigation and inspects each top-level element. All non-scrollable elements and those without rendered HTML are bypassed, this includes sticky or fixed positioned elements, and non-visible elements such as those calculated with <code>getBoundingClientRect</code>. Next.js then continues through siblings until it identifies a scrollable element that is visible in the viewport.</p></div></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/index.tsx" data-js="pages/index.js">pages/index.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return (
+    &lt;Link href=&quot;/dashboard&quot; scroll={false}&gt;
+      Dashboard
+    &lt;/Link&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return (
+    &lt;Link href=&quot;/dashboard&quot; scroll={false}&gt;
+      Dashboard
+    &lt;/Link&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="prefetch"><a class="anchor" href="#prefetch"><code>prefetch</code></a></h3>
+<p>Prefetching은 <code>&lt;Link /&gt;</code> component가 사용자의 viewport에 들어올 때(처음부터 또는 scroll을 통해) 일어납니다. Next.js는 client-side navigation의 성능을 높이기 위해 연결된 route(<code>href</code>로 지정)와 data를 background에서 prefetch하고 로드합니다. <strong>Prefetching은 production에서만 활성화됩니다</strong>.</p><div class="en-orig"><p>Prefetching happens when a <code>&lt;Link /&gt;</code> component enters the user's viewport (initially or through scroll). Next.js prefetches and loads the linked route (denoted by the <code>href</code>) and data in the background to improve the performance of client-side navigation. <strong>Prefetching is only enabled in production</strong>.</p></div>
+<p><code>prefetch</code> prop에는 다음 값을 전달할 수 있습니다:</p><div class="en-orig"><p>The following values can be passed to the <code>prefetch</code> prop:</p></div>
+<ul>
+<li><strong><code>true</code> (default)</strong>: 전체 route와 그 data가 prefetch됩니다.</li>
+<li><code>false</code>: viewport에 들어올 때는 prefetching이 일어나지 않지만, hover할 때는 일어납니다. hover 시의 fetching까지 완전히 없애고 싶다면 <code>&lt;a&gt;</code> tag를 사용하거나, hover 시 prefetching 비활성화도 지원하는 App Router를 <a href="app-guides-migrating-app-router-migration.html">점진적으로 도입</a>하는 것을 고려하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>true</code> (default)</strong>: The full route and its data will be prefetched.</li>
+<li><code>false</code>: Prefetching will not happen when entering the viewport, but will happen on hover. If you want to completely remove fetching on hover as well, consider using an <code>&lt;a&gt;</code> tag or <a href="app-guides-migrating-app-router-migration.html">incrementally adopting</a> the App Router, which enables disabling prefetching on hover too.</li>
+</ul></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/index.tsx" data-js="pages/index.js">pages/index.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return (
+    &lt;Link href=&quot;/dashboard&quot; prefetch={false}&gt;
+      Dashboard
+    &lt;/Link&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return (
+    &lt;Link href=&quot;/dashboard&quot; prefetch={false}&gt;
+      Dashboard
+    &lt;/Link&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="shallow"><a class="anchor" href="#shallow"><code>shallow</code></a></h3>
+<p><a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a>, <a href="pages-building-your-application-data-fetching-get-server-side-props.html"><code>getServerSideProps</code></a>, <a href="pages-api-reference-functions-get-initial-props.html"><code>getInitialProps</code></a>를 다시 실행하지 않고 현재 페이지의 경로를 업데이트합니다. 기본값은 <code>false</code>입니다.</p><div class="en-orig"><p>Update the path of the current page without rerunning <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a>, <a href="pages-building-your-application-data-fetching-get-server-side-props.html"><code>getServerSideProps</code></a> or <a href="pages-api-reference-functions-get-initial-props.html"><code>getInitialProps</code></a>. Defaults to <code>false</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/index.tsx" data-js="pages/index.js">pages/index.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return (
+    &lt;Link href=&quot;/dashboard&quot; shallow={false}&gt;
+      Dashboard
+    &lt;/Link&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return (
+    &lt;Link href=&quot;/dashboard&quot; shallow={false}&gt;
+      Dashboard
+    &lt;/Link&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="locale"><a class="anchor" href="#locale"><code>locale</code></a></h3>
+<p>활성 locale이 자동으로 앞에 붙습니다. <code>locale</code>을 사용하면 다른 locale을 지정할 수 있습니다. <code>false</code>이면 기본 동작이 비활성화되므로 <code>href</code>에 locale을 직접 포함해야 합니다.</p><div class="en-orig"><p>The active locale is automatically prepended. <code>locale</code> allows for providing a different locale. When <code>false</code> <code>href</code> has to include the locale as the default behavior is disabled.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/index.tsx" data-js="pages/index.js">pages/index.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return (
+    &lt;&gt;
+      {/* Default behavior: locale is prepended */}
+      &lt;Link href=&quot;/dashboard&quot;&gt;Dashboard (with locale)&lt;/Link&gt;
+
+      {/* Disable locale prepending */}
+      &lt;Link href=&quot;/dashboard&quot; locale={false}&gt;
+        Dashboard (without locale)
+      &lt;/Link&gt;
+
+      {/* Specify a different locale */}
+      &lt;Link href=&quot;/dashboard&quot; locale=&quot;fr&quot;&gt;
+        Dashboard (French)
+      &lt;/Link&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return (
+    &lt;&gt;
+      {/* Default behavior: locale is prepended */}
+      &lt;Link href=&quot;/dashboard&quot;&gt;Dashboard (with locale)&lt;/Link&gt;
+
+      {/* Disable locale prepending */}
+      &lt;Link href=&quot;/dashboard&quot; locale={false}&gt;
+        Dashboard (without locale)
+      &lt;/Link&gt;
+
+      {/* Specify a different locale */}
+      &lt;Link href=&quot;/dashboard&quot; locale=&quot;fr&quot;&gt;
+        Dashboard (French)
+      &lt;/Link&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="as"><a class="anchor" href="#as"><code>as</code></a></h3>
+<p>브라우저 URL bar에 표시될 경로에 대한 선택적 decorator입니다. Next.js 9.5.3 이전에는 dynamic route에 사용되었으며, 어떻게 동작했는지는 <a href="https://github.com/vercel/next.js/blob/v9.5.2/docs/api-reference/next/link.md#dynamic-routes" target="_blank" rel="noopener">이전 문서</a>를 참고하세요.</p><div class="en-orig"><p>Optional decorator for the path that will be shown in the browser URL bar. Before Next.js 9.5.3 this was used for dynamic routes, check our <a href="https://github.com/vercel/next.js/blob/v9.5.2/docs/api-reference/next/link.md#dynamic-routes" target="_blank" rel="noopener">previous docs</a> to see how it worked.</p></div>
+<p>이 경로가 <code>href</code>에 제공된 경로와 다르면, <a href="https://github.com/vercel/next.js/blob/v9.5.2/docs/api-reference/next/link.md#dynamic-routes" target="_blank" rel="noopener">이전 문서</a>에 나온 것처럼 이전의 <code>href</code>/<code>as</code> 동작이 사용됩니다.</p><div class="en-orig"><p>When this path differs from the one provided in <code>href</code> the previous <code>href</code>/<code>as</code> behavior is used as shown in the <a href="https://github.com/vercel/next.js/blob/v9.5.2/docs/api-reference/next/link.md#dynamic-routes" target="_blank" rel="noopener">previous docs</a>.</p></div>
+<h3 class="sec" id="onnavigate"><a class="anchor" href="#onnavigate"><code>onNavigate</code></a></h3>
+<p>client-side navigation 중에 호출되는 event handler입니다. handler는 <code>preventDefault()</code> method를 포함한 event object를 받으므로, 필요하면 navigation을 취소할 수 있습니다.</p><div class="en-orig"><p>An event handler called during client-side navigation. The handler receives an event object that includes a <code>preventDefault()</code> method, allowing you to cancel the navigation if needed.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export default function Page() {
+  return (
+    &lt;Link
+      href=&quot;/dashboard&quot;
+      onNavigate={(e) =&gt; {
+        // Only executes during SPA navigation
+        console.log(&#x27;Navigating...&#x27;)
+
+        // Optionally prevent navigation
+        // e.preventDefault()
+      }}
+    &gt;
+      Dashboard
+    &lt;/Link&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Page() {
+  return (
+    &lt;Link
+      href=&quot;/dashboard&quot;
+      onNavigate={(e) =&gt; {
+        // Only executes during SPA navigation
+        console.log(&#x27;Navigating...&#x27;)
+
+        // Optionally prevent navigation
+        // e.preventDefault()
+      }}
+    &gt;
+      Dashboard
+    &lt;/Link&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>onClick</code>과 <code>onNavigate</code>는 비슷해 보이지만 목적이 다릅니다. <code>onClick</code>은 모든 click event에서 실행되는 반면, <code>onNavigate</code>는 client-side navigation 중에만 실행됩니다. 주요 차이점은 다음과 같습니다:</p>
+<ul>
+<li>modifier key(<code>Ctrl</code>/<code>Cmd</code> + Click)를 사용하면, Next.js가 새 탭에 대한 기본 navigation을 막기 때문에 <code>onClick</code>은 실행되지만 <code>onNavigate</code>는 실행되지 않습니다.</li>
+<li><code>onNavigate</code>는 client-side 및 same-origin navigation 전용이므로 외부 URL에서는 trigger되지 않습니다.</li>
+<li><code>download</code> attribute가 있는 link는 브라우저가 연결된 URL을 다운로드로 처리하므로 <code>onClick</code>에서는 동작하지만 <code>onNavigate</code>에서는 동작하지 않습니다.</li>
+</ul><div class="en-orig"><p>While <code>onClick</code> and <code>onNavigate</code> may seem similar, they serve different purposes. <code>onClick</code> executes for all click events, while <code>onNavigate</code> only runs during client-side navigation. Some key differences:</p>
+<ul>
+<li>When using modifier keys (<code>Ctrl</code>/<code>Cmd</code> + Click), <code>onClick</code> executes but <code>onNavigate</code> doesn't since Next.js prevents default navigation for new tabs.</li>
+<li>External URLs won't trigger <code>onNavigate</code> since it's only for client-side and same-origin navigations.</li>
+<li>Links with the <code>download</code> attribute will work with <code>onClick</code> but not <code>onNavigate</code> since the browser will treat the linked URL as a download.</li>
+</ul></div></div></div>
+<h3 class="sec" id="transitiontypes"><a class="anchor" href="#transitiontypes"><code>transitionTypes</code></a></h3>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<p>다음 예시들은 다양한 상황에서 <code>&lt;Link&gt;</code> component를 사용하는 방법을 보여 줍니다.</p><div class="en-orig"><p>The following examples demonstrate how to use the <code>&lt;Link&gt;</code> component in different scenarios.</p></div>
+<h3 class="sec" id="linking-to-dynamic-route-segments"><a class="anchor" href="#linking-to-dynamic-route-segments">Linking to dynamic route segments<span class="ko">dynamic route segment로 연결하기</span></a></h3>
+<p><a href="pages-building-your-application-routing-dynamic-routes.html#convention">dynamic route segment</a>의 경우, template literal을 사용해 link의 경로를 만드는 것이 편리할 수 있습니다.</p><div class="en-orig"><p>For <a href="pages-building-your-application-routing-dynamic-routes.html#convention">dynamic route segments</a>, it can be handy to use template literals to create the link's path.</p></div>
+<p>예를 들어 dynamic route <code>pages/blog/[slug].js</code>로 연결되는 link 목록을 생성할 수 있습니다</p><div class="en-orig"><p>For example, you can generate a list of links to the dynamic route <code>pages/blog/[slug].js</code></p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/blog/index.tsx" data-js="pages/blog/index.js">pages/blog/index.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+function Posts({ posts }) {
+  return (
+    &lt;ul&gt;
+      {posts.map((post) =&gt; (
+        &lt;li key={post.id}&gt;
+          &lt;Link href={`/blog/${post.slug}`}&gt;{post.title}&lt;/Link&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+function Posts({ posts }) {
+  return (
+    &lt;ul&gt;
+      {posts.map((post) =&gt; (
+        &lt;li key={post.id}&gt;
+          &lt;Link href={`/blog/${post.slug}`}&gt;{post.title}&lt;/Link&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}
+
+export default Posts</code></pre></div></div>
+<h3 class="sec" id="scrolling-to-an-id"><a class="anchor" href="#scrolling-to-an-id">Scrolling to an <code>id</code><span class="ko"><code>id</code>로 scroll하기</span></a></h3>
+<p>navigation 시 특정 <code>id</code>로 scroll하고 싶다면, URL 뒤에 <code>#</code> hash link를 붙이거나 <code>href</code> prop에 hash link만 전달하면 됩니다. <code>&lt;Link&gt;</code>가 <code>&lt;a&gt;</code> element로 렌더링되기 때문에 가능합니다.</p><div class="en-orig"><p>If you'd like to scroll to a specific <code>id</code> on navigation, you can append your URL with a <code>#</code> hash link or just pass a hash link to the <code>href</code> prop. This is possible since <code>&lt;Link&gt;</code> renders to an <code>&lt;a&gt;</code> element.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&lt;Link href=&quot;/dashboard#settings&quot;&gt;Settings&lt;/Link&gt;
+
+// Output
+&lt;a href=&quot;/dashboard#settings&quot;&gt;Settings&lt;/a&gt;</code></pre></div></div>
+<h3 class="sec" id="passing-a-url-object"><a class="anchor" href="#passing-a-url-object">Passing a URL Object<span class="ko">URL Object 전달하기</span></a></h3>
+<p><code>Link</code>는 URL object를 받을 수도 있으며, 이를 자동으로 format해 URL 문자열을 만듭니다:</p><div class="en-orig"><p><code>Link</code> can also receive a URL object and it will automatically format it to create the URL string:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/index.ts" data-js="pages/index.js">pages/index.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+function Home() {
+  return (
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;Link
+          href={{
+            pathname: &#x27;/about&#x27;,
+            query: { name: &#x27;test&#x27; },
+          }}
+        &gt;
+          About us
+        &lt;/Link&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;Link
+          href={{
+            pathname: &#x27;/blog/[slug]&#x27;,
+            query: { slug: &#x27;my-post&#x27; },
+          }}
+        &gt;
+          Blog Post
+        &lt;/Link&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  )
+}
+
+export default Home</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+function Home() {
+  return (
+    &lt;ul&gt;
+      &lt;li&gt;
+        &lt;Link
+          href={{
+            pathname: &#x27;/about&#x27;,
+            query: { name: &#x27;test&#x27; },
+          }}
+        &gt;
+          About us
+        &lt;/Link&gt;
+      &lt;/li&gt;
+      &lt;li&gt;
+        &lt;Link
+          href={{
+            pathname: &#x27;/blog/[slug]&#x27;,
+            query: { slug: &#x27;my-post&#x27; },
+          }}
+        &gt;
+          Blog Post
+        &lt;/Link&gt;
+      &lt;/li&gt;
+    &lt;/ul&gt;
+  )
+}
+
+export default Home</code></pre></div></div>
+<p>위 예시에는 다음으로 가는 link가 있습니다:</p><div class="en-orig"><p>The above example has a link to:</p></div>
+<ul>
+<li>미리 정의된 route: <code>/about?name=test</code></li>
+<li><a href="pages-building-your-application-routing-dynamic-routes.html#convention">dynamic route</a>: <code>/blog/my-post</code></li>
+</ul><div class="en-orig"><ul>
+<li>A predefined route: <code>/about?name=test</code></li>
+<li>A <a href="pages-building-your-application-routing-dynamic-routes.html#convention">dynamic route</a>: <code>/blog/my-post</code></li>
+</ul></div>
+<p><a href="https://nodejs.org/api/url.html#url_url_strings_and_url_objects" target="_blank" rel="noopener">Node.js URL module 문서</a>에 정의된 모든 property를 사용할 수 있습니다.</p><div class="en-orig"><p>You can use every property as defined in the <a href="https://nodejs.org/api/url.html#url_url_strings_and_url_objects" target="_blank" rel="noopener">Node.js URL module documentation</a>.</p></div>
+<h3 class="sec" id="replace-the-url-instead-of-push"><a class="anchor" href="#replace-the-url-instead-of-push">Replace the URL instead of push<span class="ko">push 대신 URL 교체하기</span></a></h3>
+<p><code>Link</code> component의 기본 동작은 <code>history</code> stack에 새 URL을 <code>push</code>하는 것입니다. 다음 예시처럼 <code>replace</code> prop을 사용해 새 항목이 추가되지 않게 할 수 있습니다:</p><div class="en-orig"><p>The default behavior of the <code>Link</code> component is to <code>push</code> a new URL into the <code>history</code> stack. You can use the <code>replace</code> prop to prevent adding a new entry, as in the following example:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/index.js" data-js="pages/index.js">pages/index.js</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return (
+    &lt;Link href=&quot;/about&quot; replace&gt;
+      About us
+    &lt;/Link&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return (
+    &lt;Link href=&quot;/about&quot; replace&gt;
+      About us
+    &lt;/Link&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="disable-scrolling-to-the-top-of-the-page"><a class="anchor" href="#disable-scrolling-to-the-top-of-the-page">Disable scrolling to the top of the page<span class="ko">페이지 맨 위로 scroll 비활성화</span></a></h3>
+<p><code>Link</code>의 기본 동작은 페이지 맨 위로 scroll하는 것입니다. hash가 정의되어 있으면 일반 <code>&lt;a&gt;</code> tag처럼 특정 id로 scroll합니다. 맨 위 / hash로 scroll하지 않게 하려면 <code>Link</code>에 <code>scroll={false}</code>를 추가하면 됩니다:</p><div class="en-orig"><p>The default behavior of <code>Link</code> is to scroll to the top of the page. When there is a hash defined it will scroll to the specific id, like a normal <code>&lt;a&gt;</code> tag. To prevent scrolling to the top / hash <code>scroll={false}</code> can be added to <code>Link</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return (
+    &lt;Link href=&quot;/#hashid&quot; scroll={false}&gt;
+      Disables scrolling to the top
+    &lt;/Link&gt;
+  )
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">pages/index.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export default function Home() {
+  return (
+    &lt;Link href=&quot;/#hashid&quot; scroll={false}&gt;
+      Disables scrolling to the top
+    &lt;/Link&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="scroll-offset-with-sticky-headers"><a class="anchor" href="#scroll-offset-with-sticky-headers">Scroll offset with sticky headers<span class="ko">sticky header가 있을 때의 scroll offset</span></a></h3>
+<p>Next.js는 scroll 대상을 찾을 때 sticky와 fixed로 position이 지정된 element를 건너뛰기 때문에, navigation 후 콘텐츠가 sticky header 뒤에 가려질 수 있습니다. 예를 들어 layout에 sticky header가 있다면:</p><div class="en-orig"><p>Because Next.js skips sticky and fixed positioned elements when finding the scroll target, content may end up behind a sticky header after navigation. For example, if your layout has a sticky header:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import &#x27;./globals.css&#x27;
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;body&gt;
+        &lt;header className=&quot;sticky top-0 h-16 bg-white&quot;&gt;
+          {/* Navigation */}
+        &lt;/header&gt;
+        {children}
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import &#x27;./globals.css&#x27;
+
+export default function RootLayout({ children }) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;body&gt;
+        &lt;header className=&quot;sticky top-0 h-16 bg-white&quot;&gt;
+          {/* Navigation */}
+        &lt;/header&gt;
+        {children}
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<p>scroll container에 <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-padding-top" target="_blank" rel="noopener"><code>scroll-padding-top</code></a>을 사용해 header 높이를 반영할 수 있습니다:</p><div class="en-orig"><p>You can account for its height using <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-padding-top" target="_blank" rel="noopener"><code>scroll-padding-top</code></a> on the scroll container:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">app/globals.css</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-css">html {
+  scroll-padding-top: 64px; /* Match the height of your sticky header */
+}</code></pre></div></div>
+<p>이는 scroll 기반 위치 지정에 offset을 주는 브라우저 CSS property입니다. hash fragment(<code>#id</code>) navigation을 포함해, Next.js가 네이티브 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView" target="_blank" rel="noopener"><code>scrollIntoView()</code></a> API를 사용할 때마다 적용됩니다. 또는 전역 offset을 설정하는 대신 개별 대상 element에 <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin-top" target="_blank" rel="noopener"><code>scroll-margin-top</code></a>을 사용할 수도 있습니다.</p><div class="en-orig"><p>This is a browser CSS property that offsets scroll-based positioning. It applies whenever Next.js uses the native <a href="https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView" target="_blank" rel="noopener"><code>scrollIntoView()</code></a> API, including hash fragment (<code>#id</code>) navigation. Alternatively, you can use <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin-top" target="_blank" rel="noopener"><code>scroll-margin-top</code></a> on individual target elements instead of setting a global offset.</p></div>
+<h3 class="sec" id="prefetching-links-in-proxy"><a class="anchor" href="#prefetching-links-in-proxy">Prefetching links in Proxy<span class="ko">Proxy에서 link prefetch하기</span></a></h3>
+<p>인증이나 사용자를 다른 페이지로 rewrite하는 등의 목적으로 <a href="app-api-reference-file-conventions-proxy.html">Proxy</a>를 사용하는 경우가 많습니다. <code>&lt;Link /&gt;</code> component가 Proxy를 통한 rewrite가 있는 link를 올바르게 prefetch하려면, 표시할 URL과 prefetch할 URL을 모두 Next.js에 알려 주어야 합니다. 이는 prefetch할 올바른 route를 알기 위해 proxy에 불필요한 fetch를 보내는 것을 피하기 위해 필요합니다.</p><div class="en-orig"><p>It's common to use <a href="app-api-reference-file-conventions-proxy.html">Proxy</a> for authentication or other purposes that involve rewriting the user to a different page. In order for the <code>&lt;Link /&gt;</code> component to properly prefetch links with rewrites via Proxy, you need to tell Next.js both the URL to display and the URL to prefetch. This is required to avoid un-necessary fetches to proxy to know the correct route to prefetch.</p></div>
+<p>예를 들어 인증된 사용자용 view와 방문자용 view가 있는 <code>/dashboard</code> route를 제공하려면, Proxy에 다음을 추가해 사용자를 올바른 페이지로 redirect할 수 있습니다:</p><div class="en-orig"><p>For example, if you want to serve a <code>/dashboard</code> route that has authenticated and visitor views, you can add the following in your Proxy to redirect the user to the correct page:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { NextResponse } from &#x27;next/server&#x27;
+import type { NextRequest } from &#x27;next/server&#x27;
+
+export function proxy(request: NextRequest) {
+  const nextUrl = request.nextUrl
+  if (nextUrl.pathname === &#x27;/dashboard&#x27;) {
+    if (request.cookies.has(&#x27;authToken&#x27;)) {
+      return NextResponse.rewrite(new URL(&#x27;/auth/dashboard&#x27;, request.url))
+    } else {
+      return NextResponse.rewrite(new URL(&#x27;/public/dashboard&#x27;, request.url))
+    }
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { NextResponse } from &#x27;next/server&#x27;
+
+export function proxy(request) {
+  const nextUrl = request.nextUrl
+  if (nextUrl.pathname === &#x27;/dashboard&#x27;) {
+    if (request.cookies.has(&#x27;authToken&#x27;)) {
+      return NextResponse.rewrite(new URL(&#x27;/auth/dashboard&#x27;, request.url))
+    } else {
+      return NextResponse.rewrite(new URL(&#x27;/public/dashboard&#x27;, request.url))
+    }
+  }
+}</code></pre></div></div>
+<p>이 경우 <code>&lt;Link /&gt;</code> component에서는 다음 코드를 사용하면 됩니다:</p><div class="en-orig"><p>In this case, you would want to use the following code in your <code>&lt;Link /&gt;</code> component:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/index.tsx" data-js="pages/index.js">pages/index.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import Link from &#x27;next/link&#x27;
+import useIsAuthed from &#x27;./hooks/useIsAuthed&#x27; // Your auth hook
+
+export default function Home() {
+  const isAuthed = useIsAuthed()
+  const path = isAuthed ? &#x27;/auth/dashboard&#x27; : &#x27;/public/dashboard&#x27;
+  return (
+    &lt;Link as=&quot;/dashboard&quot; href={path}&gt;
+      Dashboard
+    &lt;/Link&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import Link from &#x27;next/link&#x27;
+import useIsAuthed from &#x27;./hooks/useIsAuthed&#x27; // Your auth hook
+
+export default function Home() {
+  const isAuthed = useIsAuthed()
+  const path = isAuthed ? &#x27;/auth/dashboard&#x27; : &#x27;/public/dashboard&#x27;
+  return (
+    &lt;Link as=&quot;/dashboard&quot; href={path}&gt;
+      Dashboard
+    &lt;/Link&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="pages-building-your-application-routing-dynamic-routes.html#convention">Dynamic Routes</a>를 사용한다면 <code>as</code>와 <code>href</code> props를 조정해야 합니다. 예를 들어 proxy를 통해 다르게 보여 주고 싶은 <code>/dashboard/authed/[user]</code> 같은 Dynamic Route가 있다면 다음과 같이 작성합니다: <code>&lt;Link href={{ pathname: &#x27;/dashboard/authed/[user]&#x27;, query: { user: username } }} as=&quot;/dashboard/[user]&quot;&gt;Profile&lt;/Link&gt;</code>.</p><div class="en-orig"><p>If you're using <a href="pages-building-your-application-routing-dynamic-routes.html#convention">Dynamic Routes</a>, you'll need to adapt your <code>as</code> and <code>href</code> props. For example, if you have a Dynamic Route like <code>/dashboard/authed/[user]</code> that you want to present differently via proxy, you would write: <code>&lt;Link href={{ pathname: &#x27;/dashboard/authed/[user]&#x27;, query: { user: username } }} as=&quot;/dashboard/[user]&quot;&gt;Profile&lt;/Link&gt;</code>.</p></div></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version history<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.2.0</code></td><td><code>transitionTypes</code> prop 추가.</td></tr>
+<tr><td><code>v15.4.0</code></td><td>기본 <code>prefetch</code> 동작의 alias로 <code>auto</code> 추가.</td></tr>
+<tr><td><code>v15.3.0</code></td><td><code>onNavigate</code> API 추가</td></tr>
+<tr><td><code>v13.0.0</code></td><td>더 이상 자식 <code>&lt;a&gt;</code> tag가 필요하지 않음. codebase를 자동으로 업데이트하는 <a href="app-guides-upgrading-codemods.html#remove-a-tags-from-link-components">codemod</a>가 제공됨.</td></tr>
+<tr><td><code>v10.0.0</code></td><td>dynamic route를 가리키는 <code>href</code> props가 자동으로 resolve되며 더 이상 <code>as</code> prop이 필요하지 않음.</td></tr>
+<tr><td><code>v8.0.0</code></td><td>prefetching 성능 개선.</td></tr>
+<tr><td><code>v1.0.0</code></td><td><code>next/link</code> 도입.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.2.0</code></td><td>Add <code>transitionTypes</code> prop.</td></tr>
+<tr><td><code>v15.4.0</code></td><td>Add <code>auto</code> as an alias to the default <code>prefetch</code> behavior.</td></tr>
+<tr><td><code>v15.3.0</code></td><td>Add <code>onNavigate</code> API</td></tr>
+<tr><td><code>v13.0.0</code></td><td>No longer requires a child <code>&lt;a&gt;</code> tag. A <a href="app-guides-upgrading-codemods.html#remove-a-tags-from-link-components">codemod</a> is provided to automatically update your codebase.</td></tr>
+<tr><td><code>v10.0.0</code></td><td><code>href</code> props pointing to a dynamic route are automatically resolved and no longer require an <code>as</code> prop.</td></tr>
+<tr><td><code>v8.0.0</code></td><td>Improved prefetching performance.</td></tr>
+<tr><td><code>v1.0.0</code></td><td><code>next/link</code> introduced.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/02-components/link.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/api-reference/components/link" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-api-reference-components-image.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Image</div><div class="ttl-ko">Image 컴포넌트</div></a>
+      <a href="pages-api-reference-components-script.html" class="next"><div class="dir">다음 →</div><div class="ttl">Script</div><div class="ttl-ko">Script 컴포넌트</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/api-reference/components/link" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#reference">Reference</a></li><li class="l3"><a href="#href-required"><code>href</code> (required)</a></li><li class="l3"><a href="#replace"><code>replace</code></a></li><li class="l3"><a href="#scroll"><code>scroll</code></a></li><li class="l3"><a href="#prefetch"><code>prefetch</code></a></li><li class="l3"><a href="#shallow"><code>shallow</code></a></li><li class="l3"><a href="#locale"><code>locale</code></a></li><li class="l3"><a href="#as"><code>as</code></a></li><li class="l3"><a href="#onnavigate"><code>onNavigate</code></a></li><li class="l3"><a href="#transitiontypes"><code>transitionTypes</code></a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#linking-to-dynamic-route-segments">Linking to dynamic route segments</a></li><li class="l3"><a href="#scrolling-to-an-id">Scrolling to an <code>id</code></a></li><li class="l3"><a href="#passing-a-url-object">Passing a URL Object</a></li><li class="l3"><a href="#replace-the-url-instead-of-push">Replace the URL instead of push</a></li><li class="l3"><a href="#disable-scrolling-to-the-top-of-the-page">Disable scrolling to the top of the page</a></li><li class="l3"><a href="#scroll-offset-with-sticky-headers">Scroll offset with sticky headers</a></li><li class="l3"><a href="#prefetching-links-in-proxy">Prefetching links in Proxy</a></li><li class="l2"><a href="#version-history">Version history</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`&lt;Link&gt;`는 HTML `&lt;a&gt;` element를 확장해 route 간 [prefetching](/docs/app/getting-started/linking-and-navigating#prefetching)과 client-side navigation을 제공하는 React component입니다. Next.js에서 route 간에 이동하는 주된 방법입니다.
+
+기본 사용법:
+
+
+
+
+
+[[CODE 2]]
+
+
+
+## Reference || 레퍼런스
+
+`&lt;Link&gt;` component에는 다음 props를 전달할 수 있습니다:
+
+
+
+| Prop                        | 예시                  | Type              | 필수 |
+| --------------------------- | ------------------------ | ----------------- | -------- |
+| [`href`](#href-required)    | `href=&quot;/dashboard&quot;`      | String or Object  | Yes      |
+| [`as`](#as)                 | `as=&quot;/post/abc&quot;`         | String or Object  | -        |
+| [`replace`](#replace)       | `replace={false}`        | Boolean           | -        |
+| [`scroll`](#scroll)         | `scroll={false}`         | Boolean           | -        |
+| [`prefetch`](#prefetch)     | `prefetch={false}`       | Boolean           | -        |
+| [`shallow`](#shallow)       | `shallow={false}`        | Boolean           | -        |
+| [`locale`](#locale)         | `locale=&quot;fr&quot;`            | String or Boolean | -        |
+| [`onNavigate`](#onnavigate) | `onNavigate={(e) =&gt; {}}` | Function          | -        |
+
+
+
+
+
+&gt; **Good to know**: `className`이나 `target=&quot;_blank&quot;` 같은 `&lt;a&gt;` tag attribute는 `&lt;Link&gt;`에 props로 추가할 수 있으며, 내부 `&lt;a&gt;` element로 전달됩니다.
+
+### `href` (required) || `href` (필수)
+
+이동할 경로 또는 URL입니다.
+
+
+
+
+
+[[CODE 4]]
+
+
+
+### `replace`
+
+**기본값은 `false`입니다.** `true`이면 `next/link`는 [브라우저 history](https://developer.mozilla.org/docs/Web/API/History_API) stack에 새 URL을 추가하는 대신 현재 history state를 교체합니다.
+
+
+
+
+
+[[CODE 6]]
+
+
+
+### `scroll`
+
+**기본값은 `true`입니다.** Next.js에서 `&lt;Link&gt;`의 기본 scroll 동작은 브라우저가 뒤로 가기/앞으로 가기 navigation을 처리하는 방식과 비슷하게 **scroll 위치를 유지하는 것**입니다. 새 [Page](/docs/app/api-reference/file-conventions/page)로 이동할 때, Page가 viewport에 보이는 한 scroll 위치는 그대로 유지됩니다. 하지만 Page가 viewport에 보이지 않으면 Next.js는 첫 번째 Page element의 맨 위로 scroll합니다.
+
+`scroll = {false}`이면 Next.js는 첫 번째 Page element로 scroll하려고 시도하지 않습니다.
+
+&gt; **Good to know**: Next.js는 scroll 동작을 관리하기 전에 `scroll: false`인지 확인합니다. scroll이 활성화되어 있으면 navigation에 관련된 DOM node를 찾아 각 top-level element를 검사합니다. scroll할 수 없는 element와 렌더링된 HTML이 없는 element는 모두 건너뛰며, 여기에는 sticky 또는 fixed로 position이 지정된 element와 `getBoundingClientRect`로 계산했을 때 보이지 않는 element 등이 포함됩니다. 그런 다음 Next.js는 viewport에 보이는 scroll 가능한 element를 찾을 때까지 sibling element를 계속 탐색합니다.
+
+
+
+
+
+[[CODE 8]]
+
+
+
+### `prefetch`
+
+
+
+
+
+Prefetching은 `&lt;Link /&gt;` component가 사용자의 viewport에 들어올 때(처음부터 또는 scroll을 통해) 일어납니다. Next.js는 client-side navigation의 성능을 높이기 위해 연결된 route(`href`로 지정)와 data를 background에서 prefetch하고 로드합니다. **Prefetching은 production에서만 활성화됩니다**.
+
+`prefetch` prop에는 다음 값을 전달할 수 있습니다:
+
+- **`true` (default)**: 전체 route와 그 data가 prefetch됩니다.
+- `false`: viewport에 들어올 때는 prefetching이 일어나지 않지만, hover할 때는 일어납니다. hover 시의 fetching까지 완전히 없애고 싶다면 `&lt;a&gt;` tag를 사용하거나, hover 시 prefetching 비활성화도 지원하는 App Router를 [점진적으로 도입](/docs/app/guides/migrating/app-router-migration)하는 것을 고려하세요.
+
+[[CODE 10]]
+
+### `shallow`
+
+[`getStaticProps`](/docs/pages/building-your-application/data-fetching/get-static-props), [`getServerSideProps`](/docs/pages/building-your-application/data-fetching/get-server-side-props), [`getInitialProps`](/docs/pages/api-reference/functions/get-initial-props)를 다시 실행하지 않고 현재 페이지의 경로를 업데이트합니다. 기본값은 `false`입니다.
+
+[[CODE 11]]
+
+### `locale`
+
+활성 locale이 자동으로 앞에 붙습니다. `locale`을 사용하면 다른 locale을 지정할 수 있습니다. `false`이면 기본 동작이 비활성화되므로 `href`에 locale을 직접 포함해야 합니다.
+
+[[CODE 12]]
+
+### `as`
+
+브라우저 URL bar에 표시될 경로에 대한 선택적 decorator입니다. Next.js 9.5.3 이전에는 dynamic route에 사용되었으며, 어떻게 동작했는지는 [이전 문서](https://github.com/vercel/next.js/blob/v9.5.2/docs/api-reference/next/link.md#dynamic-routes)를 참고하세요.
+
+이 경로가 `href`에 제공된 경로와 다르면, [이전 문서](https://github.com/vercel/next.js/blob/v9.5.2/docs/api-reference/next/link.md#dynamic-routes)에 나온 것처럼 이전의 `href`/`as` 동작이 사용됩니다.
+
+
+
+### `onNavigate`
+
+client-side navigation 중에 호출되는 event handler입니다. handler는 `preventDefault()` method를 포함한 event object를 받으므로, 필요하면 navigation을 취소할 수 있습니다.
+
+[[CODE 13]]
+
+&gt; **Good to know**: `onClick`과 `onNavigate`는 비슷해 보이지만 목적이 다릅니다. `onClick`은 모든 click event에서 실행되는 반면, `onNavigate`는 client-side navigation 중에만 실행됩니다. 주요 차이점은 다음과 같습니다:
+&gt;
+&gt; - modifier key(`Ctrl`/`Cmd` + Click)를 사용하면, Next.js가 새 탭에 대한 기본 navigation을 막기 때문에 `onClick`은 실행되지만 `onNavigate`는 실행되지 않습니다.
+&gt; - `onNavigate`는 client-side 및 same-origin navigation 전용이므로 외부 URL에서는 trigger되지 않습니다.
+&gt; - `download` attribute가 있는 link는 브라우저가 연결된 URL을 다운로드로 처리하므로 `onClick`에서는 동작하지만 `onNavigate`에서는 동작하지 않습니다.
+
+### `transitionTypes`
+
+
+
+## Examples || 예시
+
+다음 예시들은 다양한 상황에서 `&lt;Link&gt;` component를 사용하는 방법을 보여 줍니다.
+
+
+
+
+
+### Linking to dynamic route segments || dynamic route segment로 연결하기
+
+[dynamic route segment](/docs/pages/building-your-application/routing/dynamic-routes#convention)의 경우, template literal을 사용해 link의 경로를 만드는 것이 편리할 수 있습니다.
+
+예를 들어 dynamic route `pages/blog/[slug].js`로 연결되는 link 목록을 생성할 수 있습니다
+
+[[CODE 17]]
+
+
+
+### Scrolling to an `id` || `id`로 scroll하기
+
+navigation 시 특정 `id`로 scroll하고 싶다면, URL 뒤에 `#` hash link를 붙이거나 `href` prop에 hash link만 전달하면 됩니다. `&lt;Link&gt;`가 `&lt;a&gt;` element로 렌더링되기 때문에 가능합니다.
+
+[[CODE 18]]
+
+
+
+
+
+### Passing a URL Object || URL Object 전달하기
+
+`Link`는 URL object를 받을 수도 있으며, 이를 자동으로 format해 URL 문자열을 만듭니다:
+
+[[CODE 19]]
+
+위 예시에는 다음으로 가는 link가 있습니다:
+
+- 미리 정의된 route: `/about?name=test`
+- [dynamic route](/docs/pages/building-your-application/routing/dynamic-routes#convention): `/blog/my-post`
+
+[Node.js URL module 문서](https://nodejs.org/api/url.html#url_url_strings_and_url_objects)에 정의된 모든 property를 사용할 수 있습니다.
+
+
+
+### Replace the URL instead of push || push 대신 URL 교체하기
+
+`Link` component의 기본 동작은 `history` stack에 새 URL을 `push`하는 것입니다. 다음 예시처럼 `replace` prop을 사용해 새 항목이 추가되지 않게 할 수 있습니다:
+
+
+
+
+
+[[CODE 21]]
+
+
+
+### Disable scrolling to the top of the page || 페이지 맨 위로 scroll 비활성화
+
+
+
+
+
+`Link`의 기본 동작은 페이지 맨 위로 scroll하는 것입니다. hash가 정의되어 있으면 일반 `&lt;a&gt;` tag처럼 특정 id로 scroll합니다. 맨 위 / hash로 scroll하지 않게 하려면 `Link`에 `scroll={false}`를 추가하면 됩니다:
+
+[[CODE 25]]
+
+[[CODE 26]]
+
+
+
+### Scroll offset with sticky headers || sticky header가 있을 때의 scroll offset
+
+Next.js는 scroll 대상을 찾을 때 sticky와 fixed로 position이 지정된 element를 건너뛰기 때문에, navigation 후 콘텐츠가 sticky header 뒤에 가려질 수 있습니다. 예를 들어 layout에 sticky header가 있다면:
+
+[[CODE 27]]
+
+scroll container에 [`scroll-padding-top`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-padding-top)을 사용해 header 높이를 반영할 수 있습니다:
+
+[[CODE 28]]
+
+이는 scroll 기반 위치 지정에 offset을 주는 브라우저 CSS property입니다. hash fragment(`#id`) navigation을 포함해, Next.js가 네이티브 [`scrollIntoView()`](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView) API를 사용할 때마다 적용됩니다. 또는 전역 offset을 설정하는 대신 개별 대상 element에 [`scroll-margin-top`](https://developer.mozilla.org/en-US/docs/Web/CSS/scroll-margin-top)을 사용할 수도 있습니다.
+
+### Prefetching links in Proxy || Proxy에서 link prefetch하기
+
+인증이나 사용자를 다른 페이지로 rewrite하는 등의 목적으로 [Proxy](/docs/app/api-reference/file-conventions/proxy)를 사용하는 경우가 많습니다. `&lt;Link /&gt;` component가 Proxy를 통한 rewrite가 있는 link를 올바르게 prefetch하려면, 표시할 URL과 prefetch할 URL을 모두 Next.js에 알려 주어야 합니다. 이는 prefetch할 올바른 route를 알기 위해 proxy에 불필요한 fetch를 보내는 것을 피하기 위해 필요합니다.
+
+예를 들어 인증된 사용자용 view와 방문자용 view가 있는 `/dashboard` route를 제공하려면, Proxy에 다음을 추가해 사용자를 올바른 페이지로 redirect할 수 있습니다:
+
+[[CODE 29]]
+
+이 경우 `&lt;Link /&gt;` component에서는 다음 코드를 사용하면 됩니다:
+
+
+
+
+
+[[CODE 31]]
+
+&gt; **Good to know**: [Dynamic Routes](/docs/pages/building-your-application/routing/dynamic-routes#convention)를 사용한다면 `as`와 `href` props를 조정해야 합니다. 예를 들어 proxy를 통해 다르게 보여 주고 싶은 `/dashboard/authed/[user]` 같은 Dynamic Route가 있다면 다음과 같이 작성합니다: `&lt;Link href={{ pathname: &#x27;/dashboard/authed/[user]&#x27;, query: { user: username } }} as=&quot;/dashboard/[user]&quot;&gt;Profile&lt;/Link&gt;`.
+
+
+
+
+
+## Version history || 버전 기록
+
+| Version   | Changes                                                                                                                                                                      |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `v16.2.0` | `transitionTypes` prop 추가.                                                                                                                                                  |
+| `v15.4.0` | 기본 `prefetch` 동작의 alias로 `auto` 추가.                                                                                                                   |
+| `v15.3.0` | `onNavigate` API 추가                                                                                                                                                         |
+| `v13.0.0` | 더 이상 자식 `&lt;a&gt;` tag가 필요하지 않음. codebase를 자동으로 업데이트하는 [codemod](/docs/app/guides/upgrading/codemods#remove-a-tags-from-link-components)가 제공됨. |
+| `v10.0.0` | dynamic route를 가리키는 `href` props가 자동으로 resolve되며 더 이상 `as` prop이 필요하지 않음.                                                                      |
+| `v8.0.0`  | prefetching 성능 개선.                                                                                                                                            |
+| `v1.0.0`  | `next/link` 도입.                                                                                                                                                      |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

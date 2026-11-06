@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Next.js Cache Handler (Custom Next.js Cache Handler) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/config/next-config-js/incrementalCacheHandlerPath" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/config/next-config-js/incrementalCacheHandlerPath" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/incrementalCacheHandlerPath.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config.html">Configuration</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config-next-config-js.html">next.config.js</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Custom Next.js Cache Handler<span class="sub">Custom Next.js Cache Handler</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>cache된 page와 data를 durable storage에 영구 저장하거나, Next.js 애플리케이션의 여러 container 또는 instance 간에 cache를 공유하고 싶다면 Next.js cache 위치를 설정할 수 있습니다.</p><div class="en-orig"><p>You can configure the Next.js cache location if you want to persist cached pages and data to durable storage, or share the cache across multiple containers or instances of your Next.js application.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>cacheHandler</code>(단수) configuration은 ISR, route handler response, 최적화된 이미지의 저장과 revalidate 같은 server cache 작업에 Next.js가 전용으로 사용합니다. <code>&#x27;use cache&#x27;</code> directive에는 사용되지 <strong>않습니다</strong>. <code>&#x27;use cache&#x27;</code> directive에는 대신 <a href="app-api-reference-config-next-config-js-cacheHandlers.html"><code>cacheHandlers</code></a>(복수)를 사용하세요. <a href="app-api-reference-config-next-config-js-cacheMaxMemorySize.html"><code>cacheMaxMemorySize</code></a>는 둘 모두와 별개이며, 각각의 in-memory cache 크기를 정합니다.</p><div class="en-orig"><p>The <code>cacheHandler</code> (singular) configuration is specifically used by Next.js for server cache operations such as storing and revalidating ISR, route handler responses, and optimized images. It is <strong>not</strong> used by <code>&#x27;use cache&#x27;</code> directives. For <code>&#x27;use cache&#x27;</code> directives, use <a href="app-api-reference-config-next-config-js-cacheHandlers.html"><code>cacheHandlers</code></a> (plural) instead. <a href="app-api-reference-config-next-config-js-cacheMaxMemorySize.html"><code>cacheMaxMemorySize</code></a> is separate from both, and sizes the in-memory cache for each.</p></div></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  cacheHandler: require.resolve(&#x27;./cache-handler.js&#x27;),
+  cacheMaxMemorySize: 0, // disable default in-memory caching
+}</code></pre></div></div>
+<p>동작하는 구현은 <a href="https://github.com/vercel/next.js/tree/canary/examples/cache-handler-redis" target="_blank" rel="noopener">Redis <code>cacheHandler</code> 예제</a>를, shared store 기반 handler에 필요한 사항은 <a href="app-guides-self-hosting.html#configuring-caching">Configuring Caching</a>을 참고하세요.</p><div class="en-orig"><p>See the <a href="https://github.com/vercel/next.js/tree/canary/examples/cache-handler-redis" target="_blank" rel="noopener">Redis <code>cacheHandler</code> example</a> for a working implementation, and <a href="app-guides-self-hosting.html#configuring-caching">Configuring Caching</a> for what a handler backed by a shared store needs.</p></div>
+<h2 class="sec" id="api-reference"><a class="anchor" href="#api-reference">API Reference<span class="ko">API 레퍼런스</span></a></h2>
+<p>cache handler는 다음 method를 구현할 수 있습니다: <code>get</code>, <code>set</code>, <code>revalidateTag</code>, <code>resetRequestCache</code>.</p><div class="en-orig"><p>The cache handler can implement the following methods: <code>get</code>, <code>set</code>, <code>revalidateTag</code>, and <code>resetRequestCache</code>.</p></div>
+<h3 class="sec" id="get"><a class="anchor" href="#get"><code>get()</code></a></h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Parameter</th><th>Type</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>key</code></td><td><code>string</code></td><td>cache된 값의 key입니다.</td></tr>
+<tr><td><code>ctx</code></td><td><code>object</code></td><td>cache entry 종류를 포함한 context입니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>key</code></td><td><code>string</code></td><td>The key to the cached value.</td></tr>
+<tr><td><code>ctx</code></td><td><code>object</code></td><td>Context including the cache entry kind.</td></tr>
+</tbody></table></div></div>
+<p><code>ctx</code> parameter에는 조회하는 cache entry의 type을 나타내는 <code>kind</code> property가 들어 있습니다. 가능한 값은 <code>&#x27;APP_PAGE&#x27;</code>, <code>&#x27;APP_ROUTE&#x27;</code>, <code>&#x27;PAGES&#x27;</code>, <code>&#x27;FETCH&#x27;</code>, <code>&#x27;IMAGE&#x27;</code>입니다.</p><div class="en-orig"><p>The <code>ctx</code> parameter contains a <code>kind</code> property that indicates the type of cache entry being retrieved. Possible values include <code>&#x27;APP_PAGE&#x27;</code>, <code>&#x27;APP_ROUTE&#x27;</code>, <code>&#x27;PAGES&#x27;</code>, <code>&#x27;FETCH&#x27;</code>, and <code>&#x27;IMAGE&#x27;</code>.</p></div>
+<p>cache key는 opaque identifier입니다. entry를 읽고 쓸 때 key 전체를 그대로 유지하세요. key는 request pathname이 아닙니다.</p><div class="en-orig"><p>Cache keys are opaque identifiers. Preserve the entire key when reading and writing entries; a key is not a request pathname.</p></div>
+<p>response key에는 서로 다른 route가 entry를 공유하지 않도록 response 종류와 source route의 SHA-256 hash가 포함됩니다. Pages Router source는 route definition의 canonical <code>pathname</code>을 사용하므로, index module은 두 bundler에서 같은 identity를 가집니다. App Router source는 route group과 parallel slot을 포함한 전체 <code>page</code> module 이름을 사용합니다. 예를 들어 <code>/blog/[slug]</code>로 생성된 <code>/blog/post</code>의 Pages Router response는 <code>/route-cache/PAGES/&lt;route-hash&gt;/$/blog/post</code>를 사용하며, 여기서 <code>&lt;route-hash&gt;</code>는 UTF-8 source 문자열 <code>/blog/[slug]</code>의 64자리 16진수 SHA-256 digest입니다. 이렇게 하면 추가되는 directory 깊이가 제한되고 disk에서 Unicode source 이름이 길게 펼쳐지는 것을 피할 수 있습니다. request pathname은 그대로 읽을 수 있지만, source route는 hash로부터 복원할 수 없습니다. 이전에 key를 pathname으로 해석하던 handler는 이 namespace를 고려해야 합니다. fetch cache key는 변경되지 않았습니다.</p><div class="en-orig"><p>Response keys include the response kind and a SHA-256 hash of the source route to keep different routes from sharing entries. Pages Router sources use the route definition's canonical <code>pathname</code>, so an index module has the same identity in both bundlers. App Router sources use the full <code>page</code> module name, including route groups and parallel slots. For example, a Pages Router response for <code>/blog/post</code> generated by <code>/blog/[slug]</code> uses <code>/route-cache/PAGES/&lt;route-hash&gt;/$/blog/post</code>, where <code>&lt;route-hash&gt;</code> is the 64-character hexadecimal SHA-256 digest of the UTF-8 source string <code>/blog/[slug]</code>. This bounds the added directory depth and avoids expanding Unicode source names on disk. The request pathname remains readable; the source route cannot be recovered from its hash. Handlers that previously interpreted keys as pathnames must account for this namespace. Fetch cache keys are unchanged.</p></div>
+<p>build adapter가 없으면 prerender된 response는 기존의 <code>server/pages</code>와 <code>server/app</code> 경로에 그대로 남습니다. 그 metadata는 각 immutable build seed를 만든 정확한 scoped key, source owner, fallback 상태를 식별합니다. 내장 filesystem cache는 기존 seed를 읽기 전에 그 metadata를 검증한 다음, 원래 artifact와 그 age를 유지하면서 전체 response를 <code>server/route-cache</code>로 승격합니다. adapter가 설정되어 있으면 build 시점의 response artifact는 scoped <code>server/route-cache</code> key에 바로 기록되므로, adapter가 이를 package하기 전에 충돌하는 route가 서로를 덮어쓸 수 없습니다. static <code>output: &#x27;export&#x27;</code>는 계속 일반적인 public export 파일을 출력합니다. runtime의 읽기와 쓰기는 scoped key만 사용합니다. custom cache handler는 opaque scoped key를 받으며 기존 pathname으로 조회되는 일은 없습니다. 외부 response cache는 그 key를 변경 없이 유지해야 합니다.</p><div class="en-orig"><p>Without a build adapter, prerendered responses remain at their historical <code>server/pages</code> and <code>server/app</code> paths. Their metadata identifies the exact scoped key, source owner, and fallback status that produced each immutable build seed. The built-in filesystem cache verifies that metadata before reading a historical seed, then promotes the complete response to <code>server/route-cache</code> while retaining the original artifact and its age. When an adapter is configured, build-time response artifacts are written directly to their scoped <code>server/route-cache</code> keys so colliding routes cannot overwrite one another before the adapter packages them. Static <code>output: &#x27;export&#x27;</code> continues to emit normal public export files. Runtime reads and writes use only scoped keys. Custom cache handlers receive the opaque scoped key and are never queried with a historical pathname; an external response cache must preserve that key unchanged.</p></div>
+<p>runtime packaging은 prerender manifest에 있는 기존 source-route metadata를 보존해야 합니다. Next.js는 이 metadata를 사용해 선택된 route의 허용 parameter와 rendering mode도 검증합니다.</p><div class="en-orig"><p>Runtime packaging must preserve the existing source-route metadata in the prerender manifest. Next.js also uses it to verify the allowed parameters and rendering mode of the selected route.</p></div>
+<p>Next.js를 호출하기 전에 cache된 response를 읽는 integration도 entry를 선택할 때 source-route 소유 관계를 보존해야 합니다. route namespace를 제거하거나 pathname만 사용하는 cache entry로 fallback하면 이 격리가 무력화됩니다.</p><div class="en-orig"><p>Integrations that read cached responses before invoking Next.js must also preserve source-route ownership when selecting entries. Removing the route namespace or falling back to pathname-only cache entries defeats that isolation.</p></div>
+<p>cache된 값을 반환하며, 찾지 못하면 <code>null</code>을 반환합니다.</p><div class="en-orig"><p>Returns the cached value or <code>null</code> if not found.</p></div>
+<h3 class="sec" id="set"><a class="anchor" href="#set"><code>set()</code></a></h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Parameter</th><th>Type</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>key</code></td><td><code>string</code></td><td>data를 저장할 key입니다.</td></tr>
+<tr><td><code>data</code></td><td>Data 또는 <code>null</code></td><td>cache할 data입니다.</td></tr>
+<tr><td><code>ctx</code></td><td><code>{ tags: [] }</code></td><td>제공된 cache tag입니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>key</code></td><td><code>string</code></td><td>The key to store the data under.</td></tr>
+<tr><td><code>data</code></td><td>Data or <code>null</code></td><td>The data to be cached.</td></tr>
+<tr><td><code>ctx</code></td><td><code>{ tags: [] }</code></td><td>The cache tags provided.</td></tr>
+</tbody></table></div></div>
+<p><code>data</code> object에는 cache entry의 type을 나타내는 <code>kind</code> property가 들어 있습니다. image optimization의 경우 <code>kind</code>는 <code>&#x27;IMAGE&#x27;</code>이고, data에는 <code>buffer</code>, <code>etag</code>, <code>extension</code>, <code>revalidate</code> 같은 property가 포함됩니다.</p><div class="en-orig"><p>The <code>data</code> object contains a <code>kind</code> property that indicates the type of cache entry. For image optimization, <code>kind</code> will be <code>&#x27;IMAGE&#x27;</code> and the data will include properties like <code>buffer</code>, <code>etag</code>, <code>extension</code>, and <code>revalidate</code>.</p></div>
+<p><code>Promise&lt;void&gt;</code>를 반환합니다.</p><div class="en-orig"><p>Returns <code>Promise&lt;void&gt;</code>.</p></div>
+<h3 class="sec" id="revalidatetag"><a class="anchor" href="#revalidatetag"><code>revalidateTag()</code></a></h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Parameter</th><th>Type</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>tag</code></td><td><code>string</code> 또는 <code>string[]</code></td><td>revalidate할 cache tag입니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Parameter</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>tag</code></td><td><code>string</code> or <code>string[]</code></td><td>The cache tags to revalidate.</td></tr>
+</tbody></table></div></div>
+<p><code>Promise&lt;void&gt;</code>를 반환합니다. <a href="app-guides-incremental-static-regeneration.html">data revalidate</a> 또는 <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag()</code></a> 함수에 대해 더 알아보세요.</p><div class="en-orig"><p>Returns <code>Promise&lt;void&gt;</code>. Learn more about <a href="app-guides-incremental-static-regeneration.html">revalidating data</a> or the <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag()</code></a> function.</p></div>
+<h3 class="sec" id="resetrequestcache"><a class="anchor" href="#resetrequestcache"><code>resetRequestCache()</code></a></h3>
+<p>이 method는 다음 request 전에 단일 request를 위한 임시 in-memory cache를 초기화합니다.</p><div class="en-orig"><p>This method resets the temporary in-memory cache for a single request before the next request.</p></div>
+<p><code>void</code>를 반환합니다.</p><div class="en-orig"><p>Returns <code>void</code>.</p></div>
+<p><strong>Good to know:</strong></p><div class="en-orig"><p><strong>Good to know:</strong></p></div>
+<ul>
+<li><code>revalidatePath</code>는 cache tag 위에 얹힌 편의 layer입니다. <code>revalidatePath</code>를 호출하면 <code>revalidateTag</code> 함수가 호출되며, 그 안에서 path를 기준으로 cache key에 tag를 붙일지 선택할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>revalidatePath</code> is a convenience layer on top of cache tags. Calling <code>revalidatePath</code> will call your <code>revalidateTag</code> function, which you can then choose if you want to tag cache keys based on the path.</li>
+</ul></div>
+<h2 class="sec" id="image-optimization-caching"><a class="anchor" href="#image-optimization-caching">Image Optimization Caching</a></h2>
+<p><code>cacheHandler</code>는 <code>next/image</code>로 최적화된 이미지를 cache하는 데도 사용할 수 있습니다. 이를 활성화하려면 <code>next.config.js</code>에서 <code>images.customCacheHandler</code>를 <code>true</code>로 설정하세요:</p><div class="en-orig"><p>The <code>cacheHandler</code> can also be used for caching optimized images from <code>next/image</code>. To enable this, set <code>images.customCacheHandler</code> to <code>true</code> in your <code>next.config.js</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  cacheHandler: require.resolve(&#x27;./cache-handler.js&#x27;),
+  images: {
+    customCacheHandler: true,
+  },
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 opt-in flag는 다음 major 버전에서 기본 동작이 됩니다. 지금 설정해 두면 cache handler가 image optimization entry를 처리하도록 미리 준비할 수 있습니다.</p><div class="en-orig"><p>This opt-in flag will become the default behavior in the next major version. Setting it now allows you to prepare your cache handler for image optimization entries.</p></div></div></div>
+<p><code>kind</code> property를 사용해 cache entry type을 구분하고, 필요하면 이미지를 따로 처리할 수 있습니다. 예를 들어 eviction policy를 구현하거나 이미지를 다른 위치에 저장할 수 있습니다.</p><div class="en-orig"><p>You can use the <code>kind</code> property to differentiate between cache entry types and handle images separately if needed, for example to implement an eviction policy or store images in a different location.</p></div>
+<p>image cache entry를 처리할 때 <code>kind</code>는 <code>&#x27;IMAGE&#x27;</code>이고, data에는 <code>buffer</code>, <code>etag</code>, <code>extension</code>, <code>revalidate</code> property가 포함됩니다.</p><div class="en-orig"><p>When handling image cache entries, the <code>kind</code> will be <code>&#x27;IMAGE&#x27;</code> and the data will include <code>buffer</code>, <code>etag</code>, <code>extension</code>, and <code>revalidate</code> properties.</p></div>
+<h2 class="sec" id="platform-support"><a class="anchor" href="#platform-support">Platform Support<span class="ko">플랫폼 지원</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Deployment Option</th><th>지원 여부</th></tr></thead>
+<tbody>
+<tr><td><a href="app-getting-started-deploying.html#nodejs-server">Node.js server</a></td><td>Yes</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#docker">Docker container</a></td><td>Yes</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#static-export">Static export</a></td><td>No</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#adapters">Adapters</a></td><td>플랫폼별 상이</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Deployment Option</th><th>Supported</th></tr></thead>
+<tbody>
+<tr><td><a href="app-getting-started-deploying.html#nodejs-server">Node.js server</a></td><td>Yes</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#docker">Docker container</a></td><td>Yes</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#static-export">Static export</a></td><td>No</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#adapters">Adapters</a></td><td>Platform-specific</td></tr>
+</tbody></table></div></div>
+<p>Next.js를 self-hosting할 때 <a href="app-guides-self-hosting.html#caching-and-isr">ISR을 설정</a>하는 방법을 알아보세요.</p><div class="en-orig"><p>Learn how to <a href="app-guides-self-hosting.html#caching-and-isr">configure ISR</a> when self-hosting Next.js.</p></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>버전</th><th>변경 사항</th></tr></thead>
+<tbody>
+<tr><td><code>v16.2.0</code></td><td>image optimization caching에 대한 <code>cacheHandler</code> 지원.</td></tr>
+<tr><td><code>v14.1.0</code></td><td><code>cacheHandler</code>로 이름이 바뀌고 stable이 됨.</td></tr>
+<tr><td><code>v13.4.0</code></td><td><code>revalidateTag</code>에 대한 <code>incrementalCacheHandlerPath</code> 지원.</td></tr>
+<tr><td><code>v13.4.0</code></td><td>standalone output에 대한 <code>incrementalCacheHandlerPath</code> 지원.</td></tr>
+<tr><td><code>v12.2.0</code></td><td>Experimental <code>incrementalCacheHandlerPath</code> 추가.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.2.0</code></td><td><code>cacheHandler</code> support for image optimization caching.</td></tr>
+<tr><td><code>v14.1.0</code></td><td>Renamed to <code>cacheHandler</code> and became stable.</td></tr>
+<tr><td><code>v13.4.0</code></td><td><code>incrementalCacheHandlerPath</code> support for <code>revalidateTag</code>.</td></tr>
+<tr><td><code>v13.4.0</code></td><td><code>incrementalCacheHandlerPath</code> support for standalone output.</td></tr>
+<tr><td><code>v12.2.0</code></td><td>Experimental <code>incrementalCacheHandlerPath</code> added.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/incrementalCacheHandlerPath.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/incrementalCacheHandlerPath" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-config-next-config-js-images.html" class="prev"><div class="dir">← 이전</div><div class="ttl">images</div><div class="ttl-ko">images</div></a>
+      <a href="app-api-reference-config-next-config-js-inlineCss.html" class="next"><div class="dir">다음 →</div><div class="ttl">inlineCss</div><div class="ttl-ko">inlineCss</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/incrementalCacheHandlerPath" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#api-reference">API Reference</a></li><li class="l3"><a href="#get"><code>get()</code></a></li><li class="l3"><a href="#set"><code>set()</code></a></li><li class="l3"><a href="#revalidatetag"><code>revalidateTag()</code></a></li><li class="l3"><a href="#resetrequestcache"><code>resetRequestCache()</code></a></li><li class="l2"><a href="#image-optimization-caching">Image Optimization Caching</a></li><li class="l2"><a href="#platform-support">Platform Support</a></li><li class="l2"><a href="#version-history">Version History</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+cache된 page와 data를 durable storage에 영구 저장하거나, Next.js 애플리케이션의 여러 container 또는 instance 간에 cache를 공유하고 싶다면 Next.js cache 위치를 설정할 수 있습니다.
+
+&gt; **Good to know**: `cacheHandler`(단수) configuration은 ISR, route handler response, 최적화된 이미지의 저장과 revalidate 같은 server cache 작업에 Next.js가 전용으로 사용합니다. `&#x27;use cache&#x27;` directive에는 사용되지 **않습니다**. `&#x27;use cache&#x27;` directive에는 대신 [`cacheHandlers`](/docs/app/api-reference/config/next-config-js/cacheHandlers)(복수)를 사용하세요. [`cacheMaxMemorySize`](/docs/app/api-reference/config/next-config-js/cacheMaxMemorySize)는 둘 모두와 별개이며, 각각의 in-memory cache 크기를 정합니다.
+
+[[CODE 1]]
+
+동작하는 구현은 [Redis `cacheHandler` 예제](https://github.com/vercel/next.js/tree/canary/examples/cache-handler-redis)를, shared store 기반 handler에 필요한 사항은 [Configuring Caching](/docs/app/guides/self-hosting#configuring-caching)을 참고하세요.
+
+## API Reference || API 레퍼런스
+
+cache handler는 다음 method를 구현할 수 있습니다: `get`, `set`, `revalidateTag`, `resetRequestCache`.
+
+### `get()`
+
+| Parameter | Type     | 설명                             |
+| --------- | -------- | --------------------------------------- |
+| `key`     | `string` | cache된 값의 key입니다.            |
+| `ctx`     | `object` | cache entry 종류를 포함한 context입니다. |
+
+`ctx` parameter에는 조회하는 cache entry의 type을 나타내는 `kind` property가 들어 있습니다. 가능한 값은 `&#x27;APP_PAGE&#x27;`, `&#x27;APP_ROUTE&#x27;`, `&#x27;PAGES&#x27;`, `&#x27;FETCH&#x27;`, `&#x27;IMAGE&#x27;`입니다.
+
+cache key는 opaque identifier입니다. entry를 읽고 쓸 때 key 전체를 그대로 유지하세요. key는 request pathname이 아닙니다.
+
+response key에는 서로 다른 route가 entry를 공유하지 않도록 response 종류와 source route의 SHA-256 hash가 포함됩니다. Pages Router source는 route definition의 canonical `pathname`을 사용하므로, index module은 두 bundler에서 같은 identity를 가집니다. App Router source는 route group과 parallel slot을 포함한 전체 `page` module 이름을 사용합니다. 예를 들어 `/blog/[slug]`로 생성된 `/blog/post`의 Pages Router response는 `/route-cache/PAGES/&lt;route-hash&gt;/$/blog/post`를 사용하며, 여기서 `&lt;route-hash&gt;`는 UTF-8 source 문자열 `/blog/[slug]`의 64자리 16진수 SHA-256 digest입니다. 이렇게 하면 추가되는 directory 깊이가 제한되고 disk에서 Unicode source 이름이 길게 펼쳐지는 것을 피할 수 있습니다. request pathname은 그대로 읽을 수 있지만, source route는 hash로부터 복원할 수 없습니다. 이전에 key를 pathname으로 해석하던 handler는 이 namespace를 고려해야 합니다. fetch cache key는 변경되지 않았습니다.
+
+build adapter가 없으면 prerender된 response는 기존의 `server/pages`와 `server/app` 경로에 그대로 남습니다. 그 metadata는 각 immutable build seed를 만든 정확한 scoped key, source owner, fallback 상태를 식별합니다. 내장 filesystem cache는 기존 seed를 읽기 전에 그 metadata를 검증한 다음, 원래 artifact와 그 age를 유지하면서 전체 response를 `server/route-cache`로 승격합니다. adapter가 설정되어 있으면 build 시점의 response artifact는 scoped `server/route-cache` key에 바로 기록되므로, adapter가 이를 package하기 전에 충돌하는 route가 서로를 덮어쓸 수 없습니다. static `output: &#x27;export&#x27;`는 계속 일반적인 public export 파일을 출력합니다. runtime의 읽기와 쓰기는 scoped key만 사용합니다. custom cache handler는 opaque scoped key를 받으며 기존 pathname으로 조회되는 일은 없습니다. 외부 response cache는 그 key를 변경 없이 유지해야 합니다.
+
+runtime packaging은 prerender manifest에 있는 기존 source-route metadata를 보존해야 합니다. Next.js는 이 metadata를 사용해 선택된 route의 허용 parameter와 rendering mode도 검증합니다.
+
+Next.js를 호출하기 전에 cache된 response를 읽는 integration도 entry를 선택할 때 source-route 소유 관계를 보존해야 합니다. route namespace를 제거하거나 pathname만 사용하는 cache entry로 fallback하면 이 격리가 무력화됩니다.
+
+cache된 값을 반환하며, 찾지 못하면 `null`을 반환합니다.
+
+### `set()`
+
+| Parameter | Type           | 설명                      |
+| --------- | -------------- | -------------------------------- |
+| `key`     | `string`       | data를 저장할 key입니다. |
+| `data`    | Data 또는 `null` | cache할 data입니다.           |
+| `ctx`     | `{ tags: [] }` | 제공된 cache tag입니다.         |
+
+`data` object에는 cache entry의 type을 나타내는 `kind` property가 들어 있습니다. image optimization의 경우 `kind`는 `&#x27;IMAGE&#x27;`이고, data에는 `buffer`, `etag`, `extension`, `revalidate` 같은 property가 포함됩니다.
+
+`Promise&lt;void&gt;`를 반환합니다.
+
+### `revalidateTag()`
+
+| Parameter | Type                   | 설명                   |
+| --------- | ---------------------- | ----------------------------- |
+| `tag`     | `string` 또는 `string[]` | revalidate할 cache tag입니다. |
+
+`Promise&lt;void&gt;`를 반환합니다. [data revalidate](/docs/app/guides/incremental-static-regeneration) 또는 [`revalidateTag()`](/docs/app/api-reference/functions/revalidateTag) 함수에 대해 더 알아보세요.
+
+### `resetRequestCache()`
+
+이 method는 다음 request 전에 단일 request를 위한 임시 in-memory cache를 초기화합니다.
+
+`void`를 반환합니다.
+
+**Good to know:**
+
+- `revalidatePath`는 cache tag 위에 얹힌 편의 layer입니다. `revalidatePath`를 호출하면 `revalidateTag` 함수가 호출되며, 그 안에서 path를 기준으로 cache key에 tag를 붙일지 선택할 수 있습니다.
+
+## Image Optimization Caching || image optimization caching
+
+`cacheHandler`는 `next/image`로 최적화된 이미지를 cache하는 데도 사용할 수 있습니다. 이를 활성화하려면 `next.config.js`에서 `images.customCacheHandler`를 `true`로 설정하세요:
+
+[[CODE 2]]
+
+&gt; **Good to know**: 이 opt-in flag는 다음 major 버전에서 기본 동작이 됩니다. 지금 설정해 두면 cache handler가 image optimization entry를 처리하도록 미리 준비할 수 있습니다.
+
+`kind` property를 사용해 cache entry type을 구분하고, 필요하면 이미지를 따로 처리할 수 있습니다. 예를 들어 eviction policy를 구현하거나 이미지를 다른 위치에 저장할 수 있습니다.
+
+image cache entry를 처리할 때 `kind`는 `&#x27;IMAGE&#x27;`이고, data에는 `buffer`, `etag`, `extension`, `revalidate` property가 포함됩니다.
+
+## Platform Support || 플랫폼 지원
+
+| Deployment Option                                                   | 지원 여부         |
+| ------------------------------------------------------------------- | ----------------- |
+| [Node.js server](/docs/app/getting-started/deploying#nodejs-server) | Yes               |
+| [Docker container](/docs/app/getting-started/deploying#docker)      | Yes               |
+| [Static export](/docs/app/getting-started/deploying#static-export)  | No                |
+| [Adapters](/docs/app/getting-started/deploying#adapters)            | 플랫폼별 상이 |
+
+Next.js를 self-hosting할 때 [ISR을 설정](/docs/app/guides/self-hosting#caching-and-isr)하는 방법을 알아보세요.
+
+## Version History || 버전 기록
+
+| 버전   | 변경 사항                                                      |
+| --------- | ------------------------------------------------------------ |
+| `v16.2.0` | image optimization caching에 대한 `cacheHandler` 지원.       |
+| `v14.1.0` | `cacheHandler`로 이름이 바뀌고 stable이 됨.                 |
+| `v13.4.0` | `revalidateTag`에 대한 `incrementalCacheHandlerPath` 지원.   |
+| `v13.4.0` | standalone output에 대한 `incrementalCacheHandlerPath` 지원. |
+| `v12.2.0` | Experimental `incrementalCacheHandlerPath` 추가.            |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Edge Runtime (Edge Runtime) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/api-reference/edge" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/api-reference/edge" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/07-edge.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference.html">API Reference</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Edge Runtime<span class="sub">Edge Runtime</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js에는 애플리케이션에서 사용할 수 있는 두 가지 server runtime이 있습니다:</p><div class="en-orig"><p>Next.js has two server runtimes you can use in your application:</p></div>
+<ul>
+<li><strong>Node.js Runtime</strong> (기본값): 모든 Node.js API에 접근할 수 있으며 애플리케이션을 rendering하는 데 사용됩니다.</li>
+<li><strong>Edge Runtime</strong>: 더 제한된 <a href="#reference">API 집합</a>을 포함하며, <a href="app-api-reference-file-conventions-proxy.html">Proxy</a>에서 사용됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The <strong>Node.js Runtime</strong> (default), which has access to all Node.js APIs and is used for rendering your application.</li>
+<li>The <strong>Edge Runtime</strong> which contains a more limited <a href="#reference">set of APIs</a>, used in <a href="app-api-reference-file-conventions-proxy.html">Proxy</a>.</li>
+</ul></div>
+<h2 class="sec" id="caveats"><a class="anchor" href="#caveats">Caveats<span class="ko">주의 사항</span></a></h2>
+<ul>
+<li>Edge Runtime은 모든 Node.js API를 지원하지는 않습니다. 일부 package는 예상대로 동작하지 않을 수 있습니다.</li>
+<li>Edge Runtime은 Incremental Static Regeneration(ISR)을 지원하지 않습니다.</li>
+<li>두 runtime 모두 deployment adapter에 따라 <a href="app-api-reference-file-conventions-loading.html">streaming</a>을 지원할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The Edge Runtime does not support all Node.js APIs. Some packages may not work as expected.</li>
+<li>The Edge Runtime does not support Incremental Static Regeneration (ISR).</li>
+<li>Both runtimes can support <a href="app-api-reference-file-conventions-loading.html">streaming</a> depending on your deployment adapter.</li>
+</ul></div>
+<h2 class="sec" id="reference"><a class="anchor" href="#reference">Reference<span class="ko">레퍼런스</span></a></h2>
+<p>Edge Runtime은 다음 API를 지원합니다:</p><div class="en-orig"><p>The Edge Runtime supports the following APIs:</p></div>
+<h3 class="sec" id="network-apis"><a class="anchor" href="#network-apis">Network APIs</a></h3>
+<div class="table-wrap"><table>
+<thead><tr><th>API</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Blob" target="_blank" rel="noopener"><code>Blob</code></a></td><td>blob을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Fetch_API" target="_blank" rel="noopener"><code>fetch</code></a></td><td>resource를 가져옵니다(fetch)</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/FetchEvent" target="_blank" rel="noopener"><code>FetchEvent</code></a></td><td>fetch event를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/File" target="_blank" rel="noopener"><code>File</code></a></td><td>파일을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/FormData" target="_blank" rel="noopener"><code>FormData</code></a></td><td>form data를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Headers" target="_blank" rel="noopener"><code>Headers</code></a></td><td>HTTP header를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Request" target="_blank" rel="noopener"><code>Request</code></a></td><td>HTTP request를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Response" target="_blank" rel="noopener"><code>Response</code></a></td><td>HTTP response를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/URLSearchParams" target="_blank" rel="noopener"><code>URLSearchParams</code></a></td><td>URL search parameter를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/WebSocket" target="_blank" rel="noopener"><code>WebSocket</code></a></td><td>websocket 연결을 나타냅니다</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>API</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Blob" target="_blank" rel="noopener"><code>Blob</code></a></td><td>Represents a blob</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Fetch_API" target="_blank" rel="noopener"><code>fetch</code></a></td><td>Fetches a resource</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/FetchEvent" target="_blank" rel="noopener"><code>FetchEvent</code></a></td><td>Represents a fetch event</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/File" target="_blank" rel="noopener"><code>File</code></a></td><td>Represents a file</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/FormData" target="_blank" rel="noopener"><code>FormData</code></a></td><td>Represents form data</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Headers" target="_blank" rel="noopener"><code>Headers</code></a></td><td>Represents HTTP headers</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Request" target="_blank" rel="noopener"><code>Request</code></a></td><td>Represents an HTTP request</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Response" target="_blank" rel="noopener"><code>Response</code></a></td><td>Represents an HTTP response</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/URLSearchParams" target="_blank" rel="noopener"><code>URLSearchParams</code></a></td><td>Represents URL search parameters</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/WebSocket" target="_blank" rel="noopener"><code>WebSocket</code></a></td><td>Represents a websocket connection</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="encoding-apis"><a class="anchor" href="#encoding-apis">Encoding APIs</a></h3>
+<div class="table-wrap"><table>
+<thead><tr><th>API</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><a href="https://developer.mozilla.org/en-US/docs/Web/API/atob" target="_blank" rel="noopener"><code>atob</code></a></td><td>base-64로 인코딩된 문자열을 디코딩합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/en-US/docs/Web/API/btoa" target="_blank" rel="noopener"><code>btoa</code></a></td><td>문자열을 base-64로 인코딩합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/TextDecoder" target="_blank" rel="noopener"><code>TextDecoder</code></a></td><td>Uint8Array를 문자열로 디코딩합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/TextDecoderStream" target="_blank" rel="noopener"><code>TextDecoderStream</code></a></td><td>stream용 chainable decoder입니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/TextEncoder" target="_blank" rel="noopener"><code>TextEncoder</code></a></td><td>문자열을 Uint8Array로 인코딩합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/TextEncoderStream" target="_blank" rel="noopener"><code>TextEncoderStream</code></a></td><td>stream용 chainable encoder입니다</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>API</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><a href="https://developer.mozilla.org/en-US/docs/Web/API/atob" target="_blank" rel="noopener"><code>atob</code></a></td><td>Decodes a base-64 encoded string</td></tr>
+<tr><td><a href="https://developer.mozilla.org/en-US/docs/Web/API/btoa" target="_blank" rel="noopener"><code>btoa</code></a></td><td>Encodes a string in base-64</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/TextDecoder" target="_blank" rel="noopener"><code>TextDecoder</code></a></td><td>Decodes a Uint8Array into a string</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/TextDecoderStream" target="_blank" rel="noopener"><code>TextDecoderStream</code></a></td><td>Chainable decoder for streams</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/TextEncoder" target="_blank" rel="noopener"><code>TextEncoder</code></a></td><td>Encodes a string into a Uint8Array</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/TextEncoderStream" target="_blank" rel="noopener"><code>TextEncoderStream</code></a></td><td>Chainable encoder for streams</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="stream-apis"><a class="anchor" href="#stream-apis">Stream APIs</a></h3>
+<div class="table-wrap"><table>
+<thead><tr><th>API</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/ReadableStream" target="_blank" rel="noopener"><code>ReadableStream</code></a></td><td>읽을 수 있는 stream을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBReader" target="_blank" rel="noopener"><code>ReadableStreamBYOBReader</code></a></td><td>ReadableStream의 reader를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultReader" target="_blank" rel="noopener"><code>ReadableStreamDefaultReader</code></a></td><td>ReadableStream의 reader를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/TransformStream" target="_blank" rel="noopener"><code>TransformStream</code></a></td><td>transform stream을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/WritableStream" target="_blank" rel="noopener"><code>WritableStream</code></a></td><td>쓸 수 있는 stream을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter" target="_blank" rel="noopener"><code>WritableStreamDefaultWriter</code></a></td><td>WritableStream의 writer를 나타냅니다</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>API</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/ReadableStream" target="_blank" rel="noopener"><code>ReadableStream</code></a></td><td>Represents a readable stream</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBReader" target="_blank" rel="noopener"><code>ReadableStreamBYOBReader</code></a></td><td>Represents a reader of a ReadableStream</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultReader" target="_blank" rel="noopener"><code>ReadableStreamDefaultReader</code></a></td><td>Represents a reader of a ReadableStream</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/TransformStream" target="_blank" rel="noopener"><code>TransformStream</code></a></td><td>Represents a transform stream</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/WritableStream" target="_blank" rel="noopener"><code>WritableStream</code></a></td><td>Represents a writable stream</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter" target="_blank" rel="noopener"><code>WritableStreamDefaultWriter</code></a></td><td>Represents a writer of a WritableStream</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="crypto-apis"><a class="anchor" href="#crypto-apis">Crypto APIs</a></h3>
+<div class="table-wrap"><table>
+<thead><tr><th>API</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Window/crypto" target="_blank" rel="noopener"><code>crypto</code></a></td><td>플랫폼의 암호화 기능에 접근할 수 있게 해 줍니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/CryptoKey" target="_blank" rel="noopener"><code>CryptoKey</code></a></td><td>암호화 key를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/SubtleCrypto" target="_blank" rel="noopener"><code>SubtleCrypto</code></a></td><td>hashing, signing, encryption, decryption 같은 일반적인 암호화 primitive에 접근할 수 있게 해 줍니다</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>API</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Window/crypto" target="_blank" rel="noopener"><code>crypto</code></a></td><td>Provides access to the cryptographic functionality of the platform</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/CryptoKey" target="_blank" rel="noopener"><code>CryptoKey</code></a></td><td>Represents a cryptographic key</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/SubtleCrypto" target="_blank" rel="noopener"><code>SubtleCrypto</code></a></td><td>Provides access to common cryptographic primitives, like hashing, signing, encryption or decryption</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="web-standard-apis"><a class="anchor" href="#web-standard-apis">Web Standard APIs</a></h3>
+<div class="table-wrap"><table>
+<thead><tr><th>API</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/AbortController" target="_blank" rel="noopener"><code>AbortController</code></a></td><td>원할 때 하나 이상의 DOM request를 중단(abort)할 수 있게 해 줍니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array" target="_blank" rel="noopener"><code>Array</code></a></td><td>값의 배열을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer" target="_blank" rel="noopener"><code>ArrayBuffer</code></a></td><td>일반적인 고정 길이 raw binary data buffer를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Atomics" target="_blank" rel="noopener"><code>Atomics</code></a></td><td>atomic 연산을 static method로 제공합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/BigInt" target="_blank" rel="noopener"><code>BigInt</code></a></td><td>임의 정밀도의 정수를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/BigInt64Array" target="_blank" rel="noopener"><code>BigInt64Array</code></a></td><td>64비트 부호 있는 정수의 typed array를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/BigUint64Array" target="_blank" rel="noopener"><code>BigUint64Array</code></a></td><td>64비트 부호 없는 정수의 typed array를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean" target="_blank" rel="noopener"><code>Boolean</code></a></td><td><code>true</code>와 <code>false</code> 두 값을 가질 수 있는 논리 엔티티를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/WindowOrWorkerGlobalScope/clearInterval" target="_blank" rel="noopener"><code>clearInterval</code></a></td><td>이전에 <code>setInterval()</code> 호출로 설정한, 시간 간격으로 반복되는 동작을 취소합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/WindowOrWorkerGlobalScope/clearTimeout" target="_blank" rel="noopener"><code>clearTimeout</code></a></td><td>이전에 <code>setTimeout()</code> 호출로 설정한, 시간 지정 반복 동작을 취소합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Console" target="_blank" rel="noopener"><code>console</code></a></td><td>브라우저의 debugging console에 접근할 수 있게 해 줍니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DataView" target="_blank" rel="noopener"><code>DataView</code></a></td><td><code>ArrayBuffer</code>의 일반적인 view를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date" target="_blank" rel="noopener"><code>Date</code></a></td><td>플랫폼에 독립적인 형식으로 특정 시점 하나를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/decodeURI" target="_blank" rel="noopener"><code>decodeURI</code></a></td><td><code>encodeURI</code> 또는 비슷한 루틴으로 만든 Uniform Resource Identifier(URI)를 디코딩합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent" target="_blank" rel="noopener"><code>decodeURIComponent</code></a></td><td><code>encodeURIComponent</code> 또는 비슷한 루틴으로 만든 Uniform Resource Identifier(URI) component를 디코딩합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/DOMException" target="_blank" rel="noopener"><code>DOMException</code></a></td><td>DOM에서 발생하는 error를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/encodeURI" target="_blank" rel="noopener"><code>encodeURI</code></a></td><td>특정 문자를 해당 문자의 UTF-8 인코딩을 나타내는 1~4개의 escape sequence로 바꿔 Uniform Resource Identifier(URI)를 인코딩합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent" target="_blank" rel="noopener"><code>encodeURIComponent</code></a></td><td>특정 문자를 해당 문자의 UTF-8 인코딩을 나타내는 1~4개의 escape sequence로 바꿔 Uniform Resource Identifier(URI) component를 인코딩합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error" target="_blank" rel="noopener"><code>Error</code></a></td><td>문장을 실행하거나 property에 접근할 때 발생하는 error를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/EvalError" target="_blank" rel="noopener"><code>EvalError</code></a></td><td>전역 함수 <code>eval()</code>과 관련해 발생하는 error를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Float32Array" target="_blank" rel="noopener"><code>Float32Array</code></a></td><td>32비트 부동소수점 숫자의 typed array를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Float64Array" target="_blank" rel="noopener"><code>Float64Array</code></a></td><td>64비트 부동소수점 숫자의 typed array를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Function" target="_blank" rel="noopener"><code>Function</code></a></td><td>함수를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity" target="_blank" rel="noopener"><code>Infinity</code></a></td><td>수학적 무한대(Infinity) 값을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Int8Array" target="_blank" rel="noopener"><code>Int8Array</code></a></td><td>8비트 부호 있는 정수의 typed array를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Int16Array" target="_blank" rel="noopener"><code>Int16Array</code></a></td><td>16비트 부호 있는 정수의 typed array를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Int32Array" target="_blank" rel="noopener"><code>Int32Array</code></a></td><td>32비트 부호 있는 정수의 typed array를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl" target="_blank" rel="noopener"><code>Intl</code></a></td><td>국제화(internationalization)와 지역화(localization) 기능에 접근할 수 있게 해 줍니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/isFinite" target="_blank" rel="noopener"><code>isFinite</code></a></td><td>값이 유한한 숫자인지 판단합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/isNaN" target="_blank" rel="noopener"><code>isNaN</code></a></td><td>값이 <code>NaN</code>인지 아닌지 판단합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/JSON" target="_blank" rel="noopener"><code>JSON</code></a></td><td>JavaScript 값을 JSON 형식으로, 또는 JSON 형식에서 변환하는 기능을 제공합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map" target="_blank" rel="noopener"><code>Map</code></a></td><td>각 값이 한 번만 나타날 수 있는 값의 collection을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Math" target="_blank" rel="noopener"><code>Math</code></a></td><td>수학 함수와 상수에 접근할 수 있게 해 줍니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number" target="_blank" rel="noopener"><code>Number</code></a></td><td>숫자 값을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object" target="_blank" rel="noopener"><code>Object</code></a></td><td>모든 JavaScript object의 기반이 되는 object를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/parseFloat" target="_blank" rel="noopener"><code>parseFloat</code></a></td><td>문자열 인자를 파싱해 부동소수점 숫자를 반환합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/parseInt" target="_blank" rel="noopener"><code>parseInt</code></a></td><td>문자열 인자를 파싱해 지정한 진법(radix)의 정수를 반환합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank" rel="noopener"><code>Promise</code></a></td><td>비동기 작업의 최종 완료(또는 실패)와 그 결과 값을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Proxy" target="_blank" rel="noopener"><code>Proxy</code></a></td><td>기본 연산(예: property 조회, 할당, 열거, 함수 호출 등)에 대한 사용자 정의 동작을 정의하는 데 쓰이는 object를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/queueMicrotask" target="_blank" rel="noopener"><code>queueMicrotask</code></a></td><td>실행할 microtask를 queue에 넣습니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RangeError" target="_blank" rel="noopener"><code>RangeError</code></a></td><td>값이 허용된 집합이나 범위에 속하지 않을 때의 error를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError" target="_blank" rel="noopener"><code>ReferenceError</code></a></td><td>존재하지 않는 변수를 참조할 때의 error를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Reflect" target="_blank" rel="noopener"><code>Reflect</code></a></td><td>가로챌 수 있는(interceptable) JavaScript 연산을 위한 method를 제공합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp" target="_blank" rel="noopener"><code>RegExp</code></a></td><td>문자 조합을 매칭할 수 있게 해 주는 정규 표현식을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set" target="_blank" rel="noopener"><code>Set</code></a></td><td>각 값이 한 번만 나타날 수 있는 값의 collection을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/setInterval" target="_blank" rel="noopener"><code>setInterval</code></a></td><td>각 호출 사이에 고정된 시간 간격을 두고 함수를 반복 호출합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/setTimeout" target="_blank" rel="noopener"><code>setTimeout</code></a></td><td>지정한 밀리초가 지난 뒤 함수를 호출하거나 표현식을 평가합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer" target="_blank" rel="noopener"><code>SharedArrayBuffer</code></a></td><td>일반적인 고정 길이 raw binary data buffer를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String" target="_blank" rel="noopener"><code>String</code></a></td><td>문자의 시퀀스를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Web_Workers_API/Structured_clone_algorithm" target="_blank" rel="noopener"><code>structuredClone</code></a></td><td>값의 deep copy를 만듭니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol" target="_blank" rel="noopener"><code>Symbol</code></a></td><td>object property의 key로 사용되는 고유하고 불변인 data type을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError" target="_blank" rel="noopener"><code>SyntaxError</code></a></td><td>문법적으로 잘못된 코드를 해석하려 할 때의 error를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/TypeError" target="_blank" rel="noopener"><code>TypeError</code></a></td><td>값이 예상한 type이 아닐 때의 error를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array" target="_blank" rel="noopener"><code>Uint8Array</code></a></td><td>8비트 부호 없는 정수의 typed array를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray" target="_blank" rel="noopener"><code>Uint8ClampedArray</code></a></td><td>0-255 범위로 고정(clamp)된 8비트 부호 없는 정수의 typed array를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array" target="_blank" rel="noopener"><code>Uint32Array</code></a></td><td>32비트 부호 없는 정수의 typed array를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/URIError" target="_blank" rel="noopener"><code>URIError</code></a></td><td>전역 URI 처리 함수를 잘못된 방식으로 사용했을 때의 error를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/URL" target="_blank" rel="noopener"><code>URL</code></a></td><td>object URL을 만드는 데 쓰이는 static method를 제공하는 object를 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/URLPattern" target="_blank" rel="noopener"><code>URLPattern</code></a></td><td>URL pattern을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/URLSearchParams" target="_blank" rel="noopener"><code>URLSearchParams</code></a></td><td>key/value 쌍의 collection을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WeakMap" target="_blank" rel="noopener"><code>WeakMap</code></a></td><td>key가 약하게(weakly) 참조되는 key/value 쌍의 collection을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WeakSet" target="_blank" rel="noopener"><code>WeakSet</code></a></td><td>각 object가 한 번만 나타날 수 있는 object의 collection을 나타냅니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly" target="_blank" rel="noopener"><code>WebAssembly</code></a></td><td>WebAssembly에 접근할 수 있게 해 줍니다</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>API</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/AbortController" target="_blank" rel="noopener"><code>AbortController</code></a></td><td>Allows you to abort one or more DOM requests as and when desired</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array" target="_blank" rel="noopener"><code>Array</code></a></td><td>Represents an array of values</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer" target="_blank" rel="noopener"><code>ArrayBuffer</code></a></td><td>Represents a generic, fixed-length raw binary data buffer</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Atomics" target="_blank" rel="noopener"><code>Atomics</code></a></td><td>Provides atomic operations as static methods</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/BigInt" target="_blank" rel="noopener"><code>BigInt</code></a></td><td>Represents a whole number with arbitrary precision</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/BigInt64Array" target="_blank" rel="noopener"><code>BigInt64Array</code></a></td><td>Represents a typed array of 64-bit signed integers</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/BigUint64Array" target="_blank" rel="noopener"><code>BigUint64Array</code></a></td><td>Represents a typed array of 64-bit unsigned integers</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean" target="_blank" rel="noopener"><code>Boolean</code></a></td><td>Represents a logical entity and can have two values: <code>true</code> and <code>false</code></td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/WindowOrWorkerGlobalScope/clearInterval" target="_blank" rel="noopener"><code>clearInterval</code></a></td><td>Cancels a timed, repeating action which was previously established by a call to <code>setInterval()</code></td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/WindowOrWorkerGlobalScope/clearTimeout" target="_blank" rel="noopener"><code>clearTimeout</code></a></td><td>Cancels a timed, repeating action which was previously established by a call to <code>setTimeout()</code></td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Console" target="_blank" rel="noopener"><code>console</code></a></td><td>Provides access to the browser's debugging console</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DataView" target="_blank" rel="noopener"><code>DataView</code></a></td><td>Represents a generic view of an <code>ArrayBuffer</code></td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date" target="_blank" rel="noopener"><code>Date</code></a></td><td>Represents a single moment in time in a platform-independent format</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/decodeURI" target="_blank" rel="noopener"><code>decodeURI</code></a></td><td>Decodes a Uniform Resource Identifier (URI) previously created by <code>encodeURI</code> or by a similar routine</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent" target="_blank" rel="noopener"><code>decodeURIComponent</code></a></td><td>Decodes a Uniform Resource Identifier (URI) component previously created by <code>encodeURIComponent</code> or by a similar routine</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/DOMException" target="_blank" rel="noopener"><code>DOMException</code></a></td><td>Represents an error that occurs in the DOM</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/encodeURI" target="_blank" rel="noopener"><code>encodeURI</code></a></td><td>Encodes a Uniform Resource Identifier (URI) by replacing each instance of certain characters by one, two, three, or four escape sequences representing the UTF-8 encoding of the character</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent" target="_blank" rel="noopener"><code>encodeURIComponent</code></a></td><td>Encodes a Uniform Resource Identifier (URI) component by replacing each instance of certain characters by one, two, three, or four escape sequences representing the UTF-8 encoding of the character</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error" target="_blank" rel="noopener"><code>Error</code></a></td><td>Represents an error when trying to execute a statement or accessing a property</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/EvalError" target="_blank" rel="noopener"><code>EvalError</code></a></td><td>Represents an error that occurs regarding the global function <code>eval()</code></td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Float32Array" target="_blank" rel="noopener"><code>Float32Array</code></a></td><td>Represents a typed array of 32-bit floating point numbers</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Float64Array" target="_blank" rel="noopener"><code>Float64Array</code></a></td><td>Represents a typed array of 64-bit floating point numbers</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Function" target="_blank" rel="noopener"><code>Function</code></a></td><td>Represents a function</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity" target="_blank" rel="noopener"><code>Infinity</code></a></td><td>Represents the mathematical Infinity value</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Int8Array" target="_blank" rel="noopener"><code>Int8Array</code></a></td><td>Represents a typed array of 8-bit signed integers</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Int16Array" target="_blank" rel="noopener"><code>Int16Array</code></a></td><td>Represents a typed array of 16-bit signed integers</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Int32Array" target="_blank" rel="noopener"><code>Int32Array</code></a></td><td>Represents a typed array of 32-bit signed integers</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl" target="_blank" rel="noopener"><code>Intl</code></a></td><td>Provides access to internationalization and localization functionality</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/isFinite" target="_blank" rel="noopener"><code>isFinite</code></a></td><td>Determines whether a value is a finite number</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/isNaN" target="_blank" rel="noopener"><code>isNaN</code></a></td><td>Determines whether a value is <code>NaN</code> or not</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/JSON" target="_blank" rel="noopener"><code>JSON</code></a></td><td>Provides functionality to convert JavaScript values to and from the JSON format</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map" target="_blank" rel="noopener"><code>Map</code></a></td><td>Represents a collection of values, where each value may occur only once</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Math" target="_blank" rel="noopener"><code>Math</code></a></td><td>Provides access to mathematical functions and constants</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number" target="_blank" rel="noopener"><code>Number</code></a></td><td>Represents a numeric value</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object" target="_blank" rel="noopener"><code>Object</code></a></td><td>Represents the object that is the base of all JavaScript objects</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/parseFloat" target="_blank" rel="noopener"><code>parseFloat</code></a></td><td>Parses a string argument and returns a floating point number</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/parseInt" target="_blank" rel="noopener"><code>parseInt</code></a></td><td>Parses a string argument and returns an integer of the specified radix</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise" target="_blank" rel="noopener"><code>Promise</code></a></td><td>Represents the eventual completion (or failure) of an asynchronous operation, and its resulting value</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Proxy" target="_blank" rel="noopener"><code>Proxy</code></a></td><td>Represents an object that is used to define custom behavior for fundamental operations (e.g. property lookup, assignment, enumeration, function invocation, etc)</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/queueMicrotask" target="_blank" rel="noopener"><code>queueMicrotask</code></a></td><td>Queues a microtask to be executed</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RangeError" target="_blank" rel="noopener"><code>RangeError</code></a></td><td>Represents an error when a value is not in the set or range of allowed values</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError" target="_blank" rel="noopener"><code>ReferenceError</code></a></td><td>Represents an error when a non-existent variable is referenced</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Reflect" target="_blank" rel="noopener"><code>Reflect</code></a></td><td>Provides methods for interceptable JavaScript operations</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp" target="_blank" rel="noopener"><code>RegExp</code></a></td><td>Represents a regular expression, allowing you to match combinations of characters</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set" target="_blank" rel="noopener"><code>Set</code></a></td><td>Represents a collection of values, where each value may occur only once</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/setInterval" target="_blank" rel="noopener"><code>setInterval</code></a></td><td>Repeatedly calls a function, with a fixed time delay between each call</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/setTimeout" target="_blank" rel="noopener"><code>setTimeout</code></a></td><td>Calls a function or evaluates an expression after a specified number of milliseconds</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer" target="_blank" rel="noopener"><code>SharedArrayBuffer</code></a></td><td>Represents a generic, fixed-length raw binary data buffer</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String" target="_blank" rel="noopener"><code>String</code></a></td><td>Represents a sequence of characters</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/Web_Workers_API/Structured_clone_algorithm" target="_blank" rel="noopener"><code>structuredClone</code></a></td><td>Creates a deep copy of a value</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol" target="_blank" rel="noopener"><code>Symbol</code></a></td><td>Represents a unique and immutable data type that is used as the key of an object property</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError" target="_blank" rel="noopener"><code>SyntaxError</code></a></td><td>Represents an error when trying to interpret syntactically invalid code</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/TypeError" target="_blank" rel="noopener"><code>TypeError</code></a></td><td>Represents an error when a value is not of the expected type</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array" target="_blank" rel="noopener"><code>Uint8Array</code></a></td><td>Represents a typed array of 8-bit unsigned integers</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray" target="_blank" rel="noopener"><code>Uint8ClampedArray</code></a></td><td>Represents a typed array of 8-bit unsigned integers clamped to 0-255</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array" target="_blank" rel="noopener"><code>Uint32Array</code></a></td><td>Represents a typed array of 32-bit unsigned integers</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/URIError" target="_blank" rel="noopener"><code>URIError</code></a></td><td>Represents an error when a global URI handling function was used in a wrong way</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/URL" target="_blank" rel="noopener"><code>URL</code></a></td><td>Represents an object providing static methods used for creating object URLs</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/URLPattern" target="_blank" rel="noopener"><code>URLPattern</code></a></td><td>Represents a URL pattern</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/API/URLSearchParams" target="_blank" rel="noopener"><code>URLSearchParams</code></a></td><td>Represents a collection of key/value pairs</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WeakMap" target="_blank" rel="noopener"><code>WeakMap</code></a></td><td>Represents a collection of key/value pairs in which the keys are weakly referenced</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WeakSet" target="_blank" rel="noopener"><code>WeakSet</code></a></td><td>Represents a collection of objects in which each object may occur only once</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly" target="_blank" rel="noopener"><code>WebAssembly</code></a></td><td>Provides access to WebAssembly</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="nextjs-specific-polyfills"><a class="anchor" href="#nextjs-specific-polyfills">Next.js Specific Polyfills<span class="ko">Next.js 전용 Polyfill</span></a></h3>
+<ul>
+<li><a href="https://nodejs.org/api/async_context.html#class-asynclocalstorage" target="_blank" rel="noopener"><code>AsyncLocalStorage</code></a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://nodejs.org/api/async_context.html#class-asynclocalstorage" target="_blank" rel="noopener"><code>AsyncLocalStorage</code></a></li>
+</ul></div>
+<h3 class="sec" id="environment-variables"><a class="anchor" href="#environment-variables">Environment Variables<span class="ko">환경 변수</span></a></h3>
+<p><code>process.env</code>를 사용하면 <code>next dev</code>와 <code>next build</code> 모두에서 <a href="app-guides-environment-variables.html">Environment Variables</a>에 접근할 수 있습니다.</p><div class="en-orig"><p>You can use <code>process.env</code> to access <a href="app-guides-environment-variables.html">Environment Variables</a> for both <code>next dev</code> and <code>next build</code>.</p></div>
+<h3 class="sec" id="unsupported-apis"><a class="anchor" href="#unsupported-apis">Unsupported APIs<span class="ko">지원하지 않는 API</span></a></h3>
+<p>Edge Runtime에는 다음과 같은 제약이 있습니다:</p><div class="en-orig"><p>The Edge Runtime has some restrictions including:</p></div>
+<ul>
+<li>Native Node.js API는 <strong>지원되지 않습니다</strong>. 예를 들어 filesystem을 읽거나 쓸 수 없습니다.</li>
+<li><code>node_modules</code>는 ES Modules를 구현하고 native Node.js API를 사용하지 않는다면 사용할 <em>수 있습니다</em>.</li>
+<li><code>require</code>를 직접 호출하는 것은 <strong>허용되지 않습니다</strong>. 대신 ES Modules를 사용하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>Native Node.js APIs <strong>are not supported</strong>. For example, you can't read or write to the filesystem.</li>
+<li><code>node_modules</code> <em>can</em> be used, as long as they implement ES Modules and do not use native Node.js APIs.</li>
+<li>Calling <code>require</code> directly is <strong>not allowed</strong>. Use ES Modules instead.</li>
+</ul></div>
+<p>다음 JavaScript 언어 기능은 비활성화되어 있으며 <strong>동작하지 않습니다:</strong></p><div class="en-orig"><p>The following JavaScript language features are disabled, and <strong>will not work:</strong></p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>API</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/eval" target="_blank" rel="noopener"><code>eval</code></a></td><td>문자열로 표현된 JavaScript 코드를 평가합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Function" target="_blank" rel="noopener"><code>new Function(evalString)</code></a></td><td>인자로 전달된 코드로 새 함수를 만듭니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/compile" target="_blank" rel="noopener"><code>WebAssembly.compile</code></a></td><td>buffer source로부터 WebAssembly module을 compile합니다</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiate" target="_blank" rel="noopener"><code>WebAssembly.instantiate</code></a></td><td>buffer source로부터 WebAssembly module을 compile하고 instantiate합니다</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>API</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/eval" target="_blank" rel="noopener"><code>eval</code></a></td><td>Evaluates JavaScript code represented as a string</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Function" target="_blank" rel="noopener"><code>new Function(evalString)</code></a></td><td>Creates a new function with the code provided as an argument</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/compile" target="_blank" rel="noopener"><code>WebAssembly.compile</code></a></td><td>Compiles a WebAssembly module from a buffer source</td></tr>
+<tr><td><a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiate" target="_blank" rel="noopener"><code>WebAssembly.instantiate</code></a></td><td>Compiles and instantiates a WebAssembly module from a buffer source</td></tr>
+</tbody></table></div></div>
+<p>드물게 코드에 <em>runtime에 도달할 수 없고</em> treeshaking으로도 제거할 수 없는 dynamic code evaluation 문이 포함되거나 import될 수 있습니다.
+Proxy 설정에서 특정 파일을 허용하도록 이 검사를 완화할 수 있습니다:</p><div class="en-orig"><p>In rare cases, your code could contain (or import) some dynamic code evaluation statements which <em>cannot be reached at runtime</em> and which cannot be removed by treeshaking.
+You can relax the check to allow specific files with your Proxy configuration:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">proxy.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const config = {
+  unstable_allowDynamic: [
+    // allows a single file
+    &#x27;/lib/utilities.js&#x27;,
+    // use a glob to allow anything in the function-bind 3rd party module
+    &#x27;**/node_modules/function-bind/**&#x27;,
+  ],
+}</code></pre></div></div>
+<p><code>unstable_allowDynamic</code>은 특정 파일에 대해 dynamic code evaluation을 무시하는 <a href="https://github.com/micromatch/micromatch#matching-features" target="_blank" rel="noopener">glob</a> 또는 glob 배열입니다. glob은 애플리케이션 root 폴더를 기준으로 한 상대 경로입니다.</p><div class="en-orig"><p><code>unstable_allowDynamic</code> is a <a href="https://github.com/micromatch/micromatch#matching-features" target="_blank" rel="noopener">glob</a>, or an array of globs, ignoring dynamic code evaluation for specific files. The globs are relative to your application root folder.</p></div>
+<p>이 문들이 Edge에서 실행되면 <em>throw되어 runtime error를 일으킨다는</em> 점에 유의하세요.</p><div class="en-orig"><p>Be warned that if these statements are executed on the Edge, <em>they will throw and cause a runtime error</em>.</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/07-edge.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/api-reference/edge" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-api-reference-adapters-use-cases.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Use Cases</div><div class="ttl-ko">사용 사례</div></a>
+      <a href="pages-api-reference-turbopack.html" class="next"><div class="dir">다음 →</div><div class="ttl">Turbopack</div><div class="ttl-ko">Turbopack</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/api-reference/edge" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#caveats">Caveats</a></li><li class="l2"><a href="#reference">Reference</a></li><li class="l3"><a href="#network-apis">Network APIs</a></li><li class="l3"><a href="#encoding-apis">Encoding APIs</a></li><li class="l3"><a href="#stream-apis">Stream APIs</a></li><li class="l3"><a href="#crypto-apis">Crypto APIs</a></li><li class="l3"><a href="#web-standard-apis">Web Standard APIs</a></li><li class="l3"><a href="#nextjs-specific-polyfills">Next.js Specific Polyfills</a></li><li class="l3"><a href="#environment-variables">Environment Variables</a></li><li class="l3"><a href="#unsupported-apis">Unsupported APIs</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js에는 애플리케이션에서 사용할 수 있는 두 가지 server runtime이 있습니다:
+
+- **Node.js Runtime** (기본값): 모든 Node.js API에 접근할 수 있으며 애플리케이션을 rendering하는 데 사용됩니다.
+- **Edge Runtime**: 더 제한된 [API 집합](#reference)을 포함하며, [Proxy](/docs/app/api-reference/file-conventions/proxy)에서 사용됩니다.
+
+## Caveats || 주의 사항
+
+- Edge Runtime은 모든 Node.js API를 지원하지는 않습니다. 일부 package는 예상대로 동작하지 않을 수 있습니다.
+- Edge Runtime은 Incremental Static Regeneration(ISR)을 지원하지 않습니다.
+- 두 runtime 모두 deployment adapter에 따라 [streaming](/docs/app/api-reference/file-conventions/loading)을 지원할 수 있습니다.
+
+## Reference || 레퍼런스
+
+Edge Runtime은 다음 API를 지원합니다:
+
+### Network APIs
+
+| API | Description |
+| --- | --- |
+| [`Blob`](https://developer.mozilla.org/docs/Web/API/Blob) | blob을 나타냅니다 |
+| [`fetch`](https://developer.mozilla.org/docs/Web/API/Fetch_API) | resource를 가져옵니다(fetch) |
+| [`FetchEvent`](https://developer.mozilla.org/docs/Web/API/FetchEvent) | fetch event를 나타냅니다 |
+| [`File`](https://developer.mozilla.org/docs/Web/API/File) | 파일을 나타냅니다 |
+| [`FormData`](https://developer.mozilla.org/docs/Web/API/FormData) | form data를 나타냅니다 |
+| [`Headers`](https://developer.mozilla.org/docs/Web/API/Headers) | HTTP header를 나타냅니다 |
+| [`Request`](https://developer.mozilla.org/docs/Web/API/Request) | HTTP request를 나타냅니다 |
+| [`Response`](https://developer.mozilla.org/docs/Web/API/Response) | HTTP response를 나타냅니다 |
+| [`URLSearchParams`](https://developer.mozilla.org/docs/Web/API/URLSearchParams) | URL search parameter를 나타냅니다 |
+| [`WebSocket`](https://developer.mozilla.org/docs/Web/API/WebSocket) | websocket 연결을 나타냅니다 |
+
+### Encoding APIs
+
+| API | Description |
+| --- | --- |
+| [`atob`](https://developer.mozilla.org/en-US/docs/Web/API/atob) | base-64로 인코딩된 문자열을 디코딩합니다 |
+| [`btoa`](https://developer.mozilla.org/en-US/docs/Web/API/btoa) | 문자열을 base-64로 인코딩합니다 |
+| [`TextDecoder`](https://developer.mozilla.org/docs/Web/API/TextDecoder) | Uint8Array를 문자열로 디코딩합니다 |
+| [`TextDecoderStream`](https://developer.mozilla.org/docs/Web/API/TextDecoderStream) | stream용 chainable decoder입니다 |
+| [`TextEncoder`](https://developer.mozilla.org/docs/Web/API/TextEncoder) | 문자열을 Uint8Array로 인코딩합니다 |
+| [`TextEncoderStream`](https://developer.mozilla.org/docs/Web/API/TextEncoderStream) | stream용 chainable encoder입니다 |
+
+### Stream APIs
+
+| API | Description |
+| --- | --- |
+| [`ReadableStream`](https://developer.mozilla.org/docs/Web/API/ReadableStream) | 읽을 수 있는 stream을 나타냅니다 |
+| [`ReadableStreamBYOBReader`](https://developer.mozilla.org/docs/Web/API/ReadableStreamBYOBReader) | ReadableStream의 reader를 나타냅니다 |
+| [`ReadableStreamDefaultReader`](https://developer.mozilla.org/docs/Web/API/ReadableStreamDefaultReader) | ReadableStream의 reader를 나타냅니다 |
+| [`TransformStream`](https://developer.mozilla.org/docs/Web/API/TransformStream) | transform stream을 나타냅니다 |
+| [`WritableStream`](https://developer.mozilla.org/docs/Web/API/WritableStream) | 쓸 수 있는 stream을 나타냅니다 |
+| [`WritableStreamDefaultWriter`](https://developer.mozilla.org/docs/Web/API/WritableStreamDefaultWriter) | WritableStream의 writer를 나타냅니다 |
+
+### Crypto APIs
+
+| API | Description |
+| --- | --- |
+| [`crypto`](https://developer.mozilla.org/docs/Web/API/Window/crypto) | 플랫폼의 암호화 기능에 접근할 수 있게 해 줍니다 |
+| [`CryptoKey`](https://developer.mozilla.org/docs/Web/API/CryptoKey) | 암호화 key를 나타냅니다 |
+| [`SubtleCrypto`](https://developer.mozilla.org/docs/Web/API/SubtleCrypto) | hashing, signing, encryption, decryption 같은 일반적인 암호화 primitive에 접근할 수 있게 해 줍니다 |
+
+### Web Standard APIs
+
+| API | Description |
+| --- | --- |
+| [`AbortController`](https://developer.mozilla.org/docs/Web/API/AbortController) | 원할 때 하나 이상의 DOM request를 중단(abort)할 수 있게 해 줍니다 |
+| [`Array`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array) | 값의 배열을 나타냅니다 |
+| [`ArrayBuffer`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/ArrayBuffer) | 일반적인 고정 길이 raw binary data buffer를 나타냅니다 |
+| [`Atomics`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Atomics) | atomic 연산을 static method로 제공합니다 |
+| [`BigInt`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/BigInt) | 임의 정밀도의 정수를 나타냅니다 |
+| [`BigInt64Array`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/BigInt64Array) | 64비트 부호 있는 정수의 typed array를 나타냅니다 |
+| [`BigUint64Array`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/BigUint64Array) | 64비트 부호 없는 정수의 typed array를 나타냅니다 |
+| [`Boolean`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean) | `true`와 `false` 두 값을 가질 수 있는 논리 엔티티를 나타냅니다 |
+| [`clearInterval`](https://developer.mozilla.org/docs/Web/API/WindowOrWorkerGlobalScope/clearInterval) | 이전에 `setInterval()` 호출로 설정한, 시간 간격으로 반복되는 동작을 취소합니다 |
+| [`clearTimeout`](https://developer.mozilla.org/docs/Web/API/WindowOrWorkerGlobalScope/clearTimeout) | 이전에 `setTimeout()` 호출로 설정한, 시간 지정 반복 동작을 취소합니다 |
+| [`console`](https://developer.mozilla.org/docs/Web/API/Console) | 브라우저의 debugging console에 접근할 수 있게 해 줍니다 |
+| [`DataView`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/DataView) | `ArrayBuffer`의 일반적인 view를 나타냅니다 |
+| [`Date`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Date) | 플랫폼에 독립적인 형식으로 특정 시점 하나를 나타냅니다 |
+| [`decodeURI`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/decodeURI) | `encodeURI` 또는 비슷한 루틴으로 만든 Uniform Resource Identifier(URI)를 디코딩합니다 |
+| [`decodeURIComponent`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/decodeURIComponent) | `encodeURIComponent` 또는 비슷한 루틴으로 만든 Uniform Resource Identifier(URI) component를 디코딩합니다 |
+| [`DOMException`](https://developer.mozilla.org/docs/Web/API/DOMException) | DOM에서 발생하는 error를 나타냅니다 |
+| [`encodeURI`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/encodeURI) | 특정 문자를 해당 문자의 UTF-8 인코딩을 나타내는 1~4개의 escape sequence로 바꿔 Uniform Resource Identifier(URI)를 인코딩합니다 |
+| [`encodeURIComponent`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/encodeURIComponent) | 특정 문자를 해당 문자의 UTF-8 인코딩을 나타내는 1~4개의 escape sequence로 바꿔 Uniform Resource Identifier(URI) component를 인코딩합니다 |
+| [`Error`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error) | 문장을 실행하거나 property에 접근할 때 발생하는 error를 나타냅니다 |
+| [`EvalError`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/EvalError) | 전역 함수 `eval()`과 관련해 발생하는 error를 나타냅니다 |
+| [`Float32Array`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Float32Array) | 32비트 부동소수점 숫자의 typed array를 나타냅니다 |
+| [`Float64Array`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Float64Array) | 64비트 부동소수점 숫자의 typed array를 나타냅니다 |
+| [`Function`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Function) | 함수를 나타냅니다 |
+| [`Infinity`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Infinity) | 수학적 무한대(Infinity) 값을 나타냅니다 |
+| [`Int8Array`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Int8Array) | 8비트 부호 있는 정수의 typed array를 나타냅니다 |
+| [`Int16Array`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Int16Array) | 16비트 부호 있는 정수의 typed array를 나타냅니다 |
+| [`Int32Array`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Int32Array) | 32비트 부호 있는 정수의 typed array를 나타냅니다 |
+| [`Intl`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Intl) | 국제화(internationalization)와 지역화(localization) 기능에 접근할 수 있게 해 줍니다 |
+| [`isFinite`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/isFinite) | 값이 유한한 숫자인지 판단합니다 |
+| [`isNaN`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/isNaN) | 값이 `NaN`인지 아닌지 판단합니다 |
+| [`JSON`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/JSON) | JavaScript 값을 JSON 형식으로, 또는 JSON 형식에서 변환하는 기능을 제공합니다 |
+| [`Map`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Map) | 각 값이 한 번만 나타날 수 있는 값의 collection을 나타냅니다 |
+| [`Math`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Math) | 수학 함수와 상수에 접근할 수 있게 해 줍니다 |
+| [`Number`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number) | 숫자 값을 나타냅니다 |
+| [`Object`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object) | 모든 JavaScript object의 기반이 되는 object를 나타냅니다 |
+| [`parseFloat`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/parseFloat) | 문자열 인자를 파싱해 부동소수점 숫자를 반환합니다 |
+| [`parseInt`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/parseInt) | 문자열 인자를 파싱해 지정한 진법(radix)의 정수를 반환합니다 |
+| [`Promise`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Promise) | 비동기 작업의 최종 완료(또는 실패)와 그 결과 값을 나타냅니다 |
+| [`Proxy`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Proxy) | 기본 연산(예: property 조회, 할당, 열거, 함수 호출 등)에 대한 사용자 정의 동작을 정의하는 데 쓰이는 object를 나타냅니다 |
+| [`queueMicrotask`](https://developer.mozilla.org/docs/Web/API/queueMicrotask) | 실행할 microtask를 queue에 넣습니다 |
+| [`RangeError`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RangeError) | 값이 허용된 집합이나 범위에 속하지 않을 때의 error를 나타냅니다 |
+| [`ReferenceError`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/ReferenceError) | 존재하지 않는 변수를 참조할 때의 error를 나타냅니다 |
+| [`Reflect`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Reflect) | 가로챌 수 있는(interceptable) JavaScript 연산을 위한 method를 제공합니다 |
+| [`RegExp`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/RegExp) | 문자 조합을 매칭할 수 있게 해 주는 정규 표현식을 나타냅니다 |
+| [`Set`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Set) | 각 값이 한 번만 나타날 수 있는 값의 collection을 나타냅니다 |
+| [`setInterval`](https://developer.mozilla.org/docs/Web/API/setInterval) | 각 호출 사이에 고정된 시간 간격을 두고 함수를 반복 호출합니다 |
+| [`setTimeout`](https://developer.mozilla.org/docs/Web/API/setTimeout) | 지정한 밀리초가 지난 뒤 함수를 호출하거나 표현식을 평가합니다 |
+| [`SharedArrayBuffer`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer) | 일반적인 고정 길이 raw binary data buffer를 나타냅니다 |
+| [`String`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String) | 문자의 시퀀스를 나타냅니다 |
+| [`structuredClone`](https://developer.mozilla.org/docs/Web/API/Web_Workers_API/Structured_clone_algorithm) | 값의 deep copy를 만듭니다 |
+| [`Symbol`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Symbol) | object property의 key로 사용되는 고유하고 불변인 data type을 나타냅니다 |
+| [`SyntaxError`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/SyntaxError) | 문법적으로 잘못된 코드를 해석하려 할 때의 error를 나타냅니다 |
+| [`TypeError`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/TypeError) | 값이 예상한 type이 아닐 때의 error를 나타냅니다 |
+| [`Uint8Array`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array) | 8비트 부호 없는 정수의 typed array를 나타냅니다 |
+| [`Uint8ClampedArray`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint8ClampedArray) | 0-255 범위로 고정(clamp)된 8비트 부호 없는 정수의 typed array를 나타냅니다 |
+| [`Uint32Array`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Uint32Array) | 32비트 부호 없는 정수의 typed array를 나타냅니다 |
+| [`URIError`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/URIError) | 전역 URI 처리 함수를 잘못된 방식으로 사용했을 때의 error를 나타냅니다 |
+| [`URL`](https://developer.mozilla.org/docs/Web/API/URL) | object URL을 만드는 데 쓰이는 static method를 제공하는 object를 나타냅니다 |
+| [`URLPattern`](https://developer.mozilla.org/docs/Web/API/URLPattern) | URL pattern을 나타냅니다 |
+| [`URLSearchParams`](https://developer.mozilla.org/docs/Web/API/URLSearchParams) | key/value 쌍의 collection을 나타냅니다 |
+| [`WeakMap`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WeakMap) | key가 약하게(weakly) 참조되는 key/value 쌍의 collection을 나타냅니다 |
+| [`WeakSet`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WeakSet) | 각 object가 한 번만 나타날 수 있는 object의 collection을 나타냅니다 |
+| [`WebAssembly`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly) | WebAssembly에 접근할 수 있게 해 줍니다 |
+
+### Next.js Specific Polyfills || Next.js 전용 Polyfill
+
+- [`AsyncLocalStorage`](https://nodejs.org/api/async_context.html#class-asynclocalstorage)
+
+### Environment Variables || 환경 변수
+
+`process.env`를 사용하면 `next dev`와 `next build` 모두에서 [Environment Variables](/docs/app/guides/environment-variables)에 접근할 수 있습니다.
+
+### Unsupported APIs || 지원하지 않는 API
+
+Edge Runtime에는 다음과 같은 제약이 있습니다:
+
+- Native Node.js API는 **지원되지 않습니다**. 예를 들어 filesystem을 읽거나 쓸 수 없습니다.
+- `node_modules`는 ES Modules를 구현하고 native Node.js API를 사용하지 않는다면 사용할 _수 있습니다_.
+- `require`를 직접 호출하는 것은 **허용되지 않습니다**. 대신 ES Modules를 사용하세요.
+
+다음 JavaScript 언어 기능은 비활성화되어 있으며 **동작하지 않습니다:**
+
+| API | Description |
+| --- | --- |
+| [`eval`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/eval) | 문자열로 표현된 JavaScript 코드를 평가합니다 |
+| [`new Function(evalString)`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Function) | 인자로 전달된 코드로 새 함수를 만듭니다 |
+| [`WebAssembly.compile`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/compile) | buffer source로부터 WebAssembly module을 compile합니다 |
+| [`WebAssembly.instantiate`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/WebAssembly/instantiate) | buffer source로부터 WebAssembly module을 compile하고 instantiate합니다 |
+
+드물게 코드에 _runtime에 도달할 수 없고_ treeshaking으로도 제거할 수 없는 dynamic code evaluation 문이 포함되거나 import될 수 있습니다.
+Proxy 설정에서 특정 파일을 허용하도록 이 검사를 완화할 수 있습니다:
+
+[[CODE 1]]
+
+`unstable_allowDynamic`은 특정 파일에 대해 dynamic code evaluation을 무시하는 [glob](https://github.com/micromatch/micromatch#matching-features) 또는 glob 배열입니다. glob은 애플리케이션 root 폴더를 기준으로 한 상대 경로입니다.
+
+이 문들이 Edge에서 실행되면 _throw되어 runtime error를 일으킨다는_ 점에 유의하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

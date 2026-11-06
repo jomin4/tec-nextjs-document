@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How Next.js preserves UI state with Activity (Activity로 UI state 보존하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/preserving-ui-state" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/preserving-ui-state" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/preserving-ui-state.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How Next.js preserves UI state with Activity<span class="sub">Activity로 UI state 보존하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 가이드는 <a href="app-getting-started-caching.html">Cache Components</a>가 활성화되어 있다고 가정합니다. Next config 파일에서 <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents: true</code></a>를 설정해 활성화하세요.</p><div class="en-orig"><p>This guide assumes <a href="app-getting-started-caching.html">Cache Components</a> is enabled. Enable it by setting <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents: true</code></a> in your Next config file.</p></div></div></div>
+<p>Cache Components 이전에는 navigation 간에 page 수준의 state를 보존하려면 state를 <a href="app-getting-started-layouts-and-pages.html#nesting-layouts">공유 layout</a>으로 끌어올리거나 external store를 사용하는 등의 우회 방법이 필요했습니다. Cache Components를 사용하면 Next.js가 기본으로(out of the box) state와 DOM을 보존합니다.</p><div class="en-orig"><p>Before Cache Components, preserving page-level state across navigations required workarounds like hoisting state to a <a href="app-getting-started-layouts-and-pages.html#nesting-layouts">shared layout</a> or using an external store. With Cache Components, Next.js preserves state and DOM out of the box.</p></div>
+<p>Next.js는 navigation 시 page를 unmount하는 대신 React의 <a href="https://react.dev/reference/react/Activity" target="_blank" rel="noopener"><code>&lt;Activity&gt;</code></a> component로 page를 숨깁니다. Activity는 DOM을 document 안에 그대로 두기 때문에(<code>display: none</code>으로 숨김) React state와 DOM state가 모두 보존됩니다. form 작성 중인 내용, scroll 위치, 펼쳐진 <code>&lt;details&gt;</code> element, video 재생 진행 상황 등이 그 예입니다.</p><div class="en-orig"><p>Instead of unmounting pages on navigation, Next.js hides them using React's <a href="https://react.dev/reference/react/Activity" target="_blank" rel="noopener"><code>&lt;Activity&gt;</code></a> component. Activity keeps the DOM in the document (hidden with <code>display: none</code>), so both React state and DOM state are preserved: form drafts, scroll positions, expanded <code>&lt;details&gt;</code> elements, video playback progress, and more.</p></div>
+<p>Next.js는 최대 3개의 route를 보존합니다. 그 이상이 되면 가장 오래된 route가 제거(evict)되고 다음에는 새로 re-render됩니다.</p><div class="en-orig"><p>Next.js preserves up to 3 routes. Beyond that, the oldest route is evicted and will re-render fresh.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="app-api-reference-functions-use-router.html#bfcacheid"><code>useRouter().bfcacheId</code></a>를 <a href="https://react.dev/learn/preserving-and-resetting-state#option-2-resetting-state-with-a-key" target="_blank" rel="noopener">React <code>key</code></a>로 사용하세요. <code>&lt;Fragment key={bfcacheId}&gt;</code> 하나로 push 또는 replace navigation(<code>&lt;Link&gt;</code> 클릭과 <code>router.push</code> / <code>router.replace</code> 포함) 시에는 subtree 전체를 reset하면서, 브라우저 뒤로/앞으로 이동 시에는 여전히 state를 복원할 수 있습니다. <code>bfcacheId</code>는 주로 migration 용도의 도구입니다. 새 코드에서는 아래의 pattern별 reset 방법을 권장합니다.</p><div class="en-orig"><p>Use <a href="app-api-reference-functions-use-router.html#bfcacheid"><code>useRouter().bfcacheId</code></a> as a <a href="https://react.dev/learn/preserving-and-resetting-state#option-2-resetting-state-with-a-key" target="_blank" rel="noopener">React <code>key</code></a>: a single <code>&lt;Fragment key={bfcacheId}&gt;</code> resets an entire subtree on push or replace navigations (including <code>&lt;Link&gt;</code> clicks and <code>router.push</code> / <code>router.replace</code>) while still restoring state on browser back/forward. <code>bfcacheId</code> is mainly a migration tool. For new code, prefer the per-pattern resets below.</p></div></div></div>
+<h2 class="sec" id="choosing-what-to-preserve"><a class="anchor" href="#choosing-what-to-preserve">Choosing what to preserve<span class="ko">무엇을 보존할지 선택하기</span></a></h2>
+<p>Activity는 기본적으로 모든 component state와 DOM state를 보존합니다. 각 state마다 그것이 UI에 맞는 동작인지는 직접 판단해야 합니다. 아래 pattern들은 흔한 시나리오와, 보존할 때와 reset할 때 양쪽을 어떻게 처리하는지 보여 줍니다.</p><div class="en-orig"><p>Activity preserves all component state and DOM state by default. For each piece of state, you decide whether that's the right behavior for your UI. The patterns below show common scenarios and how to handle both sides.</p></div>
+<h3 class="sec" id="expandable-ui-dropdowns-accordions-panels"><a class="anchor" href="#expandable-ui-dropdowns-accordions-panels">Expandable UI (dropdowns, accordions, panels)<span class="ko">펼침 UI (dropdown, accordion, panel)</span></a></h3>
+<p>사용자가 다른 곳으로 navigate했다가 돌아오면, Activity는 펼침 element의 열림/닫힘 state를 보존합니다.</p><div class="en-orig"><p>When a user navigates away and returns, Activity preserves the open/closed state of expandable elements.</p></div>
+<p><strong>When to keep it:</strong> 섹션이 펼쳐진 sidebar, FAQ accordion, filter panel 등입니다. 사용자가 의도적으로 화면을 구성해 둔 것이므로, 이를 복원하면 같은 작업을 다시 하지 않아도 됩니다.</p><div class="en-orig"><p><strong>When to keep it:</strong> A sidebar with expanded sections, a FAQ accordion, or a filters panel. The user set up their view intentionally, and restoring it avoids re-doing that work.</p></div>
+<p><strong>When to reset it:</strong> 버튼 클릭으로 열리는 dropdown menu나 popover입니다. 이런 것은 일시적인 interaction이지, 계속 유지되는 화면 state가 아닙니다. page에 돌아왔을 때 dropdown이 이미 열려 있으면 사용자에게 친절하지 않습니다.</p><div class="en-orig"><p><strong>When to reset it:</strong> A dropdown menu or popover triggered by a button click. These are transient interactions, not persistent view state. Returning to a page with a dropdown already open is not user friendly.</p></div>
+<p>일시적인 열림/닫힘 state를 reset하려면 <code>useLayoutEffect</code> cleanup 함수에서 닫으세요:</p><div class="en-orig"><p>To reset transient open/closed state, close it in a <code>useLayoutEffect</code> cleanup function:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useState, useLayoutEffect } from &#x27;react&#x27;
+
+function SettingsDropdown() {
+  const [isOpen, setIsOpen] = useState(false)
+
+  // Close dropdown when this component becomes hidden
+  useLayoutEffect(() =&gt; {
+    return () =&gt; {
+      setIsOpen(false)
+    }
+  }, [])
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; setIsOpen((o) =&gt; !o)}&gt;Options&lt;/button&gt;
+      {isOpen &amp;&amp; (
+        &lt;ul&gt;
+          &lt;li&gt;
+            &lt;button&gt;Edit Profile&lt;/button&gt;
+          &lt;/li&gt;
+          &lt;li&gt;
+            &lt;button&gt;Change Password&lt;/button&gt;
+          &lt;/li&gt;
+        &lt;/ul&gt;
+      )}
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>Activity가 이 component를 숨기면 cleanup 함수가 실행되어 <code>isOpen</code>을 reset합니다. page가 다시 보이게 되면 dropdown은 닫혀 있습니다. <code>useLayoutEffect</code>를 사용하면 component가 숨겨지기 전에 cleanup이 동기적으로 실행되므로, 오래된(stale) state가 잠깐 깜빡이는 현상을 막을 수 있습니다.</p><div class="en-orig"><p>When Activity hides this component, the cleanup function runs and resets <code>isOpen</code>. When the page becomes visible again, the dropdown is closed. Using <code>useLayoutEffect</code> ensures the cleanup runs synchronously before the component is hidden, avoiding any flash of stale state.</p></div>
+<p><code>Link</code>의 <a href="app-api-reference-components-link.html#onnavigate"><code>onNavigate</code></a> callback을 사용해 navigation link가 클릭되는 즉시 dropdown을 닫을 수도 있습니다.</p><div class="en-orig"><p>You can also use <code>Link</code>'s <a href="app-api-reference-components-link.html#onnavigate"><code>onNavigate</code></a> callback to close dropdowns immediately when a navigation link is clicked.</p></div>
+<h3 class="sec" id="dialog-and-initialization-logic"><a class="anchor" href="#dialog-and-initialization-logic">Dialog and initialization logic<span class="ko">Dialog와 초기화 로직</span></a></h3>
+<p>Activity는 dialog의 열림/닫힘 state를 보존합니다. 이는 그 state를 기반으로 실행되는 Effect에도 영향을 줍니다.</p><div class="en-orig"><p>Activity preserves dialog open/closed state. This also affects Effects that run based on that state.</p></div>
+<p><strong>When to keep it:</strong> 사용자가 작업 중이던 multi-step wizard나 settings panel입니다. 현재 단계와 입력 state를 보존하면 진행 상황을 잃지 않습니다.</p><div class="en-orig"><p><strong>When to keep it:</strong> A multi-step wizard or a settings panel that the user was actively working in. Preserving the step and input state avoids losing progress.</p></div>
+<p><strong>When to reset it:</strong> 열릴 때마다 초기화 로직(예: input에 focus 주기)을 실행하는 dialog입니다. dialog가 열린 상태에서 사용자가 다른 곳으로 navigate하면, Activity는 <code>isDialogOpen: true</code>를 보존합니다. 다시 열면 이미 <code>true</code>인 값을 <code>true</code>로 설정하므로 state 변화가 일어나지 않고 Effect도 다시 실행되지 않습니다.</p><div class="en-orig"><p><strong>When to reset it:</strong> A dialog that runs initialization logic (like focusing an input) each time it opens. If the user navigated away while the dialog was open, Activity preserves <code>isDialogOpen: true</code>. Opening it again sets it to <code>true</code> when it's already <code>true</code>, so no state change happens and the Effect doesn't re-run.</p></div>
+<p>다음 예제를 보세요:</p><div class="en-orig"><p>Consider this example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useState, useRef, useEffect } from &#x27;react&#x27;
+
+function ProductTab() {
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const inputRef = useRef&lt;HTMLInputElement&gt;(null)
+
+  useEffect(() =&gt; {
+    if (isDialogOpen) {
+      inputRef.current?.focus()
+    }
+  }, [isDialogOpen])
+
+  // ...
+}</code></pre></div></div>
+<p>dialog가 열린 상태에서 사용자가 다른 곳으로 navigate했다면, 돌아와서 dialog를 열어도 <code>isDialogOpen</code>이 이미 <code>true</code>였기 때문에 focus Effect가 실행되지 않습니다.</p><div class="en-orig"><p>If the user navigated away while the dialog was open, returning and opening the dialog won't trigger the focus Effect because <code>isDialogOpen</code> was already <code>true</code>.</p></div>
+<p>이를 해결하려면 dialog state를 search param처럼 보존되는 component state 바깥의 무언가로부터 도출(derive)하세요:</p><div class="en-orig"><p>To fix this, derive the dialog state from something outside the preserved component state like a search param:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useSearchParams, useRouter } from &#x27;next/navigation&#x27;
+import { useEffect, useRef } from &#x27;react&#x27;
+
+function ProductTab() {
+  const searchParams = useSearchParams()
+  const router = useRouter()
+  const isDialogOpen = searchParams.get(&#x27;edit&#x27;) === &#x27;true&#x27;
+  const inputRef = useRef&lt;HTMLInputElement&gt;(null)
+
+  useEffect(() =&gt; {
+    if (isDialogOpen) {
+      inputRef.current?.focus()
+    }
+  }, [isDialogOpen])
+
+  return (
+    &lt;div&gt;
+      &lt;button onClick={() =&gt; router.push(&#x27;?edit=true&#x27;)}&gt;Edit Product&lt;/button&gt;
+
+      {isDialogOpen &amp;&amp; (
+        &lt;dialog open&gt;
+          &lt;input ref={inputRef} placeholder=&quot;Product name&quot; /&gt;
+          &lt;button onClick={() =&gt; router.replace(&#x27;?&#x27;, { scroll: false })}&gt;
+            Close
+          &lt;/button&gt;
+        &lt;/dialog&gt;
+      )}
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>이 방식에서는 <code>isDialogOpen</code>이 component state가 아니라 URL로부터 도출됩니다. 다른 곳으로 navigate했다가 돌아오면 search param이 비워지므로(URL이 바뀌었기 때문에) <code>isDialogOpen</code>은 <code>false</code>가 됩니다. dialog를 열면 param이 설정되고, 이것이 <code>isDialogOpen</code>을 바꾸어 Effect를 실행시킵니다.</p><div class="en-orig"><p>With this approach, <code>isDialogOpen</code> derives from the URL rather than component state. When navigating away and returning, the search param is cleared (the URL changed), so <code>isDialogOpen</code> becomes <code>false</code>. Opening the dialog sets the param, which changes <code>isDialogOpen</code> and triggers the Effect.</p></div>
+<h3 class="sec" id="forms-inputs-and-state"><a class="anchor" href="#forms-inputs-and-state">Forms, inputs, and state<span class="ko">Form, input, state</span></a></h3>
+<p>Activity는 navigation 간에 form input 값(text field, 선택된 option, checkbox state), 제출 결과, 상태 메시지를 보존합니다.</p><div class="en-orig"><p>Activity preserves form input values (text fields, selected options, checkbox states), submission results, and status messages across navigations.</p></div>
+<p><strong>When to keep it:</strong> filter가 있는 검색 page, 사용자가 작성 중이던 초안, 저장하지 않은 변경 사항이 있는 settings form입니다. 사용자가 작업을 잃지 않으므로, 입력 state 보존은 가장 큰 UX 이점 중 하나입니다.</p><div class="en-orig"><p><strong>When to keep it:</strong> A search page with filters, a draft the user was composing, or a settings form with unsaved changes. Preserving input state is one of the biggest UX wins because the user doesn't lose work.</p></div>
+<p><strong>When to reset it:</strong> 방문할 때마다 새로 시작해야 하는 "new transaction" flow, 또는 오래된 성공/오류 메시지가 새로운 맥락에서 혼란을 줄 수 있는 form입니다.</p><div class="en-orig"><p><strong>When to reset it:</strong> A "new transaction" flow where each visit should start fresh, or a form where stale success/error messages would be confusing in a new context.</p></div>
+<h4 class="sec" id="resetting-form-state-on-submit"><a class="anchor" href="#resetting-form-state-on-submit">Resetting form state on submit<span class="ko">제출 시 form state reset하기</span></a></h4>
+<p>사용자가 새 항목을 만드는 page를 생각해 보세요. 제출 후 <code>router.push</code>가 새 record로 navigate합니다. Activity가 page를 보존하므로, 뒤로 navigate하면 이전에 입력한 이름이 form에 그대로 남아 있습니다. form을 새 상태로 유지하려면 event handler에서 state를 reset하세요:</p><div class="en-orig"><p>Consider a page where the user creates a new item. After submitting, <code>router.push</code> navigates to the new record. Since Activity preserves the page, navigating back shows the previous name still in the form. Reset state in the event handler to keep the form fresh:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/new/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useState } from &#x27;react&#x27;
+import { useRouter } from &#x27;next/navigation&#x27;
+
+export default function NewItemPage() {
+  const [name, setName] = useState(&#x27;&#x27;)
+  const router = useRouter()
+
+  async function handleSubmit(e: React.SubmitEvent&lt;HTMLFormElement&gt;) {
+    e.preventDefault()
+    const item = await createItem({ name })
+    setName(&#x27;&#x27;)
+    router.push(`/items/${item.id}`)
+  }
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input value={name} onChange={(e) =&gt; setName(e.target.value)} /&gt;
+      &lt;button type=&quot;submit&quot;&gt;Create&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</code></pre></div></div>
+<h4 class="sec" id="resetting-stale-status-messages"><a class="anchor" href="#resetting-stale-status-messages">Resetting stale status messages<span class="ko">오래된 상태 메시지 reset하기</span></a></h4>
+<p>제출 후 feedback 메시지를 render하기 위해 state에 status를 설정했다면, 이를 지울 만한 믿을 수 있는 사용자 주도 event가 없는 경우가 많습니다.</p><div class="en-orig"><p>If after submitting you set a status into state to render a feedback message, there's often not a reliable user-initiated event to clear it.</p></div>
+<p>사용자는 직접 제어할 수 없는 <code>next/link</code> element나 브라우저 컨트롤로 navigate할 수도 있습니다.</p><div class="en-orig"><p>The user might navigate via <code>next/link</code> elements out of your control, or via browser controls.</p></div>
+<p>form으로 다시 navigate하면 오래된 메시지가 보입니다. 이 경우 <code>useLayoutEffect</code> cleanup을 사용해 form과 state를 reset할 수 있습니다:</p><div class="en-orig"><p>Navigating back to the form shows a stale message. In this case, you may use a <code>useLayoutEffect</code> cleanup to reset the form and state:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useState, useRef, useLayoutEffect } from &#x27;react&#x27;
+
+function ContactForm() {
+  const [name, setName] = useState(&#x27;&#x27;)
+  const [status, setStatus] = useState&lt;&#x27;idle&#x27; | &#x27;success&#x27;&gt;(&#x27;idle&#x27;)
+  const shouldReset = useRef(false)
+
+  async function handleSubmit(e: React.SubmitEvent&lt;HTMLFormElement&gt;) {
+    e.preventDefault()
+    await sendMessage({ name })
+    setStatus(&#x27;success&#x27;)
+    shouldReset.current = true
+  }
+
+  // Reset stale success message when Activity hides this component
+  useLayoutEffect(() =&gt; {
+    return () =&gt; {
+      if (shouldReset.current) {
+        shouldReset.current = false
+        setStatus(&#x27;idle&#x27;)
+        setName(&#x27;&#x27;)
+      }
+    }
+  }, [])
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      &lt;input value={name} onChange={(e) =&gt; setName(e.target.value)} /&gt;
+      &lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
+      {status === &#x27;success&#x27; &amp;&amp; &lt;p&gt;Message sent!&lt;/p&gt;}
+    &lt;/form&gt;
+  )
+}</code></pre></div></div>
+<p><code>shouldReset</code> ref는 제출이 성공한 뒤에만 cleanup이 실행되도록 보장합니다. 사용자가 제출하지 않고 작성 도중에 다른 곳으로 navigate하면 입력 내용은 보존됩니다.</p><div class="en-orig"><p>The <code>shouldReset</code> ref ensures the cleanup only runs after a successful submission. If the user navigates away mid-draft without submitting, their input is preserved.</p></div>
+<p><a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener"><code>useActionState</code></a>를 사용한다면 같은 방식이 적용됩니다. reducer에 <code>RESET</code> action을 추가하는 방법은 React 문서의 <a href="https://react.dev/reference/react/useActionState#reset-state" target="_blank" rel="noopener">Reset state</a>를 참고하세요. 이 hook들로 반응성 좋은 interaction을 만드는 방법은 <a href="app-guides-interactive-apps.html">Building interactive apps</a> 가이드를 참고하세요.</p><div class="en-orig"><p>If you use <a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener"><code>useActionState</code></a>, the same approach applies. See <a href="https://react.dev/reference/react/useActionState#reset-state" target="_blank" rel="noopener">Reset state</a> in the React docs for how to add a <code>RESET</code> action to your reducer. For more on building responsive interactions with these hooks, see the <a href="app-guides-interactive-apps.html">Building interactive apps</a> guide.</p></div>
+<details><summary>callback ref로 모든 form field reset하기</summary><div class="details-body"><p>callback ref를 사용해 Activity가 component를 숨길 때 <code>form.reset()</code>을 호출할 수 있습니다:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&lt;form
+  ref={(form) =&gt; {
+    return () =&gt; form?.reset()
+  }}
+&gt;
+  &lt;input name=&quot;email&quot; /&gt;
+  &lt;input name=&quot;message&quot; /&gt;
+  &lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
+&lt;/form&gt;</code></pre></div></div>
+<p>이렇게 하면 사용자가 다른 곳으로 navigate할 때마다 모든 field가 reset됩니다.</p></div></details>
+<h2 class="sec" id="state-and-authentication"><a class="anchor" href="#state-and-authentication">State and authentication<span class="ko">State와 인증</span></a></h2>
+<p>Activity는 인증 변경을 포함해 navigation 간에 local component state(<code>useState</code>, DOM input 값)를 보존합니다. 이는 표준 React 동작입니다. props가 바뀌면(예: 새 user를 받는 경우) re-render가 일어나지만 기존 state는 reset되지 않습니다. 한 사용자가 작성한 초안이 다른 사용자에게 보여서는 안 됩니다.</p><div class="en-orig"><p>Activity preserves local component state (<code>useState</code>, DOM input values) across navigations, including authentication changes. This is standard React behavior: props changing (such as receiving a new user) triggers a re-render but does not reset existing state. A draft composed by one user shouldn't be visible to another.</p></div>
+<p>logout flow에서는 <code>router.push</code> 대신 <code>window.location.href</code>를 사용하면 전체 page reload가 일어나 모든 client-side state가 지워집니다.</p><div class="en-orig"><p>For logout flows, using <code>window.location.href</code> instead of <code>router.push</code> triggers a full page reload, clearing all client-side state.</p></div>
+<p>전체 reload 없이 사용자가 바뀔 때 특정 state를 reset하려면:</p><div class="en-orig"><p>To reset specific state when the user changes without a full reload:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useState, useEffect, useRef } from &#x27;react&#x27;
+
+function UserScopedForm({ userId }: { userId: string | null }) {
+  const [draft, setDraft] = useState(&#x27;&#x27;)
+  const lastUserIdRef = useRef&lt;string | null&gt;(null)
+
+  useEffect(() =&gt; {
+    if (lastUserIdRef.current !== null &amp;&amp; lastUserIdRef.current !== userId) {
+      setDraft(&#x27;&#x27;) // Reset on user change
+    }
+    lastUserIdRef.current = userId
+  }, [userId])
+
+  return &lt;textarea value={draft} onChange={(e) =&gt; setDraft(e.target.value)} /&gt;
+}</code></pre></div></div>
+<p>또는 user ID를 component의 key로 지정해 React가 reset을 처리하게 할 수 있습니다: <code>&lt;Form key={userId} /&gt;</code>.</p><div class="en-orig"><p>Alternatively, key components by user ID to let React handle the reset: <code>&lt;Form key={userId} /&gt;</code>.</p></div>
+<h2 class="sec" id="global-styles"><a class="anchor" href="#global-styles">Global styles<span class="ko">Global style</span></a></h2>
+<p>page 수준의 style(CSS variable, z-index, global class)은 그 style을 만든 component가 Activity에 의해 숨겨졌을 때도 보이는 page에 영향을 줄 수 있습니다. 숨겨졌을 때는 이를 비활성화하는 것이 좋습니다. 숨겨진 page의 accent color나 z-index override가 보이는 page로 새어 나와서는 안 됩니다.</p><div class="en-orig"><p>Page-level styles (CSS variables, z-index, global classes) can affect visible pages when the originating component is hidden by Activity. You likely want to disable them when hidden: a hidden page's accent color or z-index overrides shouldn't leak into the visible page.</p></div>
+<p>callback ref를 사용해 stylesheet의 <code>media</code> attribute를 전환하세요:</p><div class="en-orig"><p>Use a callback ref to toggle the stylesheet's <code>media</code> attribute:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&lt;style
+  ref={(style) =&gt; {
+    if (style) style.media = &#x27;&#x27; // Enable when visible
+    return () =&gt; {
+      if (style) style.media = &#x27;not all&#x27; // Disable when hidden
+    }
+  }}
+&gt;
+  {`:root { --page-accent: blue; }`}
+&lt;/style&gt;</code></pre></div></div>
+<p>또는 여러 style element를 관리하거나 더 복잡한 cleanup이 필요하면 <code>useLayoutEffect</code>를 사용하세요:</p><div class="en-orig"><p>Or use <code>useLayoutEffect</code> when managing multiple style elements or more complex cleanup:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useLayoutEffect, useRef } from &#x27;react&#x27;
+
+function PageWithStyles() {
+  const styleRef = useRef&lt;HTMLStyleElement&gt;(null)
+
+  useLayoutEffect(() =&gt; {
+    if (styleRef.current) styleRef.current.media = &#x27;&#x27;
+    return () =&gt; {
+      if (styleRef.current) styleRef.current.media = &#x27;not all&#x27;
+    }
+  }, [])
+
+  return &lt;style ref={styleRef}&gt;{`:root { --page-accent: blue; }`}&lt;/style&gt;
+}</code></pre></div></div>
+<p>Activity가 component를 숨기면 cleanup이 <code>media=&quot;not all&quot;</code>을 설정해 stylesheet를 비활성화합니다. 다시 보이게 되면 effect가 다시 실행되어 <code>media</code>를 reset하고 stylesheet를 활성화합니다.</p><div class="en-orig"><p>When Activity hides the component, the cleanup sets <code>media=&quot;not all&quot;</code>, which disables the stylesheet. When visible again, the effect re-runs and resets <code>media</code> to enable it.</p></div>
+<h3 class="sec" id="the-has-selector"><a class="anchor" href="#the-has-selector">The <code>:has</code> selector<span class="ko"><code>:has</code> selector</span></a></h3>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:has" target="_blank" rel="noopener"><code>:root:has(...)</code></a> rule은 selector를 기준으로 style을 적용합니다. 선택된 element도, match된 element도 그 관계를 알지 못합니다. 유효한 CSS이긴 하지만 React의 data flow를 우회하고 서로 관련 없는 component를 결합시킵니다.</p><div class="en-orig"><p>A <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:has" target="_blank" rel="noopener"><code>:root:has(...)</code></a> rule applies styles based on its selector. Neither the selected element nor the matched element knows about the relationship. It's valid CSS, but it bypasses React's data flow and couples unrelated components.</p></div>
+<p>global state에는 React가 소유하는 <code>data-*</code> attribute를 사용하는 것이 좋습니다:</p><div class="en-orig"><p>For global state, prefer a <code>data-*</code> attribute that React owns:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&lt;html data-modal-open={modalOpen ? &quot;true&quot; : undefined}&gt;</code></pre></div></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-css">html[data-modal-open=&#x27;true&#x27;] {
+  overflow: hidden;
+}</code></pre></div></div>
+<p><code>:has()</code>는 component 내부의 local한 parent/child styling에만 사용하세요:</p><div class="en-orig"><p>Reserve <code>:has()</code> for local parent/child styling within a component:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-css">.card:has(img) {
+  padding-top: 0;
+}</code></pre></div></div>
+<p>이것은 React data flow나 Next.js만의 문제가 아닙니다. 범위가 넓은 <code>:has()</code> selector는 실제 performance 병목이 됩니다. MDN의 <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:has#performance_considerations" target="_blank" rel="noopener">Performance considerations</a>를 참고하세요.</p><div class="en-orig"><p>This isn't only a React data-flow or Next.js concern. Broad <code>:has()</code> selectors are a real performance bottleneck. See <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:has#performance_considerations" target="_blank" rel="noopener">Performance considerations</a> on MDN.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>숨겨진 component 자체가 global <code>:has</code> rule을 정의한다면, 위 섹션의 전환 방식이 component의 다른 style과 함께 그 rule도 비활성화합니다.</p><div class="en-orig"><p>If the hidden component itself defines the global <code>:has</code> rule, the toggle from the section above disables it along with the component's other styles.</p></div></div></div>
+<h2 class="sec" id="testing"><a class="anchor" href="#testing">Testing<span class="ko">테스트</span></a></h2>
+<p>숨겨진 Activity 콘텐츠는 <code>display: none</code> 상태이지만 document 안에 남아 있습니다. 이는 Cache Components가 보존하는 route와 <code>&lt;Activity&gt;</code>로 직접 숨긴 콘텐츠 모두에 해당합니다. 이 점은 Playwright, Cypress, Puppeteer 같은 도구를 사용한 end-to-end 테스트에 영향을 줍니다:</p><div class="en-orig"><p>Hidden Activity content has <code>display: none</code> but remains in the document. This applies both to routes preserved by Cache Components and to content you hide with <code>&lt;Activity&gt;</code> directly. It affects end-to-end testing with tools like Playwright, Cypress, or Puppeteer:</p></div>
+<ul>
+<li><strong>DOM query가 숨겨진 element를 찾을 수 있습니다.</strong> selector는 visibility와 관계없이 element를 match할 수 있습니다.</li>
+<li><strong>숨겨진 element와의 interaction은 실패하거나 time out됩니다.</strong> 대부분의 도구는 interaction 전에 element가 보이게 될 때까지 기다리지만, 기다린다고 해서 보이는 element와 숨겨진 element를 모두 match하는 query가 좁혀지지는 않습니다. Playwright는 이를 strict mode violation으로 보고합니다.</li>
+<li><strong>assertion이 숨겨진 콘텐츠를 match할 수 있습니다.</strong> element의 존재를 assert할 때는 visibility를 명시적으로 지정하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>DOM queries can find hidden elements.</strong> Selectors may match elements regardless of visibility.</li>
+<li><strong>Interactions with hidden elements fail or time out.</strong> Most tools wait for an element to become visible before interacting, but waiting doesn't narrow a query that matches both a visible and a hidden element. Playwright reports this as a strict mode violation.</li>
+<li><strong>Assertions may match hidden content.</strong> Be explicit about visibility when asserting element presence.</li>
+</ul></div>
+<h3 class="sec" id="use-visibility-aware-selectors"><a class="anchor" href="#use-visibility-aware-selectors">Use visibility-aware selectors<span class="ko">visibility를 고려하는 selector 사용하기</span></a></h3>
+<p>숨겨진 element를 제외하는 accessibility tree를 query하는 locator를 사용하거나, 동작을 수행하기 전에 visibility로 match 결과를 filter하세요. Playwright에서 <code>getByRole</code> query는 기본적으로 숨겨진 element를 제외합니다:</p><div class="en-orig"><p>Prefer locators that query the accessibility tree, which leaves out hidden elements, or filter matches by visibility before acting on them. In Playwright, <code>getByRole</code> queries exclude hidden elements by default:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">// Good - getByRole excludes hidden elements by default
+await page.getByRole(&#x27;button&#x27;, { name: &#x27;Submit&#x27; }).click()
+await page.getByRole(&#x27;textbox&#x27;, { name: &#x27;Email&#x27; }).fill(&#x27;test@example.com&#x27;)</code></pre></div></div>
+<p><code>getByLabel</code>, <code>getByPlaceholder</code>, <code>.locator()</code>를 포함한 다른 locator는 숨겨진 element를 match할 수 있습니다. visibility로 명시적으로 filter하세요:</p><div class="en-orig"><p>Other locators, including <code>getByLabel</code>, <code>getByPlaceholder</code>, and <code>.locator()</code>, can match hidden elements. Filter them by visibility explicitly:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">// Filter by visibility explicitly
+await page
+  .getByLabel(&#x27;Email&#x27;)
+  .filter({ visible: true })
+  .fill(&#x27;test@example.com&#x27;)
+await page.getByPlaceholder(&#x27;Search...&#x27;).filter({ visible: true }).fill(&#x27;query&#x27;)
+await page.locator(&#x27;.product-card&#x27;).filter({ visible: true }).first().click()
+await page
+  .locator(&#x27;[data-testid=&quot;timer&quot;]&#x27;)
+  .filter({ visible: true })
+  .textContent()
+
+// Avoid - may match hidden elements in Activity boundaries
+await page.getByLabel(&#x27;Email&#x27;).fill(&#x27;test@example.com&#x27;)
+await page.locator(&#x27;.product-card&#x27;).first().click()</code></pre></div></div>
+<p><code>getByRole</code>은 Activity, tab navigation, accordion 등 숨겨진 콘텐츠를 DOM에 유지하는 모든 pattern에 견고합니다. 숨겨진 element를 제외하는 accessibility tree를 query하기 때문입니다. 어떤 locator가 숨겨진 element를 match하는지는 테스트 도구와 버전마다 다르므로, 사용하는 도구의 문서에서 locator와 test helper를 확인하세요.</p><div class="en-orig"><p><code>getByRole</code> is robust to Activity, tabbed navigation, accordions, and any other pattern that keeps hidden content in the DOM. It queries the accessibility tree, which excludes hidden elements. Which locators match hidden elements varies between testing tools and their versions, so check your tool's documentation for its locators and test helpers to confirm.</p></div>
+<h2 class="sec" id="using-activity-in-your-components"><a class="anchor" href="#using-activity-in-your-components">Using Activity in your components<span class="ko">직접 만든 component에서 Activity 사용하기</span></a></h2>
+<p>Cache Components는 route 수준에서 Activity를 자동으로 사용하지만, 직접 만든 component에서도 <code>&lt;Activity&gt;</code>를 바로 사용할 수 있습니다. tab, 펼침 panel처럼 unmount하지 않고 콘텐츠를 숨기고 싶은 모든 UI에 유용합니다.</p><div class="en-orig"><p>Cache Components uses Activity automatically at the route level, but you can also use <code>&lt;Activity&gt;</code> directly in your own components. This is useful for tabs, expandable panels, or any UI where you want to hide content without unmounting it.</p></div>
+<h3 class="sec" id="prerendering-hidden-content"><a class="anchor" href="#prerendering-hidden-content">Prerendering hidden content<span class="ko">숨겨진 콘텐츠 prerender하기</span></a></h3>
+<p>Activity는 사용자가 아직 보지 않은 콘텐츠를 prerender할 수 있습니다. 숨겨진 boundary는 낮은 우선순위로 render됩니다. Suspense와 함께 사용하면, 사용자가 다음에 볼 가능성이 높은 콘텐츠의 data를 prefetch할 수 있습니다.</p><div class="en-orig"><p>Activity can prerender content the user hasn't seen yet. Hidden boundaries render at lower priority. Combined with Suspense, this lets you prefetch data for content the user is likely to view next.</p></div>
+<p>Server Component는 즉시 data fetching을 시작하고 promise를 client component에 전달할 수 있습니다. client component는 사용자가 요청할 때까지 Activity로 콘텐츠를 숨기고, render할 때 <code>use()</code>로 promise를 resolve합니다:</p><div class="en-orig"><p>A Server Component can start fetching data immediately and pass the promise to a client component. The client component uses Activity to hide the content until the user requests it, and <code>use()</code> to resolve the promise when rendering:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { ExpandableComments } from &#x27;./expandable-comments&#x27;
+
+async function getCommentsData() {
+  return db.comments.findMany()
+}
+
+export default function Page() {
+  const commentsPromise = getCommentsData()
+
+  return (
+    &lt;article&gt;
+      &lt;h1&gt;Post Title&lt;/h1&gt;
+      &lt;p&gt;Main content visible immediately...&lt;/p&gt;
+
+      &lt;ExpandableComments commentsPromise={commentsPromise} /&gt;
+    &lt;/article&gt;
+  )
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/expandable-comments.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { Activity, Suspense, useState, use } from &#x27;react&#x27;
+
+type Comment = { id: string; text: string; author: string }
+
+export function ExpandableComments({
+  commentsPromise,
+}: {
+  commentsPromise: Promise&lt;Comment[]&gt;
+}) {
+  const [expanded, setExpanded] = useState(false)
+
+  return (
+    &lt;&gt;
+      &lt;button onClick={() =&gt; setExpanded((e) =&gt; !e)}&gt;
+        {expanded ? &#x27;Hide Comments&#x27; : &#x27;Show Comments&#x27;}
+      &lt;/button&gt;
+
+      &lt;Activity mode={expanded ? &#x27;visible&#x27; : &#x27;hidden&#x27;}&gt;
+        &lt;Suspense fallback={&lt;CommentsSkeleton /&gt;}&gt;
+          &lt;Comments commentsPromise={commentsPromise} /&gt;
+        &lt;/Suspense&gt;
+      &lt;/Activity&gt;
+    &lt;/&gt;
+  )
+}
+
+function Comments({
+  commentsPromise,
+}: {
+  commentsPromise: Promise&lt;Comment[]&gt;
+}) {
+  const comments = use(commentsPromise)
+  return (
+    &lt;ul&gt;
+      {comments.map((c) =&gt; (
+        &lt;li key={c.id}&gt;{c.text}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}
+
+function CommentsSkeleton() {
+  return &lt;div&gt;Loading comments...&lt;/div&gt;
+}</code></pre></div></div>
+<p>Server Component는 즉시 comment fetching을 시작하고 promise를 아래로 전달합니다. 숨겨져 있는 동안 data는 낮은 우선순위로 stream됩니다. 사용자가 "Show Comments"를 클릭하면 <code>Comments</code> component가 <code>use()</code>로 promise를 resolve하고 콘텐츠가 즉시 나타납니다.</p><div class="en-orig"><p>The Server Component starts fetching comments immediately and passes the promise down. While hidden, the data streams at lower priority. When the user clicks "Show Comments", the <code>Comments</code> component resolves the promise with <code>use()</code> and the content appears instantly.</p></div>
+<h3 class="sec" id="effect-and-media-cleanup"><a class="anchor" href="#effect-and-media-cleanup">Effect and media cleanup<span class="ko">Effect와 media cleanup</span></a></h3>
+<p>Activity가 콘텐츠를 숨기면 React는 unmount할 때와 똑같이 effect cleanup 함수를 실행합니다. 즉, cleanup을 제대로 작성해 두었다면 timer, subscription, media 재생이 자동으로 일시 정지됩니다:</p><div class="en-orig"><p>When Activity hides content, React runs effect cleanup functions just like it does on unmount. This means timers, subscriptions, and media playback pause automatically if you have proper cleanup:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useEffect, useState } from &#x27;react&#x27;
+
+function LiveTimer() {
+  const [count, setCount] = useState(0)
+
+  useEffect(() =&gt; {
+    const id = setInterval(() =&gt; setCount((c) =&gt; c + 1), 1000)
+    return () =&gt; clearInterval(id) // Pauses when hidden
+  }, [])
+
+  return &lt;p&gt;Count: {count}&lt;/p&gt;
+}</code></pre></div></div>
+<p><code>&lt;video&gt;</code>, <code>&lt;audio&gt;</code> 같은 media element는 <code>display: none</code>으로 재생이 멈추지 않습니다. <code>useLayoutEffect</code>로 명시적인 cleanup을 추가하세요:</p><div class="en-orig"><p>For media elements like <code>&lt;video&gt;</code> and <code>&lt;audio&gt;</code>, <code>display: none</code> does not stop playback. Add explicit cleanup with <code>useLayoutEffect</code>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useLayoutEffect, useRef } from &#x27;react&#x27;
+
+function VideoPlayer({ src }: { src: string }) {
+  const videoRef = useRef&lt;HTMLVideoElement&gt;(null)
+
+  useLayoutEffect(() =&gt; {
+    const video = videoRef.current
+    return () =&gt; {
+      video?.pause() // Pauses when hidden, preserves playback position
+    }
+  }, [])
+
+  return &lt;video ref={videoRef} src={src} controls /&gt;
+}</code></pre></div></div>
+<p>component가 다시 보이게 되면 effect가 다시 실행되고, DOM node가 제거된 적이 없으므로 재생 위치도 보존됩니다.</p><div class="en-orig"><p>When the component becomes visible again, effects re-run and playback position is preserved since the DOM node was never removed.</p></div>
+<h3 class="sec" id="distinguishing-first-mount-from-re-show"><a class="anchor" href="#distinguishing-first-mount-from-re-show">Distinguishing first mount from re-show<span class="ko">첫 mount와 다시 보이기 구분하기</span></a></h3>
+<p>Effect는 최초 mount뿐 아니라 숨김에서 보임으로 바뀔 때마다 실행됩니다. 첫 mount와 이후의 visibility 변화를 구분해야 한다면 ref를 사용하세요:</p><div class="en-orig"><p>Effects run on every hide-to-visible transition, not just the initial mount. If you need to distinguish the first mount from subsequent visibility changes, use a ref:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useEffect, useRef } from &#x27;react&#x27;
+
+function TrackedComponent() {
+  const hasMountedRef = useRef(false)
+
+  useEffect(() =&gt; {
+    if (!hasMountedRef.current) {
+      hasMountedRef.current = true
+      console.log(&#x27;First mount&#x27;)
+    } else {
+      console.log(&#x27;Became visible again&#x27;)
+    }
+  }, [])
+
+  return &lt;div&gt;...&lt;/div&gt;
+}</code></pre></div></div>
+<p>ref는 숨김/보임 사이클을 거쳐도 유지되므로(ref는 cleanup되지 않음) 첫 mount 이후 <code>hasMountedRef.current</code>는 계속 <code>true</code>로 남습니다. Activity가 보이게 될 때마다 Effect가 다시 실행되지만, 이제는 <code>else</code> branch로 갑니다.</p><div class="en-orig"><p>The ref persists across hide/show cycles (refs aren't cleaned up), so <code>hasMountedRef.current</code> stays <code>true</code> after the first mount. Each time Activity becomes visible, the Effect runs again, but now it takes the <code>else</code> branch.</p></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예제</span></a></h2>
+<p><a href="https://react-activity-patterns.labs.vercel.dev" target="_blank" rel="noopener">Activity Patterns Demo</a>(<a href="https://github.com/nextjs/react-activity-patterns" target="_blank" rel="noopener">source</a>)는 Cache Components가 활성화되어 있고 route 3개로 구성된 Next.js 앱입니다. route 사이를 navigate하며 state 보존이 실제로 동작하는 모습을 확인해 보세요:</p><div class="en-orig"><p>The <a href="https://react-activity-patterns.labs.vercel.dev" target="_blank" rel="noopener">Activity Patterns Demo</a> (<a href="https://github.com/nextjs/react-activity-patterns" target="_blank" rel="noopener">source</a>) is a Next.js app with Cache Components enabled and three routes. Navigate between them to see state preservation in action:</p></div>
+<ul>
+<li><strong>Data</strong> — navigation 간에 state를 유지하는 정렬 가능한 table과 선택 가능한 list, 그리고 background에서 prerender되는 reviews 섹션</li>
+<li><strong>Forms</strong> — DOM state(<code>&lt;details&gt;</code>, checkbox, text input)가 유지되는 filter panel, 그리고 <code>useLayoutEffect</code> cleanup을 사용해 제출 후 reset되는 newsletter form</li>
+<li><strong>Side Effects</strong> — 다른 곳으로 navigate하면 일시 정지되고 돌아오면 다시 시작되는 live timer, 그리고 재생 위치를 보존한 채 자동으로 일시 정지되는 video player</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Data</strong> — sortable table and selectable list that keep their state across navigations, plus a reviews section that prerenders in the background</li>
+<li><strong>Forms</strong> — filter panel with DOM state (<code>&lt;details&gt;</code>, checkboxes, text inputs) that persists, and a newsletter form that resets after submission using <code>useLayoutEffect</code> cleanup</li>
+<li><strong>Side Effects</strong> — a live timer that pauses when you navigate away and resumes when you return, and a video player that auto-pauses with playback position preserved</li>
+</ul></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">관련 문서</h2><p>Cache Components와 UI state 보존에 대해 더 알아보세요.</p><div class="rgrid"><a class="rcard" href="app-getting-started-caching.html"><div class="rt">Caching</div><div class="rk">캐싱</div><div class="rd">Next.js에서 데이터와 UI를 cache하는 방법을 알아봅니다</div></a><a class="rcard" href="app-guides-migrating-to-cache-components.html"><div class="rt">Migrating to Cache Components</div><div class="rk">Cache Components로 migrate하기</div><div class="rd">Next.js에서 route segment config를 Cache Components로 migrate하는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/preserving-ui-state.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/preserving-ui-state" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-prefetching.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Prefetching</div><div class="ttl-ko">Prefetching</div></a>
+      <a href="app-guides-preventing-flash-before-hydration.html" class="next"><div class="dir">다음 →</div><div class="ttl">Preventing Flash</div><div class="ttl-ko">hydration 전 깜빡임 방지하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/preserving-ui-state" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#choosing-what-to-preserve">Choosing what to preserve</a></li><li class="l3"><a href="#expandable-ui-dropdowns-accordions-panels">Expandable UI (dropdowns, accordions, panels)</a></li><li class="l3"><a href="#dialog-and-initialization-logic">Dialog and initialization logic</a></li><li class="l3"><a href="#forms-inputs-and-state">Forms, inputs, and state</a></li><li class="l2"><a href="#state-and-authentication">State and authentication</a></li><li class="l2"><a href="#global-styles">Global styles</a></li><li class="l3"><a href="#the-has-selector">The <code>:has</code> selector</a></li><li class="l2"><a href="#testing">Testing</a></li><li class="l3"><a href="#use-visibility-aware-selectors">Use visibility-aware selectors</a></li><li class="l2"><a href="#using-activity-in-your-components">Using Activity in your components</a></li><li class="l3"><a href="#prerendering-hidden-content">Prerendering hidden content</a></li><li class="l3"><a href="#effect-and-media-cleanup">Effect and media cleanup</a></li><li class="l3"><a href="#distinguishing-first-mount-from-re-show">Distinguishing first mount from re-show</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l2"><a href="#next-steps">관련 문서</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+&gt; **Good to know:** 이 가이드는 [Cache Components](/docs/app/getting-started/caching)가 활성화되어 있다고 가정합니다. Next config 파일에서 [`cacheComponents: true`](/docs/app/api-reference/config/next-config-js/cacheComponents)를 설정해 활성화하세요.
+
+Cache Components 이전에는 navigation 간에 page 수준의 state를 보존하려면 state를 [공유 layout](/docs/app/getting-started/layouts-and-pages#nesting-layouts)으로 끌어올리거나 external store를 사용하는 등의 우회 방법이 필요했습니다. Cache Components를 사용하면 Next.js가 기본으로(out of the box) state와 DOM을 보존합니다.
+
+Next.js는 navigation 시 page를 unmount하는 대신 React의 [`&lt;Activity&gt;`](https://react.dev/reference/react/Activity) component로 page를 숨깁니다. Activity는 DOM을 document 안에 그대로 두기 때문에(`display: none`으로 숨김) React state와 DOM state가 모두 보존됩니다. form 작성 중인 내용, scroll 위치, 펼쳐진 `&lt;details&gt;` element, video 재생 진행 상황 등이 그 예입니다.
+
+Next.js는 최대 3개의 route를 보존합니다. 그 이상이 되면 가장 오래된 route가 제거(evict)되고 다음에는 새로 re-render됩니다.
+
+&gt; **Good to know:** [`useRouter().bfcacheId`](/docs/app/api-reference/functions/use-router#bfcacheid)를 [React `key`](https://react.dev/learn/preserving-and-resetting-state#option-2-resetting-state-with-a-key)로 사용하세요. `&lt;Fragment key={bfcacheId}&gt;` 하나로 push 또는 replace navigation(`&lt;Link&gt;` 클릭과 `router.push` / `router.replace` 포함) 시에는 subtree 전체를 reset하면서, 브라우저 뒤로/앞으로 이동 시에는 여전히 state를 복원할 수 있습니다. `bfcacheId`는 주로 migration 용도의 도구입니다. 새 코드에서는 아래의 pattern별 reset 방법을 권장합니다.
+
+## Choosing what to preserve || 무엇을 보존할지 선택하기
+
+Activity는 기본적으로 모든 component state와 DOM state를 보존합니다. 각 state마다 그것이 UI에 맞는 동작인지는 직접 판단해야 합니다. 아래 pattern들은 흔한 시나리오와, 보존할 때와 reset할 때 양쪽을 어떻게 처리하는지 보여 줍니다.
+
+### Expandable UI (dropdowns, accordions, panels) || 펼침 UI (dropdown, accordion, panel)
+
+사용자가 다른 곳으로 navigate했다가 돌아오면, Activity는 펼침 element의 열림/닫힘 state를 보존합니다.
+
+**When to keep it:** 섹션이 펼쳐진 sidebar, FAQ accordion, filter panel 등입니다. 사용자가 의도적으로 화면을 구성해 둔 것이므로, 이를 복원하면 같은 작업을 다시 하지 않아도 됩니다.
+
+**When to reset it:** 버튼 클릭으로 열리는 dropdown menu나 popover입니다. 이런 것은 일시적인 interaction이지, 계속 유지되는 화면 state가 아닙니다. page에 돌아왔을 때 dropdown이 이미 열려 있으면 사용자에게 친절하지 않습니다.
+
+일시적인 열림/닫힘 state를 reset하려면 `useLayoutEffect` cleanup 함수에서 닫으세요:
+
+[[CODE 1]]
+
+Activity가 이 component를 숨기면 cleanup 함수가 실행되어 `isOpen`을 reset합니다. page가 다시 보이게 되면 dropdown은 닫혀 있습니다. `useLayoutEffect`를 사용하면 component가 숨겨지기 전에 cleanup이 동기적으로 실행되므로, 오래된(stale) state가 잠깐 깜빡이는 현상을 막을 수 있습니다.
+
+`Link`의 [`onNavigate`](/docs/app/api-reference/components/link#onnavigate) callback을 사용해 navigation link가 클릭되는 즉시 dropdown을 닫을 수도 있습니다.
+
+### Dialog and initialization logic || Dialog와 초기화 로직
+
+Activity는 dialog의 열림/닫힘 state를 보존합니다. 이는 그 state를 기반으로 실행되는 Effect에도 영향을 줍니다.
+
+**When to keep it:** 사용자가 작업 중이던 multi-step wizard나 settings panel입니다. 현재 단계와 입력 state를 보존하면 진행 상황을 잃지 않습니다.
+
+**When to reset it:** 열릴 때마다 초기화 로직(예: input에 focus 주기)을 실행하는 dialog입니다. dialog가 열린 상태에서 사용자가 다른 곳으로 navigate하면, Activity는 `isDialogOpen: true`를 보존합니다. 다시 열면 이미 `true`인 값을 `true`로 설정하므로 state 변화가 일어나지 않고 Effect도 다시 실행되지 않습니다.
+
+다음 예제를 보세요:
+
+[[CODE 2]]
+
+dialog가 열린 상태에서 사용자가 다른 곳으로 navigate했다면, 돌아와서 dialog를 열어도 `isDialogOpen`이 이미 `true`였기 때문에 focus Effect가 실행되지 않습니다.
+
+이를 해결하려면 dialog state를 search param처럼 보존되는 component state 바깥의 무언가로부터 도출(derive)하세요:
+
+[[CODE 3]]
+
+이 방식에서는 `isDialogOpen`이 component state가 아니라 URL로부터 도출됩니다. 다른 곳으로 navigate했다가 돌아오면 search param이 비워지므로(URL이 바뀌었기 때문에) `isDialogOpen`은 `false`가 됩니다. dialog를 열면 param이 설정되고, 이것이 `isDialogOpen`을 바꾸어 Effect를 실행시킵니다.
+
+### Forms, inputs, and state || Form, input, state
+
+Activity는 navigation 간에 form input 값(text field, 선택된 option, checkbox state), 제출 결과, 상태 메시지를 보존합니다.
+
+**When to keep it:** filter가 있는 검색 page, 사용자가 작성 중이던 초안, 저장하지 않은 변경 사항이 있는 settings form입니다. 사용자가 작업을 잃지 않으므로, 입력 state 보존은 가장 큰 UX 이점 중 하나입니다.
+
+**When to reset it:** 방문할 때마다 새로 시작해야 하는 &quot;new transaction&quot; flow, 또는 오래된 성공/오류 메시지가 새로운 맥락에서 혼란을 줄 수 있는 form입니다.
+
+#### Resetting form state on submit || 제출 시 form state reset하기
+
+사용자가 새 항목을 만드는 page를 생각해 보세요. 제출 후 `router.push`가 새 record로 navigate합니다. Activity가 page를 보존하므로, 뒤로 navigate하면 이전에 입력한 이름이 form에 그대로 남아 있습니다. form을 새 상태로 유지하려면 event handler에서 state를 reset하세요:
+
+[[CODE 4]]
+
+#### Resetting stale status messages || 오래된 상태 메시지 reset하기
+
+제출 후 feedback 메시지를 render하기 위해 state에 status를 설정했다면, 이를 지울 만한 믿을 수 있는 사용자 주도 event가 없는 경우가 많습니다.
+
+사용자는 직접 제어할 수 없는 `next/link` element나 브라우저 컨트롤로 navigate할 수도 있습니다.
+
+form으로 다시 navigate하면 오래된 메시지가 보입니다. 이 경우 `useLayoutEffect` cleanup을 사용해 form과 state를 reset할 수 있습니다:
+
+[[CODE 5]]
+
+`shouldReset` ref는 제출이 성공한 뒤에만 cleanup이 실행되도록 보장합니다. 사용자가 제출하지 않고 작성 도중에 다른 곳으로 navigate하면 입력 내용은 보존됩니다.
+
+[`useActionState`](https://react.dev/reference/react/useActionState)를 사용한다면 같은 방식이 적용됩니다. reducer에 `RESET` action을 추가하는 방법은 React 문서의 [Reset state](https://react.dev/reference/react/useActionState#reset-state)를 참고하세요. 이 hook들로 반응성 좋은 interaction을 만드는 방법은 [Building interactive apps](/docs/app/guides/interactive-apps) 가이드를 참고하세요.
+
+&lt;details&gt;
+&lt;summary&gt;callback ref로 모든 form field reset하기&lt;/summary&gt;
+
+callback ref를 사용해 Activity가 component를 숨길 때 `form.reset()`을 호출할 수 있습니다:
+
+[[CODE 6]]
+
+이렇게 하면 사용자가 다른 곳으로 navigate할 때마다 모든 field가 reset됩니다.
+
+&lt;/details&gt;
+
+## State and authentication || State와 인증
+
+Activity는 인증 변경을 포함해 navigation 간에 local component state(`useState`, DOM input 값)를 보존합니다. 이는 표준 React 동작입니다. props가 바뀌면(예: 새 user를 받는 경우) re-render가 일어나지만 기존 state는 reset되지 않습니다. 한 사용자가 작성한 초안이 다른 사용자에게 보여서는 안 됩니다.
+
+logout flow에서는 `router.push` 대신 `window.location.href`를 사용하면 전체 page reload가 일어나 모든 client-side state가 지워집니다.
+
+전체 reload 없이 사용자가 바뀔 때 특정 state를 reset하려면:
+
+[[CODE 7]]
+
+또는 user ID를 component의 key로 지정해 React가 reset을 처리하게 할 수 있습니다: `&lt;Form key={userId} /&gt;`.
+
+## Global styles || Global style
+
+page 수준의 style(CSS variable, z-index, global class)은 그 style을 만든 component가 Activity에 의해 숨겨졌을 때도 보이는 page에 영향을 줄 수 있습니다. 숨겨졌을 때는 이를 비활성화하는 것이 좋습니다. 숨겨진 page의 accent color나 z-index override가 보이는 page로 새어 나와서는 안 됩니다.
+
+callback ref를 사용해 stylesheet의 `media` attribute를 전환하세요:
+
+[[CODE 8]]
+
+또는 여러 style element를 관리하거나 더 복잡한 cleanup이 필요하면 `useLayoutEffect`를 사용하세요:
+
+[[CODE 9]]
+
+Activity가 component를 숨기면 cleanup이 `media=&quot;not all&quot;`을 설정해 stylesheet를 비활성화합니다. 다시 보이게 되면 effect가 다시 실행되어 `media`를 reset하고 stylesheet를 활성화합니다.
+
+### The `:has` selector || `:has` selector
+
+[`:root:has(...)`](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:has) rule은 selector를 기준으로 style을 적용합니다. 선택된 element도, match된 element도 그 관계를 알지 못합니다. 유효한 CSS이긴 하지만 React의 data flow를 우회하고 서로 관련 없는 component를 결합시킵니다.
+
+global state에는 React가 소유하는 `data-*` attribute를 사용하는 것이 좋습니다:
+
+[[CODE 10]]
+
+[[CODE 11]]
+
+`:has()`는 component 내부의 local한 parent/child styling에만 사용하세요:
+
+[[CODE 12]]
+
+이것은 React data flow나 Next.js만의 문제가 아닙니다. 범위가 넓은 `:has()` selector는 실제 performance 병목이 됩니다. MDN의 [Performance considerations](https://developer.mozilla.org/en-US/docs/Web/CSS/Reference/Selectors/:has#performance_considerations)를 참고하세요.
+
+&gt; **Good to know:** 숨겨진 component 자체가 global `:has` rule을 정의한다면, 위 섹션의 전환 방식이 component의 다른 style과 함께 그 rule도 비활성화합니다.
+
+## Testing || 테스트
+
+숨겨진 Activity 콘텐츠는 `display: none` 상태이지만 document 안에 남아 있습니다. 이는 Cache Components가 보존하는 route와 `&lt;Activity&gt;`로 직접 숨긴 콘텐츠 모두에 해당합니다. 이 점은 Playwright, Cypress, Puppeteer 같은 도구를 사용한 end-to-end 테스트에 영향을 줍니다:
+
+- **DOM query가 숨겨진 element를 찾을 수 있습니다.** selector는 visibility와 관계없이 element를 match할 수 있습니다.
+- **숨겨진 element와의 interaction은 실패하거나 time out됩니다.** 대부분의 도구는 interaction 전에 element가 보이게 될 때까지 기다리지만, 기다린다고 해서 보이는 element와 숨겨진 element를 모두 match하는 query가 좁혀지지는 않습니다. Playwright는 이를 strict mode violation으로 보고합니다.
+- **assertion이 숨겨진 콘텐츠를 match할 수 있습니다.** element의 존재를 assert할 때는 visibility를 명시적으로 지정하세요.
+
+### Use visibility-aware selectors || visibility를 고려하는 selector 사용하기
+
+숨겨진 element를 제외하는 accessibility tree를 query하는 locator를 사용하거나, 동작을 수행하기 전에 visibility로 match 결과를 filter하세요. Playwright에서 `getByRole` query는 기본적으로 숨겨진 element를 제외합니다:
+
+[[CODE 13]]
+
+`getByLabel`, `getByPlaceholder`, `.locator()`를 포함한 다른 locator는 숨겨진 element를 match할 수 있습니다. visibility로 명시적으로 filter하세요:
+
+[[CODE 14]]
+
+`getByRole`은 Activity, tab navigation, accordion 등 숨겨진 콘텐츠를 DOM에 유지하는 모든 pattern에 견고합니다. 숨겨진 element를 제외하는 accessibility tree를 query하기 때문입니다. 어떤 locator가 숨겨진 element를 match하는지는 테스트 도구와 버전마다 다르므로, 사용하는 도구의 문서에서 locator와 test helper를 확인하세요.
+
+## Using Activity in your components || 직접 만든 component에서 Activity 사용하기
+
+Cache Components는 route 수준에서 Activity를 자동으로 사용하지만, 직접 만든 component에서도 `&lt;Activity&gt;`를 바로 사용할 수 있습니다. tab, 펼침 panel처럼 unmount하지 않고 콘텐츠를 숨기고 싶은 모든 UI에 유용합니다.
+
+### Prerendering hidden content || 숨겨진 콘텐츠 prerender하기
+
+Activity는 사용자가 아직 보지 않은 콘텐츠를 prerender할 수 있습니다. 숨겨진 boundary는 낮은 우선순위로 render됩니다. Suspense와 함께 사용하면, 사용자가 다음에 볼 가능성이 높은 콘텐츠의 data를 prefetch할 수 있습니다.
+
+Server Component는 즉시 data fetching을 시작하고 promise를 client component에 전달할 수 있습니다. client component는 사용자가 요청할 때까지 Activity로 콘텐츠를 숨기고, render할 때 `use()`로 promise를 resolve합니다:
+
+[[CODE 15]]
+
+[[CODE 16]]
+
+Server Component는 즉시 comment fetching을 시작하고 promise를 아래로 전달합니다. 숨겨져 있는 동안 data는 낮은 우선순위로 stream됩니다. 사용자가 &quot;Show Comments&quot;를 클릭하면 `Comments` component가 `use()`로 promise를 resolve하고 콘텐츠가 즉시 나타납니다.
+
+### Effect and media cleanup || Effect와 media cleanup
+
+Activity가 콘텐츠를 숨기면 React는 unmount할 때와 똑같이 effect cleanup 함수를 실행합니다. 즉, cleanup을 제대로 작성해 두었다면 timer, subscription, media 재생이 자동으로 일시 정지됩니다:
+
+[[CODE 17]]
+
+`&lt;video&gt;`, `&lt;audio&gt;` 같은 media element는 `display: none`으로 재생이 멈추지 않습니다. `useLayoutEffect`로 명시적인 cleanup을 추가하세요:
+
+[[CODE 18]]
+
+component가 다시 보이게 되면 effect가 다시 실행되고, DOM node가 제거된 적이 없으므로 재생 위치도 보존됩니다.
+
+### Distinguishing first mount from re-show || 첫 mount와 다시 보이기 구분하기
+
+Effect는 최초 mount뿐 아니라 숨김에서 보임으로 바뀔 때마다 실행됩니다. 첫 mount와 이후의 visibility 변화를 구분해야 한다면 ref를 사용하세요:
+
+[[CODE 19]]
+
+ref는 숨김/보임 사이클을 거쳐도 유지되므로(ref는 cleanup되지 않음) 첫 mount 이후 `hasMountedRef.current`는 계속 `true`로 남습니다. Activity가 보이게 될 때마다 Effect가 다시 실행되지만, 이제는 `else` branch로 갑니다.
+
+## Examples || 예제
+
+[Activity Patterns Demo](https://react-activity-patterns.labs.vercel.dev)([source](https://github.com/nextjs/react-activity-patterns))는 Cache Components가 활성화되어 있고 route 3개로 구성된 Next.js 앱입니다. route 사이를 navigate하며 state 보존이 실제로 동작하는 모습을 확인해 보세요:
+
+- **Data** — navigation 간에 state를 유지하는 정렬 가능한 table과 선택 가능한 list, 그리고 background에서 prerender되는 reviews 섹션
+- **Forms** — DOM state(`&lt;details&gt;`, checkbox, text input)가 유지되는 filter panel, 그리고 `useLayoutEffect` cleanup을 사용해 제출 후 reset되는 newsletter form
+- **Side Effects** — 다른 곳으로 navigate하면 일시 정지되고 돌아오면 다시 시작되는 live timer, 그리고 재생 위치를 보존한 채 자동으로 일시 정지되는 video player
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

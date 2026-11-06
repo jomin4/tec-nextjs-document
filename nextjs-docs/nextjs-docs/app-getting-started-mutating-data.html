@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mutating Data (데이터 변경하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/getting-started/mutating-data" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/getting-started/mutating-data" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/07-mutating-data.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-getting-started.html">Getting Started</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Mutating Data<span class="sub">데이터 변경하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js에서는 <a href="https://react.dev/reference/rsc/server-functions" target="_blank" rel="noopener">React Server Functions</a>를 사용해 데이터를 mutate할 수 있습니다. 이 페이지에서는 Server Function을 <a href="#creating-server-functions">만드는 방법</a>과 <a href="#invoking-server-functions">호출하는 방법</a>을 살펴봅니다. Next.js 고유의 동작(single-roundtrip response, sequential dispatch, security, deployment)은 <a href="app-guides-server-actions.html">Server Actions and Mutations</a>를 참고하세요.</p><div class="en-orig"><p>You can mutate data in Next.js using <a href="https://react.dev/reference/rsc/server-functions" target="_blank" rel="noopener">React Server Functions</a>. This page will go through how you can <a href="#creating-server-functions">create</a> and <a href="#invoking-server-functions">invoke</a> Server Functions. For Next.js-specific behaviors (single-roundtrip response, sequential dispatch, security, deployment), see <a href="app-guides-server-actions.html">Server Actions and Mutations</a>.</p></div>
+<h2 class="sec" id="what-are-server-functions"><a class="anchor" href="#what-are-server-functions">What are Server Functions?<span class="ko">Server Function이란?</span></a></h2>
+<p><strong>Server Function</strong>은 server에서 실행되는 비동기 함수입니다. client에서 network request를 통해 호출할 수 있으며, 그래서 반드시 비동기여야 합니다.</p><div class="en-orig"><p>A <strong>Server Function</strong> is an asynchronous function that runs on the server. You can call them from the client through a network request, which is why they must be asynchronous.</p></div>
+<p><code>action</code>이나 mutation 맥락에서는 <strong>Server Actions</strong>라고도 부릅니다.</p><div class="en-orig"><p>In an <code>action</code> or mutation context, they are also called <strong>Server Actions</strong>.</p></div>
+<p>convention(관례)상 Server Action은 <a href="https://react.dev/reference/react/startTransition" target="_blank" rel="noopener"><code>startTransition</code></a>과 함께 사용되는 async 함수입니다. 함수가 다음과 같이 전달되면 이 처리가 자동으로 이루어집니다:</p><div class="en-orig"><p>By convention, a Server Action is an async function used with <a href="https://react.dev/reference/react/startTransition" target="_blank" rel="noopener"><code>startTransition</code></a>. This happens automatically when the function is:</p></div>
+<ul>
+<li><code>action</code> prop으로 <code>&lt;form&gt;</code>에 전달될 때.</li>
+<li><code>formAction</code> prop으로 <code>&lt;button&gt;</code>에 전달될 때.</li>
+</ul><div class="en-orig"><ul>
+<li>Passed to a <code>&lt;form&gt;</code> using the <code>action</code> prop.</li>
+<li>Passed to a <code>&lt;button&gt;</code> using the <code>formAction</code> prop.</li>
+</ul></div>
+<p>action이 호출되면 Next.js는 업데이트된 UI와 새 데이터를 한 번의 server roundtrip으로 함께 반환할 수 있습니다.</p><div class="en-orig"><p>When an action is invoked, Next.js can return both the updated UI and new data in a single server roundtrip.</p></div>
+<p>내부적으로 action은 <code>POST</code> method를 사용하며, 오직 이 HTTP method로만 호출할 수 있습니다.</p><div class="en-orig"><p>Behind the scenes, actions use the <code>POST</code> method, and only this HTTP method can invoke them.</p></div>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Warning</div><p>Server Function은 애플리케이션 UI를 통해서만이 아니라 직접 보낸 POST request로도 접근할 수 있습니다. 모든 Server Function 안에서 항상 authentication과 authorization을 확인하세요. 권장 패턴은 <a href="app-guides-data-security.html#authentication-and-authorization">Data Security 가이드</a>를 참고하세요.</p><div class="en-orig"><p>Server Functions are reachable via direct POST requests, not just through your application's UI. Always verify authentication and authorization inside every Server Function. See the <a href="app-guides-data-security.html#authentication-and-authorization">Data Security guide</a> for recommended patterns.</p></div></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Server Action은 특정한 방식(form 제출과 mutation 처리)으로 사용되는 Server Function입니다. Server Function이 더 넓은 의미의 용어입니다.</p><div class="en-orig"><p>A Server Action is a Server Function used in a specific way (for handling form submissions and mutations). Server Function is the broader term.</p></div></div></div>
+<h2 class="sec" id="creating-server-functions"><a class="anchor" href="#creating-server-functions">Creating Server Functions<span class="ko">Server Function 만들기</span></a></h2>
+<p>Server Function은 <a href="https://react.dev/reference/rsc/use-server" target="_blank" rel="noopener"><code>use server</code></a> directive를 사용해 정의할 수 있습니다. directive를 <strong>비동기</strong> 함수의 맨 위에 두면 그 함수를 Server Function으로 표시하고, 별도 파일의 맨 위에 두면 그 파일의 모든 export를 표시합니다.</p><div class="en-orig"><p>A Server Function can be defined by using the <a href="https://react.dev/reference/rsc/use-server" target="_blank" rel="noopener"><code>use server</code></a> directive. You can place the directive at the top of an <strong>asynchronous</strong> function to mark the function as a Server Function, or at the top of a separate file to mark all exports of that file.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/lib/actions.ts" data-js="app/lib/actions.js">app/lib/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { auth } from &#x27;@/lib/auth&#x27;
+
+export async function createPost(formData: FormData) {
+  &#x27;use server&#x27;
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+
+  const title = formData.get(&#x27;title&#x27;)
+  const content = formData.get(&#x27;content&#x27;)
+
+  // Mutate data
+  // Revalidate cache
+}
+
+export async function deletePost(formData: FormData) {
+  &#x27;use server&#x27;
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+
+  const id = formData.get(&#x27;id&#x27;)
+
+  // Verify the user owns this resource before deleting
+  // Mutate data
+  // Revalidate cache
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { auth } from &#x27;@/lib/auth&#x27;
+
+export async function createPost(formData) {
+  &#x27;use server&#x27;
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+
+  const title = formData.get(&#x27;title&#x27;)
+  const content = formData.get(&#x27;content&#x27;)
+
+  // Mutate data
+  // Revalidate cache
+}
+
+export async function deletePost(formData) {
+  &#x27;use server&#x27;
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+
+  const id = formData.get(&#x27;id&#x27;)
+
+  // Verify the user owns this resource before deleting
+  // Mutate data
+  // Revalidate cache
+}</code></pre></div></div>
+<h3 class="sec" id="server-components"><a class="anchor" href="#server-components">Server Components</a></h3>
+<p>Server Component 안에서는 함수 본문 맨 위에 <code>&quot;use server&quot;</code> directive를 추가해 Server Function을 inline으로 정의할 수 있습니다:</p><div class="en-orig"><p>Server Functions can be inlined in Server Components by adding the <code>&quot;use server&quot;</code> directive to the top of the function body:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function Page() {
+  // Server Action
+  async function createPost(formData: FormData) {
+    &#x27;use server&#x27;
+    // ...
+  }
+
+  return &lt;&gt;&lt;/&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function Page() {
+  // Server Action
+  async function createPost(formData) {
+    &#x27;use server&#x27;
+    // ...
+  }
+
+  return &lt;&gt;&lt;/&gt;
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Server Component는 기본적으로 progressive enhancement를 지원합니다. 즉, Server Action을 호출하는 form은 JavaScript가 아직 로드되지 않았거나 비활성화되어 있어도 제출됩니다.</p><div class="en-orig"><p>Server Components support progressive enhancement by default, meaning forms that call Server Actions will be submitted even if JavaScript hasn't loaded yet or is disabled.</p></div></div></div>
+<h3 class="sec" id="client-components"><a class="anchor" href="#client-components">Client Components</a></h3>
+<p>Client Component 안에서는 Server Function을 정의할 수 없습니다. 하지만 맨 위에 <code>&quot;use server&quot;</code> directive가 있는 파일에서 import하면 Client Component에서 호출할 수 있습니다:</p><div class="en-orig"><p>It's not possible to define Server Functions in Client Components. However, you can invoke them in Client Components by importing them from a file that has the <code>&quot;use server&quot;</code> directive at the top of it:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+export async function createPost() {}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+export async function createPost() {}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/ui/button.tsx" data-js="app/ui/button.js">app/ui/button.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { createPost } from &#x27;@/app/actions&#x27;
+
+export function Button() {
+  return &lt;button formAction={createPost}&gt;Create&lt;/button&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { createPost } from &#x27;@/app/actions&#x27;
+
+export function Button() {
+  return &lt;button formAction={createPost}&gt;Create&lt;/button&gt;
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Client Component에서 Server Action을 호출하는 form은 JavaScript가 아직 로드되지 않았다면 제출을 queue에 쌓아 두며, hydration 시 우선 처리됩니다. hydration 이후에는 form을 제출해도 브라우저가 새로고침되지 않습니다.</p><div class="en-orig"><p>In Client Components, forms invoking Server Actions will queue submissions if JavaScript isn't loaded yet, and will be prioritized for hydration. After hydration, the browser does not refresh on form submission.</p></div></div></div>
+<h3 class="sec" id="passing-actions-as-props"><a class="anchor" href="#passing-actions-as-props">Passing actions as props<span class="ko">action을 props로 전달하기</span></a></h3>
+<p>action을 prop으로 Client Component에 전달할 수도 있습니다:</p><div class="en-orig"><p>You can also pass an action to a Client Component as a prop:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&lt;ClientComponent updateItemAction={updateItem} /&gt;</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/client-component.tsx" data-js="app/client-component.js">app/client-component.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+export default function ClientComponent({
+  updateItemAction,
+}: {
+  updateItemAction: (formData: FormData) =&gt; void
+}) {
+  return &lt;form action={updateItemAction}&gt;{/* ... */}&lt;/form&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+export default function ClientComponent({ updateItemAction }) {
+  return &lt;form action={updateItemAction}&gt;{/* ... */}&lt;/form&gt;
+}</code></pre></div></div>
+<h2 class="sec" id="invoking-server-functions"><a class="anchor" href="#invoking-server-functions">Invoking Server Functions<span class="ko">Server Function 호출하기</span></a></h2>
+<p>Server Function을 호출하는 주요 방법은 두 가지입니다:</p><div class="en-orig"><p>There are two main ways you can invoke a Server Function:</p></div>
+<ol>
+<li>Server Component와 Client Component의 <a href="#forms">Form</a></li>
+<li>Client Component의 <a href="#event-handlers">Event Handler</a>와 <a href="#useeffect">useEffect</a></li>
+</ol><div class="en-orig"><ol>
+<li><a href="#forms">Forms</a> in Server and Client Components</li>
+<li><a href="#event-handlers">Event Handlers</a> and <a href="#useeffect">useEffect</a> in Client Components</li>
+</ol></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Server Function은 server-side mutation을 위해 설계되었습니다. client는 이를 한 번에 하나씩 dispatch하고 await합니다. <a href="app-guides-server-actions.html#sequential-dispatch-on-the-client">Sequential dispatch on the client</a>를 참고하세요. 병렬 data fetching이 필요하다면 Server Component에서 <a href="app-getting-started-fetching-data.html#server-components">data fetching</a>을 사용하거나, 하나의 Server Function 또는 <a href="app-guides-backend-for-frontend.html#manipulating-data">Route Handler</a> 안에서 병렬 작업을 수행하세요.</p><div class="en-orig"><p>Server Functions are designed for server-side mutations. The client dispatches and awaits them one at a time. See <a href="app-guides-server-actions.html#sequential-dispatch-on-the-client">Sequential dispatch on the client</a>. If you need parallel data fetching, use <a href="app-getting-started-fetching-data.html#server-components">data fetching</a> in Server Components, or perform parallel work inside a single Server Function or <a href="app-guides-backend-for-frontend.html#manipulating-data">Route Handler</a>.</p></div></div></div>
+<h3 class="sec" id="forms"><a class="anchor" href="#forms">Forms</a></h3>
+<p>React는 HTML <a href="https://react.dev/reference/react-dom/components/form" target="_blank" rel="noopener"><code>&lt;form&gt;</code></a> element를 확장해, HTML <code>action</code> prop으로 Server Function을 호출할 수 있게 합니다.</p><div class="en-orig"><p>React extends the HTML <a href="https://react.dev/reference/react-dom/components/form" target="_blank" rel="noopener"><code>&lt;form&gt;</code></a> element to allow a Server Function to be invoked with the HTML <code>action</code> prop.</p></div>
+<p>form에서 호출되면 함수는 <a href="https://developer.mozilla.org/docs/Web/API/FormData/FormData" target="_blank" rel="noopener"><code>FormData</code></a> object를 자동으로 받습니다. native <a href="https://developer.mozilla.org/en-US/docs/Web/API/FormData#instance_methods" target="_blank" rel="noopener"><code>FormData</code> method</a>를 사용해 데이터를 추출할 수 있습니다:</p><div class="en-orig"><p>When invoked in a form, the function automatically receives the <a href="https://developer.mozilla.org/docs/Web/API/FormData/FormData" target="_blank" rel="noopener"><code>FormData</code></a> object. You can extract the data using the native <a href="https://developer.mozilla.org/en-US/docs/Web/API/FormData#instance_methods" target="_blank" rel="noopener"><code>FormData</code> methods</a>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/ui/form.tsx" data-js="app/ui/form.js">app/ui/form.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { createPost } from &#x27;@/app/actions&#x27;
+
+export function Form() {
+  return (
+    &lt;form action={createPost}&gt;
+      &lt;input type=&quot;text&quot; name=&quot;title&quot; /&gt;
+      &lt;input type=&quot;text&quot; name=&quot;content&quot; /&gt;
+      &lt;button type=&quot;submit&quot;&gt;Create&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { createPost } from &#x27;@/app/actions&#x27;
+
+export function Form() {
+  return (
+    &lt;form action={createPost}&gt;
+      &lt;input type=&quot;text&quot; name=&quot;title&quot; /&gt;
+      &lt;input type=&quot;text&quot; name=&quot;content&quot; /&gt;
+      &lt;button type=&quot;submit&quot;&gt;Create&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { auth } from &#x27;@/lib/auth&#x27;
+
+export async function createPost(formData: FormData) {
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+
+  const title = formData.get(&#x27;title&#x27;)
+  const content = formData.get(&#x27;content&#x27;)
+
+  // Mutate data
+  // Revalidate cache
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { auth } from &#x27;@/lib/auth&#x27;
+
+export async function createPost(formData) {
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+
+  const title = formData.get(&#x27;title&#x27;)
+  const content = formData.get(&#x27;content&#x27;)
+
+  // Mutate data
+  // Revalidate cache
+}</code></pre></div></div>
+<h3 class="sec" id="event-handlers"><a class="anchor" href="#event-handlers">Event Handlers</a></h3>
+<p>Client Component에서는 <code>onClick</code> 같은 event handler를 사용해 Server Function을 호출할 수 있습니다.</p><div class="en-orig"><p>You can invoke a Server Function in a Client Component by using event handlers such as <code>onClick</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/like-button.tsx" data-js="app/like-button.js">app/like-button.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { incrementLike } from &#x27;./actions&#x27;
+import { useState } from &#x27;react&#x27;
+
+export default function LikeButton({ initialLikes }: { initialLikes: number }) {
+  const [likes, setLikes] = useState(initialLikes)
+
+  return (
+    &lt;&gt;
+      &lt;p&gt;Total Likes: {likes}&lt;/p&gt;
+      &lt;button
+        onClick={async () =&gt; {
+          const updatedLikes = await incrementLike()
+          setLikes(updatedLikes)
+        }}
+      &gt;
+        Like
+      &lt;/button&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { incrementLike } from &#x27;./actions&#x27;
+import { useState } from &#x27;react&#x27;
+
+export default function LikeButton({ initialLikes }) {
+  const [likes, setLikes] = useState(initialLikes)
+
+  return (
+    &lt;&gt;
+      &lt;p&gt;Total Likes: {likes}&lt;/p&gt;
+      &lt;button
+        onClick={async () =&gt; {
+          const updatedLikes = await incrementLike()
+          setLikes(updatedLikes)
+        }}
+      &gt;
+        Like
+      &lt;/button&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예제</span></a></h2>
+<h3 class="sec" id="showing-a-pending-state"><a class="anchor" href="#showing-a-pending-state">Showing a pending state<span class="ko">pending state 표시하기</span></a></h3>
+<p>Server Function을 실행하는 동안 React의 <a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener"><code>useActionState</code></a> hook으로 loading indicator를 보여 줄 수 있습니다. 이 hook은 <code>pending</code> boolean을 반환합니다:</p><div class="en-orig"><p>While executing a Server Function, you can show a loading indicator with React's <a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener"><code>useActionState</code></a> hook. This hook returns a <code>pending</code> boolean:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/ui/button.tsx" data-js="app/ui/button.js">app/ui/button.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useActionState, startTransition } from &#x27;react&#x27;
+import { createPost } from &#x27;@/app/actions&#x27;
+import { LoadingSpinner } from &#x27;@/app/ui/loading-spinner&#x27;
+
+export function Button() {
+  const [state, action, pending] = useActionState(createPost, false)
+
+  return (
+    &lt;button onClick={() =&gt; startTransition(action)}&gt;
+      {pending ? &lt;LoadingSpinner /&gt; : &#x27;Create Post&#x27;}
+    &lt;/button&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useActionState, startTransition } from &#x27;react&#x27;
+import { createPost } from &#x27;@/app/actions&#x27;
+import { LoadingSpinner } from &#x27;@/app/ui/loading-spinner&#x27;
+
+export function Button() {
+  const [state, action, pending] = useActionState(createPost, false)
+
+  return (
+    &lt;button onClick={() =&gt; startTransition(action)}&gt;
+      {pending ? &lt;LoadingSpinner /&gt; : &#x27;Create Post&#x27;}
+    &lt;/button&gt;
+  )
+}</code></pre></div></div>
+<p>pending feedback, optimistic UI, transition, error handling 등 반응성 있는 interaction을 더 깊이 살펴보려면 <a href="app-guides-interactive-apps.html">Building interactive apps</a> 가이드를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-guides-interactive-apps.html">Building interactive apps</a> guide for a deeper walkthrough of responsive interactions, including pending feedback, optimistic UI, transitions, and error handling.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><strong>experimental</strong> 기능인 <a href="app-guides-offline-support.html"><code>useOffline</code></a> config를 활성화하면, 연결이 끊겨 중단된 Server Action은 pending 상태로 남아 있다가 network가 돌아오면 완료됩니다.</p><div class="en-orig"><p>With the <strong>experimental</strong> <a href="app-guides-offline-support.html"><code>useOffline</code></a> config enabled, a Server Action interrupted by a connectivity drop stays pending and completes when the network returns.</p></div></div></div>
+<h3 class="sec" id="refresh-data"><a class="anchor" href="#refresh-data">Refresh data<span class="ko">데이터 새로고침</span></a></h3>
+<p>mutation 후에는 최신 데이터를 보여 주기 위해 현재 page를 새로고침하고 싶을 수 있습니다. Server Action 안에서 <code>next/cache</code>의 <a href="app-api-reference-functions-refresh.html"><code>refresh</code></a>를 호출하면 됩니다:</p><div class="en-orig"><p>After a mutation, you may want to refresh the current page to show the latest data. You can do this by calling <a href="app-api-reference-functions-refresh.html"><code>refresh</code></a> from <code>next/cache</code> in a Server Action:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/lib/actions.ts" data-js="app/lib/actions.js">app/lib/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { auth } from &#x27;@/lib/auth&#x27;
+import { refresh } from &#x27;next/cache&#x27;
+
+export async function updatePost(formData: FormData) {
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+  // Mutate data
+  // ...
+
+  refresh()
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { auth } from &#x27;@/lib/auth&#x27;
+import { refresh } from &#x27;next/cache&#x27;
+
+export async function updatePost(formData) {
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+  // Mutate data
+  // ...
+
+  refresh()
+}</code></pre></div></div>
+<p>이렇게 하면 client router가 새로고침되어 UI가 최신 state를 반영합니다. <code>refresh()</code> 함수는 tag가 지정된 데이터를 revalidate하지 않습니다. tag가 지정된 데이터를 revalidate하려면 대신 <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>나 <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>를 사용하세요.</p><div class="en-orig"><p>This refreshes the client router, ensuring the UI reflects the latest state. The <code>refresh()</code> function does not revalidate tagged data. To revalidate tagged data, use <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a> or <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a> instead.</p></div>
+<h3 class="sec" id="revalidate-data"><a class="anchor" href="#revalidate-data">Revalidate data<span class="ko">데이터 revalidate하기</span></a></h3>
+<p>mutation을 수행한 후 Server Function 안에서 <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>나 <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>를 호출하면 Next.js cache를 revalidate하고 업데이트된 데이터를 보여 줄 수 있습니다:</p><div class="en-orig"><p>After performing a mutation, you can revalidate the Next.js cache and show the updated data by calling <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a> or <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a> within the Server Function:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/lib/actions.ts" data-js="app/lib/actions.js">app/lib/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { auth } from &#x27;@/lib/auth&#x27;
+import { revalidatePath } from &#x27;next/cache&#x27;
+
+export async function createPost(formData: FormData) {
+  &#x27;use server&#x27;
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+  // Mutate data
+  // ...
+
+  revalidatePath(&#x27;/posts&#x27;)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { auth } from &#x27;@/lib/auth&#x27;
+import { revalidatePath } from &#x27;next/cache&#x27;
+
+export async function createPost(formData) {
+  &#x27;use server&#x27;
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+  // Mutate data
+  // ...
+  revalidatePath(&#x27;/posts&#x27;)
+}</code></pre></div></div>
+<h3 class="sec" id="redirect-after-a-mutation"><a class="anchor" href="#redirect-after-a-mutation">Redirect after a mutation<span class="ko">mutation 후 redirect하기</span></a></h3>
+<p>mutation 후 사용자를 다른 page로 redirect하고 싶을 수 있습니다. Server Function 안에서 <a href="app-api-reference-functions-redirect.html"><code>redirect</code></a>를 호출하면 됩니다.</p><div class="en-orig"><p>You may want to redirect the user to a different page after a mutation. You can do this by calling <a href="app-api-reference-functions-redirect.html"><code>redirect</code></a> within the Server Function.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/lib/actions.ts" data-js="app/lib/actions.js">app/lib/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { auth } from &#x27;@/lib/auth&#x27;
+import { revalidatePath } from &#x27;next/cache&#x27;
+import { redirect } from &#x27;next/navigation&#x27;
+
+export async function createPost(formData: FormData) {
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+  // Mutate data
+  // ...
+
+  revalidatePath(&#x27;/posts&#x27;)
+  redirect(&#x27;/posts&#x27;)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { auth } from &#x27;@/lib/auth&#x27;
+import { revalidatePath } from &#x27;next/cache&#x27;
+import { redirect } from &#x27;next/navigation&#x27;
+
+export async function createPost(formData) {
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+  // Mutate data
+  // ...
+
+  revalidatePath(&#x27;/posts&#x27;)
+  redirect(&#x27;/posts&#x27;)
+}</code></pre></div></div>
+<p><code>redirect</code>를 호출하면 framework가 처리하는 control-flow exception을 <a href="app-api-reference-functions-redirect.html#behavior">throw</a>합니다. 그 뒤의 코드는 실행되지 않습니다. 최신 데이터가 필요하다면 그 전에 <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>나 <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>를 호출하세요.</p><div class="en-orig"><p>Calling <code>redirect</code> <a href="app-api-reference-functions-redirect.html#behavior">throws</a> a framework handled control-flow exception. Any code after it won't execute. If you need fresh data, call <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a> or <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a> beforehand.</p></div>
+<h3 class="sec" id="cookies"><a class="anchor" href="#cookies">Cookies</a></h3>
+<p>Server Action 안에서 <a href="app-api-reference-functions-cookies.html"><code>cookies</code></a> API를 사용해 cookie를 <code>get</code>, <code>set</code>, <code>delete</code>할 수 있습니다.</p><div class="en-orig"><p>You can <code>get</code>, <code>set</code>, and <code>delete</code> cookies inside a Server Action using the <a href="app-api-reference-functions-cookies.html"><code>cookies</code></a> API.</p></div>
+<p>Server Action에서 cookie를 <a href="app-api-reference-functions-cookies.html#understanding-cookie-behavior-in-server-functions">set하거나 delete</a>하면, Next.js는 server에서 현재 page와 그 layout을 다시 render하여 <strong>UI가 새 cookie 값을 반영하도록</strong> 합니다.</p><div class="en-orig"><p>When you <a href="app-api-reference-functions-cookies.html#understanding-cookie-behavior-in-server-functions">set or delete</a> a cookie in a Server Action, Next.js re-renders the current page and its layouts on the server so the <strong>UI reflects the new cookie value</strong>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>server 업데이트는 현재 React tree에 적용되며, 필요에 따라 component를 re-render, mount, unmount합니다. re-render되는 component의 client state는 유지되고, effect는 dependency가 바뀐 경우 다시 실행됩니다.</p><div class="en-orig"><p>The server update applies to the current React tree, re-rendering, mounting, or unmounting components, as needed. Client state is preserved for re-rendered components, and effects re-run if their dependencies changed.</p></div></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { cookies } from &#x27;next/headers&#x27;
+
+export async function exampleAction() {
+  const cookieStore = await cookies()
+
+  // Get cookie
+  cookieStore.get(&#x27;name&#x27;)?.value
+
+  // Set cookie
+  cookieStore.set(&#x27;name&#x27;, &#x27;Delba&#x27;)
+
+  // Delete cookie
+  cookieStore.delete(&#x27;name&#x27;)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { cookies } from &#x27;next/headers&#x27;
+
+export async function exampleAction() {
+  // Get cookie
+  const cookieStore = await cookies()
+
+  // Get cookie
+  cookieStore.get(&#x27;name&#x27;)?.value
+
+  // Set cookie
+  cookieStore.set(&#x27;name&#x27;, &#x27;Delba&#x27;)
+
+  // Delete cookie
+  cookieStore.delete(&#x27;name&#x27;)
+}</code></pre></div></div>
+<h3 class="sec" id="useeffect"><a class="anchor" href="#useeffect">useEffect</a></h3>
+<p>React의 <a href="https://react.dev/reference/react/useEffect" target="_blank" rel="noopener"><code>useEffect</code></a> hook을 사용하면 component가 mount되거나 dependency가 바뀔 때 Server Action을 호출할 수 있습니다. 이는 global event에 의존하거나 자동으로 trigger되어야 하는 mutation에 유용합니다. 예를 들어 앱 단축키를 위한 <code>onKeyDown</code>, 무한 스크롤을 위한 intersection observer hook, 또는 component가 mount될 때 조회수를 업데이트하는 경우가 있습니다:</p><div class="en-orig"><p>You can use the React <a href="https://react.dev/reference/react/useEffect" target="_blank" rel="noopener"><code>useEffect</code></a> hook to invoke a Server Action when the component mounts or a dependency changes. This is useful for mutations that depend on global events or need to be triggered automatically. For example, <code>onKeyDown</code> for app shortcuts, an intersection observer hook for infinite scrolling, or when the component mounts to update a view count:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/view-count.tsx" data-js="app/view-count.js">app/view-count.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { incrementViews } from &#x27;./actions&#x27;
+import { useState, useEffect, useTransition } from &#x27;react&#x27;
+
+export default function ViewCount({ initialViews }: { initialViews: number }) {
+  const [views, setViews] = useState(initialViews)
+  const [isPending, startTransition] = useTransition()
+
+  useEffect(() =&gt; {
+    startTransition(async () =&gt; {
+      const updatedViews = await incrementViews()
+      setViews(updatedViews)
+    })
+  }, [])
+
+  // You can use `isPending` to give users feedback
+  return &lt;p&gt;Total Views: {views}&lt;/p&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { incrementViews } from &#x27;./actions&#x27;
+import { useState, useEffect, useTransition } from &#x27;react&#x27;
+
+export default function ViewCount({ initialViews }) {
+  const [views, setViews] = useState(initialViews)
+  const [isPending, startTransition] = useTransition()
+
+  useEffect(() =&gt; {
+    startTransition(async () =&gt; {
+      const updatedViews = await incrementViews()
+      setViews(updatedViews)
+    })
+  }, [])
+
+  // You can use `isPending` to give users feedback
+  return &lt;p&gt;Total Views: {views}&lt;/p&gt;
+}</code></pre></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">다음 단계</h2><p>Server Action과 이 페이지에서 언급한 API에 대해 더 알아보세요.</p><div class="rgrid"><a class="rcard" href="app-guides-server-actions.html"><div class="rt">Server Actions and Mutations</div><div class="rk">Server Action과 Mutation</div><div class="rd">single-roundtrip response 모델, 순차 dispatch, 보안, caching 통합을 포함해 Next.js에서 Server Action이 동작하는 방식을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-functions-revalidatePath.html"><div class="rt">revalidatePath</div><div class="rk">revalidatePath</div><div class="rd">revalidatePath 함수의 API Reference입니다.</div></a><a class="rcard" href="app-api-reference-functions-revalidateTag.html"><div class="rt">revalidateTag</div><div class="rk">revalidateTag</div><div class="rd">revalidateTag 함수에 대한 API Reference입니다.</div></a><a class="rcard" href="app-api-reference-functions-redirect.html"><div class="rt">redirect</div><div class="rk">redirect</div><div class="rd">redirect 함수의 API Reference입니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/07-mutating-data.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/getting-started/mutating-data" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-getting-started-fetching-data.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Fetching Data</div><div class="ttl-ko">데이터 가져오기</div></a>
+      <a href="app-getting-started-caching.html" class="next"><div class="dir">다음 →</div><div class="ttl">Caching</div><div class="ttl-ko">캐싱</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/getting-started/mutating-data" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#what-are-server-functions">What are Server Functions?</a></li><li class="l2"><a href="#creating-server-functions">Creating Server Functions</a></li><li class="l3"><a href="#server-components">Server Components</a></li><li class="l3"><a href="#client-components">Client Components</a></li><li class="l3"><a href="#passing-actions-as-props">Passing actions as props</a></li><li class="l2"><a href="#invoking-server-functions">Invoking Server Functions</a></li><li class="l3"><a href="#forms">Forms</a></li><li class="l3"><a href="#event-handlers">Event Handlers</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#showing-a-pending-state">Showing a pending state</a></li><li class="l3"><a href="#refresh-data">Refresh data</a></li><li class="l3"><a href="#revalidate-data">Revalidate data</a></li><li class="l3"><a href="#redirect-after-a-mutation">Redirect after a mutation</a></li><li class="l3"><a href="#cookies">Cookies</a></li><li class="l3"><a href="#useeffect">useEffect</a></li><li class="l2"><a href="#next-steps">다음 단계</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js에서는 [React Server Functions](https://react.dev/reference/rsc/server-functions)를 사용해 데이터를 mutate할 수 있습니다. 이 페이지에서는 Server Function을 [만드는 방법](#creating-server-functions)과 [호출하는 방법](#invoking-server-functions)을 살펴봅니다. Next.js 고유의 동작(single-roundtrip response, sequential dispatch, security, deployment)은 [Server Actions and Mutations](/docs/app/guides/server-actions)를 참고하세요.
+
+## What are Server Functions? || Server Function이란?
+
+**Server Function**은 server에서 실행되는 비동기 함수입니다. client에서 network request를 통해 호출할 수 있으며, 그래서 반드시 비동기여야 합니다.
+
+`action`이나 mutation 맥락에서는 **Server Actions**라고도 부릅니다.
+
+convention(관례)상 Server Action은 [`startTransition`](https://react.dev/reference/react/startTransition)과 함께 사용되는 async 함수입니다. 함수가 다음과 같이 전달되면 이 처리가 자동으로 이루어집니다:
+
+- `action` prop으로 `&lt;form&gt;`에 전달될 때.
+- `formAction` prop으로 `&lt;button&gt;`에 전달될 때.
+
+action이 호출되면 Next.js는 업데이트된 UI와 새 데이터를 한 번의 server roundtrip으로 함께 반환할 수 있습니다.
+
+내부적으로 action은 `POST` method를 사용하며, 오직 이 HTTP method로만 호출할 수 있습니다.
+
+&gt; [!WARNING]
+&gt; Server Function은 애플리케이션 UI를 통해서만이 아니라 직접 보낸 POST request로도 접근할 수 있습니다. 모든 Server Function 안에서 항상 authentication과 authorization을 확인하세요. 권장 패턴은 [Data Security 가이드](/docs/app/guides/data-security#authentication-and-authorization)를 참고하세요.
+
+&gt; **Good to know:** Server Action은 특정한 방식(form 제출과 mutation 처리)으로 사용되는 Server Function입니다. Server Function이 더 넓은 의미의 용어입니다.
+
+## Creating Server Functions || Server Function 만들기
+
+Server Function은 [`use server`](https://react.dev/reference/rsc/use-server) directive를 사용해 정의할 수 있습니다. directive를 **비동기** 함수의 맨 위에 두면 그 함수를 Server Function으로 표시하고, 별도 파일의 맨 위에 두면 그 파일의 모든 export를 표시합니다.
+
+[[CODE 1]]
+
+### Server Components
+
+Server Component 안에서는 함수 본문 맨 위에 `&quot;use server&quot;` directive를 추가해 Server Function을 inline으로 정의할 수 있습니다:
+
+[[CODE 2]]
+
+&gt; **Good to know:** Server Component는 기본적으로 progressive enhancement를 지원합니다. 즉, Server Action을 호출하는 form은 JavaScript가 아직 로드되지 않았거나 비활성화되어 있어도 제출됩니다.
+
+### Client Components
+
+Client Component 안에서는 Server Function을 정의할 수 없습니다. 하지만 맨 위에 `&quot;use server&quot;` directive가 있는 파일에서 import하면 Client Component에서 호출할 수 있습니다:
+
+[[CODE 3]]
+
+[[CODE 4]]
+
+&gt; **Good to know:** Client Component에서 Server Action을 호출하는 form은 JavaScript가 아직 로드되지 않았다면 제출을 queue에 쌓아 두며, hydration 시 우선 처리됩니다. hydration 이후에는 form을 제출해도 브라우저가 새로고침되지 않습니다.
+
+### Passing actions as props || action을 props로 전달하기
+
+action을 prop으로 Client Component에 전달할 수도 있습니다:
+
+[[CODE 5]]
+
+[[CODE 6]]
+
+## Invoking Server Functions || Server Function 호출하기
+
+Server Function을 호출하는 주요 방법은 두 가지입니다:
+
+1. Server Component와 Client Component의 [Form](#forms)
+2. Client Component의 [Event Handler](#event-handlers)와 [useEffect](#useeffect)
+
+&gt; **Good to know:** Server Function은 server-side mutation을 위해 설계되었습니다. client는 이를 한 번에 하나씩 dispatch하고 await합니다. [Sequential dispatch on the client](/docs/app/guides/server-actions#sequential-dispatch-on-the-client)를 참고하세요. 병렬 data fetching이 필요하다면 Server Component에서 [data fetching](/docs/app/getting-started/fetching-data#server-components)을 사용하거나, 하나의 Server Function 또는 [Route Handler](/docs/app/guides/backend-for-frontend#manipulating-data) 안에서 병렬 작업을 수행하세요.
+
+### Forms
+
+React는 HTML [`&lt;form&gt;`](https://react.dev/reference/react-dom/components/form) element를 확장해, HTML `action` prop으로 Server Function을 호출할 수 있게 합니다.
+
+form에서 호출되면 함수는 [`FormData`](https://developer.mozilla.org/docs/Web/API/FormData/FormData) object를 자동으로 받습니다. native [`FormData` method](https://developer.mozilla.org/en-US/docs/Web/API/FormData#instance_methods)를 사용해 데이터를 추출할 수 있습니다:
+
+[[CODE 7]]
+
+[[CODE 8]]
+
+### Event Handlers
+
+Client Component에서는 `onClick` 같은 event handler를 사용해 Server Function을 호출할 수 있습니다.
+
+[[CODE 9]]
+
+## Examples || 예제
+
+### Showing a pending state || pending state 표시하기
+
+Server Function을 실행하는 동안 React의 [`useActionState`](https://react.dev/reference/react/useActionState) hook으로 loading indicator를 보여 줄 수 있습니다. 이 hook은 `pending` boolean을 반환합니다:
+
+[[CODE 10]]
+
+pending feedback, optimistic UI, transition, error handling 등 반응성 있는 interaction을 더 깊이 살펴보려면 [Building interactive apps](/docs/app/guides/interactive-apps) 가이드를 참고하세요.
+
+&gt; **Good to know**: **experimental** 기능인 [`useOffline`](/docs/app/guides/offline-support) config를 활성화하면, 연결이 끊겨 중단된 Server Action은 pending 상태로 남아 있다가 network가 돌아오면 완료됩니다.
+
+### Refresh data || 데이터 새로고침
+
+mutation 후에는 최신 데이터를 보여 주기 위해 현재 page를 새로고침하고 싶을 수 있습니다. Server Action 안에서 `next/cache`의 [`refresh`](/docs/app/api-reference/functions/refresh)를 호출하면 됩니다:
+
+[[CODE 11]]
+
+이렇게 하면 client router가 새로고침되어 UI가 최신 state를 반영합니다. `refresh()` 함수는 tag가 지정된 데이터를 revalidate하지 않습니다. tag가 지정된 데이터를 revalidate하려면 대신 [`updateTag`](/docs/app/api-reference/functions/updateTag)나 [`revalidateTag`](/docs/app/api-reference/functions/revalidateTag)를 사용하세요.
+
+### Revalidate data || 데이터 revalidate하기
+
+mutation을 수행한 후 Server Function 안에서 [`revalidatePath`](/docs/app/api-reference/functions/revalidatePath)나 [`revalidateTag`](/docs/app/api-reference/functions/revalidateTag)를 호출하면 Next.js cache를 revalidate하고 업데이트된 데이터를 보여 줄 수 있습니다:
+
+[[CODE 12]]
+
+### Redirect after a mutation || mutation 후 redirect하기
+
+mutation 후 사용자를 다른 page로 redirect하고 싶을 수 있습니다. Server Function 안에서 [`redirect`](/docs/app/api-reference/functions/redirect)를 호출하면 됩니다.
+
+[[CODE 13]]
+
+`redirect`를 호출하면 framework가 처리하는 control-flow exception을 [throw](/docs/app/api-reference/functions/redirect#behavior)합니다. 그 뒤의 코드는 실행되지 않습니다. 최신 데이터가 필요하다면 그 전에 [`revalidatePath`](/docs/app/api-reference/functions/revalidatePath)나 [`revalidateTag`](/docs/app/api-reference/functions/revalidateTag)를 호출하세요.
+
+### Cookies
+
+Server Action 안에서 [`cookies`](/docs/app/api-reference/functions/cookies) API를 사용해 cookie를 `get`, `set`, `delete`할 수 있습니다.
+
+Server Action에서 cookie를 [set하거나 delete](/docs/app/api-reference/functions/cookies#understanding-cookie-behavior-in-server-functions)하면, Next.js는 server에서 현재 page와 그 layout을 다시 render하여 **UI가 새 cookie 값을 반영하도록** 합니다.
+
+&gt; **Good to know**: server 업데이트는 현재 React tree에 적용되며, 필요에 따라 component를 re-render, mount, unmount합니다. re-render되는 component의 client state는 유지되고, effect는 dependency가 바뀐 경우 다시 실행됩니다.
+
+[[CODE 14]]
+
+### useEffect
+
+React의 [`useEffect`](https://react.dev/reference/react/useEffect) hook을 사용하면 component가 mount되거나 dependency가 바뀔 때 Server Action을 호출할 수 있습니다. 이는 global event에 의존하거나 자동으로 trigger되어야 하는 mutation에 유용합니다. 예를 들어 앱 단축키를 위한 `onKeyDown`, 무한 스크롤을 위한 intersection observer hook, 또는 component가 mount될 때 조회수를 업데이트하는 경우가 있습니다:
+
+[[CODE 15]]
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

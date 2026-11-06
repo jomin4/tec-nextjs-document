@@ -1,0 +1,1287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to migrate from Pages to the App Router (Pages Router에서 App Router로 migrate하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/guides/migrating/app-router-migration" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/guides/migrating/app-router-migration" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/migrating/app-router-migration.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-guides.html">Guides</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-guides-migrating.html">Migrating</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to migrate from Pages to the App Router<span class="sub">Pages Router에서 App Router로 migrate하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>이 가이드는 다음 작업을 도와줍니다:</p><div class="en-orig"><p>This guide will help you:</p></div>
+<ul>
+<li><a href="#nextjs-version">Next.js 애플리케이션을 버전 12에서 버전 13으로 업데이트하기</a></li>
+<li><a href="#upgrading-new-features"><code>pages</code>와 <code>app</code> directory 양쪽에서 동작하는 기능 upgrade하기</a></li>
+<li><a href="#migrating-from-pages-to-app">기존 애플리케이션을 <code>pages</code>에서 <code>app</code>으로 점진적으로 migrate하기</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="#nextjs-version">Update your Next.js application from version 12 to version 13</a></li>
+<li><a href="#upgrading-new-features">Upgrade features that work in both the <code>pages</code> and the <code>app</code> directories</a></li>
+<li><a href="#migrating-from-pages-to-app">Incrementally migrate your existing application from <code>pages</code> to <code>app</code></a></li>
+</ul></div>
+<h2 class="sec" id="upgrading"><a class="anchor" href="#upgrading">Upgrading<span class="ko">업그레이드</span></a></h2>
+<h3 class="sec" id="nodejs-version"><a class="anchor" href="#nodejs-version">Node.js Version<span class="ko">Node.js 버전</span></a></h3>
+<p>이제 최소 Node.js 버전은 <strong>v18.17</strong>입니다. 자세한 내용은 <a href="https://nodejs.org/docs/latest-v18.x/api/" target="_blank" rel="noopener">Node.js 문서</a>를 참고하세요.</p><div class="en-orig"><p>The minimum Node.js version is now <strong>v18.17</strong>. See the <a href="https://nodejs.org/docs/latest-v18.x/api/" target="_blank" rel="noopener">Node.js documentation</a> for more information.</p></div>
+<h3 class="sec" id="nextjs-version"><a class="anchor" href="#nextjs-version">Next.js Version<span class="ko">Next.js 버전</span></a></h3>
+<p>Next.js 버전 13으로 업데이트하려면 선호하는 package manager로 다음 command를 실행하세요:</p><div class="en-orig"><p>To update to Next.js version 13, run the following command using your preferred package manager:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add next@latest react@latest react-dom@latest</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install next@latest react@latest react-dom@latest</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add next@latest react@latest react-dom@latest</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add next@latest react@latest react-dom@latest</code></pre></div></div>
+<h3 class="sec" id="eslint-version"><a class="anchor" href="#eslint-version">ESLint Version<span class="ko">ESLint 버전</span></a></h3>
+<p>ESLint를 사용하고 있다면 ESLint 버전을 upgrade해야 합니다:</p><div class="en-orig"><p>If you're using ESLint, you need to upgrade your ESLint version:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add -D eslint-config-next@latest</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install -D eslint-config-next@latest</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add -D eslint-config-next@latest</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add -D eslint-config-next@latest</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>ESLint 변경 사항을 적용하려면 VS Code에서 ESLint server를 다시 시작해야 할 수 있습니다. Command Palette(Mac은 <code>cmd+shift+p</code>, Windows는 <code>ctrl+shift+p</code>)를 열고 <code>ESLint: Restart ESLint Server</code>를 검색하세요.</p><div class="en-orig"><p>You may need to restart the ESLint server in VS Code for the ESLint changes to take effect. Open the Command Palette (<code>cmd+shift+p</code> on Mac; <code>ctrl+shift+p</code> on Windows) and search for <code>ESLint: Restart ESLint Server</code>.</p></div></div></div>
+<h2 class="sec" id="next-steps"><a class="anchor" href="#next-steps">Next Steps<span class="ko">다음 단계</span></a></h2>
+<p>업데이트한 뒤에는 다음 섹션에서 다음 단계를 확인하세요:</p><div class="en-orig"><p>After you've updated, see the following sections for next steps:</p></div>
+<ul>
+<li><a href="#upgrading-new-features">새 기능 upgrade하기</a>: 개선된 Image, Link Component 같은 새 기능으로 upgrade하는 데 도움이 되는 가이드입니다.</li>
+<li><a href="#migrating-from-pages-to-app"><code>pages</code>에서 <code>app</code> directory로 migrate하기</a>: <code>pages</code>에서 <code>app</code> directory로 점진적으로 migrate하는 데 도움이 되는 단계별 가이드입니다.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="#upgrading-new-features">Upgrade new features</a>: A guide to help you upgrade to new features such as the improved Image and Link Components.</li>
+<li><a href="#migrating-from-pages-to-app">Migrate from the <code>pages</code> to <code>app</code> directory</a>: A step-by-step guide to help you incrementally migrate from the <code>pages</code> to the <code>app</code> directory.</li>
+</ul></div>
+<h2 class="sec" id="upgrading-new-features"><a class="anchor" href="#upgrading-new-features">Upgrading New Features<span class="ko">새 기능 업그레이드</span></a></h2>
+<p>Next.js 13은 새로운 기능과 convention을 갖춘 새 <a href="app.html">App Router</a>를 도입했습니다. 새 Router는 <code>app</code> directory에서 사용할 수 있으며 <code>pages</code> directory와 함께 공존합니다.</p><div class="en-orig"><p>Next.js 13 introduced the new <a href="app.html">App Router</a> with new features and conventions. The new Router is available in the <code>app</code> directory and co-exists with the <code>pages</code> directory.</p></div>
+<p>Next.js 13으로 upgrade한다고 해서 App Router를 반드시 사용해야 하는 것은 <strong>아닙니다</strong>. 업데이트된 <a href="#image-component">Image component</a>, <a href="#link-component">Link component</a>, <a href="#script-component">Script component</a>, <a href="#font-optimization">Font optimization</a>처럼 두 directory 모두에서 동작하는 새 기능과 함께 <code>pages</code>를 계속 사용할 수 있습니다.</p><div class="en-orig"><p>Upgrading to Next.js 13 does <strong>not</strong> require using the App Router. You can continue using <code>pages</code> with new features that work in both directories, such as the updated <a href="#image-component">Image component</a>, <a href="#link-component">Link component</a>, <a href="#script-component">Script component</a>, and <a href="#font-optimization">Font optimization</a>.</p></div>
+<h3 class="sec" id="image-component"><a class="anchor" href="#image-component"><code>&lt;Image/&gt;</code> Component</a></h3>
+<p>Next.js 12에서는 임시 import인 <code>next/future/image</code>로 Image Component의 새로운 개선 사항을 도입했습니다. 이 개선 사항에는 더 적은 client-side JavaScript, image를 확장하고 style을 입히는 더 쉬운 방법, 더 나은 accessibility, 브라우저 native lazy loading이 포함되었습니다.</p><div class="en-orig"><p>Next.js 12 introduced new improvements to the Image Component with a temporary import: <code>next/future/image</code>. These improvements included less client-side JavaScript, easier ways to extend and style images, better accessibility, and native browser lazy loading.</p></div>
+<p>버전 13에서는 이 새로운 동작이 <code>next/image</code>의 기본값이 되었습니다.</p><div class="en-orig"><p>In version 13, this new behavior is now the default for <code>next/image</code>.</p></div>
+<p>새 Image Component로 migrate하는 데 도움이 되는 codemod가 두 가지 있습니다:</p><div class="en-orig"><p>There are two codemods to help you migrate to the new Image Component:</p></div>
+<ul>
+<li><a href="app-guides-upgrading-codemods.html#next-image-to-legacy-image"><strong><code>next-image-to-legacy-image</code> codemod</strong></a>: <code>next/image</code> import를 <code>next/legacy/image</code>로 안전하게 자동으로 이름을 바꿉니다. 기존 component는 동작이 그대로 유지됩니다.</li>
+<li><a href="app-guides-upgrading-codemods.html#next-image-experimental"><strong><code>next-image-experimental</code> codemod</strong></a>: inline style을 추가하고 사용하지 않는 props를 제거하는 위험한(dangerous) 작업을 합니다. 기존 component의 동작이 새 기본값에 맞게 바뀝니다. 이 codemod를 사용하려면 먼저 <code>next-image-to-legacy-image</code> codemod를 실행해야 합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-guides-upgrading-codemods.html#next-image-to-legacy-image"><strong><code>next-image-to-legacy-image</code> codemod</strong></a>: Safely and automatically renames <code>next/image</code> imports to <code>next/legacy/image</code>. Existing components will maintain the same behavior.</li>
+<li><a href="app-guides-upgrading-codemods.html#next-image-experimental"><strong><code>next-image-experimental</code> codemod</strong></a>: Dangerously adds inline styles and removes unused props. This will change the behavior of existing components to match the new defaults. To use this codemod, you need to run the <code>next-image-to-legacy-image</code> codemod first.</li>
+</ul></div>
+<h3 class="sec" id="link-component"><a class="anchor" href="#link-component"><code>&lt;Link&gt;</code> Component</a></h3>
+<p><a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code> Component</a>에는 더 이상 child로 <code>&lt;a&gt;</code> tag를 직접 추가할 필요가 없습니다. 이 동작은 <a href="https://nextjs.org/blog/next-12-2" target="_blank" rel="noopener">버전 12.2</a>에서 experimental option으로 추가되었고 이제 기본값입니다. Next.js 13에서 <code>&lt;Link&gt;</code>는 항상 <code>&lt;a&gt;</code>를 render하며, props를 하위 tag로 전달(forward)할 수 있습니다.</p><div class="en-orig"><p>The <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code> Component</a> no longer requires manually adding an <code>&lt;a&gt;</code> tag as a child. This behavior was added as an experimental option in <a href="https://nextjs.org/blog/next-12-2" target="_blank" rel="noopener">version 12.2</a> and is now the default. In Next.js 13, <code>&lt;Link&gt;</code> always renders <code>&lt;a&gt;</code> and allows you to forward props to the underlying tag.</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+// Next.js 12: `&lt;a&gt;` has to be nested otherwise it&#x27;s excluded
+&lt;Link href=&quot;/about&quot;&gt;
+  &lt;a&gt;About&lt;/a&gt;
+&lt;/Link&gt;
+
+// Next.js 13: `&lt;Link&gt;` always renders `&lt;a&gt;` under the hood
+&lt;Link href=&quot;/about&quot;&gt;
+  About
+&lt;/Link&gt;</code></pre></div></div>
+<p>link를 Next.js 13에 맞게 upgrade하려면 <a href="app-guides-upgrading-codemods.html#new-link"><code>new-link</code> codemod</a>를 사용할 수 있습니다.</p><div class="en-orig"><p>To upgrade your links to Next.js 13, you can use the <a href="app-guides-upgrading-codemods.html#new-link"><code>new-link</code> codemod</a>.</p></div>
+<h3 class="sec" id="script-component"><a class="anchor" href="#script-component"><code>&lt;Script&gt;</code> Component</a></h3>
+<p><a href="app-api-reference-components-script.html"><code>next/script</code></a>의 동작이 <code>pages</code>와 <code>app</code>을 모두 지원하도록 업데이트되었지만, 매끄럽게 migrate하려면 몇 가지를 변경해야 합니다:</p><div class="en-orig"><p>The behavior of <a href="app-api-reference-components-script.html"><code>next/script</code></a> has been updated to support both <code>pages</code> and <code>app</code>, but some changes need to be made to ensure a smooth migration:</p></div>
+<ul>
+<li>이전에 <code>_document.js</code>에 넣었던 <code>beforeInteractive</code> script는 모두 <code>app/layout.tsx</code>나 <code>app/[locale]/layout.tsx</code> 같은 <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a>으로 옮기세요.</li>
+<li>experimental <code>worker</code> strategy는 아직 <code>app</code>에서 동작하지 않으므로, 이 strategy를 지정한 script는 제거하거나 다른 strategy(예: <code>lazyOnload</code>)를 사용하도록 수정해야 합니다.</li>
+<li><code>onLoad</code>, <code>onReady</code>, <code>onError</code> handler는 Server Component에서 동작하지 않으므로 <a href="app-getting-started-server-and-client-components.html">Client Component</a>로 옮기거나 완전히 제거하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>Move any <code>beforeInteractive</code> scripts you previously included in <code>_document.js</code> to a <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a>, such as <code>app/layout.tsx</code> or <code>app/[locale]/layout.tsx</code>.</li>
+<li>The experimental <code>worker</code> strategy does not yet work in <code>app</code> and scripts denoted with this strategy will either have to be removed or modified to use a different strategy (e.g. <code>lazyOnload</code>).</li>
+<li><code>onLoad</code>, <code>onReady</code>, and <code>onError</code> handlers will not work in Server Components so make sure to move them to a <a href="app-getting-started-server-and-client-components.html">Client Component</a> or remove them altogether.</li>
+</ul></div>
+<h3 class="sec" id="font-optimization"><a class="anchor" href="#font-optimization">Font Optimization<span class="ko">Font 최적화</span></a></h3>
+<p>이전에는 Next.js가 <a href="app-api-reference-components-font.html">font CSS를 inline으로 넣어서</a> font 최적화를 도와주었습니다. 버전 13에서는 새 <a href="app-api-reference-components-font.html"><code>next/font</code></a> module이 도입되었습니다. 이 module을 사용하면 뛰어난 performance와 privacy를 보장하면서도 font loading 경험을 customize할 수 있습니다. <code>next/font</code>는 <code>pages</code>와 <code>app</code> directory 모두에서 지원됩니다.</p><div class="en-orig"><p>Previously, Next.js helped you optimize fonts by <a href="app-api-reference-components-font.html">inlining font CSS</a>. Version 13 introduces the new <a href="app-api-reference-components-font.html"><code>next/font</code></a> module which gives you the ability to customize your font loading experience while still ensuring great performance and privacy. <code>next/font</code> is supported in both the <code>pages</code> and <code>app</code> directories.</p></div>
+<p><a href="app-api-reference-components-font.html">CSS inline 방식</a>은 <code>pages</code>에서는 여전히 동작하지만 <code>app</code>에서는 동작하지 않습니다. 대신 <a href="app-api-reference-components-font.html"><code>next/font</code></a>를 사용해야 합니다.</p><div class="en-orig"><p>While <a href="app-api-reference-components-font.html">inlining CSS</a> still works in <code>pages</code>, it does not work in <code>app</code>. You should use <a href="app-api-reference-components-font.html"><code>next/font</code></a> instead.</p></div>
+<p><code>next/font</code> 사용 방법은 <a href="app-api-reference-components-font.html">Font Optimization</a> 페이지를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-api-reference-components-font.html">Font Optimization</a> page to learn how to use <code>next/font</code>.</p></div>
+<h2 class="sec" id="migrating-from-pages-to-app"><a class="anchor" href="#migrating-from-pages-to-app">Migrating from <code>pages</code> to <code>app</code><span class="ko"><code>pages</code>에서 <code>app</code>으로 migrate하기</span></a></h2>
+<blockquote><p><strong>🎥 Watch:</strong> App Router를 점진적으로 도입하는 방법을 알아보세요 → <a href="https://www.youtube.com/watch?v=YQMSietiFm0" target="_blank" rel="noopener">YouTube (16분)</a>.</p><div class="en-orig"><p><strong>🎥 Watch:</strong> Learn how to incrementally adopt the App Router → <a href="https://www.youtube.com/watch?v=YQMSietiFm0" target="_blank" rel="noopener">YouTube (16 minutes)</a>.</p></div></blockquote>
+<p>App Router로 옮기면서 Server Component, Suspense 등 Next.js가 기반으로 삼는 React 기능을 처음 사용하게 될 수도 있습니다. 여기에 <a href="app-api-reference-file-conventions.html">special file</a>과 <a href="app-api-reference-file-conventions-layout.html">layout</a> 같은 새로운 Next.js 기능까지 더해지면, migration은 새로운 개념, mental model, 동작 변화를 익혀야 한다는 뜻이 됩니다.</p><div class="en-orig"><p>Moving to the App Router may be the first time using React features that Next.js builds on top of such as Server Components, Suspense, and more. When combined with new Next.js features such as <a href="app-api-reference-file-conventions.html">special files</a> and <a href="app-api-reference-file-conventions-layout.html">layouts</a>, migration means new concepts, mental models, and behavioral changes to learn.</p></div>
+<p>migration을 더 작은 단계로 나누어 이런 업데이트가 겹치면서 생기는 복잡도를 줄이기를 권장합니다. <code>app</code> directory는 page 단위의 점진적 migration이 가능하도록 <code>pages</code> directory와 동시에 동작하게 의도적으로 설계되었습니다.</p><div class="en-orig"><p>We recommend reducing the combined complexity of these updates by breaking down your migration into smaller steps. The <code>app</code> directory is intentionally designed to work simultaneously with the <code>pages</code> directory to allow for incremental page-by-page migration.</p></div>
+<ul>
+<li><code>app</code> directory는 nested route <em>와</em> layout을 지원합니다. <a href="app-getting-started-layouts-and-pages.html">더 알아보기</a>.</li>
+<li>nested folder로 route를 정의하고, special <code>page.js</code> 파일로 route segment를 public하게 접근 가능하게 만듭니다. <a href="#step-4-migrating-pages">더 알아보기</a>.</li>
+<li><a href="app-api-reference-file-conventions.html">Special file convention</a>은 각 route segment의 UI를 만드는 데 사용됩니다. 가장 흔한 special file은 <code>page.js</code>와 <code>layout.js</code>입니다.<ul>
+<li><code>page.js</code>로 route 고유의 UI를 정의합니다.</li>
+<li><code>layout.js</code>로 여러 route에서 공유하는 UI를 정의합니다.</li>
+<li>special file에는 <code>.js</code>, <code>.jsx</code>, <code>.tsx</code> 파일 확장자를 사용할 수 있습니다.</li>
+</ul></li>
+<li><code>app</code> directory 안에 component, style, test 등 다른 파일을 함께 둘(colocate) 수 있습니다. <a href="app.html">더 알아보기</a>.</li>
+<li><code>getServerSideProps</code>와 <code>getStaticProps</code> 같은 data fetching 함수는 <code>app</code> 안에서 <a href="app-getting-started-fetching-data.html">새 API</a>로 대체되었습니다. <code>getStaticPaths</code>는 <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>로 대체되었습니다.</li>
+<li><code>pages/_app.js</code>와 <code>pages/_document.js</code>는 하나의 <code>app/layout.js</code> root layout으로 대체되었습니다. <a href="app-api-reference-file-conventions-layout.html#root-layout">더 알아보기</a>.</li>
+<li><code>pages/_error.js</code>는 더 세분화된 <code>error.js</code> special file로 대체되었습니다. <a href="app-getting-started-error-handling.html">더 알아보기</a>.</li>
+<li><code>pages/404.js</code>는 <a href="app-api-reference-file-conventions-not-found.html"><code>not-found.js</code></a> 파일로 대체되었습니다.</li>
+<li><code>pages/api/*</code> API Route는 <a href="app-api-reference-file-conventions-route.html"><code>route.js</code></a>(Route Handler) special file로 대체되었습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The <code>app</code> directory supports nested routes <em>and</em> layouts. <a href="app-getting-started-layouts-and-pages.html">Learn more</a>.</li>
+<li>Use nested folders to define routes and a special <code>page.js</code> file to make a route segment publicly accessible. <a href="#step-4-migrating-pages">Learn more</a>.</li>
+<li><a href="app-api-reference-file-conventions.html">Special file conventions</a> are used to create UI for each route segment. The most common special files are <code>page.js</code> and <code>layout.js</code>.<ul>
+<li>Use <code>page.js</code> to define UI unique to a route.</li>
+<li>Use <code>layout.js</code> to define UI that is shared across multiple routes.</li>
+<li><code>.js</code>, <code>.jsx</code>, or <code>.tsx</code> file extensions can be used for special files.</li>
+</ul></li>
+<li>You can colocate other files inside the <code>app</code> directory such as components, styles, tests, and more. <a href="app.html">Learn more</a>.</li>
+<li>Data fetching functions like <code>getServerSideProps</code> and <code>getStaticProps</code> have been replaced with <a href="app-getting-started-fetching-data.html">a new API</a> inside <code>app</code>. <code>getStaticPaths</code> has been replaced with <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>.</li>
+<li><code>pages/_app.js</code> and <code>pages/_document.js</code> have been replaced with a single <code>app/layout.js</code> root layout. <a href="app-api-reference-file-conventions-layout.html#root-layout">Learn more</a>.</li>
+<li><code>pages/_error.js</code> has been replaced with more granular <code>error.js</code> special files. <a href="app-getting-started-error-handling.html">Learn more</a>.</li>
+<li><code>pages/404.js</code> has been replaced with the <a href="app-api-reference-file-conventions-not-found.html"><code>not-found.js</code></a> file.</li>
+<li><code>pages/api/*</code> API Routes have been replaced with the <a href="app-api-reference-file-conventions-route.html"><code>route.js</code></a> (Route Handler) special file.</li>
+</ul></div>
+<h3 class="sec" id="step-1-creating-the-app-directory"><a class="anchor" href="#step-1-creating-the-app-directory">Step 1: Creating the <code>app</code> directory<span class="ko">1단계: <code>app</code> directory 만들기</span></a></h3>
+<p>최신 Next.js 버전으로 업데이트하세요(13.4 이상 필요):</p><div class="en-orig"><p>Update to the latest Next.js version (requires 13.4 or greater):</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add next@latest</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install next@latest</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add next@latest</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add next@latest</code></pre></div></div>
+<p>그다음 프로젝트 root(또는 <code>src/</code> directory)에 새 <code>app</code> directory를 만드세요.</p><div class="en-orig"><p>Then, create a new <code>app</code> directory at the root of your project (or <code>src/</code> directory).</p></div>
+<h3 class="sec" id="step-2-creating-a-root-layout"><a class="anchor" href="#step-2-creating-a-root-layout">Step 2: Creating a Root Layout<span class="ko">2단계: Root Layout 만들기</span></a></h3>
+<p><code>app</code> directory 안에 새 <code>app/layout.tsx</code> 파일을 만드세요. 이 파일은 <code>app</code> 안의 모든 route에 적용되는 <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a>입니다.</p><div class="en-orig"><p>Create a new <code>app/layout.tsx</code> file inside the <code>app</code> directory. This is a <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a> that will apply to all routes inside <code>app</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function RootLayout({
+  // Layouts must accept a children prop.
+  // This will be populated with nested layouts or pages
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;body&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function RootLayout({
+  // Layouts must accept a children prop.
+  // This will be populated with nested layouts or pages
+  children,
+}) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;body&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<ul>
+<li><code>app</code> directory에는 root layout이 <strong>반드시</strong> 있어야 합니다.</li>
+<li>Next.js가 <code>&lt;html&gt;</code>과 <code>&lt;body&gt;</code> tag를 자동으로 만들지 않으므로 root layout에서 이를 정의해야 합니다</li>
+<li>root layout은 <code>pages/_app.tsx</code>와 <code>pages/_document.tsx</code> 파일을 대체합니다.</li>
+<li>layout 파일에는 <code>.js</code>, <code>.jsx</code>, <code>.tsx</code> 확장자를 사용할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The <code>app</code> directory <strong>must</strong> include a root layout.</li>
+<li>The root layout must define <code>&lt;html&gt;</code>, and <code>&lt;body&gt;</code> tags since Next.js does not automatically create them</li>
+<li>The root layout replaces the <code>pages/_app.tsx</code> and <code>pages/_document.tsx</code> files.</li>
+<li><code>.js</code>, <code>.jsx</code>, or <code>.tsx</code> extensions can be used for layout files.</li>
+</ul></div>
+<p><code>&lt;head&gt;</code> HTML element를 관리하려면 <a href="app-getting-started-metadata-and-og-images.html">built-in SEO 지원</a>을 사용할 수 있습니다:</p><div class="en-orig"><p>To manage <code>&lt;head&gt;</code> HTML elements, you can use the <a href="app-getting-started-metadata-and-og-images.html">built-in SEO support</a>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export const metadata: Metadata = {
+  title: &#x27;Home&#x27;,
+  description: &#x27;Welcome to Next.js&#x27;,
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const metadata = {
+  title: &#x27;Home&#x27;,
+  description: &#x27;Welcome to Next.js&#x27;,
+}</code></pre></div></div>
+<h4 class="sec" id="migrating-_documentjs-and-_appjs"><a class="anchor" href="#migrating-_documentjs-and-_appjs">Migrating <code>_document.js</code> and <code>_app.js</code><span class="ko"><code>_document.js</code>와 <code>_app.js</code> migrate하기</span></a></h4>
+<p>기존 <code>_app</code>이나 <code>_document</code> 파일이 있다면 그 내용(예: global style)을 root layout(<code>app/layout.tsx</code>)으로 복사할 수 있습니다. <code>app/layout.tsx</code>의 style은 <code>pages/*</code>에는 적용되지 <em>않습니다</em>. migration 중에는 <code>pages/*</code> route가 깨지지 않도록 <code>_app</code>/<code>_document</code>를 유지해야 합니다. migration이 완전히 끝나면 안전하게 삭제할 수 있습니다.</p><div class="en-orig"><p>If you have an existing <code>_app</code> or <code>_document</code> file, you can copy the contents (e.g. global styles) to the root layout (<code>app/layout.tsx</code>). Styles in <code>app/layout.tsx</code> will <em>not</em> apply to <code>pages/*</code>. You should keep <code>_app</code>/<code>_document</code> while migrating to prevent your <code>pages/*</code> routes from breaking. Once fully migrated, you can then safely delete them.</p></div>
+<p>React Context provider를 사용하고 있다면 이를 <a href="app-getting-started-server-and-client-components.html">Client Component</a>로 옮겨야 합니다.</p><div class="en-orig"><p>If you are using any React Context providers, they will need to be moved to a <a href="app-getting-started-server-and-client-components.html">Client Component</a>.</p></div>
+<h4 class="sec" id="migrating-the-getlayout-pattern-to-layouts-optional"><a class="anchor" href="#migrating-the-getlayout-pattern-to-layouts-optional">Migrating the <code>getLayout()</code> pattern to Layouts (Optional)<span class="ko"><code>getLayout()</code> pattern을 Layout으로 migrate하기 (선택)</span></a></h4>
+<p>Next.js는 <code>pages</code> directory에서 page별 layout을 구현하기 위해 <a href="pages-building-your-application-routing-pages-and-layouts.html#layout-pattern">Page component에 property를 추가</a>하는 방식을 권장했습니다. 이 pattern은 <code>app</code> directory의 <a href="app-api-reference-file-conventions-layout.html">nested layout</a> native 지원으로 대체할 수 있습니다.</p><div class="en-orig"><p>Next.js recommended adding a <a href="pages-building-your-application-routing-pages-and-layouts.html#layout-pattern">property to Page components</a> to achieve per-page layouts in the <code>pages</code> directory. This pattern can be replaced with native support for <a href="app-api-reference-file-conventions-layout.html">nested layouts</a> in the <code>app</code> directory.</p></div>
+<details><summary>변경 전후 예제 보기</summary><div class="details-body"><p><strong>Before</strong></p>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">components/DashboardLayout.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export default function DashboardLayout({ children }) {
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;My Dashboard&lt;/h2&gt;
+      {children}
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/dashboard/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import DashboardLayout from &#x27;../components/DashboardLayout&#x27;
+
+export default function Page() {
+  return &lt;p&gt;My Page&lt;/p&gt;
+}
+
+Page.getLayout = function getLayout(page) {
+  return &lt;DashboardLayout&gt;{page}&lt;/DashboardLayout&gt;
+}</code></pre></div></div>
+<p><strong>After</strong></p>
+<ul>
+<li><p><code>pages/dashboard/index.js</code>에서 <code>Page.getLayout</code> property를 제거하고, <a href="#step-4-migrating-pages">page migration 단계</a>에 따라 <code>app</code> directory로 옮기세요.</p>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/dashboard/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export default function Page() {
+  return &lt;p&gt;My Page&lt;/p&gt;
+}</code></pre></div></div></li>
+<li><p><code>pages</code> directory의 동작을 유지하기 위해 <code>DashboardLayout</code>의 내용을 새 <a href="app-getting-started-server-and-client-components.html">Client Component</a>로 옮기세요.</p>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/dashboard/DashboardLayout.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">&#x27;use client&#x27; // this directive should be at top of the file, before any imports.
+
+// This is a Client Component
+export default function DashboardLayout({ children }) {
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;My Dashboard&lt;/h2&gt;
+      {children}
+    &lt;/div&gt;
+  )
+}</code></pre></div></div></li>
+<li><p><code>app</code> directory 안의 새 <code>layout.js</code> 파일에 <code>DashboardLayout</code>을 import하세요.</p>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/dashboard/layout.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import DashboardLayout from &#x27;./DashboardLayout&#x27;
+
+// This is a Server Component
+export default function Layout({ children }) {
+  return &lt;DashboardLayout&gt;{children}&lt;/DashboardLayout&gt;
+}</code></pre></div></div></li>
+<li>client로 보내는 component JavaScript의 양을 줄이기 위해 <code>DashboardLayout.js</code>(Client Component)의 상호작용이 없는 부분을 <code>layout.js</code>(Server Component)로 점진적으로 옮길 수 있습니다.</li>
+</ul></div></details>
+<h3 class="sec" id="step-3-migrating-nexthead"><a class="anchor" href="#step-3-migrating-nexthead">Step 3: Migrating <code>next/head</code><span class="ko">3단계: <code>next/head</code> migrate하기</span></a></h3>
+<p><code>pages</code> directory에서는 <code>title</code>, <code>meta</code> 같은 <code>&lt;head&gt;</code> HTML element를 관리하는 데 <code>next/head</code> React component를 사용합니다. <code>app</code> directory에서는 <code>next/head</code>가 새 <a href="app-getting-started-metadata-and-og-images.html">built-in SEO 지원</a>으로 대체됩니다.</p><div class="en-orig"><p>In the <code>pages</code> directory, the <code>next/head</code> React component is used to manage <code>&lt;head&gt;</code> HTML elements such as <code>title</code> and <code>meta</code> . In the <code>app</code> directory, <code>next/head</code> is replaced with the new <a href="app-getting-started-metadata-and-og-images.html">built-in SEO support</a>.</p></div>
+<p><strong>Before:</strong></p><div class="en-orig"><p><strong>Before:</strong></p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/index.tsx" data-js="pages/index.js">pages/index.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Head from &#x27;next/head&#x27;
+
+export default function Page() {
+  return (
+    &lt;&gt;
+      &lt;Head&gt;
+        &lt;title&gt;My page title&lt;/title&gt;
+      &lt;/Head&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Head from &#x27;next/head&#x27;
+
+export default function Page() {
+  return (
+    &lt;&gt;
+      &lt;Head&gt;
+        &lt;title&gt;My page title&lt;/title&gt;
+      &lt;/Head&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p><strong>After:</strong></p><div class="en-orig"><p><strong>After:</strong></p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export const metadata: Metadata = {
+  title: &#x27;My Page Title&#x27;,
+}
+
+export default function Page() {
+  return &#x27;...&#x27;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const metadata = {
+  title: &#x27;My Page Title&#x27;,
+}
+
+export default function Page() {
+  return &#x27;...&#x27;
+}</code></pre></div></div>
+<p><a href="app-api-reference-functions-generate-metadata.html">모든 metadata option 보기</a>.</p><div class="en-orig"><p><a href="app-api-reference-functions-generate-metadata.html">See all metadata options</a>.</p></div>
+<h3 class="sec" id="step-4-migrating-pages"><a class="anchor" href="#step-4-migrating-pages">Step 4: Migrating Pages<span class="ko">4단계: Page migrate하기</span></a></h3>
+<ul>
+<li><a href="app.html"><code>app</code> directory</a>의 page는 기본적으로 <a href="app-getting-started-server-and-client-components.html">Server Component</a>입니다. page가 <a href="app-getting-started-server-and-client-components.html">Client Component</a>인 <code>pages</code> directory와는 다릅니다.</li>
+<li><code>app</code>에서는 <a href="app-getting-started-fetching-data.html">Data fetching</a> 방식이 바뀌었습니다. <code>getServerSideProps</code>, <code>getStaticProps</code>, <code>getInitialProps</code>는 더 단순한 API로 대체되었습니다.</li>
+<li><code>app</code> directory는 nested folder로 route를 정의하고, special <code>page.js</code> 파일로 route segment를 public하게 접근 가능하게 만듭니다.</li>
+<li><div class="table-wrap"><table>
+<thead><tr><th><code>pages</code> Directory</th><th><code>app</code> Directory</th><th>Route</th></tr></thead>
+<tbody>
+<tr><td><code>index.js</code></td><td><code>page.js</code></td><td><code>/</code></td></tr>
+<tr><td><code>about.js</code></td><td><code>about/page.js</code></td><td><code>/about</code></td></tr>
+<tr><td><code>blog/[slug].js</code></td><td><code>blog/[slug]/page.js</code></td><td><code>/blog/post-1</code></td></tr>
+</tbody></table></div></li>
+</ul><div class="en-orig"><ul>
+<li>Pages in the <a href="app.html"><code>app</code> directory</a> are <a href="app-getting-started-server-and-client-components.html">Server Components</a> by default. This is different from the <code>pages</code> directory where pages are <a href="app-getting-started-server-and-client-components.html">Client Components</a>.</li>
+<li><a href="app-getting-started-fetching-data.html">Data fetching</a> has changed in <code>app</code>. <code>getServerSideProps</code>, <code>getStaticProps</code> and <code>getInitialProps</code> have been replaced with a simpler API.</li>
+<li>The <code>app</code> directory uses nested folders to define routes and a special <code>page.js</code> file to make a route segment publicly accessible.</li>
+<li><div class="table-wrap"><table>
+<thead><tr><th><code>pages</code> Directory</th><th><code>app</code> Directory</th><th>Route</th></tr></thead>
+<tbody>
+<tr><td><code>index.js</code></td><td><code>page.js</code></td><td><code>/</code></td></tr>
+<tr><td><code>about.js</code></td><td><code>about/page.js</code></td><td><code>/about</code></td></tr>
+<tr><td><code>blog/[slug].js</code></td><td><code>blog/[slug]/page.js</code></td><td><code>/blog/post-1</code></td></tr>
+</tbody></table></div></li>
+</ul></div>
+<p>page migration은 크게 두 단계로 나누어 진행하기를 권장합니다:</p><div class="en-orig"><p>We recommend breaking down the migration of a page into two main steps:</p></div>
+<ul>
+<li>1단계: default export된 Page Component를 새 Client Component로 옮깁니다.</li>
+<li>2단계: 새 Client Component를 <code>app</code> directory 안의 새 <code>page.js</code> 파일에 import합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Step 1: Move the default exported Page Component into a new Client Component.</li>
+<li>Step 2: Import the new Client Component into a new <code>page.js</code> file inside the <code>app</code> directory.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 방법은 <code>pages</code> directory와 가장 비슷하게 동작하므로 가장 쉬운 migration 경로입니다.</p><div class="en-orig"><p>This is the easiest migration path because it has the most comparable behavior to the <code>pages</code> directory.</p></div></div></div>
+<p><strong>Step 1: Create a new Client Component</strong></p><div class="en-orig"><p><strong>Step 1: Create a new Client Component</strong></p></div>
+<ul>
+<li><code>app</code> directory 안에 Client Component를 export하는 별도의 새 파일(예: <code>app/home-page.tsx</code> 또는 비슷한 이름)을 만드세요. Client Component를 정의하려면 파일 맨 위(모든 import보다 앞)에 <code>&#x27;use client&#x27;</code> directive를 추가하세요.<ul>
+<li>Pages Router와 마찬가지로, 초기 page load 시 Client Component를 static HTML로 prerender하는 <a href="app-getting-started-server-and-client-components.html#on-the-client-first-load">최적화 단계</a>가 있습니다.</li>
+</ul></li>
+<li>default export된 page component를 <code>pages/index.js</code>에서 <code>app/home-page.tsx</code>로 옮기세요.</li>
+</ul><div class="en-orig"><ul>
+<li>Create a new separate file inside the <code>app</code> directory (i.e. <code>app/home-page.tsx</code> or similar) that exports a Client Component. To define Client Components, add the <code>&#x27;use client&#x27;</code> directive to the top of the file (before any imports).<ul>
+<li>Similar to the Pages Router, there is an <a href="app-getting-started-server-and-client-components.html#on-the-client-first-load">optimization step</a> to prerender Client Components to static HTML on the initial page load.</li>
+</ul></li>
+<li>Move the default exported page component from <code>pages/index.js</code> to <code>app/home-page.tsx</code>.</li>
+</ul></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/home-page.tsx" data-js="app/home-page.js">app/home-page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+// This is a Client Component (same as components in the `pages` directory)
+// It receives data as props, has access to state and effects, and is
+// prerendered on the server during the initial page load.
+export default function HomePage({ recentPosts }) {
+  return (
+    &lt;div&gt;
+      {recentPosts.map((post) =&gt; (
+        &lt;div key={post.id}&gt;{post.title}&lt;/div&gt;
+      ))}
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+// This is a Client Component. It receives data as props and
+// has access to state and effects just like Page components
+// in the `pages` directory.
+export default function HomePage({ recentPosts }) {
+  return (
+    &lt;div&gt;
+      {recentPosts.map((post) =&gt; (
+        &lt;div key={post.id}&gt;{post.title}&lt;/div&gt;
+      ))}
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p><strong>Step 2: Create a new page</strong></p><div class="en-orig"><p><strong>Step 2: Create a new page</strong></p></div>
+<ul>
+<li><code>app</code> directory 안에 새 <code>app/page.tsx</code> 파일을 만드세요. 이 파일은 기본적으로 Server Component입니다.</li>
+<li><code>home-page.tsx</code> Client Component를 page에 import하세요.</li>
+<li><p><code>pages/index.js</code>에서 data를 fetch하고 있었다면, 새 <a href="app-getting-started-fetching-data.html">data fetching API</a>를 사용해 data fetching 로직을 Server Component 안으로 바로 옮기세요. 자세한 내용은 <a href="#step-6-migrating-data-fetching-methods">data fetching upgrade 가이드</a>를 참고하세요.</p>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// Import your Client Component
+import HomePage from &#x27;./home-page&#x27;
+
+async function getPosts() {
+  const res = await fetch(&#x27;https://...&#x27;)
+  const posts = await res.json()
+  return posts
+}
+
+export default async function Page() {
+  // Fetch data directly in a Server Component
+  const recentPosts = await getPosts()
+  // Forward fetched data to your Client Component
+  return &lt;HomePage recentPosts={recentPosts} /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// Import your Client Component
+import HomePage from &#x27;./home-page&#x27;
+
+async function getPosts() {
+  const res = await fetch(&#x27;https://...&#x27;)
+  const posts = await res.json()
+  return posts
+}
+
+export default async function Page() {
+  // Fetch data directly in a Server Component
+  const recentPosts = await getPosts()
+  // Forward fetched data to your Client Component
+  return &lt;HomePage recentPosts={recentPosts} /&gt;
+}</code></pre></div></div></li>
+<li>이전 page에서 <code>useRouter</code>를 사용했다면 새 routing hook으로 업데이트해야 합니다. <a href="app-api-reference-functions-use-router.html">더 알아보기</a>.</li>
+<li>development server를 시작하고 <a href="http://localhost:3000" target="_blank" rel="noopener"><code>http://localhost:3000</code></a>에 접속하세요. 기존 index route가 이제 app directory를 통해 제공되는 것을 확인할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Create a new <code>app/page.tsx</code> file inside the <code>app</code> directory. This is a Server Component by default.</li>
+<li>Import the <code>home-page.tsx</code> Client Component into the page.</li>
+<li><p>If you were fetching data in <code>pages/index.js</code>, move the data fetching logic directly into the Server Component using the new <a href="app-getting-started-fetching-data.html">data fetching APIs</a>. See the <a href="#step-6-migrating-data-fetching-methods">data fetching upgrade guide</a> for more details.</p>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// Import your Client Component
+import HomePage from &#x27;./home-page&#x27;
+
+async function getPosts() {
+  const res = await fetch(&#x27;https://...&#x27;)
+  const posts = await res.json()
+  return posts
+}
+
+export default async function Page() {
+  // Fetch data directly in a Server Component
+  const recentPosts = await getPosts()
+  // Forward fetched data to your Client Component
+  return &lt;HomePage recentPosts={recentPosts} /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// Import your Client Component
+import HomePage from &#x27;./home-page&#x27;
+
+async function getPosts() {
+  const res = await fetch(&#x27;https://...&#x27;)
+  const posts = await res.json()
+  return posts
+}
+
+export default async function Page() {
+  // Fetch data directly in a Server Component
+  const recentPosts = await getPosts()
+  // Forward fetched data to your Client Component
+  return &lt;HomePage recentPosts={recentPosts} /&gt;
+}</code></pre></div></div></li>
+<li>If your previous page used <code>useRouter</code>, you'll need to update to the new routing hooks. <a href="app-api-reference-functions-use-router.html">Learn more</a>.</li>
+<li>Start your development server and visit <a href="http://localhost:3000" target="_blank" rel="noopener"><code>http://localhost:3000</code></a>. You should see your existing index route, now served through the app directory.</li>
+</ul></div>
+<h3 class="sec" id="step-5-migrating-routing-hooks"><a class="anchor" href="#step-5-migrating-routing-hooks">Step 5: Migrating Routing Hooks<span class="ko">5단계: Routing Hook migrate하기</span></a></h3>
+<p><code>app</code> directory의 새로운 동작을 지원하기 위해 새 router가 추가되었습니다.</p><div class="en-orig"><p>A new router has been added to support the new behavior in the <code>app</code> directory.</p></div>
+<p><code>app</code>에서는 <code>next/navigation</code>에서 import하는 세 가지 새 hook인 <a href="app-api-reference-functions-use-router.html"><code>useRouter()</code></a>, <a href="app-api-reference-functions-use-pathname.html"><code>usePathname()</code></a>, <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams()</code></a>를 사용해야 합니다.</p><div class="en-orig"><p>In <code>app</code>, you should use the three new hooks imported from <code>next/navigation</code>: <a href="app-api-reference-functions-use-router.html"><code>useRouter()</code></a>, <a href="app-api-reference-functions-use-pathname.html"><code>usePathname()</code></a>, and <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams()</code></a>.</p></div>
+<ul>
+<li>새 <code>useRouter</code> hook은 <code>next/navigation</code>에서 import하며, <code>next/router</code>에서 import하는 <code>pages</code>의 <code>useRouter</code> hook과는 동작이 다릅니다.<ul>
+<li><a href="pages-api-reference-functions-use-router.html"><code>next/router</code>에서 import하는 <code>useRouter</code> hook</a>은 <code>app</code> directory에서 지원되지 않지만 <code>pages</code> directory에서는 계속 사용할 수 있습니다.</li>
+</ul></li>
+<li>새 <code>useRouter</code>는 <code>pathname</code> string을 반환하지 않습니다. 대신 별도의 <code>usePathname</code> hook을 사용하세요.</li>
+<li>새 <code>useRouter</code>는 <code>query</code> object를 반환하지 않습니다. 이제 search parameter와 dynamic route parameter가 분리되었습니다. 대신 <code>useSearchParams</code>와 <code>useParams</code> hook을 사용하세요.</li>
+<li><code>useSearchParams</code>와 <code>usePathname</code>을 함께 사용해 page 변경을 감지할 수 있습니다. 자세한 내용은 <a href="app-api-reference-functions-use-router.html#router-events">Router Events</a> 섹션을 참고하세요.</li>
+<li>이 새 hook들은 Client Component에서만 지원됩니다. Server Component에서는 사용할 수 없습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The new <code>useRouter</code> hook is imported from <code>next/navigation</code> and has different behavior to the <code>useRouter</code> hook in <code>pages</code> which is imported from <code>next/router</code>.<ul>
+<li>The <a href="pages-api-reference-functions-use-router.html"><code>useRouter</code> hook imported from <code>next/router</code></a> is not supported in the <code>app</code> directory but can continue to be used in the <code>pages</code> directory.</li>
+</ul></li>
+<li>The new <code>useRouter</code> does not return the <code>pathname</code> string. Use the separate <code>usePathname</code> hook instead.</li>
+<li>The new <code>useRouter</code> does not return the <code>query</code> object. Search parameters and dynamic route parameters are now separate. Use the <code>useSearchParams</code> and <code>useParams</code> hooks instead.</li>
+<li>You can use <code>useSearchParams</code> and <code>usePathname</code> together to listen to page changes. See the <a href="app-api-reference-functions-use-router.html#router-events">Router Events</a> section for more details.</li>
+<li>These new hooks are only supported in Client Components. They cannot be used in Server Components.</li>
+</ul></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/example-client-component.tsx" data-js="app/example-client-component.js">app/example-client-component.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useRouter, usePathname, useSearchParams } from &#x27;next/navigation&#x27;
+
+export default function ExampleClientComponent() {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  // ...
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useRouter, usePathname, useSearchParams } from &#x27;next/navigation&#x27;
+
+export default function ExampleClientComponent() {
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  // ...
+}</code></pre></div></div>
+<p>또한 새 <code>useRouter</code> hook에는 다음과 같은 변경 사항이 있습니다:</p><div class="en-orig"><p>In addition, the new <code>useRouter</code> hook has the following changes:</p></div>
+<ul>
+<li><code>fallback</code>이 <a href="#replacing-fallback">대체되었기 때문에</a> <code>isFallback</code>이 제거되었습니다.</li>
+<li><code>app</code> directory에서는 Next.js의 built-in i18n 기능이 더 이상 필요하지 않으므로 <code>locale</code>, <code>locales</code>, <code>defaultLocale</code>, <code>domainLocales</code> 값이 제거되었습니다. <a href="app-guides-internationalization.html">i18n에 대해 더 알아보기</a>.</li>
+<li><code>basePath</code>가 제거되었습니다. 대안은 <code>useRouter</code>에 포함되지 않을 예정이며, 아직 구현되지 않았습니다.</li>
+<li>새 router에서 <code>as</code> 개념이 제거되었기 때문에 <code>asPath</code>가 제거되었습니다.</li>
+<li>더 이상 필요하지 않기 때문에 <code>isReady</code>가 제거되었습니다. <a href="app-glossary.html#prerendering">prerendering</a> 중에는 <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams()</code></a> hook을 사용하는 component는 prerendering 단계를 건너뛰고, 대신 runtime에 client에서 render됩니다.</li>
+<li><code>route</code>가 제거되었습니다. <code>usePathname</code>이나 <code>useSelectedLayoutSegments()</code>가 대안이 됩니다.</li>
+<li><code>router.push()</code>와 <code>router.replace()</code>는 더 이상 Promise를 반환하지 않습니다. route 변경을 React Transition으로 queue에 넣고 바로 반환합니다. pending 상태를 보여 주려면 <a href="https://react.dev/reference/react/useTransition" target="_blank" rel="noopener"><code>useTransition</code></a>이 반환하는 <code>startTransition</code> 안에서 호출하고 <code>isPending</code>을 읽으세요. 예제는 <a href="app-guides-interactive-apps.html#step-3-filter-with-pending-feedback">Filter with pending feedback</a>을 참고하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><code>isFallback</code> has been removed because <code>fallback</code> has <a href="#replacing-fallback">been replaced</a>.</li>
+<li>The <code>locale</code>, <code>locales</code>, <code>defaultLocale</code>, <code>domainLocales</code> values have been removed because built-in i18n Next.js features are no longer necessary in the <code>app</code> directory. <a href="app-guides-internationalization.html">Learn more about i18n</a>.</li>
+<li><code>basePath</code> has been removed. The alternative will not be part of <code>useRouter</code>. It has not yet been implemented.</li>
+<li><code>asPath</code> has been removed because the concept of <code>as</code> has been removed from the new router.</li>
+<li><code>isReady</code> has been removed because it is no longer necessary. During <a href="app-glossary.html#prerendering">prerendering</a>, any component that uses the <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams()</code></a> hook will skip the prerendering step and instead be rendered on the client at runtime.</li>
+<li><code>route</code> has been removed. <code>usePathname</code> or <code>useSelectedLayoutSegments()</code> provide an alternative.</li>
+<li><code>router.push()</code> and <code>router.replace()</code> no longer return a Promise. They queue the route change as a React Transition and return right away. To show a pending state, call them inside the <code>startTransition</code> returned by <a href="https://react.dev/reference/react/useTransition" target="_blank" rel="noopener"><code>useTransition</code></a> and read <code>isPending</code>. See <a href="app-guides-interactive-apps.html#step-3-filter-with-pending-feedback">Filter with pending feedback</a> for an example.</li>
+</ul></div>
+<p><a href="app-api-reference-functions-use-router.html"><code>useRouter()</code> API reference 보기</a>.</p><div class="en-orig"><p><a href="app-api-reference-functions-use-router.html">View the <code>useRouter()</code> API reference</a>.</p></div>
+<h4 class="sec" id="sharing-components-between-pages-and-app"><a class="anchor" href="#sharing-components-between-pages-and-app">Sharing components between <code>pages</code> and <code>app</code><span class="ko"><code>pages</code>와 <code>app</code> 사이에서 component 공유하기</span></a></h4>
+<p><code>pages</code>와 <code>app</code> router 사이에서 component 호환성을 유지하려면 <a href="pages-api-reference-functions-use-router.html#the-nextcompatrouter-export"><code>next/compat/router</code>의 <code>useRouter</code> hook</a>을 참고하세요.
+이것은 <code>pages</code> directory의 <code>useRouter</code> hook이지만, router 간에 component를 공유하는 동안 사용하도록 만들어졌습니다. <code>app</code> router에서만 사용할 준비가 되면 새 <a href="app-api-reference-functions-use-router.html"><code>next/navigation</code>의 <code>useRouter</code></a>로 업데이트하세요.</p><div class="en-orig"><p>To keep components compatible between the <code>pages</code> and <code>app</code> routers, refer to the <a href="pages-api-reference-functions-use-router.html#the-nextcompatrouter-export"><code>useRouter</code> hook from <code>next/compat/router</code></a>.
+This is the <code>useRouter</code> hook from the <code>pages</code> directory, but intended to be used while sharing components between routers. Once you are ready to use it only on the <code>app</code> router, update to the new <a href="app-api-reference-functions-use-router.html"><code>useRouter</code> from <code>next/navigation</code></a>.</p></div>
+<h3 class="sec" id="step-6-migrating-data-fetching-methods"><a class="anchor" href="#step-6-migrating-data-fetching-methods">Step 6: Migrating Data Fetching Methods<span class="ko">6단계: Data Fetching 메서드 migrate하기</span></a></h3>
+<p><code>pages</code> directory는 page의 data를 fetch하기 위해 <code>getServerSideProps</code>와 <code>getStaticProps</code>를 사용합니다. <code>app</code> directory 안에서는 이 기존 data fetching 함수들이 <code>fetch()</code>와 <code>async</code> React Server Component 위에 만들어진 <a href="app-getting-started-fetching-data.html">더 단순한 API</a>로 대체됩니다.</p><div class="en-orig"><p>The <code>pages</code> directory uses <code>getServerSideProps</code> and <code>getStaticProps</code> to fetch data for pages. Inside the <code>app</code> directory, these previous data fetching functions are replaced with a <a href="app-getting-started-fetching-data.html">simpler API</a> built on top of <code>fetch()</code> and <code>async</code> React Server Components.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default async function Page() {
+  // Opt into the Next.js Data Cache for this request.
+  // The cached response can be reused across requests and revalidated on demand.
+  // Similar to `getStaticProps`.
+  const cachedData = await fetch(&#x27;https://...&#x27;, { cache: &#x27;force-cache&#x27; })
+
+  // Opt out of caching for this request.
+  // Next.js fetches this from the data source on every request.
+  // This is the default fetch behavior.
+  // Similar to `getServerSideProps`.
+  const uncachedData = await fetch(&#x27;https://...&#x27;, { cache: &#x27;no-store&#x27; })
+
+  // Cache this request, but revalidate it at most every 10 seconds.
+  // Similar to `getStaticProps` with the `revalidate` option.
+  const revalidatedData = await fetch(&#x27;https://...&#x27;, {
+    next: { revalidate: 10 },
+  })
+
+  return &lt;div&gt;...&lt;/div&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function Page() {
+  // Opt into the Next.js Data Cache for this request.
+  // The cached response can be reused across requests and revalidated on demand.
+  // Similar to `getStaticProps`.
+  const cachedData = await fetch(&#x27;https://...&#x27;, { cache: &#x27;force-cache&#x27; })
+
+  // Opt out of caching for this request.
+  // Next.js fetches this from the data source on every request.
+  // This is the default fetch behavior.
+  // Similar to `getServerSideProps`.
+  const uncachedData = await fetch(&#x27;https://...&#x27;, { cache: &#x27;no-store&#x27; })
+
+  // Cache this request, but revalidate it at most every 10 seconds.
+  // Similar to `getStaticProps` with the `revalidate` option.
+  const revalidatedData = await fetch(&#x27;https://...&#x27;, {
+    next: { revalidate: 10 },
+  })
+
+  return &lt;div&gt;...&lt;/div&gt;
+}</code></pre></div></div>
+<h4 class="sec" id="server-side-rendering-getserversideprops"><a class="anchor" href="#server-side-rendering-getserversideprops">Server-side Rendering (<code>getServerSideProps</code>)</a></h4>
+<p><code>pages</code> directory에서 <code>getServerSideProps</code>는 server에서 data를 fetch하고 파일의 default export된 React component에 props를 전달하는 데 사용됩니다. page의 초기 HTML은 server에서 prerender되고, 그다음 브라우저에서 page를 "hydrating"합니다(상호작용 가능하게 만듭니다).</p><div class="en-orig"><p>In the <code>pages</code> directory, <code>getServerSideProps</code> is used to fetch data on the server and forward props to the default exported React component in the file. The initial HTML for the page is prerendered from the server, followed by "hydrating" the page in the browser (making it interactive).</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/dashboard.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// `pages` directory
+
+export async function getServerSideProps() {
+  const res = await fetch(`https://...`)
+  const projects = await res.json()
+
+  return { props: { projects } }
+}
+
+export default function Dashboard({ projects }) {
+  return (
+    &lt;ul&gt;
+      {projects.map((project) =&gt; (
+        &lt;li key={project.id}&gt;{project.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div></div>
+<p>App Router에서는 <a href="app-getting-started-server-and-client-components.html">Server Component</a>를 사용해 data fetching을 React component 안에 함께 둘 수 있습니다. 이렇게 하면 server에서 render된 HTML은 유지하면서 client로 보내는 JavaScript를 줄일 수 있습니다.</p><div class="en-orig"><p>In the App Router, we can colocate our data fetching inside our React components using <a href="app-getting-started-server-and-client-components.html">Server Components</a>. This allows us to send less JavaScript to the client, while maintaining the rendered HTML from the server.</p></div>
+<p><code>cache</code> option을 <code>no-store</code>로 설정하면 fetch한 data를 <a href="app-getting-started-fetching-data.html">절대 cache하지 않도록</a> 지정할 수 있습니다. 이는 <code>pages</code> directory의 <code>getServerSideProps</code>와 비슷합니다.</p><div class="en-orig"><p>By setting the <code>cache</code> option to <code>no-store</code>, we can indicate that the fetched data should <a href="app-getting-started-fetching-data.html">never be cached</a>. This is similar to <code>getServerSideProps</code> in the <code>pages</code> directory.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/page.tsx" data-js="app/dashboard/page.js">app/dashboard/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// `app` directory
+
+// This function can be named anything
+async function getProjects() {
+  const res = await fetch(`https://...`, { cache: &#x27;no-store&#x27; })
+  const projects = await res.json()
+
+  return projects
+}
+
+export default async function Dashboard() {
+  const projects = await getProjects()
+
+  return (
+    &lt;ul&gt;
+      {projects.map((project) =&gt; (
+        &lt;li key={project.id}&gt;{project.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// `app` directory
+
+// This function can be named anything
+async function getProjects() {
+  const res = await fetch(`https://...`, { cache: &#x27;no-store&#x27; })
+  const projects = await res.json()
+
+  return projects
+}
+
+export default async function Dashboard() {
+  const projects = await getProjects()
+
+  return (
+    &lt;ul&gt;
+      {projects.map((project) =&gt; (
+        &lt;li key={project.id}&gt;{project.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div></div>
+<h4 class="sec" id="accessing-request-object"><a class="anchor" href="#accessing-request-object">Accessing Request Object<span class="ko">Request Object에 접근하기</span></a></h4>
+<p><code>pages</code> directory에서는 Node.js HTTP API를 기반으로 request 기반 data를 가져올 수 있습니다.</p><div class="en-orig"><p>In the <code>pages</code> directory, you can retrieve request-based data based on the Node.js HTTP API.</p></div>
+<p>예를 들어 <code>getServerSideProps</code>에서 <code>req</code> object를 가져와 request의 cookie와 header를 조회할 수 있습니다.</p><div class="en-orig"><p>For example, you can retrieve the <code>req</code> object from <code>getServerSideProps</code> and use it to retrieve the request's cookies and headers.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// `pages` directory
+
+export async function getServerSideProps({ req, query }) {
+  const authHeader = req.getHeaders()[&#x27;authorization&#x27;];
+  const theme = req.cookies[&#x27;theme&#x27;];
+
+  return { props: { ... }}
+}
+
+export default function Page(props) {
+  return ...
+}</code></pre></div></div>
+<p><code>app</code> directory는 request data를 가져오기 위한 새로운 read-only 함수를 제공합니다:</p><div class="en-orig"><p>The <code>app</code> directory exposes new read-only functions to retrieve request data:</p></div>
+<ul>
+<li><a href="app-api-reference-functions-headers.html"><code>headers</code></a>: Web Headers API를 기반으로 하며, <a href="app-getting-started-server-and-client-components.html">Server Component</a> 안에서 request header를 가져오는 데 사용할 수 있습니다.</li>
+<li><a href="app-api-reference-functions-cookies.html"><code>cookies</code></a>: Web Cookies API를 기반으로 하며, <a href="app-getting-started-server-and-client-components.html">Server Component</a> 안에서 cookie를 가져오는 데 사용할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-functions-headers.html"><code>headers</code></a>: Based on the Web Headers API, and can be used inside <a href="app-getting-started-server-and-client-components.html">Server Components</a> to retrieve request headers.</li>
+<li><a href="app-api-reference-functions-cookies.html"><code>cookies</code></a>: Based on the Web Cookies API, and can be used inside <a href="app-getting-started-server-and-client-components.html">Server Components</a> to retrieve cookies.</li>
+</ul></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// `app` directory
+import { cookies, headers } from &#x27;next/headers&#x27;
+
+async function getData() {
+  const authHeader = (await headers()).get(&#x27;authorization&#x27;)
+
+  return &#x27;...&#x27;
+}
+
+export default async function Page() {
+  // You can use `cookies` or `headers` inside Server Components
+  // directly or in your data fetching function
+  const theme = (await cookies()).get(&#x27;theme&#x27;)
+  const data = await getData()
+  return &#x27;...&#x27;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// `app` directory
+import { cookies, headers } from &#x27;next/headers&#x27;
+
+async function getData() {
+  const authHeader = (await headers()).get(&#x27;authorization&#x27;)
+
+  return &#x27;...&#x27;
+}
+
+export default async function Page() {
+  // You can use `cookies` or `headers` inside Server Components
+  // directly or in your data fetching function
+  const theme = (await cookies()).get(&#x27;theme&#x27;)
+  const data = await getData()
+  return &#x27;...&#x27;
+}</code></pre></div></div>
+<h4 class="sec" id="static-site-generation-getstaticprops"><a class="anchor" href="#static-site-generation-getstaticprops">Static Site Generation (<code>getStaticProps</code>)</a></h4>
+<p><code>pages</code> directory에서 <code>getStaticProps</code> 함수는 build 시점에 page를 prerender하는 데 사용됩니다. 이 함수로 외부 API나 database에서 직접 data를 fetch하고, build 중 page가 생성될 때 이 data를 page 전체에 전달할 수 있습니다.</p><div class="en-orig"><p>In the <code>pages</code> directory, the <code>getStaticProps</code> function is used to prerender a page at build time. This function can be used to fetch data from an external API or directly from a database, and pass this data down to the entire page as it's being generated during the build.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// `pages` directory
+
+export async function getStaticProps() {
+  const res = await fetch(`https://...`)
+  const projects = await res.json()
+
+  return { props: { projects } }
+}
+
+export default function Index({ projects }) {
+  return projects.map((project) =&gt; &lt;div&gt;{project.name}&lt;/div&gt;)
+}</code></pre></div></div>
+<p><code>app</code> directory에서 <a href="app-api-reference-functions-fetch.html"><code>fetch()</code></a>를 사용한 data fetching은 기본값이 <code>cache: &#x27;force-cache&#x27;</code>이며, 직접 invalidate하기 전까지 request data를 cache합니다. 이는 <code>pages</code> directory의 <code>getStaticProps</code>와 비슷합니다.</p><div class="en-orig"><p>In the <code>app</code> directory, data fetching with <a href="app-api-reference-functions-fetch.html"><code>fetch()</code></a> will default to <code>cache: &#x27;force-cache&#x27;</code>, which will cache the request data until manually invalidated. This is similar to <code>getStaticProps</code> in the <code>pages</code> directory.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// `app` directory
+
+// This function can be named anything
+async function getProjects() {
+  const res = await fetch(`https://...`)
+  const projects = await res.json()
+
+  return projects
+}
+
+export default async function Index() {
+  const projects = await getProjects()
+
+  return projects.map((project) =&gt; &lt;div&gt;{project.name}&lt;/div&gt;)
+}</code></pre></div></div>
+<h4 class="sec" id="dynamic-paths-getstaticpaths"><a class="anchor" href="#dynamic-paths-getstaticpaths">Dynamic paths (<code>getStaticPaths</code>)</a></h4>
+<p><code>pages</code> directory에서 <code>getStaticPaths</code> 함수는 build 시점에 prerender해야 하는 dynamic path를 정의하는 데 사용됩니다.</p><div class="en-orig"><p>In the <code>pages</code> directory, the <code>getStaticPaths</code> function is used to define the dynamic paths that should be prerendered at build time.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/posts/[id].js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// `pages` directory
+import PostLayout from &#x27;@/components/post-layout&#x27;
+
+export async function getStaticPaths() {
+  return {
+    paths: [{ params: { id: &#x27;1&#x27; } }, { params: { id: &#x27;2&#x27; } }],
+  }
+}
+
+export async function getStaticProps({ params }) {
+  const res = await fetch(`https://.../posts/${params.id}`)
+  const post = await res.json()
+
+  return { props: { post } }
+}
+
+export default function Post({ post }) {
+  return &lt;PostLayout post={post} /&gt;
+}</code></pre></div></div>
+<p><code>app</code> directory에서는 <code>getStaticPaths</code>가 <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>로 대체됩니다.</p><div class="en-orig"><p>In the <code>app</code> directory, <code>getStaticPaths</code> is replaced with <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>.</p></div>
+<p><a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>는 <code>getStaticPaths</code>와 비슷하게 동작하지만, route parameter를 반환하는 API가 단순해졌고 <a href="app-api-reference-file-conventions-layout.html">layout</a> 안에서도 사용할 수 있습니다. <code>generateStaticParams</code>의 반환 형태는 중첩된 <code>param</code> object의 array나 resolve된 path string이 아니라 segment의 array입니다.</p><div class="en-orig"><p><a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a> behaves similarly to <code>getStaticPaths</code>, but has a simplified API for returning route parameters and can be used inside <a href="app-api-reference-file-conventions-layout.html">layouts</a>. The return shape of <code>generateStaticParams</code> is an array of segments instead of an array of nested <code>param</code> objects or a string of resolved paths.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/posts/[id]/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// `app` directory
+import PostLayout from &#x27;@/components/post-layout&#x27;
+
+export async function generateStaticParams() {
+  return [{ id: &#x27;1&#x27; }, { id: &#x27;2&#x27; }]
+}
+
+async function getPost(params) {
+  const res = await fetch(`https://.../posts/${(await params).id}`)
+  const post = await res.json()
+
+  return post
+}
+
+export default async function Post({ params }) {
+  const post = await getPost(params)
+
+  return &lt;PostLayout post={post} /&gt;
+}</code></pre></div></div>
+<p><code>app</code> directory의 새로운 모델에는 <code>getStaticPaths</code>보다 <code>generateStaticParams</code>라는 이름이 더 적합합니다. <code>get</code> 접두사는 더 설명적인 <code>generate</code>로 바뀌었는데, 이제 <code>getStaticProps</code>와 <code>getServerSideProps</code>가 필요 없으므로 단독으로 쓰기에 더 잘 어울립니다. <code>Paths</code> 접미사는 <code>Params</code>로 바뀌었는데, 여러 dynamic segment가 있는 nested routing에 더 적합합니다.</p><div class="en-orig"><p>Using the name <code>generateStaticParams</code> is more appropriate than <code>getStaticPaths</code> for the new model in the <code>app</code> directory. The <code>get</code> prefix is replaced with a more descriptive <code>generate</code>, which sits better alone now that <code>getStaticProps</code> and <code>getServerSideProps</code> are no longer necessary. The <code>Paths</code> suffix is replaced by <code>Params</code>, which is more appropriate for nested routing with multiple dynamic segments.</p></div>
+<hr />
+<h4 class="sec" id="replacing-fallback"><a class="anchor" href="#replacing-fallback">Replacing <code>fallback</code><span class="ko"><code>fallback</code> 대체하기</span></a></h4>
+<p><code>pages</code> directory에서는 <code>getStaticPaths</code>가 반환하는 <code>fallback</code> property로 build 시점에 prerender되지 않은 page의 동작을 정의합니다. 이 property를 <code>true</code>로 설정하면 page가 생성되는 동안 fallback page를 보여 주고, <code>false</code>로 설정하면 404 page를 보여 주며, <code>blocking</code>으로 설정하면 request 시점에 page를 생성합니다.</p><div class="en-orig"><p>In the <code>pages</code> directory, the <code>fallback</code> property returned from <code>getStaticPaths</code> is used to define the behavior of a page that isn't prerendered at build time. This property can be set to <code>true</code> to show a fallback page while the page is being generated, <code>false</code> to show a 404 page, or <code>blocking</code> to generate the page at request time.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/posts/[id].js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// `pages` directory
+
+export async function getStaticPaths() {
+  return {
+    paths: [],
+    fallback: &#x27;blocking&#x27;
+  };
+}
+
+export async function getStaticProps({ params }) {
+  ...
+}
+
+export default function Post({ post }) {
+  return ...
+}</code></pre></div></div>
+<p><code>app</code> directory에서는 <a href="app-api-reference-file-conventions-route-segment-config-dynamicParams.html"><code>config.dynamicParams</code> property</a>가 <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a> 밖의 params를 처리하는 방식을 제어합니다:</p><div class="en-orig"><p>In the <code>app</code> directory the <a href="app-api-reference-file-conventions-route-segment-config-dynamicParams.html"><code>config.dynamicParams</code> property</a> controls how params outside of <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a> are handled:</p></div>
+<ul>
+<li><strong><code>true</code></strong>: (기본값) <code>generateStaticParams</code>에 포함되지 않은 dynamic segment는 요청 시(on demand) 생성됩니다.</li>
+<li><strong><code>false</code></strong>: <code>generateStaticParams</code>에 포함되지 않은 dynamic segment는 404를 반환합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>true</code></strong>: (default) Dynamic segments not included in <code>generateStaticParams</code> are generated on demand.</li>
+<li><strong><code>false</code></strong>: Dynamic segments not included in <code>generateStaticParams</code> will return a 404.</li>
+</ul></div>
+<p>이는 <code>pages</code> directory에서 <code>getStaticPaths</code>의 <code>fallback: true | false | &#x27;blocking&#x27;</code> option을 대체합니다. streaming에서는 <code>&#x27;blocking&#x27;</code>과 <code>true</code>의 차이가 무시할 만한 수준이므로 <code>fallback: &#x27;blocking&#x27;</code> option은 <code>dynamicParams</code>에 포함되지 않았습니다.</p><div class="en-orig"><p>This replaces the <code>fallback: true | false | &#x27;blocking&#x27;</code> option of <code>getStaticPaths</code> in the <code>pages</code> directory. The <code>fallback: &#x27;blocking&#x27;</code> option is not included in <code>dynamicParams</code> because the difference between <code>&#x27;blocking&#x27;</code> and <code>true</code> is negligible with streaming.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/posts/[id]/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// `app` directory
+
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  return [...]
+}
+
+async function getPost(params) {
+  ...
+}
+
+export default async function Post({ params }) {
+  const post = await getPost(params);
+
+  return ...
+}</code></pre></div></div>
+<p><a href="app-api-reference-file-conventions-route-segment-config-dynamicParams.html"><code>dynamicParams</code></a>가 <code>true</code>(기본값)로 설정되어 있으면, 아직 생성되지 않은 route segment가 request될 때 server-rendered되고 cache됩니다.</p><div class="en-orig"><p>With <a href="app-api-reference-file-conventions-route-segment-config-dynamicParams.html"><code>dynamicParams</code></a> set to <code>true</code> (the default), when a route segment is requested that hasn't been generated, it will be server-rendered and cached.</p></div>
+<h4 class="sec" id="incremental-static-regeneration-getstaticprops-with-revalidate"><a class="anchor" href="#incremental-static-regeneration-getstaticprops-with-revalidate">Incremental Static Regeneration (<code>getStaticProps</code> with <code>revalidate</code>)<span class="ko">Incremental Static Regeneration (<code>revalidate</code>를 사용한 <code>getStaticProps</code>)</span></a></h4>
+<p><code>pages</code> directory에서 <code>getStaticProps</code> 함수에 <code>revalidate</code> field를 추가하면 일정 시간이 지난 뒤 page를 자동으로 다시 생성할 수 있습니다.</p><div class="en-orig"><p>In the <code>pages</code> directory, the <code>getStaticProps</code> function allows you to add a <code>revalidate</code> field to automatically regenerate a page after a certain amount of time.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// `pages` directory
+
+export async function getStaticProps() {
+  const res = await fetch(`https://.../posts`)
+  const posts = await res.json()
+
+  return {
+    props: { posts },
+    revalidate: 60,
+  }
+}
+
+export default function Index({ posts }) {
+  return (
+    &lt;Layout&gt;
+      &lt;PostList posts={posts} /&gt;
+    &lt;/Layout&gt;
+  )
+}</code></pre></div></div>
+<p><code>app</code> directory에서 <a href="app-api-reference-functions-fetch.html"><code>fetch()</code></a>를 사용한 data fetching은 <code>revalidate</code>를 사용할 수 있으며, 지정한 초 동안 request를 cache합니다.</p><div class="en-orig"><p>In the <code>app</code> directory, data fetching with <a href="app-api-reference-functions-fetch.html"><code>fetch()</code></a> can use <code>revalidate</code>, which will cache the request for the specified amount of seconds.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// `app` directory
+
+async function getPosts() {
+  const res = await fetch(`https://.../posts`, { next: { revalidate: 60 } })
+  const data = await res.json()
+
+  return data.posts
+}
+
+export default async function PostList() {
+  const posts = await getPosts()
+
+  return posts.map((post) =&gt; &lt;div&gt;{post.name}&lt;/div&gt;)
+}</code></pre></div></div>
+<h4 class="sec" id="api-routes"><a class="anchor" href="#api-routes">API Routes</a></h4>
+<p>API Route는 <code>pages/api</code> directory에서 아무 변경 없이 계속 동작합니다. 하지만 <code>app</code> directory에서는 <a href="app-api-reference-file-conventions-route.html">Route Handler</a>로 대체되었습니다.</p><div class="en-orig"><p>API Routes continue to work in the <code>pages/api</code> directory without any changes. However, they have been replaced by <a href="app-api-reference-file-conventions-route.html">Route Handlers</a> in the <code>app</code> directory.</p></div>
+<p>Route Handler를 사용하면 Web <a href="https://developer.mozilla.org/docs/Web/API/Request" target="_blank" rel="noopener">Request</a>와 <a href="https://developer.mozilla.org/docs/Web/API/Response" target="_blank" rel="noopener">Response</a> API로 특정 route에 대한 custom request handler를 만들 수 있습니다.</p><div class="en-orig"><p>Route Handlers allow you to create custom request handlers for a given route using the Web <a href="https://developer.mozilla.org/docs/Web/API/Request" target="_blank" rel="noopener">Request</a> and <a href="https://developer.mozilla.org/docs/Web/API/Response" target="_blank" rel="noopener">Response</a> APIs.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/api/route.ts" data-js="app/api/route.js">app/api/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function GET(request: Request) {}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function GET(request) {}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이전에 client에서 외부 API를 호출하려고 API route를 사용했다면, 이제는 대신 <a href="app-getting-started-server-and-client-components.html">Server Component</a>로 data를 안전하게 fetch할 수 있습니다. <a href="app-getting-started-fetching-data.html">data fetching</a>에 대해 더 알아보세요.</p><div class="en-orig"><p>If you previously used API routes to call an external API from the client, you can now use <a href="app-getting-started-server-and-client-components.html">Server Components</a> instead to securely fetch data. Learn more about <a href="app-getting-started-fetching-data.html">data fetching</a>.</p></div></div></div>
+<h4 class="sec" id="single-page-applications"><a class="anchor" href="#single-page-applications">Single-Page Applications</a></h4>
+<p>Single-Page Application(SPA)에서 Next.js로 동시에 migrate하고 있다면 <a href="app-guides-single-page-applications.html">문서</a>에서 자세한 내용을 확인하세요.</p><div class="en-orig"><p>If you are also migrating to Next.js from a Single-Page Application (SPA) at the same time, see our <a href="app-guides-single-page-applications.html">documentation</a> to learn more.</p></div>
+<h3 class="sec" id="step-7-styling"><a class="anchor" href="#step-7-styling">Step 7: Styling<span class="ko">7단계: Styling</span></a></h3>
+<p><code>pages</code> directory에서는 global stylesheet를 <code>pages/_app.js</code>에서만 쓸 수 있도록 제한되어 있습니다. <code>app</code> directory에서는 이 제한이 없어졌습니다. global style은 어떤 layout, page, component에도 추가할 수 있습니다.</p><div class="en-orig"><p>In the <code>pages</code> directory, global stylesheets are restricted to only <code>pages/_app.js</code>. With the <code>app</code> directory, this restriction has been lifted. Global styles can be added to any layout, page, or component.</p></div>
+<ul>
+<li><a href="app-getting-started-css.html#css-modules">CSS Modules</a></li>
+<li><a href="app-getting-started-css.html#tailwind-css">Tailwind CSS</a></li>
+<li><a href="app-getting-started-css.html#global-css">Global Styles</a></li>
+<li><a href="app-guides-css-in-js.html">CSS-in-JS</a></li>
+<li><a href="app-getting-started-css.html#external-stylesheets">External Stylesheets</a></li>
+<li><a href="app-guides-sass.html">Sass</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-getting-started-css.html#css-modules">CSS Modules</a></li>
+<li><a href="app-getting-started-css.html#tailwind-css">Tailwind CSS</a></li>
+<li><a href="app-getting-started-css.html#global-css">Global Styles</a></li>
+<li><a href="app-guides-css-in-js.html">CSS-in-JS</a></li>
+<li><a href="app-getting-started-css.html#external-stylesheets">External Stylesheets</a></li>
+<li><a href="app-guides-sass.html">Sass</a></li>
+</ul></div>
+<h4 class="sec" id="tailwind-css"><a class="anchor" href="#tailwind-css">Tailwind CSS</a></h4>
+<p>Tailwind CSS를 사용하고 있다면 <code>tailwind.config.js</code> 파일에 <code>app</code> directory를 추가해야 합니다:</p><div class="en-orig"><p>If you're using Tailwind CSS, you'll need to add the <code>app</code> directory to your <code>tailwind.config.js</code> file:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">tailwind.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  content: [
+    &#x27;./app/**/*.{js,ts,jsx,tsx,mdx}&#x27;, // &lt;-- Add this line
+    &#x27;./pages/**/*.{js,ts,jsx,tsx,mdx}&#x27;,
+    &#x27;./components/**/*.{js,ts,jsx,tsx,mdx}&#x27;,
+  ],
+}</code></pre></div></div>
+<p>또한 <code>app/layout.js</code> 파일에서 global style을 import해야 합니다:</p><div class="en-orig"><p>You'll also need to import your global styles in your <code>app/layout.js</code> file:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/layout.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import &#x27;../styles/globals.css&#x27;
+
+export default function RootLayout({ children }) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;body&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<p><a href="app-getting-started-css.html#tailwind-css">Tailwind CSS로 styling하기</a>에 대해 더 알아보세요</p><div class="en-orig"><p>Learn more about <a href="app-getting-started-css.html#tailwind-css">styling with Tailwind CSS</a></p></div>
+<h2 class="sec" id="using-app-router-together-with-pages-router"><a class="anchor" href="#using-app-router-together-with-pages-router">Using App Router together with Pages Router<span class="ko">App Router와 Pages Router 함께 사용하기</span></a></h2>
+<p>서로 다른 Next.js router가 제공하는 route 사이를 이동하면 hard navigation이 발생합니다. <code>next/link</code>의 자동 link prefetching은 router를 넘나들며 prefetch하지 않습니다.</p><div class="en-orig"><p>When navigating between routes served by the different Next.js routers, there will be a hard navigation. Automatic link prefetching with <code>next/link</code> will not prefetch across routers.</p></div>
+<p>대신 App Router와 Pages Router 사이의 <a href="https://vercel.com/guides/optimizing-hard-navigations" target="_blank" rel="noopener">navigation을 최적화</a>해 prefetch와 빠른 page 전환을 유지할 수 있습니다. <a href="https://vercel.com/guides/optimizing-hard-navigations" target="_blank" rel="noopener">더 알아보기</a>.</p><div class="en-orig"><p>Instead, you can <a href="https://vercel.com/guides/optimizing-hard-navigations" target="_blank" rel="noopener">optimize navigations</a> between App Router and Pages Router to retain the prefetched and fast page transitions. <a href="https://vercel.com/guides/optimizing-hard-navigations" target="_blank" rel="noopener">Learn more</a>.</p></div>
+<h2 class="sec" id="codemods"><a class="anchor" href="#codemods">Codemods</a></h2>
+<p>Next.js는 기능이 deprecated될 때 codebase upgrade를 돕는 Codemod 변환을 제공합니다. 자세한 내용은 <a href="app-guides-upgrading-codemods.html">Codemods</a>를 참고하세요.</p><div class="en-orig"><p>Next.js provides Codemod transformations to help upgrade your codebase when a feature is deprecated. See <a href="app-guides-upgrading-codemods.html">Codemods</a> for more information.</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/migrating/app-router-migration.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/guides/migrating/app-router-migration" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-guides-migrating.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Migrating</div><div class="ttl-ko">마이그레이션</div></a>
+      <a href="pages-guides-migrating-from-create-react-app.html" class="next"><div class="dir">다음 →</div><div class="ttl">Create React App</div><div class="ttl-ko">Create React App에서 Next.js로 migrate하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/guides/migrating/app-router-migration" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#upgrading">Upgrading</a></li><li class="l3"><a href="#nodejs-version">Node.js Version</a></li><li class="l3"><a href="#nextjs-version">Next.js Version</a></li><li class="l3"><a href="#eslint-version">ESLint Version</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li><li class="l2"><a href="#upgrading-new-features">Upgrading New Features</a></li><li class="l3"><a href="#image-component"><code>&lt;Image/&gt;</code> Component</a></li><li class="l3"><a href="#link-component"><code>&lt;Link&gt;</code> Component</a></li><li class="l3"><a href="#script-component"><code>&lt;Script&gt;</code> Component</a></li><li class="l3"><a href="#font-optimization">Font Optimization</a></li><li class="l2"><a href="#migrating-from-pages-to-app">Migrating from <code>pages</code> to <code>app</code></a></li><li class="l3"><a href="#step-1-creating-the-app-directory">Step 1: Creating the <code>app</code> directory</a></li><li class="l3"><a href="#step-2-creating-a-root-layout">Step 2: Creating a Root Layout</a></li><li class="l3"><a href="#step-3-migrating-nexthead">Step 3: Migrating <code>next/head</code></a></li><li class="l3"><a href="#step-4-migrating-pages">Step 4: Migrating Pages</a></li><li class="l3"><a href="#step-5-migrating-routing-hooks">Step 5: Migrating Routing Hooks</a></li><li class="l3"><a href="#step-6-migrating-data-fetching-methods">Step 6: Migrating Data Fetching Methods</a></li><li class="l3"><a href="#step-7-styling">Step 7: Styling</a></li><li class="l2"><a href="#using-app-router-together-with-pages-router">Using App Router together with Pages Router</a></li><li class="l2"><a href="#codemods">Codemods</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+이 가이드는 다음 작업을 도와줍니다:
+
+- [Next.js 애플리케이션을 버전 12에서 버전 13으로 업데이트하기](#nextjs-version)
+- [`pages`와 `app` directory 양쪽에서 동작하는 기능 upgrade하기](#upgrading-new-features)
+- [기존 애플리케이션을 `pages`에서 `app`으로 점진적으로 migrate하기](#migrating-from-pages-to-app)
+
+## Upgrading || 업그레이드
+
+### Node.js Version || Node.js 버전
+
+이제 최소 Node.js 버전은 **v18.17**입니다. 자세한 내용은 [Node.js 문서](https://nodejs.org/docs/latest-v18.x/api/)를 참고하세요.
+
+### Next.js Version || Next.js 버전
+
+Next.js 버전 13으로 업데이트하려면 선호하는 package manager로 다음 command를 실행하세요:
+
+[[CODE 1]]
+
+### ESLint Version || ESLint 버전
+
+ESLint를 사용하고 있다면 ESLint 버전을 upgrade해야 합니다:
+
+[[CODE 2]]
+
+&gt; **Good to know**: ESLint 변경 사항을 적용하려면 VS Code에서 ESLint server를 다시 시작해야 할 수 있습니다. Command Palette(Mac은 `cmd+shift+p`, Windows는 `ctrl+shift+p`)를 열고 `ESLint: Restart ESLint Server`를 검색하세요.
+
+## Next Steps || 다음 단계
+
+업데이트한 뒤에는 다음 섹션에서 다음 단계를 확인하세요:
+
+- [새 기능 upgrade하기](#upgrading-new-features): 개선된 Image, Link Component 같은 새 기능으로 upgrade하는 데 도움이 되는 가이드입니다.
+- [`pages`에서 `app` directory로 migrate하기](#migrating-from-pages-to-app): `pages`에서 `app` directory로 점진적으로 migrate하는 데 도움이 되는 단계별 가이드입니다.
+
+## Upgrading New Features || 새 기능 업그레이드
+
+Next.js 13은 새로운 기능과 convention을 갖춘 새 [App Router](/docs/app)를 도입했습니다. 새 Router는 `app` directory에서 사용할 수 있으며 `pages` directory와 함께 공존합니다.
+
+Next.js 13으로 upgrade한다고 해서 App Router를 반드시 사용해야 하는 것은 **아닙니다**. 업데이트된 [Image component](#image-component), [Link component](#link-component), [Script component](#script-component), [Font optimization](#font-optimization)처럼 두 directory 모두에서 동작하는 새 기능과 함께 `pages`를 계속 사용할 수 있습니다.
+
+### `&lt;Image/&gt;` Component
+
+Next.js 12에서는 임시 import인 `next/future/image`로 Image Component의 새로운 개선 사항을 도입했습니다. 이 개선 사항에는 더 적은 client-side JavaScript, image를 확장하고 style을 입히는 더 쉬운 방법, 더 나은 accessibility, 브라우저 native lazy loading이 포함되었습니다.
+
+버전 13에서는 이 새로운 동작이 `next/image`의 기본값이 되었습니다.
+
+새 Image Component로 migrate하는 데 도움이 되는 codemod가 두 가지 있습니다:
+
+- [**`next-image-to-legacy-image` codemod**](/docs/app/guides/upgrading/codemods#next-image-to-legacy-image): `next/image` import를 `next/legacy/image`로 안전하게 자동으로 이름을 바꿉니다. 기존 component는 동작이 그대로 유지됩니다.
+- [**`next-image-experimental` codemod**](/docs/app/guides/upgrading/codemods#next-image-experimental): inline style을 추가하고 사용하지 않는 props를 제거하는 위험한(dangerous) 작업을 합니다. 기존 component의 동작이 새 기본값에 맞게 바뀝니다. 이 codemod를 사용하려면 먼저 `next-image-to-legacy-image` codemod를 실행해야 합니다.
+
+### `&lt;Link&gt;` Component
+
+[`&lt;Link&gt;` Component](/docs/app/api-reference/components/link)에는 더 이상 child로 `&lt;a&gt;` tag를 직접 추가할 필요가 없습니다. 이 동작은 [버전 12.2](https://nextjs.org/blog/next-12-2)에서 experimental option으로 추가되었고 이제 기본값입니다. Next.js 13에서 `&lt;Link&gt;`는 항상 `&lt;a&gt;`를 render하며, props를 하위 tag로 전달(forward)할 수 있습니다.
+
+예를 들면 다음과 같습니다:
+
+[[CODE 3]]
+
+link를 Next.js 13에 맞게 upgrade하려면 [`new-link` codemod](/docs/app/guides/upgrading/codemods#new-link)를 사용할 수 있습니다.
+
+### `&lt;Script&gt;` Component
+
+[`next/script`](/docs/app/api-reference/components/script)의 동작이 `pages`와 `app`을 모두 지원하도록 업데이트되었지만, 매끄럽게 migrate하려면 몇 가지를 변경해야 합니다:
+
+- 이전에 `_document.js`에 넣었던 `beforeInteractive` script는 모두 `app/layout.tsx`나 `app/[locale]/layout.tsx` 같은 [root layout](/docs/app/api-reference/file-conventions/layout#root-layout)으로 옮기세요.
+- experimental `worker` strategy는 아직 `app`에서 동작하지 않으므로, 이 strategy를 지정한 script는 제거하거나 다른 strategy(예: `lazyOnload`)를 사용하도록 수정해야 합니다.
+- `onLoad`, `onReady`, `onError` handler는 Server Component에서 동작하지 않으므로 [Client Component](/docs/app/getting-started/server-and-client-components)로 옮기거나 완전히 제거하세요.
+
+### Font Optimization || Font 최적화
+
+이전에는 Next.js가 [font CSS를 inline으로 넣어서](/docs/app/api-reference/components/font) font 최적화를 도와주었습니다. 버전 13에서는 새 [`next/font`](/docs/app/api-reference/components/font) module이 도입되었습니다. 이 module을 사용하면 뛰어난 performance와 privacy를 보장하면서도 font loading 경험을 customize할 수 있습니다. `next/font`는 `pages`와 `app` directory 모두에서 지원됩니다.
+
+[CSS inline 방식](/docs/app/api-reference/components/font)은 `pages`에서는 여전히 동작하지만 `app`에서는 동작하지 않습니다. 대신 [`next/font`](/docs/app/api-reference/components/font)를 사용해야 합니다.
+
+`next/font` 사용 방법은 [Font Optimization](/docs/app/api-reference/components/font) 페이지를 참고하세요.
+
+## Migrating from `pages` to `app` || `pages`에서 `app`으로 migrate하기
+
+&gt; **🎥 Watch:** App Router를 점진적으로 도입하는 방법을 알아보세요 → [YouTube (16분)](https://www.youtube.com/watch?v=YQMSietiFm0).
+
+App Router로 옮기면서 Server Component, Suspense 등 Next.js가 기반으로 삼는 React 기능을 처음 사용하게 될 수도 있습니다. 여기에 [special file](/docs/app/api-reference/file-conventions)과 [layout](/docs/app/api-reference/file-conventions/layout) 같은 새로운 Next.js 기능까지 더해지면, migration은 새로운 개념, mental model, 동작 변화를 익혀야 한다는 뜻이 됩니다.
+
+migration을 더 작은 단계로 나누어 이런 업데이트가 겹치면서 생기는 복잡도를 줄이기를 권장합니다. `app` directory는 page 단위의 점진적 migration이 가능하도록 `pages` directory와 동시에 동작하게 의도적으로 설계되었습니다.
+
+- `app` directory는 nested route _와_ layout을 지원합니다. [더 알아보기](/docs/app/getting-started/layouts-and-pages).
+- nested folder로 route를 정의하고, special `page.js` 파일로 route segment를 public하게 접근 가능하게 만듭니다. [더 알아보기](#step-4-migrating-pages).
+- [Special file convention](/docs/app/api-reference/file-conventions)은 각 route segment의 UI를 만드는 데 사용됩니다. 가장 흔한 special file은 `page.js`와 `layout.js`입니다.
+  - `page.js`로 route 고유의 UI를 정의합니다.
+  - `layout.js`로 여러 route에서 공유하는 UI를 정의합니다.
+  - special file에는 `.js`, `.jsx`, `.tsx` 파일 확장자를 사용할 수 있습니다.
+- `app` directory 안에 component, style, test 등 다른 파일을 함께 둘(colocate) 수 있습니다. [더 알아보기](/docs/app).
+- `getServerSideProps`와 `getStaticProps` 같은 data fetching 함수는 `app` 안에서 [새 API](/docs/app/getting-started/fetching-data)로 대체되었습니다. `getStaticPaths`는 [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)로 대체되었습니다.
+- `pages/_app.js`와 `pages/_document.js`는 하나의 `app/layout.js` root layout으로 대체되었습니다. [더 알아보기](/docs/app/api-reference/file-conventions/layout#root-layout).
+- `pages/_error.js`는 더 세분화된 `error.js` special file로 대체되었습니다. [더 알아보기](/docs/app/getting-started/error-handling).
+- `pages/404.js`는 [`not-found.js`](/docs/app/api-reference/file-conventions/not-found) 파일로 대체되었습니다.
+- `pages/api/*` API Route는 [`route.js`](/docs/app/api-reference/file-conventions/route)(Route Handler) special file로 대체되었습니다.
+
+### Step 1: Creating the `app` directory || 1단계: `app` directory 만들기
+
+최신 Next.js 버전으로 업데이트하세요(13.4 이상 필요):
+
+[[CODE 4]]
+
+그다음 프로젝트 root(또는 `src/` directory)에 새 `app` directory를 만드세요.
+
+### Step 2: Creating a Root Layout || 2단계: Root Layout 만들기
+
+`app` directory 안에 새 `app/layout.tsx` 파일을 만드세요. 이 파일은 `app` 안의 모든 route에 적용되는 [root layout](/docs/app/api-reference/file-conventions/layout#root-layout)입니다.
+
+[[CODE 5]]
+
+- `app` directory에는 root layout이 **반드시** 있어야 합니다.
+- Next.js가 `&lt;html&gt;`과 `&lt;body&gt;` tag를 자동으로 만들지 않으므로 root layout에서 이를 정의해야 합니다
+- root layout은 `pages/_app.tsx`와 `pages/_document.tsx` 파일을 대체합니다.
+- layout 파일에는 `.js`, `.jsx`, `.tsx` 확장자를 사용할 수 있습니다.
+
+`&lt;head&gt;` HTML element를 관리하려면 [built-in SEO 지원](/docs/app/getting-started/metadata-and-og-images)을 사용할 수 있습니다:
+
+[[CODE 6]]
+
+#### Migrating `_document.js` and `_app.js` || `_document.js`와 `_app.js` migrate하기
+
+기존 `_app`이나 `_document` 파일이 있다면 그 내용(예: global style)을 root layout(`app/layout.tsx`)으로 복사할 수 있습니다. `app/layout.tsx`의 style은 `pages/*`에는 적용되지 _않습니다_. migration 중에는 `pages/*` route가 깨지지 않도록 `_app`/`_document`를 유지해야 합니다. migration이 완전히 끝나면 안전하게 삭제할 수 있습니다.
+
+React Context provider를 사용하고 있다면 이를 [Client Component](/docs/app/getting-started/server-and-client-components)로 옮겨야 합니다.
+
+#### Migrating the `getLayout()` pattern to Layouts (Optional) || `getLayout()` pattern을 Layout으로 migrate하기 (선택)
+
+Next.js는 `pages` directory에서 page별 layout을 구현하기 위해 [Page component에 property를 추가](/docs/pages/building-your-application/routing/pages-and-layouts#layout-pattern)하는 방식을 권장했습니다. 이 pattern은 `app` directory의 [nested layout](/docs/app/api-reference/file-conventions/layout) native 지원으로 대체할 수 있습니다.
+
+&lt;details&gt;
+  &lt;summary&gt;변경 전후 예제 보기&lt;/summary&gt;
+
+**Before**
+
+[[CODE 7]]
+
+[[CODE 8]]
+
+**After**
+
+- `pages/dashboard/index.js`에서 `Page.getLayout` property를 제거하고, [page migration 단계](#step-4-migrating-pages)에 따라 `app` directory로 옮기세요.
+
+  [[CODE 9]]
+
+- `pages` directory의 동작을 유지하기 위해 `DashboardLayout`의 내용을 새 [Client Component](/docs/app/getting-started/server-and-client-components)로 옮기세요.
+
+  [[CODE 10]]
+
+- `app` directory 안의 새 `layout.js` 파일에 `DashboardLayout`을 import하세요.
+
+  [[CODE 11]]
+
+- client로 보내는 component JavaScript의 양을 줄이기 위해 `DashboardLayout.js`(Client Component)의 상호작용이 없는 부분을 `layout.js`(Server Component)로 점진적으로 옮길 수 있습니다.
+
+&lt;/details&gt;
+
+### Step 3: Migrating `next/head` || 3단계: `next/head` migrate하기
+
+`pages` directory에서는 `title`, `meta` 같은 `&lt;head&gt;` HTML element를 관리하는 데 `next/head` React component를 사용합니다. `app` directory에서는 `next/head`가 새 [built-in SEO 지원](/docs/app/getting-started/metadata-and-og-images)으로 대체됩니다.
+
+**Before:**
+
+[[CODE 12]]
+
+**After:**
+
+[[CODE 13]]
+
+[모든 metadata option 보기](/docs/app/api-reference/functions/generate-metadata).
+
+### Step 4: Migrating Pages || 4단계: Page migrate하기
+
+- [`app` directory](/docs/app)의 page는 기본적으로 [Server Component](/docs/app/getting-started/server-and-client-components)입니다. page가 [Client Component](/docs/app/getting-started/server-and-client-components)인 `pages` directory와는 다릅니다.
+- `app`에서는 [Data fetching](/docs/app/getting-started/fetching-data) 방식이 바뀌었습니다. `getServerSideProps`, `getStaticProps`, `getInitialProps`는 더 단순한 API로 대체되었습니다.
+- `app` directory는 nested folder로 route를 정의하고, special `page.js` 파일로 route segment를 public하게 접근 가능하게 만듭니다.
+- | `pages` Directory | `app` Directory       | Route          |
+  | ----------------- | --------------------- | -------------- |
+  | `index.js`        | `page.js`             | `/`            |
+  | `about.js`        | `about/page.js`       | `/about`       |
+  | `blog/[slug].js`  | `blog/[slug]/page.js` | `/blog/post-1` |
+
+page migration은 크게 두 단계로 나누어 진행하기를 권장합니다:
+
+- 1단계: default export된 Page Component를 새 Client Component로 옮깁니다.
+- 2단계: 새 Client Component를 `app` directory 안의 새 `page.js` 파일에 import합니다.
+
+&gt; **Good to know**: 이 방법은 `pages` directory와 가장 비슷하게 동작하므로 가장 쉬운 migration 경로입니다.
+
+**Step 1: Create a new Client Component**
+
+- `app` directory 안에 Client Component를 export하는 별도의 새 파일(예: `app/home-page.tsx` 또는 비슷한 이름)을 만드세요. Client Component를 정의하려면 파일 맨 위(모든 import보다 앞)에 `&#x27;use client&#x27;` directive를 추가하세요.
+  - Pages Router와 마찬가지로, 초기 page load 시 Client Component를 static HTML로 prerender하는 [최적화 단계](/docs/app/getting-started/server-and-client-components#on-the-client-first-load)가 있습니다.
+- default export된 page component를 `pages/index.js`에서 `app/home-page.tsx`로 옮기세요.
+
+[[CODE 14]]
+
+**Step 2: Create a new page**
+
+- `app` directory 안에 새 `app/page.tsx` 파일을 만드세요. 이 파일은 기본적으로 Server Component입니다.
+- `home-page.tsx` Client Component를 page에 import하세요.
+- `pages/index.js`에서 data를 fetch하고 있었다면, 새 [data fetching API](/docs/app/getting-started/fetching-data)를 사용해 data fetching 로직을 Server Component 안으로 바로 옮기세요. 자세한 내용은 [data fetching upgrade 가이드](#step-6-migrating-data-fetching-methods)를 참고하세요.
+
+  [[CODE 15]]
+
+- 이전 page에서 `useRouter`를 사용했다면 새 routing hook으로 업데이트해야 합니다. [더 알아보기](/docs/app/api-reference/functions/use-router).
+- development server를 시작하고 [`http://localhost:3000`](http://localhost:3000)에 접속하세요. 기존 index route가 이제 app directory를 통해 제공되는 것을 확인할 수 있습니다.
+
+### Step 5: Migrating Routing Hooks || 5단계: Routing Hook migrate하기
+
+`app` directory의 새로운 동작을 지원하기 위해 새 router가 추가되었습니다.
+
+`app`에서는 `next/navigation`에서 import하는 세 가지 새 hook인 [`useRouter()`](/docs/app/api-reference/functions/use-router), [`usePathname()`](/docs/app/api-reference/functions/use-pathname), [`useSearchParams()`](/docs/app/api-reference/functions/use-search-params)를 사용해야 합니다.
+
+- 새 `useRouter` hook은 `next/navigation`에서 import하며, `next/router`에서 import하는 `pages`의 `useRouter` hook과는 동작이 다릅니다.
+  - [`next/router`에서 import하는 `useRouter` hook](/docs/pages/api-reference/functions/use-router)은 `app` directory에서 지원되지 않지만 `pages` directory에서는 계속 사용할 수 있습니다.
+- 새 `useRouter`는 `pathname` string을 반환하지 않습니다. 대신 별도의 `usePathname` hook을 사용하세요.
+- 새 `useRouter`는 `query` object를 반환하지 않습니다. 이제 search parameter와 dynamic route parameter가 분리되었습니다. 대신 `useSearchParams`와 `useParams` hook을 사용하세요.
+- `useSearchParams`와 `usePathname`을 함께 사용해 page 변경을 감지할 수 있습니다. 자세한 내용은 [Router Events](/docs/app/api-reference/functions/use-router#router-events) 섹션을 참고하세요.
+- 이 새 hook들은 Client Component에서만 지원됩니다. Server Component에서는 사용할 수 없습니다.
+
+[[CODE 16]]
+
+또한 새 `useRouter` hook에는 다음과 같은 변경 사항이 있습니다:
+
+- `fallback`이 [대체되었기 때문에](#replacing-fallback) `isFallback`이 제거되었습니다.
+- `app` directory에서는 Next.js의 built-in i18n 기능이 더 이상 필요하지 않으므로 `locale`, `locales`, `defaultLocale`, `domainLocales` 값이 제거되었습니다. [i18n에 대해 더 알아보기](/docs/app/guides/internationalization).
+- `basePath`가 제거되었습니다. 대안은 `useRouter`에 포함되지 않을 예정이며, 아직 구현되지 않았습니다.
+- 새 router에서 `as` 개념이 제거되었기 때문에 `asPath`가 제거되었습니다.
+- 더 이상 필요하지 않기 때문에 `isReady`가 제거되었습니다. [prerendering](/docs/app/glossary#prerendering) 중에는 [`useSearchParams()`](/docs/app/api-reference/functions/use-search-params) hook을 사용하는 component는 prerendering 단계를 건너뛰고, 대신 runtime에 client에서 render됩니다.
+- `route`가 제거되었습니다. `usePathname`이나 `useSelectedLayoutSegments()`가 대안이 됩니다.
+- `router.push()`와 `router.replace()`는 더 이상 Promise를 반환하지 않습니다. route 변경을 React Transition으로 queue에 넣고 바로 반환합니다. pending 상태를 보여 주려면 [`useTransition`](https://react.dev/reference/react/useTransition)이 반환하는 `startTransition` 안에서 호출하고 `isPending`을 읽으세요. 예제는 [Filter with pending feedback](/docs/app/guides/interactive-apps#step-3-filter-with-pending-feedback)을 참고하세요.
+
+[`useRouter()` API reference 보기](/docs/app/api-reference/functions/use-router).
+
+#### Sharing components between `pages` and `app` || `pages`와 `app` 사이에서 component 공유하기
+
+`pages`와 `app` router 사이에서 component 호환성을 유지하려면 [`next/compat/router`의 `useRouter` hook](/docs/pages/api-reference/functions/use-router#the-nextcompatrouter-export)을 참고하세요.
+이것은 `pages` directory의 `useRouter` hook이지만, router 간에 component를 공유하는 동안 사용하도록 만들어졌습니다. `app` router에서만 사용할 준비가 되면 새 [`next/navigation`의 `useRouter`](/docs/app/api-reference/functions/use-router)로 업데이트하세요.
+
+### Step 6: Migrating Data Fetching Methods || 6단계: Data Fetching 메서드 migrate하기
+
+`pages` directory는 page의 data를 fetch하기 위해 `getServerSideProps`와 `getStaticProps`를 사용합니다. `app` directory 안에서는 이 기존 data fetching 함수들이 `fetch()`와 `async` React Server Component 위에 만들어진 [더 단순한 API](/docs/app/getting-started/fetching-data)로 대체됩니다.
+
+[[CODE 17]]
+
+#### Server-side Rendering (`getServerSideProps`)
+
+`pages` directory에서 `getServerSideProps`는 server에서 data를 fetch하고 파일의 default export된 React component에 props를 전달하는 데 사용됩니다. page의 초기 HTML은 server에서 prerender되고, 그다음 브라우저에서 page를 &quot;hydrating&quot;합니다(상호작용 가능하게 만듭니다).
+
+[[CODE 18]]
+
+App Router에서는 [Server Component](/docs/app/getting-started/server-and-client-components)를 사용해 data fetching을 React component 안에 함께 둘 수 있습니다. 이렇게 하면 server에서 render된 HTML은 유지하면서 client로 보내는 JavaScript를 줄일 수 있습니다.
+
+`cache` option을 `no-store`로 설정하면 fetch한 data를 [절대 cache하지 않도록](/docs/app/getting-started/fetching-data) 지정할 수 있습니다. 이는 `pages` directory의 `getServerSideProps`와 비슷합니다.
+
+[[CODE 19]]
+
+#### Accessing Request Object || Request Object에 접근하기
+
+`pages` directory에서는 Node.js HTTP API를 기반으로 request 기반 data를 가져올 수 있습니다.
+
+예를 들어 `getServerSideProps`에서 `req` object를 가져와 request의 cookie와 header를 조회할 수 있습니다.
+
+[[CODE 20]]
+
+`app` directory는 request data를 가져오기 위한 새로운 read-only 함수를 제공합니다:
+
+- [`headers`](/docs/app/api-reference/functions/headers): Web Headers API를 기반으로 하며, [Server Component](/docs/app/getting-started/server-and-client-components) 안에서 request header를 가져오는 데 사용할 수 있습니다.
+- [`cookies`](/docs/app/api-reference/functions/cookies): Web Cookies API를 기반으로 하며, [Server Component](/docs/app/getting-started/server-and-client-components) 안에서 cookie를 가져오는 데 사용할 수 있습니다.
+
+[[CODE 21]]
+
+#### Static Site Generation (`getStaticProps`)
+
+`pages` directory에서 `getStaticProps` 함수는 build 시점에 page를 prerender하는 데 사용됩니다. 이 함수로 외부 API나 database에서 직접 data를 fetch하고, build 중 page가 생성될 때 이 data를 page 전체에 전달할 수 있습니다.
+
+[[CODE 22]]
+
+`app` directory에서 [`fetch()`](/docs/app/api-reference/functions/fetch)를 사용한 data fetching은 기본값이 `cache: &#x27;force-cache&#x27;`이며, 직접 invalidate하기 전까지 request data를 cache합니다. 이는 `pages` directory의 `getStaticProps`와 비슷합니다.
+
+[[CODE 23]]
+
+#### Dynamic paths (`getStaticPaths`)
+
+`pages` directory에서 `getStaticPaths` 함수는 build 시점에 prerender해야 하는 dynamic path를 정의하는 데 사용됩니다.
+
+[[CODE 24]]
+
+`app` directory에서는 `getStaticPaths`가 [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)로 대체됩니다.
+
+[`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)는 `getStaticPaths`와 비슷하게 동작하지만, route parameter를 반환하는 API가 단순해졌고 [layout](/docs/app/api-reference/file-conventions/layout) 안에서도 사용할 수 있습니다. `generateStaticParams`의 반환 형태는 중첩된 `param` object의 array나 resolve된 path string이 아니라 segment의 array입니다.
+
+[[CODE 25]]
+
+`app` directory의 새로운 모델에는 `getStaticPaths`보다 `generateStaticParams`라는 이름이 더 적합합니다. `get` 접두사는 더 설명적인 `generate`로 바뀌었는데, 이제 `getStaticProps`와 `getServerSideProps`가 필요 없으므로 단독으로 쓰기에 더 잘 어울립니다. `Paths` 접미사는 `Params`로 바뀌었는데, 여러 dynamic segment가 있는 nested routing에 더 적합합니다.
+
+---
+
+#### Replacing `fallback` || `fallback` 대체하기
+
+`pages` directory에서는 `getStaticPaths`가 반환하는 `fallback` property로 build 시점에 prerender되지 않은 page의 동작을 정의합니다. 이 property를 `true`로 설정하면 page가 생성되는 동안 fallback page를 보여 주고, `false`로 설정하면 404 page를 보여 주며, `blocking`으로 설정하면 request 시점에 page를 생성합니다.
+
+[[CODE 26]]
+
+`app` directory에서는 [`config.dynamicParams` property](/docs/app/api-reference/file-conventions/route-segment-config/dynamicParams)가 [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params) 밖의 params를 처리하는 방식을 제어합니다:
+
+- **`true`**: (기본값) `generateStaticParams`에 포함되지 않은 dynamic segment는 요청 시(on demand) 생성됩니다.
+- **`false`**: `generateStaticParams`에 포함되지 않은 dynamic segment는 404를 반환합니다.
+
+이는 `pages` directory에서 `getStaticPaths`의 `fallback: true | false | &#x27;blocking&#x27;` option을 대체합니다. streaming에서는 `&#x27;blocking&#x27;`과 `true`의 차이가 무시할 만한 수준이므로 `fallback: &#x27;blocking&#x27;` option은 `dynamicParams`에 포함되지 않았습니다.
+
+[[CODE 27]]
+
+[`dynamicParams`](/docs/app/api-reference/file-conventions/route-segment-config/dynamicParams)가 `true`(기본값)로 설정되어 있으면, 아직 생성되지 않은 route segment가 request될 때 server-rendered되고 cache됩니다.
+
+#### Incremental Static Regeneration (`getStaticProps` with `revalidate`) || Incremental Static Regeneration (`revalidate`를 사용한 `getStaticProps`)
+
+`pages` directory에서 `getStaticProps` 함수에 `revalidate` field를 추가하면 일정 시간이 지난 뒤 page를 자동으로 다시 생성할 수 있습니다.
+
+[[CODE 28]]
+
+`app` directory에서 [`fetch()`](/docs/app/api-reference/functions/fetch)를 사용한 data fetching은 `revalidate`를 사용할 수 있으며, 지정한 초 동안 request를 cache합니다.
+
+[[CODE 29]]
+
+#### API Routes
+
+API Route는 `pages/api` directory에서 아무 변경 없이 계속 동작합니다. 하지만 `app` directory에서는 [Route Handler](/docs/app/api-reference/file-conventions/route)로 대체되었습니다.
+
+Route Handler를 사용하면 Web [Request](https://developer.mozilla.org/docs/Web/API/Request)와 [Response](https://developer.mozilla.org/docs/Web/API/Response) API로 특정 route에 대한 custom request handler를 만들 수 있습니다.
+
+[[CODE 30]]
+
+&gt; **Good to know**: 이전에 client에서 외부 API를 호출하려고 API route를 사용했다면, 이제는 대신 [Server Component](/docs/app/getting-started/server-and-client-components)로 data를 안전하게 fetch할 수 있습니다. [data fetching](/docs/app/getting-started/fetching-data)에 대해 더 알아보세요.
+
+#### Single-Page Applications
+
+Single-Page Application(SPA)에서 Next.js로 동시에 migrate하고 있다면 [문서](/docs/app/guides/single-page-applications)에서 자세한 내용을 확인하세요.
+
+### Step 7: Styling || 7단계: Styling
+
+`pages` directory에서는 global stylesheet를 `pages/_app.js`에서만 쓸 수 있도록 제한되어 있습니다. `app` directory에서는 이 제한이 없어졌습니다. global style은 어떤 layout, page, component에도 추가할 수 있습니다.
+
+- [CSS Modules](/docs/app/getting-started/css#css-modules)
+- [Tailwind CSS](/docs/app/getting-started/css#tailwind-css)
+- [Global Styles](/docs/app/getting-started/css#global-css)
+- [CSS-in-JS](/docs/app/guides/css-in-js)
+- [External Stylesheets](/docs/app/getting-started/css#external-stylesheets)
+- [Sass](/docs/app/guides/sass)
+
+#### Tailwind CSS
+
+Tailwind CSS를 사용하고 있다면 `tailwind.config.js` 파일에 `app` directory를 추가해야 합니다:
+
+[[CODE 31]]
+
+또한 `app/layout.js` 파일에서 global style을 import해야 합니다:
+
+[[CODE 32]]
+
+[Tailwind CSS로 styling하기](/docs/app/getting-started/css#tailwind-css)에 대해 더 알아보세요
+
+## Using App Router together with Pages Router || App Router와 Pages Router 함께 사용하기
+
+서로 다른 Next.js router가 제공하는 route 사이를 이동하면 hard navigation이 발생합니다. `next/link`의 자동 link prefetching은 router를 넘나들며 prefetch하지 않습니다.
+
+대신 App Router와 Pages Router 사이의 [navigation을 최적화](https://vercel.com/guides/optimizing-hard-navigations)해 prefetch와 빠른 page 전환을 유지할 수 있습니다. [더 알아보기](https://vercel.com/guides/optimizing-hard-navigations).
+
+## Codemods
+
+Next.js는 기능이 deprecated될 때 codebase upgrade를 돕는 Codemod 변환을 제공합니다. 자세한 내용은 [Codemods](/docs/app/guides/upgrading/codemods)를 참고하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

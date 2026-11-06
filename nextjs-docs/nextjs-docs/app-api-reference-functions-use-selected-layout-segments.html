@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>useSelectedLayoutSegments (useSelectedLayoutSegments) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/functions/use-selected-layout-segments" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/functions/use-selected-layout-segments" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/use-selected-layout-segments.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-functions.html">Functions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">useSelectedLayoutSegments<span class="sub">useSelectedLayoutSegments</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>useSelectedLayoutSegments</code>는 자신이 호출된 Layout <strong>아래</strong>에 있는 활성 route segment들을 읽을 수 있게 해 주는 <strong>Client Component</strong> hook입니다.</p><div class="en-orig"><p><code>useSelectedLayoutSegments</code> is a <strong>Client Component</strong> hook that lets you read the active route segments <strong>below</strong> the Layout it is called from.</p></div>
+<p>breadcrumb처럼 활성 child segment에 대한 정보가 필요한 UI를 parent Layout에서 만들 때 유용합니다.</p><div class="en-orig"><p>It is useful for creating UI in parent Layouts that need knowledge of active child segments such as breadcrumbs.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/example-client-component.tsx" data-js="app/example-client-component.js">app/example-client-component.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useSelectedLayoutSegments } from &#x27;next/navigation&#x27;
+
+export default function ExampleClientComponent() {
+  const segments = useSelectedLayoutSegments()
+
+  return (
+    &lt;ul&gt;
+      {segments.map((segment, index) =&gt; (
+        &lt;li key={index}&gt;{segment}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useSelectedLayoutSegments } from &#x27;next/navigation&#x27;
+
+export default function ExampleClientComponent() {
+  const segments = useSelectedLayoutSegments()
+
+  return (
+    &lt;ul&gt;
+      {segments.map((segment, index) =&gt; (
+        &lt;li key={index}&gt;{segment}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>useSelectedLayoutSegments</code>는 <a href="app-getting-started-server-and-client-components.html">Client Component</a> hook이고 Layout은 기본적으로 <a href="app-getting-started-server-and-client-components.html">Server Components</a>이므로, <code>useSelectedLayoutSegments</code>는 보통 Layout에 import된 Client Component를 통해 호출됩니다.</li>
+<li>반환되는 segment에는 <a href="app-api-reference-file-conventions-route-groups.html">Route Groups</a>가 포함되는데, UI에는 포함하고 싶지 않을 수 있습니다. <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter" target="_blank" rel="noopener"><code>filter</code></a> array method를 사용해 괄호로 시작하는 항목을 제거할 수 있습니다.</li>
+<li><a href="app-api-reference-file-conventions-dynamic-routes.html#catch-all-segments">catch-all</a> route의 경우, match된 segment들이 array 안에서 하나로 합쳐진 string으로 반환됩니다. 예를 들어 <code>app/blog/[...slug]/page.js</code>가 있을 때 <code>/blog/a/b/c</code>를 방문하면서 <code>app/layout.js</code>에서 호출하면 <code>[&#x27;blog&#x27;, &#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;]</code>가 아니라 <code>[&#x27;blog&#x27;, &#x27;a/b/c&#x27;]</code>가 반환됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Since <code>useSelectedLayoutSegments</code> is a <a href="app-getting-started-server-and-client-components.html">Client Component</a> hook, and Layouts are <a href="app-getting-started-server-and-client-components.html">Server Components</a> by default, <code>useSelectedLayoutSegments</code> is usually called via a Client Component that is imported into a Layout.</li>
+<li>The returned segments include <a href="app-api-reference-file-conventions-route-groups.html">Route Groups</a>, which you might not want to be included in your UI. You can use the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter" target="_blank" rel="noopener"><code>filter</code></a> array method to remove items that start with a bracket.</li>
+<li>For <a href="app-api-reference-file-conventions-dynamic-routes.html#catch-all-segments">catch-all</a> routes, the matched segments are returned as a single joined string within the array. For example, given <code>app/blog/[...slug]/page.js</code>, calling from <code>app/layout.js</code> when visiting <code>/blog/a/b/c</code> returns <code>[&#x27;blog&#x27;, &#x27;a/b/c&#x27;]</code>, not <code>[&#x27;blog&#x27;, &#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;]</code>.</li>
+</ul></div></div></div>
+<h2 class="sec" id="parameters"><a class="anchor" href="#parameters">Parameters</a></h2>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">const segments = useSelectedLayoutSegments(parallelRouteKey?: string)</code></pre></div></div>
+<p><code>useSelectedLayoutSegments</code>는 <em>선택적으로</em> <a href="app-api-reference-file-conventions-parallel-routes.html#with-useselectedlayoutsegments"><code>parallelRouteKey</code></a>를 받으며, 이를 통해 해당 slot 안의 활성 route segment를 읽을 수 있습니다.</p><div class="en-orig"><p><code>useSelectedLayoutSegments</code> <em>optionally</em> accepts a <a href="app-api-reference-file-conventions-parallel-routes.html#with-useselectedlayoutsegments"><code>parallelRouteKey</code></a>, which allows you to read the active route segment within that slot.</p></div>
+<h2 class="sec" id="returns"><a class="anchor" href="#returns">Returns</a></h2>
+<p><code>useSelectedLayoutSegments</code>는 hook이 호출된 layout에서 한 단계 아래부터의 활성 segment들을 담은 string array를 반환합니다. 활성 segment가 없으면 빈 array를 반환합니다.</p><div class="en-orig"><p><code>useSelectedLayoutSegments</code> returns an array of strings containing the active segments one level down from the layout the hook was called from. Or an empty array if none exist.</p></div>
+<p>예를 들어 아래와 같은 Layout과 URL이 있을 때 반환되는 segment는 다음과 같습니다:</p><div class="en-orig"><p>For example, given the Layouts and URLs below, the returned segments would be:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Layout</th><th>방문한 URL</th><th>반환된 Segments</th></tr></thead>
+<tbody>
+<tr><td><code>app/layout.js</code></td><td><code>/</code></td><td><code>[]</code></td></tr>
+<tr><td><code>app/layout.js</code></td><td><code>/dashboard</code></td><td><code>[&#x27;dashboard&#x27;]</code></td></tr>
+<tr><td><code>app/layout.js</code></td><td><code>/dashboard/settings</code></td><td><code>[&#x27;dashboard&#x27;, &#x27;settings&#x27;]</code></td></tr>
+<tr><td><code>app/dashboard/layout.js</code></td><td><code>/dashboard</code></td><td><code>[]</code></td></tr>
+<tr><td><code>app/dashboard/layout.js</code></td><td><code>/dashboard/settings</code></td><td><code>[&#x27;settings&#x27;]</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Layout</th><th>Visited URL</th><th>Returned Segments</th></tr></thead>
+<tbody>
+<tr><td><code>app/layout.js</code></td><td><code>/</code></td><td><code>[]</code></td></tr>
+<tr><td><code>app/layout.js</code></td><td><code>/dashboard</code></td><td><code>[&#x27;dashboard&#x27;]</code></td></tr>
+<tr><td><code>app/layout.js</code></td><td><code>/dashboard/settings</code></td><td><code>[&#x27;dashboard&#x27;, &#x27;settings&#x27;]</code></td></tr>
+<tr><td><code>app/dashboard/layout.js</code></td><td><code>/dashboard</code></td><td><code>[]</code></td></tr>
+<tr><td><code>app/dashboard/layout.js</code></td><td><code>/dashboard/settings</code></td><td><code>[&#x27;settings&#x27;]</code></td></tr>
+</tbody></table></div></div>
+<p>catch-all route(<code>[...slug]</code>)의 경우, match된 모든 path segment가 array 안에서 하나로 합쳐진 string으로 반환됩니다:</p><div class="en-orig"><p>For catch-all routes (<code>[...slug]</code>), all matched path segments are returned as a single joined string within the array:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Layout</th><th>방문한 URL</th><th>반환된 Segments</th></tr></thead>
+<tbody>
+<tr><td><code>app/layout.js</code></td><td><code>/blog/a/b/c</code></td><td><code>[&#x27;blog&#x27;, &#x27;a/b/c&#x27;]</code></td></tr>
+<tr><td><code>app/blog/layout.js</code></td><td><code>/blog/a/b/c</code></td><td><code>[&#x27;a/b/c&#x27;]</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Layout</th><th>Visited URL</th><th>Returned Segments</th></tr></thead>
+<tbody>
+<tr><td><code>app/layout.js</code></td><td><code>/blog/a/b/c</code></td><td><code>[&#x27;blog&#x27;, &#x27;a/b/c&#x27;]</code></td></tr>
+<tr><td><code>app/blog/layout.js</code></td><td><code>/blog/a/b/c</code></td><td><code>[&#x27;a/b/c&#x27;]</code></td></tr>
+</tbody></table></div></div>
+<h2 class="sec" id="behavior"><a class="anchor" href="#behavior">Behavior<span class="ko">동작</span></a></h2>
+<h3 class="sec" id="cache-components"><a class="anchor" href="#cache-components">Cache Components</a></h3>
+<p><a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a>가 활성화되어 있으면 <code>useSelectedLayoutSegments</code>에 <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>Suspense</code></a> boundary가 필요할 수 있습니다. 이는 prerendering 중에 활성 segment들을 resolve할 수 있는지에 따라 달라집니다.</p><div class="en-orig"><p>When <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a> is enabled, <code>useSelectedLayoutSegments</code> may require a <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>Suspense</code></a> boundary. This depends on whether the active segments can be resolved during prerendering.</p></div>
+<ul>
+<li><strong>Static route와 <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>가 있는 route</strong>: dynamic param을 포함한 모든 route segment를 build 시점에 알 수 있습니다. prerendering 중에 활성 segment들을 resolve할 수 있으므로 <code>useSelectedLayoutSegments</code>는 server에서 resolve되며 <code>Suspense</code> boundary가 필요하지 않습니다.</li>
+<li><strong><code>generateStaticParams</code>로 다루지 않는 dynamic param이 있는 route</strong>: 이 param은 request 시점까지 알 수 없는 <a href="app-api-reference-functions-generate-static-params.html#all-paths-at-build-time">fallback param</a>입니다. prerendering 중에 활성 segment들을 resolve할 수 없으므로 <code>useSelectedLayoutSegments</code>는 suspend됩니다. prerendering 중에 fallback이 render될 수 있도록 component(또는 상위 component)를 <code>Suspense</code> boundary로 감싸세요. 그렇지 않으면 build가 실패합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Static routes and routes with <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a></strong>: every route segment, including dynamic params, is known at build time. The active segments can be resolved during prerendering, so <code>useSelectedLayoutSegments</code> resolves on the server and no <code>Suspense</code> boundary is required.</li>
+<li><strong>Routes with dynamic params not covered by <code>generateStaticParams</code></strong>: the param is a <a href="app-api-reference-functions-generate-static-params.html#all-paths-at-build-time">fallback param</a> that is not known until request time. The active segments cannot be resolved during prerendering, so <code>useSelectedLayoutSegments</code> suspends. Wrap the component (or a parent) in a <code>Suspense</code> boundary so its fallback can be rendered during prerendering; otherwise, the build fails.</li>
+</ul></div>
+<p>이는 <code>useSelectedLayoutSegments</code>를 호출하는 component 자체가 static인 경우에도 적용됩니다. 예를 들어 parent layout에서 render되는 breadcrumb component는, 그 아래에 있는 page 중 알 수 없는 dynamic param을 가진 page에서 suspend됩니다. layout의 나머지 부분을 prerender된 상태로 유지하려면 <code>useSelectedLayoutSegments</code>를 호출하는 component(또는 상위 component)를 fallback이 있는 <code>Suspense</code> boundary로 감싸세요.</p><div class="en-orig"><p>This applies even when the component that calls <code>useSelectedLayoutSegments</code> is itself static. For example, a breadcrumb component rendered in a parent layout suspends on any page below it that has an unknown dynamic param. To keep the rest of the layout prerendered, wrap the component that calls <code>useSelectedLayoutSegments</code> (or a parent) in a <code>Suspense</code> boundary with a fallback.</p></div>
+<p>전체 해결 방법과 trade-off는 <a href="https://nextjs.org/docs/messages/blocking-prerender-client-hook" target="_blank" rel="noopener">Next.js encountered URL data in a Client Component outside of Suspense</a>를 참고하세요.</p><div class="en-orig"><p>See <a href="https://nextjs.org/docs/messages/blocking-prerender-client-hook" target="_blank" rel="noopener">Next.js encountered URL data in a Client Component outside of Suspense</a> for full fix options and trade-offs.</p></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v13.0.0</code></td><td><code>useSelectedLayoutSegments</code> 도입.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v13.0.0</code></td><td><code>useSelectedLayoutSegments</code> introduced.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/use-selected-layout-segments.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/functions/use-selected-layout-segments" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-functions-use-selected-layout-segment.html" class="prev"><div class="dir">← 이전</div><div class="ttl">useSelectedLayoutSegment</div><div class="ttl-ko">useSelectedLayoutSegment</div></a>
+      <a href="app-api-reference-functions-userAgent.html" class="next"><div class="dir">다음 →</div><div class="ttl">userAgent</div><div class="ttl-ko">userAgent</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/functions/use-selected-layout-segments" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#parameters">Parameters</a></li><li class="l2"><a href="#returns">Returns</a></li><li class="l2"><a href="#behavior">Behavior</a></li><li class="l3"><a href="#cache-components">Cache Components</a></li><li class="l2"><a href="#version-history">Version History</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`useSelectedLayoutSegments`는 자신이 호출된 Layout **아래**에 있는 활성 route segment들을 읽을 수 있게 해 주는 **Client Component** hook입니다.
+
+breadcrumb처럼 활성 child segment에 대한 정보가 필요한 UI를 parent Layout에서 만들 때 유용합니다.
+
+[[CODE 1]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - `useSelectedLayoutSegments`는 [Client Component](/docs/app/getting-started/server-and-client-components) hook이고 Layout은 기본적으로 [Server Components](/docs/app/getting-started/server-and-client-components)이므로, `useSelectedLayoutSegments`는 보통 Layout에 import된 Client Component를 통해 호출됩니다.
+&gt; - 반환되는 segment에는 [Route Groups](/docs/app/api-reference/file-conventions/route-groups)가 포함되는데, UI에는 포함하고 싶지 않을 수 있습니다. [`filter`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter) array method를 사용해 괄호로 시작하는 항목을 제거할 수 있습니다.
+&gt; - [catch-all](/docs/app/api-reference/file-conventions/dynamic-routes#catch-all-segments) route의 경우, match된 segment들이 array 안에서 하나로 합쳐진 string으로 반환됩니다. 예를 들어 `app/blog/[...slug]/page.js`가 있을 때 `/blog/a/b/c`를 방문하면서 `app/layout.js`에서 호출하면 `[&#x27;blog&#x27;, &#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;]`가 아니라 `[&#x27;blog&#x27;, &#x27;a/b/c&#x27;]`가 반환됩니다.
+
+## Parameters
+
+[[CODE 2]]
+
+`useSelectedLayoutSegments`는 _선택적으로_ [`parallelRouteKey`](/docs/app/api-reference/file-conventions/parallel-routes#with-useselectedlayoutsegments)를 받으며, 이를 통해 해당 slot 안의 활성 route segment를 읽을 수 있습니다.
+
+## Returns
+
+`useSelectedLayoutSegments`는 hook이 호출된 layout에서 한 단계 아래부터의 활성 segment들을 담은 string array를 반환합니다. 활성 segment가 없으면 빈 array를 반환합니다.
+
+예를 들어 아래와 같은 Layout과 URL이 있을 때 반환되는 segment는 다음과 같습니다:
+
+| Layout                    | 방문한 URL           | 반환된 Segments           |
+| ------------------------- | --------------------- | --------------------------- |
+| `app/layout.js`           | `/`                   | `[]`                        |
+| `app/layout.js`           | `/dashboard`          | `[&#x27;dashboard&#x27;]`             |
+| `app/layout.js`           | `/dashboard/settings` | `[&#x27;dashboard&#x27;, &#x27;settings&#x27;]` |
+| `app/dashboard/layout.js` | `/dashboard`          | `[]`                        |
+| `app/dashboard/layout.js` | `/dashboard/settings` | `[&#x27;settings&#x27;]`              |
+
+catch-all route(`[...slug]`)의 경우, match된 모든 path segment가 array 안에서 하나로 합쳐진 string으로 반환됩니다:
+
+| Layout               | 방문한 URL   | 반환된 Segments   |
+| -------------------- | ------------- | ------------------- |
+| `app/layout.js`      | `/blog/a/b/c` | `[&#x27;blog&#x27;, &#x27;a/b/c&#x27;]` |
+| `app/blog/layout.js` | `/blog/a/b/c` | `[&#x27;a/b/c&#x27;]`         |
+
+## Behavior || 동작
+
+### Cache Components
+
+[`cacheComponents`](/docs/app/api-reference/config/next-config-js/cacheComponents)가 활성화되어 있으면 `useSelectedLayoutSegments`에 [`Suspense`](https://react.dev/reference/react/Suspense) boundary가 필요할 수 있습니다. 이는 prerendering 중에 활성 segment들을 resolve할 수 있는지에 따라 달라집니다.
+
+- **Static route와 [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)가 있는 route**: dynamic param을 포함한 모든 route segment를 build 시점에 알 수 있습니다. prerendering 중에 활성 segment들을 resolve할 수 있으므로 `useSelectedLayoutSegments`는 server에서 resolve되며 `Suspense` boundary가 필요하지 않습니다.
+- **`generateStaticParams`로 다루지 않는 dynamic param이 있는 route**: 이 param은 request 시점까지 알 수 없는 [fallback param](/docs/app/api-reference/functions/generate-static-params#all-paths-at-build-time)입니다. prerendering 중에 활성 segment들을 resolve할 수 없으므로 `useSelectedLayoutSegments`는 suspend됩니다. prerendering 중에 fallback이 render될 수 있도록 component(또는 상위 component)를 `Suspense` boundary로 감싸세요. 그렇지 않으면 build가 실패합니다.
+
+이는 `useSelectedLayoutSegments`를 호출하는 component 자체가 static인 경우에도 적용됩니다. 예를 들어 parent layout에서 render되는 breadcrumb component는, 그 아래에 있는 page 중 알 수 없는 dynamic param을 가진 page에서 suspend됩니다. layout의 나머지 부분을 prerender된 상태로 유지하려면 `useSelectedLayoutSegments`를 호출하는 component(또는 상위 component)를 fallback이 있는 `Suspense` boundary로 감싸세요.
+
+전체 해결 방법과 trade-off는 [Next.js encountered URL data in a Client Component outside of Suspense](/docs/messages/blocking-prerender-client-hook)를 참고하세요.
+
+## Version History || 버전 기록
+
+| Version   | Changes                                 |
+| --------- | --------------------------------------- |
+| `v13.0.0` | `useSelectedLayoutSegments` 도입. |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

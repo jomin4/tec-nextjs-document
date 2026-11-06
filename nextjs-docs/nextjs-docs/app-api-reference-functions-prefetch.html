@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>prefetch (prefetch) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/functions/prefetch" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/functions/prefetch" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/prefetch.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-functions.html">Functions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">prefetch<span class="sub">prefetch</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>await prefetch()</code>를 호출하면 그 아래의 runtime 작업이 route의 <a href="app-glossary.html#app-shell">App Shell</a>에서 제외됩니다. 그 작업은 link별 prefetch나 navigation 중에 실행될 수 있고, shell에는 가장 가까운 <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> boundary의 fallback이 render됩니다.</p><div class="en-orig"><p>Calling <code>await prefetch()</code> keeps runtime work below it out of the route's <a href="app-glossary.html#app-shell">App Shell</a>. The work can run during a per-link prefetch or navigation, while the fallback of the nearest <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> boundary renders in the shell.</p></div>
+<p><code>prefetch()</code>는 원래라면 App Shell이 render했을 콘텐츠 중 생성 비용이 큰 콘텐츠에 사용하세요. static prerender는 여전히 output에 그 콘텐츠를 포함합니다.</p><div class="en-orig"><p>Use <code>prefetch()</code> for content that the App Shell would otherwise render but that is expensive to generate. Static prerenders still include the content in their output.</p></div>
+<h2 class="sec" id="usage"><a class="anchor" href="#usage">Usage<span class="ko">사용법</span></a></h2>
+<p>이 함수는 <a href="app-api-reference-config-next-config-js-cacheComponents.html">Cache Components</a>가 필요하며, 활성화되어 있지 않으면 error를 throw합니다. <a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a>이 없으면 route에 App Shell이 없으므로 이 함수는 아무 효과가 없습니다. Partial Prefetching은 전역으로 활성화하거나, <a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching 도입하기</a> 방식으로 route 하나씩 활성화하세요.</p><div class="en-orig"><p>The function requires <a href="app-api-reference-config-next-config-js-cacheComponents.html">Cache Components</a> and throws an error if not enabled. Without <a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a> a route has no App Shell, so the function has no effect. Enable Partial Prefetching globally, or one route at a time, by <a href="app-guides-adopting-partial-prefetching.html">adopting Partial Prefetching</a>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+  partialPrefetching: true,
+}
+
+export default nextConfig</code></pre></div></div>
+<p>Partial Prefetching이 활성화되어 있으면, Next.js는 client navigation 전과 도중에 server-rendered output을 단계적으로 load합니다. 이것이 route의 <a href="app-glossary.html#navigation-stages">navigation stage</a>입니다:</p><div class="en-orig"><p>With Partial Prefetching enabled, Next.js loads server-rendered output in stages, before and during a client navigation. These are the route's <a href="app-glossary.html#navigation-stages">navigation stages</a>:</p></div>
+<ol>
+<li>기본 <code>&lt;Link&gt;</code>는 App Shell을 load합니다. App Shell에는 route 중 URL에 의존하지 않는 부분이 들어 있습니다.</li>
+<li>선택적으로 <a href="app-api-reference-components-link.html#prefetch"><code>&lt;Link prefetch={true}&gt;</code></a>나 <a href="app-api-reference-functions-use-router.html"><code>router.prefetch(href, { kind: &#x27;full&#x27; })</code></a>를 사용하면 link의 URL에 의존하는 콘텐츠도 load할 수 있습니다.</li>
+<li>사용자가 link를 따라가면 navigation이 route의 나머지 부분을 render합니다.</li>
+</ol><div class="en-orig"><ol>
+<li>A default <code>&lt;Link&gt;</code> loads the App Shell, which holds the part of the route that does not depend on the URL.</li>
+<li>An optional <a href="app-api-reference-components-link.html#prefetch"><code>&lt;Link prefetch={true}&gt;</code></a>, or <a href="app-api-reference-functions-use-router.html"><code>router.prefetch(href, { kind: &#x27;full&#x27; })</code></a>, can also load content that depends on the link's URL.</li>
+<li>When the user follows the link, the navigation renders the rest of the route.</li>
+</ol></div>
+<p>runtime rendering 중에 <code>prefetch()</code>를 await하면 콘텐츠가 App Shell에서 제외되어 link별 prefetch나 navigation 중에 render됩니다. static prerender에는 여전히 그 콘텐츠가 포함될 수 있습니다.</p><div class="en-orig"><p>During runtime rendering, awaiting <code>prefetch()</code> keeps content out of the App Shell, so it renders during a per-link prefetch or navigation. Static prerenders can still include the content.</p></div>
+<p>Partial Prefetching에서 <code>kind: &#x27;full&#x27;</code> 없이 <code>router.prefetch(href)</code>를 호출하면 App Shell만 요청합니다. <code>await prefetch()</code> 아래의 콘텐츠는 render하지 않습니다.</p><div class="en-orig"><p>Calling <code>router.prefetch(href)</code> without <code>kind: &#x27;full&#x27;</code> requests only the App Shell under Partial Prefetching. It does not render content below <code>await prefetch()</code>.</p></div>
+<p>콘텐츠를 link별 prefetch에서도 제외해 navigation에서만 render되게 하려면 <a href="app-api-reference-functions-navigation.html"><code>navigation()</code></a>을 사용하세요.</p><div class="en-orig"><p>To keep content out of per-link prefetches as well, so it renders only on the navigation, use <a href="app-api-reference-functions-navigation.html"><code>navigation()</code></a>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>prefetch()</code>는 하나의 subtree를 미룹니다. route 전체에 걸쳐 static App Shell을 요구하려면 <a href="app-api-reference-file-conventions-route-segment-config-ensureStatic.html#shell"><code>ensureStatic = &#x27;shell&#x27;</code></a>을 사용하세요. 실제 예시는 <a href="app-guides-keeping-pages-static.html">Keeping pages static</a>을 참고하세요.</p><div class="en-orig"><p><code>prefetch()</code> defers one subtree. To require a static App Shell across the route, use <a href="app-api-reference-file-conventions-route-segment-config-ensureStatic.html#shell"><code>ensureStatic = &#x27;shell&#x27;</code></a>. See <a href="app-guides-keeping-pages-static.html">Keeping pages static</a> for a worked example.</p></div></div></div>
+<p><code>prefetch()</code> 위의 모든 것은 App Shell에서 render되고, 그 아래의 모든 것은 link별 prefetch나 navigation에서 render됩니다. 미루기(deferral)의 범위는 이를 await하는 component와 그 아래 tree로 한정되며, 형제 branch는 평소처럼 shell에서 render됩니다. 미룰 작업 위에 배치하고, component를 <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a>로 감싸세요:</p><div class="en-orig"><p>Everything above <code>prefetch()</code> renders in the App Shell, and everything below renders on a per-link prefetch or on the navigation. Deferral is scoped to the component that awaits it and the tree below: sibling branches render in the shell as usual. Place it above the work to defer, and wrap the component in <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/page.tsx" data-js="app/dashboard/page.js">app/dashboard/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+import { cacheLife, prefetch } from &#x27;next/cache&#x27;
+
+export default function Page() {
+  return (
+    &lt;&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading greeting...&lt;/p&gt;}&gt;
+        &lt;Greeting /&gt; {/* in the App Shell */}
+      &lt;/Suspense&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading recommendations...&lt;/p&gt;}&gt;
+        {/* the fallback is in the App Shell, the recommendations are not */}
+        &lt;Recommendations /&gt;
+      &lt;/Suspense&gt;
+    &lt;/&gt;
+  )
+}
+
+async function Greeting() {
+  const session = (await cookies()).get(&#x27;session&#x27;)?.value
+  return &lt;p&gt;{session ? &#x27;Welcome back&#x27; : &#x27;Welcome&#x27;}&lt;/p&gt;
+}
+
+async function Recommendations() {
+  await prefetch() // runtime work below renders on a per-link prefetch or navigation
+  const items = await getRecommendations()
+  return &lt;List items={items} /&gt;
+}
+
+async function getRecommendations() {
+  &#x27;use cache: private&#x27;
+  cacheLife(&#x27;hours&#x27;)
+  const session = (await cookies()).get(&#x27;session&#x27;)?.value
+  return db.recommendations.rank({ session })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+import { cacheLife, prefetch } from &#x27;next/cache&#x27;
+
+export default function Page() {
+  return (
+    &lt;&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading greeting...&lt;/p&gt;}&gt;
+        &lt;Greeting /&gt; {/* in the App Shell */}
+      &lt;/Suspense&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading recommendations...&lt;/p&gt;}&gt;
+        {/* the fallback is in the App Shell, the recommendations are not */}
+        &lt;Recommendations /&gt;
+      &lt;/Suspense&gt;
+    &lt;/&gt;
+  )
+}
+
+async function Greeting() {
+  const session = (await cookies()).get(&#x27;session&#x27;)?.value
+  return &lt;p&gt;{session ? &#x27;Welcome back&#x27; : &#x27;Welcome&#x27;}&lt;/p&gt;
+}
+
+async function Recommendations() {
+  await prefetch() // runtime work below renders on a per-link prefetch or navigation
+  const items = await getRecommendations()
+  return &lt;List items={items} /&gt;
+}
+
+async function getRecommendations() {
+  &#x27;use cache: private&#x27;
+  cacheLife(&#x27;hours&#x27;)
+  const session = (await cookies()).get(&#x27;session&#x27;)?.value
+  return db.recommendations.rank({ session })
+}</code></pre></div></div>
+<p>인사말(greeting)은 session을 읽고 App Shell에 남습니다. 추천 목록(recommendations)도 <code>getRecommendations</code> 안에서 session을 읽으므로, 그 읽기는 ranking과 함께 미뤄집니다. <code>prefetch()</code>를 제거하면 이들은 route로 들어가는 모든 link가 load하는 App Shell의 일부가 됩니다.</p><div class="en-orig"><p>The greeting reads the session and stays in the App Shell. The recommendations read it too, inside <code>getRecommendations</code>, so that read is deferred along with the ranking. Remove <code>prefetch()</code> and they become part of the App Shell that every link into the route loads.</p></div>
+<p>여기서 <code>getRecommendations</code>처럼 directive는 그 아래에서 호출되는 함수에 붙이세요. <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a>나 <a href="app-api-reference-directives-use-cache-private.html"><code>use cache: private</code></a> 같은 cache된 scope 안에서 <code>prefetch()</code>를 await하는 것은 허용되지 않습니다.</p><div class="en-orig"><p>Put the directive on a function called below it, as <code>getRecommendations</code> does here. Awaiting <code>prefetch()</code> inside a cached scope, such as <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a> or <a href="app-api-reference-directives-use-cache-private.html"><code>use cache: private</code></a>, is not allowed.</p></div>
+<h2 class="sec" id="how-prefetch-differs-from-connection"><a class="anchor" href="#how-prefetch-differs-from-connection">How <code>prefetch()</code> differs from <code>connection()</code><span class="ko"><code>prefetch()</code>와 <code>connection()</code>의 차이</span></a></h2>
+<p><a href="app-api-reference-functions-connection.html"><code>connection()</code></a> 함수는 실제 request를 기다립니다. 뒤이은 코드를 prerendering과 prefetching에서 제외해, 그 작업을 request에 의존하게 만듭니다.</p><div class="en-orig"><p>The <a href="app-api-reference-functions-connection.html"><code>connection()</code></a> function waits for a real request. It excludes the code that follows from prerendering and prefetching, making that work request-dependent.</p></div>
+<p><code>prefetch()</code>를 await하면 뒤이은 코드가 App Shell에서 제외됩니다. 이는 그 작업을 request에 의존하게 만들지 않고 link별 prefetch 중에 resolve될 수 있습니다. 따라서 <code>await prefetch()</code> 뒤에 호출된 함수는 <a href="app-api-reference-directives-use-cache.html"><code>&quot;use cache&quot;</code></a>를 사용해 cache lifetime을 유지하면서도, route로 들어가는 모든 link마다 결과를 생성하지 않을 수 있습니다.</p><div class="en-orig"><p>Awaiting <code>prefetch()</code> excludes the code that follows from the App Shell. It can resolve during a per-link prefetch without making that work request-dependent. A function called after <code>await prefetch()</code> can therefore use <a href="app-api-reference-directives-use-cache.html"><code>&quot;use cache&quot;</code></a> and keep its cache lifetime without generating its result for every link into the route.</p></div>
+<p>작업이 실제 request에서 실행되어야 한다면 <code>connection()</code>을 사용하세요. 작업이 재사용 가능하지만 선택된 link별 prefetch나 navigation에서만 실행되어야 한다면 <code>prefetch()</code>를 사용하세요.</p><div class="en-orig"><p>Use <code>connection()</code> when the work must run for a real request. Use <code>prefetch()</code> when the work is reusable but should only run for a selected per-link prefetch or a navigation.</p></div>
+<h2 class="sec" id="when-to-use-it"><a class="anchor" href="#when-to-use-it">When to use it<span class="ko">언제 사용하나요</span></a></h2>
+<p>그 아래의 콘텐츠가 생성 비용이 크고, route로 들어가는 모든 <code>&lt;Link&gt;</code>가 load하는 App Shell에서 생성되어서는 안 될 때 <code>prefetch()</code>를 사용하세요.</p><div class="en-orig"><p>Use <code>prefetch()</code> when the content below it is expensive to produce and should not be generated in the App Shell that every <code>&lt;Link&gt;</code> into the route loads.</p></div>
+<p>App Shell을 생성할 때는 그 코드가 실행되지 않으므로, 해당 upstream request는 link별 prefetch나 navigation 전까지 발생하지 않습니다.</p><div class="en-orig"><p>Producing the App Shell does not run that code, so its upstream requests are not issued until a per-link prefetch or the navigation.</p></div>
+<p>콘텐츠를 cache하지 않은 채 두어도 shell에서 제외되지만, 그 대신 cache lifetime을 포기하게 되고 link별 prefetch 중에 콘텐츠를 사용할 수 있게 만들 수도 없습니다. <code>prefetch()</code>를 사용하면 콘텐츠를 <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a>나 <a href="app-api-reference-directives-use-cache-private.html"><code>use cache: private</code></a>로 cache하고, lifetime을 지정하고, link별 prefetch나 navigation까지 미룰 수 있습니다.</p><div class="en-orig"><p>Leaving content uncached also keeps it out of the shell, but gives up its cache lifetime and cannot make it available during a per-link prefetch. With <code>prefetch()</code>, the content can be cached with <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a> or <a href="app-api-reference-directives-use-cache-private.html"><code>use cache: private</code></a>, given a lifetime, and deferred to a per-link prefetch or navigation.</p></div>
+<p>cache되지 않은 읽기, <a href="app-api-reference-functions-cacheLife.html#stale"><code>stale</code></a> 시간이 짧은 값, 그리고 <code>params</code>나 <code>searchParams</code> 뒤에 있는 모든 것은 이미 그 자체로 shell에서 제외됩니다.</p><div class="en-orig"><p>Uncached reads, values with a short <a href="app-api-reference-functions-cacheLife.html#stale"><code>stale</code></a> time, and anything behind <code>params</code> or <code>searchParams</code> are already left out of the shell on their own.</p></div>
+<h3 class="sec" id="keeping-the-app-shell-static"><a class="anchor" href="#keeping-the-app-shell-static">Keeping the App Shell static<span class="ko">App Shell을 static으로 유지하기</span></a></h3>
+<p><a href="app-api-reference-functions-cookies.html"><code>cookies()</code></a>와 <a href="app-api-reference-functions-headers.html"><code>headers()</code></a>를 읽는 모든 코드가 <code>prefetch()</code> 아래에 있으면, shell prefetch가 trigger할 prerender는 build가 이미 생성한 static output 이상을 만들어 낼 수 없으므로, shell은 대신 그 output에서 제공됩니다. route를 이렇게 구성하는 것은 선택적인 최적화입니다: static response는 CDN에 cache될 수 있으므로, route로 들어가는 기본 <code>&lt;Link&gt;</code>에 server CPU 비용이 전혀 들지 않습니다. <code>params</code>나 <code>searchParams</code>를 resolve하는 route는 대신 그 prerender를 거치며, 위의 예시도 마찬가지입니다: 인사말이 shell에서 session을 읽으므로 shell은 방문자마다 한 번씩 render되고, 추천 목록만 미뤄집니다.</p><div class="en-orig"><p>When every read of <a href="app-api-reference-functions-cookies.html"><code>cookies()</code></a> and <a href="app-api-reference-functions-headers.html"><code>headers()</code></a> sits below <code>prefetch()</code>, the prerender a shell prefetch would trigger cannot produce more than the static output the build already generated, so the shell is served from that output instead. Shaping a route this way is an optional optimization: a static response can be cached in a CDN, so a default <code>&lt;Link&gt;</code> into the route costs no server CPU at all. A route that resolves <code>params</code> or <code>searchParams</code> gets that prerender instead, and so does the example above: its greeting reads the session in the shell, so the shell renders once per visitor and only the recommendations are deferred.</p></div>
+<h2 class="sec" id="good-to-know"><a class="anchor" href="#good-to-know">Good to know<span class="ko">알아 두면 좋은 점</span></a></h2>
+<ul>
+<li>이 함수는 page의 initial load에는 아무 영향도 주지 않습니다.</li>
+<li><a href="app-api-reference-functions-connection.html"><code>connection()</code></a>과 달리, subtree를 request에 의존하는 것으로 표시하지 않습니다. <code>await prefetch()</code> 아래의 콘텐츠는 완전히 cache 가능한 상태로 남으며 <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a>로 감쌀 수 있습니다.</li>
+<li><code>&lt;Suspense&gt;</code> boundary 밖에서 호출하면 development에서 <a href="https://nextjs.org/docs/messages/instant-navigation-stage" target="_blank" rel="noopener">Instant Insight</a>가 표시됩니다. 완전히 prerender된 route에는 영향이 없지만, 이 insight는 나중에 route에 runtime rendering이 필요해지면 해당 호출이 fallback 없이 콘텐츠를 미루게 된다는 점을 알려 줍니다.</li>
+<li><code>use cache</code>, <code>use cache: private</code>, <a href="app-api-reference-functions-unstable_cache.html"><code>unstable_cache()</code></a>, <a href="app-api-reference-functions-after.html"><code>after()</code></a>, <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>, 또는 Client Component 안에서 호출하면 throw합니다.</li>
+<li><a href="app-api-reference-file-conventions-route-segment-config-prefetch.html"><code>prefetch</code> route segment config</a>를 설정한 <code>page</code>나 <code>layout</code>에서는 둘 다 이름이 <code>prefetch</code>이므로, <code>import { prefetch as prefetchStage } from &#x27;next/cache&#x27;</code>처럼 함수를 다른 이름으로 import하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>The function has no effect on the initial load of a page.</li>
+<li>Unlike <a href="app-api-reference-functions-connection.html"><code>connection()</code></a>, it does not mark the subtree as request-dependent. Content below <code>await prefetch()</code> stays fully cacheable and can be wrapped in <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a>.</li>
+<li>A call outside a <code>&lt;Suspense&gt;</code> boundary surfaces an <a href="https://nextjs.org/docs/messages/instant-navigation-stage" target="_blank" rel="noopener">Instant Insight</a> in development. A fully prerendered route is unaffected, but the insight identifies that the call would defer content without a fallback if the route later requires runtime rendering.</li>
+<li>Calling it inside <code>use cache</code>, <code>use cache: private</code>, <a href="app-api-reference-functions-unstable_cache.html"><code>unstable_cache()</code></a>, <a href="app-api-reference-functions-after.html"><code>after()</code></a>, <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>, or a Client Component throws.</li>
+<li>In a <code>page</code> or <code>layout</code> that sets the <a href="app-api-reference-file-conventions-route-segment-config-prefetch.html"><code>prefetch</code> route segment config</a>, import the function under another name, for example <code>import { prefetch as prefetchStage } from &#x27;next/cache&#x27;</code>, since both are named <code>prefetch</code>.</li>
+</ul></div>
+<h2 class="sec" id="reference"><a class="anchor" href="#reference">Reference</a></h2>
+<h3 class="sec" id="type"><a class="anchor" href="#type">Type</a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">function prefetch(): Promise&lt;void&gt;</code></pre></div></div>
+<h3 class="sec" id="parameters"><a class="anchor" href="#parameters">Parameters</a></h3>
+<ul>
+<li>이 함수는 parameter를 받지 않습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The function does not accept any parameters.</li>
+</ul></div>
+<h3 class="sec" id="returns"><a class="anchor" href="#returns">Returns</a></h3>
+<p><code>Promise&lt;void&gt;</code>를 반환합니다. 반환값을 사용하기 위한 것이 아닙니다.</p><div class="en-orig"><p>A <code>Promise&lt;void&gt;</code>. It is not meant to be consumed.</p></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.4.0</code></td><td><code>prefetch</code>가 도입되어, 이전 canary release에서 사용하던 <code>unstable_prefetch</code> 이름을 대체했습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.4.0</code></td><td><code>prefetch</code> introduced, replacing the <code>unstable_prefetch</code> name used in earlier canary releases.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><div class="rgrid"><a class="rcard" href="app-guides-optimizing-prefetching.html"><div class="rt">Optimizing prefetching</div><div class="rk">prefetching 최적화</div><div class="rd">link별 URL data를 resolve하거나, session data를 App Shell에 포함하거나, 비용이 큰 작업을 이후 navigation 단계로 미루는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-keeping-pages-static.html"><div class="rt">Keeping pages static</div><div class="rk">페이지를 static으로 유지하기</div><div class="rd">앱이 바뀌어도 선택한 route의 출력을 static으로 유지하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-functions-navigation.html"><div class="rt">navigation</div><div class="rk">navigation</div><div class="rd">navigation 함수로 runtime 작업을 사용자가 navigate할 때까지 미룹니다.</div></a><a class="rcard" href="app-api-reference-functions-connection.html"><div class="rt">connection</div><div class="rk">connection</div><div class="rd">connection 함수에 대한 API Reference입니다.</div></a><a class="rcard" href="app-api-reference-config-next-config-js-partialPrefetching.html"><div class="rt">partialPrefetching</div><div class="rk">partialPrefetching</div><div class="rd">각 route의 static 부분만 fetch하도록 기본 link prefetch 동작을 설정합니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/prefetch.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/functions/prefetch" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-functions-permanentRedirect.html" class="prev"><div class="dir">← 이전</div><div class="ttl">permanentRedirect</div><div class="ttl-ko">permanentRedirect</div></a>
+      <a href="app-api-reference-functions-redirect.html" class="next"><div class="dir">다음 →</div><div class="ttl">redirect</div><div class="ttl-ko">redirect</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/functions/prefetch" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#usage">Usage</a></li><li class="l2"><a href="#how-prefetch-differs-from-connection">How <code>prefetch()</code> differs from <code>connection()</code></a></li><li class="l2"><a href="#when-to-use-it">When to use it</a></li><li class="l3"><a href="#keeping-the-app-shell-static">Keeping the App Shell static</a></li><li class="l2"><a href="#good-to-know">Good to know</a></li><li class="l2"><a href="#reference">Reference</a></li><li class="l3"><a href="#type">Type</a></li><li class="l3"><a href="#parameters">Parameters</a></li><li class="l3"><a href="#returns">Returns</a></li><li class="l2"><a href="#version-history">Version History</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`await prefetch()`를 호출하면 그 아래의 runtime 작업이 route의 [App Shell](/docs/app/glossary#app-shell)에서 제외됩니다. 그 작업은 link별 prefetch나 navigation 중에 실행될 수 있고, shell에는 가장 가까운 [`&lt;Suspense&gt;`](https://react.dev/reference/react/Suspense) boundary의 fallback이 render됩니다.
+
+`prefetch()`는 원래라면 App Shell이 render했을 콘텐츠 중 생성 비용이 큰 콘텐츠에 사용하세요. static prerender는 여전히 output에 그 콘텐츠를 포함합니다.
+
+## Usage || 사용법
+
+이 함수는 [Cache Components](/docs/app/api-reference/config/next-config-js/cacheComponents)가 필요하며, 활성화되어 있지 않으면 error를 throw합니다. [Partial Prefetching](/docs/app/api-reference/config/next-config-js/partialPrefetching)이 없으면 route에 App Shell이 없으므로 이 함수는 아무 효과가 없습니다. Partial Prefetching은 전역으로 활성화하거나, [Partial Prefetching 도입하기](/docs/app/guides/adopting-partial-prefetching) 방식으로 route 하나씩 활성화하세요.
+
+[[CODE 1]]
+
+Partial Prefetching이 활성화되어 있으면, Next.js는 client navigation 전과 도중에 server-rendered output을 단계적으로 load합니다. 이것이 route의 [navigation stage](/docs/app/glossary#navigation-stages)입니다:
+
+1. 기본 `&lt;Link&gt;`는 App Shell을 load합니다. App Shell에는 route 중 URL에 의존하지 않는 부분이 들어 있습니다.
+2. 선택적으로 [`&lt;Link prefetch={true}&gt;`](/docs/app/api-reference/components/link#prefetch)나 [`router.prefetch(href, { kind: &#x27;full&#x27; })`](/docs/app/api-reference/functions/use-router)를 사용하면 link의 URL에 의존하는 콘텐츠도 load할 수 있습니다.
+3. 사용자가 link를 따라가면 navigation이 route의 나머지 부분을 render합니다.
+
+runtime rendering 중에 `prefetch()`를 await하면 콘텐츠가 App Shell에서 제외되어 link별 prefetch나 navigation 중에 render됩니다. static prerender에는 여전히 그 콘텐츠가 포함될 수 있습니다.
+
+Partial Prefetching에서 `kind: &#x27;full&#x27;` 없이 `router.prefetch(href)`를 호출하면 App Shell만 요청합니다. `await prefetch()` 아래의 콘텐츠는 render하지 않습니다.
+
+콘텐츠를 link별 prefetch에서도 제외해 navigation에서만 render되게 하려면 [`navigation()`](/docs/app/api-reference/functions/navigation)을 사용하세요.
+
+&gt; **Good to know**: `prefetch()`는 하나의 subtree를 미룹니다. route 전체에 걸쳐 static App Shell을 요구하려면 [`ensureStatic = &#x27;shell&#x27;`](/docs/app/api-reference/file-conventions/route-segment-config/ensureStatic#shell)을 사용하세요. 실제 예시는 [Keeping pages static](/docs/app/guides/keeping-pages-static)을 참고하세요.
+
+`prefetch()` 위의 모든 것은 App Shell에서 render되고, 그 아래의 모든 것은 link별 prefetch나 navigation에서 render됩니다. 미루기(deferral)의 범위는 이를 await하는 component와 그 아래 tree로 한정되며, 형제 branch는 평소처럼 shell에서 render됩니다. 미룰 작업 위에 배치하고, component를 [`&lt;Suspense&gt;`](https://react.dev/reference/react/Suspense)로 감싸세요:
+
+[[CODE 2]]
+
+인사말(greeting)은 session을 읽고 App Shell에 남습니다. 추천 목록(recommendations)도 `getRecommendations` 안에서 session을 읽으므로, 그 읽기는 ranking과 함께 미뤄집니다. `prefetch()`를 제거하면 이들은 route로 들어가는 모든 link가 load하는 App Shell의 일부가 됩니다.
+
+여기서 `getRecommendations`처럼 directive는 그 아래에서 호출되는 함수에 붙이세요. [`use cache`](/docs/app/api-reference/directives/use-cache)나 [`use cache: private`](/docs/app/api-reference/directives/use-cache-private) 같은 cache된 scope 안에서 `prefetch()`를 await하는 것은 허용되지 않습니다.
+
+## How `prefetch()` differs from `connection()` || `prefetch()`와 `connection()`의 차이
+
+[`connection()`](/docs/app/api-reference/functions/connection) 함수는 실제 request를 기다립니다. 뒤이은 코드를 prerendering과 prefetching에서 제외해, 그 작업을 request에 의존하게 만듭니다.
+
+`prefetch()`를 await하면 뒤이은 코드가 App Shell에서 제외됩니다. 이는 그 작업을 request에 의존하게 만들지 않고 link별 prefetch 중에 resolve될 수 있습니다. 따라서 `await prefetch()` 뒤에 호출된 함수는 [`&quot;use cache&quot;`](/docs/app/api-reference/directives/use-cache)를 사용해 cache lifetime을 유지하면서도, route로 들어가는 모든 link마다 결과를 생성하지 않을 수 있습니다.
+
+작업이 실제 request에서 실행되어야 한다면 `connection()`을 사용하세요. 작업이 재사용 가능하지만 선택된 link별 prefetch나 navigation에서만 실행되어야 한다면 `prefetch()`를 사용하세요.
+
+## When to use it || 언제 사용하나요
+
+그 아래의 콘텐츠가 생성 비용이 크고, route로 들어가는 모든 `&lt;Link&gt;`가 load하는 App Shell에서 생성되어서는 안 될 때 `prefetch()`를 사용하세요.
+
+App Shell을 생성할 때는 그 코드가 실행되지 않으므로, 해당 upstream request는 link별 prefetch나 navigation 전까지 발생하지 않습니다.
+
+콘텐츠를 cache하지 않은 채 두어도 shell에서 제외되지만, 그 대신 cache lifetime을 포기하게 되고 link별 prefetch 중에 콘텐츠를 사용할 수 있게 만들 수도 없습니다. `prefetch()`를 사용하면 콘텐츠를 [`use cache`](/docs/app/api-reference/directives/use-cache)나 [`use cache: private`](/docs/app/api-reference/directives/use-cache-private)로 cache하고, lifetime을 지정하고, link별 prefetch나 navigation까지 미룰 수 있습니다.
+
+cache되지 않은 읽기, [`stale`](/docs/app/api-reference/functions/cacheLife#stale) 시간이 짧은 값, 그리고 `params`나 `searchParams` 뒤에 있는 모든 것은 이미 그 자체로 shell에서 제외됩니다.
+
+### Keeping the App Shell static || App Shell을 static으로 유지하기
+
+[`cookies()`](/docs/app/api-reference/functions/cookies)와 [`headers()`](/docs/app/api-reference/functions/headers)를 읽는 모든 코드가 `prefetch()` 아래에 있으면, shell prefetch가 trigger할 prerender는 build가 이미 생성한 static output 이상을 만들어 낼 수 없으므로, shell은 대신 그 output에서 제공됩니다. route를 이렇게 구성하는 것은 선택적인 최적화입니다: static response는 CDN에 cache될 수 있으므로, route로 들어가는 기본 `&lt;Link&gt;`에 server CPU 비용이 전혀 들지 않습니다. `params`나 `searchParams`를 resolve하는 route는 대신 그 prerender를 거치며, 위의 예시도 마찬가지입니다: 인사말이 shell에서 session을 읽으므로 shell은 방문자마다 한 번씩 render되고, 추천 목록만 미뤄집니다.
+
+## Good to know || 알아 두면 좋은 점
+
+- 이 함수는 page의 initial load에는 아무 영향도 주지 않습니다.
+- [`connection()`](/docs/app/api-reference/functions/connection)과 달리, subtree를 request에 의존하는 것으로 표시하지 않습니다. `await prefetch()` 아래의 콘텐츠는 완전히 cache 가능한 상태로 남으며 [`use cache`](/docs/app/api-reference/directives/use-cache)로 감쌀 수 있습니다.
+- `&lt;Suspense&gt;` boundary 밖에서 호출하면 development에서 [Instant Insight](/docs/messages/instant-navigation-stage)가 표시됩니다. 완전히 prerender된 route에는 영향이 없지만, 이 insight는 나중에 route에 runtime rendering이 필요해지면 해당 호출이 fallback 없이 콘텐츠를 미루게 된다는 점을 알려 줍니다.
+- `use cache`, `use cache: private`, [`unstable_cache()`](/docs/app/api-reference/functions/unstable_cache), [`after()`](/docs/app/api-reference/functions/after), [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params), 또는 Client Component 안에서 호출하면 throw합니다.
+- [`prefetch` route segment config](/docs/app/api-reference/file-conventions/route-segment-config/prefetch)를 설정한 `page`나 `layout`에서는 둘 다 이름이 `prefetch`이므로, `import { prefetch as prefetchStage } from &#x27;next/cache&#x27;`처럼 함수를 다른 이름으로 import하세요.
+
+## Reference
+
+### Type
+
+[[CODE 3]]
+
+### Parameters
+
+- 이 함수는 parameter를 받지 않습니다.
+
+### Returns
+
+`Promise&lt;void&gt;`를 반환합니다. 반환값을 사용하기 위한 것이 아닙니다.
+
+## Version History || 버전 기록
+
+| Version | Changes |
+| --- | --- |
+| `v16.4.0` | `prefetch`가 도입되어, 이전 canary release에서 사용하던 `unstable_prefetch` 이름을 대체했습니다. |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

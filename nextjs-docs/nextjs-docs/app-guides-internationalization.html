@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Internationalization (국제화) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/internationalization" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/internationalization" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/internationalization.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Internationalization<span class="sub">국제화</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js에서는 여러 언어를 지원하도록 콘텐츠의 routing과 rendering을 설정할 수 있습니다. 사이트를 여러 locale에 맞게 만드는 작업에는 번역된 콘텐츠(localization)와 internationalized route가 포함됩니다.</p><div class="en-orig"><p>Next.js enables you to configure the routing and rendering of content to support multiple languages. Making your site adaptive to different locales includes translated content (localization) and internationalized routes.</p></div>
+<h2 class="sec" id="terminology"><a class="anchor" href="#terminology">Terminology<span class="ko">용어</span></a></h2>
+<ul>
+<li><strong>Locale:</strong> 언어와 형식(formatting) 선호 설정의 묶음을 나타내는 식별자입니다. 보통 사용자가 선호하는 언어와, 경우에 따라 사용자의 지리적 지역을 포함합니다.<ul>
+<li><code>en-US</code>: 미국에서 쓰이는 영어</li>
+<li><code>nl-NL</code>: 네덜란드에서 쓰이는 네덜란드어</li>
+<li><code>nl</code>: 특정 지역이 없는 네덜란드어</li>
+</ul></li>
+</ul><div class="en-orig"><ul>
+<li><strong>Locale:</strong> An identifier for a set of language and formatting preferences. This usually includes the preferred language of the user and possibly their geographic region.<ul>
+<li><code>en-US</code>: English as spoken in the United States</li>
+<li><code>nl-NL</code>: Dutch as spoken in the Netherlands</li>
+<li><code>nl</code>: Dutch, no specific region</li>
+</ul></li>
+</ul></div>
+<h2 class="sec" id="routing-overview"><a class="anchor" href="#routing-overview">Routing Overview<span class="ko">Routing 개요</span></a></h2>
+<p>어떤 locale을 사용할지 고를 때는 브라우저에 설정된 사용자의 언어 선호를 사용하는 것이 좋습니다. 선호 언어를 바꾸면 애플리케이션으로 들어오는 <code>Accept-Language</code> header가 바뀝니다.</p><div class="en-orig"><p>It’s recommended to use the user’s language preferences in the browser to select which locale to use. Changing your preferred language will modify the incoming <code>Accept-Language</code> header to your application.</p></div>
+<p>예를 들어 다음 library를 사용하면 들어오는 <code>Request</code>를 보고 <code>Headers</code>, 지원하려는 locale 목록, 기본 locale을 기준으로 어떤 locale을 선택할지 결정할 수 있습니다.</p><div class="en-orig"><p>For example, using the following libraries, you can look at an incoming <code>Request</code> to determine which locale to select, based on the <code>Headers</code>, locales you plan to support, and the default locale.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">proxy.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { match } from &#x27;@formatjs/intl-localematcher&#x27;
+import Negotiator from &#x27;negotiator&#x27;
+
+let headers = { &#x27;accept-language&#x27;: &#x27;en-US,en;q=0.5&#x27; }
+let languages = new Negotiator({ headers }).languages()
+let locales = [&#x27;en-US&#x27;, &#x27;nl-NL&#x27;, &#x27;nl&#x27;]
+let defaultLocale = &#x27;en-US&#x27;
+
+match(languages, locales, defaultLocale) // -&gt; &#x27;en-US&#x27;</code></pre></div></div>
+<p>routing은 sub-path(<code>/fr/products</code>)나 domain(<code>my-site.fr/products</code>)으로 국제화할 수 있습니다. 이 정보를 이용하면 이제 <a href="app-api-reference-file-conventions-proxy.html">Proxy</a> 안에서 locale을 기준으로 사용자를 redirect할 수 있습니다.</p><div class="en-orig"><p>Routing can be internationalized by either the sub-path (<code>/fr/products</code>) or domain (<code>my-site.fr/products</code>). With this information, you can now redirect the user based on the locale inside <a href="app-api-reference-file-conventions-proxy.html">Proxy</a>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">proxy.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { NextResponse } from &quot;next/server&quot;;
+
+let locales = [&#x27;en-US&#x27;, &#x27;nl-NL&#x27;, &#x27;nl&#x27;]
+
+// Get the preferred locale, similar to the above or using a library
+function getLocale(request) { ... }
+
+export function proxy(request) {
+  // Check if there is any supported locale in the pathname
+  const { pathname } = request.nextUrl
+  const pathnameHasLocale = locales.some(
+    (locale) =&gt; pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
+  )
+
+  if (pathnameHasLocale) return
+
+  // Redirect if there is no locale
+  const locale = getLocale(request)
+  request.nextUrl.pathname = `/${locale}${pathname}`
+  // e.g. incoming request is /products
+  // The new URL is now /en-US/products
+  return NextResponse.redirect(request.nextUrl)
+}
+
+export const config = {
+  matcher: [
+    // Skip all internal paths (_next)
+    &#x27;/((?!_next).*)&#x27;,
+    // Optional: only run on root (/) URL
+    // &#x27;/&#x27;
+  ],
+}</code></pre></div></div>
+<p>마지막으로 <code>app/</code> 안의 모든 special file이 <code>app/[lang]</code> 아래에 중첩되도록 하세요. 그러면 Next.js router가 route의 여러 locale을 동적으로 처리하고, 모든 layout과 page에 <code>lang</code> parameter를 전달할 수 있습니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>Finally, ensure all special files inside <code>app/</code> are nested under <code>app/[lang]</code>. This enables the Next.js router to dynamically handle different locales in the route, and forward the <code>lang</code> parameter to every layout and page. For example:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[lang]/page.tsx" data-js="app/[lang]/page.js">app/[lang]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// You now have access to the current locale
+// e.g. /en-US/products -&gt; `lang` is &quot;en-US&quot;
+export default async function Page({ params }: PageProps&lt;&#x27;/[lang]&#x27;&gt;) {
+  const { lang } = await params
+  return ...
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// You now have access to the current locale
+// e.g. /en-US/products -&gt; `lang` is &quot;en-US&quot;
+export default async function Page({ params }) {
+  const { lang } = await params
+  return ...
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>PageProps</code>와 <code>LayoutProps</code>는 전역에서 사용할 수 있는 TypeScript helper로, route parameter에 강력한 type을 제공합니다. 자세한 내용은 <a href="app-api-reference-file-conventions-page.html#page-props-helper">PageProps</a>와 <a href="app-api-reference-file-conventions-layout.html#layout-props-helper">LayoutProps</a>를 참고하세요.</p><div class="en-orig"><p><code>PageProps</code> and <code>LayoutProps</code> are globally available TypeScript helpers that provide strong typing for route parameters. See <a href="app-api-reference-file-conventions-page.html#page-props-helper">PageProps</a> and <a href="app-api-reference-file-conventions-layout.html#layout-props-helper">LayoutProps</a> for more details.</p></div></div></div>
+<p>root layout도 새 폴더 안에 중첩할 수 있습니다(예: <code>app/[lang]/layout.js</code>).</p><div class="en-orig"><p>The root layout can also be nested in the new folder (e.g. <code>app/[lang]/layout.js</code>).</p></div>
+<h2 class="sec" id="localization"><a class="anchor" href="#localization">Localization</a></h2>
+<p>사용자가 선호하는 locale에 따라 표시되는 콘텐츠를 바꾸는 것, 즉 localization은 Next.js에만 해당하는 것이 아닙니다. 아래에서 설명하는 패턴은 어떤 웹 애플리케이션에서든 똑같이 동작합니다.</p><div class="en-orig"><p>Changing displayed content based on the user’s preferred locale, or localization, is not something specific to Next.js. The patterns described below would work the same with any web application.</p></div>
+<p>애플리케이션에서 영어와 네덜란드어 콘텐츠를 모두 지원하고 싶다고 가정해 봅시다. 두 개의 서로 다른 "dictionary"를 관리할 수 있는데, dictionary는 어떤 key를 localized 문자열로 mapping해 주는 객체입니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>Let’s assume we want to support both English and Dutch content inside our application. We might maintain two different “dictionaries”, which are objects that give us a mapping from some key to a localized string. For example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">dictionaries/en.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;products&quot;: {
+    &quot;cart&quot;: &quot;Add to Cart&quot;
+  }
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">dictionaries/nl.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;products&quot;: {
+    &quot;cart&quot;: &quot;Toevoegen aan Winkelwagen&quot;
+  }
+}</code></pre></div></div>
+<p>그런 다음 요청된 locale의 번역을 load하는 <code>getDictionary</code> 함수를 만들 수 있습니다:</p><div class="en-orig"><p>We can then create a <code>getDictionary</code> function to load the translations for the requested locale:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[lang]/dictionaries.ts" data-js="app/[lang]/dictionaries.js">app/[lang]/dictionaries.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import &#x27;server-only&#x27;
+
+const dictionaries = {
+  en: () =&gt; import(&#x27;./dictionaries/en.json&#x27;).then((module) =&gt; module.default),
+  nl: () =&gt; import(&#x27;./dictionaries/nl.json&#x27;).then((module) =&gt; module.default),
+}
+
+export type Locale = keyof typeof dictionaries
+
+export const hasLocale = (locale: string): locale is Locale =&gt;
+  locale in dictionaries
+
+export const getDictionary = async (locale: Locale) =&gt; dictionaries[locale]()</code></pre><pre class="v-js" hidden><code class="language-javascript">import &#x27;server-only&#x27;
+
+const dictionaries = {
+  en: () =&gt; import(&#x27;./dictionaries/en.json&#x27;).then((module) =&gt; module.default),
+  nl: () =&gt; import(&#x27;./dictionaries/nl.json&#x27;).then((module) =&gt; module.default),
+}
+
+export const hasLocale = (locale) =&gt; locale in dictionaries
+
+export const getDictionary = async (locale) =&gt; dictionaries[locale]()</code></pre></div></div>
+<p>현재 선택된 언어가 주어지면 layout이나 page 안에서 dictionary를 fetch할 수 있습니다.</p><div class="en-orig"><p>Given the currently selected language, we can fetch the dictionary inside of a layout or page.</p></div>
+<p><code>lang</code>은 <code>string</code>으로 type이 지정되므로, <code>hasLocale</code>을 사용하면 type을 지원하는 locale로 좁힐(narrow) 수 있습니다. 또한 번역이 없을 때 runtime error 대신 404가 반환되도록 보장합니다.</p><div class="en-orig"><p>Since <code>lang</code> is typed as <code>string</code>, using <code>hasLocale</code> narrows the type to your supported locales. It also ensures a 404 is returned if a translation is missing, rather than a runtime error.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[lang]/page.tsx" data-js="app/[lang]/page.js">app/[lang]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { notFound } from &#x27;next/navigation&#x27;
+import { getDictionary, hasLocale } from &#x27;./dictionaries&#x27;
+
+export default async function Page({ params }: PageProps&lt;&#x27;/[lang]&#x27;&gt;) {
+  const { lang } = await params
+
+  if (!hasLocale(lang)) notFound()
+
+  const dict = await getDictionary(lang)
+  return &lt;button&gt;{dict.products.cart}&lt;/button&gt; // Add to Cart
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { notFound } from &#x27;next/navigation&#x27;
+import { getDictionary, hasLocale } from &#x27;./dictionaries&#x27;
+
+export default async function Page({ params }) {
+  const { lang } = await params
+
+  if (!hasLocale(lang)) notFound()
+
+  const dict = await getDictionary(lang)
+  return &lt;button&gt;{dict.products.cart}&lt;/button&gt; // Add to Cart
+}</code></pre></div></div>
+<p><code>app/</code> directory의 모든 layout과 page는 기본적으로 <a href="app-getting-started-server-and-client-components.html">Server Component</a>이므로, 번역 파일의 크기가 client-side JavaScript bundle 크기에 영향을 줄까 걱정할 필요가 없습니다. 이 코드는 <strong>server에서만 실행</strong>되고, 결과 HTML만 브라우저로 전송됩니다.</p><div class="en-orig"><p>Because all layouts and pages in the <code>app/</code> directory default to <a href="app-getting-started-server-and-client-components.html">Server Components</a>, we do not need to worry about the size of the translation files affecting our client-side JavaScript bundle size. This code will <strong>only run on the server</strong>, and only the resulting HTML will be sent to the browser.</p></div>
+<h2 class="sec" id="sharing-the-locale-across-your-app"><a class="anchor" href="#sharing-the-locale-across-your-app">Sharing the locale across your app<span class="ko">앱 전체에서 locale 공유하기</span></a></h2>
+<p>locale은 그것을 받는 page 밖에서도 필요한 경우가 많습니다. 공유 data-fetching utility나 깊이 중첩된 component 같은 곳입니다. 각 계층마다 <code>lang</code>을 prop drilling하는 대신 <a href="app-api-reference-functions-next-root-params.html"><code>next/root-params</code></a>로 직접 읽을 수 있습니다.</p><div class="en-orig"><p>The locale is often needed beyond the page that receives it, such as in shared data-fetching utilities or deeply nested components. Instead of prop drilling <code>lang</code> through each layer, we can read it directly with <a href="app-api-reference-functions-next-root-params.html"><code>next/root-params</code></a>.</p></div>
+<p><code>next/root-params</code>는 root layout 위에 있는 각 dynamic segment에 대한 getter를 export합니다. 모든 route가 <code>app/[lang]</code> 아래에 중첩되어 있으므로 <code>lang</code>은 root parameter이고, 어떤 Server Component나 server-side utility든 그 getter를 호출할 수 있습니다. locale 조회를 <code>getDictionary</code> 안으로 옮기면 호출하는 쪽에서 더 이상 <code>lang</code>을 넘기지 않아도 됩니다:</p><div class="en-orig"><p><code>next/root-params</code> exports a getter for each dynamic segment above the root layout. Since every route is nested under <code>app/[lang]</code>, <code>lang</code> is a root parameter, and any Server Component or server-side utility can call its getter. We can move the locale lookup into <code>getDictionary</code>, so callers no longer pass <code>lang</code>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[lang]/dictionaries.ts" data-js="app/[lang]/dictionaries.js">app/[lang]/dictionaries.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { lang } from &#x27;next/root-params&#x27;
+import { notFound } from &#x27;next/navigation&#x27;
+
+const dictionaries = {
+  en: () =&gt; import(&#x27;./dictionaries/en.json&#x27;).then((module) =&gt; module.default),
+  nl: () =&gt; import(&#x27;./dictionaries/nl.json&#x27;).then((module) =&gt; module.default),
+}
+
+export type Locale = keyof typeof dictionaries
+
+export const hasLocale = (locale: string): locale is Locale =&gt;
+  locale in dictionaries
+
+export const getDictionary = async () =&gt; {
+  const locale = await lang()
+  if (!hasLocale(locale)) notFound()
+  return dictionaries[locale]()
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { lang } from &#x27;next/root-params&#x27;
+import { notFound } from &#x27;next/navigation&#x27;
+
+const dictionaries = {
+  en: () =&gt; import(&#x27;./dictionaries/en.json&#x27;).then((module) =&gt; module.default),
+  nl: () =&gt; import(&#x27;./dictionaries/nl.json&#x27;).then((module) =&gt; module.default),
+}
+
+export const hasLocale = (locale) =&gt; locale in dictionaries
+
+export const getDictionary = async () =&gt; {
+  const locale = await lang()
+  if (!hasLocale(locale)) notFound()
+  return dictionaries[locale]()
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>next/root-params</code>에서 import하는 파일에는 <code>import &#x27;server-only&#x27;</code>가 필요 없습니다. Client Component에서 사용하면 이 import 자체가 이미 build 시점에 실패합니다.</p><div class="en-orig"><p>Files that import from <code>next/root-params</code> do not need <code>import &#x27;server-only&#x27;</code>. The import already fails at build time if used in a Client Component.</p></div></div></div>
+<p>이제 locale이 내부에서 resolve되므로 page와 component는 인자 없이 <code>getDictionary()</code>를 호출합니다:</p><div class="en-orig"><p>Pages and components then call <code>getDictionary()</code> with no arguments, since the locale is resolved internally:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[lang]/page.tsx" data-js="app/[lang]/page.js">app/[lang]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { getDictionary } from &#x27;./dictionaries&#x27;
+
+export default async function Page() {
+  const dict = await getDictionary()
+  return &lt;button&gt;{dict.products.cart}&lt;/button&gt; // Add to Cart
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { getDictionary } from &#x27;./dictionaries&#x27;
+
+export default async function Page() {
+  const dict = await getDictionary()
+  return &lt;button&gt;{dict.products.cart}&lt;/button&gt; // Add to Cart
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>root parameter getter는 Server Component와 server-side utility에서 실행되지만, Client Component, Server Action, Route Handler에서는 실행되지 않습니다. 전체 API와 caching 관련 동작은 <a href="app-api-reference-functions-next-root-params.html"><code>next/root-params</code></a>를 참고하세요.</p><div class="en-orig"><p>Root parameter getters run in Server Components and server-side utilities, but not in Client Components, Server Actions, or Route Handlers. See <a href="app-api-reference-functions-next-root-params.html"><code>next/root-params</code></a> for the full API and its behavior with caching.</p></div></div></div>
+<h2 class="sec" id="static-rendering"><a class="anchor" href="#static-rendering">Static Rendering</a></h2>
+<p>주어진 locale 집합에 대한 static route를 생성하려면 어떤 page나 layout에서든 <code>generateStaticParams</code>를 사용할 수 있습니다. 예를 들어 root layout에서처럼 전역으로 적용할 수도 있습니다:</p><div class="en-orig"><p>To generate static routes for a given set of locales, we can use <code>generateStaticParams</code> with any page or layout. This can be global, for example, in the root layout:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[lang]/layout.tsx" data-js="app/[lang]/layout.js">app/[lang]/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function generateStaticParams() {
+  return [{ lang: &#x27;en-US&#x27; }, { lang: &#x27;de&#x27; }]
+}
+
+export default async function RootLayout({
+  children,
+  params,
+}: LayoutProps&lt;&#x27;/[lang]&#x27;&gt;) {
+  return (
+    &lt;html lang={(await params).lang}&gt;
+      &lt;body&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function generateStaticParams() {
+  return [{ lang: &#x27;en-US&#x27; }, { lang: &#x27;de&#x27; }]
+}
+
+export default async function RootLayout({ children, params }) {
+  return (
+    &lt;html lang={(await params).lang}&gt;
+      &lt;body&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="resources"><a class="anchor" href="#resources">Resources<span class="ko">참고 자료</span></a></h2>
+<ul>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/i18n-routing" target="_blank" rel="noopener">Minimal i18n routing and translations</a></li>
+<li><a href="https://next-intl.dev" target="_blank" rel="noopener"><code>next-intl</code></a></li>
+<li><a href="https://github.com/QuiiBz/next-international" target="_blank" rel="noopener"><code>next-international</code></a></li>
+<li><a href="https://github.com/i18nexus/next-i18n-router" target="_blank" rel="noopener"><code>next-i18n-router</code></a></li>
+<li><a href="https://inlang.com/m/osslbuzt/paraglide-next-i18n" target="_blank" rel="noopener"><code>paraglide-next</code></a></li>
+<li><a href="https://lingui.dev" target="_blank" rel="noopener"><code>lingui</code></a></li>
+<li><a href="https://tolgee.io/apps-integrations/next" target="_blank" rel="noopener"><code>tolgee</code></a></li>
+<li><a href="https://intlayer.org/doc/environment/nextjs" target="_blank" rel="noopener"><code>next-intlayer</code></a></li>
+<li><a href="https://generaltranslation.com/en/docs/next" target="_blank" rel="noopener"><code>gt-next</code></a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/i18n-routing" target="_blank" rel="noopener">Minimal i18n routing and translations</a></li>
+<li><a href="https://next-intl.dev" target="_blank" rel="noopener"><code>next-intl</code></a></li>
+<li><a href="https://github.com/QuiiBz/next-international" target="_blank" rel="noopener"><code>next-international</code></a></li>
+<li><a href="https://github.com/i18nexus/next-i18n-router" target="_blank" rel="noopener"><code>next-i18n-router</code></a></li>
+<li><a href="https://inlang.com/m/osslbuzt/paraglide-next-i18n" target="_blank" rel="noopener"><code>paraglide-next</code></a></li>
+<li><a href="https://lingui.dev" target="_blank" rel="noopener"><code>lingui</code></a></li>
+<li><a href="https://tolgee.io/apps-integrations/next" target="_blank" rel="noopener"><code>tolgee</code></a></li>
+<li><a href="https://intlayer.org/doc/environment/nextjs" target="_blank" rel="noopener"><code>next-intlayer</code></a></li>
+<li><a href="https://generaltranslation.com/en/docs/next" target="_blank" rel="noopener"><code>gt-next</code></a></li>
+</ul></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><p>관련 API reference와 convention입니다.</p><div class="rgrid"><a class="rcard" href="app-api-reference-functions-next-root-params.html"><div class="rt">next/root-params</div><div class="rk">next/root-params</div><div class="rd">root 수준 route parameter에 접근할 수 있게 해 주는 next/root-params module의 API Reference입니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/internationalization.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/internationalization" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-interactive-apps.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Interactive apps</div><div class="ttl-ko">인터랙티브 앱 만들기</div></a>
+      <a href="app-guides-json-ld.html" class="next"><div class="dir">다음 →</div><div class="ttl">JSON-LD</div><div class="ttl-ko">Next.js 애플리케이션에 JSON-LD 구현하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/internationalization" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#terminology">Terminology</a></li><li class="l2"><a href="#routing-overview">Routing Overview</a></li><li class="l2"><a href="#localization">Localization</a></li><li class="l2"><a href="#sharing-the-locale-across-your-app">Sharing the locale across your app</a></li><li class="l2"><a href="#static-rendering">Static Rendering</a></li><li class="l2"><a href="#resources">Resources</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js에서는 여러 언어를 지원하도록 콘텐츠의 routing과 rendering을 설정할 수 있습니다. 사이트를 여러 locale에 맞게 만드는 작업에는 번역된 콘텐츠(localization)와 internationalized route가 포함됩니다.
+
+## Terminology || 용어
+
+- **Locale:** 언어와 형식(formatting) 선호 설정의 묶음을 나타내는 식별자입니다. 보통 사용자가 선호하는 언어와, 경우에 따라 사용자의 지리적 지역을 포함합니다.
+  - `en-US`: 미국에서 쓰이는 영어
+  - `nl-NL`: 네덜란드에서 쓰이는 네덜란드어
+  - `nl`: 특정 지역이 없는 네덜란드어
+
+## Routing Overview || Routing 개요
+
+어떤 locale을 사용할지 고를 때는 브라우저에 설정된 사용자의 언어 선호를 사용하는 것이 좋습니다. 선호 언어를 바꾸면 애플리케이션으로 들어오는 `Accept-Language` header가 바뀝니다.
+
+예를 들어 다음 library를 사용하면 들어오는 `Request`를 보고 `Headers`, 지원하려는 locale 목록, 기본 locale을 기준으로 어떤 locale을 선택할지 결정할 수 있습니다.
+
+[[CODE 1]]
+
+routing은 sub-path(`/fr/products`)나 domain(`my-site.fr/products`)으로 국제화할 수 있습니다. 이 정보를 이용하면 이제 [Proxy](/docs/app/api-reference/file-conventions/proxy) 안에서 locale을 기준으로 사용자를 redirect할 수 있습니다.
+
+[[CODE 2]]
+
+마지막으로 `app/` 안의 모든 special file이 `app/[lang]` 아래에 중첩되도록 하세요. 그러면 Next.js router가 route의 여러 locale을 동적으로 처리하고, 모든 layout과 page에 `lang` parameter를 전달할 수 있습니다. 예를 들면 다음과 같습니다:
+
+[[CODE 3]]
+
+&gt; **Good to know:** `PageProps`와 `LayoutProps`는 전역에서 사용할 수 있는 TypeScript helper로, route parameter에 강력한 type을 제공합니다. 자세한 내용은 [PageProps](/docs/app/api-reference/file-conventions/page#page-props-helper)와 [LayoutProps](/docs/app/api-reference/file-conventions/layout#layout-props-helper)를 참고하세요.
+
+root layout도 새 폴더 안에 중첩할 수 있습니다(예: `app/[lang]/layout.js`).
+
+## Localization
+
+사용자가 선호하는 locale에 따라 표시되는 콘텐츠를 바꾸는 것, 즉 localization은 Next.js에만 해당하는 것이 아닙니다. 아래에서 설명하는 패턴은 어떤 웹 애플리케이션에서든 똑같이 동작합니다.
+
+애플리케이션에서 영어와 네덜란드어 콘텐츠를 모두 지원하고 싶다고 가정해 봅시다. 두 개의 서로 다른 &quot;dictionary&quot;를 관리할 수 있는데, dictionary는 어떤 key를 localized 문자열로 mapping해 주는 객체입니다. 예를 들면 다음과 같습니다:
+
+[[CODE 4]]
+
+[[CODE 5]]
+
+그런 다음 요청된 locale의 번역을 load하는 `getDictionary` 함수를 만들 수 있습니다:
+
+[[CODE 6]]
+
+현재 선택된 언어가 주어지면 layout이나 page 안에서 dictionary를 fetch할 수 있습니다.
+
+`lang`은 `string`으로 type이 지정되므로, `hasLocale`을 사용하면 type을 지원하는 locale로 좁힐(narrow) 수 있습니다. 또한 번역이 없을 때 runtime error 대신 404가 반환되도록 보장합니다.
+
+[[CODE 7]]
+
+`app/` directory의 모든 layout과 page는 기본적으로 [Server Component](/docs/app/getting-started/server-and-client-components)이므로, 번역 파일의 크기가 client-side JavaScript bundle 크기에 영향을 줄까 걱정할 필요가 없습니다. 이 코드는 **server에서만 실행**되고, 결과 HTML만 브라우저로 전송됩니다.
+
+## Sharing the locale across your app || 앱 전체에서 locale 공유하기
+
+locale은 그것을 받는 page 밖에서도 필요한 경우가 많습니다. 공유 data-fetching utility나 깊이 중첩된 component 같은 곳입니다. 각 계층마다 `lang`을 prop drilling하는 대신 [`next/root-params`](/docs/app/api-reference/functions/next-root-params)로 직접 읽을 수 있습니다.
+
+`next/root-params`는 root layout 위에 있는 각 dynamic segment에 대한 getter를 export합니다. 모든 route가 `app/[lang]` 아래에 중첩되어 있으므로 `lang`은 root parameter이고, 어떤 Server Component나 server-side utility든 그 getter를 호출할 수 있습니다. locale 조회를 `getDictionary` 안으로 옮기면 호출하는 쪽에서 더 이상 `lang`을 넘기지 않아도 됩니다:
+
+[[CODE 8]]
+
+&gt; **Good to know:** `next/root-params`에서 import하는 파일에는 `import &#x27;server-only&#x27;`가 필요 없습니다. Client Component에서 사용하면 이 import 자체가 이미 build 시점에 실패합니다.
+
+이제 locale이 내부에서 resolve되므로 page와 component는 인자 없이 `getDictionary()`를 호출합니다:
+
+[[CODE 9]]
+
+&gt; **Good to know:** root parameter getter는 Server Component와 server-side utility에서 실행되지만, Client Component, Server Action, Route Handler에서는 실행되지 않습니다. 전체 API와 caching 관련 동작은 [`next/root-params`](/docs/app/api-reference/functions/next-root-params)를 참고하세요.
+
+## Static Rendering
+
+주어진 locale 집합에 대한 static route를 생성하려면 어떤 page나 layout에서든 `generateStaticParams`를 사용할 수 있습니다. 예를 들어 root layout에서처럼 전역으로 적용할 수도 있습니다:
+
+[[CODE 10]]
+
+## Resources || 참고 자료
+
+- [Minimal i18n routing and translations](https://github.com/vercel/next.js/tree/canary/examples/i18n-routing)
+- [`next-intl`](https://next-intl.dev)
+- [`next-international`](https://github.com/QuiiBz/next-international)
+- [`next-i18n-router`](https://github.com/i18nexus/next-i18n-router)
+- [`paraglide-next`](https://inlang.com/m/osslbuzt/paraglide-next-i18n)
+- [`lingui`](https://lingui.dev)
+- [`tolgee`](https://tolgee.io/apps-integrations/next)
+- [`next-intlayer`](https://intlayer.org/doc/environment/nextjs)
+- [`gt-next`](https://generaltranslation.com/en/docs/next)
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

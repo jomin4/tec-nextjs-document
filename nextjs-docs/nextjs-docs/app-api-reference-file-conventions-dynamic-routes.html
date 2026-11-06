@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynamic Route Segments (Dynamic Route Segment) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/file-conventions/dynamic-routes" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/file-conventions/dynamic-routes" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/03-file-conventions/dynamic-routes.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-file-conventions.html">File-system conventions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Dynamic Route Segments<span class="sub">Dynamic Route Segment</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>URL path는 path segment들의 연속입니다. App Router에서 segment는 <strong>static</strong>(정확히 일치해야 하는 literal 값)일 수도 있고 <strong>dynamic</strong>(URL에서 값을 capture하는 placeholder)일 수도 있습니다. segment의 값을 미리 알 수 없을 때는 Dynamic Segment를 정의해 dynamic data로부터 route를 만드세요. Next.js는 capture한 값을 path <code>params</code> prop으로 page에 전달하며, 이 값은 request 시점에 채워지거나 build 시점에 prerender됩니다.</p><div class="en-orig"><p>A URL path is a sequence of path segments. In the App Router, a segment may be <strong>static</strong> (a literal value matched exactly) or <strong>dynamic</strong> (a placeholder that captures a value from the URL). When you don't know a segment's value ahead of time, define a Dynamic Segment to create routes from dynamic data. Next.js passes the captured values to your page via the path <code>params</code> prop, either filled in at request time or prerendered at build time.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Dynamic Segment는 흔히 path param, route param, URL param이라고도 부릅니다.</p><div class="en-orig"><p>Dynamic Segments are often referred to as path params, route params, or URL params.</p></div></div></div>
+<h2 class="sec" id="convention"><a class="anchor" href="#convention">Convention<span class="ko">규칙</span></a></h2>
+<p>Dynamic Segment는 폴더 이름을 대괄호로 감싸서 만들 수 있습니다: <code>[folderName]</code>. 예를 들어 블로그에는 <code>app/blog/[slug]/page.js</code> 같은 route가 있을 수 있으며, 여기서 <code>[slug]</code>는 블로그 글을 위한 Dynamic Segment입니다.</p><div class="en-orig"><p>A Dynamic Segment can be created by wrapping a folder's name in square brackets: <code>[folderName]</code>. For example, a blog could include the following route <code>app/blog/[slug]/page.js</code> where <code>[slug]</code> is the Dynamic Segment for blog posts.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/[slug]/page.tsx" data-js="app/blog/[slug]/page.js">app/blog/[slug]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default async function Page({
+  params,
+}: {
+  params: Promise&lt;{ slug: string }&gt;
+}) {
+  const { slug } = await params
+  return &lt;div&gt;My Post: {slug}&lt;/div&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function Page({ params }) {
+  const { slug } = await params
+  return &lt;div&gt;My Post: {slug}&lt;/div&gt;
+}</code></pre></div></div>
+<p>Dynamic Segment는 <a href="app-api-reference-file-conventions-layout.html"><code>layout</code></a>, <a href="app-api-reference-file-conventions-page.html"><code>page</code></a>, <a href="app-api-reference-file-conventions-route.html"><code>route</code></a>, <a href="app-api-reference-functions-generate-metadata.html#generatemetadata-function"><code>generateMetadata</code></a> 함수에 <code>params</code> prop으로 전달됩니다.</p><div class="en-orig"><p>Dynamic Segments are passed as the <code>params</code> prop to <a href="app-api-reference-file-conventions-layout.html"><code>layout</code></a>, <a href="app-api-reference-file-conventions-page.html"><code>page</code></a>, <a href="app-api-reference-file-conventions-route.html"><code>route</code></a>, and <a href="app-api-reference-functions-generate-metadata.html#generatemetadata-function"><code>generateMetadata</code></a> functions.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Route</th><th>예시 URL</th><th><code>params</code></th></tr></thead>
+<tbody>
+<tr><td><code>app/blog/[slug]/page.js</code></td><td><code>/blog/a</code></td><td><code>{ slug: &#x27;a&#x27; }</code></td></tr>
+<tr><td><code>app/blog/[slug]/page.js</code></td><td><code>/blog/b</code></td><td><code>{ slug: &#x27;b&#x27; }</code></td></tr>
+<tr><td><code>app/blog/[slug]/page.js</code></td><td><code>/blog/c</code></td><td><code>{ slug: &#x27;c&#x27; }</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Route</th><th>Example URL</th><th><code>params</code></th></tr></thead>
+<tbody>
+<tr><td><code>app/blog/[slug]/page.js</code></td><td><code>/blog/a</code></td><td><code>{ slug: &#x27;a&#x27; }</code></td></tr>
+<tr><td><code>app/blog/[slug]/page.js</code></td><td><code>/blog/b</code></td><td><code>{ slug: &#x27;b&#x27; }</code></td></tr>
+<tr><td><code>app/blog/[slug]/page.js</code></td><td><code>/blog/c</code></td><td><code>{ slug: &#x27;c&#x27; }</code></td></tr>
+</tbody></table></div></div>
+<p><a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a>보다 앞에 나오는 dynamic segment는 <strong>root parameter</strong>이며, <a href="app-api-reference-functions-next-root-params.html"><code>next/root-params</code></a>를 사용해 어떤 Server Component에서든 추가로 읽을 수 있습니다.</p><div class="en-orig"><p>Dynamic segments that appear before the <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a> are <strong>root parameters</strong>, which can additionally be read from any Server Component with <a href="app-api-reference-functions-next-root-params.html"><code>next/root-params</code></a>.</p></div>
+<h3 class="sec" id="in-client-components"><a class="anchor" href="#in-client-components">In Client Components<span class="ko">Client Component에서</span></a></h3>
+<p>Client Component인 <strong>page</strong>에서는 <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use</code></a> API를 사용해 props로 받은 dynamic segment에 접근할 수 있습니다.</p><div class="en-orig"><p>In a Client Component <strong>page</strong>, dynamic segments from props can be accessed using the <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use</code></a> API.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/[slug]/page.tsx" data-js="app/blog/[slug]/page.js">app/blog/[slug]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+import { use } from &#x27;react&#x27;
+
+export default function BlogPostPage({
+  params,
+}: {
+  params: Promise&lt;{ slug: string }&gt;
+}) {
+  const { slug } = use(params)
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;{slug}&lt;/p&gt;
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+import { use } from &#x27;react&#x27;
+
+export default function BlogPostPage({ params }) {
+  const { slug } = use(params)
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;{slug}&lt;/p&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>또는 Client Component에서 <a href="app-api-reference-functions-use-params.html"><code>useParams</code></a> hook을 사용하면 Client Component tree 어디에서든 <code>params</code>에 접근할 수 있습니다.</p><div class="en-orig"><p>Alternatively Client Components can use the <a href="app-api-reference-functions-use-params.html"><code>useParams</code></a> hook to access the <code>params</code> anywhere in the Client Component tree.</p></div>
+<h3 class="sec" id="catch-all-segments"><a class="anchor" href="#catch-all-segments">Catch-all Segments<span class="ko">Catch-all Segment</span></a></h3>
+<p>대괄호 안에 줄임표를 넣어 <code>[...folderName]</code>으로 만들면 Dynamic Segment를 확장해 이후의 segment를 모두 <strong>catch-all</strong> 할 수 있습니다.</p><div class="en-orig"><p>Dynamic Segments can be extended to <strong>catch-all</strong> subsequent segments by adding an ellipsis inside the brackets <code>[...folderName]</code>.</p></div>
+<p>예를 들어 <code>app/shop/[...slug]/page.js</code>는 <code>/shop/clothes</code>뿐 아니라 <code>/shop/clothes/tops</code>, <code>/shop/clothes/tops/t-shirts</code> 등에도 match됩니다.</p><div class="en-orig"><p>For example, <code>app/shop/[...slug]/page.js</code> will match <code>/shop/clothes</code>, but also <code>/shop/clothes/tops</code>, <code>/shop/clothes/tops/t-shirts</code>, and so on.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Route</th><th>예시 URL</th><th><code>params</code></th></tr></thead>
+<tbody>
+<tr><td><code>app/shop/[...slug]/page.js</code></td><td><code>/shop/a</code></td><td><code>{ slug: [&#x27;a&#x27;] }</code></td></tr>
+<tr><td><code>app/shop/[...slug]/page.js</code></td><td><code>/shop/a/b</code></td><td><code>{ slug: [&#x27;a&#x27;, &#x27;b&#x27;] }</code></td></tr>
+<tr><td><code>app/shop/[...slug]/page.js</code></td><td><code>/shop/a/b/c</code></td><td><code>{ slug: [&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;] }</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Route</th><th>Example URL</th><th><code>params</code></th></tr></thead>
+<tbody>
+<tr><td><code>app/shop/[...slug]/page.js</code></td><td><code>/shop/a</code></td><td><code>{ slug: [&#x27;a&#x27;] }</code></td></tr>
+<tr><td><code>app/shop/[...slug]/page.js</code></td><td><code>/shop/a/b</code></td><td><code>{ slug: [&#x27;a&#x27;, &#x27;b&#x27;] }</code></td></tr>
+<tr><td><code>app/shop/[...slug]/page.js</code></td><td><code>/shop/a/b/c</code></td><td><code>{ slug: [&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;] }</code></td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="optional-catch-all-segments"><a class="anchor" href="#optional-catch-all-segments">Optional Catch-all Segments<span class="ko">Optional Catch-all Segment</span></a></h3>
+<p>parameter를 이중 대괄호로 감싸 <code>[[...folderName]]</code>으로 만들면 Catch-all Segment를 <strong>optional</strong>(선택적)로 만들 수 있습니다.</p><div class="en-orig"><p>Catch-all Segments can be made <strong>optional</strong> by including the parameter in double square brackets: <code>[[...folderName]]</code>.</p></div>
+<p>예를 들어 <code>app/shop/[[...slug]]/page.js</code>는 <code>/shop/clothes</code>, <code>/shop/clothes/tops</code>, <code>/shop/clothes/tops/t-shirts</code>에 더해 <code>/shop</code>에도 <strong>역시</strong> match됩니다.</p><div class="en-orig"><p>For example, <code>app/shop/[[...slug]]/page.js</code> will <strong>also</strong> match <code>/shop</code>, in addition to <code>/shop/clothes</code>, <code>/shop/clothes/tops</code>, <code>/shop/clothes/tops/t-shirts</code>.</p></div>
+<p><strong>catch-all</strong> segment와 <strong>optional catch-all</strong> segment의 차이는, optional의 경우 parameter가 없는 route(위 예시의 <code>/shop</code>)도 match된다는 점입니다.</p><div class="en-orig"><p>The difference between <strong>catch-all</strong> and <strong>optional catch-all</strong> segments is that with optional, the route without the parameter is also matched (<code>/shop</code> in the example above).</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Route</th><th>예시 URL</th><th><code>params</code></th></tr></thead>
+<tbody>
+<tr><td><code>app/shop/[[...slug]]/page.js</code></td><td><code>/shop</code></td><td><code>{ slug: undefined }</code></td></tr>
+<tr><td><code>app/shop/[[...slug]]/page.js</code></td><td><code>/shop/a</code></td><td><code>{ slug: [&#x27;a&#x27;] }</code></td></tr>
+<tr><td><code>app/shop/[[...slug]]/page.js</code></td><td><code>/shop/a/b</code></td><td><code>{ slug: [&#x27;a&#x27;, &#x27;b&#x27;] }</code></td></tr>
+<tr><td><code>app/shop/[[...slug]]/page.js</code></td><td><code>/shop/a/b/c</code></td><td><code>{ slug: [&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;] }</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Route</th><th>Example URL</th><th><code>params</code></th></tr></thead>
+<tbody>
+<tr><td><code>app/shop/[[...slug]]/page.js</code></td><td><code>/shop</code></td><td><code>{ slug: undefined }</code></td></tr>
+<tr><td><code>app/shop/[[...slug]]/page.js</code></td><td><code>/shop/a</code></td><td><code>{ slug: [&#x27;a&#x27;] }</code></td></tr>
+<tr><td><code>app/shop/[[...slug]]/page.js</code></td><td><code>/shop/a/b</code></td><td><code>{ slug: [&#x27;a&#x27;, &#x27;b&#x27;] }</code></td></tr>
+<tr><td><code>app/shop/[[...slug]]/page.js</code></td><td><code>/shop/a/b/c</code></td><td><code>{ slug: [&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;] }</code></td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="typescript"><a class="anchor" href="#typescript">TypeScript</a></h3>
+<p>TypeScript를 사용할 때는 설정한 route segment에 따라 <code>params</code>에 type을 추가할 수 있습니다. <code>page</code>, <code>layout</code>, <code>route</code>에서 각각 <a href="app-api-reference-file-conventions-page.html#page-props-helper"><code>PageProps&lt;&#x27;/route&#x27;&gt;</code></a>, <a href="app-api-reference-file-conventions-layout.html#layout-props-helper"><code>LayoutProps&lt;&#x27;/route&#x27;&gt;</code></a>, <a href="app-api-reference-file-conventions-route.html#route-context-helper"><code>RouteContext&lt;&#x27;/route&#x27;&gt;</code></a>를 사용해 <code>params</code>의 type을 지정하세요.</p><div class="en-orig"><p>When using TypeScript, you can add types for <code>params</code> depending on your configured route segment — use <a href="app-api-reference-file-conventions-page.html#page-props-helper"><code>PageProps&lt;&#x27;/route&#x27;&gt;</code></a>, <a href="app-api-reference-file-conventions-layout.html#layout-props-helper"><code>LayoutProps&lt;&#x27;/route&#x27;&gt;</code></a>, or <a href="app-api-reference-file-conventions-route.html#route-context-helper"><code>RouteContext&lt;&#x27;/route&#x27;&gt;</code></a> to type <code>params</code> in <code>page</code>, <code>layout</code>, and <code>route</code> respectively.</p></div>
+<p>route <code>params</code> 값은 runtime이 되기 전까지 알 수 없기 때문에 <code>string</code>, <code>string[]</code>, 또는 <code>undefined</code>(optional catch-all segment의 경우)로 type이 지정됩니다. 사용자는 주소창에 어떤 URL이든 입력할 수 있으며, 이렇게 넓은 type은 애플리케이션 코드가 가능한 모든 경우를 처리하도록 돕습니다.</p><div class="en-orig"><p>Route <code>params</code> values are typed as <code>string</code>, <code>string[]</code>, or <code>undefined</code> (for optional catch-all segments), because their values aren't known until runtime. Users can enter any URL into the address bar, and these broad types help ensure that your application code handles all these possible cases.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Route</th><th><code>params</code> Type 정의</th></tr></thead>
+<tbody>
+<tr><td><code>app/blog/[slug]/page.js</code></td><td><code>{ slug: string }</code></td></tr>
+<tr><td><code>app/shop/[...slug]/page.js</code></td><td><code>{ slug: string[] }</code></td></tr>
+<tr><td><code>app/shop/[[...slug]]/page.js</code></td><td><code>{ slug?: string[] }</code></td></tr>
+<tr><td><code>app/[categoryId]/[itemId]/page.js</code></td><td><code>{ categoryId: string, itemId: string }</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Route</th><th><code>params</code> Type Definition</th></tr></thead>
+<tbody>
+<tr><td><code>app/blog/[slug]/page.js</code></td><td><code>{ slug: string }</code></td></tr>
+<tr><td><code>app/shop/[...slug]/page.js</code></td><td><code>{ slug: string[] }</code></td></tr>
+<tr><td><code>app/shop/[[...slug]]/page.js</code></td><td><code>{ slug?: string[] }</code></td></tr>
+<tr><td><code>app/[categoryId]/[itemId]/page.js</code></td><td><code>{ categoryId: string, itemId: string }</code></td></tr>
+</tbody></table></div></div>
+<p>알려진 언어 코드 집합을 갖는 <code>[locale]</code> param처럼 <code>params</code>가 정해진 개수의 유효한 값만 가질 수 있는 route를 작업하고 있다면, runtime validation을 사용해 사용자가 입력할 수 있는 잘못된 param을 처리하고, 나머지 애플리케이션은 알려진 집합에서 나온 더 좁은 type으로 동작하게 할 수 있습니다.</p><div class="en-orig"><p>If you're working on a route where <code>params</code> can only have a fixed number of valid values, such as a <code>[locale]</code> param with a known set of language codes, you can use runtime validation to handle any invalid params a user may enter, and let the rest of your application work with the narrower type from your known set.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">/app/[locale]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { notFound } from &#x27;next/navigation&#x27;
+import type { Locale } from &#x27;@i18n/types&#x27;
+import { isValidLocale } from &#x27;@i18n/utils&#x27;
+
+function assertValidLocale(value: string): asserts value is Locale {
+  if (!isValidLocale(value)) notFound()
+}
+
+export default async function Page(props: PageProps&lt;&#x27;/[locale]&#x27;&gt;) {
+  const { locale } = await props.params // locale is typed as string
+  assertValidLocale(locale)
+  // locale is now typed as Locale
+}</code></pre></div></div>
+<h2 class="sec" id="behavior"><a class="anchor" href="#behavior">Behavior<span class="ko">동작</span></a></h2>
+<ul>
+<li><code>params</code> prop은 promise입니다. 값에 접근하려면 <code>async</code>/<code>await</code> 또는 React의 use 함수를 사용해야 합니다.<ul>
+<li>버전 14 이하에서는 <code>params</code>가 synchronous prop이었습니다. 하위 호환성을 위해 Next.js 15에서도 여전히 synchronous하게 접근할 수 있지만, 이 동작은 앞으로 deprecated될 예정입니다.</li>
+</ul></li>
+</ul><div class="en-orig"><ul>
+<li>Since the <code>params</code> prop is a promise. You must use <code>async</code>/<code>await</code> or React's use function to access the values.<ul>
+<li>In version 14 and earlier, <code>params</code> was a synchronous prop. To help with backwards compatibility, you can still access it synchronously in Next.js 15, but this behavior will be deprecated in the future.</li>
+</ul></li>
+</ul></div>
+<h3 class="sec" id="with-cache-components"><a class="anchor" href="#with-cache-components">With Cache Components<span class="ko">Cache Components와 함께 사용하기</span></a></h3>
+<p>dynamic route segment와 함께 <a href="app-getting-started-caching.html">Cache Components</a>를 사용할 때, params를 처리하는 방법은 <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>를 사용하는지 여부에 따라 달라집니다.</p><div class="en-orig"><p>When using <a href="app-getting-started-caching.html">Cache Components</a> with dynamic route segments, how you handle params depends on whether you use <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>.</p></div>
+<p><code>generateStaticParams</code>가 없으면 prerendering 중에는 param 값을 알 수 없으므로 params는 runtime data가 됩니다. fallback UI를 제공하려면 param 접근을 <code>&lt;Suspense&gt;</code> boundary로 감싸야 합니다.</p><div class="en-orig"><p>Without <code>generateStaticParams</code>, param values are unknown during prerendering, making params runtime data. You must wrap param access in <code>&lt;Suspense&gt;</code> boundaries to provide fallback UI.</p></div>
+<p><code>generateStaticParams</code>를 사용하면 build 시점에 사용할 수 있는 sample param 값을 제공하게 됩니다. build 과정에서 dynamic content와 다른 runtime API가 올바르게 처리되는지 검증한 뒤, sample에 대한 static HTML 파일을 생성합니다. runtime param으로 render된 page는 첫 request가 성공한 뒤 디스크에 저장됩니다.</p><div class="en-orig"><p>With <code>generateStaticParams</code>, you provide sample param values that can be used at build time. The build process validates that dynamic content and other runtime APIs are correctly handled, then generates static HTML files for the samples. Pages rendered with runtime params are saved to disk after a successful first request.</p></div>
+<p>아래 섹션에서 두 가지 pattern을 모두 보여 줍니다.</p><div class="en-orig"><p>The sections below demonstrate both patterns.</p></div>
+<h4 class="sec" id="without-generatestaticparams"><a class="anchor" href="#without-generatestaticparams">Without <code>generateStaticParams</code><span class="ko"><code>generateStaticParams</code> 없이</span></a></h4>
+<p>모든 params는 runtime data입니다. param 접근은 Suspense fallback UI로 감싸야 합니다. Next.js는 build 시점에 static shell을 생성하고, content는 request마다 load됩니다.</p><div class="en-orig"><p>All params are runtime data. Param access must be wrapped by Suspense fallback UI. Next.js generates a static shell at build time, and content loads on each request.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>page 수준의 fallback UI에는 <a href="app-api-reference-file-conventions-loading.html"><code>loading.tsx</code></a>를 사용할 수도 있습니다.</li>
+<li>layout에서는 top level에서 <code>params</code>를 await하지 마세요. 그렇게 하면 layout이 prerender되지 못합니다. 대신 params promise를 그것이 필요한 component로 넘겨 그곳에서 await하세요. 예시는 <a href="app-getting-started-caching.html#maximizing-the-static-shell">Maximizing the static shell</a>을 참고하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>You can also use <a href="app-api-reference-file-conventions-loading.html"><code>loading.tsx</code></a> for page-level fallback UI.</li>
+<li>In layouts, avoid awaiting <code>params</code> at the top level. Doing so prevents the layout from being prerendered. Instead, pass the params promise down to the component that needs it and await there. See <a href="app-getting-started-caching.html#maximizing-the-static-shell">Maximizing the static shell</a> for examples.</li>
+</ul></div></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/blog/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+
+export default function Page({ params }: PageProps&lt;&#x27;/blog/[slug]&#x27;&gt;) {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Blog Post&lt;/h1&gt;
+      &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+        {params.then(({ slug }) =&gt; (
+          &lt;Content slug={slug} /&gt;
+        ))}
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}
+
+async function Content({ slug }: { slug: string }) {
+  const res = await fetch(`https://api.vercel.app/blog/${slug}`)
+  const post = await res.json()
+
+  return (
+    &lt;article&gt;
+      &lt;h2&gt;{post.title}&lt;/h2&gt;
+      &lt;p&gt;{post.content}&lt;/p&gt;
+    &lt;/article&gt;
+  )
+}</code></pre></div></div>
+<h4 class="sec" id="with-generatestaticparams"><a class="anchor" href="#with-generatestaticparams">With <code>generateStaticParams</code><span class="ko"><code>generateStaticParams</code>와 함께</span></a></h4>
+<p>params를 미리 제공해 build 시점에 page를 prerender하세요. 필요에 따라 모든 route를 prerender하거나 일부만 prerender할 수 있습니다.</p><div class="en-orig"><p>Provide params ahead of time to prerender pages at build time. You can prerender all routes or a subset depending on your needs.</p></div>
+<p>build 과정에서 route는 각 sample param으로 실행되어 HTML 결과를 수집합니다. dynamic content나 runtime data에 잘못 접근하면 build가 실패합니다.</p><div class="en-orig"><p>During the build process, the route is executed with each sample param to collect the HTML result. If dynamic content or runtime data are accessed incorrectly, the build will fail.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/blog/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+
+export async function generateStaticParams() {
+  return [{ slug: &#x27;1&#x27; }, { slug: &#x27;2&#x27; }, { slug: &#x27;3&#x27; }]
+}
+
+export default async function Page({ params }: PageProps&lt;&#x27;/blog/[slug]&#x27;&gt;) {
+  const { slug } = await params
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Blog Post&lt;/h1&gt;
+      &lt;Content slug={slug} /&gt;
+    &lt;/div&gt;
+  )
+}
+
+async function Content({ slug }: { slug: string }) {
+  const post = await getPost(slug)
+  return (
+    &lt;article&gt;
+      &lt;h2&gt;{post.title}&lt;/h2&gt;
+      &lt;p&gt;{post.content}&lt;/p&gt;
+    &lt;/article&gt;
+  )
+}
+
+async function getPost(slug: string) {
+  &#x27;use cache&#x27;
+  const res = await fetch(`https://api.vercel.app/blog/${slug}`)
+  return res.json()
+}</code></pre></div></div>
+<p>build 시점 validation은 sample params로 실행되는 code path만 다룹니다. route에 sample에 없는 특정 param 값에서 runtime API에 접근하는 조건부 로직이 있다면, 그 분기는 build 시점에 검증되지 않습니다:</p><div class="en-orig"><p>Build-time validation only covers code paths that execute with the sample params. If your route has conditional logic that accesses runtime APIs for certain param values not in your samples, those branches won't be validated at build time:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/blog/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cookies } from &#x27;next/headers&#x27;
+
+export async function generateStaticParams() {
+  return [{ slug: &#x27;public-post&#x27; }, { slug: &#x27;hello-world&#x27; }]
+}
+
+export default async function Page({ params }: PageProps&lt;&#x27;/blog/[slug]&#x27;&gt;) {
+  const { slug } = await params
+
+  if (slug.startsWith(&#x27;private-&#x27;)) {
+    // This branch is never executed at build time
+    // Runtime requests for &#x27;private-*&#x27; slugs will error
+    return &lt;PrivatePost slug={slug} /&gt;
+  }
+
+  return &lt;PublicPost slug={slug} /&gt;
+}
+
+async function PrivatePost({ slug }: { slug: string }) {
+  const token = (await cookies()).get(&#x27;token&#x27;)
+  // ... fetch and render private post using token for auth
+}</code></pre></div></div>
+<p><code>generateStaticParams</code>가 반환하지 않은 runtime param의 경우, validation은 첫 request 때 이루어집니다. 위 예시에서 <code>private-</code>로 시작하는 slug에 대한 request는 <code>PrivatePost</code>가 Suspense boundary 없이 <code>cookies()</code>에 접근하기 때문에 실패합니다. 조건부 분기에 해당하지 않는 다른 runtime param은 정상적으로 render되며, 이후 request를 위해 디스크에 저장됩니다.</p><div class="en-orig"><p>For runtime params not returned by <code>generateStaticParams</code>, validation occurs during the first request. In the example above, requests for slugs starting with <code>private-</code> will fail because <code>PrivatePost</code> accesses <code>cookies()</code> without a Suspense boundary. Other runtime params that don't hit the conditional branch will render successfully and be saved to disk for subsequent requests.</p></div>
+<p>이를 해결하려면 <code>PrivatePost</code>를 Suspense로 감싸세요:</p><div class="en-orig"><p>To fix this, wrap <code>PrivatePost</code> with Suspense:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/blog/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+
+export async function generateStaticParams() {
+  return [{ slug: &#x27;public-post&#x27; }, { slug: &#x27;hello-world&#x27; }]
+}
+
+export default async function Page({ params }: PageProps&lt;&#x27;/blog/[slug]&#x27;&gt;) {
+  const { slug } = await params
+
+  if (slug.startsWith(&#x27;private-&#x27;)) {
+    return (
+      &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+        &lt;PrivatePost slug={slug} /&gt;
+      &lt;/Suspense&gt;
+    )
+  }
+
+  return &lt;PublicPost slug={slug} /&gt;
+}
+
+async function PrivatePost({ slug }: { slug: string }) {
+  const token = (await cookies()).get(&#x27;token&#x27;)
+  // ... fetch and render private post using token for auth
+}</code></pre></div></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<h3 class="sec" id="with-generatestaticparams-1"><a class="anchor" href="#with-generatestaticparams-1">With <code>generateStaticParams</code><span class="ko"><code>generateStaticParams</code>와 함께</span></a></h3>
+<p><a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a> 함수를 사용하면 request 시점에 on-demand로 생성하는 대신 build 시점에 route를 <a href="app-glossary.html#prerendering">statically generate</a>할 수 있습니다.</p><div class="en-orig"><p>The <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a> function can be used to <a href="app-glossary.html#prerendering">statically generate</a> routes at build time instead of on-demand at request time.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/[slug]/page.tsx" data-js="app/blog/[slug]/page.js">app/blog/[slug]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function generateStaticParams() {
+  const posts = await fetch(&#x27;https://.../posts&#x27;).then((res) =&gt; res.json())
+
+  return posts.map((post) =&gt; ({
+    slug: post.slug,
+  }))
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function generateStaticParams() {
+  const posts = await fetch(&#x27;https://.../posts&#x27;).then((res) =&gt; res.json())
+
+  return posts.map((post) =&gt; ({
+    slug: post.slug,
+  }))
+}</code></pre></div></div>
+<p><code>generateStaticParams</code> 함수 안에서 <code>fetch</code>를 사용하면 request가 <a href="app-glossary.html#memoization">자동으로 deduplicate</a>됩니다. 이렇게 하면 Layout, Page, 그리고 다른 <code>generateStaticParams</code> 함수에서 같은 data에 대해 여러 번 network call을 하지 않게 되어 build 시간이 빨라집니다.</p><div class="en-orig"><p>When using <code>fetch</code> inside the <code>generateStaticParams</code> function, the requests are <a href="app-glossary.html#memoization">automatically deduplicated</a>. This avoids multiple network calls for the same data Layouts, Pages, and other <code>generateStaticParams</code> functions, speeding up build time.</p></div>
+<h3 class="sec" id="dynamic-get-route-handlers-with-generatestaticparams"><a class="anchor" href="#dynamic-get-route-handlers-with-generatestaticparams">Dynamic GET Route Handlers with <code>generateStaticParams</code><span class="ko"><code>generateStaticParams</code>를 사용한 Dynamic GET Route Handler</span></a></h3>
+<p><code>generateStaticParams</code>는 dynamic <a href="app-api-reference-file-conventions-route.html">Route Handler</a>와도 함께 동작해 build 시점에 API response를 statically generate할 수 있습니다:</p><div class="en-orig"><p><code>generateStaticParams</code> also works with dynamic <a href="app-api-reference-file-conventions-route.html">Route Handlers</a> to statically generate API responses at build time:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/api/posts/[id]/route.ts" data-js="app/api/posts/[id]/route.js">app/api/posts/[id]/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function generateStaticParams() {
+  const posts: { id: number }[] = await fetch(
+    &#x27;https://api.vercel.app/blog&#x27;
+  ).then((res) =&gt; res.json())
+
+  return posts.map((post) =&gt; ({
+    id: `${post.id}`,
+  }))
+}
+
+export async function GET(
+  request: Request,
+  { params }: RouteContext&lt;&#x27;/api/posts/[id]&#x27;&gt;
+) {
+  const { id } = await params
+  const res = await fetch(`https://api.vercel.app/blog/${id}`)
+
+  if (!res.ok) {
+    return Response.json({ error: &#x27;Post not found&#x27; }, { status: 404 })
+  }
+
+  const post = await res.json()
+  return Response.json(post)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function generateStaticParams() {
+  const posts = await fetch(&#x27;https://api.vercel.app/blog&#x27;).then((res) =&gt;
+    res.json()
+  )
+
+  return posts.map((post) =&gt; ({
+    id: `${post.id}`,
+  }))
+}
+
+export async function GET(request, { params }) {
+  const { id } = await params
+  const res = await fetch(`https://api.vercel.app/blog/${id}`)
+
+  if (!res.ok) {
+    return Response.json({ error: &#x27;Post not found&#x27; }, { status: 404 })
+  }
+
+  const post = await res.json()
+  return Response.json(post)
+}</code></pre></div></div>
+<p>이 예시에서는 <code>generateStaticParams</code>가 반환한 모든 블로그 글 ID에 대한 route handler가 build 시점에 statically generate됩니다. 다른 ID에 대한 request는 request 시점에 dynamic하게 처리됩니다.</p><div class="en-orig"><p>In this example, route handlers for all blog post IDs returned by <code>generateStaticParams</code> will be statically generated at build time. Requests to other IDs will be handled dynamically at request time.</p></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">다음 단계</h2><p>다음으로 무엇을 할지 더 알아보려면 다음 섹션을 추천합니다</p><div class="rgrid"><a class="rcard" href="app-api-reference-functions-generate-static-params.html"><div class="rt">generateStaticParams</div><div class="rk">generateStaticParams</div><div class="rd">generateStaticParams 함수에 대한 API reference입니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/03-file-conventions/dynamic-routes.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/file-conventions/dynamic-routes" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-file-conventions-default.html" class="prev"><div class="dir">← 이전</div><div class="ttl">default.js</div><div class="ttl-ko">default.js</div></a>
+      <a href="app-api-reference-file-conventions-error.html" class="next"><div class="dir">다음 →</div><div class="ttl">error.js</div><div class="ttl-ko">error.js</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/file-conventions/dynamic-routes" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#convention">Convention</a></li><li class="l3"><a href="#in-client-components">In Client Components</a></li><li class="l3"><a href="#catch-all-segments">Catch-all Segments</a></li><li class="l3"><a href="#optional-catch-all-segments">Optional Catch-all Segments</a></li><li class="l3"><a href="#typescript">TypeScript</a></li><li class="l2"><a href="#behavior">Behavior</a></li><li class="l3"><a href="#with-cache-components">With Cache Components</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#with-generatestaticparams-1">With <code>generateStaticParams</code></a></li><li class="l3"><a href="#dynamic-get-route-handlers-with-generatestaticparams">Dynamic GET Route Handlers with <code>generateStaticParams</code></a></li><li class="l2"><a href="#next-steps">다음 단계</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+URL path는 path segment들의 연속입니다. App Router에서 segment는 **static**(정확히 일치해야 하는 literal 값)일 수도 있고 **dynamic**(URL에서 값을 capture하는 placeholder)일 수도 있습니다. segment의 값을 미리 알 수 없을 때는 Dynamic Segment를 정의해 dynamic data로부터 route를 만드세요. Next.js는 capture한 값을 path `params` prop으로 page에 전달하며, 이 값은 request 시점에 채워지거나 build 시점에 prerender됩니다.
+
+&gt; **Good to know**: Dynamic Segment는 흔히 path param, route param, URL param이라고도 부릅니다.
+
+## Convention || 규칙
+
+Dynamic Segment는 폴더 이름을 대괄호로 감싸서 만들 수 있습니다: `[folderName]`. 예를 들어 블로그에는 `app/blog/[slug]/page.js` 같은 route가 있을 수 있으며, 여기서 `[slug]`는 블로그 글을 위한 Dynamic Segment입니다.
+
+[[CODE 1]]
+
+Dynamic Segment는 [`layout`](/docs/app/api-reference/file-conventions/layout), [`page`](/docs/app/api-reference/file-conventions/page), [`route`](/docs/app/api-reference/file-conventions/route), [`generateMetadata`](/docs/app/api-reference/functions/generate-metadata#generatemetadata-function) 함수에 `params` prop으로 전달됩니다.
+
+| Route                     | 예시 URL | `params`        |
+| ------------------------- | ----------- | --------------- |
+| `app/blog/[slug]/page.js` | `/blog/a`   | `{ slug: &#x27;a&#x27; }` |
+| `app/blog/[slug]/page.js` | `/blog/b`   | `{ slug: &#x27;b&#x27; }` |
+| `app/blog/[slug]/page.js` | `/blog/c`   | `{ slug: &#x27;c&#x27; }` |
+
+[root layout](/docs/app/api-reference/file-conventions/layout#root-layout)보다 앞에 나오는 dynamic segment는 **root parameter**이며, [`next/root-params`](/docs/app/api-reference/functions/next-root-params)를 사용해 어떤 Server Component에서든 추가로 읽을 수 있습니다.
+
+### In Client Components || Client Component에서
+
+Client Component인 **page**에서는 [`use`](https://react.dev/reference/react/use) API를 사용해 props로 받은 dynamic segment에 접근할 수 있습니다.
+
+[[CODE 2]]
+
+또는 Client Component에서 [`useParams`](/docs/app/api-reference/functions/use-params) hook을 사용하면 Client Component tree 어디에서든 `params`에 접근할 수 있습니다.
+
+### Catch-all Segments || Catch-all Segment
+
+대괄호 안에 줄임표를 넣어 `[...folderName]`으로 만들면 Dynamic Segment를 확장해 이후의 segment를 모두 **catch-all** 할 수 있습니다.
+
+예를 들어 `app/shop/[...slug]/page.js`는 `/shop/clothes`뿐 아니라 `/shop/clothes/tops`, `/shop/clothes/tops/t-shirts` 등에도 match됩니다.
+
+| Route                        | 예시 URL   | `params`                    |
+| ---------------------------- | ------------- | --------------------------- |
+| `app/shop/[...slug]/page.js` | `/shop/a`     | `{ slug: [&#x27;a&#x27;] }`           |
+| `app/shop/[...slug]/page.js` | `/shop/a/b`   | `{ slug: [&#x27;a&#x27;, &#x27;b&#x27;] }`      |
+| `app/shop/[...slug]/page.js` | `/shop/a/b/c` | `{ slug: [&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;] }` |
+
+### Optional Catch-all Segments || Optional Catch-all Segment
+
+parameter를 이중 대괄호로 감싸 `[[...folderName]]`으로 만들면 Catch-all Segment를 **optional**(선택적)로 만들 수 있습니다.
+
+예를 들어 `app/shop/[[...slug]]/page.js`는 `/shop/clothes`, `/shop/clothes/tops`, `/shop/clothes/tops/t-shirts`에 더해 `/shop`에도 **역시** match됩니다.
+
+**catch-all** segment와 **optional catch-all** segment의 차이는, optional의 경우 parameter가 없는 route(위 예시의 `/shop`)도 match된다는 점입니다.
+
+| Route                          | 예시 URL   | `params`                    |
+| ------------------------------ | ------------- | --------------------------- |
+| `app/shop/[[...slug]]/page.js` | `/shop`       | `{ slug: undefined }`       |
+| `app/shop/[[...slug]]/page.js` | `/shop/a`     | `{ slug: [&#x27;a&#x27;] }`           |
+| `app/shop/[[...slug]]/page.js` | `/shop/a/b`   | `{ slug: [&#x27;a&#x27;, &#x27;b&#x27;] }`      |
+| `app/shop/[[...slug]]/page.js` | `/shop/a/b/c` | `{ slug: [&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;] }` |
+
+### TypeScript
+
+TypeScript를 사용할 때는 설정한 route segment에 따라 `params`에 type을 추가할 수 있습니다. `page`, `layout`, `route`에서 각각 [`PageProps&lt;&#x27;/route&#x27;&gt;`](/docs/app/api-reference/file-conventions/page#page-props-helper), [`LayoutProps&lt;&#x27;/route&#x27;&gt;`](/docs/app/api-reference/file-conventions/layout#layout-props-helper), [`RouteContext&lt;&#x27;/route&#x27;&gt;`](/docs/app/api-reference/file-conventions/route#route-context-helper)를 사용해 `params`의 type을 지정하세요.
+
+route `params` 값은 runtime이 되기 전까지 알 수 없기 때문에 `string`, `string[]`, 또는 `undefined`(optional catch-all segment의 경우)로 type이 지정됩니다. 사용자는 주소창에 어떤 URL이든 입력할 수 있으며, 이렇게 넓은 type은 애플리케이션 코드가 가능한 모든 경우를 처리하도록 돕습니다.
+
+| Route                               | `params` Type 정의                 |
+| ----------------------------------- | ---------------------------------------- |
+| `app/blog/[slug]/page.js`           | `{ slug: string }`                       |
+| `app/shop/[...slug]/page.js`        | `{ slug: string[] }`                     |
+| `app/shop/[[...slug]]/page.js`      | `{ slug?: string[] }`                    |
+| `app/[categoryId]/[itemId]/page.js` | `{ categoryId: string, itemId: string }` |
+
+알려진 언어 코드 집합을 갖는 `[locale]` param처럼 `params`가 정해진 개수의 유효한 값만 가질 수 있는 route를 작업하고 있다면, runtime validation을 사용해 사용자가 입력할 수 있는 잘못된 param을 처리하고, 나머지 애플리케이션은 알려진 집합에서 나온 더 좁은 type으로 동작하게 할 수 있습니다.
+
+[[CODE 3]]
+
+## Behavior || 동작
+
+- `params` prop은 promise입니다. 값에 접근하려면 `async`/`await` 또는 React의 use 함수를 사용해야 합니다.
+  - 버전 14 이하에서는 `params`가 synchronous prop이었습니다. 하위 호환성을 위해 Next.js 15에서도 여전히 synchronous하게 접근할 수 있지만, 이 동작은 앞으로 deprecated될 예정입니다.
+
+### With Cache Components || Cache Components와 함께 사용하기
+
+dynamic route segment와 함께 [Cache Components](/docs/app/getting-started/caching)를 사용할 때, params를 처리하는 방법은 [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)를 사용하는지 여부에 따라 달라집니다.
+
+`generateStaticParams`가 없으면 prerendering 중에는 param 값을 알 수 없으므로 params는 runtime data가 됩니다. fallback UI를 제공하려면 param 접근을 `&lt;Suspense&gt;` boundary로 감싸야 합니다.
+
+`generateStaticParams`를 사용하면 build 시점에 사용할 수 있는 sample param 값을 제공하게 됩니다. build 과정에서 dynamic content와 다른 runtime API가 올바르게 처리되는지 검증한 뒤, sample에 대한 static HTML 파일을 생성합니다. runtime param으로 render된 page는 첫 request가 성공한 뒤 디스크에 저장됩니다.
+
+아래 섹션에서 두 가지 pattern을 모두 보여 줍니다.
+
+#### Without `generateStaticParams` || `generateStaticParams` 없이
+
+모든 params는 runtime data입니다. param 접근은 Suspense fallback UI로 감싸야 합니다. Next.js는 build 시점에 static shell을 생성하고, content는 request마다 load됩니다.
+
+&gt; **Good to know**:
+&gt;
+&gt; - page 수준의 fallback UI에는 [`loading.tsx`](/docs/app/api-reference/file-conventions/loading)를 사용할 수도 있습니다.
+&gt; - layout에서는 top level에서 `params`를 await하지 마세요. 그렇게 하면 layout이 prerender되지 못합니다. 대신 params promise를 그것이 필요한 component로 넘겨 그곳에서 await하세요. 예시는 [Maximizing the static shell](/docs/app/getting-started/caching#maximizing-the-static-shell)을 참고하세요.
+
+[[CODE 4]]
+
+#### With `generateStaticParams` || `generateStaticParams`와 함께
+
+params를 미리 제공해 build 시점에 page를 prerender하세요. 필요에 따라 모든 route를 prerender하거나 일부만 prerender할 수 있습니다.
+
+build 과정에서 route는 각 sample param으로 실행되어 HTML 결과를 수집합니다. dynamic content나 runtime data에 잘못 접근하면 build가 실패합니다.
+
+[[CODE 5]]
+
+build 시점 validation은 sample params로 실행되는 code path만 다룹니다. route에 sample에 없는 특정 param 값에서 runtime API에 접근하는 조건부 로직이 있다면, 그 분기는 build 시점에 검증되지 않습니다:
+
+[[CODE 6]]
+
+`generateStaticParams`가 반환하지 않은 runtime param의 경우, validation은 첫 request 때 이루어집니다. 위 예시에서 `private-`로 시작하는 slug에 대한 request는 `PrivatePost`가 Suspense boundary 없이 `cookies()`에 접근하기 때문에 실패합니다. 조건부 분기에 해당하지 않는 다른 runtime param은 정상적으로 render되며, 이후 request를 위해 디스크에 저장됩니다.
+
+이를 해결하려면 `PrivatePost`를 Suspense로 감싸세요:
+
+[[CODE 7]]
+
+## Examples || 예시
+
+### With `generateStaticParams` || `generateStaticParams`와 함께
+
+[`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params) 함수를 사용하면 request 시점에 on-demand로 생성하는 대신 build 시점에 route를 [statically generate](/docs/app/glossary#prerendering)할 수 있습니다.
+
+[[CODE 8]]
+
+`generateStaticParams` 함수 안에서 `fetch`를 사용하면 request가 [자동으로 deduplicate](/docs/app/glossary#memoization)됩니다. 이렇게 하면 Layout, Page, 그리고 다른 `generateStaticParams` 함수에서 같은 data에 대해 여러 번 network call을 하지 않게 되어 build 시간이 빨라집니다.
+
+### Dynamic GET Route Handlers with `generateStaticParams` || `generateStaticParams`를 사용한 Dynamic GET Route Handler
+
+`generateStaticParams`는 dynamic [Route Handler](/docs/app/api-reference/file-conventions/route)와도 함께 동작해 build 시점에 API response를 statically generate할 수 있습니다:
+
+[[CODE 9]]
+
+이 예시에서는 `generateStaticParams`가 반환한 모든 블로그 글 ID에 대한 route handler가 build 시점에 statically generate됩니다. 다른 ID에 대한 request는 request 시점에 dynamic하게 처리됩니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

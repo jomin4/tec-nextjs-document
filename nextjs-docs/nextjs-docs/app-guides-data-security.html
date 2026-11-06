@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to think about data security in Next.js (Next.js의 데이터 보안을 생각하는 방법) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/data-security" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/data-security" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/data-security.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to think about data security in Next.js<span class="sub">Next.js의 데이터 보안을 생각하는 방법</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><a href="https://react.dev/reference/rsc/server-components" target="_blank" rel="noopener">React Server Components</a>는 performance를 높이고 data fetching을 단순하게 만들어 주지만, 데이터에 접근하는 위치와 방식도 바꾸기 때문에 frontend 앱에서 데이터를 다룰 때의 전통적인 보안 가정 일부를 바꿔 놓습니다.</p><div class="en-orig"><p><a href="https://react.dev/reference/rsc/server-components" target="_blank" rel="noopener">React Server Components</a> improve performance and simplify data fetching, but also shift where and how data is accessed, changing some of the traditional security assumptions for handling data in frontend apps.</p></div>
+<p>이 가이드는 Next.js에서 데이터 보안을 어떻게 생각해야 하는지, 그리고 best practice를 어떻게 구현하는지 이해하는 데 도움을 줍니다.</p><div class="en-orig"><p>This guide will help you understand how to think about data security in Next.js and how to implement best practices.</p></div>
+<h2 class="sec" id="data-fetching-approaches"><a class="anchor" href="#data-fetching-approaches">Data fetching approaches<span class="ko">Data fetching 방식</span></a></h2>
+<p>Next.js에서 데이터를 fetch할 때 권장하는 주요 방식은 프로젝트의 규모와 연식에 따라 세 가지입니다:</p><div class="en-orig"><p>There are three main approaches we recommend for fetching data in Next.js, depending on the size and age of your project:</p></div>
+<ul>
+<li><a href="#external-http-apis">HTTP APIs</a>: 기존의 대규모 애플리케이션과 조직용.</li>
+<li><a href="#data-access-layer">Data Access Layer</a>: 새 프로젝트용.</li>
+<li><a href="#component-level-data-access">Component-Level Data Access</a>: prototype과 학습용.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="#external-http-apis">HTTP APIs</a>: for existing large applications and organizations.</li>
+<li><a href="#data-access-layer">Data Access Layer</a>: for new projects.</li>
+<li><a href="#component-level-data-access">Component-Level Data Access</a>: for prototypes and learning.</li>
+</ul></div>
+<p>하나의 data fetching 방식을 골라서 섞지 않고 사용하기를 권장합니다. 그래야 code base에서 일하는 개발자와 보안 감사자(security auditor) 모두 무엇을 예상해야 하는지 분명해집니다.</p><div class="en-orig"><p>We recommend choosing one data fetching approach and avoiding mixing them. This makes it clear for both developers working in your code base and security auditors what to expect.</p></div>
+<h3 class="sec" id="external-http-apis"><a class="anchor" href="#external-http-apis">External HTTP APIs<span class="ko">외부 HTTP API</span></a></h3>
+<p>기존 프로젝트에 Server Component를 도입할 때는 <strong>Zero Trust</strong> 모델을 따라야 합니다. Client Component에서와 마찬가지로 Server Component에서도 <a href="app-api-reference-functions-fetch.html"><code>fetch</code></a>를 사용해 REST나 GraphQL 같은 기존 API endpoint를 계속 호출할 수 있습니다.</p><div class="en-orig"><p>You should follow a <strong>Zero Trust</strong> model when adopting Server Components in an existing project. You can continue calling your existing API endpoints such as REST or GraphQL from Server Components using <a href="app-api-reference-functions-fetch.html"><code>fetch</code></a>, just as you would in Client Components.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cookies } from &#x27;next/headers&#x27;
+
+export default async function Page() {
+  const cookieStore = await cookies()
+  const token = cookieStore.get(&#x27;AUTH_TOKEN&#x27;)?.value
+
+  const res = await fetch(&#x27;https://api.example.com/profile&#x27;, {
+    headers: {
+      Cookie: `AUTH_TOKEN=${token}`,
+      // Other headers
+    },
+  })
+
+  // ....
+}</code></pre></div></div>
+<p>이 방식은 다음과 같은 경우에 잘 맞습니다:</p><div class="en-orig"><p>This approach works well when:</p></div>
+<ul>
+<li>이미 보안 관행이 자리 잡혀 있는 경우.</li>
+<li>별도의 backend 팀이 다른 언어를 사용하거나 API를 독립적으로 관리하는 경우.</li>
+</ul><div class="en-orig"><ul>
+<li>You already have security practices in place.</li>
+<li>Separate backend teams use other languages or manage APIs independently.</li>
+</ul></div>
+<h3 class="sec" id="data-access-layer"><a class="anchor" href="#data-access-layer">Data Access Layer</a></h3>
+<p>새 프로젝트에는 전용 <strong>Data Access Layer (DAL)</strong> 만들기를 권장합니다. 이는 데이터를 언제, 어떻게 fetch하고 render context에 무엇을 전달할지 제어하는 내부 library입니다.</p><div class="en-orig"><p>For new projects, we recommend creating a dedicated <strong>Data Access Layer (DAL)</strong>. This is an internal library that controls how and when data is fetched, and what gets passed to your render context.</p></div>
+<p>Data Access Layer는 다음을 지켜야 합니다:</p><div class="en-orig"><p>A Data Access Layer should:</p></div>
+<ul>
+<li>server에서만 실행됩니다.</li>
+<li>authorization 검사를 수행합니다.</li>
+<li>안전하고 최소한의 데이터만 담은 <strong>Data Transfer Objects (DTOs)</strong> 형태로 반환합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Only run on the server.</li>
+<li>Perform authorization checks.</li>
+<li>Return safe, minimal <strong>Data Transfer Objects (DTOs)</strong>.</li>
+</ul></div>
+<p>이 방식은 모든 데이터 접근 로직을 한곳에 모으므로, 일관된 데이터 접근을 강제하기 쉬워지고 authorization 버그의 위험이 줄어듭니다. 또한 하나의 request 안에서 여러 부분이 in-memory cache를 공유하는 이점도 얻을 수 있습니다.</p><div class="en-orig"><p>This approach centralizes all data access logic, making it easier to enforce consistent data access and reduces the risk of authorization bugs. You also get the benefit of sharing an in-memory cache across different parts of a request.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">data/auth.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cache } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+
+// Cached helper methods makes it easy to get the same value in many places
+// without manually passing it around. This discourages passing it from Server
+// Component to Server Component which minimizes risk of passing it to a Client
+// Component.
+export const getCurrentUser = cache(async () =&gt; {
+  const cookieStore = await cookies()
+  const token = cookieStore.get(&#x27;AUTH_TOKEN&#x27;)
+  const decodedToken = await decryptAndValidate(token)
+  // Don&#x27;t include secret tokens or private information as public fields.
+  // Use classes to avoid accidentally passing the whole object to the client.
+  return new User(decodedToken.id)
+})</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">data/user-dto.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import &#x27;server-only&#x27;
+import { getCurrentUser } from &#x27;./auth&#x27;
+
+function canSeeUsername(viewer: User) {
+  // Public info for now, but can change
+  return true
+}
+
+function canSeePhoneNumber(viewer: User, team: string) {
+  // Privacy rules
+  return viewer.isAdmin || team === viewer.team
+}
+
+export async function getProfileDTO(slug: string) {
+  // Don&#x27;t pass values, read back cached values, also solves context and easier to make it lazy
+
+  // use a database API that supports safe templating of queries
+  const [rows] = await sql`SELECT * FROM user WHERE slug = ${slug}`
+  const userData = rows[0]
+
+  const currentUser = await getCurrentUser()
+
+  // only return the data relevant for this query and not everything
+  // &lt;https://www.w3.org/2001/tag/doc/APIMinimization&gt;
+  return {
+    username: canSeeUsername(currentUser) ? userData.username : null,
+    phonenumber: canSeePhoneNumber(currentUser, userData.team)
+      ? userData.phonenumber
+      : null,
+  }
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { getProfileDTO } from &#x27;../../data/user-dto&#x27;
+
+export default async function Page({ params }) {
+  const { slug } = await params
+  // This page can now safely pass around this profile knowing
+  // that it shouldn&#x27;t contain anything sensitive.
+  const profile = await getProfileDTO(slug)
+  ...
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>secret key는 environment variable에 저장해야 하지만, <code>process.env</code>에는 Data Access Layer만 접근해야 합니다. 그래야 secret이 애플리케이션의 다른 부분에 노출되지 않습니다.</p><div class="en-orig"><p>Secret keys should be stored in environment variables, but only the Data Access Layer should access <code>process.env</code>. This keeps secrets from being exposed to other parts of the application.</p></div></div></div>
+<h3 class="sec" id="component-level-data-access"><a class="anchor" href="#component-level-data-access">Component-level data access<span class="ko">Component 수준 데이터 접근</span></a></h3>
+<p>빠른 prototype과 반복 작업을 위해서는 database query를 Server Component 안에 직접 둘 수 있습니다.</p><div class="en-orig"><p>For quick prototypes and iteration, database queries can be placed directly in Server Components.</p></div>
+<p>하지만 이 방식은 예를 들어 다음과 같이 private 데이터를 실수로 client에 노출하기 쉽습니다:</p><div class="en-orig"><p>This approach, however, makes it easier to accidentally expose private data to the client, for example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import Profile from &#x27;./components/profile.tsx&#x27;
+
+export default async function Page({ params }) {
+  const { slug } = await params
+  const [rows] = await sql`SELECT * FROM user WHERE slug = ${slug}`
+  const userData = rows[0]
+  // EXPOSED: This exposes all the fields in userData to the client because
+  // we are passing the data from the Server Component to the Client.
+  return &lt;Profile user={userData} /&gt;
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/ui/profile.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+// BAD: This is a bad props interface because it accepts way more data than the
+// Client Component needs and it encourages server components to pass all that
+// data down. A better solution would be to accept a limited object with just
+// the fields necessary for rendering the profile.
+export default async function Profile({ user }: { user: User }) {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{user.name}&lt;/h1&gt;
+      ...
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>Client Component에 전달하기 전에 데이터를 정제(sanitize)해야 합니다:</p><div class="en-orig"><p>You should sanitize the data before passing it to the Client Component:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">data/user.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { sql } from &#x27;./db&#x27;
+
+export async function getUser(slug: string) {
+  const [rows] = await sql`SELECT * FROM user WHERE slug = ${slug}`
+  const user = rows[0]
+
+  // Return only the public fields
+  return {
+    name: user.name,
+  }
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { getUser } from &#x27;../data/user&#x27;
+import Profile from &#x27;./ui/profile&#x27;
+
+export default async function Page({
+  params,
+}: {
+  params: Promise&lt;{ slug: string }&gt;
+}) {
+  const { slug } = await params
+  const publicProfile = await getUser(slug)
+  return &lt;Profile user={publicProfile} /&gt;
+}</code></pre></div></div>
+<h2 class="sec" id="reading-data"><a class="anchor" href="#reading-data">Reading data<span class="ko">데이터 읽기</span></a></h2>
+<h3 class="sec" id="passing-data-from-server-to-client"><a class="anchor" href="#passing-data-from-server-to-client">Passing data from server to client<span class="ko">server에서 client로 데이터 전달하기</span></a></h3>
+<p>초기 load 시에는 Server Component와 Client Component 모두 server에서 실행되어 HTML을 생성합니다. 하지만 둘은 서로 격리된 module system에서 실행됩니다. 덕분에 Server Component는 private 데이터와 API에 접근할 수 있지만 Client Component는 그럴 수 없습니다.</p><div class="en-orig"><p>On the initial load, both Server and Client Components run on the server to generate HTML. However, they execute in isolated module systems. This ensures that Server Components can access private data and APIs, while Client Components cannot.</p></div>
+<p><strong>Server Components:</strong></p><div class="en-orig"><p><strong>Server Components:</strong></p></div>
+<ul>
+<li>server에서만 실행됩니다.</li>
+<li>environment variable, secret, database, 내부 API에 안전하게 접근할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Run only on the server.</li>
+<li>Can safely access environment variables, secrets, databases, and internal APIs.</li>
+</ul></div>
+<p><strong>Client Components:</strong></p><div class="en-orig"><p><strong>Client Components:</strong></p></div>
+<ul>
+<li>prerendering 중에는 server에서 실행되지만, 브라우저에서 실행되는 코드와 같은 보안 가정을 따라야 합니다.</li>
+<li>권한이 필요한(privileged) 데이터나 server 전용 module에 접근해서는 안 됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Run on the server during prerendering, but must follow the same security assumptions as code running in the browser.</li>
+<li>Must not access privileged data or server-only modules.</li>
+</ul></div>
+<p>이렇게 해서 앱은 기본적으로 안전하지만, 데이터를 fetch하거나 component에 전달하는 방식에 따라 private 데이터가 실수로 노출될 수 있습니다.</p><div class="en-orig"><p>This ensures the app is secure by default, but it's possible to accidentally expose private data through how data is fetched or passed to components.</p></div>
+<h3 class="sec" id="tainting"><a class="anchor" href="#tainting">Tainting</a></h3>
+<p>private 데이터가 실수로 client에 노출되는 것을 막기 위해 React Taint API를 사용할 수 있습니다:</p><div class="en-orig"><p>To prevent accidental exposure of private data to the client, you can use React Taint APIs:</p></div>
+<ul>
+<li>데이터 객체에는 <a href="https://react.dev/reference/react/experimental_taintObjectReference" target="_blank" rel="noopener"><code>experimental_taintObjectReference</code></a>.</li>
+<li>특정 값에는 <a href="https://react.dev/reference/react/experimental_taintUniqueValue" target="_blank" rel="noopener"><code>experimental_taintUniqueValue</code></a>.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://react.dev/reference/react/experimental_taintObjectReference" target="_blank" rel="noopener"><code>experimental_taintObjectReference</code></a> for data objects.</li>
+<li><a href="https://react.dev/reference/react/experimental_taintUniqueValue" target="_blank" rel="noopener"><code>experimental_taintUniqueValue</code></a> for specific values.</li>
+</ul></div>
+<p><code>next.config.js</code>의 <a href="app-api-reference-config-next-config-js-taint.html"><code>experimental.taint</code></a> option으로 Next.js 앱에서 이 기능을 활성화할 수 있습니다:</p><div class="en-orig"><p>You can enable usage in your Next.js app with the <a href="app-api-reference-config-next-config-js-taint.html"><code>experimental.taint</code></a> option in <code>next.config.js</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  experimental: {
+    taint: true,
+  },
+}</code></pre></div></div>
+<p>이렇게 하면 taint된 객체나 값이 client로 전달되지 않습니다. 하지만 이는 추가적인 보호 계층일 뿐이므로, React의 render context에 전달하기 전에 <a href="#data-access-layer">DAL</a>에서 데이터를 필터링하고 정제하는 작업은 여전히 해야 합니다.</p><div class="en-orig"><p>This prevents the tainted objects or values from being passed to the client. However, it's an additional layer of protection, you should still filter and sanitize the data in your <a href="#data-access-layer">DAL</a> before passing it to React's render context.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>기본적으로 environment variable은 Server에서만 사용할 수 있습니다. Next.js는 <code>NEXT_PUBLIC_</code> 접두사가 붙은 environment variable만 client에 노출합니다. <a href="app-guides-environment-variables.html">더 알아보기</a>.</li>
+<li>함수와 class는 기본적으로 이미 Client Component에 전달되지 않도록 차단되어 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>By default, environment variables are only available on the Server. Next.js exposes any environment variable prefixed with <code>NEXT_PUBLIC_</code> to the client. <a href="app-guides-environment-variables.html">Learn more</a>.</li>
+<li>Functions and classes are already blocked from being passed to Client Components by default.</li>
+</ul></div></div></div>
+<h3 class="sec" id="preventing-client-side-execution-of-server-only-code"><a class="anchor" href="#preventing-client-side-execution-of-server-only-code">Preventing client-side execution of server-only code<span class="ko">server 전용 코드의 client 실행 막기</span></a></h3>
+<p>server 전용 코드가 client에서 실행되지 않도록 하려면 <a href="https://www.npmjs.com/package/server-only" target="_blank" rel="noopener"><code>server-only</code></a> package로 module을 표시할 수 있습니다:</p><div class="en-orig"><p>To prevent server-only code from being executed on the client, you can mark a module with the <a href="https://www.npmjs.com/package/server-only" target="_blank" rel="noopener"><code>server-only</code></a> package:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">lib/data.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import &#x27;server-only&#x27;
+
+//...</code></pre></div></div>
+<p>이렇게 하면 해당 module이 client 환경에서 import될 때 build error가 발생하므로, 독점 코드나 내부 business logic이 server에만 머물게 됩니다.</p><div class="en-orig"><p>This ensures that proprietary code or internal business logic stays on the server by causing a build error if the module is imported in the client environment.</p></div>
+<p>Next.js는 <code>server-only</code> import를 내부적으로 처리합니다. NPM에 있는 이 package들의 내용은 사용되지 않습니다. 다만 linting rule이 불필요한(extraneous) dependency를 경고한다면, 문제를 피하기 위해 설치해 둘 수 있습니다.</p><div class="en-orig"><p>Next.js handles <code>server-only</code> imports internally. The contents of these packages from NPM are not used. However, if your linting rules flag extraneous dependencies, you may install them to avoid issues.</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-npm"><code class="language-bash">npm install server-only</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add server-only</code></pre><pre class="pm-pnpm" hidden><code class="language-bash">pnpm add server-only</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add server-only</code></pre></div></div>
+<p><code>server-only</code>에 대한 자세한 내용은 <a href="app-getting-started-server-and-client-components.html#preventing-environment-poisoning">environment poisoning 방지</a> 섹션을 참고하세요.</p><div class="en-orig"><p>Read more about <code>server-only</code> in the <a href="app-getting-started-server-and-client-components.html#preventing-environment-poisoning">preventing environment poisoning</a> section.</p></div>
+<h2 class="sec" id="mutating-data"><a class="anchor" href="#mutating-data">Mutating Data<span class="ko">데이터 변경하기</span></a></h2>
+<p>Next.js는 <a href="https://react.dev/reference/rsc/server-functions" target="_blank" rel="noopener">Server Actions</a>로 mutation을 처리합니다.</p><div class="en-orig"><p>Next.js handles mutations with <a href="https://react.dev/reference/rsc/server-functions" target="_blank" rel="noopener">Server Actions</a>.</p></div>
+<h3 class="sec" id="built-in-server-actions-security-features"><a class="anchor" href="#built-in-server-actions-security-features">Built-in Server Actions Security features<span class="ko">내장 Server Actions 보안 기능</span></a></h3>
+<p>기본적으로 Server Action을 만들고 export하면, 애플리케이션 UI를 통해서뿐 아니라 직접적인 POST request로도 접근할 수 있습니다. 즉, Server Action이나 utility 함수가 코드의 다른 곳에서 import되지 않더라도 외부에서 호출될 수 있습니다.</p><div class="en-orig"><p>By default, when a Server Action is created and exported, it is reachable via a direct POST request, not just through your application's UI. This means, even if a Server Action or utility function is not imported elsewhere in your code, it can still be called externally.</p></div>
+<p>보안을 강화하기 위해 Next.js에는 다음과 같은 기능이 내장되어 있습니다:</p><div class="en-orig"><p>To improve security, Next.js has the following built-in features:</p></div>
+<ul>
+<li><strong>Secure action IDs:</strong> Next.js는 client가 Server Action을 참조하고 호출할 수 있도록 암호화된 비결정적(non-deterministic) ID를 만듭니다. 보안 강화를 위해 이 ID는 build 사이에 주기적으로 다시 계산됩니다.</li>
+<li><strong>Dead code elimination:</strong> 사용되지 않는 Server Action(ID로 참조됨)은 공개 접근을 막기 위해 client bundle에서 제거됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Secure action IDs:</strong> Next.js creates encrypted, non-deterministic IDs to allow the client to reference and call the Server Action. These IDs are periodically recalculated between builds for enhanced security.</li>
+<li><strong>Dead code elimination:</strong> Unused Server Actions (referenced by their IDs) are removed from client bundle to avoid public access.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>ID는 compile 중에 생성되며 최대 14일 동안 cache됩니다. 새 build가 시작되거나 build cache가 무효화되면 다시 생성됩니다.
+이 보안 개선은 authentication 계층이 빠져 있는 경우의 위험을 줄여 줍니다. 하지만 Server Action은 여전히 직접적인 POST request로 접근 가능하다고 간주하고, 각 action 안에서 authentication과 authorization을 검증해야 합니다.</p><div class="en-orig"><p>The IDs are created during compilation and are cached for a maximum of 14 days. They will be regenerated when a new build is initiated or when the build cache is invalidated.
+This security improvement reduces the risk in cases where an authentication layer is missing. However, you should still treat Server Actions as reachable via direct POST requests and verify authentication and authorization inside each one.</p></div></div></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// app/actions.js
+&#x27;use server&#x27;
+
+// If this action **is** used in our application, Next.js
+// will create a secure ID to allow the client to reference
+// and call the Server Action.
+export async function updateUserAction(formData) {}
+
+// If this action **is not** used in our application, Next.js
+// will automatically remove this code during `next build`
+// and will not create a public endpoint.
+export async function deleteUserAction(formData) {}</code></pre></div></div>
+<h3 class="sec" id="validating-client-input"><a class="anchor" href="#validating-client-input">Validating client input<span class="ko">client 입력 검증하기</span></a></h3>
+<p>client에서 오는 입력은 쉽게 조작될 수 있으므로 항상 검증해야 합니다. 예를 들어 form data, URL parameter, header, searchParams 등이 있습니다:</p><div class="en-orig"><p>You should always validate input from client, as they can be easily modified. For example, form data, URL parameters, headers, and searchParams:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// BAD: Trusting searchParams directly
+export default async function Page({ searchParams }) {
+  const isAdmin = (await searchParams).isAdmin
+  if (isAdmin === &#x27;true&#x27;) {
+    // Vulnerable: relies on untrusted client data
+    return &lt;AdminPanel /&gt;
+  }
+}
+
+// GOOD: Re-verify every time
+import { cookies } from &#x27;next/headers&#x27;
+import { verifyAdmin } from &#x27;./auth&#x27;
+
+export default async function Page() {
+  const cookieStore = await cookies()
+  const token = cookieStore.get(&#x27;AUTH_TOKEN&#x27;)
+  const isAdmin = await verifyAdmin(token)
+
+  if (isAdmin) {
+    return &lt;AdminPanel /&gt;
+  }
+}</code></pre></div></div>
+<h3 class="sec" id="authentication-and-authorization"><a class="anchor" href="#authentication-and-authorization">Authentication and authorization<span class="ko">Authentication과 authorization</span></a></h3>
+<p>page 수준의 authentication 검사는 그 안에 정의된 Server Action까지 적용되지 않습니다. action 안에서 항상 다시 검증하세요:</p><div class="en-orig"><p>A page-level authentication check does not extend to the Server Actions defined within it. Always re-verify inside the action:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/admin/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { auth } from &#x27;@/lib/auth&#x27;
+import { redirect } from &#x27;next/navigation&#x27;
+
+export default async function AdminPage() {
+  const session = await auth()
+  if (!session?.user?.isAdmin) {
+    redirect(&#x27;/login&#x27;)
+  }
+
+  return (
+    &lt;form
+      action={async () =&gt; {
+        &#x27;use server&#x27;
+        const session = await auth()
+        if (!session?.user?.isAdmin) {
+          throw new Error(&#x27;Unauthorized&#x27;)
+        }
+        await db.record.deleteMany()
+      }}
+    &gt;
+      &lt;button&gt;Delete Records&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</code></pre></div></div>
+<p>action 안에서 강조 표시된 <code>auth()</code> 검사가 핵심입니다. 6번째 줄의 page 수준 redirect는 어떤 UI를 render할지를 제어하지만, Server Action은 별도의 진입점(entry point)이므로 호출자를 스스로 검증해야 합니다.</p><div class="en-orig"><p>The highlighted <code>auth()</code> check inside the action is critical. The page-level redirect on line 6 controls which UI is rendered, but the Server Action is a separate entry point and must verify the caller on its own.</p></div>
+<p>authentication(사용자가 로그인했는가?) 외에도 <strong>authorization</strong>(이 사용자가 이 특정 리소스에 대해 작업할 권한이 있는가?)을 확인하는 것을 잊지 마세요. 이렇게 하면 <a href="https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html" target="_blank" rel="noopener">Insecure Direct Object Reference (IDOR)</a> 취약점을 막을 수 있습니다:</p><div class="en-orig"><p>Beyond authentication (is the user logged in?), remember to check <strong>authorization</strong> (does this user have permission to act on this specific resource?). This prevents <a href="https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html" target="_blank" rel="noopener">Insecure Direct Object Reference (IDOR)</a> vulnerabilities:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/actions.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use server&#x27;
+
+import { auth } from &#x27;@/lib/auth&#x27;
+import { db } from &#x27;@/lib/db&#x27;
+
+export async function deletePost(postId: string) {
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+
+  const post = await db.post.findUnique({ where: { id: postId } })
+
+  // Check that the user owns this resource
+  if (post.authorId !== session.user.id) {
+    throw new Error(&#x27;Forbidden&#x27;)
+  }
+
+  await db.post.delete({ where: { id: postId } })
+}</code></pre></div></div>
+<p>Next.js의 <a href="app-guides-authentication.html">Authentication</a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about <a href="app-guides-authentication.html">Authentication</a> in Next.js.</p></div>
+<h3 class="sec" id="using-a-data-access-layer-for-mutations"><a class="anchor" href="#using-a-data-access-layer-for-mutations">Using a Data Access Layer for mutations<span class="ko">mutation에 Data Access Layer 사용하기</span></a></h3>
+<p>데이터 읽기에 <a href="#data-access-layer">Data Access Layer</a>를 권장하는 것처럼, mutation에도 같은 패턴을 적용할 수 있습니다. 이렇게 하면 authentication, authorization, database 로직은 전용 <code>server-only</code> module에 두고 <code>&quot;use server&quot;</code> action은 얇게 유지할 수 있습니다.</p><div class="en-orig"><p>Just as we recommend a <a href="#data-access-layer">Data Access Layer</a> for reading data, you can apply the same pattern to mutations. This keeps authentication, authorization, and database logic in a dedicated <code>server-only</code> module, while <code>&quot;use server&quot;</code> actions stay thin.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">data/posts.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import &#x27;server-only&#x27;
+
+import { auth } from &#x27;@/lib/auth&#x27;
+import { db } from &#x27;@/lib/db&#x27;
+
+export async function deletePost(postId: string) {
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+
+  const post = await db.post.findUnique({ where: { id: postId } })
+
+  if (post.authorId !== session.user.id) {
+    throw new Error(&#x27;Forbidden&#x27;)
+  }
+
+  await db.post.delete({ where: { id: postId } })
+}</code></pre></div></div>
+<p>그러면 <code>&quot;use server&quot;</code> action은 DAL에 작업을 위임합니다:</p><div class="en-orig"><p>The <code>&quot;use server&quot;</code> action then delegates to the DAL:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/actions.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use server&#x27;
+
+import { deletePost } from &#x27;@/data/posts&#x27;
+import { revalidatePath } from &#x27;next/cache&#x27;
+
+export async function deletePostAction(postId: string) {
+  await deletePost(postId) // Auth + authz happen inside the DAL
+  revalidatePath(&#x27;/posts&#x27;)
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>import &#x27;server-only&#x27;</code>는 Data Access Layer와 <code>&quot;use server&quot;</code> 파일 자체 양쪽에서 모두 사용할 수 있습니다. <code>&quot;use server&quot;</code> module은 server 전용 webpack layer에서 resolve되기 때문에, action을 Client Component에 import하는 경우(예: <code>useActionState</code>에 전달하기 위해)에도 둘 다 동작합니다.</p><div class="en-orig"><p>You can use <code>import &#x27;server-only&#x27;</code> in both the Data Access Layer and the <code>&quot;use server&quot;</code> file itself. Both work when the action is imported into a Client Component (for example, to pass it to <code>useActionState</code>), because <code>&quot;use server&quot;</code> modules are resolved in a server-only webpack layer.</p></div></div></div>
+<h3 class="sec" id="controlling-return-values"><a class="anchor" href="#controlling-return-values">Controlling return values<span class="ko">반환 값 제어하기</span></a></h3>
+<p>Server Action의 반환 값은 직렬화(serialize)되어 client로 전송됩니다. 원시 database record가 아니라 UI에 필요한 것만 반환하세요.</p><div class="en-orig"><p>Server Action return values are serialized and sent to the client. Only return what the UI needs, not raw database records.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/actions.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use server&#x27;
+
+import { auth } from &#x27;@/lib/auth&#x27;
+import { db } from &#x27;@/lib/db&#x27;
+
+// BAD: Returns the full database record, which may include
+// internal fields the client should not see.
+export async function updateUser(data: FormData) {
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+  return db.user.update({
+    where: { id: session.user.id },
+    data: { name: data.get(&#x27;name&#x27;) as string },
+  })
+}
+
+// GOOD: Returns only what the client needs.
+export async function updateUserSafe(data: FormData) {
+  const session = await auth()
+  if (!session?.user) {
+    throw new Error(&#x27;Unauthorized&#x27;)
+  }
+  await db.user.update({
+    where: { id: session.user.id },
+    data: { name: data.get(&#x27;name&#x27;) as string },
+  })
+  return { success: true }
+}</code></pre></div></div>
+<h3 class="sec" id="rate-limiting"><a class="anchor" href="#rate-limiting">Rate limiting</a></h3>
+<p>비용이 큰 작업(이메일 전송, database 쓰기)에는 남용을 막기 위해 rate limiting을 추가하는 것을 고려하세요. Backend for Frontend 가이드의 <a href="app-guides-backend-for-frontend.html#rate-limiting">Rate limiting</a> 예제를 참고하세요.</p><div class="en-orig"><p>For expensive operations (sending emails, writing to a database), consider adding rate limiting to prevent abuse. See the <a href="app-guides-backend-for-frontend.html#rate-limiting">Rate limiting</a> example in the Backend for Frontend guide.</p></div>
+<h3 class="sec" id="closures-and-encryption"><a class="anchor" href="#closures-and-encryption">Closures and encryption<span class="ko">Closure와 암호화</span></a></h3>
+<p>component 안에 Server Action을 정의하면 action이 바깥 함수의 scope에 접근할 수 있는 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures" target="_blank" rel="noopener">closure</a>가 만들어집니다. 예를 들어 <code>publish</code> action은 <code>publishVersion</code> 변수에 접근할 수 있습니다:</p><div class="en-orig"><p>Defining a Server Action inside a component creates a <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures" target="_blank" rel="noopener">closure</a> where the action has access to the outer function's scope. For example, the <code>publish</code> action has access to the <code>publishVersion</code> variable:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default async function Page() {
+  const publishVersion = await getLatestVersion();
+
+  async function publish() {
+    &quot;use server&quot;;
+    if (publishVersion !== await getLatestVersion()) {
+      throw new Error(&#x27;The version has changed since pressing publish&#x27;);
+    }
+    ...
+  }
+
+  return (
+    &lt;form&gt;
+      &lt;button formAction={publish}&gt;Publish&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function Page() {
+  const publishVersion = await getLatestVersion();
+
+  async function publish() {
+    &quot;use server&quot;;
+    if (publishVersion !== await getLatestVersion()) {
+      throw new Error(&#x27;The version has changed since pressing publish&#x27;);
+    }
+    ...
+  }
+
+  return (
+    &lt;form&gt;
+      &lt;button formAction={publish}&gt;Publish&lt;/button&gt;
+    &lt;/form&gt;
+  );
+}</code></pre></div></div>
+<p>closure는 rendering 시점의 데이터(예: <code>publishVersion</code>)의 *snapshot*을 캡처해 두었다가 나중에 action이 호출될 때 사용해야 할 때 유용합니다.</p><div class="en-orig"><p>Closures are useful when you need to capture a <em>snapshot</em> of data (e.g. <code>publishVersion</code>) at the time of rendering so that it can be used later when the action is invoked.</p></div>
+<p>하지만 이를 위해 캡처된 변수는 client로 전송되었다가 action이 호출될 때 다시 server로 돌아옵니다. 민감한 데이터가 client에 노출되지 않도록 Next.js는 closure로 캡처된(closed-over) 변수를 자동으로 암호화합니다. Next.js 애플리케이션을 build할 때마다 각 action에 대해 새로운 private key가 생성됩니다. 즉, action은 특정 build에 대해서만 호출할 수 있습니다.</p><div class="en-orig"><p>However, for this to happen, the captured variables are sent to the client and back to the server when the action is invoked. To prevent sensitive data from being exposed to the client, Next.js automatically encrypts the closed-over variables. A new private key is generated for each action every time a Next.js application is built. This means actions can only be invoked for a specific build.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>민감한 값이 client에 노출되는 것을 막기 위해 암호화에만 의존하는 것은 권장하지 않습니다.</p><div class="en-orig"><p>We don't recommend relying on encryption alone to prevent sensitive values from being exposed on the client.</p></div></div></div>
+<h3 class="sec" id="overwriting-encryption-keys-advanced"><a class="anchor" href="#overwriting-encryption-keys-advanced">Overwriting encryption keys (advanced)<span class="ko">암호화 key 덮어쓰기 (고급)</span></a></h3>
+<p>Next.js 애플리케이션을 여러 server에 걸쳐 <strong>self-hosting</strong>하면, 각 server instance가 서로 다른 암호화 key를 갖게 되어 불일치가 생길 수 있습니다.</p><div class="en-orig"><p>When <strong>self-hosting</strong> your Next.js application across multiple servers, each server instance may end up with a different encryption key, leading to potential inconsistencies.</p></div>
+<p>이를 완화하려면 <code>process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY</code> environment variable로 암호화 key를 덮어쓸 수 있습니다. 이 변수를 지정하면 암호화 key가 build 간에 유지되고, 모든 server instance가 같은 key를 사용합니다.</p><div class="en-orig"><p>To mitigate this, you can overwrite the encryption key using the <code>process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY</code> environment variable. Specifying this variable ensures that your encryption keys are persistent across builds, and all server instances use the same key.</p></div>
+<p>key는 decode한 길이가 유효한 AES key 크기(16, 24, 32 byte)와 일치하는 base64 인코딩 값이어야 합니다. Next.js는 기본적으로 32 byte key를 생성합니다. 플랫폼의 암호화 도구로 호환되는 key를 생성할 수 있습니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>The key must be a base64-encoded value whose decoded length matches a valid AES key size (16, 24, or 32 bytes). Next.js generates 32-byte keys by default. You can generate a compatible key using your platform’s cryptographic tools, for example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-bash">openssl rand -base64 32</code></pre></div></div>
+<p>이는 여러 deployment에 걸쳐 일관된 암호화 동작이 애플리케이션에 중요한 고급 사용 사례입니다. key rotation과 서명(signing) 같은 표준 보안 관행을 따르세요. deployment별 고려 사항은 <a href="app-guides-self-hosting.html#server-functions-encryption-key">Self-Hosting 가이드</a>를 참고하세요.</p><div class="en-orig"><p>This is an advanced use case where consistent encryption behavior across multiple deployments is critical for your application. Follow standard security practices such as key rotation and signing. See the <a href="app-guides-self-hosting.html#server-functions-encryption-key">Self-Hosting guide</a> for deployment-specific considerations.</p></div>
+<h3 class="sec" id="allowed-origins-advanced"><a class="anchor" href="#allowed-origins-advanced">Allowed origins (advanced)<span class="ko">허용된 origin (고급)</span></a></h3>
+<p>Server Action은 <code>&lt;form&gt;</code> element에서 호출될 수 있으므로 <a href="https://developer.mozilla.org/en-US/docs/Glossary/CSRF" target="_blank" rel="noopener">CSRF 공격</a>에 노출될 수 있습니다.</p><div class="en-orig"><p>Since Server Actions can be invoked in a <code>&lt;form&gt;</code> element, this opens them up to <a href="https://developer.mozilla.org/en-US/docs/Glossary/CSRF" target="_blank" rel="noopener">CSRF attacks</a>.</p></div>
+<p>내부적으로 Server Action은 <code>POST</code> method를 사용하며, 이 HTTP method로만 호출할 수 있습니다. 특히 <a href="https://web.dev/articles/samesite-cookies-explained" target="_blank" rel="noopener">SameSite cookie</a>가 기본값인 최신 브라우저에서는 이것만으로도 대부분의 CSRF 취약점을 막을 수 있습니다.</p><div class="en-orig"><p>Behind the scenes, Server Actions use the <code>POST</code> method, and only this HTTP method is allowed to invoke them. This prevents most CSRF vulnerabilities in modern browsers, particularly with <a href="https://web.dev/articles/samesite-cookies-explained" target="_blank" rel="noopener">SameSite cookies</a> being the default.</p></div>
+<p>추가 보호 장치로, Next.js의 Server Action은 <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin" target="_blank" rel="noopener">Origin header</a>를 <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host" target="_blank" rel="noopener">Host header</a>(또는 <code>X-Forwarded-Host</code>)와 비교합니다. 둘이 일치하지 않으면 request가 중단됩니다. 다시 말해, Server Action은 그것을 호스팅하는 page와 같은 host에서만 호출할 수 있습니다.</p><div class="en-orig"><p>As an additional protection, Server Actions in Next.js also compare the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin" target="_blank" rel="noopener">Origin header</a> to the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host" target="_blank" rel="noopener">Host header</a> (or <code>X-Forwarded-Host</code>). If these don't match, the request will be aborted. In other words, Server Actions can only be invoked on the same host as the page that hosts it.</p></div>
+<p>reverse proxy나 다층 backend 아키텍처(server API가 production domain과 다른 경우)를 사용하는 대규모 애플리케이션에서는 configuration option인 <a href="app-api-reference-config-next-config-js-serverActions.html"><code>serverActions.allowedOrigins</code></a>를 사용해 안전한 origin 목록을 지정하는 것을 권장합니다. 이 option은 문자열 배열을 받습니다.</p><div class="en-orig"><p>For large applications that use reverse proxies or multi-layered backend architectures (where the server API differs from the production domain), it's recommended to use the configuration option <a href="app-api-reference-config-next-config-js-serverActions.html"><code>serverActions.allowedOrigins</code></a> option to specify a list of safe origins. The option accepts an array of strings.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+module.exports = {
+  experimental: {
+    serverActions: {
+      allowedOrigins: [&#x27;my-proxy.com&#x27;, &#x27;*.my-proxy.com&#x27;],
+    },
+  },
+}</code></pre></div></div>
+<p><a href="https://nextjs.org/blog/security-nextjs-server-components-actions" target="_blank" rel="noopener">Security and Server Actions</a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about <a href="https://nextjs.org/blog/security-nextjs-server-components-actions" target="_blank" rel="noopener">Security and Server Actions</a>.</p></div>
+<h3 class="sec" id="avoiding-side-effects-during-rendering"><a class="anchor" href="#avoiding-side-effects-during-rendering">Avoiding side-effects during rendering<span class="ko">rendering 중 side-effect 피하기</span></a></h3>
+<p>mutation(예: 사용자 로그아웃, database 업데이트, cache 무효화)은 Server Component든 Client Component든 절대 side-effect가 되어서는 안 됩니다. Next.js는 의도치 않은 side effect를 막기 위해 render method 안에서 cookie를 설정하거나 cache revalidation을 트리거하는 것을 명시적으로 막습니다.</p><div class="en-orig"><p>Mutations (e.g. logging out users, updating databases, invalidating caches) should never be a side-effect, either in Server or Client Components. Next.js explicitly prevents setting cookies or triggering cache revalidation within render methods to avoid unintended side effects.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// BAD: Triggering a mutation during rendering
+export default async function Page({ searchParams }) {
+  if ((await searchParams).logout) {
+    const cookieStore = await cookies()
+    cookieStore.delete(&#x27;AUTH_TOKEN&#x27;)
+  }
+
+  return &lt;UserProfile /&gt;
+}</code></pre></div></div>
+<p>대신 Server Action을 사용해 mutation을 처리해야 합니다.</p><div class="en-orig"><p>Instead, you should use Server Actions to handle mutations.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// GOOD: Using Server Actions to handle mutations
+import { logout } from &#x27;./actions&#x27;
+
+export default function Page() {
+  return (
+    &lt;&gt;
+      &lt;UserProfile /&gt;
+      &lt;form action={logout}&gt;
+        &lt;button type=&quot;submit&quot;&gt;Logout&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Next.js는 mutation을 처리할 때 <code>POST</code> request를 사용합니다. 이렇게 하면 GET request로 인한 의도치 않은 side-effect를 막아 Cross-Site Request Forgery (CSRF) 위험을 줄일 수 있습니다.</p><div class="en-orig"><p>Next.js uses <code>POST</code> requests to handle mutations. This prevents accidental side-effects from GET requests, reducing Cross-Site Request Forgery (CSRF) risks.</p></div></div></div>
+<h2 class="sec" id="auditing"><a class="anchor" href="#auditing">Auditing<span class="ko">감사(Auditing)</span></a></h2>
+<p>Next.js 프로젝트를 감사(audit)하고 있다면, 특히 더 살펴보기를 권장하는 몇 가지 항목은 다음과 같습니다:</p><div class="en-orig"><p>If you're doing an audit of a Next.js project, here are a few things we recommend looking extra at:</p></div>
+<ul>
+<li><strong>Data Access Layer:</strong> 격리된 Data Access Layer에 대한 확립된 관행이 있나요? database package와 environment variable이 Data Access Layer 밖에서 import되지 않는지 확인하세요.</li>
+<li><strong><code>&quot;use client&quot;</code> files:</strong> Component props가 private 데이터를 기대하고 있나요? type signature가 지나치게 넓지는 않나요?</li>
+<li><strong><code>&quot;use server&quot;</code> files:</strong> Action 인수가 action 안이나 Data Access Layer 안에서 검증되나요? action 안에서 사용자가 다시 authorize되나요? action이 리소스의 소유권을 확인하나요(authentication만이 아니라 authorization까지)? 반환 값이 client에 필요한 것만 남도록 필터링되나요? database 접근이 <code>server-only</code> Data Access Layer에 위임되어 있나요?</li>
+<li><strong><code>/[param]/.</code></strong> 대괄호가 있는 폴더는 사용자 입력입니다. params가 검증되나요?</li>
+<li><strong><code>proxy.ts</code> and <code>route.ts</code>:</strong> 강력한 권한을 가집니다. 전통적인 기법으로 이 파일들을 감사하는 데 시간을 더 들이세요. Penetration Testing이나 Vulnerability Scanning을 정기적으로, 또는 팀의 소프트웨어 개발 lifecycle에 맞춰 수행하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Data Access Layer:</strong> Is there an established practice for an isolated Data Access Layer? Verify that database packages and environment variables are not imported outside the Data Access Layer.</li>
+<li><strong><code>&quot;use client&quot;</code> files:</strong> Are the Component props expecting private data? Are the type signatures overly broad?</li>
+<li><strong><code>&quot;use server&quot;</code> files:</strong> Are the Action arguments validated in the action or inside the Data Access Layer? Is the user re-authorized inside the action? Does the action check ownership of the resource (authorization, not just authentication)? Are return values filtered to only what the client needs? Is database access delegated to a <code>server-only</code> Data Access Layer?</li>
+<li><strong><code>/[param]/.</code></strong> Folders with brackets are user input. Are params validated?</li>
+<li><strong><code>proxy.ts</code> and <code>route.ts</code>:</strong> Have a lot of power. Spend extra time auditing these using traditional techniques. Perform Penetration Testing or Vulnerability Scanning regularly or in alignment with your team's software development lifecycle.</li>
+</ul></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">다음 단계</h2><p>이 가이드에서 언급한 주제에 대해 더 알아보세요.</p><div class="rgrid"><a class="rcard" href="app-guides-authentication.html"><div class="rt">How to implement authentication in Next.js</div><div class="rk">Next.js에서 인증 구현하기</div><div class="rd">Next.js 애플리케이션에서 authentication을 구현하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-content-security-policy.html"><div class="rt">How to set a Content Security Policy (CSP) for your Next.js application</div><div class="rk">Next.js 애플리케이션에 Content Security Policy(CSP) 설정하기</div><div class="rd">Next.js 애플리케이션에 Content Security Policy(CSP)를 설정하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-forms.html"><div class="rt">How to create forms with Server Actions</div><div class="rk">Server Actions로 form 만들기</div><div class="rd">React Server Actions로 Next.js에서 form을 만드는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-server-actions.html"><div class="rt">Server Actions and Mutations</div><div class="rk">Server Action과 Mutation</div><div class="rd">single-roundtrip response 모델, 순차 dispatch, 보안, caching 통합을 포함해 Next.js에서 Server Action이 동작하는 방식을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/data-security.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/data-security" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-custom-webpack.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Custom Webpack</div><div class="ttl-ko">Next.js에서 custom webpack 버전 사용하기</div></a>
+      <a href="app-guides-debugging.html" class="next"><div class="dir">다음 →</div><div class="ttl">Debugging</div><div class="ttl-ko">Next.js에서 debugging 도구 사용하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/data-security" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#data-fetching-approaches">Data fetching approaches</a></li><li class="l3"><a href="#external-http-apis">External HTTP APIs</a></li><li class="l3"><a href="#data-access-layer">Data Access Layer</a></li><li class="l3"><a href="#component-level-data-access">Component-level data access</a></li><li class="l2"><a href="#reading-data">Reading data</a></li><li class="l3"><a href="#passing-data-from-server-to-client">Passing data from server to client</a></li><li class="l3"><a href="#tainting">Tainting</a></li><li class="l3"><a href="#preventing-client-side-execution-of-server-only-code">Preventing client-side execution of server-only code</a></li><li class="l2"><a href="#mutating-data">Mutating Data</a></li><li class="l3"><a href="#built-in-server-actions-security-features">Built-in Server Actions Security features</a></li><li class="l3"><a href="#validating-client-input">Validating client input</a></li><li class="l3"><a href="#authentication-and-authorization">Authentication and authorization</a></li><li class="l3"><a href="#using-a-data-access-layer-for-mutations">Using a Data Access Layer for mutations</a></li><li class="l3"><a href="#controlling-return-values">Controlling return values</a></li><li class="l3"><a href="#rate-limiting">Rate limiting</a></li><li class="l3"><a href="#closures-and-encryption">Closures and encryption</a></li><li class="l3"><a href="#overwriting-encryption-keys-advanced">Overwriting encryption keys (advanced)</a></li><li class="l3"><a href="#allowed-origins-advanced">Allowed origins (advanced)</a></li><li class="l3"><a href="#avoiding-side-effects-during-rendering">Avoiding side-effects during rendering</a></li><li class="l2"><a href="#auditing">Auditing</a></li><li class="l2"><a href="#next-steps">다음 단계</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+[React Server Components](https://react.dev/reference/rsc/server-components)는 performance를 높이고 data fetching을 단순하게 만들어 주지만, 데이터에 접근하는 위치와 방식도 바꾸기 때문에 frontend 앱에서 데이터를 다룰 때의 전통적인 보안 가정 일부를 바꿔 놓습니다.
+
+이 가이드는 Next.js에서 데이터 보안을 어떻게 생각해야 하는지, 그리고 best practice를 어떻게 구현하는지 이해하는 데 도움을 줍니다.
+
+## Data fetching approaches || Data fetching 방식
+
+Next.js에서 데이터를 fetch할 때 권장하는 주요 방식은 프로젝트의 규모와 연식에 따라 세 가지입니다:
+
+- [HTTP APIs](#external-http-apis): 기존의 대규모 애플리케이션과 조직용.
+- [Data Access Layer](#data-access-layer): 새 프로젝트용.
+- [Component-Level Data Access](#component-level-data-access): prototype과 학습용.
+
+하나의 data fetching 방식을 골라서 섞지 않고 사용하기를 권장합니다. 그래야 code base에서 일하는 개발자와 보안 감사자(security auditor) 모두 무엇을 예상해야 하는지 분명해집니다.
+
+### External HTTP APIs || 외부 HTTP API
+
+기존 프로젝트에 Server Component를 도입할 때는 **Zero Trust** 모델을 따라야 합니다. Client Component에서와 마찬가지로 Server Component에서도 [`fetch`](/docs/app/api-reference/functions/fetch)를 사용해 REST나 GraphQL 같은 기존 API endpoint를 계속 호출할 수 있습니다.
+
+[[CODE 1]]
+
+이 방식은 다음과 같은 경우에 잘 맞습니다:
+
+- 이미 보안 관행이 자리 잡혀 있는 경우.
+- 별도의 backend 팀이 다른 언어를 사용하거나 API를 독립적으로 관리하는 경우.
+
+### Data Access Layer
+
+새 프로젝트에는 전용 **Data Access Layer (DAL)** 만들기를 권장합니다. 이는 데이터를 언제, 어떻게 fetch하고 render context에 무엇을 전달할지 제어하는 내부 library입니다.
+
+Data Access Layer는 다음을 지켜야 합니다:
+
+- server에서만 실행됩니다.
+- authorization 검사를 수행합니다.
+- 안전하고 최소한의 데이터만 담은 **Data Transfer Objects (DTOs)** 형태로 반환합니다.
+
+이 방식은 모든 데이터 접근 로직을 한곳에 모으므로, 일관된 데이터 접근을 강제하기 쉬워지고 authorization 버그의 위험이 줄어듭니다. 또한 하나의 request 안에서 여러 부분이 in-memory cache를 공유하는 이점도 얻을 수 있습니다.
+
+[[CODE 2]]
+
+[[CODE 3]]
+
+[[CODE 4]]
+
+&gt; **Good to know:** secret key는 environment variable에 저장해야 하지만, `process.env`에는 Data Access Layer만 접근해야 합니다. 그래야 secret이 애플리케이션의 다른 부분에 노출되지 않습니다.
+
+### Component-level data access || Component 수준 데이터 접근
+
+빠른 prototype과 반복 작업을 위해서는 database query를 Server Component 안에 직접 둘 수 있습니다.
+
+하지만 이 방식은 예를 들어 다음과 같이 private 데이터를 실수로 client에 노출하기 쉽습니다:
+
+[[CODE 5]]
+
+[[CODE 6]]
+
+Client Component에 전달하기 전에 데이터를 정제(sanitize)해야 합니다:
+
+[[CODE 7]]
+
+[[CODE 8]]
+
+## Reading data || 데이터 읽기
+
+### Passing data from server to client || server에서 client로 데이터 전달하기
+
+초기 load 시에는 Server Component와 Client Component 모두 server에서 실행되어 HTML을 생성합니다. 하지만 둘은 서로 격리된 module system에서 실행됩니다. 덕분에 Server Component는 private 데이터와 API에 접근할 수 있지만 Client Component는 그럴 수 없습니다.
+
+**Server Components:**
+
+- server에서만 실행됩니다.
+- environment variable, secret, database, 내부 API에 안전하게 접근할 수 있습니다.
+
+**Client Components:**
+
+- prerendering 중에는 server에서 실행되지만, 브라우저에서 실행되는 코드와 같은 보안 가정을 따라야 합니다.
+- 권한이 필요한(privileged) 데이터나 server 전용 module에 접근해서는 안 됩니다.
+
+이렇게 해서 앱은 기본적으로 안전하지만, 데이터를 fetch하거나 component에 전달하는 방식에 따라 private 데이터가 실수로 노출될 수 있습니다.
+
+### Tainting
+
+private 데이터가 실수로 client에 노출되는 것을 막기 위해 React Taint API를 사용할 수 있습니다:
+
+- 데이터 객체에는 [`experimental_taintObjectReference`](https://react.dev/reference/react/experimental_taintObjectReference).
+- 특정 값에는 [`experimental_taintUniqueValue`](https://react.dev/reference/react/experimental_taintUniqueValue).
+
+`next.config.js`의 [`experimental.taint`](/docs/app/api-reference/config/next-config-js/taint) option으로 Next.js 앱에서 이 기능을 활성화할 수 있습니다:
+
+[[CODE 9]]
+
+이렇게 하면 taint된 객체나 값이 client로 전달되지 않습니다. 하지만 이는 추가적인 보호 계층일 뿐이므로, React의 render context에 전달하기 전에 [DAL](#data-access-layer)에서 데이터를 필터링하고 정제하는 작업은 여전히 해야 합니다.
+
+&gt; **Good to know:**
+&gt;
+&gt; - 기본적으로 environment variable은 Server에서만 사용할 수 있습니다. Next.js는 `NEXT_PUBLIC_` 접두사가 붙은 environment variable만 client에 노출합니다. [더 알아보기](/docs/app/guides/environment-variables).
+&gt; - 함수와 class는 기본적으로 이미 Client Component에 전달되지 않도록 차단되어 있습니다.
+
+### Preventing client-side execution of server-only code || server 전용 코드의 client 실행 막기
+
+server 전용 코드가 client에서 실행되지 않도록 하려면 [`server-only`](https://www.npmjs.com/package/server-only) package로 module을 표시할 수 있습니다:
+
+[[CODE 10]]
+
+이렇게 하면 해당 module이 client 환경에서 import될 때 build error가 발생하므로, 독점 코드나 내부 business logic이 server에만 머물게 됩니다.
+
+Next.js는 `server-only` import를 내부적으로 처리합니다. NPM에 있는 이 package들의 내용은 사용되지 않습니다. 다만 linting rule이 불필요한(extraneous) dependency를 경고한다면, 문제를 피하기 위해 설치해 둘 수 있습니다.
+
+[[CODE 11]]
+
+`server-only`에 대한 자세한 내용은 [environment poisoning 방지](/docs/app/getting-started/server-and-client-components#preventing-environment-poisoning) 섹션을 참고하세요.
+
+## Mutating Data || 데이터 변경하기
+
+Next.js는 [Server Actions](https://react.dev/reference/rsc/server-functions)로 mutation을 처리합니다.
+
+### Built-in Server Actions Security features || 내장 Server Actions 보안 기능
+
+기본적으로 Server Action을 만들고 export하면, 애플리케이션 UI를 통해서뿐 아니라 직접적인 POST request로도 접근할 수 있습니다. 즉, Server Action이나 utility 함수가 코드의 다른 곳에서 import되지 않더라도 외부에서 호출될 수 있습니다.
+
+보안을 강화하기 위해 Next.js에는 다음과 같은 기능이 내장되어 있습니다:
+
+- **Secure action IDs:** Next.js는 client가 Server Action을 참조하고 호출할 수 있도록 암호화된 비결정적(non-deterministic) ID를 만듭니다. 보안 강화를 위해 이 ID는 build 사이에 주기적으로 다시 계산됩니다.
+- **Dead code elimination:** 사용되지 않는 Server Action(ID로 참조됨)은 공개 접근을 막기 위해 client bundle에서 제거됩니다.
+
+&gt; **Good to know**:
+&gt;
+&gt; ID는 compile 중에 생성되며 최대 14일 동안 cache됩니다. 새 build가 시작되거나 build cache가 무효화되면 다시 생성됩니다.
+&gt; 이 보안 개선은 authentication 계층이 빠져 있는 경우의 위험을 줄여 줍니다. 하지만 Server Action은 여전히 직접적인 POST request로 접근 가능하다고 간주하고, 각 action 안에서 authentication과 authorization을 검증해야 합니다.
+
+[[CODE 12]]
+
+### Validating client input || client 입력 검증하기
+
+client에서 오는 입력은 쉽게 조작될 수 있으므로 항상 검증해야 합니다. 예를 들어 form data, URL parameter, header, searchParams 등이 있습니다:
+
+[[CODE 13]]
+
+### Authentication and authorization || Authentication과 authorization
+
+page 수준의 authentication 검사는 그 안에 정의된 Server Action까지 적용되지 않습니다. action 안에서 항상 다시 검증하세요:
+
+[[CODE 14]]
+
+action 안에서 강조 표시된 `auth()` 검사가 핵심입니다. 6번째 줄의 page 수준 redirect는 어떤 UI를 render할지를 제어하지만, Server Action은 별도의 진입점(entry point)이므로 호출자를 스스로 검증해야 합니다.
+
+authentication(사용자가 로그인했는가?) 외에도 **authorization**(이 사용자가 이 특정 리소스에 대해 작업할 권한이 있는가?)을 확인하는 것을 잊지 마세요. 이렇게 하면 [Insecure Direct Object Reference (IDOR)](https://cheatsheetseries.owasp.org/cheatsheets/Insecure_Direct_Object_Reference_Prevention_Cheat_Sheet.html) 취약점을 막을 수 있습니다:
+
+[[CODE 15]]
+
+Next.js의 [Authentication](/docs/app/guides/authentication)에 대해 더 알아보세요.
+
+### Using a Data Access Layer for mutations || mutation에 Data Access Layer 사용하기
+
+데이터 읽기에 [Data Access Layer](#data-access-layer)를 권장하는 것처럼, mutation에도 같은 패턴을 적용할 수 있습니다. 이렇게 하면 authentication, authorization, database 로직은 전용 `server-only` module에 두고 `&quot;use server&quot;` action은 얇게 유지할 수 있습니다.
+
+[[CODE 16]]
+
+그러면 `&quot;use server&quot;` action은 DAL에 작업을 위임합니다:
+
+[[CODE 17]]
+
+&gt; **Good to know:** `import &#x27;server-only&#x27;`는 Data Access Layer와 `&quot;use server&quot;` 파일 자체 양쪽에서 모두 사용할 수 있습니다. `&quot;use server&quot;` module은 server 전용 webpack layer에서 resolve되기 때문에, action을 Client Component에 import하는 경우(예: `useActionState`에 전달하기 위해)에도 둘 다 동작합니다.
+
+### Controlling return values || 반환 값 제어하기
+
+Server Action의 반환 값은 직렬화(serialize)되어 client로 전송됩니다. 원시 database record가 아니라 UI에 필요한 것만 반환하세요.
+
+[[CODE 18]]
+
+### Rate limiting
+
+비용이 큰 작업(이메일 전송, database 쓰기)에는 남용을 막기 위해 rate limiting을 추가하는 것을 고려하세요. Backend for Frontend 가이드의 [Rate limiting](/docs/app/guides/backend-for-frontend#rate-limiting) 예제를 참고하세요.
+
+### Closures and encryption || Closure와 암호화
+
+component 안에 Server Action을 정의하면 action이 바깥 함수의 scope에 접근할 수 있는 [closure](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Closures)가 만들어집니다. 예를 들어 `publish` action은 `publishVersion` 변수에 접근할 수 있습니다:
+
+[[CODE 19]]
+
+closure는 rendering 시점의 데이터(예: `publishVersion`)의 *snapshot*을 캡처해 두었다가 나중에 action이 호출될 때 사용해야 할 때 유용합니다.
+
+하지만 이를 위해 캡처된 변수는 client로 전송되었다가 action이 호출될 때 다시 server로 돌아옵니다. 민감한 데이터가 client에 노출되지 않도록 Next.js는 closure로 캡처된(closed-over) 변수를 자동으로 암호화합니다. Next.js 애플리케이션을 build할 때마다 각 action에 대해 새로운 private key가 생성됩니다. 즉, action은 특정 build에 대해서만 호출할 수 있습니다.
+
+&gt; **Good to know:** 민감한 값이 client에 노출되는 것을 막기 위해 암호화에만 의존하는 것은 권장하지 않습니다.
+
+### Overwriting encryption keys (advanced) || 암호화 key 덮어쓰기 (고급)
+
+Next.js 애플리케이션을 여러 server에 걸쳐 **self-hosting**하면, 각 server instance가 서로 다른 암호화 key를 갖게 되어 불일치가 생길 수 있습니다.
+
+이를 완화하려면 `process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` environment variable로 암호화 key를 덮어쓸 수 있습니다. 이 변수를 지정하면 암호화 key가 build 간에 유지되고, 모든 server instance가 같은 key를 사용합니다.
+
+key는 decode한 길이가 유효한 AES key 크기(16, 24, 32 byte)와 일치하는 base64 인코딩 값이어야 합니다. Next.js는 기본적으로 32 byte key를 생성합니다. 플랫폼의 암호화 도구로 호환되는 key를 생성할 수 있습니다. 예를 들면 다음과 같습니다:
+
+[[CODE 20]]
+
+이는 여러 deployment에 걸쳐 일관된 암호화 동작이 애플리케이션에 중요한 고급 사용 사례입니다. key rotation과 서명(signing) 같은 표준 보안 관행을 따르세요. deployment별 고려 사항은 [Self-Hosting 가이드](/docs/app/guides/self-hosting#server-functions-encryption-key)를 참고하세요.
+
+### Allowed origins (advanced) || 허용된 origin (고급)
+
+Server Action은 `&lt;form&gt;` element에서 호출될 수 있으므로 [CSRF 공격](https://developer.mozilla.org/en-US/docs/Glossary/CSRF)에 노출될 수 있습니다.
+
+내부적으로 Server Action은 `POST` method를 사용하며, 이 HTTP method로만 호출할 수 있습니다. 특히 [SameSite cookie](https://web.dev/articles/samesite-cookies-explained)가 기본값인 최신 브라우저에서는 이것만으로도 대부분의 CSRF 취약점을 막을 수 있습니다.
+
+추가 보호 장치로, Next.js의 Server Action은 [Origin header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Origin)를 [Host header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Host)(또는 `X-Forwarded-Host`)와 비교합니다. 둘이 일치하지 않으면 request가 중단됩니다. 다시 말해, Server Action은 그것을 호스팅하는 page와 같은 host에서만 호출할 수 있습니다.
+
+reverse proxy나 다층 backend 아키텍처(server API가 production domain과 다른 경우)를 사용하는 대규모 애플리케이션에서는 configuration option인 [`serverActions.allowedOrigins`](/docs/app/api-reference/config/next-config-js/serverActions)를 사용해 안전한 origin 목록을 지정하는 것을 권장합니다. 이 option은 문자열 배열을 받습니다.
+
+[[CODE 21]]
+
+[Security and Server Actions](https://nextjs.org/blog/security-nextjs-server-components-actions)에 대해 더 알아보세요.
+
+### Avoiding side-effects during rendering || rendering 중 side-effect 피하기
+
+mutation(예: 사용자 로그아웃, database 업데이트, cache 무효화)은 Server Component든 Client Component든 절대 side-effect가 되어서는 안 됩니다. Next.js는 의도치 않은 side effect를 막기 위해 render method 안에서 cookie를 설정하거나 cache revalidation을 트리거하는 것을 명시적으로 막습니다.
+
+[[CODE 22]]
+
+대신 Server Action을 사용해 mutation을 처리해야 합니다.
+
+[[CODE 23]]
+
+&gt; **Good to know:** Next.js는 mutation을 처리할 때 `POST` request를 사용합니다. 이렇게 하면 GET request로 인한 의도치 않은 side-effect를 막아 Cross-Site Request Forgery (CSRF) 위험을 줄일 수 있습니다.
+
+## Auditing || 감사(Auditing)
+
+Next.js 프로젝트를 감사(audit)하고 있다면, 특히 더 살펴보기를 권장하는 몇 가지 항목은 다음과 같습니다:
+
+- **Data Access Layer:** 격리된 Data Access Layer에 대한 확립된 관행이 있나요? database package와 environment variable이 Data Access Layer 밖에서 import되지 않는지 확인하세요.
+- **`&quot;use client&quot;` files:** Component props가 private 데이터를 기대하고 있나요? type signature가 지나치게 넓지는 않나요?
+- **`&quot;use server&quot;` files:** Action 인수가 action 안이나 Data Access Layer 안에서 검증되나요? action 안에서 사용자가 다시 authorize되나요? action이 리소스의 소유권을 확인하나요(authentication만이 아니라 authorization까지)? 반환 값이 client에 필요한 것만 남도록 필터링되나요? database 접근이 `server-only` Data Access Layer에 위임되어 있나요?
+- **`/[param]/.`** 대괄호가 있는 폴더는 사용자 입력입니다. params가 검증되나요?
+- **`proxy.ts` and `route.ts`:** 강력한 권한을 가집니다. 전통적인 기법으로 이 파일들을 감사하는 데 시간을 더 들이세요. Penetration Testing이나 Vulnerability Scanning을 정기적으로, 또는 팀의 소프트웨어 개발 lifecycle에 맞춰 수행하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

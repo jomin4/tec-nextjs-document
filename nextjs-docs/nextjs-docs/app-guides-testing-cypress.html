@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to set up Cypress with Next.js (Next.js에 Cypress 설정하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/testing/cypress" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/testing/cypress" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/testing/cypress.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides-testing.html">Testing</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to set up Cypress with Next.js<span class="sub">Next.js에 Cypress 설정하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><a href="https://www.cypress.io/" target="_blank" rel="noopener">Cypress</a>는 <strong>End-to-End (E2E)</strong> 및 <strong>Component Testing</strong>에 사용하는 test runner입니다. 이 페이지에서는 Next.js에 Cypress를 설정하고 첫 test를 작성하는 방법을 보여 줍니다.</p><div class="en-orig"><p><a href="https://www.cypress.io/" target="_blank" rel="noopener">Cypress</a> is a test runner used for <strong>End-to-End (E2E)</strong> and <strong>Component Testing</strong>. This page will show you how to set up Cypress with Next.js and write your first tests.</p></div>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Warning</div><ul>
+<li>13.6.3 미만의 Cypress 버전은 <code>moduleResolution:&quot;bundler&quot;</code>를 사용하는 <a href="https://github.com/cypress-io/cypress/issues/27731" target="_blank" rel="noopener">TypeScript 버전 5</a>를 지원하지 않습니다. 하지만 이 문제는 Cypress 13.6.3 이상 버전에서 해결되었습니다. <a href="https://docs.cypress.io/guides/references/changelog#13-6-3" target="_blank" rel="noopener">cypress v13.6.3</a></li>
+</ul><div class="en-orig"><ul>
+<li>Cypress versions below 13.6.3 do not support <a href="https://github.com/cypress-io/cypress/issues/27731" target="_blank" rel="noopener">TypeScript version 5</a> with <code>moduleResolution:&quot;bundler&quot;</code>. However, this issue has been resolved in Cypress version 13.6.3 and later. <a href="https://docs.cypress.io/guides/references/changelog#13-6-3" target="_blank" rel="noopener">cypress v13.6.3</a></li>
+</ul></div></div></div>
+<h2 class="sec" id="quickstart"><a class="anchor" href="#quickstart">Quickstart<span class="ko">빠른 시작</span></a></h2>
+<p><a href="https://github.com/vercel/next.js/tree/canary/examples/with-cypress" target="_blank" rel="noopener">with-cypress example</a>과 함께 <code>create-next-app</code>을 사용하면 빠르게 시작할 수 있습니다.</p><div class="en-orig"><p>You can use <code>create-next-app</code> with the <a href="https://github.com/vercel/next.js/tree/canary/examples/with-cypress" target="_blank" rel="noopener">with-cypress example</a> to quickly get started.</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm create next-app --example with-cypress with-cypress-app</code></pre><pre class="pm-npm" hidden><code class="language-bash">npx create-next-app@latest --example with-cypress with-cypress-app</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn create next-app --example with-cypress with-cypress-app</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun create next-app --example with-cypress with-cypress-app</code></pre></div></div>
+<h2 class="sec" id="manual-setup"><a class="anchor" href="#manual-setup">Manual setup<span class="ko">수동 설정</span></a></h2>
+<p>Cypress를 수동으로 설정하려면 <code>cypress</code>를 dev dependency로 설치하세요:</p><div class="en-orig"><p>To manually set up Cypress, install <code>cypress</code> as a dev dependency:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add -D cypress</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install -D cypress</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add -D cypress</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add -D cypress</code></pre></div></div>
+<p><code>package.json</code>의 scripts 필드에 Cypress <code>open</code> command를 추가하세요:</p><div class="en-orig"><p>Add the Cypress <code>open</code> command to the <code>package.json</code> scripts field:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">package.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;next dev&quot;,
+    &quot;build&quot;: &quot;next build&quot;,
+    &quot;start&quot;: &quot;next start&quot;,
+    &quot;lint&quot;: &quot;eslint&quot;,
+    &quot;cypress:open&quot;: &quot;cypress open&quot;
+  }
+}</code></pre></div></div>
+<p>Cypress를 처음 실행해 Cypress testing suite를 여세요:</p><div class="en-orig"><p>Run Cypress for the first time to open the Cypress testing suite:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm cypress:open</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm run cypress:open</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn cypress:open</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun run cypress:open</code></pre></div></div>
+<p><strong>E2E Testing</strong>과 <strong>Component Testing</strong> 중 하나 또는 둘 다를 설정할 수 있습니다. 이 option 중 하나를 선택하면 프로젝트에 <code>cypress.config.js</code> 파일과 <code>cypress</code> 폴더가 자동으로 만들어집니다.</p><div class="en-orig"><p>You can choose to configure <strong>E2E Testing</strong> and/or <strong>Component Testing</strong>. Selecting any of these options will automatically create a <code>cypress.config.js</code> file and a <code>cypress</code> folder in your project.</p></div>
+<h2 class="sec" id="creating-your-first-cypress-e2e-test"><a class="anchor" href="#creating-your-first-cypress-e2e-test">Creating your first Cypress E2E test<span class="ko">첫 Cypress E2E test 만들기</span></a></h2>
+<p><code>cypress.config</code> 파일에 다음 configuration이 있는지 확인하세요:</p><div class="en-orig"><p>Ensure your <code>cypress.config</code> file has the following configuration:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="cypress.config.ts" data-js="cypress.config.js">cypress.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { defineConfig } from &#x27;cypress&#x27;
+
+export default defineConfig({
+  e2e: {
+    setupNodeEvents(on, config) {},
+  },
+})</code></pre><pre class="v-js" hidden><code class="language-javascript">const { defineConfig } = require(&#x27;cypress&#x27;)
+
+module.exports = defineConfig({
+  e2e: {
+    setupNodeEvents(on, config) {},
+  },
+})</code></pre></div></div>
+<p>그런 다음 새 Next.js 파일 두 개를 만드세요:</p><div class="en-orig"><p>Then, create two new Next.js files:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Page() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Home&lt;/h1&gt;
+      &lt;Link href=&quot;/about&quot;&gt;About&lt;/Link&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/about/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Page() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;About&lt;/h1&gt;
+      &lt;Link href=&quot;/&quot;&gt;Home&lt;/Link&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>navigation이 올바르게 동작하는지 확인하는 test를 추가하세요:</p><div class="en-orig"><p>Add a test to check your navigation is working correctly:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">cypress/e2e/app.cy.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">describe(&#x27;Navigation&#x27;, () =&gt; {
+  it(&#x27;should navigate to the about page&#x27;, () =&gt; {
+    // Start from the index page
+    cy.visit(&#x27;http://localhost:3000/&#x27;)
+
+    // Find a link with an href attribute containing &quot;about&quot; and click it
+    cy.get(&#x27;a[href*=&quot;about&quot;]&#x27;).click()
+
+    // The new url should include &quot;/about&quot;
+    cy.url().should(&#x27;include&#x27;, &#x27;/about&#x27;)
+
+    // The new page should contain an h1 with &quot;About&quot;
+    cy.get(&#x27;h1&#x27;).contains(&#x27;About&#x27;)
+  })
+})</code></pre></div></div>
+<h3 class="sec" id="running-e2e-tests"><a class="anchor" href="#running-e2e-tests">Running E2E Tests<span class="ko">E2E test 실행하기</span></a></h3>
+<p>Cypress는 사용자가 애플리케이션을 탐색하는 것을 시뮬레이션하므로 Next.js server가 실행 중이어야 합니다. 애플리케이션이 실제로 동작하는 방식과 더 비슷하도록 production 코드를 대상으로 test를 실행하는 것을 권장합니다.</p><div class="en-orig"><p>Cypress will simulate a user navigating your application, this requires your Next.js server to be running. We recommend running your tests against your production code to more closely resemble how your application will behave.</p></div>
+<p><code>npm run build &amp;&amp; npm run start</code>를 실행해 Next.js 애플리케이션을 build한 다음, 다른 terminal 창에서 <code>npm run cypress:open</code>을 실행해 Cypress를 시작하고 E2E Testing suite를 실행하세요.</p><div class="en-orig"><p>Run <code>npm run build &amp;&amp; npm run start</code> to build your Next.js application, then run <code>npm run cypress:open</code> in another terminal window to start Cypress and run your E2E Testing suite.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>cypress.config.js</code> configuration 파일에 <code>baseUrl: &#x27;http://localhost:3000&#x27;</code>을 추가하면 <code>cy.visit(&quot;http://localhost:3000/&quot;)</code> 대신 <code>cy.visit(&quot;/&quot;)</code>를 사용할 수 있습니다.</li>
+<li>또는 <a href="https://www.npmjs.com/package/start-server-and-test" target="_blank" rel="noopener"><code>start-server-and-test</code></a> package를 설치해 Next.js production server를 Cypress와 함께 실행할 수 있습니다. 설치 후 <code>package.json</code>의 scripts 필드에 <code>&quot;test&quot;: &quot;start-server-and-test start http://localhost:3000 cypress&quot;</code>를 추가하세요. 변경 사항이 생기면 애플리케이션을 다시 build해야 한다는 점을 기억하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>You can use <code>cy.visit(&quot;/&quot;)</code> instead of <code>cy.visit(&quot;http://localhost:3000/&quot;)</code> by adding <code>baseUrl: &#x27;http://localhost:3000&#x27;</code> to the <code>cypress.config.js</code> configuration file.</li>
+<li>Alternatively, you can install the <a href="https://www.npmjs.com/package/start-server-and-test" target="_blank" rel="noopener"><code>start-server-and-test</code></a> package to run the Next.js production server in conjunction with Cypress. After installation, add <code>&quot;test&quot;: &quot;start-server-and-test start http://localhost:3000 cypress&quot;</code> to your <code>package.json</code> scripts field. Remember to rebuild your application after new changes.</li>
+</ul></div></div></div>
+<h2 class="sec" id="creating-your-first-cypress-component-test"><a class="anchor" href="#creating-your-first-cypress-component-test">Creating your first Cypress component test<span class="ko">첫 Cypress component test 만들기</span></a></h2>
+<p>Component test는 애플리케이션 전체를 bundle하거나 server를 시작하지 않고도 특정 component를 build하고 mount합니다.</p><div class="en-orig"><p>Component tests build and mount a specific component without having to bundle your whole application or start a server.</p></div>
+<p>Cypress 앱에서 <strong>Component Testing</strong>을 선택한 다음, front-end framework로 <strong>Next.js</strong>를 선택하세요. 프로젝트에 <code>cypress/component</code> 폴더가 만들어지고, Component Testing을 활성화하도록 <code>cypress.config.js</code> 파일이 업데이트됩니다.</p><div class="en-orig"><p>Select <strong>Component Testing</strong> in the Cypress app, then select <strong>Next.js</strong> as your front-end framework. A <code>cypress/component</code> folder will be created in your project, and a <code>cypress.config.js</code> file will be updated to enable Component Testing.</p></div>
+<p><code>cypress.config</code> 파일에 다음 configuration이 있는지 확인하세요:</p><div class="en-orig"><p>Ensure your <code>cypress.config</code> file has the following configuration:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="cypress.config.ts" data-js="cypress.config.js">cypress.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { defineConfig } from &#x27;cypress&#x27;
+
+export default defineConfig({
+  component: {
+    devServer: {
+      framework: &#x27;next&#x27;,
+      bundler: &#x27;webpack&#x27;,
+    },
+  },
+})</code></pre><pre class="v-js" hidden><code class="language-javascript">const { defineConfig } = require(&#x27;cypress&#x27;)
+
+module.exports = defineConfig({
+  component: {
+    devServer: {
+      framework: &#x27;next&#x27;,
+      bundler: &#x27;webpack&#x27;,
+    },
+  },
+})</code></pre></div></div>
+<p>앞 섹션과 같은 component가 있다고 가정하고, component가 예상한 출력을 render하는지 검증하는 test를 추가하세요:</p><div class="en-orig"><p>Assuming the same components from the previous section, add a test to validate a component is rendering the expected output:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">cypress/component/about.cy.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import Page from &#x27;../../app/page&#x27;
+
+describe(&#x27;&lt;Page /&gt;&#x27;, () =&gt; {
+  it(&#x27;should render and display expected content&#x27;, () =&gt; {
+    // Mount the React component for the Home page
+    cy.mount(&lt;Page /&gt;)
+
+    // The new page should contain an h1 with &quot;Home&quot;
+    cy.get(&#x27;h1&#x27;).contains(&#x27;Home&#x27;)
+
+    // Validate that a link with the expected URL is present
+    // Following the link is better suited to an E2E test
+    cy.get(&#x27;a[href=&quot;/about&quot;]&#x27;).should(&#x27;be.visible&#x27;)
+  })
+})</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>Cypress는 현재 <code>async</code> Server Component에 대한 Component Testing을 지원하지 않습니다. E2E testing 사용을 권장합니다.</li>
+<li>component test에는 Next.js server가 필요하지 않으므로, server가 있어야 동작하는 <code>&lt;Image /&gt;</code> 같은 기능은 별도 설정 없이는 동작하지 않을 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Cypress currently doesn't support Component Testing for <code>async</code> Server Components. We recommend using E2E testing.</li>
+<li>Since component tests do not require a Next.js server, features like <code>&lt;Image /&gt;</code> that rely on a server being available may not function out-of-the-box.</li>
+</ul></div></div></div>
+<h3 class="sec" id="running-component-tests"><a class="anchor" href="#running-component-tests">Running Component Tests<span class="ko">Component test 실행하기</span></a></h3>
+<p>terminal에서 <code>npm run cypress:open</code>을 실행해 Cypress를 시작하고 Component Testing suite를 실행하세요.</p><div class="en-orig"><p>Run <code>npm run cypress:open</code> in your terminal to start Cypress and run your Component Testing suite.</p></div>
+<h2 class="sec" id="continuous-integration-ci"><a class="anchor" href="#continuous-integration-ci">Continuous Integration (CI)</a></h2>
+<p>interactive testing 외에도 <code>cypress run</code> command를 사용해 Cypress를 headless로 실행할 수 있으며, 이는 CI 환경에 더 적합합니다:</p><div class="en-orig"><p>In addition to interactive testing, you can also run Cypress headlessly using the <code>cypress run</code> command, which is better suited for CI environments:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">package.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;scripts&quot;: {
+    //...
+    &quot;e2e&quot;: &quot;start-server-and-test dev http://localhost:3000 \&quot;cypress open --e2e\&quot;&quot;,
+    &quot;e2e:headless&quot;: &quot;start-server-and-test dev http://localhost:3000 \&quot;cypress run --e2e\&quot;&quot;,
+    &quot;component&quot;: &quot;cypress open --component&quot;,
+    &quot;component:headless&quot;: &quot;cypress run --component&quot;
+  }
+}</code></pre></div></div>
+<p>다음 자료에서 Cypress와 Continuous Integration에 대해 더 알아볼 수 있습니다:</p><div class="en-orig"><p>You can learn more about Cypress and Continuous Integration from these resources:</p></div>
+<ul>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/with-cypress" target="_blank" rel="noopener">Next.js with Cypress example</a></li>
+<li><a href="https://docs.cypress.io/guides/continuous-integration/introduction" target="_blank" rel="noopener">Cypress Continuous Integration Docs</a></li>
+<li><a href="https://on.cypress.io/github-actions" target="_blank" rel="noopener">Cypress GitHub Actions Guide</a></li>
+<li><a href="https://github.com/cypress-io/github-action" target="_blank" rel="noopener">Official Cypress GitHub Action</a></li>
+<li><a href="https://discord.com/invite/cypress" target="_blank" rel="noopener">Cypress Discord</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/with-cypress" target="_blank" rel="noopener">Next.js with Cypress example</a></li>
+<li><a href="https://docs.cypress.io/guides/continuous-integration/introduction" target="_blank" rel="noopener">Cypress Continuous Integration Docs</a></li>
+<li><a href="https://on.cypress.io/github-actions" target="_blank" rel="noopener">Cypress GitHub Actions Guide</a></li>
+<li><a href="https://github.com/cypress-io/github-action" target="_blank" rel="noopener">Official Cypress GitHub Action</a></li>
+<li><a href="https://discord.com/invite/cypress" target="_blank" rel="noopener">Cypress Discord</a></li>
+</ul></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/testing/cypress.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/testing/cypress" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-testing.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Testing</div><div class="ttl-ko">테스트</div></a>
+      <a href="app-guides-testing-jest.html" class="next"><div class="dir">다음 →</div><div class="ttl">Jest</div><div class="ttl-ko">Next.js에 Jest 설정하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/testing/cypress" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#quickstart">Quickstart</a></li><li class="l2"><a href="#manual-setup">Manual setup</a></li><li class="l2"><a href="#creating-your-first-cypress-e2e-test">Creating your first Cypress E2E test</a></li><li class="l3"><a href="#running-e2e-tests">Running E2E Tests</a></li><li class="l2"><a href="#creating-your-first-cypress-component-test">Creating your first Cypress component test</a></li><li class="l3"><a href="#running-component-tests">Running Component Tests</a></li><li class="l2"><a href="#continuous-integration-ci">Continuous Integration (CI)</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+[Cypress](https://www.cypress.io/)는 **End-to-End (E2E)** 및 **Component Testing**에 사용하는 test runner입니다. 이 페이지에서는 Next.js에 Cypress를 설정하고 첫 test를 작성하는 방법을 보여 줍니다.
+
+&gt; **Warning:**
+&gt;
+&gt; - 13.6.3 미만의 Cypress 버전은 `moduleResolution:&quot;bundler&quot;`를 사용하는 [TypeScript 버전 5](https://github.com/cypress-io/cypress/issues/27731)를 지원하지 않습니다. 하지만 이 문제는 Cypress 13.6.3 이상 버전에서 해결되었습니다. [cypress v13.6.3](https://docs.cypress.io/guides/references/changelog#13-6-3)
+
+
+
+## Quickstart || 빠른 시작
+
+[with-cypress example](https://github.com/vercel/next.js/tree/canary/examples/with-cypress)과 함께 `create-next-app`을 사용하면 빠르게 시작할 수 있습니다.
+
+[[CODE 1]]
+
+
+
+## Manual setup || 수동 설정
+
+Cypress를 수동으로 설정하려면 `cypress`를 dev dependency로 설치하세요:
+
+[[CODE 2]]
+
+`package.json`의 scripts 필드에 Cypress `open` command를 추가하세요:
+
+[[CODE 3]]
+
+Cypress를 처음 실행해 Cypress testing suite를 여세요:
+
+[[CODE 4]]
+
+**E2E Testing**과 **Component Testing** 중 하나 또는 둘 다를 설정할 수 있습니다. 이 option 중 하나를 선택하면 프로젝트에 `cypress.config.js` 파일과 `cypress` 폴더가 자동으로 만들어집니다.
+
+## Creating your first Cypress E2E test || 첫 Cypress E2E test 만들기
+
+`cypress.config` 파일에 다음 configuration이 있는지 확인하세요:
+
+[[CODE 5]]
+
+그런 다음 새 Next.js 파일 두 개를 만드세요:
+
+
+
+[[CODE 6]]
+
+[[CODE 7]]
+
+
+
+
+
+navigation이 올바르게 동작하는지 확인하는 test를 추가하세요:
+
+[[CODE 10]]
+
+### Running E2E Tests || E2E test 실행하기
+
+Cypress는 사용자가 애플리케이션을 탐색하는 것을 시뮬레이션하므로 Next.js server가 실행 중이어야 합니다. 애플리케이션이 실제로 동작하는 방식과 더 비슷하도록 production 코드를 대상으로 test를 실행하는 것을 권장합니다.
+
+`npm run build &amp;&amp; npm run start`를 실행해 Next.js 애플리케이션을 build한 다음, 다른 terminal 창에서 `npm run cypress:open`을 실행해 Cypress를 시작하고 E2E Testing suite를 실행하세요.
+
+&gt; **Good to know:**
+&gt;
+&gt; - `cypress.config.js` configuration 파일에 `baseUrl: &#x27;http://localhost:3000&#x27;`을 추가하면 `cy.visit(&quot;http://localhost:3000/&quot;)` 대신 `cy.visit(&quot;/&quot;)`를 사용할 수 있습니다.
+&gt; - 또는 [`start-server-and-test`](https://www.npmjs.com/package/start-server-and-test) package를 설치해 Next.js production server를 Cypress와 함께 실행할 수 있습니다. 설치 후 `package.json`의 scripts 필드에 `&quot;test&quot;: &quot;start-server-and-test start http://localhost:3000 cypress&quot;`를 추가하세요. 변경 사항이 생기면 애플리케이션을 다시 build해야 한다는 점을 기억하세요.
+
+## Creating your first Cypress component test || 첫 Cypress component test 만들기
+
+Component test는 애플리케이션 전체를 bundle하거나 server를 시작하지 않고도 특정 component를 build하고 mount합니다.
+
+Cypress 앱에서 **Component Testing**을 선택한 다음, front-end framework로 **Next.js**를 선택하세요. 프로젝트에 `cypress/component` 폴더가 만들어지고, Component Testing을 활성화하도록 `cypress.config.js` 파일이 업데이트됩니다.
+
+`cypress.config` 파일에 다음 configuration이 있는지 확인하세요:
+
+[[CODE 11]]
+
+앞 섹션과 같은 component가 있다고 가정하고, component가 예상한 출력을 render하는지 검증하는 test를 추가하세요:
+
+
+
+[[CODE 12]]
+
+
+
+
+
+&gt; **Good to know**:
+&gt;
+&gt; - Cypress는 현재 `async` Server Component에 대한 Component Testing을 지원하지 않습니다. E2E testing 사용을 권장합니다.
+&gt; - component test에는 Next.js server가 필요하지 않으므로, server가 있어야 동작하는 `&lt;Image /&gt;` 같은 기능은 별도 설정 없이는 동작하지 않을 수 있습니다.
+
+### Running Component Tests || Component test 실행하기
+
+terminal에서 `npm run cypress:open`을 실행해 Cypress를 시작하고 Component Testing suite를 실행하세요.
+
+## Continuous Integration (CI)
+
+interactive testing 외에도 `cypress run` command를 사용해 Cypress를 headless로 실행할 수 있으며, 이는 CI 환경에 더 적합합니다:
+
+[[CODE 14]]
+
+다음 자료에서 Cypress와 Continuous Integration에 대해 더 알아볼 수 있습니다:
+
+- [Next.js with Cypress example](https://github.com/vercel/next.js/tree/canary/examples/with-cypress)
+- [Cypress Continuous Integration Docs](https://docs.cypress.io/guides/continuous-integration/introduction)
+- [Cypress GitHub Actions Guide](https://on.cypress.io/github-actions)
+- [Official Cypress GitHub Action](https://github.com/cypress-io/github-action)
+- [Cypress Discord](https://discord.com/invite/cypress)
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

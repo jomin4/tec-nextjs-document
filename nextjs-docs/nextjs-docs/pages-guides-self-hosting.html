@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to self-host your Next.js application (Next.js 애플리케이션 self-hosting하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/guides/self-hosting" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/guides/self-hosting" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/self-hosting.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to self-host your Next.js application<span class="sub">Next.js 애플리케이션 self-hosting하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js 앱을 <a href="app-getting-started-deploying.html">deploy</a>할 때, 사용하는 infrastructure에 맞춰 여러 기능이 처리되는 방식을 설정하고 싶을 수 있습니다.</p><div class="en-orig"><p>When <a href="app-getting-started-deploying.html">deploying</a> your Next.js app, you may want to configure how different features are handled based on your infrastructure.</p></div>
+<blockquote><p><strong>🎥 Watch:</strong> Next.js self-hosting에 대해 더 알아보세요 → <a href="https://www.youtube.com/watch?v=sIVL4JMqRfc" target="_blank" rel="noopener">YouTube (45분)</a>.</p><div class="en-orig"><p><strong>🎥 Watch:</strong> Learn more about self-hosting Next.js → <a href="https://www.youtube.com/watch?v=sIVL4JMqRfc" target="_blank" rel="noopener">YouTube (45 minutes)</a>.</p></div></blockquote>
+<h2 class="sec" id="reverse-proxy"><a class="anchor" href="#reverse-proxy">Reverse Proxy</a></h2>
+<p>self-hosting할 때는 Next.js server를 인터넷에 직접 노출하기보다, 그 앞에 reverse proxy(nginx 등)를 두는 것을 권장합니다. reverse proxy는 잘못된 형식의 request, slow connection 공격, payload 크기 제한, rate limiting 및 기타 보안 문제를 처리해서 이런 작업을 Next.js server에서 덜어 줍니다. 덕분에 server는 request 검증 대신 rendering에 자원을 집중할 수 있습니다.</p><div class="en-orig"><p>When self-hosting, it's recommended to use a reverse proxy (like nginx) in front of your Next.js server rather than exposing it directly to the internet. A reverse proxy can handle malformed requests, slow connection attacks, payload size limits, rate limiting, and other security concerns, offloading these tasks from the Next.js server. This allows the server to dedicate its resources to rendering rather than request validation.</p></div>
+<h2 class="sec" id="image-optimization"><a class="anchor" href="#image-optimization">Image Optimization</a></h2>
+<p><code>next/image</code>를 통한 <a href="app-api-reference-components-image.html">Image Optimization</a>은 <code>next start</code>로 deploy할 때 별도 설정 없이(zero configuration) self-hosted 환경에서 동작합니다. 이미지 최적화를 별도 service에 맡기고 싶다면 <a href="app-api-reference-components-image.html#loader">image loader를 설정</a>할 수 있습니다.</p><div class="en-orig"><p><a href="app-api-reference-components-image.html">Image Optimization</a> through <code>next/image</code> works self-hosted with zero configuration when deploying using <code>next start</code>. If you would prefer to have a separate service to optimize images, you can <a href="app-api-reference-components-image.html#loader">configure an image loader</a>.</p></div>
+<p><code>next.config.js</code>에 custom image loader를 정의하면 <a href="app-guides-static-exports.html#image-optimization">static export</a>에서도 Image Optimization을 사용할 수 있습니다. 이미지는 build 중이 아니라 runtime에 최적화된다는 점에 유의하세요.</p><div class="en-orig"><p>Image Optimization can be used with a <a href="app-guides-static-exports.html#image-optimization">static export</a> by defining a custom image loader in <code>next.config.js</code>. Note that images are optimized at runtime, not during the build.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>glibc 기반 Linux 시스템에서는 과도한 메모리 사용을 막기 위해 Image Optimization에 <a href="https://sharp.pixelplumbing.com/install#linux-memory-allocator" target="_blank" rel="noopener">추가 configuration</a>이 필요할 수 있습니다.</li>
+<li><a href="app-api-reference-components-image.html#minimumcachettl">최적화된 이미지의 caching 동작</a>과 TTL 설정 방법에 대해 더 알아보세요.</li>
+<li>원한다면 <a href="app-api-reference-components-image.html#unoptimized">Image Optimization을 비활성화</a>하고도 <code>next/image</code> 사용의 다른 이점은 그대로 누릴 수 있습니다. 예를 들어 이미지를 따로 직접 최적화하는 경우입니다.</li>
+</ul><div class="en-orig"><ul>
+<li>On glibc-based Linux systems, Image Optimization may require <a href="https://sharp.pixelplumbing.com/install#linux-memory-allocator" target="_blank" rel="noopener">additional configuration</a> to prevent excessive memory usage.</li>
+<li>Learn more about the <a href="app-api-reference-components-image.html#minimumcachettl">caching behavior of optimized images</a> and how to configure the TTL.</li>
+<li>You can also <a href="app-api-reference-components-image.html#unoptimized">disable Image Optimization</a> and still retain other benefits of using <code>next/image</code> if you prefer. For example, if you are optimizing images yourself separately.</li>
+</ul></div></div></div>
+<h2 class="sec" id="proxy"><a class="anchor" href="#proxy">Proxy</a></h2>
+<p><a href="app-api-reference-file-conventions-proxy.html">Proxy</a>는 <code>next start</code>로 deploy할 때 별도 설정 없이 self-hosted 환경에서 동작합니다. 들어오는 request에 접근해야 하므로 <a href="app-guides-static-exports.html">static export</a>에서는 지원되지 않습니다.</p><div class="en-orig"><p><a href="app-api-reference-file-conventions-proxy.html">Proxy</a> works self-hosted with zero configuration when deploying using <code>next start</code>. Since it requires access to the incoming request, it is not supported when using a <a href="app-guides-static-exports.html">static export</a>.</p></div>
+<p>모든 Node.js API가 필요한 로직을 추가하려 한다면(또는 외부 package를 사용하려 한다면), 이 로직을 <a href="app-getting-started-server-and-client-components.html">Server Component</a>인 <a href="app-api-reference-file-conventions-layout.html">layout</a>으로 옮길 수 있을지도 모릅니다. 예를 들어 <a href="app-api-reference-functions-headers.html">header</a>를 확인하고 <a href="app-api-reference-functions-redirect.html">redirect</a>하는 경우입니다. 또한 <code>next.config.js</code>를 통해 header, cookie, query parameter를 사용해 <a href="app-api-reference-config-next-config-js-redirects.html#header-cookie-and-query-matching">redirect</a>하거나 <a href="app-api-reference-config-next-config-js-rewrites.html#header-cookie-and-query-matching">rewrite</a>할 수도 있습니다. 그래도 안 된다면 <a href="pages-guides-custom-server.html">custom server</a>를 사용할 수도 있습니다.</p><div class="en-orig"><p>If you are looking to add logic (or use an external package) that requires all Node.js APIs, you might be able to move this logic to a <a href="app-api-reference-file-conventions-layout.html">layout</a> as a <a href="app-getting-started-server-and-client-components.html">Server Component</a>. For example, checking <a href="app-api-reference-functions-headers.html">headers</a> and <a href="app-api-reference-functions-redirect.html">redirecting</a>. You can also use headers, cookies, or query parameters to <a href="app-api-reference-config-next-config-js-redirects.html#header-cookie-and-query-matching">redirect</a> or <a href="app-api-reference-config-next-config-js-rewrites.html#header-cookie-and-query-matching">rewrite</a> through <code>next.config.js</code>. If that does not work, you can also use a <a href="pages-guides-custom-server.html">custom server</a>.</p></div>
+<h2 class="sec" id="environment-variables"><a class="anchor" href="#environment-variables">Environment Variables<span class="ko">Environment variable</span></a></h2>
+<p>Next.js는 build time environment variable과 runtime environment variable을 모두 지원합니다.</p><div class="en-orig"><p>Next.js can support both build time and runtime environment variables.</p></div>
+<p><strong>기본적으로 environment variable은 server에서만 사용할 수 있습니다</strong>. environment variable을 브라우저에 노출하려면 이름 앞에 <code>NEXT_PUBLIC_</code> prefix를 붙여야 합니다. 단, 이런 public environment variable은 <code>next build</code> 중에 JavaScript bundle에 inline됩니다.</p><div class="en-orig"><p><strong>By default, environment variables are only available on the server</strong>. To expose an environment variable to the browser, it must be prefixed with <code>NEXT_PUBLIC_</code>. However, these public environment variables will be inlined into the JavaScript bundle during <code>next build</code>.</p></div>
+<p>runtime environment variable을 읽으려면 <code>getServerSideProps</code>를 사용하거나 <a href="app-guides-migrating-app-router-migration.html">App Router를 점진적으로 도입</a>하는 것을 권장합니다.</p><div class="en-orig"><p>To read runtime environment variables, we recommend using <code>getServerSideProps</code> or <a href="app-guides-migrating-app-router-migration.html">incrementally adopting the App Router</a>.</p></div>
+<p>이렇게 하면 서로 다른 값을 가진 여러 environment에 걸쳐 promote할 수 있는 단일 Docker image를 사용할 수 있습니다.</p><div class="en-orig"><p>This allows you to use a singular Docker image that can be promoted through multiple environments with different values.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><a href="app-guides-instrumentation.html"><code>register</code> 함수</a>를 사용하면 server 시작 시 코드를 실행할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>You can run code on server startup using the <a href="app-guides-instrumentation.html"><code>register</code> function</a>.</li>
+</ul></div></div></div>
+<h2 class="sec" id="caching-and-isr"><a class="anchor" href="#caching-and-isr">Caching and ISR<span class="ko">Caching과 ISR</span></a></h2>
+<p>Next.js는 response, 생성된 static page, build output, 그리고 이미지·font·script 같은 기타 static asset을 cache할 수 있습니다.</p><div class="en-orig"><p>Next.js can cache responses, generated static pages, build outputs, and other static assets like images, fonts, and scripts.</p></div>
+<p>page caching과 revalidation(<a href="app-guides-incremental-static-regeneration.html">Incremental Static Regeneration</a> 사용)은 <strong>같은 Next.js server cache</strong>를 사용합니다. 기본적으로 이 cache는 각 Next.js server instance의 로컬 filesystem(디스크)에 저장됩니다.</p><div class="en-orig"><p>Caching and revalidating pages (with <a href="app-guides-incremental-static-regeneration.html">Incremental Static Regeneration</a>) use the <strong>same Next.js server cache</strong>. By default, this cache is stored on the local filesystem (on disk) of each Next.js server instance.</p></div>
+<p>persistent 로컬 디스크를 가진 단일 self-hosted <code>next start</code> instance에서는 이것이 자동으로 동작합니다. 여러 instance를 실행하거나, ephemeral compute를 사용하거나, Next.js 앞에 CDN/reverse proxy를 둔다면 <a href="#configuring-caching">Configuring Caching</a>, <a href="#multi-instance-cache-coordination">Multi-Instance Cache Coordination</a>, <a href="#usage-with-cdns">Usage with CDNs</a>도 함께 검토하세요.</p><div class="en-orig"><p>This works automatically for a single self-hosted <code>next start</code> instance with persistent local disk. If you run multiple instances, use ephemeral compute, or place a CDN/reverse proxy in front of Next.js, also review <a href="#configuring-caching">Configuring Caching</a>, <a href="#multi-instance-cache-coordination">Multi-Instance Cache Coordination</a>, and <a href="#usage-with-cdns">Usage with CDNs</a>.</p></div>
+<p>cache된 page와 데이터를 durable storage에 유지하거나, Next.js 애플리케이션의 여러 container 또는 instance 사이에서 cache를 공유하고 싶다면 Next.js cache 위치를 설정할 수 있습니다.</p><div class="en-orig"><p>You can configure the Next.js cache location if you want to persist cached pages and data to durable storage, or share the cache across multiple containers or instances of your Next.js application.</p></div>
+<h3 class="sec" id="automatic-caching"><a class="anchor" href="#automatic-caching">Automatic Caching<span class="ko">자동 caching</span></a></h3>
+<ul>
+<li>Next.js는 진정으로 immutable한 asset에 <code>public, max-age=31536000, immutable</code> 값의 <code>Cache-Control</code> header를 설정합니다. 이 값은 override할 수 없습니다. 이런 immutable 파일은 파일 이름에 SHA-hash가 들어 있어서 무기한 안전하게 cache할 수 있습니다. 예를 들면 <a href="app-getting-started-images.html#local-images">Static Image Imports</a>입니다. 이미지의 경우 <a href="app-api-reference-components-image.html#minimumcachettl">TTL을 설정</a>할 수 있습니다.</li>
+<li>Incremental Static Regeneration(ISR)은 <code>s-maxage: &lt;revalidate in getStaticProps&gt;, stale-while-revalidate</code> 값의 <code>Cache-Control</code> header를 설정합니다. 이 revalidation 시간은 <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code> 함수</a>에서 초 단위로 정의합니다. <code>revalidate: false</code>로 설정하면 기본 cache 기간은 1년이 됩니다. 이를 CDN 계층에서 활용하려면 CDN/reverse proxy가 이 directive와 cache-key variability를 따라야 합니다(<a href="app-guides-cdn-caching.html">CDN Caching</a>). 그렇지 않으면 response가 CDN caching을 우회하거나, client-side navigation 중에 stale하거나 맞지 않는 variant가 제공될 수 있습니다.</li>
+<li>dynamic rendering되는 page는 사용자별 데이터가 cache되지 않도록 <code>private, no-cache, no-store, max-age=0, must-revalidate</code> 값의 <code>Cache-Control</code> header를 설정합니다. 이는 App Router와 Pages Router 모두에 적용됩니다. <a href="app-guides-draft-mode.html">Draft Mode</a>도 여기에 포함됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Next.js sets the <code>Cache-Control</code> header of <code>public, max-age=31536000, immutable</code> to truly immutable assets. It cannot be overridden. These immutable files contain a SHA-hash in the file name, so they can be safely cached indefinitely. For example, <a href="app-getting-started-images.html#local-images">Static Image Imports</a>. You can <a href="app-api-reference-components-image.html#minimumcachettl">configure the TTL</a> for images.</li>
+<li>Incremental Static Regeneration (ISR) sets the <code>Cache-Control</code> header of <code>s-maxage: &lt;revalidate in getStaticProps&gt;, stale-while-revalidate</code>. This revalidation time is defined in your <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code> function</a> in seconds. If you set <code>revalidate: false</code>, it will default to a one-year cache duration. To leverage this at the CDN layer, your CDN/reverse proxy must respect these directives and cache-key variability (<a href="app-guides-cdn-caching.html">CDN Caching</a>); otherwise, responses may bypass CDN caching or serve stale/mismatched variants during client-side navigation.</li>
+<li>Dynamically rendered pages set a <code>Cache-Control</code> header of <code>private, no-cache, no-store, max-age=0, must-revalidate</code> to prevent user-specific data from being cached. This applies to both the App Router and Pages Router. This also includes <a href="app-guides-draft-mode.html">Draft Mode</a>.</li>
+</ul></div>
+<h3 class="sec" id="static-assets"><a class="anchor" href="#static-assets">Static Assets<span class="ko">Static asset</span></a></h3>
+<p>static asset을 다른 domain이나 CDN에서 hosting하고 싶다면 <code>next.config.js</code>에서 <code>assetPrefix</code> <a href="app-api-reference-config-next-config-js-assetPrefix.html">configuration</a>을 사용할 수 있습니다. Next.js는 JavaScript나 CSS 파일을 가져올 때 이 asset prefix를 사용합니다. asset을 다른 domain으로 분리하면 DNS와 TLS resolution에 추가 시간이 든다는 단점이 있습니다.</p><div class="en-orig"><p>If you want to host static assets on a different domain or CDN, you can use the <code>assetPrefix</code> <a href="app-api-reference-config-next-config-js-assetPrefix.html">configuration</a> in <code>next.config.js</code>. Next.js will use this asset prefix when retrieving JavaScript or CSS files. Separating your assets to a different domain does come with the downside of extra time spent on DNS and TLS resolution.</p></div>
+<p><a href="app-api-reference-config-next-config-js-assetPrefix.html"><code>assetPrefix</code>에 대해 더 알아보기</a>.</p><div class="en-orig"><p><a href="app-api-reference-config-next-config-js-assetPrefix.html">Learn more about <code>assetPrefix</code></a>.</p></div>
+<h3 class="sec" id="configuring-caching"><a class="anchor" href="#configuring-caching">Configuring Caching<span class="ko">Caching 설정하기</span></a></h3>
+<p>기본적으로 생성된 cache asset은 메모리(기본 50mb)와 디스크에 저장됩니다. ephemeral compute platform(흔한 serverless 구성)에서는 로컬 디스크가 persistent하지 않거나 사용할 수 없는 경우가 많아서, 이 cache는 사실상 수명이 짧고 instance마다 따로 존재합니다. Kubernetes 같은 container orchestration platform으로 Next.js를 hosting한다면 각 pod가 cache의 사본을 하나씩 갖게 됩니다. 기본적으로 cache가 pod 사이에 공유되지 않아 stale 데이터가 표시되는 것을 막으려면, Next.js cache에 cache handler를 제공하고 in-memory caching을 비활성화하도록 설정할 수 있습니다.</p><div class="en-orig"><p>By default, generated cache assets will be stored in memory (defaults to 50mb) and on disk. On ephemeral compute platforms (common serverless setups), local disk is often non-persistent or unavailable, so this cache is effectively short-lived and per-instance. If you are hosting Next.js using a container orchestration platform like Kubernetes, each pod will have a copy of the cache. To prevent stale data from being shown since the cache is not shared between pods by default, you can configure the Next.js cache to provide a cache handler and disable in-memory caching.</p></div>
+<p>self-hosting할 때 cache 위치를 설정하려면 <code>next.config.js</code> 파일에 custom handler를 지정하세요:</p><div class="en-orig"><p>To configure the cache location when self-hosting, set a custom handler in your <code>next.config.js</code> file:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  cacheHandler: require.resolve(&#x27;./cache-handler.js&#x27;),
+  cacheMaxMemorySize: 0, // disable default in-memory caching
+}</code></pre></div></div>
+<p>handler 파일은 <code>get</code>, <code>set</code>, <code>revalidateTag</code>, <code>resetRequestCache</code>를 구현한 class를 export합니다. 각 method의 signature는 <a href="app-api-reference-config-next-config-js-incrementalCacheHandlerPath.html"><code>cacheHandler</code></a>를, 동작하는 구현은 <a href="https://github.com/vercel/next.js/tree/canary/examples/cache-handler-redis" target="_blank" rel="noopener">Redis <code>cacheHandler</code> 예제</a>를 참고하세요.</p><div class="en-orig"><p>The handler file exports a class that implements <code>get</code>, <code>set</code>, <code>revalidateTag</code>, and <code>resetRequestCache</code>. See <a href="app-api-reference-config-next-config-js-incrementalCacheHandlerPath.html"><code>cacheHandler</code></a> for each method's signature, and the <a href="https://github.com/vercel/next.js/tree/canary/examples/cache-handler-redis" target="_blank" rel="noopener">Redis <code>cacheHandler</code> example</a> for a working implementation.</p></div>
+<p>production deployment에서 handler는 다음을 충족해야 합니다:</p><div class="en-orig"><p>For production deployments, the handler must:</p></div>
+<ul>
+<li><strong>모든 instance가 접근할 수 있는 곳에 entry를 저장합니다.</strong> <a href="https://github.com/vercel/next.js/tree/canary/examples/cache-handler-redis" target="_blank" rel="noopener">Redis</a>나 AWS S3 같은 곳입니다. <code>Map</code>처럼 process 내부에 있는 store를 쓰면 다시 각 pod가 cache 사본을 따로 갖게 됩니다.</li>
+<li><strong>store의 크기를 제한합니다.</strong> TTL이나 크기 기반 eviction을 사용해 더 이상 request되지 않는 경로와 <code>fetch</code> key의 entry를 제거하세요.</li>
+<li><strong>entry를 serialize합니다.</strong> process 외부의 store라면 모두 이것이 필요합니다. entry에는 <code>JSON.stringify</code>/<code>JSON.parse</code>만으로는 serialize·복원할 수 없는 <code>Buffer</code>(예: <code>rscData</code>)와 <code>Map</code>(예: <code>segmentData</code>) 값이 들어 있을 수 있습니다. 이 serialization을 처리하지 않으면 client-side navigation이나 prefetch(RSC) request에서 <code>segmentData.get is not a function</code> 또는 <code>failed to pipe response</code> 같은 오류가 발생합니다.</li>
+<li><strong>tag로 entry를 index합니다.</strong> <code>APP_PAGE</code>, <code>APP_ROUTE</code>, <code>PAGES</code> entry는 <code>x-next-cache-tags</code> response header(<code>data.headers</code>)에 tag를 담고 있고, <code>fetch</code> entry의 tag는 <code>ctx.tags</code>에 담겨 있습니다. 한 instance에서 <code>revalidateTag</code>를 호출하면 모든 instance의 entry가 invalidate되도록 index를 shared store에 보관하세요.</li>
+<li><strong>storage 오류를 처리합니다.</strong> timeout이나 끊긴 connection 같은 경우입니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Store entries where every instance can reach them</strong>, like <a href="https://github.com/vercel/next.js/tree/canary/examples/cache-handler-redis" target="_blank" rel="noopener">Redis</a> or AWS S3. A store inside the process, such as a <code>Map</code>, gives each pod its own copy of the cache again.</li>
+<li><strong>Bound the store's size.</strong> Use a TTL or size-based eviction to remove entries for paths and <code>fetch</code> keys that are no longer requested.</li>
+<li><strong>Serialize entries.</strong> Any store outside the process needs this. An entry can contain <code>Buffer</code> (for example <code>rscData</code>) and <code>Map</code> (for example <code>segmentData</code>) values that <code>JSON.stringify</code>/<code>JSON.parse</code> can't serialize and restore on their own. Not handling this serialization results in errors like <code>segmentData.get is not a function</code> or <code>failed to pipe response</code> on client-side navigation or prefetch (RSC) requests.</li>
+<li><strong>Index entries by tag.</strong> <code>APP_PAGE</code>, <code>APP_ROUTE</code>, and <code>PAGES</code> entries carry their tags in the <code>x-next-cache-tags</code> response header (<code>data.headers</code>), while <code>ctx.tags</code> carries tags for <code>fetch</code> entries. Keep the index in the shared store, so a <code>revalidateTag</code> call on one instance invalidates the entry on every instance.</li>
+<li><strong>Handle storage errors</strong>, such as timeouts and dropped connections.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>revalidatePath</code>는 cache tag 위에 얹힌 편의 계층입니다. <code>revalidatePath</code>를 호출하면 해당 page를 위한 특수 기본 tag로 <code>revalidateTag</code> 함수가 호출됩니다.</li>
+<li><code>&#x27;use cache&#x27;</code> directive용 backend를 설정한다면 <a href="app-api-reference-config-next-config-js-cacheHandlers.html"><code>cacheHandlers</code></a>를 사용하세요.</li>
+<li>production을 염두에 둔 community Redis handler(GET timeout, in-memory coalescing, multi-instance tag coordination)는 <a href="https://github.com/vercel/next.js/blob/canary/examples/cache-handler-redis/README.md#production-community-handlers" target="_blank" rel="noopener">Redis 예제 README</a>에 정리되어 있으며, <a href="https://github.com/trieb-work/nextjs-turbo-redis-cache" target="_blank" rel="noopener"><code>@trieb.work/nextjs-turbo-redis-cache</code></a>와 <a href="https://github.com/mrjasonroy/cache-components-cache-handler" target="_blank" rel="noopener"><code>@mrjasonroy/cache-components-cache-handler</code></a>가 포함됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>revalidatePath</code> is a convenience layer on top of cache tags. Calling <code>revalidatePath</code> will call the <code>revalidateTag</code> function with a special default tag for the provided page.</li>
+<li>If you are configuring backends for <code>&#x27;use cache&#x27;</code> directives, use <a href="app-api-reference-config-next-config-js-cacheHandlers.html"><code>cacheHandlers</code></a>.</li>
+<li>Production-oriented community Redis handlers (GET timeouts, in-memory coalescing, multi-instance tag coordination) are listed in the <a href="https://github.com/vercel/next.js/blob/canary/examples/cache-handler-redis/README.md#production-community-handlers" target="_blank" rel="noopener">Redis example README</a>, including <a href="https://github.com/trieb-work/nextjs-turbo-redis-cache" target="_blank" rel="noopener"><code>@trieb.work/nextjs-turbo-redis-cache</code></a> and <a href="https://github.com/mrjasonroy/cache-components-cache-handler" target="_blank" rel="noopener"><code>@mrjasonroy/cache-components-cache-handler</code></a>.</li>
+</ul></div></div></div>
+<h2 class="sec" id="build-cache"><a class="anchor" href="#build-cache">Build Cache</a></h2>
+<p>Next.js는 <code>next build</code> 중에 어떤 버전의 애플리케이션이 제공되고 있는지 식별하기 위한 ID를 생성합니다. 같은 build를 사용해 여러 container를 띄워야 합니다.</p><div class="en-orig"><p>Next.js generates an ID during <code>next build</code> to identify which version of your application is being served. The same build should be used and boot up multiple containers.</p></div>
+<p>environment의 각 단계마다 다시 build한다면, container 사이에서 사용할 일관된 build ID를 생성해야 합니다. <code>next.config.js</code>에서 <code>generateBuildId</code> command를 사용하세요:</p><div class="en-orig"><p>If you are rebuilding for each stage of your environment, you will need to generate a consistent build ID to use between containers. Use the <code>generateBuildId</code> command in <code>next.config.js</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  generateBuildId: async () =&gt; {
+    // This could be anything, using the latest git hash
+    return process.env.GIT_HASH
+  },
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="app-api-reference-config-next-config-js-deploymentId.html"><code>deploymentId</code></a>가 설정되어 있으면, <code>generateBuildId</code>를 명시적으로 설정하지 않는 한 Next.js는 고정된 build ID를 사용합니다. 대신 <a href="#version-skew">Version skew</a>는 deployment ID로 감지됩니다.</p><div class="en-orig"><p>When <a href="app-api-reference-config-next-config-js-deploymentId.html"><code>deploymentId</code></a> is set, Next.js uses a constant build ID unless you explicitly configure <code>generateBuildId</code>. <a href="#version-skew">Version skew</a> is detected from the deployment ID instead.</p></div></div></div>
+<h2 class="sec" id="multi-server-deployments"><a class="anchor" href="#multi-server-deployments">Multi-Server Deployments<span class="ko">Multi-server deployment</span></a></h2>
+<p>Next.js를 여러 server instance에 걸쳐 실행할 때(예: load balancer 뒤의 container들) 일관된 동작을 보장하려면 추가로 고려할 점이 있습니다.</p><div class="en-orig"><p>When running Next.js across multiple server instances (for example, containers behind a load balancer), there are additional considerations to ensure consistent behavior.</p></div>
+<h3 class="sec" id="server-functions-encryption-key"><a class="anchor" href="#server-functions-encryption-key">Server Functions encryption key</a></h3>
+<p>Next.js는 <a href="app-getting-started-mutating-data.html">Server Function</a>의 closure 변수를 client로 보내기 전에 암호화합니다. 기본적으로 build마다 고유한 encryption key가 생성됩니다.</p><div class="en-orig"><p>Next.js encrypts <a href="app-getting-started-mutating-data.html">Server Function</a> closure variables before sending them to the client. By default, a unique encryption key is generated for each build.</p></div>
+<p>여러 server instance를 실행할 때는 모든 instance가 같은 encryption key를 사용해야 합니다. 그렇지 않으면 한 instance가 암호화한 Server Function을 다른 instance가 복호화할 수 없어서 "Failed to find Server Action" 오류가 발생합니다.</p><div class="en-orig"><p>When running multiple server instances, all instances must use the same encryption key. Otherwise, a Server Function encrypted by one instance cannot be decrypted by another, causing "Failed to find Server Action" errors.</p></div>
+<p><code>NEXT_SERVER_ACTIONS_ENCRYPTION_KEY</code> environment variable로 일관된 encryption key를 설정하세요. key는 유효한 AES key 길이(16, 24, 32 bytes)를 가진 base64-encoded 값이어야 합니다. Next.js는 기본적으로 32-byte key를 생성합니다.</p><div class="en-orig"><p>Set a consistent encryption key using the <code>NEXT_SERVER_ACTIONS_ENCRYPTION_KEY</code> environment variable. The key must be a base64-encoded value with a valid AES key length (16, 24, or 32 bytes). Next.js generates 32-byte keys by default.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-bash">NEXT_SERVER_ACTIONS_ENCRYPTION_KEY=your-generated-key next build</code></pre></div></div>
+<p>key는 build output에 포함되어 runtime에 자동으로 사용됩니다. 자세한 내용은 <a href="app-guides-data-security.html#overwriting-encryption-keys-advanced">Data Security 가이드</a>를 참고하세요.</p><div class="en-orig"><p>The key is embedded in the build output and used automatically at runtime. Learn more in the <a href="app-guides-data-security.html#overwriting-encryption-keys-advanced">Data Security guide</a>.</p></div>
+<h3 class="sec" id="deployment-identifier"><a class="anchor" href="#deployment-identifier">Deployment identifier</a></h3>
+<p>rolling deployment 중 version skew 보호를 활성화하려면 <a href="app-api-reference-config-next-config-js-deploymentId.html"><code>deploymentId</code></a>를 설정하세요. 이렇게 하면 client가 항상 일관된 deployment 버전의 asset을 받게 됩니다.</p><div class="en-orig"><p>Configure a <a href="app-api-reference-config-next-config-js-deploymentId.html"><code>deploymentId</code></a> to enable version skew protection during rolling deployments. This ensures clients always receive assets from a consistent deployment version.</p></div>
+<h3 class="sec" id="shared-cache"><a class="anchor" href="#shared-cache">Shared cache</a></h3>
+<p>기본적으로 Next.js는 instance 사이에 공유되지 않는 in-memory cache를 사용합니다. 일관된 caching 동작을 원한다면 외부 storage에 데이터를 저장하는 <a href="app-api-reference-config-next-config-js-cacheHandlers.html">custom cache handler</a>와 함께 <a href="app-api-reference-directives-use-cache-remote.html"><code>&#x27;use cache: remote&#x27;</code></a>를 사용하세요.</p><div class="en-orig"><p>By default, Next.js uses an in-memory cache that is not shared across instances. For consistent caching behavior, use <a href="app-api-reference-directives-use-cache-remote.html"><code>&#x27;use cache: remote&#x27;</code></a> with a <a href="app-api-reference-config-next-config-js-cacheHandlers.html">custom cache handler</a> that stores data in external storage.</p></div>
+<h2 class="sec" id="version-skew"><a class="anchor" href="#version-skew">Version Skew</a></h2>
+<p>여러 instance에 걸쳐 self-hosting하거나 rolling deployment를 할 때, <a href="app-glossary.html#version-skew">version skew</a>는 다음과 같은 문제를 일으킬 수 있습니다:</p><div class="en-orig"><p>When self-hosting across multiple instances or doing rolling deployments, <a href="app-glossary.html#version-skew">version skew</a> can cause:</p></div>
+<ul>
+<li><strong>Missing assets</strong>: client가 server에 더 이상 존재하지 않는 JavaScript나 CSS 파일을 request합니다</li>
+<li><strong>Server Function mismatches</strong>: client가 이전 build의 ID로 Server Function을 호출하는데, server는 그 ID를 더 이상 인식하지 못합니다</li>
+<li><strong>Navigation failures</strong>: 이전 deployment에서 prefetch한 page 데이터가 새 server와 호환되지 않습니다</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Missing assets</strong>: The client requests JavaScript or CSS files that no longer exist on the server</li>
+<li><strong>Server Function mismatches</strong>: The client invokes a Server Function using an ID from a previous build that the server no longer recognizes</li>
+<li><strong>Navigation failures</strong>: Prefetched page data from an old deployment is incompatible with the new server</li>
+</ul></div>
+<p>Next.js는 <a href="app-api-reference-config-next-config-js-deploymentId.html"><code>deploymentId</code></a>를 사용해 version skew를 감지하고 처리합니다. deployment ID가 설정되어 있으면:</p><div class="en-orig"><p>Next.js uses the <a href="app-api-reference-config-next-config-js-deploymentId.html"><code>deploymentId</code></a> to detect and handle version skew. When a deployment ID is configured:</p></div>
+<ul>
+<li>static asset에 <code>?dpl=&lt;deploymentId&gt;</code> query parameter가 붙습니다</li>
+<li>client-side navigation request에 <code>x-deployment-id</code> header가 포함됩니다</li>
+<li>server는 client의 deployment ID를 자신의 ID와 비교합니다</li>
+</ul><div class="en-orig"><ul>
+<li>Static assets include a <code>?dpl=&lt;deploymentId&gt;</code> query parameter</li>
+<li>Client-side navigation requests include an <code>x-deployment-id</code> header</li>
+<li>The server compares the client's deployment ID with its own</li>
+</ul></div>
+<p>불일치가 감지되면 Next.js는 client-side navigation 대신 hard navigation(전체 page reload)을 실행합니다. 이렇게 하면 client가 일관된 deployment 버전의 asset을 가져오게 됩니다.</p><div class="en-orig"><p>If a mismatch is detected, Next.js triggers a hard navigation (full page reload) instead of a client-side navigation. This ensures the client fetches assets from a consistent deployment version.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  deploymentId: process.env.DEPLOYMENT_VERSION,
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>애플리케이션이 reload될 때, page navigation 사이에 state를 유지하도록 설계되어 있지 않다면 애플리케이션 state가 사라질 수 있습니다. URL state나 local storage는 유지되지만, <code>useState</code> 같은 component state는 사라집니다.</p><div class="en-orig"><p>When the application is reloaded, there may be a loss of application state if it's not designed to persist between page navigations. URL state or local storage would persist, but component state like <code>useState</code> would be lost.</p></div></div></div>
+<h3 class="sec" id="immutable-assets"><a class="anchor" href="#immutable-assets">Immutable Assets<span class="ko">Immutable asset</span></a></h3>
+<p><a href="app-api-reference-config-next-config-js-supportsImmutableAssets.html">immutable static asset</a>을 사용하면 version skew를 막기가 훨씬 쉬워집니다:</p><div class="en-orig"><p>When using <a href="app-api-reference-config-next-config-js-supportsImmutableAssets.html">immutable static assets</a>, preventing version skew becomes much easier:</p></div>
+<p>asset을 여러 deployment 사이에서 공유할 수 있으므로, 기존 static 파일 폴더(또는 CDN bucket)에 계속 추가하기만 하면 version skew가 생기지 않습니다(reverse proxy에서 deployment id를 추적하거나 green-blue deployment를 할 필요 없이).</p><div class="en-orig"><p>Assets can be shared across deployments, so if you just keep adding them to your existing static file folder (or CDN bucket), there will be no version skew (without having to track deployment ids in the reverse proxy/do green-blue deployments).</p></div>
+<h2 class="sec" id="manual-graceful-shutdowns"><a class="anchor" href="#manual-graceful-shutdowns">Manual Graceful Shutdowns<span class="ko">수동 graceful shutdown</span></a></h2>
+<p>self-hosting할 때, server가 <code>SIGTERM</code> 또는 <code>SIGINT</code> signal로 종료될 때 코드를 실행하고 싶을 수 있습니다.</p><div class="en-orig"><p>When self-hosting, you might want to run code when the server shuts down on <code>SIGTERM</code> or <code>SIGINT</code> signals.</p></div>
+<p>env 변수 <code>NEXT_MANUAL_SIG_HANDLE</code>을 <code>true</code>로 설정한 뒤, <code>_document.js</code> 파일 안에서 해당 signal에 대한 handler를 등록하면 됩니다. 이 environment variable은 <code>.env</code> 파일이 아니라 <code>package.json</code> script에 직접 등록해야 합니다.</p><div class="en-orig"><p>You can set the env variable <code>NEXT_MANUAL_SIG_HANDLE</code> to <code>true</code> and then register a handler for that signal inside your <code>_document.js</code> file. You will need to register the environment variable directly in the <code>package.json</code> script, and not in the <code>.env</code> file.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>수동 signal 처리는 <code>next dev</code>에서는 사용할 수 없습니다.</p><div class="en-orig"><p>Manual signal handling is not available in <code>next dev</code>.</p></div></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">package.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;next dev&quot;,
+    &quot;build&quot;: &quot;next build&quot;,
+    &quot;start&quot;: &quot;NEXT_MANUAL_SIG_HANDLE=true next start&quot;
+  }
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/_document.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">if (process.env.NEXT_MANUAL_SIG_HANDLE) {
+  process.on(&#x27;SIGTERM&#x27;, () =&gt; {
+    console.log(&#x27;Received SIGTERM: cleaning up&#x27;)
+    process.exit(0)
+  })
+  process.on(&#x27;SIGINT&#x27;, () =&gt; {
+    console.log(&#x27;Received SIGINT: cleaning up&#x27;)
+    process.exit(0)
+  })
+}</code></pre></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/self-hosting.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/guides/self-hosting" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-guides-scripts.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Scripts</div><div class="ttl-ko">Script 로드와 최적화</div></a>
+      <a href="pages-guides-static-exports.html" class="next"><div class="dir">다음 →</div><div class="ttl">Static Exports</div><div class="ttl-ko">Next.js 애플리케이션을 static export하는 방법</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/guides/self-hosting" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#reverse-proxy">Reverse Proxy</a></li><li class="l2"><a href="#image-optimization">Image Optimization</a></li><li class="l2"><a href="#proxy">Proxy</a></li><li class="l2"><a href="#environment-variables">Environment Variables</a></li><li class="l2"><a href="#caching-and-isr">Caching and ISR</a></li><li class="l3"><a href="#automatic-caching">Automatic Caching</a></li><li class="l3"><a href="#static-assets">Static Assets</a></li><li class="l3"><a href="#configuring-caching">Configuring Caching</a></li><li class="l2"><a href="#build-cache">Build Cache</a></li><li class="l2"><a href="#multi-server-deployments">Multi-Server Deployments</a></li><li class="l3"><a href="#server-functions-encryption-key">Server Functions encryption key</a></li><li class="l3"><a href="#deployment-identifier">Deployment identifier</a></li><li class="l3"><a href="#shared-cache">Shared cache</a></li><li class="l2"><a href="#version-skew">Version Skew</a></li><li class="l3"><a href="#immutable-assets">Immutable Assets</a></li><li class="l2"><a href="#manual-graceful-shutdowns">Manual Graceful Shutdowns</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js 앱을 [deploy](/docs/app/getting-started/deploying)할 때, 사용하는 infrastructure에 맞춰 여러 기능이 처리되는 방식을 설정하고 싶을 수 있습니다.
+
+&gt; **🎥 Watch:** Next.js self-hosting에 대해 더 알아보세요 → [YouTube (45분)](https://www.youtube.com/watch?v=sIVL4JMqRfc).
+
+## Reverse Proxy
+
+self-hosting할 때는 Next.js server를 인터넷에 직접 노출하기보다, 그 앞에 reverse proxy(nginx 등)를 두는 것을 권장합니다. reverse proxy는 잘못된 형식의 request, slow connection 공격, payload 크기 제한, rate limiting 및 기타 보안 문제를 처리해서 이런 작업을 Next.js server에서 덜어 줍니다. 덕분에 server는 request 검증 대신 rendering에 자원을 집중할 수 있습니다.
+
+## Image Optimization
+
+`next/image`를 통한 [Image Optimization](/docs/app/api-reference/components/image)은 `next start`로 deploy할 때 별도 설정 없이(zero configuration) self-hosted 환경에서 동작합니다. 이미지 최적화를 별도 service에 맡기고 싶다면 [image loader를 설정](/docs/app/api-reference/components/image#loader)할 수 있습니다.
+
+`next.config.js`에 custom image loader를 정의하면 [static export](/docs/app/guides/static-exports#image-optimization)에서도 Image Optimization을 사용할 수 있습니다. 이미지는 build 중이 아니라 runtime에 최적화된다는 점에 유의하세요.
+
+&gt; **Good to know:**
+&gt;
+&gt; - glibc 기반 Linux 시스템에서는 과도한 메모리 사용을 막기 위해 Image Optimization에 [추가 configuration](https://sharp.pixelplumbing.com/install#linux-memory-allocator)이 필요할 수 있습니다.
+&gt; - [최적화된 이미지의 caching 동작](/docs/app/api-reference/components/image#minimumcachettl)과 TTL 설정 방법에 대해 더 알아보세요.
+&gt; - 원한다면 [Image Optimization을 비활성화](/docs/app/api-reference/components/image#unoptimized)하고도 `next/image` 사용의 다른 이점은 그대로 누릴 수 있습니다. 예를 들어 이미지를 따로 직접 최적화하는 경우입니다.
+
+## Proxy
+
+[Proxy](/docs/app/api-reference/file-conventions/proxy)는 `next start`로 deploy할 때 별도 설정 없이 self-hosted 환경에서 동작합니다. 들어오는 request에 접근해야 하므로 [static export](/docs/app/guides/static-exports)에서는 지원되지 않습니다.
+
+모든 Node.js API가 필요한 로직을 추가하려 한다면(또는 외부 package를 사용하려 한다면), 이 로직을 [Server Component](/docs/app/getting-started/server-and-client-components)인 [layout](/docs/app/api-reference/file-conventions/layout)으로 옮길 수 있을지도 모릅니다. 예를 들어 [header](/docs/app/api-reference/functions/headers)를 확인하고 [redirect](/docs/app/api-reference/functions/redirect)하는 경우입니다. 또한 `next.config.js`를 통해 header, cookie, query parameter를 사용해 [redirect](/docs/app/api-reference/config/next-config-js/redirects#header-cookie-and-query-matching)하거나 [rewrite](/docs/app/api-reference/config/next-config-js/rewrites#header-cookie-and-query-matching)할 수도 있습니다. 그래도 안 된다면 [custom server](/docs/pages/guides/custom-server)를 사용할 수도 있습니다.
+
+## Environment Variables || Environment variable
+
+Next.js는 build time environment variable과 runtime environment variable을 모두 지원합니다.
+
+**기본적으로 environment variable은 server에서만 사용할 수 있습니다**. environment variable을 브라우저에 노출하려면 이름 앞에 `NEXT_PUBLIC_` prefix를 붙여야 합니다. 단, 이런 public environment variable은 `next build` 중에 JavaScript bundle에 inline됩니다.
+
+
+
+runtime environment variable을 읽으려면 `getServerSideProps`를 사용하거나 [App Router를 점진적으로 도입](/docs/app/guides/migrating/app-router-migration)하는 것을 권장합니다.
+
+
+
+
+
+이렇게 하면 서로 다른 값을 가진 여러 environment에 걸쳐 promote할 수 있는 단일 Docker image를 사용할 수 있습니다.
+
+&gt; **Good to know:**
+&gt;
+&gt; - [`register` 함수](/docs/app/guides/instrumentation)를 사용하면 server 시작 시 코드를 실행할 수 있습니다.
+
+## Caching and ISR || Caching과 ISR
+
+Next.js는 response, 생성된 static page, build output, 그리고 이미지·font·script 같은 기타 static asset을 cache할 수 있습니다.
+
+page caching과 revalidation([Incremental Static Regeneration](/docs/app/guides/incremental-static-regeneration) 사용)은 **같은 Next.js server cache**를 사용합니다. 기본적으로 이 cache는 각 Next.js server instance의 로컬 filesystem(디스크)에 저장됩니다.
+
+persistent 로컬 디스크를 가진 단일 self-hosted `next start` instance에서는 이것이 자동으로 동작합니다. 여러 instance를 실행하거나, ephemeral compute를 사용하거나, Next.js 앞에 CDN/reverse proxy를 둔다면 [Configuring Caching](#configuring-caching), [Multi-Instance Cache Coordination](#multi-instance-cache-coordination), [Usage with CDNs](#usage-with-cdns)도 함께 검토하세요.
+
+cache된 page와 데이터를 durable storage에 유지하거나, Next.js 애플리케이션의 여러 container 또는 instance 사이에서 cache를 공유하고 싶다면 Next.js cache 위치를 설정할 수 있습니다.
+
+### Automatic Caching || 자동 caching
+
+- Next.js는 진정으로 immutable한 asset에 `public, max-age=31536000, immutable` 값의 `Cache-Control` header를 설정합니다. 이 값은 override할 수 없습니다. 이런 immutable 파일은 파일 이름에 SHA-hash가 들어 있어서 무기한 안전하게 cache할 수 있습니다. 예를 들면 [Static Image Imports](/docs/app/getting-started/images#local-images)입니다. 이미지의 경우 [TTL을 설정](/docs/app/api-reference/components/image#minimumcachettl)할 수 있습니다.
+- Incremental Static Regeneration(ISR)은 `s-maxage: &lt;revalidate in getStaticProps&gt;, stale-while-revalidate` 값의 `Cache-Control` header를 설정합니다. 이 revalidation 시간은 [`getStaticProps` 함수](/docs/pages/building-your-application/data-fetching/get-static-props)에서 초 단위로 정의합니다. `revalidate: false`로 설정하면 기본 cache 기간은 1년이 됩니다. 이를 CDN 계층에서 활용하려면 CDN/reverse proxy가 이 directive와 cache-key variability를 따라야 합니다([CDN Caching](/docs/app/guides/cdn-caching)). 그렇지 않으면 response가 CDN caching을 우회하거나, client-side navigation 중에 stale하거나 맞지 않는 variant가 제공될 수 있습니다.
+- dynamic rendering되는 page는 사용자별 데이터가 cache되지 않도록 `private, no-cache, no-store, max-age=0, must-revalidate` 값의 `Cache-Control` header를 설정합니다. 이는 App Router와 Pages Router 모두에 적용됩니다. [Draft Mode](/docs/app/guides/draft-mode)도 여기에 포함됩니다.
+
+### Static Assets || Static asset
+
+static asset을 다른 domain이나 CDN에서 hosting하고 싶다면 `next.config.js`에서 `assetPrefix` [configuration](/docs/app/api-reference/config/next-config-js/assetPrefix)을 사용할 수 있습니다. Next.js는 JavaScript나 CSS 파일을 가져올 때 이 asset prefix를 사용합니다. asset을 다른 domain으로 분리하면 DNS와 TLS resolution에 추가 시간이 든다는 단점이 있습니다.
+
+[`assetPrefix`에 대해 더 알아보기](/docs/app/api-reference/config/next-config-js/assetPrefix).
+
+### Configuring Caching || Caching 설정하기
+
+기본적으로 생성된 cache asset은 메모리(기본 50mb)와 디스크에 저장됩니다. ephemeral compute platform(흔한 serverless 구성)에서는 로컬 디스크가 persistent하지 않거나 사용할 수 없는 경우가 많아서, 이 cache는 사실상 수명이 짧고 instance마다 따로 존재합니다. Kubernetes 같은 container orchestration platform으로 Next.js를 hosting한다면 각 pod가 cache의 사본을 하나씩 갖게 됩니다. 기본적으로 cache가 pod 사이에 공유되지 않아 stale 데이터가 표시되는 것을 막으려면, Next.js cache에 cache handler를 제공하고 in-memory caching을 비활성화하도록 설정할 수 있습니다.
+
+self-hosting할 때 cache 위치를 설정하려면 `next.config.js` 파일에 custom handler를 지정하세요:
+
+[[CODE 2]]
+
+handler 파일은 `get`, `set`, `revalidateTag`, `resetRequestCache`를 구현한 class를 export합니다. 각 method의 signature는 [`cacheHandler`](/docs/app/api-reference/config/next-config-js/incrementalCacheHandlerPath)를, 동작하는 구현은 [Redis `cacheHandler` 예제](https://github.com/vercel/next.js/tree/canary/examples/cache-handler-redis)를 참고하세요.
+
+production deployment에서 handler는 다음을 충족해야 합니다:
+
+- **모든 instance가 접근할 수 있는 곳에 entry를 저장합니다.** [Redis](https://github.com/vercel/next.js/tree/canary/examples/cache-handler-redis)나 AWS S3 같은 곳입니다. `Map`처럼 process 내부에 있는 store를 쓰면 다시 각 pod가 cache 사본을 따로 갖게 됩니다.
+- **store의 크기를 제한합니다.** TTL이나 크기 기반 eviction을 사용해 더 이상 request되지 않는 경로와 `fetch` key의 entry를 제거하세요.
+- **entry를 serialize합니다.** process 외부의 store라면 모두 이것이 필요합니다. entry에는 `JSON.stringify`/`JSON.parse`만으로는 serialize·복원할 수 없는 `Buffer`(예: `rscData`)와 `Map`(예: `segmentData`) 값이 들어 있을 수 있습니다. 이 serialization을 처리하지 않으면 client-side navigation이나 prefetch(RSC) request에서 `segmentData.get is not a function` 또는 `failed to pipe response` 같은 오류가 발생합니다.
+- **tag로 entry를 index합니다.** `APP_PAGE`, `APP_ROUTE`, `PAGES` entry는 `x-next-cache-tags` response header(`data.headers`)에 tag를 담고 있고, `fetch` entry의 tag는 `ctx.tags`에 담겨 있습니다. 한 instance에서 `revalidateTag`를 호출하면 모든 instance의 entry가 invalidate되도록 index를 shared store에 보관하세요.
+- **storage 오류를 처리합니다.** timeout이나 끊긴 connection 같은 경우입니다.
+
+&gt; **Good to know:**
+&gt;
+&gt; - `revalidatePath`는 cache tag 위에 얹힌 편의 계층입니다. `revalidatePath`를 호출하면 해당 page를 위한 특수 기본 tag로 `revalidateTag` 함수가 호출됩니다.
+&gt; - `&#x27;use cache&#x27;` directive용 backend를 설정한다면 [`cacheHandlers`](/docs/app/api-reference/config/next-config-js/cacheHandlers)를 사용하세요.
+&gt; - production을 염두에 둔 community Redis handler(GET timeout, in-memory coalescing, multi-instance tag coordination)는 [Redis 예제 README](https://github.com/vercel/next.js/blob/canary/examples/cache-handler-redis/README.md#production-community-handlers)에 정리되어 있으며, [`@trieb.work/nextjs-turbo-redis-cache`](https://github.com/trieb-work/nextjs-turbo-redis-cache)와 [`@mrjasonroy/cache-components-cache-handler`](https://github.com/mrjasonroy/cache-components-cache-handler)가 포함됩니다.
+
+## Build Cache
+
+Next.js는 `next build` 중에 어떤 버전의 애플리케이션이 제공되고 있는지 식별하기 위한 ID를 생성합니다. 같은 build를 사용해 여러 container를 띄워야 합니다.
+
+environment의 각 단계마다 다시 build한다면, container 사이에서 사용할 일관된 build ID를 생성해야 합니다. `next.config.js`에서 `generateBuildId` command를 사용하세요:
+
+[[CODE 3]]
+
+&gt; **Good to know:** [`deploymentId`](/docs/app/api-reference/config/next-config-js/deploymentId)가 설정되어 있으면, `generateBuildId`를 명시적으로 설정하지 않는 한 Next.js는 고정된 build ID를 사용합니다. 대신 [Version skew](#version-skew)는 deployment ID로 감지됩니다.
+
+## Multi-Server Deployments || Multi-server deployment
+
+Next.js를 여러 server instance에 걸쳐 실행할 때(예: load balancer 뒤의 container들) 일관된 동작을 보장하려면 추가로 고려할 점이 있습니다.
+
+### Server Functions encryption key || Server Functions encryption key
+
+Next.js는 [Server Function](/docs/app/getting-started/mutating-data)의 closure 변수를 client로 보내기 전에 암호화합니다. 기본적으로 build마다 고유한 encryption key가 생성됩니다.
+
+여러 server instance를 실행할 때는 모든 instance가 같은 encryption key를 사용해야 합니다. 그렇지 않으면 한 instance가 암호화한 Server Function을 다른 instance가 복호화할 수 없어서 &quot;Failed to find Server Action&quot; 오류가 발생합니다.
+
+`NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` environment variable로 일관된 encryption key를 설정하세요. key는 유효한 AES key 길이(16, 24, 32 bytes)를 가진 base64-encoded 값이어야 합니다. Next.js는 기본적으로 32-byte key를 생성합니다.
+
+[[CODE 4]]
+
+key는 build output에 포함되어 runtime에 자동으로 사용됩니다. 자세한 내용은 [Data Security 가이드](/docs/app/guides/data-security#overwriting-encryption-keys-advanced)를 참고하세요.
+
+### Deployment identifier
+
+rolling deployment 중 version skew 보호를 활성화하려면 [`deploymentId`](/docs/app/api-reference/config/next-config-js/deploymentId)를 설정하세요. 이렇게 하면 client가 항상 일관된 deployment 버전의 asset을 받게 됩니다.
+
+### Shared cache
+
+기본적으로 Next.js는 instance 사이에 공유되지 않는 in-memory cache를 사용합니다. 일관된 caching 동작을 원한다면 외부 storage에 데이터를 저장하는 [custom cache handler](/docs/app/api-reference/config/next-config-js/cacheHandlers)와 함께 [`&#x27;use cache: remote&#x27;`](/docs/app/api-reference/directives/use-cache-remote)를 사용하세요.
+
+## Version Skew
+
+여러 instance에 걸쳐 self-hosting하거나 rolling deployment를 할 때, [version skew](/docs/app/glossary#version-skew)는 다음과 같은 문제를 일으킬 수 있습니다:
+
+- **Missing assets**: client가 server에 더 이상 존재하지 않는 JavaScript나 CSS 파일을 request합니다
+- **Server Function mismatches**: client가 이전 build의 ID로 Server Function을 호출하는데, server는 그 ID를 더 이상 인식하지 못합니다
+- **Navigation failures**: 이전 deployment에서 prefetch한 page 데이터가 새 server와 호환되지 않습니다
+
+Next.js는 [`deploymentId`](/docs/app/api-reference/config/next-config-js/deploymentId)를 사용해 version skew를 감지하고 처리합니다. deployment ID가 설정되어 있으면:
+
+- static asset에 `?dpl=&lt;deploymentId&gt;` query parameter가 붙습니다
+- client-side navigation request에 `x-deployment-id` header가 포함됩니다
+- server는 client의 deployment ID를 자신의 ID와 비교합니다
+
+불일치가 감지되면 Next.js는 client-side navigation 대신 hard navigation(전체 page reload)을 실행합니다. 이렇게 하면 client가 일관된 deployment 버전의 asset을 가져오게 됩니다.
+
+[[CODE 5]]
+
+&gt; **Good to know:** 애플리케이션이 reload될 때, page navigation 사이에 state를 유지하도록 설계되어 있지 않다면 애플리케이션 state가 사라질 수 있습니다. URL state나 local storage는 유지되지만, `useState` 같은 component state는 사라집니다.
+
+### Immutable Assets || Immutable asset
+
+[immutable static asset](/docs/app/api-reference/config/next-config-js/supportsImmutableAssets)을 사용하면 version skew를 막기가 훨씬 쉬워집니다:
+
+asset을 여러 deployment 사이에서 공유할 수 있으므로, 기존 static 파일 폴더(또는 CDN bucket)에 계속 추가하기만 하면 version skew가 생기지 않습니다(reverse proxy에서 deployment id를 추적하거나 green-blue deployment를 할 필요 없이).
+
+
+
+
+
+
+
+## Manual Graceful Shutdowns || 수동 graceful shutdown
+
+self-hosting할 때, server가 `SIGTERM` 또는 `SIGINT` signal로 종료될 때 코드를 실행하고 싶을 수 있습니다.
+
+env 변수 `NEXT_MANUAL_SIG_HANDLE`을 `true`로 설정한 뒤, `_document.js` 파일 안에서 해당 signal에 대한 handler를 등록하면 됩니다. 이 environment variable은 `.env` 파일이 아니라 `package.json` script에 직접 등록해야 합니다.
+
+&gt; **Good to know**: 수동 signal 처리는 `next dev`에서는 사용할 수 없습니다.
+
+[[CODE 7]]
+
+[[CODE 8]]
+
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

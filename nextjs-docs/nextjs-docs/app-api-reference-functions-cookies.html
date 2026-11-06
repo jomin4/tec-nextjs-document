@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cookies (cookies) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/functions/cookies" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/functions/cookies" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/cookies.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-functions.html">Functions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">cookies<span class="sub">cookies</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>cookies</code>는 <a href="app-getting-started-server-and-client-components.html">Server Components</a>에서 들어오는 HTTP request의 cookie를 읽고, <a href="app-getting-started-mutating-data.html">Server Functions</a>나 <a href="app-api-reference-file-conventions-route.html">Route Handlers</a>에서 나가는 request의 cookie를 읽고 쓸 수 있게 해 주는 <strong>async</strong> 함수입니다.</p><div class="en-orig"><p><code>cookies</code> is an <strong>async</strong> function that allows you to read the HTTP incoming request cookies in <a href="app-getting-started-server-and-client-components.html">Server Components</a>, and read/write outgoing request cookies in <a href="app-getting-started-mutating-data.html">Server Functions</a> or <a href="app-api-reference-file-conventions-route.html">Route Handlers</a>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { cookies } from &#x27;next/headers&#x27;
+
+export default async function Page() {
+  const cookieStore = await cookies()
+  const theme = cookieStore.get(&#x27;theme&#x27;)
+  return &#x27;...&#x27;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { cookies } from &#x27;next/headers&#x27;
+
+export default async function Page() {
+  const cookieStore = await cookies()
+  const theme = cookieStore.get(&#x27;theme&#x27;)
+  return &#x27;...&#x27;
+}</code></pre></div></div>
+<h2 class="sec" id="reference"><a class="anchor" href="#reference">Reference</a></h2>
+<h3 class="sec" id="methods"><a class="anchor" href="#methods">Methods</a></h3>
+<p>다음 method를 사용할 수 있습니다:</p><div class="en-orig"><p>The following methods are available:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Method</th><th>Return Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>get(&#x27;name&#x27;)</code></td><td>Object</td><td>cookie 이름을 받아 이름과 값이 담긴 object를 반환합니다.</td></tr>
+<tr><td><code>getAll()</code></td><td>Array of objects</td><td>이름이 일치하는 모든 cookie의 목록을 반환합니다.</td></tr>
+<tr><td><code>has(&#x27;name&#x27;)</code></td><td>Boolean</td><td>cookie 이름을 받아 해당 cookie가 존재하는지에 따라 boolean을 반환합니다.</td></tr>
+<tr><td><code>set(name, value, options)</code></td><td>-</td><td>cookie 이름, 값, option을 받아 나가는 request의 cookie를 설정합니다.</td></tr>
+<tr><td><code>delete(name)</code></td><td>-</td><td>cookie 이름을 받아 해당 cookie를 삭제합니다.</td></tr>
+<tr><td><code>toString()</code></td><td>String</td><td>cookie들을 문자열로 표현한 값을 반환합니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Method</th><th>Return Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>get(&#x27;name&#x27;)</code></td><td>Object</td><td>Accepts a cookie name and returns an object with the name and value.</td></tr>
+<tr><td><code>getAll()</code></td><td>Array of objects</td><td>Returns a list of all the cookies with a matching name.</td></tr>
+<tr><td><code>has(&#x27;name&#x27;)</code></td><td>Boolean</td><td>Accepts a cookie name and returns a boolean based on if the cookie exists.</td></tr>
+<tr><td><code>set(name, value, options)</code></td><td>-</td><td>Accepts a cookie name, value, and options and sets the outgoing request cookie.</td></tr>
+<tr><td><code>delete(name)</code></td><td>-</td><td>Accepts a cookie name and deletes the cookie.</td></tr>
+<tr><td><code>toString()</code></td><td>String</td><td>Returns a string representation of the cookies.</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="options"><a class="anchor" href="#options">Options</a></h3>
+<p>cookie를 설정할 때 <code>options</code> object에서 다음 property를 지원합니다:</p><div class="en-orig"><p>When setting a cookie, the following properties from the <code>options</code> object are supported:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>name</code></td><td>String</td><td>cookie의 이름을 지정합니다.</td></tr>
+<tr><td><code>value</code></td><td>String</td><td>cookie에 저장할 값을 지정합니다.</td></tr>
+<tr><td><code>expires</code></td><td>Date</td><td>cookie가 만료되는 정확한 날짜를 정의합니다.</td></tr>
+<tr><td><code>maxAge</code></td><td>Number</td><td>cookie의 수명을 초 단위로 설정합니다.</td></tr>
+<tr><td><code>domain</code></td><td>String</td><td>cookie를 사용할 수 있는 domain을 지정합니다.</td></tr>
+<tr><td><code>path</code></td><td>String, default: <code>&#x27;/&#x27;</code></td><td>cookie의 범위를 domain 안의 특정 path로 제한합니다.</td></tr>
+<tr><td><code>secure</code></td><td>Boolean</td><td>보안 강화를 위해 cookie가 HTTPS 연결로만 전송되도록 합니다.</td></tr>
+<tr><td><code>httpOnly</code></td><td>Boolean</td><td>cookie를 HTTP request로만 제한해 client-side 접근을 막습니다.</td></tr>
+<tr><td><code>sameSite</code></td><td>Boolean, <code>&#x27;lax&#x27;</code>, <code>&#x27;strict&#x27;</code>, <code>&#x27;none&#x27;</code></td><td>cookie의 cross-site request 동작을 제어합니다.</td></tr>
+<tr><td><code>priority</code></td><td>String (<code>&quot;low&quot;</code>, <code>&quot;medium&quot;</code>, <code>&quot;high&quot;</code>)</td><td>cookie의 우선순위(priority)를 지정합니다</td></tr>
+<tr><td><code>partitioned</code></td><td>Boolean</td><td>cookie가 <a href="https://github.com/privacycg/CHIPS" target="_blank" rel="noopener">partitioned</a> 상태인지 나타냅니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>name</code></td><td>String</td><td>Specifies the name of the cookie.</td></tr>
+<tr><td><code>value</code></td><td>String</td><td>Specifies the value to be stored in the cookie.</td></tr>
+<tr><td><code>expires</code></td><td>Date</td><td>Defines the exact date when the cookie will expire.</td></tr>
+<tr><td><code>maxAge</code></td><td>Number</td><td>Sets the cookie’s lifespan in seconds.</td></tr>
+<tr><td><code>domain</code></td><td>String</td><td>Specifies the domain where the cookie is available.</td></tr>
+<tr><td><code>path</code></td><td>String, default: <code>&#x27;/&#x27;</code></td><td>Limits the cookie's scope to a specific path within the domain.</td></tr>
+<tr><td><code>secure</code></td><td>Boolean</td><td>Ensures the cookie is sent only over HTTPS connections for added security.</td></tr>
+<tr><td><code>httpOnly</code></td><td>Boolean</td><td>Restricts the cookie to HTTP requests, preventing client-side access.</td></tr>
+<tr><td><code>sameSite</code></td><td>Boolean, <code>&#x27;lax&#x27;</code>, <code>&#x27;strict&#x27;</code>, <code>&#x27;none&#x27;</code></td><td>Controls the cookie's cross-site request behavior.</td></tr>
+<tr><td><code>priority</code></td><td>String (<code>&quot;low&quot;</code>, <code>&quot;medium&quot;</code>, <code>&quot;high&quot;</code>)</td><td>Specifies the cookie's priority</td></tr>
+<tr><td><code>partitioned</code></td><td>Boolean</td><td>Indicates whether the cookie is <a href="https://github.com/privacycg/CHIPS" target="_blank" rel="noopener">partitioned</a>.</td></tr>
+</tbody></table></div></div>
+<p>기본값이 있는 option은 <code>path</code>뿐입니다.</p><div class="en-orig"><p>The only option with a default value is <code>path</code>.</p></div>
+<p>이 option들에 대해 더 알아보려면 <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies" target="_blank" rel="noopener">MDN 문서</a>를 참고하세요.</p><div class="en-orig"><p>To learn more about these options, see the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies" target="_blank" rel="noopener">MDN docs</a>.</p></div>
+<h2 class="sec" id="good-to-know"><a class="anchor" href="#good-to-know">Good to know</a></h2>
+<ul>
+<li><code>cookies</code>는 promise를 반환하는 <strong>asynchronous</strong> 함수입니다. cookie에 접근하려면 <code>async/await</code>나 React의 <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use</code></a> 함수를 사용해야 합니다.<ul>
+<li>버전 14 이하에서 <code>cookies</code>는 synchronous 함수였습니다. 하위 호환성을 위해 Next.js 15에서도 여전히 synchronous하게 접근할 수 있지만, 이 동작은 앞으로 deprecated될 예정입니다.</li>
+</ul></li>
+<li><code>cookies</code>는 반환값을 미리 알 수 없는 <a href="app-glossary.html#request-time-apis">Request-time API</a>입니다. layout이나 page에서 사용하면 해당 route는 <a href="app-glossary.html#dynamic-rendering">dynamic rendering</a>으로 전환됩니다.</li>
+<li><a href="app-getting-started-caching.html">Cache Components</a>를 사용할 때 <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> boundary 바깥에서 <code>cookies()</code>를 호출하면 route가 prerender되지 않습니다. 해결 방법은 <a href="https://nextjs.org/docs/messages/blocking-prerender-runtime" target="_blank" rel="noopener">Next.js encountered runtime data during prerendering</a>을 참고하세요.</li>
+<li><code>.delete</code> method는 다음 경우에만 호출할 수 있습니다:<ul>
+<li><a href="app-getting-started-mutating-data.html">Server Function</a>이나 <a href="app-api-reference-file-conventions-route.html">Route Handler</a> 안에서.</li>
+<li><code>.set</code>을 호출한 곳과 같은 domain에 속할 때. wildcard domain의 경우 특정 subdomain이 정확히 일치해야 합니다. 또한 코드는 삭제하려는 cookie와 같은 protocol(HTTP 또는 HTTPS)에서 실행되어야 합니다.</li>
+</ul></li>
+<li>HTTP는 streaming이 시작된 뒤에 cookie를 설정하는 것을 허용하지 않으므로, <code>.set</code>은 반드시 <a href="app-getting-started-mutating-data.html">Server Function</a>이나 <a href="app-api-reference-file-conventions-route.html">Route Handler</a>에서 사용해야 합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>cookies</code> is an <strong>asynchronous</strong> function that returns a promise. You must use <code>async/await</code> or React's <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use</code></a> function to access cookies.<ul>
+<li>In version 14 and earlier, <code>cookies</code> was a synchronous function. To help with backwards compatibility, you can still access it synchronously in Next.js 15, but this behavior will be deprecated in the future.</li>
+</ul></li>
+<li><code>cookies</code> is a <a href="app-glossary.html#request-time-apis">Request-time API</a> whose returned values cannot be known ahead of time. Using it in a layout or page will opt a route into <a href="app-glossary.html#dynamic-rendering">dynamic rendering</a>.</li>
+<li>With <a href="app-getting-started-caching.html">Cache Components</a>, calling <code>cookies()</code> outside of a <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> boundary prevents the route from being prerendered. See <a href="https://nextjs.org/docs/messages/blocking-prerender-runtime" target="_blank" rel="noopener">Next.js encountered runtime data during prerendering</a> for fix options.</li>
+<li>The <code>.delete</code> method can only be called:<ul>
+<li>In a <a href="app-getting-started-mutating-data.html">Server Function</a> or <a href="app-api-reference-file-conventions-route.html">Route Handler</a>.</li>
+<li>If it belongs to the same domain from which <code>.set</code> is called. For wildcard domains, the specific subdomain must be an exact match. Additionally, the code must be executed on the same protocol (HTTP or HTTPS) as the cookie you want to delete.</li>
+</ul></li>
+<li>HTTP does not allow setting cookies after streaming starts, so you must use <code>.set</code> in a <a href="app-getting-started-mutating-data.html">Server Function</a> or <a href="app-api-reference-file-conventions-route.html">Route Handler</a>.</li>
+</ul></div>
+<h2 class="sec" id="understanding-cookie-behavior-in-server-components"><a class="anchor" href="#understanding-cookie-behavior-in-server-components">Understanding Cookie Behavior in Server Components<span class="ko">Server Component에서의 cookie 동작 이해하기</span></a></h2>
+<p>Server Component에서 cookie를 다룰 때는 cookie가 근본적으로 client-side 저장 메커니즘이라는 점을 이해하는 것이 중요합니다:</p><div class="en-orig"><p>When working with cookies in Server Components, it's important to understand that cookies are fundamentally a client-side storage mechanism:</p></div>
+<ul>
+<li><strong>cookie 읽기</strong>는 Server Component에서 동작합니다. client의 브라우저가 HTTP request header에 담아 server로 보내는 cookie 데이터에 접근하는 것이기 때문입니다.</li>
+<li><strong>cookie 설정</strong>은 Server Component rendering 중에는 지원되지 않습니다. cookie를 수정하려면 client에서 Server Function을 호출하거나 Route Handler를 사용하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Reading cookies</strong> works in Server Components because you're accessing the cookie data that the client's browser sends to the server in the HTTP request headers.</li>
+<li><strong>Setting cookies</strong> is not supported during Server Component rendering. To modify cookies, invoke a Server Function from the client or use a Route Handler.</li>
+</ul></div>
+<p>server는 브라우저에게 cookie를 저장하라는 지시(<code>Set-Cookie</code> header를 통해)만 보낼 수 있으며, 실제 저장은 client side에서 일어납니다. 그래서 state를 수정하는 cookie 작업(<code>.set</code>, <code>.delete</code>)은 response header를 제대로 설정할 수 있는 Server Function이나 Route Handler에서 수행해야 합니다.</p><div class="en-orig"><p>The server can only send instructions (via <code>Set-Cookie</code> headers) to tell the browser to store cookies - the actual storage happens on the client side. This is why cookie operations that modify state (<code>.set</code>, <code>.delete</code>) must be performed in a Server Function or Route Handler where the response headers can be properly set.</p></div>
+<h2 class="sec" id="understanding-cookie-behavior-in-server-functions"><a class="anchor" href="#understanding-cookie-behavior-in-server-functions">Understanding Cookie Behavior in Server Functions<span class="ko">Server Function에서의 cookie 동작 이해하기</span></a></h2>
+<p>Server Function에서 cookie를 설정하거나 삭제한 뒤, 그 함수가 <a href="app-getting-started-mutating-data.html#what-are-server-functions">Server Action</a>으로 사용되면(예: form의 <code>action</code> prop으로 전달된 경우) Next.js는 업데이트된 UI와 새 데이터를 한 번의 server roundtrip으로 함께 반환할 수 있습니다. <a href="app-getting-started-caching.html">Caching and Revalidating</a>을 참고하세요.</p><div class="en-orig"><p>After you set or delete a cookie in a Server Function, Next.js can return both the updated UI and new data in a single server roundtrip when the function is used as a <a href="app-getting-started-mutating-data.html#what-are-server-functions">Server Action</a> (e.g., passed to a form's <code>action</code> prop). See <a href="app-getting-started-caching.html">Caching and Revalidating</a>.</p></div>
+<p>UI는 unmount되지 않지만, server에서 오는 데이터에 의존하는 effect는 다시 실행됩니다.</p><div class="en-orig"><p>The UI is not unmounted, but effects that depend on data coming from the server will re-run.</p></div>
+<p>cache된 데이터도 새로 고치려면 함수 안에서 <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>나 <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>를 호출하세요.</p><div class="en-orig"><p>To refresh cached data too, call <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a> or <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a> inside the function.</p></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예제</span></a></h2>
+<h3 class="sec" id="getting-a-cookie"><a class="anchor" href="#getting-a-cookie">Getting a cookie<span class="ko">cookie 가져오기</span></a></h3>
+<p><code>(await cookies()).get(&#x27;name&#x27;)</code> method로 cookie 하나를 가져올 수 있습니다:</p><div class="en-orig"><p>You can use the <code>(await cookies()).get(&#x27;name&#x27;)</code> method to get a single cookie:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { cookies } from &#x27;next/headers&#x27;
+
+export default async function Page() {
+  const cookieStore = await cookies()
+  const theme = cookieStore.get(&#x27;theme&#x27;)
+  return &#x27;...&#x27;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { cookies } from &#x27;next/headers&#x27;
+
+export default async function Page() {
+  const cookieStore = await cookies()
+  const theme = cookieStore.get(&#x27;theme&#x27;)
+  return &#x27;...&#x27;
+}</code></pre></div></div>
+<h3 class="sec" id="getting-all-cookies"><a class="anchor" href="#getting-all-cookies">Getting all cookies<span class="ko">모든 cookie 가져오기</span></a></h3>
+<p><code>(await cookies()).getAll()</code> method로 이름이 일치하는 모든 cookie를 가져올 수 있습니다. <code>name</code>을 지정하지 않으면 사용 가능한 모든 cookie를 반환합니다.</p><div class="en-orig"><p>You can use the <code>(await cookies()).getAll()</code> method to get all cookies with a matching name. If <code>name</code> is unspecified, it returns all the available cookies.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { cookies } from &#x27;next/headers&#x27;
+
+export default async function Page() {
+  const cookieStore = await cookies()
+  return cookieStore.getAll().map((cookie) =&gt; (
+    &lt;div key={cookie.name}&gt;
+      &lt;p&gt;Name: {cookie.name}&lt;/p&gt;
+      &lt;p&gt;Value: {cookie.value}&lt;/p&gt;
+    &lt;/div&gt;
+  ))
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { cookies } from &#x27;next/headers&#x27;
+
+export default async function Page() {
+  const cookieStore = await cookies()
+  return cookieStore.getAll().map((cookie) =&gt; (
+    &lt;div key={cookie.name}&gt;
+      &lt;p&gt;Name: {cookie.name}&lt;/p&gt;
+      &lt;p&gt;Value: {cookie.value}&lt;/p&gt;
+    &lt;/div&gt;
+  ))
+}</code></pre></div></div>
+<h3 class="sec" id="setting-a-cookie"><a class="anchor" href="#setting-a-cookie">Setting a cookie<span class="ko">cookie 설정하기</span></a></h3>
+<p><a href="app-getting-started-mutating-data.html">Server Function</a>이나 <a href="app-api-reference-file-conventions-route.html">Route Handler</a>에서 <code>(await cookies()).set(name, value, options)</code> method로 cookie를 설정할 수 있습니다. <a href="#options"><code>options</code> object</a>는 선택 사항입니다.</p><div class="en-orig"><p>You can use the <code>(await cookies()).set(name, value, options)</code> method in a <a href="app-getting-started-mutating-data.html">Server Function</a> or <a href="app-api-reference-file-conventions-route.html">Route Handler</a> to set a cookie. The <a href="#options"><code>options</code> object</a> is optional.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { cookies } from &#x27;next/headers&#x27;
+
+export async function create(data) {
+  const cookieStore = await cookies()
+
+  cookieStore.set(&#x27;name&#x27;, &#x27;lee&#x27;)
+  // or
+  cookieStore.set(&#x27;name&#x27;, &#x27;lee&#x27;, { secure: true })
+  // or
+  cookieStore.set({
+    name: &#x27;name&#x27;,
+    value: &#x27;lee&#x27;,
+    httpOnly: true,
+    path: &#x27;/&#x27;,
+  })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { cookies } from &#x27;next/headers&#x27;
+
+export async function create(data) {
+  const cookieStore = await cookies()
+
+  cookieStore.set(&#x27;name&#x27;, &#x27;lee&#x27;)
+  // or
+  cookieStore.set(&#x27;name&#x27;, &#x27;lee&#x27;, { secure: true })
+  // or
+  cookieStore.set({
+    name: &#x27;name&#x27;,
+    value: &#x27;lee&#x27;,
+    httpOnly: true,
+    path: &#x27;/&#x27;,
+  })
+}</code></pre></div></div>
+<h3 class="sec" id="checking-if-a-cookie-exists"><a class="anchor" href="#checking-if-a-cookie-exists">Checking if a cookie exists<span class="ko">cookie 존재 여부 확인하기</span></a></h3>
+<p><code>(await cookies()).has(name)</code> method로 cookie가 존재하는지 확인할 수 있습니다:</p><div class="en-orig"><p>You can use the <code>(await cookies()).has(name)</code> method to check if a cookie exists:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.ts" data-js="app/page.js">app/page.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { cookies } from &#x27;next/headers&#x27;
+
+export default async function Page() {
+  const cookieStore = await cookies()
+  const hasCookie = cookieStore.has(&#x27;theme&#x27;)
+  return &#x27;...&#x27;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { cookies } from &#x27;next/headers&#x27;
+
+export default async function Page() {
+  const cookieStore = await cookies()
+  const hasCookie = cookieStore.has(&#x27;theme&#x27;)
+  return &#x27;...&#x27;
+}</code></pre></div></div>
+<h3 class="sec" id="deleting-cookies"><a class="anchor" href="#deleting-cookies">Deleting cookies<span class="ko">cookie 삭제하기</span></a></h3>
+<p>cookie를 삭제하는 방법은 세 가지가 있습니다.</p><div class="en-orig"><p>There are three ways you can delete a cookie.</p></div>
+<p><code>delete()</code> method 사용하기:</p><div class="en-orig"><p>Using the <code>delete()</code> method:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { cookies } from &#x27;next/headers&#x27;
+
+export async function deleteCookie(data) {
+  const cookieStore = await cookies()
+  cookieStore.delete(&#x27;name&#x27;)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { cookies } from &#x27;next/headers&#x27;
+
+export async function deleteCookie(data) {
+  const cookieStore = await cookies()
+  cookieStore.delete(&#x27;name&#x27;)
+}</code></pre></div></div>
+<p>같은 이름에 빈 값을 가진 새 cookie 설정하기:</p><div class="en-orig"><p>Setting a new cookie with the same name and an empty value:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { cookies } from &#x27;next/headers&#x27;
+
+export async function deleteCookie(data) {
+  const cookieStore = await cookies()
+  cookieStore.set(&#x27;name&#x27;, &#x27;&#x27;)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { cookies } from &#x27;next/headers&#x27;
+
+export async function deleteCookie(data) {
+  const cookieStore = await cookies()
+  cookieStore.set(&#x27;name&#x27;, &#x27;&#x27;)
+}</code></pre></div></div>
+<p><code>maxAge</code>를 0으로 설정하면 cookie가 즉시 만료됩니다. <code>maxAge</code>는 초 단위 값을 받습니다.</p><div class="en-orig"><p>Setting the <code>maxAge</code> to 0 will immediately expire a cookie. <code>maxAge</code> accepts a value in seconds.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { cookies } from &#x27;next/headers&#x27;
+
+export async function deleteCookie(data) {
+  const cookieStore = await cookies()
+  cookieStore.set(&#x27;name&#x27;, &#x27;value&#x27;, { maxAge: 0 })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { cookies } from &#x27;next/headers&#x27;
+
+export async function deleteCookie(data) {
+  const cookieStore = await cookies()
+  cookieStore.set(&#x27;name&#x27;, &#x27;value&#x27;, { maxAge: 0 })
+}</code></pre></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v15.0.0-RC</code></td><td><code>cookies</code>가 이제 async 함수입니다. <a href="app-guides-upgrading-codemods.html#150">codemod</a>를 사용할 수 있습니다.</td></tr>
+<tr><td><code>v13.0.0</code></td><td><code>cookies</code>가 도입되었습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v15.0.0-RC</code></td><td><code>cookies</code> is now an async function. A <a href="app-guides-upgrading-codemods.html#150">codemod</a> is available.</td></tr>
+<tr><td><code>v13.0.0</code></td><td><code>cookies</code> introduced.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/cookies.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/functions/cookies" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-functions-connection.html" class="prev"><div class="dir">← 이전</div><div class="ttl">connection</div><div class="ttl-ko">connection</div></a>
+      <a href="app-api-reference-functions-draft-mode.html" class="next"><div class="dir">다음 →</div><div class="ttl">draftMode</div><div class="ttl-ko">draftMode</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/functions/cookies" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#reference">Reference</a></li><li class="l3"><a href="#methods">Methods</a></li><li class="l3"><a href="#options">Options</a></li><li class="l2"><a href="#good-to-know">Good to know</a></li><li class="l2"><a href="#understanding-cookie-behavior-in-server-components">Understanding Cookie Behavior in Server Components</a></li><li class="l2"><a href="#understanding-cookie-behavior-in-server-functions">Understanding Cookie Behavior in Server Functions</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#getting-a-cookie">Getting a cookie</a></li><li class="l3"><a href="#getting-all-cookies">Getting all cookies</a></li><li class="l3"><a href="#setting-a-cookie">Setting a cookie</a></li><li class="l3"><a href="#checking-if-a-cookie-exists">Checking if a cookie exists</a></li><li class="l3"><a href="#deleting-cookies">Deleting cookies</a></li><li class="l2"><a href="#version-history">Version History</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`cookies`는 [Server Components](/docs/app/getting-started/server-and-client-components)에서 들어오는 HTTP request의 cookie를 읽고, [Server Functions](/docs/app/getting-started/mutating-data)나 [Route Handlers](/docs/app/api-reference/file-conventions/route)에서 나가는 request의 cookie를 읽고 쓸 수 있게 해 주는 **async** 함수입니다.
+
+[[CODE 1]]
+
+## Reference
+
+### Methods
+
+다음 method를 사용할 수 있습니다:
+
+| Method                      | Return Type      | Description                                                                     |
+| --------------------------- | ---------------- | ------------------------------------------------------------------------------- |
+| `get(&#x27;name&#x27;)`               | Object           | cookie 이름을 받아 이름과 값이 담긴 object를 반환합니다.            |
+| `getAll()`                  | Array of objects | 이름이 일치하는 모든 cookie의 목록을 반환합니다.                         |
+| `has(&#x27;name&#x27;)`               | Boolean          | cookie 이름을 받아 해당 cookie가 존재하는지에 따라 boolean을 반환합니다.      |
+| `set(name, value, options)` | -                | cookie 이름, 값, option을 받아 나가는 request의 cookie를 설정합니다. |
+| `delete(name)`              | -                | cookie 이름을 받아 해당 cookie를 삭제합니다.                                   |
+| `toString()`                | String           | cookie들을 문자열로 표현한 값을 반환합니다.                                 |
+
+### Options
+
+cookie를 설정할 때 `options` object에서 다음 property를 지원합니다:
+
+| Option        | Type                                   | Description                                                                        |
+| ------------- | -------------------------------------- | ---------------------------------------------------------------------------------- |
+| `name`        | String                                 | cookie의 이름을 지정합니다.                                                  |
+| `value`       | String                                 | cookie에 저장할 값을 지정합니다.                                    |
+| `expires`     | Date                                   | cookie가 만료되는 정확한 날짜를 정의합니다.                                |
+| `maxAge`      | Number                                 | cookie의 수명을 초 단위로 설정합니다.                                             |
+| `domain`      | String                                 | cookie를 사용할 수 있는 domain을 지정합니다.                                |
+| `path`        | String, default: `&#x27;/&#x27;`                 | cookie의 범위를 domain 안의 특정 path로 제한합니다.                    |
+| `secure`      | Boolean                                | 보안 강화를 위해 cookie가 HTTPS 연결로만 전송되도록 합니다.         |
+| `httpOnly`    | Boolean                                | cookie를 HTTP request로만 제한해 client-side 접근을 막습니다.              |
+| `sameSite`    | Boolean, `&#x27;lax&#x27;`, `&#x27;strict&#x27;`, `&#x27;none&#x27;` | cookie의 cross-site request 동작을 제어합니다.                                 |
+| `priority`    | String (`&quot;low&quot;`, `&quot;medium&quot;`, `&quot;high&quot;`) | cookie의 우선순위(priority)를 지정합니다                                                    |
+| `partitioned` | Boolean                                | cookie가 [partitioned](https://github.com/privacycg/CHIPS) 상태인지 나타냅니다. |
+
+기본값이 있는 option은 `path`뿐입니다.
+
+이 option들에 대해 더 알아보려면 [MDN 문서](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies)를 참고하세요.
+
+## Good to know
+
+- `cookies`는 promise를 반환하는 **asynchronous** 함수입니다. cookie에 접근하려면 `async/await`나 React의 [`use`](https://react.dev/reference/react/use) 함수를 사용해야 합니다.
+  - 버전 14 이하에서 `cookies`는 synchronous 함수였습니다. 하위 호환성을 위해 Next.js 15에서도 여전히 synchronous하게 접근할 수 있지만, 이 동작은 앞으로 deprecated될 예정입니다.
+- `cookies`는 반환값을 미리 알 수 없는 [Request-time API](/docs/app/glossary#request-time-apis)입니다. layout이나 page에서 사용하면 해당 route는 [dynamic rendering](/docs/app/glossary#dynamic-rendering)으로 전환됩니다.
+- [Cache Components](/docs/app/getting-started/caching)를 사용할 때 [`&lt;Suspense&gt;`](https://react.dev/reference/react/Suspense) boundary 바깥에서 `cookies()`를 호출하면 route가 prerender되지 않습니다. 해결 방법은 [Next.js encountered runtime data during prerendering](/docs/messages/blocking-prerender-runtime)을 참고하세요.
+- `.delete` method는 다음 경우에만 호출할 수 있습니다:
+  - [Server Function](/docs/app/getting-started/mutating-data)이나 [Route Handler](/docs/app/api-reference/file-conventions/route) 안에서.
+  - `.set`을 호출한 곳과 같은 domain에 속할 때. wildcard domain의 경우 특정 subdomain이 정확히 일치해야 합니다. 또한 코드는 삭제하려는 cookie와 같은 protocol(HTTP 또는 HTTPS)에서 실행되어야 합니다.
+- HTTP는 streaming이 시작된 뒤에 cookie를 설정하는 것을 허용하지 않으므로, `.set`은 반드시 [Server Function](/docs/app/getting-started/mutating-data)이나 [Route Handler](/docs/app/api-reference/file-conventions/route)에서 사용해야 합니다.
+
+## Understanding Cookie Behavior in Server Components || Server Component에서의 cookie 동작 이해하기
+
+Server Component에서 cookie를 다룰 때는 cookie가 근본적으로 client-side 저장 메커니즘이라는 점을 이해하는 것이 중요합니다:
+
+- **cookie 읽기**는 Server Component에서 동작합니다. client의 브라우저가 HTTP request header에 담아 server로 보내는 cookie 데이터에 접근하는 것이기 때문입니다.
+- **cookie 설정**은 Server Component rendering 중에는 지원되지 않습니다. cookie를 수정하려면 client에서 Server Function을 호출하거나 Route Handler를 사용하세요.
+
+server는 브라우저에게 cookie를 저장하라는 지시(`Set-Cookie` header를 통해)만 보낼 수 있으며, 실제 저장은 client side에서 일어납니다. 그래서 state를 수정하는 cookie 작업(`.set`, `.delete`)은 response header를 제대로 설정할 수 있는 Server Function이나 Route Handler에서 수행해야 합니다.
+
+## Understanding Cookie Behavior in Server Functions || Server Function에서의 cookie 동작 이해하기
+
+Server Function에서 cookie를 설정하거나 삭제한 뒤, 그 함수가 [Server Action](/docs/app/getting-started/mutating-data#what-are-server-functions)으로 사용되면(예: form의 `action` prop으로 전달된 경우) Next.js는 업데이트된 UI와 새 데이터를 한 번의 server roundtrip으로 함께 반환할 수 있습니다. [Caching and Revalidating](/docs/app/getting-started/caching)을 참고하세요.
+
+UI는 unmount되지 않지만, server에서 오는 데이터에 의존하는 effect는 다시 실행됩니다.
+
+cache된 데이터도 새로 고치려면 함수 안에서 [`revalidatePath`](/docs/app/api-reference/functions/revalidatePath)나 [`revalidateTag`](/docs/app/api-reference/functions/revalidateTag)를 호출하세요.
+
+## Examples || 예제
+
+### Getting a cookie || cookie 가져오기
+
+`(await cookies()).get(&#x27;name&#x27;)` method로 cookie 하나를 가져올 수 있습니다:
+
+[[CODE 2]]
+
+### Getting all cookies || 모든 cookie 가져오기
+
+`(await cookies()).getAll()` method로 이름이 일치하는 모든 cookie를 가져올 수 있습니다. `name`을 지정하지 않으면 사용 가능한 모든 cookie를 반환합니다.
+
+[[CODE 3]]
+
+### Setting a cookie || cookie 설정하기
+
+[Server Function](/docs/app/getting-started/mutating-data)이나 [Route Handler](/docs/app/api-reference/file-conventions/route)에서 `(await cookies()).set(name, value, options)` method로 cookie를 설정할 수 있습니다. [`options` object](#options)는 선택 사항입니다.
+
+[[CODE 4]]
+
+### Checking if a cookie exists || cookie 존재 여부 확인하기
+
+`(await cookies()).has(name)` method로 cookie가 존재하는지 확인할 수 있습니다:
+
+[[CODE 5]]
+
+### Deleting cookies || cookie 삭제하기
+
+cookie를 삭제하는 방법은 세 가지가 있습니다.
+
+`delete()` method 사용하기:
+
+[[CODE 6]]
+
+같은 이름에 빈 값을 가진 새 cookie 설정하기:
+
+[[CODE 7]]
+
+`maxAge`를 0으로 설정하면 cookie가 즉시 만료됩니다. `maxAge`는 초 단위 값을 받습니다.
+
+[[CODE 8]]
+
+## Version History || 버전 기록
+
+| Version      | Changes                                                                                                |
+| ------------ | ------------------------------------------------------------------------------------------------------ |
+| `v15.0.0-RC` | `cookies`가 이제 async 함수입니다. [codemod](/docs/app/guides/upgrading/codemods#150)를 사용할 수 있습니다. |
+| `v13.0.0`    | `cookies`가 도입되었습니다.                                                                                  |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

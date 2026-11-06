@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Output Types (Output 타입) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/api-reference/adapters/output-types" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/api-reference/adapters/output-types" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/07-adapters/09-output-types.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference-adapters.html">Adapters</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Output Types<span class="sub">Output 타입</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>outputs</code> object에는 build output type별 배열이 들어 있습니다:</p><div class="en-orig"><p>The <code>outputs</code> object contains arrays of build output types:</p></div>
+<ul>
+<li><code>outputs.pages</code>: <code>pages/</code> directory의 React page</li>
+<li><code>outputs.pagesApi</code>: <code>pages/api/</code>의 API route</li>
+<li><code>outputs.appPages</code>: <code>app/</code> directory의 React page</li>
+<li><code>outputs.appRoutes</code>: <code>app/</code>의 API route와 metadata route</li>
+<li><code>outputs.prerenders</code>: ISR이 활성화된 route와 static prerender</li>
+<li><code>outputs.staticFiles</code>: static asset과 자동으로 static 최적화된(auto-statically optimized) page</li>
+<li><code>outputs.middleware</code>: Middleware 함수 (있는 경우)</li>
+</ul><div class="en-orig"><ul>
+<li><code>outputs.pages</code>: React pages from the <code>pages/</code> directory</li>
+<li><code>outputs.pagesApi</code>: API routes from <code>pages/api/</code></li>
+<li><code>outputs.appPages</code>: React pages from the <code>app/</code> directory</li>
+<li><code>outputs.appRoutes</code>: API and metadata routes from <code>app/</code></li>
+<li><code>outputs.prerenders</code>: ISR-enabled routes and static prerenders</li>
+<li><code>outputs.staticFiles</code>: Static assets and auto-statically optimized pages</li>
+<li><code>outputs.middleware</code>: Middleware function (if present)</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p><code>config.output</code>이 <code>&#x27;export&#x27;</code>로 설정되어 있으면 <code>outputs.staticFiles</code>만 채워집니다. 애플리케이션 전체가 static 파일로 export되기 때문에 나머지 배열(<code>pages</code>, <code>appPages</code>, <code>pagesApi</code>, <code>appRoutes</code>, <code>prerenders</code>)은 모두 비어 있습니다.</p><div class="en-orig"><p>When <code>config.output</code> is set to <code>&#x27;export&#x27;</code>, only <code>outputs.staticFiles</code> is populated. All other arrays (<code>pages</code>, <code>appPages</code>, <code>pagesApi</code>, <code>appRoutes</code>, <code>prerenders</code>) will be empty since the entire application is exported as static files.</p></div></div></div>
+<p><code>runtime: &#x27;edge&#x27;</code>인 모든 route output에는 <code>edgeRuntime</code>이 포함되며, 여기에는 edge runtime에서 해당 output을 호출하기 위한 표준(canonical) entry metadata가 들어 있습니다. Edge Runtime은 <a href="https://nextjs.org/docs/messages/edge-runtime-deprecated" target="_blank" rel="noopener">deprecated</a>되었다는 점에 유의하세요.</p><div class="en-orig"><p>For any route output with <code>runtime: &#x27;edge&#x27;</code>, <code>edgeRuntime</code> is included and contains the canonical entry metadata for invoking that output in your edge runtime. Note that the Edge Runtime is <a href="https://nextjs.org/docs/messages/edge-runtime-deprecated" target="_blank" rel="noopener">deprecated</a>.</p></div>
+<h2 class="sec" id="pages-outputspages"><a class="anchor" href="#pages-outputspages">Pages (<code>outputs.pages</code>)</a></h2>
+<p><code>pages/</code> directory의 React page:</p><div class="en-orig"><p>React pages from the <code>pages/</code> directory:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">{
+  type: &#x27;PAGES&#x27;
+  id: string           // Route identifier
+  filePath: string     // Path to the built file
+  pathname: string     // URL pathname
+  sourcePage: string   // Original source file path in pages/ directory
+  runtime: &#x27;nodejs&#x27; | &#x27;edge&#x27;
+  assets: Record&lt;string, string&gt;  // Traced dependencies (key: relative path from repo root, value: absolute path)
+  assetsHashes: Record&lt;string, string&gt;  // Content hashes of each `assets` entry (key: same as `assets`, value: content hash)
+  wasmAssets?: Record&lt;string, string&gt;  // Bundled wasm files (key: name, value: absolute path)
+  edgeRuntime?: {
+    modulePath: string    // Absolute path to the module registered in the edge runtime
+    entryKey: string      // Canonical key used by the edge entry registry
+    handlerExport: string // Export name to invoke, currently &#x27;handler&#x27;
+  }
+  config: {
+    maxDuration?: number  // Maximum duration of the route in seconds
+    preferredRegion?: string | string[]  // Preferred deployment region (deprecated)
+    env?: Record&lt;string, string&gt;  // Environment variables (edge runtime only)
+  }
+}</code></pre></div></div>
+<h2 class="sec" id="api-routes-outputspagesapi"><a class="anchor" href="#api-routes-outputspagesapi">API Routes (<code>outputs.pagesApi</code>)</a></h2>
+<p><code>pages/api/</code>의 API route:</p><div class="en-orig"><p>API routes from <code>pages/api/</code>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">{
+  type: &#x27;PAGES_API&#x27;
+  id: string           // Route identifier
+  filePath: string     // Path to the built file
+  pathname: string     // URL pathname
+  sourcePage: string   // Original relative source file path
+  runtime: &#x27;nodejs&#x27; | &#x27;edge&#x27;
+  assets: Record&lt;string, string&gt;  // Traced dependencies (key: relative path from repo root, value: absolute path)
+  assetsHashes: Record&lt;string, string&gt;  // Content hashes of each `assets` entry (key: same as `assets`, value: content hash)
+  wasmAssets?: Record&lt;string, string&gt;  // Bundled wasm files (key: name, value: absolute path)
+  edgeRuntime?: {
+    modulePath: string    // Absolute path to the module registered in the edge runtime
+    entryKey: string      // Canonical key used by the edge entry registry
+    handlerExport: string // Export name to invoke, currently &#x27;handler&#x27;
+  }
+  config: {
+    maxDuration?: number  // Maximum duration of the route in seconds
+    preferredRegion?: string | string[]  // Preferred deployment region (deprecated)
+    env?: Record&lt;string, string&gt;  // Environment variables (edge runtime only)
+  }
+}</code></pre></div></div>
+<h2 class="sec" id="app-pages-outputsapppages"><a class="anchor" href="#app-pages-outputsapppages">App Pages (<code>outputs.appPages</code>)</a></h2>
+<p><code>app/</code> directory의 React page:</p><div class="en-orig"><p>React pages from the <code>app/</code> directory:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">{
+  type: &#x27;APP_PAGE&#x27;
+  id: string           // Route identifier
+  filePath: string     // Path to the built file
+  pathname: string     // URL pathname. Includes .rsc suffix for RSC routes
+  sourcePage: string   // Original relative source file path
+  runtime: &#x27;nodejs&#x27; | &#x27;edge&#x27; // Runtime the route is built for
+  assets: Record&lt;string, string&gt;  // Traced dependencies (key: relative path from repo root, value: absolute path)
+  assetsHashes: Record&lt;string, string&gt;  // Content hashes of each `assets` entry (key: same as `assets`, value: content hash)
+  wasmAssets?: Record&lt;string, string&gt;  // Bundled wasm files (key: name, value: absolute path)
+  edgeRuntime?: {
+    modulePath: string    // Absolute path to the module registered in the edge runtime
+    entryKey: string      // Canonical key used by the edge entry registry
+    handlerExport: string // Export name to invoke, currently &#x27;handler&#x27;
+  }
+  config: {
+    maxDuration?: number  // Maximum duration of the route in seconds
+    preferredRegion?: string | string[]  // Preferred deployment region (deprecated)
+    env?: Record&lt;string, string&gt;  // Environment variables (edge runtime only)
+  }
+}</code></pre></div></div>
+<h2 class="sec" id="app-routes-outputsapproutes"><a class="anchor" href="#app-routes-outputsapproutes">App Routes (<code>outputs.appRoutes</code>)</a></h2>
+<p><code>app/</code> directory의 API route와 metadata route:</p><div class="en-orig"><p>API and metadata routes from the <code>app/</code> directory:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">{
+  type: &#x27;APP_ROUTE&#x27;
+  id: string           // Route identifier
+  filePath: string     // Path to the built file
+  pathname: string     // URL pathname
+  sourcePage: string   // Original relative source file path
+  runtime: &#x27;nodejs&#x27; | &#x27;edge&#x27; // Runtime the route is built for
+  assets: Record&lt;string, string&gt;  // Traced dependencies (key: relative path from repo root, value: absolute path)
+  assetsHashes: Record&lt;string, string&gt;  // Content hashes of each `assets` entry (key: same as `assets`, value: content hash)
+  wasmAssets?: Record&lt;string, string&gt;  // Bundled wasm files (key: name, value: absolute path)
+  edgeRuntime?: {
+    modulePath: string    // Absolute path to the module registered in the edge runtime
+    entryKey: string      // Canonical key used by the edge entry registry
+    handlerExport: string // Export name to invoke, currently &#x27;handler&#x27;
+  }
+  config: {
+    maxDuration?: number  // Maximum duration of the route in seconds
+    preferredRegion?: string | string[]  // Preferred deployment region (deprecated)
+    env?: Record&lt;string, string&gt;  // Environment variables (edge runtime only)
+  }
+}</code></pre></div></div>
+<h2 class="sec" id="prerenders-outputsprerenders"><a class="anchor" href="#prerenders-outputsprerenders">Prerenders (<code>outputs.prerenders</code>)</a></h2>
+<p>ISR이 활성화된 route와 static prerender:</p><div class="en-orig"><p>ISR-enabled routes and static prerenders:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">{
+  type: &#x27;PRERENDER&#x27;
+  id: string           // Route identifier
+  pathname: string     // URL pathname
+  parentOutputId: string  // ID of the source page/route
+  groupId: number        // Revalidation group identifier (prerenders with same groupId revalidate together)
+  route: string           // Source route matcher aligned with the filesystem route, keeping dynamic segments (e.g. /blog/[slug] for the prerendered path /blog/first)
+  routeType?: &#x27;route&#x27; | &#x27;fallback&#x27; | &#x27;shell&#x27; | &#x27;page&#x27;  // Kind of canonical response
+  response?: &#x27;empty&#x27; | &#x27;initial&#x27; | &#x27;complete&#x27;  // Completeness before request-time work
+  compute?: &#x27;blocking&#x27; | &#x27;resuming&#x27; | &#x27;static&#x27;  // Request-time compute needed for the completed response
+  htmlSize?: number       // Byte size of the prerendered App Router HTML shell
+  pprChain?: {
+    headers: Record&lt;string, string&gt;  // PPR chain headers (e.g., &#x27;next-resume&#x27;: &#x27;1&#x27;)
+  }
+  parentFallbackMode?: false | null | string  // false: no additional paths (fallback: false), null: blocking render, string: path to HTML fallback
+  fallback?: {
+    filePath: string | undefined  // Path to the fallback file (HTML, JSON, or RSC)
+    initialStatus?: number  // Initial status code
+    initialHeaders?: Record&lt;string, string | string[]&gt;  // Initial headers
+    initialExpiration?: number  // Initial expiration time in seconds
+    initialRevalidate?: number | false  // Initial revalidate time in seconds, or false for fully static
+    postponedState: string | undefined  // Serialized PPR state used for resuming rendering
+  }
+  config: {
+    allowQuery?: string[]     // Allowed query parameters considered for the cache key
+    allowHeader?: string[]    // Allowed headers for ISR
+    bypassFor?: RouteHas[]    // Cache bypass conditions
+    renderingMode?: &#x27;STATIC&#x27; | &#x27;PARTIALLY_STATIC&#x27;  // STATIC: fully static, PARTIALLY_STATIC: PPR-enabled
+    partialFallback?: boolean  // Serves a partial fallback shell that should be upgraded to a full route in the background
+    bypassToken?: string      // Generated token that signals the prerender cache should be bypassed
+  }
+}</code></pre></div></div>
+<h3 class="sec" id="prerender-classification"><a class="anchor" href="#prerender-classification">Prerender classification<span class="ko">Prerender 분류</span></a></h3>
+<p><code>routeType</code>, <code>response</code>, <code>compute</code>는 prerender group의 primary response에 함께 출력됩니다. 관련된 RSC, data, segment output에는 이 field들이 생략됩니다. <code>fallback: false</code>인 Pages Router template도 일치하지 않는 URL에 대해 serve되는 일이 없으므로 이 field들을 생략합니다.</p><div class="en-orig"><p><code>routeType</code>, <code>response</code>, and <code>compute</code> are emitted together on the primary response in a prerender group. Related RSC, data, and segment outputs omit these fields. Pages Router templates with <code>fallback: false</code> also omit them because those templates are never served for unmatched URLs.</p></div>
+<p><code>routeType</code>은 표준(canonical) response의 종류를 나타냅니다:</p><div class="en-orig"><p><code>routeType</code> identifies the kind of canonical response:</p></div>
+<ul>
+<li><code>route</code>: Route Handler 같은 UI가 아닌 route</li>
+<li><code>page</code>: URL에 누락된 prerender 가능 parameter가 없는 page</li>
+<li><code>shell</code>: 해당 URL 부류(class)에 대해 재사용 가능한 가장 구체적인 page shell</li>
+<li><code>fallback</code>: prerender 가능한 parameter를 더 채워 넣어 특화(specialize)할 수 있는 재사용 가능한 page response</li>
+</ul><div class="en-orig"><ul>
+<li><code>route</code>: a non-UI route, such as a Route Handler</li>
+<li><code>page</code>: a page whose URL has no missing prerenderable parameters</li>
+<li><code>shell</code>: the most specific reusable page shell for its class of URLs</li>
+<li><code>fallback</code>: a reusable page response that can be specialized by filling more prerenderable parameters</li>
+</ul></div>
+<p><code>response</code>는 request 시점 작업 전에 response가 얼마나 완성되어 있는지를 나타냅니다:</p><div class="en-orig"><p><code>response</code> describes how complete the response is before request-time work:</p></div>
+<ul>
+<li><code>empty</code>: serve할 수 있는 초기 page response가 없음</li>
+<li><code>initial</code>: 초기 response를 serve할 수 있지만 완성된 page UI는 아님. 실제로는 부분적으로 prerender 가능한(partially prerenderable) UI route에만 해당함</li>
+<li><code>complete</code>: response가 완성되어 있음. <code>204</code> Route Handler response처럼 0 byte response body도 포함될 수 있음</li>
+</ul><div class="en-orig"><ul>
+<li><code>empty</code>: no initial page response can be served</li>
+<li><code>initial</code>: an initial response can be served, but it is not the completed page UI. In practice, this only applies to UI routes that are partially prerenderable</li>
+<li><code>complete</code>: the response is complete; this can include a zero-byte response body, such as a <code>204</code> Route Handler response</li>
+</ul></div>
+<p><code>compute</code>는 완성된 response를 serve하는 데 필요한 request 시점 compute를 나타냅니다:</p><div class="en-orig"><p><code>compute</code> describes the request-time compute needed to serve the completed response:</p></div>
+<ul>
+<li><code>blocking</code>: request 시점 compute가 시작되기 전에는 초기 response를 보낼 수 없음. 일단 시작되면 compute가 계속되는 동안 response를 stream할 수 있음</li>
+<li><code>resuming</code>: postponed 작업이 server에서 resume되는 동안 초기 response가 serve됨</li>
+<li><code>static</code>: request마다 server compute가 필요하지 않음</li>
+</ul><div class="en-orig"><ul>
+<li><code>blocking</code>: no initial response can be sent before request-time compute starts; once started, the response can stream while compute continues</li>
+<li><code>resuming</code>: an initial response is served while postponed work resumes on the server</li>
+<li><code>static</code>: no server compute is required per request</li>
+</ul></div>
+<p><code>htmlSize</code>는 primary App Router HTML output에만 포함됩니다. 값이 <code>0</code>이면 HTML shell이 비어 있다는 뜻입니다. Pages Router prerender, Route Handler, 그리고 관련된 RSC, data, segment output에는 생략됩니다.</p><div class="en-orig"><p><code>htmlSize</code> is only included on the primary App Router HTML output. A value of <code>0</code> means that the HTML shell is empty. Pages Router prerenders, Route Handlers, and related RSC, data, and segment outputs omit it.</p></div>
+<h2 class="sec" id="static-files-outputsstaticfiles"><a class="anchor" href="#static-files-outputsstaticfiles">Static Files (<code>outputs.staticFiles</code>)</a></h2>
+<p>static asset과 자동으로 static 최적화된 page:</p><div class="en-orig"><p>Static assets and auto-statically optimized pages:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">{
+  type: &#x27;STATIC_FILE&#x27;
+  id: string // Unique identifier for this static file output
+  filePath: string // Absolute filesystem path to the built file
+  pathname: string // The routable URL pathname for this static file
+  immutableHash: string | undefined // Content hash when the filename contains a hash, indicating the file is immutable
+}</code></pre></div></div>
+<p><code>immutableHash</code>에 대한 자세한 내용은 <a href="app-api-reference-adapters-immutable-static-assets.html">Supporting immutable static assets</a>를 참고하세요.</p><div class="en-orig"><p>See <a href="app-api-reference-adapters-immutable-static-assets.html">Supporting immutable static assets</a> for more information about <code>immutableHash</code>.</p></div>
+<h2 class="sec" id="middleware-outputsmiddleware"><a class="anchor" href="#middleware-outputsmiddleware">Middleware (<code>outputs.middleware</code>)</a></h2>
+<p><code>middleware.ts</code> (<code>.js</code>/<code>.ts</code>) 또는 <code>proxy.ts</code> (<code>.js</code>/<code>.ts</code>) 함수 (있는 경우):</p><div class="en-orig"><p><code>middleware.ts</code> (<code>.js</code>/<code>.ts</code>) or <code>proxy.ts</code> (<code>.js</code>/<code>.ts</code>) function (if present):</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">{
+  type: &#x27;MIDDLEWARE&#x27;
+  id: string           // Route identifier
+  filePath: string     // Path to the built file
+  pathname: string      // Always &#x27;/_middleware&#x27;
+  sourcePage: string    // Always &#x27;middleware&#x27;
+  runtime: &#x27;nodejs&#x27; | &#x27;edge&#x27; // Runtime the route is built for
+  assets: Record&lt;string, string&gt;  // Traced dependencies (key: relative path from repo root, value: absolute path)
+  assetsHashes: Record&lt;string, string&gt;  // Content hashes of each `assets` entry (key: same as `assets`, value: content hash)
+  wasmAssets?: Record&lt;string, string&gt;  // Bundled wasm files (key: name, value: absolute path)
+  edgeRuntime?: {
+    modulePath: string    // Absolute path to the module registered in the edge runtime
+    entryKey: string      // Canonical key used by the edge entry registry
+    handlerExport: string // Export name to invoke, currently &#x27;handler&#x27;
+  }
+  config: {
+    maxDuration?: number  // Maximum duration of the route in seconds
+    preferredRegion?: string | string[]  // Preferred deployment region (deprecated)
+    env?: Record&lt;string, string&gt;  // Environment variables (edge runtime only)
+    matchers?: Array&lt;{
+      source: string  // Source pattern
+      sourceRegex: string  // Compiled regex for matching requests
+      has: RouteHas[] | undefined  // Positive matching conditions
+      missing: RouteHas[] | undefined  // Negative matching conditions
+    }&gt;
+  }
+}</code></pre></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/07-adapters/09-output-types.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/api-reference/adapters/output-types" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-api-reference-adapters-invoking-entrypoints.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Invoking Entrypoints</div><div class="ttl-ko">Entrypoint 호출하기</div></a>
+      <a href="pages-api-reference-adapters-routing-information.html" class="next"><div class="dir">다음 →</div><div class="ttl">Routing Information</div><div class="ttl-ko">Routing 정보</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/api-reference/adapters/output-types" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#pages-outputspages">Pages (<code>outputs.pages</code>)</a></li><li class="l2"><a href="#api-routes-outputspagesapi">API Routes (<code>outputs.pagesApi</code>)</a></li><li class="l2"><a href="#app-pages-outputsapppages">App Pages (<code>outputs.appPages</code>)</a></li><li class="l2"><a href="#app-routes-outputsapproutes">App Routes (<code>outputs.appRoutes</code>)</a></li><li class="l2"><a href="#prerenders-outputsprerenders">Prerenders (<code>outputs.prerenders</code>)</a></li><li class="l3"><a href="#prerender-classification">Prerender classification</a></li><li class="l2"><a href="#static-files-outputsstaticfiles">Static Files (<code>outputs.staticFiles</code>)</a></li><li class="l2"><a href="#middleware-outputsmiddleware">Middleware (<code>outputs.middleware</code>)</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`outputs` object에는 build output type별 배열이 들어 있습니다:
+
+- `outputs.pages`: `pages/` directory의 React page
+- `outputs.pagesApi`: `pages/api/`의 API route
+- `outputs.appPages`: `app/` directory의 React page
+- `outputs.appRoutes`: `app/`의 API route와 metadata route
+- `outputs.prerenders`: ISR이 활성화된 route와 static prerender
+- `outputs.staticFiles`: static asset과 자동으로 static 최적화된(auto-statically optimized) page
+- `outputs.middleware`: Middleware 함수 (있는 경우)
+
+&gt; **Note:** `config.output`이 `&#x27;export&#x27;`로 설정되어 있으면 `outputs.staticFiles`만 채워집니다. 애플리케이션 전체가 static 파일로 export되기 때문에 나머지 배열(`pages`, `appPages`, `pagesApi`, `appRoutes`, `prerenders`)은 모두 비어 있습니다.
+
+`runtime: &#x27;edge&#x27;`인 모든 route output에는 `edgeRuntime`이 포함되며, 여기에는 edge runtime에서 해당 output을 호출하기 위한 표준(canonical) entry metadata가 들어 있습니다. Edge Runtime은 [deprecated](/docs/messages/edge-runtime-deprecated)되었다는 점에 유의하세요.
+
+## Pages (`outputs.pages`)
+
+`pages/` directory의 React page:
+
+[[CODE 1]]
+
+## API Routes (`outputs.pagesApi`)
+
+`pages/api/`의 API route:
+
+[[CODE 2]]
+
+## App Pages (`outputs.appPages`)
+
+`app/` directory의 React page:
+
+[[CODE 3]]
+
+## App Routes (`outputs.appRoutes`)
+
+`app/` directory의 API route와 metadata route:
+
+[[CODE 4]]
+
+## Prerenders (`outputs.prerenders`)
+
+ISR이 활성화된 route와 static prerender:
+
+[[CODE 5]]
+
+### Prerender classification || Prerender 분류
+
+`routeType`, `response`, `compute`는 prerender group의 primary response에 함께 출력됩니다. 관련된 RSC, data, segment output에는 이 field들이 생략됩니다. `fallback: false`인 Pages Router template도 일치하지 않는 URL에 대해 serve되는 일이 없으므로 이 field들을 생략합니다.
+
+`routeType`은 표준(canonical) response의 종류를 나타냅니다:
+
+- `route`: Route Handler 같은 UI가 아닌 route
+- `page`: URL에 누락된 prerender 가능 parameter가 없는 page
+- `shell`: 해당 URL 부류(class)에 대해 재사용 가능한 가장 구체적인 page shell
+- `fallback`: prerender 가능한 parameter를 더 채워 넣어 특화(specialize)할 수 있는 재사용 가능한 page response
+
+`response`는 request 시점 작업 전에 response가 얼마나 완성되어 있는지를 나타냅니다:
+
+- `empty`: serve할 수 있는 초기 page response가 없음
+- `initial`: 초기 response를 serve할 수 있지만 완성된 page UI는 아님. 실제로는 부분적으로 prerender 가능한(partially prerenderable) UI route에만 해당함
+- `complete`: response가 완성되어 있음. `204` Route Handler response처럼 0 byte response body도 포함될 수 있음
+
+`compute`는 완성된 response를 serve하는 데 필요한 request 시점 compute를 나타냅니다:
+
+- `blocking`: request 시점 compute가 시작되기 전에는 초기 response를 보낼 수 없음. 일단 시작되면 compute가 계속되는 동안 response를 stream할 수 있음
+- `resuming`: postponed 작업이 server에서 resume되는 동안 초기 response가 serve됨
+- `static`: request마다 server compute가 필요하지 않음
+
+`htmlSize`는 primary App Router HTML output에만 포함됩니다. 값이 `0`이면 HTML shell이 비어 있다는 뜻입니다. Pages Router prerender, Route Handler, 그리고 관련된 RSC, data, segment output에는 생략됩니다.
+
+## Static Files (`outputs.staticFiles`)
+
+static asset과 자동으로 static 최적화된 page:
+
+[[CODE 6]]
+
+`immutableHash`에 대한 자세한 내용은 [Supporting immutable static assets](/docs/app/api-reference/adapters/immutable-static-assets)를 참고하세요.
+
+## Middleware (`outputs.middleware`)
+
+`middleware.ts` (`.js`/`.ts`) 또는 `proxy.ts` (`.js`/`.ts`) 함수 (있는 경우):
+
+[[CODE 7]]
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

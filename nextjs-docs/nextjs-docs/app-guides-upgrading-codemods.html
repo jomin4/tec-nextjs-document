@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codemods (Codemod) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/upgrading/codemods" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/upgrading/codemods" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/upgrading/codemods.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides-upgrading.html">Upgrading</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Codemods<span class="sub">Codemod</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Codemod는 codebase에 프로그램 방식으로 실행되는 변환(transformation)입니다. 이를 통해 모든 파일을 일일이 직접 손대지 않고도 많은 양의 변경을 프로그램으로 적용할 수 있습니다.</p><div class="en-orig"><p>Codemods are transformations that run on your codebase programmatically. This allows a large number of changes to be programmatically applied without having to manually go through every file.</p></div>
+<p>Next.js는 API가 업데이트되거나 deprecated될 때 Next.js codebase를 upgrade할 수 있도록 Codemod transformation을 제공합니다.</p><div class="en-orig"><p>Next.js provides Codemod transformations to help upgrade your Next.js codebase when an API is updated or deprecated.</p></div>
+<h2 class="sec" id="usage"><a class="anchor" href="#usage">Usage<span class="ko">사용법</span></a></h2>
+<p>terminal에서 프로젝트 폴더로 이동(<code>cd</code>)한 다음 실행하세요:</p><div class="en-orig"><p>In your terminal, navigate (<code>cd</code>) into your project's folder, then run:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod &lt;transform&gt; &lt;path&gt;</code></pre></div></div>
+<p><code>&lt;transform&gt;</code>과 <code>&lt;path&gt;</code>를 적절한 값으로 바꾸세요.</p><div class="en-orig"><p>Replacing <code>&lt;transform&gt;</code> and <code>&lt;path&gt;</code> with appropriate values.</p></div>
+<ul>
+<li><code>transform</code> - transform 이름</li>
+<li><code>path</code> - 변환할 파일 또는 directory</li>
+<li><code>--dry</code> dry-run을 실행하며, 코드는 수정되지 않습니다</li>
+<li><code>--print</code> 비교할 수 있도록 변경된 output을 출력합니다</li>
+</ul><div class="en-orig"><ul>
+<li><code>transform</code> - name of transform</li>
+<li><code>path</code> - files or directory to transform</li>
+<li><code>--dry</code> Do a dry-run, no code will be edited</li>
+<li><code>--print</code> Prints the changed output for comparison</li>
+</ul></div>
+<h2 class="sec" id="upgrade"><a class="anchor" href="#upgrade">Upgrade<span class="ko">업그레이드</span></a></h2>
+<p>Next.js 애플리케이션을 upgrade하며, codemod를 자동으로 실행하고 Next.js, React, React DOM을 업데이트합니다.</p><div class="en-orig"><p>Upgrades your Next.js application, automatically running codemods and updating Next.js, React, and React DOM.</p></div>
+<p>coding agent가 codemod를 실행하고, 남은 migration 작업을 마무리하고, 앱을 검증하게 하려면 대신 <code>npx next@canary upgrade --agent=latest</code>를 실행하세요. 자세한 내용은 <a href="app-guides-upgrading-agent-upgrade.html">Upgrade with a coding agent</a>를 참고하세요.</p><div class="en-orig"><p>To have a coding agent run the codemods, complete the remaining migration work, and verify the app, run <code>npx next@canary upgrade --agent=latest</code> instead. See <a href="app-guides-upgrading-agent-upgrade.html">Upgrade with a coding agent</a> for details.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod upgrade [revision]</code></pre></div></div>
+<h3 class="sec" id="options"><a class="anchor" href="#options">Options<span class="ko">옵션</span></a></h3>
+<ul>
+<li><code>revision</code>(선택): upgrade 유형(<code>patch</code>, <code>minor</code>, <code>major</code>), NPM dist tag(예: <code>latest</code>, <code>canary</code>, <code>rc</code>), 또는 정확한 버전(예: <code>15.0.0</code>)을 지정합니다. stable 버전에서는 기본값이 <code>minor</code>입니다.</li>
+<li><code>--verbose</code>: upgrade 과정에서 더 자세한 output을 보여 줍니다.</li>
+<li><code>--skip-react-upgrade</code>: React dependency, type, override를 그대로 유지하고 React codemod를 건너뜁니다.</li>
+<li><code>--skip-eslint-upgrade</code>: <code>eslint</code>, <code>eslint-config-next</code>, <code>@next/eslint-plugin-next</code>를 그대로 유지하고 <code>next-lint-to-eslint-cli</code>를 건너뜁니다. 검증 전에 필요한 lint migration은 직접 완료하세요.</li>
+<li><code>-y, --yes</code>: 모든 interactive prompt를 건너뛰고 기본값을 받아들입니다(React 18 이후 버전으로 upgrade, Turbopack 활성화, 권장 codemod 모두 적용, React 19 codemod 실행). stdin이 TTY가 아닐 때(CI, AI coding agent, 또는 모든 non-interactive shell)도 자동으로 활성화되므로, 보통은 직접 넘길 필요가 없습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>revision</code> (optional): Specify the upgrade type (<code>patch</code>, <code>minor</code>, <code>major</code>), an NPM dist tag (e.g. <code>latest</code>, <code>canary</code>, <code>rc</code>), or an exact version (e.g. <code>15.0.0</code>). Defaults to <code>minor</code> for stable versions.</li>
+<li><code>--verbose</code>: Show more detailed output during the upgrade process.</li>
+<li><code>--skip-react-upgrade</code>: Preserve React dependencies, types, and overrides, and skip React codemods.</li>
+<li><code>--skip-eslint-upgrade</code>: Preserve <code>eslint</code>, <code>eslint-config-next</code>, <code>@next/eslint-plugin-next</code>, and skip <code>next-lint-to-eslint-cli</code>. Complete required lint migrations manually before verification.</li>
+<li><code>-y, --yes</code>: Skip every interactive prompt and accept its default (upgrade React past 18, enable Turbopack, apply all recommended codemods, run the React 19 codemods). Also auto-enabled when stdin is not a TTY (CI, an AI coding agent, or any non-interactive shell), so you usually don't need to pass it explicitly.</li>
+</ul></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash"># Upgrade to the latest patch (e.g. 16.0.7 -&gt; 16.0.8)
+npx @next/codemod upgrade patch
+
+# Upgrade to the latest minor (e.g. 15.3.7 -&gt; 15.4.8). This is the default.
+npx @next/codemod upgrade minor
+
+# Upgrade to the latest major (e.g. 15.5.7 -&gt; 16.0.7)
+npx @next/codemod upgrade major
+
+# Upgrade to a specific version
+npx @next/codemod upgrade 16
+
+# Upgrade to the canary release
+npx @next/codemod upgrade canary
+
+# Run from an agent or CI: skip every prompt
+npx @next/codemod upgrade canary --yes</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>target 버전이 현재 버전과 같거나 더 낮으면 command는 아무것도 바꾸지 않고 종료됩니다.</li>
+<li>skip flag는 target의 peer dependency 요구 사항을 우회하지 않습니다. 이전에 설치가 실패했다면 dependency를 고친 다음 해당 flag와 함께 똑같은 target으로 다시 시도하세요. Next.js가 이미 target과 일치한다면 건너뛴 migration을 아래 guide에 따라 개별적으로 실행하세요.</li>
+<li>upgrade 중에 어떤 Next.js codemod를 적용할지 선택하라는 prompt가 나올 수 있고, React를 upgrade하는 경우 React 19 codemod를 실행할지 묻는 prompt가 나올 수 있습니다.</li>
+<li>AI coding agent가 호출하거나 CI에서 실행되면(stdin이 TTY가 아닌 모든 환경) upgrade는 non-interactive로 실행되며 모든 기본값을 받아들입니다. terminal에서도 이 동작을 강제하려면 <code>--yes</code>를 넘기세요.</li>
+</ul><div class="en-orig"><ul>
+<li>If the target version is the same as or lower than your current version, the command exits without making changes.</li>
+<li>The skip flags do not bypass the target's peer dependency requirements. If installation previously failed, repair the dependencies and retry the same exact target with the relevant flag. If Next.js already matches the target, run any skipped migrations individually using the guides below.</li>
+<li>During the upgrade, you may be prompted to choose which Next.js codemods to apply and run React 19 codemods if upgrading React.</li>
+<li>When invoked by an AI coding agent or in CI (anywhere stdin isn't a TTY), the upgrade runs non-interactively and accepts every default. Pass <code>--yes</code> to force this behavior even from a terminal.</li>
+</ul></div></div></div>
+<h2 class="sec" id="codemods"><a class="anchor" href="#codemods">Codemods</a></h2>
+<h3 class="sec" id="163"><a class="anchor" href="#163">16.3</a></h3>
+<h4 class="sec" id="opt-every-route-out-of-cache-components-validation"><a class="anchor" href="#opt-every-route-out-of-cache-components-validation">Opt every route out of Cache Components validation<span class="ko">모든 route를 Cache Components validation에서 제외하기</span></a></h4>
+<h5 class="sec" id="cache-components-instant-false"><a class="anchor" href="#cache-components-instant-false"><code>cache-components-instant-false</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@canary cache-components-instant-false ./app</code></pre></div></div>
+<p>이 codemod는 app directory에서 아직 <code>instant</code>를 export하지 않는 모든 <code>{page,layout,default}</code> 파일에 <code>export const instant = false</code>를 추가합니다. 덕분에 <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a>를 활성화한 다음 route별로 opt-out을 하나씩 제거할 수 있습니다. Client Component(<code>&quot;use client&quot;</code>)와 이미 <code>instant</code>를 선언한 파일은 건너뜁니다. 생성되는 <code>@next-codemod-ignore</code> comment는 compile을 막지 않으면서 의도적인 opt-out임을 표시합니다.</p><div class="en-orig"><p>This codemod adds <code>export const instant = false</code> to every <code>{page,layout,default}</code> file in your app directory that doesn't already export <code>instant</code>, so you can enable <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a> and then remove the opt-outs route by route. It skips Client Components (<code>&quot;use client&quot;</code>) and files that already declare <code>instant</code>. The generated <code>@next-codemod-ignore</code> comment marks the intentional opt-out without blocking compilation.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>src/</code> 프로젝트에서는 <code>./src/app</code>을 넘기세요. 잘못된 경로를 주면 실패하지 않고 <code>0 ok</code>를 보고하므로 파일 수를 확인하세요.</p><div class="en-orig"><p>Pass <code>./src/app</code> in a <code>src/</code> project. A wrong path reports <code>0 ok</code> instead of failing, so check the file count.</p></div></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-diff">+ // @next-codemod-ignore Cache Components adoption: this segment temporarily allows blocking.
++ // Remove this opt-out after verifying the segment passes validation without it.
++ // See: https://nextjs.org/docs/app/guides/migrating-to-cache-components
++ export const instant = false
++
+  export default function Page() {
+    return &lt;h1&gt;Hello&lt;/h1&gt;
+  }</code></pre></div></div>
+<p>전체 도입 과정은 <a href="app-guides-migrating-to-cache-components.html">Migrating to Cache Components</a> guide를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-guides-migrating-to-cache-components.html">Migrating to Cache Components</a> guide for the full adoption path.</p></div>
+<h4 class="sec" id="remove-prefetch--partial-route-segment-config-after-enabling-partial-prefetching"><a class="anchor" href="#remove-prefetch--partial-route-segment-config-after-enabling-partial-prefetching">Remove <code>prefetch = &#x27;partial&#x27;</code> Route Segment Config after enabling Partial Prefetching<span class="ko">Partial Prefetching 활성화 후 <code>prefetch = &#x27;partial&#x27;</code> Route Segment Config 제거하기</span></a></h4>
+<h5 class="sec" id="remove-partial-prefetch"><a class="anchor" href="#remove-partial-prefetch"><code>remove-partial-prefetch</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@canary remove-partial-prefetch ./app</code></pre></div></div>
+<p>이 codemod는 app directory의 <code>{page,layout}</code> 파일에서 <code>export const prefetch = &#x27;partial&#x27;</code>을 제거합니다. 덕분에 <a href="app-api-reference-config-next-config-js-partialPrefetching.html"><code>partialPrefetching</code></a>을 전역으로 활성화한 다음 이제는 불필요해진 route별 opt-in을 없앨 수 있습니다. <code>&#x27;partial&#x27;</code> 값만 제거하고 <code>prefetch = &#x27;force-disabled&#x27;</code> 같은 다른 값은 그대로 둡니다.</p><div class="en-orig"><p>This codemod removes <code>export const prefetch = &#x27;partial&#x27;</code> from the <code>{page,layout}</code> files in your app directory, so you can enable <a href="app-api-reference-config-next-config-js-partialPrefetching.html"><code>partialPrefetching</code></a> globally and then drop the now-redundant per-route opt-ins. It removes only the <code>&#x27;partial&#x27;</code> value and leaves other values such as <code>prefetch = &#x27;force-disabled&#x27;</code> in place.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>src/</code> 프로젝트에서는 <code>./src/app</code>을 넘기세요. 잘못된 경로를 주면 실패하지 않고 <code>0 ok</code>를 보고하므로 파일 수를 확인하세요.</p><div class="en-orig"><p>Pass <code>./src/app</code> in a <code>src/</code> project. A wrong path reports <code>0 ok</code> instead of failing, so check the file count.</p></div></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">app/products/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-diff">- export const prefetch = &#x27;partial&#x27;</code></pre></div></div>
+<p>전체 도입 과정은 <a href="app-guides-adopting-partial-prefetching.html">Adopting Partial Prefetching</a> guide를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-guides-adopting-partial-prefetching.html">Adopting Partial Prefetching</a> guide for the full adoption path.</p></div>
+<h3 class="sec" id="160"><a class="anchor" href="#160">16.0</a></h3>
+<h4 class="sec" id="remove-experimental_ppr-route-segment-config-from-app-router-pages-and-layouts"><a class="anchor" href="#remove-experimental_ppr-route-segment-config-from-app-router-pages-and-layouts">Remove <code>experimental_ppr</code> Route Segment Config from App Router pages and layouts<span class="ko">App Router page와 layout에서 <code>experimental_ppr</code> Route Segment Config 제거하기</span></a></h4>
+<h5 class="sec" id="remove-experimental-ppr"><a class="anchor" href="#remove-experimental-ppr"><code>remove-experimental-ppr</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@latest remove-experimental-ppr .</code></pre></div></div>
+<p>이 codemod는 App Router page와 layout에서 <code>experimental_ppr</code> Route Segment Config를 제거합니다.</p><div class="en-orig"><p>This codemod removes the <code>experimental_ppr</code> Route Segment Config from App Router pages and layouts.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-diff">- export const experimental_ppr = true;</code></pre></div></div>
+<h4 class="sec" id="remove-unstable_-prefix-from-stabilized-api"><a class="anchor" href="#remove-unstable_-prefix-from-stabilized-api">Remove <code>unstable_</code> prefix from stabilized API<span class="ko">안정화된 API에서 <code>unstable_</code> prefix 제거하기</span></a></h4>
+<h5 class="sec" id="remove-unstable-prefix"><a class="anchor" href="#remove-unstable-prefix"><code>remove-unstable-prefix</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@latest remove-unstable-prefix .</code></pre></div></div>
+<p>이 codemod는 안정화된 API에서 <code>unstable_</code> prefix를 제거합니다.</p><div class="en-orig"><p>This codemod removes the <code>unstable_</code> prefix from stabilized API.</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { unstable_cacheTag as cacheTag } from &#x27;next/cache&#x27;
+
+cacheTag()</code></pre></div></div>
+<p>다음과 같이 변환됩니다:</p><div class="en-orig"><p>Transforms into:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { cacheTag } from &#x27;next/cache&#x27;
+
+cacheTag()</code></pre></div></div>
+<h4 class="sec" id="migrate-from-deprecated-middleware-convention-to-proxy"><a class="anchor" href="#migrate-from-deprecated-middleware-convention-to-proxy">Migrate from deprecated <code>middleware</code> convention to <code>proxy</code><span class="ko">deprecated된 <code>middleware</code> convention에서 <code>proxy</code>로 migrate하기</span></a></h4>
+<h5 class="sec" id="middleware-to-proxy"><a class="anchor" href="#middleware-to-proxy"><code>middleware-to-proxy</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@latest middleware-to-proxy .</code></pre></div></div>
+<p>이 codemod는 deprecated된 <code>middleware</code> convention을 사용하던 프로젝트를 <code>proxy</code> convention을 사용하도록 migrate합니다. 이 codemod는 다음을 수행합니다:</p><div class="en-orig"><p>This codemod migrates projects from using the deprecated <code>middleware</code> convention to using the <code>proxy</code> convention. It:</p></div>
+<ul>
+<li><code>middleware.&lt;extension&gt;</code>을 <code>proxy.&lt;extension&gt;</code>으로 이름을 바꿉니다(예: <code>middleware.ts</code>를 <code>proxy.ts</code>로)</li>
+<li>named export <code>middleware</code>를 <code>proxy</code>로 이름을 바꿉니다</li>
+<li>Next.js config property <code>experimental.middlewarePrefetch</code>를 <code>experimental.proxyPrefetch</code>로 이름을 바꿉니다</li>
+<li>Next.js config property <code>experimental.middlewareClientMaxBodySize</code>를 <code>experimental.proxyClientMaxBodySize</code>로 이름을 바꿉니다</li>
+<li>Next.js config property <code>experimental.externalMiddlewareRewritesResolve</code>를 <code>experimental.externalProxyRewritesResolve</code>로 이름을 바꿉니다</li>
+<li>Next.js config property <code>skipMiddlewareUrlNormalize</code>를 <code>skipProxyUrlNormalize</code>로 이름을 바꿉니다</li>
+</ul><div class="en-orig"><ul>
+<li>Renames <code>middleware.&lt;extension&gt;</code> to <code>proxy.&lt;extension&gt;</code> (e.g. <code>middleware.ts</code> to <code>proxy.ts</code>)</li>
+<li>Renames named export <code>middleware</code> to <code>proxy</code></li>
+<li>Renames Next.js config property <code>experimental.middlewarePrefetch</code> to <code>experimental.proxyPrefetch</code></li>
+<li>Renames Next.js config property <code>experimental.middlewareClientMaxBodySize</code> to <code>experimental.proxyClientMaxBodySize</code></li>
+<li>Renames Next.js config property <code>experimental.externalMiddlewareRewritesResolve</code> to <code>experimental.externalProxyRewritesResolve</code></li>
+<li>Renames Next.js config property <code>skipMiddlewareUrlNormalize</code> to <code>skipProxyUrlNormalize</code></li>
+</ul></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">middleware.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { NextResponse } from &#x27;next/server&#x27;
+
+export function middleware() {
+  return NextResponse.next()
+}</code></pre></div></div>
+<p>다음과 같이 변환됩니다:</p><div class="en-orig"><p>Transforms into:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">proxy.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { NextResponse } from &#x27;next/server&#x27;
+
+export function proxy() {
+  return NextResponse.next()
+}</code></pre></div></div>
+<h4 class="sec" id="migrate-from-next-lint-to-eslint-cli"><a class="anchor" href="#migrate-from-next-lint-to-eslint-cli">Migrate from <code>next lint</code> to ESLint CLI<span class="ko"><code>next lint</code>에서 ESLint CLI로 migrate하기</span></a></h4>
+<h5 class="sec" id="next-lint-to-eslint-cli"><a class="anchor" href="#next-lint-to-eslint-cli"><code>next-lint-to-eslint-cli</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@canary next-lint-to-eslint-cli .</code></pre></div></div>
+<p>이 codemod는 <code>next lint</code>를 사용하던 프로젝트를 로컬 ESLint config와 함께 ESLint CLI를 사용하도록 migrate합니다. 이 codemod는 다음을 수행합니다:</p><div class="en-orig"><p>This codemod migrates projects from using <code>next lint</code> to using the ESLint CLI with your local ESLint config. It:</p></div>
+<ul>
+<li>Next.js 권장 configuration이 들어간 <code>eslint.config.mjs</code> 파일을 만듭니다</li>
+<li><code>package.json</code> script가 <code>next lint</code> 대신 <code>eslint .</code>을 사용하도록 업데이트합니다</li>
+<li>필요한 ESLint dependency를 <code>package.json</code>에 추가합니다</li>
+<li>기존 ESLint configuration이 있으면 그대로 보존합니다</li>
+</ul><div class="en-orig"><ul>
+<li>Creates an <code>eslint.config.mjs</code> file with Next.js recommended configurations</li>
+<li>Updates <code>package.json</code> scripts to use <code>eslint .</code> instead of <code>next lint</code></li>
+<li>Adds necessary ESLint dependencies to <code>package.json</code></li>
+<li>Preserves existing ESLint configurations when found</li>
+</ul></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">package.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;scripts&quot;: {
+    &quot;lint&quot;: &quot;next lint&quot;
+  }
+}</code></pre></div></div>
+<p>다음과 같이 바뀝니다:</p><div class="en-orig"><p>Becomes:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">package.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;scripts&quot;: {
+    &quot;lint&quot;: &quot;eslint .&quot;
+  }
+}</code></pre></div></div>
+<p>그리고 다음 파일을 만듭니다:</p><div class="en-orig"><p>And creates:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">eslint.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { dirname } from &#x27;path&#x27;
+import { fileURLToPath } from &#x27;url&#x27;
+import { FlatCompat } from &#x27;@eslint/eslintrc&#x27;
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+const compat = new FlatCompat({
+  baseDirectory: __dirname,
+})
+
+const eslintConfig = [
+  ...compat.extends(&#x27;next/core-web-vitals&#x27;, &#x27;next/typescript&#x27;),
+  {
+    ignores: [
+      &#x27;node_modules/**&#x27;,
+      &#x27;.next/**&#x27;,
+      &#x27;out/**&#x27;,
+      &#x27;build/**&#x27;,
+      &#x27;next-env.d.ts&#x27;,
+    ],
+  },
+]
+
+export default eslintConfig</code></pre></div></div>
+<h3 class="sec" id="150"><a class="anchor" href="#150">15.0</a></h3>
+<h4 class="sec" id="transform-app-router-route-segment-config-runtime-value-from-experimental-edge-to-edge"><a class="anchor" href="#transform-app-router-route-segment-config-runtime-value-from-experimental-edge-to-edge">Transform App Router Route Segment Config <code>runtime</code> value from <code>experimental-edge</code> to <code>edge</code><span class="ko">App Router Route Segment Config <code>runtime</code> 값을 <code>experimental-edge</code>에서 <code>edge</code>로 변환하기</span></a></h4>
+<h5 class="sec" id="app-dir-runtime-config-experimental-edge"><a class="anchor" href="#app-dir-runtime-config-experimental-edge"><code>app-dir-runtime-config-experimental-edge</code></a></h5>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p>이 codemod는 App Router 전용입니다.</p><div class="en-orig"><p>This codemod is App Router specific.</p></div></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@latest app-dir-runtime-config-experimental-edge .</code></pre></div></div>
+<p>이 codemod는 <a href="app-api-reference-file-conventions-route-segment-config-runtime.html">Route Segment Config <code>runtime</code></a> 값 <code>experimental-edge</code>를 <code>edge</code>로 변환합니다.</p><div class="en-orig"><p>This codemod transforms <a href="app-api-reference-file-conventions-route-segment-config-runtime.html">Route Segment Config <code>runtime</code></a> value <code>experimental-edge</code> to <code>edge</code>.</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">export const runtime = &#x27;experimental-edge&#x27;</code></pre></div></div>
+<p>다음과 같이 변환됩니다:</p><div class="en-orig"><p>Transforms into:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">export const runtime = &#x27;edge&#x27;</code></pre></div></div>
+<h4 class="sec" id="migrate-to-async-dynamic-apis"><a class="anchor" href="#migrate-to-async-dynamic-apis">Migrate to async Dynamic APIs<span class="ko">async Dynamic API로 migrate하기</span></a></h4>
+<p>이전에 동기(synchronous) 접근을 지원하던, dynamic rendering을 사용하게 만드는 API들이 이제 비동기(asynchronous)가 되었습니다. 이 breaking change에 대한 자세한 내용은 <a href="app-guides-upgrading-version-15.html">upgrade guide</a>에서 읽을 수 있습니다.</p><div class="en-orig"><p>APIs that opted into dynamic rendering that previously supported synchronous access are now asynchronous. You can read more about this breaking change in the <a href="app-guides-upgrading-version-15.html">upgrade guide</a>.</p></div>
+<h5 class="sec" id="next-async-request-api"><a class="anchor" href="#next-async-request-api"><code>next-async-request-api</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@latest next-async-request-api .</code></pre></div></div>
+<p>이 codemod는 이제 비동기가 된 dynamic API(<code>next/headers</code>의 <code>cookies()</code>, <code>headers()</code>, <code>draftMode()</code>)를 올바르게 await하거나, 해당되는 경우 <code>React.use()</code>로 감싸도록 변환합니다.
+자동 migration이 불가능한 경우 codemod는 <code>@next-codemod-error</code> comment를 추가하고 임시 <code>UnsafeUnwrapped*</code> cast를 추가할 수 있습니다. 이를 제거하기 전에 migration을 완료하세요. 제안된 변경이 맞지 않으면 directive를 <code>@next-codemod-ignore</code>로 바꾸고 그 이유를 설명하세요.</p><div class="en-orig"><p>This codemod will transform dynamic APIs (<code>cookies()</code>, <code>headers()</code> and <code>draftMode()</code> from <code>next/headers</code>) that are now asynchronous to be properly awaited or wrapped with <code>React.use()</code> if applicable.
+When automatic migration isn't possible, the codemod adds an <code>@next-codemod-error</code> comment and may add a temporary <code>UnsafeUnwrapped*</code> cast. Complete the migration before removing them. If the suggested change doesn't apply, replace the directive with <code>@next-codemod-ignore</code> and explain why.</p></div>
+<p>예시는 <a href="app-guides-upgrading-version-15.html#async-request-apis-breaking-change">Async Request APIs migration guide</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-guides-upgrading-version-15.html#async-request-apis-breaking-change">Async Request APIs migration guide</a> for examples.</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { cookies, headers } from &#x27;next/headers&#x27;
+const token = cookies().get(&#x27;token&#x27;)
+
+function useToken() {
+  const token = cookies().get(&#x27;token&#x27;)
+  return token
+}
+
+export default function Page() {
+  const name = cookies().get(&#x27;name&#x27;)
+}
+
+function getHeader() {
+  return headers().get(&#x27;x-foo&#x27;)
+}</code></pre></div></div>
+<p>다음과 같이 변환됩니다:</p><div class="en-orig"><p>Transforms into:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { use } from &#x27;react&#x27;
+import {
+  cookies,
+  headers,
+  type UnsafeUnwrappedCookies,
+  type UnsafeUnwrappedHeaders,
+} from &#x27;next/headers&#x27;
+const token =
+  /* @next-codemod-error Await this API and update its callers; remove the temporary UnsafeUnwrappedCookies cast after repairing the migration. */
+  (cookies() as unknown as UnsafeUnwrappedCookies).get(&#x27;token&#x27;)
+
+function useToken() {
+  const token = use(cookies()).get(&#x27;token&#x27;)
+  return token
+}
+
+export default async function Page() {
+  const name = (await cookies()).get(&#x27;name&#x27;)
+}
+
+function getHeader() {
+  return (
+    /* @next-codemod-error Await this API and update its callers; remove the temporary UnsafeUnwrappedHeaders cast after repairing the migration. */
+    (headers() as unknown as UnsafeUnwrappedHeaders).get(&#x27;x-foo&#x27;)
+  )
+}</code></pre></div></div>
+<p>page / route entry(<code>page.js</code>, <code>layout.js</code>, <code>route.js</code>, <code>default.js</code>)나 <code>generateMetadata</code> / <code>generateViewport</code> API에서 <code>params</code> 또는 <code>searchParams</code> props의 property 접근이 감지되면,
+codemod는 callsite를 sync 함수에서 async 함수로 변환하고 property 접근을 await하려고 시도합니다. async로 만들 수 없는 경우(Client Component 등)에는 <code>React.use</code>를 사용해 promise를 unwrap합니다.</p><div class="en-orig"><p>When we detect property access on the <code>params</code> or <code>searchParams</code> props in the page / route entries (<code>page.js</code>, <code>layout.js</code>, <code>route.js</code>, or <code>default.js</code>) or the <code>generateMetadata</code> / <code>generateViewport</code> APIs,
+it will attempt to transform the callsite from a sync to an async function, and await the property access. If it can't be made async (such as with a Client Component), it will use <code>React.use</code> to unwrap the promise .</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">// page.tsx
+export default function Page({
+  params,
+  searchParams,
+}: {
+  params: { slug: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}) {
+  const { value } = searchParams
+  if (value === &#x27;foo&#x27;) {
+    // ...
+  }
+}
+
+export function generateMetadata({ params }: { params: { slug: string } }) {
+  const { slug } = params
+  return {
+    title: `My Page - ${slug}`,
+  }
+}</code></pre></div></div>
+<p>다음과 같이 변환됩니다:</p><div class="en-orig"><p>Transforms into:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">// page.tsx
+export default async function Page(props: {
+  params: Promise&lt;{ slug: string }&gt;
+  searchParams: Promise&lt;{ [key: string]: string | string[] | undefined }&gt;
+}) {
+  const searchParams = await props.searchParams
+  const { value } = searchParams
+  if (value === &#x27;foo&#x27;) {
+    // ...
+  }
+}
+
+export async function generateMetadata(props: {
+  params: Promise&lt;{ slug: string }&gt;
+}) {
+  const params = await props.params
+  const { slug } = params
+  return {
+    title: `My Page - ${slug}`,
+  }
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 codemod가 수동 개입이 필요할 수 있는 지점을 찾았지만 정확한 수정 방법을 판단할 수 없는 경우, 코드에 comment나 typecast를 추가해 사용자가 직접 업데이트해야 한다는 것을 알려 줍니다. 이 comment에는 <strong>@next/codemod</strong> prefix가 붙고, typecast에는 <code>UnsafeUnwrapped</code> prefix가 붙습니다.
+이 comment들을 명시적으로 제거하기 전까지 build에서 error가 발생합니다. <a href="https://nextjs.org/docs/messages/sync-dynamic-apis" target="_blank" rel="noopener">자세히 알아보기</a>.</p><div class="en-orig"><p>When this codemod identifies a spot that might require manual intervention, but we aren't able to determine the exact fix, it will add a comment or typecast to the code to inform the user that it needs to be manually updated. These comments are prefixed with <strong>@next/codemod</strong>, and typecasts are prefixed with <code>UnsafeUnwrapped</code>.
+Your build will error until these comments are explicitly removed. <a href="https://nextjs.org/docs/messages/sync-dynamic-apis" target="_blank" rel="noopener">Read more</a>.</p></div></div></div>
+<h4 class="sec" id="replace-geo-and-ip-properties-of-nextrequest-with-vercelfunctions"><a class="anchor" href="#replace-geo-and-ip-properties-of-nextrequest-with-vercelfunctions">Replace <code>geo</code> and <code>ip</code> properties of <code>NextRequest</code> with <code>@vercel/functions</code><span class="ko"><code>NextRequest</code>의 <code>geo</code>, <code>ip</code> property를 <code>@vercel/functions</code>로 교체하기</span></a></h4>
+<h5 class="sec" id="next-request-geo-ip"><a class="anchor" href="#next-request-geo-ip"><code>next-request-geo-ip</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@latest next-request-geo-ip .</code></pre></div></div>
+<p>이 codemod는 <code>@vercel/functions</code>를 설치하고 <code>NextRequest</code>의 <code>geo</code>, <code>ip</code> property를 대응하는 <code>@vercel/functions</code> 기능으로 변환합니다.</p><div class="en-orig"><p>This codemod installs <code>@vercel/functions</code> and transforms <code>geo</code> and <code>ip</code> properties of <code>NextRequest</code> with corresponding <code>@vercel/functions</code> features.</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import type { NextRequest } from &#x27;next/server&#x27;
+
+export function GET(req: NextRequest) {
+  const { geo, ip } = req
+}</code></pre></div></div>
+<p>다음과 같이 변환됩니다:</p><div class="en-orig"><p>Transforms into:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import type { NextRequest } from &#x27;next/server&#x27;
+import { geolocation, ipAddress } from &#x27;@vercel/functions&#x27;
+
+export function GET(req: NextRequest) {
+  const geo = geolocation(req)
+  const ip = ipAddress(req)
+}</code></pre></div></div>
+<h3 class="sec" id="140"><a class="anchor" href="#140">14.0</a></h3>
+<h4 class="sec" id="migrate-imageresponse-imports"><a class="anchor" href="#migrate-imageresponse-imports">Migrate <code>ImageResponse</code> imports<span class="ko"><code>ImageResponse</code> import migrate하기</span></a></h4>
+<h5 class="sec" id="next-og-import"><a class="anchor" href="#next-og-import"><code>next-og-import</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@latest next-og-import .</code></pre></div></div>
+<p>이 codemod는 <a href="app-getting-started-metadata-and-og-images.html#generated-open-graph-images">Dynamic OG Image Generation</a>을 사용하는 곳의 import를 <code>next/server</code>에서 <code>next/og</code>로 옮기도록 변환합니다.</p><div class="en-orig"><p>This codemod moves transforms imports from <code>next/server</code> to <code>next/og</code> for usage of <a href="app-getting-started-metadata-and-og-images.html#generated-open-graph-images">Dynamic OG Image Generation</a>.</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { ImageResponse } from &#x27;next/server&#x27;</code></pre></div></div>
+<p>다음과 같이 변환됩니다:</p><div class="en-orig"><p>Transforms into:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { ImageResponse } from &#x27;next/og&#x27;</code></pre></div></div>
+<h4 class="sec" id="use-viewport-export"><a class="anchor" href="#use-viewport-export">Use <code>viewport</code> export<span class="ko"><code>viewport</code> export 사용하기</span></a></h4>
+<h5 class="sec" id="metadata-to-viewport-export"><a class="anchor" href="#metadata-to-viewport-export"><code>metadata-to-viewport-export</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@latest metadata-to-viewport-export .</code></pre></div></div>
+<p>이 codemod는 일부 viewport metadata를 <code>viewport</code> export로 migrate합니다.</p><div class="en-orig"><p>This codemod migrates certain viewport metadata to <code>viewport</code> export.</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export const metadata = {
+  title: &#x27;My App&#x27;,
+  themeColor: &#x27;dark&#x27;,
+  viewport: {
+    width: 1,
+  },
+}</code></pre></div></div>
+<p>다음과 같이 변환됩니다:</p><div class="en-orig"><p>Transforms into:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export const metadata = {
+  title: &#x27;My App&#x27;,
+}
+
+export const viewport = {
+  width: 1,
+  themeColor: &#x27;dark&#x27;,
+}</code></pre></div></div>
+<h3 class="sec" id="132"><a class="anchor" href="#132">13.2</a></h3>
+<h4 class="sec" id="use-built-in-font"><a class="anchor" href="#use-built-in-font">Use Built-in Font<span class="ko">Built-in Font 사용하기</span></a></h4>
+<h5 class="sec" id="built-in-next-font"><a class="anchor" href="#built-in-next-font"><code>built-in-next-font</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@latest built-in-next-font .</code></pre></div></div>
+<p>이 codemod는 <code>@next/font</code> package를 uninstall하고 <code>@next/font</code> import를 built-in <code>next/font</code>로 변환합니다.</p><div class="en-orig"><p>This codemod uninstalls the <code>@next/font</code> package and transforms <code>@next/font</code> imports into the built-in <code>next/font</code>.</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { Inter } from &#x27;@next/font/google&#x27;</code></pre></div></div>
+<p>다음과 같이 변환됩니다:</p><div class="en-orig"><p>Transforms into:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { Inter } from &#x27;next/font/google&#x27;</code></pre></div></div>
+<h3 class="sec" id="130"><a class="anchor" href="#130">13.0</a></h3>
+<h4 class="sec" id="rename-next-image-imports"><a class="anchor" href="#rename-next-image-imports">Rename Next Image Imports<span class="ko">Next Image import 이름 바꾸기</span></a></h4>
+<h5 class="sec" id="next-image-to-legacy-image"><a class="anchor" href="#next-image-to-legacy-image"><code>next-image-to-legacy-image</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@latest next-image-to-legacy-image .</code></pre></div></div>
+<p>기존 Next.js 10, 11, 12 애플리케이션의 <code>next/image</code> import를 Next.js 13의 <code>next/legacy/image</code>로 안전하게 이름을 바꿉니다. 또한 <code>next/future/image</code>를 <code>next/image</code>로 이름을 바꿉니다.</p><div class="en-orig"><p>Safely renames <code>next/image</code> imports in existing Next.js 10, 11, or 12 applications to <code>next/legacy/image</code> in Next.js 13. Also renames <code>next/future/image</code> to <code>next/image</code>.</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import Image1 from &#x27;next/image&#x27;
+import Image2 from &#x27;next/future/image&#x27;
+
+export default function Home() {
+  return (
+    &lt;div&gt;
+      &lt;Image1 src=&quot;/test.jpg&quot; width=&quot;200&quot; height=&quot;300&quot; /&gt;
+      &lt;Image2 src=&quot;/test.png&quot; width=&quot;500&quot; height=&quot;400&quot; /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>다음과 같이 변환됩니다:</p><div class="en-orig"><p>Transforms into:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// &#x27;next/image&#x27; becomes &#x27;next/legacy/image&#x27;
+import Image1 from &#x27;next/legacy/image&#x27;
+// &#x27;next/future/image&#x27; becomes &#x27;next/image&#x27;
+import Image2 from &#x27;next/image&#x27;
+
+export default function Home() {
+  return (
+    &lt;div&gt;
+      &lt;Image1 src=&quot;/test.jpg&quot; width=&quot;200&quot; height=&quot;300&quot; /&gt;
+      &lt;Image2 src=&quot;/test.png&quot; width=&quot;500&quot; height=&quot;400&quot; /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<h4 class="sec" id="migrate-to-the-new-image-component"><a class="anchor" href="#migrate-to-the-new-image-component">Migrate to the New Image Component<span class="ko">새 Image Component로 migrate하기</span></a></h4>
+<h5 class="sec" id="next-image-experimental"><a class="anchor" href="#next-image-experimental"><code>next-image-experimental</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@latest next-image-experimental .</code></pre></div></div>
+<p>inline style을 추가하고 사용하지 않는 props를 제거하여 <code>next/legacy/image</code>에서 새 <code>next/image</code>로 위험을 감수하고(dangerously) migrate합니다.</p><div class="en-orig"><p>Dangerously migrates from <code>next/legacy/image</code> to the new <code>next/image</code> by adding inline styles and removing unused props.</p></div>
+<ul>
+<li><code>layout</code> prop을 제거하고 <code>style</code>을 추가합니다.</li>
+<li><code>objectFit</code> prop을 제거하고 <code>style</code>을 추가합니다.</li>
+<li><code>objectPosition</code> prop을 제거하고 <code>style</code>을 추가합니다.</li>
+<li><code>lazyBoundary</code> prop을 제거합니다.</li>
+<li><code>lazyRoot</code> prop을 제거합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Removes <code>layout</code> prop and adds <code>style</code>.</li>
+<li>Removes <code>objectFit</code> prop and adds <code>style</code>.</li>
+<li>Removes <code>objectPosition</code> prop and adds <code>style</code>.</li>
+<li>Removes <code>lazyBoundary</code> prop.</li>
+<li>Removes <code>lazyRoot</code> prop.</li>
+</ul></div>
+<h4 class="sec" id="remove-a-tags-from-link-components"><a class="anchor" href="#remove-a-tags-from-link-components">Remove <code>&lt;a&gt;</code> Tags From Link Components<span class="ko">Link Component에서 <code>&lt;a&gt;</code> tag 제거하기</span></a></h4>
+<h5 class="sec" id="new-link"><a class="anchor" href="#new-link"><code>new-link</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@latest new-link .</code></pre></div></div>
+<p><a href="app-api-reference-components-link.html">Link Component</a> 안의 <code>&lt;a&gt;</code> tag를 제거합니다.</p><div class="en-orig"><p>Remove <code>&lt;a&gt;</code> tags inside <a href="app-api-reference-components-link.html">Link Components</a>.</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&lt;Link href=&quot;/about&quot;&gt;
+  &lt;a&gt;About&lt;/a&gt;
+&lt;/Link&gt;
+// transforms into
+&lt;Link href=&quot;/about&quot;&gt;
+  About
+&lt;/Link&gt;
+
+&lt;Link href=&quot;/about&quot;&gt;
+  &lt;a onClick={() =&gt; console.log(&#x27;clicked&#x27;)}&gt;About&lt;/a&gt;
+&lt;/Link&gt;
+// transforms into
+&lt;Link href=&quot;/about&quot; onClick={() =&gt; console.log(&#x27;clicked&#x27;)}&gt;
+  About
+&lt;/Link&gt;</code></pre></div></div>
+<h3 class="sec" id="11"><a class="anchor" href="#11">11</a></h3>
+<h4 class="sec" id="migrate-from-cra"><a class="anchor" href="#migrate-from-cra">Migrate from CRA<span class="ko">CRA에서 migrate하기</span></a></h4>
+<h5 class="sec" id="cra-to-next"><a class="anchor" href="#cra-to-next"><code>cra-to-next</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod cra-to-next</code></pre></div></div>
+<p>Create React App 프로젝트를 Next.js로 migrate합니다. 기존 동작과 맞추기 위해 Pages Router와 필요한 config를 만듭니다. SSR 중 <code>window</code> 사용으로 인한 호환성 문제를 막기 위해 처음에는 client-side only rendering을 활용하며, 이후 이를 매끄럽게 활성화해 Next.js 전용 기능을 점진적으로 도입할 수 있습니다.</p><div class="en-orig"><p>Migrates a Create React App project to Next.js; creating a Pages Router and necessary config to match behavior. Client-side only rendering is leveraged initially to prevent breaking compatibility due to <code>window</code> usage during SSR and can be enabled seamlessly to allow the gradual adoption of Next.js specific features.</p></div>
+<p>이 transform과 관련된 feedback은 <a href="https://github.com/vercel/next.js/discussions/25858" target="_blank" rel="noopener">이 discussion</a>에 남겨 주세요.</p><div class="en-orig"><p>Please share any feedback related to this transform <a href="https://github.com/vercel/next.js/discussions/25858" target="_blank" rel="noopener">in this discussion</a>.</p></div>
+<h3 class="sec" id="10"><a class="anchor" href="#10">10</a></h3>
+<h4 class="sec" id="add-react-imports"><a class="anchor" href="#add-react-imports">Add React imports<span class="ko">React import 추가하기</span></a></h4>
+<h5 class="sec" id="add-missing-react-import"><a class="anchor" href="#add-missing-react-import"><code>add-missing-react-import</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod add-missing-react-import</code></pre></div></div>
+<p>새 <a href="https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html" target="_blank" rel="noopener">React JSX transform</a>이 동작하도록, <code>React</code>를 import하지 않는 파일에 import를 추가하는 변환을 합니다.</p><div class="en-orig"><p>Transforms files that do not import <code>React</code> to include the import in order for the new <a href="https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html" target="_blank" rel="noopener">React JSX transform</a> to work.</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">my-component.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export default class Home extends React.Component {
+  render() {
+    return &lt;div&gt;Hello World&lt;/div&gt;
+  }
+}</code></pre></div></div>
+<p>다음과 같이 변환됩니다:</p><div class="en-orig"><p>Transforms into:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">my-component.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import React from &#x27;react&#x27;
+export default class Home extends React.Component {
+  render() {
+    return &lt;div&gt;Hello World&lt;/div&gt;
+  }
+}</code></pre></div></div>
+<h3 class="sec" id="9"><a class="anchor" href="#9">9</a></h3>
+<h4 class="sec" id="transform-anonymous-components-into-named-components"><a class="anchor" href="#transform-anonymous-components-into-named-components">Transform Anonymous Components into Named Components<span class="ko">익명 Component를 이름 있는 Component로 변환하기</span></a></h4>
+<h5 class="sec" id="name-default-component"><a class="anchor" href="#name-default-component"><code>name-default-component</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod name-default-component</code></pre></div></div>
+<p><strong>버전 9 이상.</strong></p><div class="en-orig"><p><strong>Versions 9 and above.</strong></p></div>
+<p>익명 component가 <a href="https://nextjs.org/blog/next-9-4#fast-refresh" target="_blank" rel="noopener">Fast Refresh</a>와 함께 동작하도록 이름 있는(named) component로 변환합니다.</p><div class="en-orig"><p>Transforms anonymous components into named components to make sure they work with <a href="https://nextjs.org/blog/next-9-4#fast-refresh" target="_blank" rel="noopener">Fast Refresh</a>.</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">my-component.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export default function () {
+  return &lt;div&gt;Hello World&lt;/div&gt;
+}</code></pre></div></div>
+<p>다음과 같이 변환됩니다:</p><div class="en-orig"><p>Transforms into:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">my-component.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export default function MyComponent() {
+  return &lt;div&gt;Hello World&lt;/div&gt;
+}</code></pre></div></div>
+<p>component에는 파일 이름을 바탕으로 한 camel-case 이름이 붙으며, arrow function에서도 동작합니다.</p><div class="en-orig"><p>The component will have a camel-cased name based on the name of the file, and it also works with arrow functions.</p></div>
+<h3 class="sec" id="8"><a class="anchor" href="#8">8</a></h3>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p>Built-in AMP 지원과 이 codemod는 Next.js 16에서 제거되었습니다.</p><div class="en-orig"><p>Built-in AMP support and this codemod have been removed in Next.js 16.</p></div></div></div>
+<h4 class="sec" id="transform-amp-hoc-into-page-config"><a class="anchor" href="#transform-amp-hoc-into-page-config">Transform AMP HOC into page config<span class="ko">AMP HOC를 page config로 변환하기</span></a></h4>
+<h5 class="sec" id="withamp-to-config"><a class="anchor" href="#withamp-to-config"><code>withamp-to-config</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod withamp-to-config</code></pre></div></div>
+<p><code>withAmp</code> HOC를 Next.js 9 page configuration으로 변환합니다.</p><div class="en-orig"><p>Transforms the <code>withAmp</code> HOC into Next.js 9 page configuration.</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// Before
+import { withAmp } from &#x27;next/amp&#x27;
+
+function Home() {
+  return &lt;h1&gt;My AMP Page&lt;/h1&gt;
+}
+
+export default withAmp(Home)</code></pre></div></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// After
+export default function Home() {
+  return &lt;h1&gt;My AMP Page&lt;/h1&gt;
+}
+
+export const config = {
+  amp: true,
+}</code></pre></div></div>
+<h3 class="sec" id="6"><a class="anchor" href="#6">6</a></h3>
+<h4 class="sec" id="use-withrouter"><a class="anchor" href="#use-withrouter">Use <code>withRouter</code><span class="ko"><code>withRouter</code> 사용하기</span></a></h4>
+<h5 class="sec" id="url-to-withrouter"><a class="anchor" href="#url-to-withrouter"><code>url-to-withrouter</code></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod url-to-withrouter</code></pre></div></div>
+<p>top level page에 자동으로 주입되던 deprecated <code>url</code> property를 <code>withRouter</code>와 그것이 주입하는 <code>router</code> property를 사용하도록 변환합니다. 자세한 내용: <a href="https://nextjs.org/docs/messages/url-deprecated" target="_blank" rel="noopener">https://nextjs.org/docs/messages/url-deprecated</a></p><div class="en-orig"><p>Transforms the deprecated automatically injected <code>url</code> property on top level pages to using <code>withRouter</code> and the <code>router</code> property it injects. Read more here: <a href="https://nextjs.org/docs/messages/url-deprecated" target="_blank" rel="noopener">https://nextjs.org/docs/messages/url-deprecated</a></p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">From</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import React from &#x27;react&#x27;
+export default class extends React.Component {
+  render() {
+    const { pathname } = this.props.url
+    return &lt;div&gt;Current pathname: {pathname}&lt;/div&gt;
+  }
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">To</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import React from &#x27;react&#x27;
+import { withRouter } from &#x27;next/router&#x27;
+export default withRouter(
+  class extends React.Component {
+    render() {
+      const { pathname } = this.props.router
+      return &lt;div&gt;Current pathname: {pathname}&lt;/div&gt;
+    }
+  }
+)</code></pre></div></div>
+<p>이것은 한 가지 예시일 뿐입니다. 변환되는(그리고 테스트된) 모든 경우는 <a href="https://github.com/vercel/next.js/tree/canary/packages/next-codemod/transforms/__testfixtures__/url-to-withrouter" target="_blank" rel="noopener"><code>__testfixtures__</code> directory</a>에서 확인할 수 있습니다.</p><div class="en-orig"><p>This is one case. All the cases that are transformed (and tested) can be found in the <a href="https://github.com/vercel/next.js/tree/canary/packages/next-codemod/transforms/__testfixtures__/url-to-withrouter" target="_blank" rel="noopener"><code>__testfixtures__</code> directory</a>.</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/upgrading/codemods.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/upgrading/codemods" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-upgrading-agent-upgrade.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Upgrade with a coding agent</div><div class="ttl-ko">coding agent로 업그레이드하기</div></a>
+      <a href="app-guides-upgrading-version-14.html" class="next"><div class="dir">다음 →</div><div class="ttl">Version 14</div><div class="ttl-ko">버전 14로 업그레이드하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/upgrading/codemods" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#usage">Usage</a></li><li class="l2"><a href="#upgrade">Upgrade</a></li><li class="l3"><a href="#options">Options</a></li><li class="l2"><a href="#codemods">Codemods</a></li><li class="l3"><a href="#163">16.3</a></li><li class="l3"><a href="#160">16.0</a></li><li class="l3"><a href="#150">15.0</a></li><li class="l3"><a href="#140">14.0</a></li><li class="l3"><a href="#132">13.2</a></li><li class="l3"><a href="#130">13.0</a></li><li class="l3"><a href="#11">11</a></li><li class="l3"><a href="#10">10</a></li><li class="l3"><a href="#9">9</a></li><li class="l3"><a href="#8">8</a></li><li class="l3"><a href="#6">6</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Codemod는 codebase에 프로그램 방식으로 실행되는 변환(transformation)입니다. 이를 통해 모든 파일을 일일이 직접 손대지 않고도 많은 양의 변경을 프로그램으로 적용할 수 있습니다.
+
+Next.js는 API가 업데이트되거나 deprecated될 때 Next.js codebase를 upgrade할 수 있도록 Codemod transformation을 제공합니다.
+
+## Usage || 사용법
+
+terminal에서 프로젝트 폴더로 이동(`cd`)한 다음 실행하세요:
+
+[[CODE 1]]
+
+`&lt;transform&gt;`과 `&lt;path&gt;`를 적절한 값으로 바꾸세요.
+
+- `transform` - transform 이름
+- `path` - 변환할 파일 또는 directory
+- `--dry` dry-run을 실행하며, 코드는 수정되지 않습니다
+- `--print` 비교할 수 있도록 변경된 output을 출력합니다
+
+## Upgrade || 업그레이드
+
+Next.js 애플리케이션을 upgrade하며, codemod를 자동으로 실행하고 Next.js, React, React DOM을 업데이트합니다.
+
+coding agent가 codemod를 실행하고, 남은 migration 작업을 마무리하고, 앱을 검증하게 하려면 대신 `npx next@canary upgrade --agent=latest`를 실행하세요. 자세한 내용은 [Upgrade with a coding agent](/docs/app/guides/upgrading/agent-upgrade)를 참고하세요.
+
+[[CODE 2]]
+
+### Options || 옵션
+
+- `revision`(선택): upgrade 유형(`patch`, `minor`, `major`), NPM dist tag(예: `latest`, `canary`, `rc`), 또는 정확한 버전(예: `15.0.0`)을 지정합니다. stable 버전에서는 기본값이 `minor`입니다.
+- `--verbose`: upgrade 과정에서 더 자세한 output을 보여 줍니다.
+- `--skip-react-upgrade`: React dependency, type, override를 그대로 유지하고 React codemod를 건너뜁니다.
+- `--skip-eslint-upgrade`: `eslint`, `eslint-config-next`, `@next/eslint-plugin-next`를 그대로 유지하고 `next-lint-to-eslint-cli`를 건너뜁니다. 검증 전에 필요한 lint migration은 직접 완료하세요.
+- `-y, --yes`: 모든 interactive prompt를 건너뛰고 기본값을 받아들입니다(React 18 이후 버전으로 upgrade, Turbopack 활성화, 권장 codemod 모두 적용, React 19 codemod 실행). stdin이 TTY가 아닐 때(CI, AI coding agent, 또는 모든 non-interactive shell)도 자동으로 활성화되므로, 보통은 직접 넘길 필요가 없습니다.
+
+예를 들면 다음과 같습니다:
+
+[[CODE 3]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - target 버전이 현재 버전과 같거나 더 낮으면 command는 아무것도 바꾸지 않고 종료됩니다.
+&gt; - skip flag는 target의 peer dependency 요구 사항을 우회하지 않습니다. 이전에 설치가 실패했다면 dependency를 고친 다음 해당 flag와 함께 똑같은 target으로 다시 시도하세요. Next.js가 이미 target과 일치한다면 건너뛴 migration을 아래 guide에 따라 개별적으로 실행하세요.
+&gt; - upgrade 중에 어떤 Next.js codemod를 적용할지 선택하라는 prompt가 나올 수 있고, React를 upgrade하는 경우 React 19 codemod를 실행할지 묻는 prompt가 나올 수 있습니다.
+&gt; - AI coding agent가 호출하거나 CI에서 실행되면(stdin이 TTY가 아닌 모든 환경) upgrade는 non-interactive로 실행되며 모든 기본값을 받아들입니다. terminal에서도 이 동작을 강제하려면 `--yes`를 넘기세요.
+
+## Codemods
+
+### 16.3
+
+#### Opt every route out of Cache Components validation || 모든 route를 Cache Components validation에서 제외하기
+
+##### `cache-components-instant-false`
+
+[[CODE 4]]
+
+이 codemod는 app directory에서 아직 `instant`를 export하지 않는 모든 `{page,layout,default}` 파일에 `export const instant = false`를 추가합니다. 덕분에 [`cacheComponents`](/docs/app/api-reference/config/next-config-js/cacheComponents)를 활성화한 다음 route별로 opt-out을 하나씩 제거할 수 있습니다. Client Component(`&quot;use client&quot;`)와 이미 `instant`를 선언한 파일은 건너뜁니다. 생성되는 `@next-codemod-ignore` comment는 compile을 막지 않으면서 의도적인 opt-out임을 표시합니다.
+
+&gt; **Good to know**: `src/` 프로젝트에서는 `./src/app`을 넘기세요. 잘못된 경로를 주면 실패하지 않고 `0 ok`를 보고하므로 파일 수를 확인하세요.
+
+[[CODE 5]]
+
+전체 도입 과정은 [Migrating to Cache Components](/docs/app/guides/migrating-to-cache-components) guide를 참고하세요.
+
+#### Remove `prefetch = &#x27;partial&#x27;` Route Segment Config after enabling Partial Prefetching || Partial Prefetching 활성화 후 `prefetch = &#x27;partial&#x27;` Route Segment Config 제거하기
+
+##### `remove-partial-prefetch`
+
+[[CODE 6]]
+
+이 codemod는 app directory의 `{page,layout}` 파일에서 `export const prefetch = &#x27;partial&#x27;`을 제거합니다. 덕분에 [`partialPrefetching`](/docs/app/api-reference/config/next-config-js/partialPrefetching)을 전역으로 활성화한 다음 이제는 불필요해진 route별 opt-in을 없앨 수 있습니다. `&#x27;partial&#x27;` 값만 제거하고 `prefetch = &#x27;force-disabled&#x27;` 같은 다른 값은 그대로 둡니다.
+
+&gt; **Good to know**: `src/` 프로젝트에서는 `./src/app`을 넘기세요. 잘못된 경로를 주면 실패하지 않고 `0 ok`를 보고하므로 파일 수를 확인하세요.
+
+[[CODE 7]]
+
+전체 도입 과정은 [Adopting Partial Prefetching](/docs/app/guides/adopting-partial-prefetching) guide를 참고하세요.
+
+### 16.0
+
+#### Remove `experimental_ppr` Route Segment Config from App Router pages and layouts || App Router page와 layout에서 `experimental_ppr` Route Segment Config 제거하기
+
+##### `remove-experimental-ppr`
+
+[[CODE 8]]
+
+이 codemod는 App Router page와 layout에서 `experimental_ppr` Route Segment Config를 제거합니다.
+
+[[CODE 9]]
+
+#### Remove `unstable_` prefix from stabilized API || 안정화된 API에서 `unstable_` prefix 제거하기
+
+##### `remove-unstable-prefix`
+
+[[CODE 10]]
+
+이 codemod는 안정화된 API에서 `unstable_` prefix를 제거합니다.
+
+예를 들면 다음과 같습니다:
+
+[[CODE 11]]
+
+다음과 같이 변환됩니다:
+
+[[CODE 12]]
+
+#### Migrate from deprecated `middleware` convention to `proxy` || deprecated된 `middleware` convention에서 `proxy`로 migrate하기
+
+##### `middleware-to-proxy`
+
+[[CODE 13]]
+
+이 codemod는 deprecated된 `middleware` convention을 사용하던 프로젝트를 `proxy` convention을 사용하도록 migrate합니다. 이 codemod는 다음을 수행합니다:
+
+- `middleware.&lt;extension&gt;`을 `proxy.&lt;extension&gt;`으로 이름을 바꿉니다(예: `middleware.ts`를 `proxy.ts`로)
+- named export `middleware`를 `proxy`로 이름을 바꿉니다
+- Next.js config property `experimental.middlewarePrefetch`를 `experimental.proxyPrefetch`로 이름을 바꿉니다
+- Next.js config property `experimental.middlewareClientMaxBodySize`를 `experimental.proxyClientMaxBodySize`로 이름을 바꿉니다
+- Next.js config property `experimental.externalMiddlewareRewritesResolve`를 `experimental.externalProxyRewritesResolve`로 이름을 바꿉니다
+- Next.js config property `skipMiddlewareUrlNormalize`를 `skipProxyUrlNormalize`로 이름을 바꿉니다
+
+예를 들면 다음과 같습니다:
+
+[[CODE 14]]
+
+다음과 같이 변환됩니다:
+
+[[CODE 15]]
+
+#### Migrate from `next lint` to ESLint CLI || `next lint`에서 ESLint CLI로 migrate하기
+
+##### `next-lint-to-eslint-cli`
+
+[[CODE 16]]
+
+이 codemod는 `next lint`를 사용하던 프로젝트를 로컬 ESLint config와 함께 ESLint CLI를 사용하도록 migrate합니다. 이 codemod는 다음을 수행합니다:
+
+- Next.js 권장 configuration이 들어간 `eslint.config.mjs` 파일을 만듭니다
+- `package.json` script가 `next lint` 대신 `eslint .`을 사용하도록 업데이트합니다
+- 필요한 ESLint dependency를 `package.json`에 추가합니다
+- 기존 ESLint configuration이 있으면 그대로 보존합니다
+
+예를 들면 다음과 같습니다:
+
+[[CODE 17]]
+
+다음과 같이 바뀝니다:
+
+[[CODE 18]]
+
+그리고 다음 파일을 만듭니다:
+
+[[CODE 19]]
+
+### 15.0
+
+#### Transform App Router Route Segment Config `runtime` value from `experimental-edge` to `edge` || App Router Route Segment Config `runtime` 값을 `experimental-edge`에서 `edge`로 변환하기
+
+##### `app-dir-runtime-config-experimental-edge`
+
+&gt; **Note**: 이 codemod는 App Router 전용입니다.
+
+[[CODE 20]]
+
+이 codemod는 [Route Segment Config `runtime`](https://nextjs.org/docs/app/api-reference/file-conventions/route-segment-config/runtime) 값 `experimental-edge`를 `edge`로 변환합니다.
+
+예를 들면 다음과 같습니다:
+
+[[CODE 21]]
+
+다음과 같이 변환됩니다:
+
+[[CODE 22]]
+
+#### Migrate to async Dynamic APIs || async Dynamic API로 migrate하기
+
+이전에 동기(synchronous) 접근을 지원하던, dynamic rendering을 사용하게 만드는 API들이 이제 비동기(asynchronous)가 되었습니다. 이 breaking change에 대한 자세한 내용은 [upgrade guide](/docs/app/guides/upgrading/version-15)에서 읽을 수 있습니다.
+
+##### `next-async-request-api`
+
+[[CODE 23]]
+
+이 codemod는 이제 비동기가 된 dynamic API(`next/headers`의 `cookies()`, `headers()`, `draftMode()`)를 올바르게 await하거나, 해당되는 경우 `React.use()`로 감싸도록 변환합니다.
+자동 migration이 불가능한 경우 codemod는 `@next-codemod-error` comment를 추가하고 임시 `UnsafeUnwrapped*` cast를 추가할 수 있습니다. 이를 제거하기 전에 migration을 완료하세요. 제안된 변경이 맞지 않으면 directive를 `@next-codemod-ignore`로 바꾸고 그 이유를 설명하세요.
+
+예시는 [Async Request APIs migration guide](/docs/app/guides/upgrading/version-15#async-request-apis-breaking-change)를 참고하세요.
+
+예를 들면 다음과 같습니다:
+
+[[CODE 24]]
+
+다음과 같이 변환됩니다:
+
+[[CODE 25]]
+
+page / route entry(`page.js`, `layout.js`, `route.js`, `default.js`)나 `generateMetadata` / `generateViewport` API에서 `params` 또는 `searchParams` props의 property 접근이 감지되면,
+codemod는 callsite를 sync 함수에서 async 함수로 변환하고 property 접근을 await하려고 시도합니다. async로 만들 수 없는 경우(Client Component 등)에는 `React.use`를 사용해 promise를 unwrap합니다.
+
+예를 들면 다음과 같습니다:
+
+[[CODE 26]]
+
+다음과 같이 변환됩니다:
+
+[[CODE 27]]
+
+&gt; **Good to know:** 이 codemod가 수동 개입이 필요할 수 있는 지점을 찾았지만 정확한 수정 방법을 판단할 수 없는 경우, 코드에 comment나 typecast를 추가해 사용자가 직접 업데이트해야 한다는 것을 알려 줍니다. 이 comment에는 **@next/codemod** prefix가 붙고, typecast에는 `UnsafeUnwrapped` prefix가 붙습니다.
+&gt; 이 comment들을 명시적으로 제거하기 전까지 build에서 error가 발생합니다. [자세히 알아보기](/docs/messages/sync-dynamic-apis).
+
+#### Replace `geo` and `ip` properties of `NextRequest` with `@vercel/functions` || `NextRequest`의 `geo`, `ip` property를 `@vercel/functions`로 교체하기
+
+##### `next-request-geo-ip`
+
+[[CODE 28]]
+
+이 codemod는 `@vercel/functions`를 설치하고 `NextRequest`의 `geo`, `ip` property를 대응하는 `@vercel/functions` 기능으로 변환합니다.
+
+예를 들면 다음과 같습니다:
+
+[[CODE 29]]
+
+다음과 같이 변환됩니다:
+
+[[CODE 30]]
+
+### 14.0
+
+#### Migrate `ImageResponse` imports || `ImageResponse` import migrate하기
+
+##### `next-og-import`
+
+[[CODE 31]]
+
+이 codemod는 [Dynamic OG Image Generation](/docs/app/getting-started/metadata-and-og-images#generated-open-graph-images)을 사용하는 곳의 import를 `next/server`에서 `next/og`로 옮기도록 변환합니다.
+
+예를 들면 다음과 같습니다:
+
+[[CODE 32]]
+
+다음과 같이 변환됩니다:
+
+[[CODE 33]]
+
+#### Use `viewport` export || `viewport` export 사용하기
+
+##### `metadata-to-viewport-export`
+
+[[CODE 34]]
+
+이 codemod는 일부 viewport metadata를 `viewport` export로 migrate합니다.
+
+예를 들면 다음과 같습니다:
+
+[[CODE 35]]
+
+다음과 같이 변환됩니다:
+
+[[CODE 36]]
+
+### 13.2
+
+#### Use Built-in Font || Built-in Font 사용하기
+
+##### `built-in-next-font`
+
+[[CODE 37]]
+
+이 codemod는 `@next/font` package를 uninstall하고 `@next/font` import를 built-in `next/font`로 변환합니다.
+
+예를 들면 다음과 같습니다:
+
+[[CODE 38]]
+
+다음과 같이 변환됩니다:
+
+[[CODE 39]]
+
+### 13.0
+
+#### Rename Next Image Imports || Next Image import 이름 바꾸기
+
+##### `next-image-to-legacy-image`
+
+[[CODE 40]]
+
+기존 Next.js 10, 11, 12 애플리케이션의 `next/image` import를 Next.js 13의 `next/legacy/image`로 안전하게 이름을 바꿉니다. 또한 `next/future/image`를 `next/image`로 이름을 바꿉니다.
+
+예를 들면 다음과 같습니다:
+
+[[CODE 41]]
+
+다음과 같이 변환됩니다:
+
+[[CODE 42]]
+
+#### Migrate to the New Image Component || 새 Image Component로 migrate하기
+
+##### `next-image-experimental`
+
+[[CODE 43]]
+
+inline style을 추가하고 사용하지 않는 props를 제거하여 `next/legacy/image`에서 새 `next/image`로 위험을 감수하고(dangerously) migrate합니다.
+
+- `layout` prop을 제거하고 `style`을 추가합니다.
+- `objectFit` prop을 제거하고 `style`을 추가합니다.
+- `objectPosition` prop을 제거하고 `style`을 추가합니다.
+- `lazyBoundary` prop을 제거합니다.
+- `lazyRoot` prop을 제거합니다.
+
+#### Remove `&lt;a&gt;` Tags From Link Components || Link Component에서 `&lt;a&gt;` tag 제거하기
+
+##### `new-link`
+
+[[CODE 44]]
+
+
+
+[Link Component](/docs/app/api-reference/components/link) 안의 `&lt;a&gt;` tag를 제거합니다.
+
+
+
+
+
+예를 들면 다음과 같습니다:
+
+[[CODE 45]]
+
+### 11
+
+#### Migrate from CRA || CRA에서 migrate하기
+
+##### `cra-to-next`
+
+[[CODE 46]]
+
+Create React App 프로젝트를 Next.js로 migrate합니다. 기존 동작과 맞추기 위해 Pages Router와 필요한 config를 만듭니다. SSR 중 `window` 사용으로 인한 호환성 문제를 막기 위해 처음에는 client-side only rendering을 활용하며, 이후 이를 매끄럽게 활성화해 Next.js 전용 기능을 점진적으로 도입할 수 있습니다.
+
+이 transform과 관련된 feedback은 [이 discussion](https://github.com/vercel/next.js/discussions/25858)에 남겨 주세요.
+
+### 10
+
+#### Add React imports || React import 추가하기
+
+##### `add-missing-react-import`
+
+[[CODE 47]]
+
+새 [React JSX transform](https://reactjs.org/blog/2020/09/22/introducing-the-new-jsx-transform.html)이 동작하도록, `React`를 import하지 않는 파일에 import를 추가하는 변환을 합니다.
+
+예를 들면 다음과 같습니다:
+
+[[CODE 48]]
+
+다음과 같이 변환됩니다:
+
+[[CODE 49]]
+
+### 9
+
+#### Transform Anonymous Components into Named Components || 익명 Component를 이름 있는 Component로 변환하기
+
+##### `name-default-component`
+
+[[CODE 50]]
+
+**버전 9 이상.**
+
+익명 component가 [Fast Refresh](https://nextjs.org/blog/next-9-4#fast-refresh)와 함께 동작하도록 이름 있는(named) component로 변환합니다.
+
+예를 들면 다음과 같습니다:
+
+[[CODE 51]]
+
+다음과 같이 변환됩니다:
+
+[[CODE 52]]
+
+component에는 파일 이름을 바탕으로 한 camel-case 이름이 붙으며, arrow function에서도 동작합니다.
+
+### 8
+
+&gt; **Note**: Built-in AMP 지원과 이 codemod는 Next.js 16에서 제거되었습니다.
+
+#### Transform AMP HOC into page config || AMP HOC를 page config로 변환하기
+
+##### `withamp-to-config`
+
+[[CODE 53]]
+
+`withAmp` HOC를 Next.js 9 page configuration으로 변환합니다.
+
+예를 들면 다음과 같습니다:
+
+[[CODE 54]]
+
+[[CODE 55]]
+
+### 6
+
+#### Use `withRouter` || `withRouter` 사용하기
+
+##### `url-to-withrouter`
+
+[[CODE 56]]
+
+top level page에 자동으로 주입되던 deprecated `url` property를 `withRouter`와 그것이 주입하는 `router` property를 사용하도록 변환합니다. 자세한 내용: [https://nextjs.org/docs/messages/url-deprecated](/docs/messages/url-deprecated)
+
+예를 들면 다음과 같습니다:
+
+[[CODE 57]]
+
+[[CODE 58]]
+
+이것은 한 가지 예시일 뿐입니다. 변환되는(그리고 테스트된) 모든 경우는 [`__testfixtures__` directory](https://github.com/vercel/next.js/tree/canary/packages/next-codemod/transforms/__testfixtures__/url-to-withrouter)에서 확인할 수 있습니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

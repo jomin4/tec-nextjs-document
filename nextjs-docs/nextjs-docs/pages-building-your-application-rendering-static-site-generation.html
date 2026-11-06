@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Static Site Generation (SSG) (Static Site Generation (SSG)) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/building-your-application/rendering/static-site-generation" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/building-your-application/rendering/static-site-generation" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/03-building-your-application/02-rendering/02-static-site-generation.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-building-your-application.html">Building Your Application</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-building-your-application-rendering.html">Rendering</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Static Site Generation (SSG)<span class="sub">Static Site Generation (SSG)</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<details><summary>예시</summary><div class="details-body"><ul>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-agilitycms" target="_blank" rel="noopener">Agility CMS Example</a> (<a href="https://next-blog-agilitycms.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-builder-io" target="_blank" rel="noopener">Builder.io Example</a> (<a href="https://cms-builder-io.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-buttercms" target="_blank" rel="noopener">ButterCMS Example</a> (<a href="https://next-blog-buttercms.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-contentful" target="_blank" rel="noopener">Contentful Example</a> (<a href="https://app-router-contentful.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-cosmic" target="_blank" rel="noopener">Cosmic Example</a> (<a href="https://next-blog-cosmic.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-datocms" target="_blank" rel="noopener">DatoCMS Example</a> (<a href="https://next-blog-datocms.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-dotcms" target="_blank" rel="noopener">DotCMS Example</a> (<a href="https://nextjs-dotcms-blog.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-drupal" target="_blank" rel="noopener">Drupal Example</a> (<a href="https://cms-drupal.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-enterspeed" target="_blank" rel="noopener">Enterspeed Example</a> (<a href="https://next-blog-demo.enterspeed.com/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-graphcms" target="_blank" rel="noopener">GraphCMS Example</a> (<a href="https://next-blog-graphcms.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-keystonejs-embedded" target="_blank" rel="noopener">Keystone Example</a> (<a href="https://nextjs-keystone-demo.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-kontent-ai" target="_blank" rel="noopener">Kontent.ai Example</a> (<a href="https://next-blog-kontent-ai.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-makeswift" target="_blank" rel="noopener">Makeswift Example</a> (<a href="https://nextjs-makeswift-example.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-plasmic" target="_blank" rel="noopener">Plasmic Example</a> (<a href="https://nextjs-plasmic-example.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-prepr" target="_blank" rel="noopener">Prepr Example</a> (<a href="https://next-blog-prepr.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-prismic" target="_blank" rel="noopener">Prismic Example</a> (<a href="https://next-blog-prismic.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-sanity" target="_blank" rel="noopener">Sanity Example</a> (<a href="https://next-blog.sanity.build/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-sitecore-xmcloud" target="_blank" rel="noopener">Sitecore XM Cloud Example</a> (<a href="https://vercel-sitecore-xmcloud-demo.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-storyblok" target="_blank" rel="noopener">Storyblok Example</a> (<a href="https://next-blog-storyblok.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-strapi" target="_blank" rel="noopener">Strapi Example</a> (<a href="https://next-blog-strapi.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-takeshape" target="_blank" rel="noopener">TakeShape Example</a> (<a href="https://next-blog-takeshape.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-tina" target="_blank" rel="noopener">Tina Example</a> (<a href="https://cms-tina-example.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-umbraco" target="_blank" rel="noopener">Umbraco Example</a> (<a href="https://nextjs-umbraco-sample-blog.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-umbraco-heartcore" target="_blank" rel="noopener">Umbraco Heartcore Example</a> (<a href="https://next-blog-umbraco-heartcore.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-webiny" target="_blank" rel="noopener">Webiny Example</a> (<a href="https://webiny-headlesscms-nextjs-example.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-wordpress" target="_blank" rel="noopener">WordPress Example</a> (<a href="https://next-blog-wordpress.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/blog-starter" target="_blank" rel="noopener">Blog Starter Example</a> (<a href="https://next-blog-starter.vercel.app/" target="_blank" rel="noopener">Demo</a>)</li>
+<li><a href="https://react-tweet.vercel.app/" target="_blank" rel="noopener">Static Tweet (Demo)</a></li>
+</ul></div></details>
+<p>page가 <strong>Static Generation</strong>을 사용하면, page HTML은 <strong>build 시점</strong>에 생성됩니다. 즉, production에서는 <code>next build</code>를 실행할 때 page HTML이 생성됩니다. 이 HTML은 이후 각 request마다 재사용되며, CDN에 cache될 수 있습니다.</p><div class="en-orig"><p>If a page uses <strong>Static Generation</strong>, the page HTML is generated at <strong>build time</strong>. That means in production, the page HTML is generated when you run <code>next build</code>. This HTML will then be reused on each request. It can be cached by a CDN.</p></div>
+<p>Next.js에서는 <strong>data가 있든 없든</strong> page를 static하게 생성할 수 있습니다. 각 경우를 살펴보겠습니다.</p><div class="en-orig"><p>In Next.js, you can statically generate pages <strong>with or without data</strong>. Let's take a look at each case.</p></div>
+<h3 class="sec" id="static-generation-without-data"><a class="anchor" href="#static-generation-without-data">Static Generation without data<span class="ko">data 없는 Static Generation</span></a></h3>
+<p>기본적으로 Next.js는 data를 fetch하지 않고 Static Generation으로 page를 prerender합니다. 예시는 다음과 같습니다:</p><div class="en-orig"><p>By default, Next.js prerenders pages using Static Generation without fetching data. Here's an example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">function About() {
+  return &lt;div&gt;About&lt;/div&gt;
+}
+
+export default About</code></pre></div></div>
+<p>이 page는 prerender를 위해 외부 data를 fetch할 필요가 없다는 점에 주목하세요. 이런 경우 Next.js는 build 중에 page마다 HTML 파일을 하나씩 생성합니다.</p><div class="en-orig"><p>Note that this page does not need to fetch any external data to be prerendered. In cases like this, Next.js generates a single HTML file per page during build time.</p></div>
+<h3 class="sec" id="static-generation-with-data"><a class="anchor" href="#static-generation-with-data">Static Generation with data<span class="ko">data가 있는 Static Generation</span></a></h3>
+<p>어떤 page는 prerender를 위해 외부 data를 fetch해야 합니다. 두 가지 시나리오가 있으며, 둘 중 하나 또는 둘 다 해당될 수 있습니다. 각 경우에 Next.js가 제공하는 다음 함수를 사용할 수 있습니다:</p><div class="en-orig"><p>Some pages require fetching external data for prerendering. There are two scenarios, and one or both might apply. In each case, you can use these functions that Next.js provides:</p></div>
+<ol>
+<li>page <strong>content</strong>가 외부 data에 의존하는 경우: <code>getStaticProps</code>를 사용하세요.</li>
+<li>page <strong>paths</strong>가 외부 data에 의존하는 경우: <code>getStaticPaths</code>를 사용하세요(보통 <code>getStaticProps</code>와 함께 사용).</li>
+</ol><div class="en-orig"><ol>
+<li>Your page <strong>content</strong> depends on external data: Use <code>getStaticProps</code>.</li>
+<li>Your page <strong>paths</strong> depend on external data: Use <code>getStaticPaths</code> (usually in addition to <code>getStaticProps</code>).</li>
+</ol></div>
+<h4 class="sec" id="scenario-1-your-page-content-depends-on-external-data"><a class="anchor" href="#scenario-1-your-page-content-depends-on-external-data">Scenario 1: Your page content depends on external data<span class="ko">시나리오 1: page content가 외부 data에 의존하는 경우</span></a></h4>
+<p><strong>예시</strong>: 블로그 page에서 CMS(content management system)로부터 블로그 글 목록을 fetch해야 할 수 있습니다.</p><div class="en-orig"><p><strong>Example</strong>: Your blog page might need to fetch the list of blog posts from a CMS (content management system).</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// TODO: Need to fetch `posts` (by calling some API endpoint)
+//       before this page can be prerendered.
+export default function Blog({ posts }) {
+  return (
+    &lt;ul&gt;
+      {posts.map((post) =&gt; (
+        &lt;li&gt;{post.title}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div></div>
+<p>prerender 시 이 data를 fetch할 수 있도록, Next.js에서는 같은 파일에서 <code>getStaticProps</code>라는 <code>async</code> 함수를 <code>export</code>할 수 있습니다. 이 함수는 build 시점에 호출되며, prerender 시 fetch한 data를 page의 <code>props</code>로 전달할 수 있게 해 줍니다.</p><div class="en-orig"><p>To fetch this data on prerender, Next.js allows you to <code>export</code> an <code>async</code> function called <code>getStaticProps</code> from the same file. This function gets called at build time and lets you pass fetched data to the page's <code>props</code> on prerender.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export default function Blog({ posts }) {
+  // Render posts...
+}
+
+// This function gets called at build time
+export async function getStaticProps() {
+  // Call an external API endpoint to get posts
+  const res = await fetch(&#x27;https://.../posts&#x27;)
+  const posts = await res.json()
+
+  // By returning { props: { posts } }, the Blog component
+  // will receive `posts` as a prop at build time
+  return {
+    props: {
+      posts,
+    },
+  }
+}</code></pre></div></div>
+<p><code>getStaticProps</code>의 동작 방식을 더 알아보려면 <a href="pages-building-your-application-data-fetching-get-static-props.html">Data Fetching 문서</a>를 확인하세요.</p><div class="en-orig"><p>To learn more about how <code>getStaticProps</code> works, check out the <a href="pages-building-your-application-data-fetching-get-static-props.html">Data Fetching documentation</a>.</p></div>
+<h4 class="sec" id="scenario-2-your-page-paths-depend-on-external-data"><a class="anchor" href="#scenario-2-your-page-paths-depend-on-external-data">Scenario 2: Your page paths depend on external data<span class="ko">시나리오 2: page path가 외부 data에 의존하는 경우</span></a></h4>
+<p>Next.js에서는 <strong>dynamic route</strong>를 가진 page를 만들 수 있습니다. 예를 들어 <code>pages/posts/[id].js</code>라는 파일을 만들어 <code>id</code>에 따라 블로그 글 하나를 보여 줄 수 있습니다. 그러면 <code>posts/1</code>에 접근했을 때 <code>id: 1</code>인 블로그 글을 보여 줄 수 있습니다.</p><div class="en-orig"><p>Next.js allows you to create pages with <strong>dynamic routes</strong>. For example, you can create a file called <code>pages/posts/[id].js</code> to show a single blog post based on <code>id</code>. This will allow you to show a blog post with <code>id: 1</code> when you access <code>posts/1</code>.</p></div>
+<blockquote><p>dynamic routing에 대해 더 알아보려면 <a href="pages-building-your-application-routing-dynamic-routes.html">Dynamic Routing 문서</a>를 확인하세요.</p><div class="en-orig"><p>To learn more about dynamic routing, check the <a href="pages-building-your-application-routing-dynamic-routes.html">Dynamic Routing documentation</a>.</p></div></blockquote>
+<p>하지만 build 시점에 어떤 <code>id</code>를 prerender할지는 외부 data에 따라 달라질 수 있습니다.</p><div class="en-orig"><p>However, which <code>id</code> you want to prerender at build time might depend on external data.</p></div>
+<p><strong>예시</strong>: database에 블로그 글을 하나만(<code>id: 1</code>) 추가했다고 가정해 봅시다. 이 경우 build 시점에 <code>posts/1</code>만 prerender하고 싶을 것입니다.</p><div class="en-orig"><p><strong>Example</strong>: suppose that you've only added one blog post (with <code>id: 1</code>) to the database. In this case, you'd only want to prerender <code>posts/1</code> at build time.</p></div>
+<p>나중에 <code>id: 2</code>인 두 번째 글을 추가할 수도 있습니다. 그러면 <code>posts/2</code>도 prerender하고 싶을 것입니다.</p><div class="en-orig"><p>Later, you might add the second post with <code>id: 2</code>. Then you'd want to prerender <code>posts/2</code> as well.</p></div>
+<p>따라서 prerender되는 page <strong>paths</strong>는 외부 data에 의존합니다. 이를 처리하기 위해 Next.js에서는 dynamic page(이 경우 <code>pages/posts/[id].js</code>)에서 <code>getStaticPaths</code>라는 <code>async</code> 함수를 <code>export</code>할 수 있습니다. 이 함수는 build 시점에 호출되며, prerender할 path를 지정할 수 있게 해 줍니다.</p><div class="en-orig"><p>So your page <strong>paths</strong> that are prerendered depend on external data. To handle this, Next.js lets you <code>export</code> an <code>async</code> function called <code>getStaticPaths</code> from a dynamic page (<code>pages/posts/[id].js</code> in this case). This function gets called at build time and lets you specify which paths you want to prerender.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// This function gets called at build time
+export async function getStaticPaths() {
+  // Call an external API endpoint to get posts
+  const res = await fetch(&#x27;https://.../posts&#x27;)
+  const posts = await res.json()
+
+  // Get the paths we want to prerender based on posts
+  const paths = posts.map((post) =&gt; ({
+    params: { id: post.id },
+  }))
+
+  // We&#x27;ll prerender only these paths at build time.
+  // { fallback: false } means other routes should 404.
+  return { paths, fallback: false }
+}</code></pre></div></div>
+<p>또한 <code>pages/posts/[id].js</code>에서 <code>getStaticProps</code>도 export해야 이 <code>id</code>에 해당하는 글의 data를 fetch하고 이를 사용해 page를 prerender할 수 있습니다:</p><div class="en-orig"><p>Also in <code>pages/posts/[id].js</code>, you need to export <code>getStaticProps</code> so that you can fetch the data about the post with this <code>id</code> and use it to prerender the page:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export default function Post({ post }) {
+  // Render post...
+}
+
+export async function getStaticPaths() {
+  // ...
+}
+
+// This also gets called at build time
+export async function getStaticProps({ params }) {
+  // params contains the post `id`.
+  // If the route is like /posts/1, then params.id is 1
+  const res = await fetch(`https://.../posts/${params.id}`)
+  const post = await res.json()
+
+  // Pass post data to the page via props
+  return { props: { post } }
+}</code></pre></div></div>
+<p><code>getStaticPaths</code>의 동작 방식을 더 알아보려면 <a href="pages-building-your-application-data-fetching-get-static-paths.html">Data Fetching 문서</a>를 확인하세요.</p><div class="en-orig"><p>To learn more about how <code>getStaticPaths</code> works, check out the <a href="pages-building-your-application-data-fetching-get-static-paths.html">Data Fetching documentation</a>.</p></div>
+<h3 class="sec" id="when-should-i-use-static-generation"><a class="anchor" href="#when-should-i-use-static-generation">When should I use Static Generation?<span class="ko">Static Generation은 언제 사용해야 하나요?</span></a></h3>
+<p>가능하면 (data가 있든 없든) <strong>Static Generation</strong>을 사용하는 것을 권장합니다. page를 한 번 build해 CDN으로 제공할 수 있으므로, 모든 request마다 server가 page를 render하는 것보다 훨씬 빠르기 때문입니다.</p><div class="en-orig"><p>We recommend using <strong>Static Generation</strong> (with and without data) whenever possible because your page can be built once and served by CDN, which makes it much faster than having a server render the page on every request.</p></div>
+<p>Static Generation은 다음을 포함한 다양한 종류의 page에 사용할 수 있습니다:</p><div class="en-orig"><p>You can use Static Generation for many types of pages, including:</p></div>
+<ul>
+<li>마케팅 page</li>
+<li>블로그 글과 포트폴리오</li>
+<li>E-commerce 상품 목록</li>
+<li>도움말과 문서</li>
+</ul><div class="en-orig"><ul>
+<li>Marketing pages</li>
+<li>Blog posts and portfolios</li>
+<li>E-commerce product listings</li>
+<li>Help and documentation</li>
+</ul></div>
+<p>스스로에게 이렇게 물어보세요: "이 page를 사용자의 request <strong>이전에</strong> prerender할 수 있는가?" 답이 '예'라면 Static Generation을 선택해야 합니다.</p><div class="en-orig"><p>You should ask yourself: "Can I prerender this page <strong>ahead</strong> of a user's request?" If the answer is yes, then you should choose Static Generation.</p></div>
+<p>반면 사용자의 request 이전에 page를 prerender할 수 없다면 Static Generation은 좋은 선택이 <strong>아닙니다</strong>. page가 자주 업데이트되는 data를 보여 주고, request마다 page content가 바뀔 수도 있습니다.</p><div class="en-orig"><p>On the other hand, Static Generation is <strong>not</strong> a good idea if you cannot prerender a page ahead of a user's request. Maybe your page shows frequently updated data, and the page content changes on every request.</p></div>
+<p>이런 경우에는 다음 중 하나를 할 수 있습니다:</p><div class="en-orig"><p>In cases like this, you can do one of the following:</p></div>
+<ul>
+<li>Static Generation과 <strong>Client-side data fetching</strong>을 함께 사용하기: page의 일부는 prerender를 건너뛰고 client-side JavaScript로 채울 수 있습니다. 이 방식에 대해 더 알아보려면 <a href="pages-building-your-application-data-fetching-client-side.html">Data Fetching 문서</a>를 확인하세요.</li>
+<li><strong>Server-Side Rendering</strong> 사용하기: Next.js가 각 request마다 page를 prerender합니다. page를 CDN에 cache할 수 없으므로 더 느리지만, prerender된 page는 항상 최신 상태입니다. 이 방식은 아래에서 다룹니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Use Static Generation with <strong>Client-side data fetching:</strong> You can skip prerendering some parts of a page and then use client-side JavaScript to populate them. To learn more about this approach, check out the <a href="pages-building-your-application-data-fetching-client-side.html">Data Fetching documentation</a>.</li>
+<li>Use <strong>Server-Side Rendering:</strong> Next.js prerenders a page on each request. It will be slower because the page cannot be cached by a CDN, but the prerendered page will always be up-to-date. We'll talk about this approach below.</li>
+</ul></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/03-building-your-application/02-rendering/02-static-site-generation.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/building-your-application/rendering/static-site-generation" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-building-your-application-rendering-server-side-rendering.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Server-side Rendering (SSR)</div><div class="ttl-ko">Server-side Rendering (SSR)</div></a>
+      <a href="pages-building-your-application-rendering-automatic-static-optimization.html" class="next"><div class="dir">다음 →</div><div class="ttl">Automatic Static Optimization</div><div class="ttl-ko">자동 Static 최적화</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/building-your-application/rendering/static-site-generation" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l3"><a href="#static-generation-without-data">Static Generation without data</a></li><li class="l3"><a href="#static-generation-with-data">Static Generation with data</a></li><li class="l3"><a href="#when-should-i-use-static-generation">When should I use Static Generation?</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+&lt;details&gt;
+  &lt;summary&gt;예시&lt;/summary&gt;
+
+- [Agility CMS Example](https://github.com/vercel/next.js/tree/canary/examples/cms-agilitycms) ([Demo](https://next-blog-agilitycms.vercel.app/))
+- [Builder.io Example](https://github.com/vercel/next.js/tree/canary/examples/cms-builder-io) ([Demo](https://cms-builder-io.vercel.app/))
+- [ButterCMS Example](https://github.com/vercel/next.js/tree/canary/examples/cms-buttercms) ([Demo](https://next-blog-buttercms.vercel.app/))
+- [Contentful Example](https://github.com/vercel/next.js/tree/canary/examples/cms-contentful) ([Demo](https://app-router-contentful.vercel.app/))
+- [Cosmic Example](https://github.com/vercel/next.js/tree/canary/examples/cms-cosmic) ([Demo](https://next-blog-cosmic.vercel.app/))
+- [DatoCMS Example](https://github.com/vercel/next.js/tree/canary/examples/cms-datocms) ([Demo](https://next-blog-datocms.vercel.app/))
+- [DotCMS Example](https://github.com/vercel/next.js/tree/canary/examples/cms-dotcms) ([Demo](https://nextjs-dotcms-blog.vercel.app/))
+- [Drupal Example](https://github.com/vercel/next.js/tree/canary/examples/cms-drupal) ([Demo](https://cms-drupal.vercel.app/))
+- [Enterspeed Example](https://github.com/vercel/next.js/tree/canary/examples/cms-enterspeed) ([Demo](https://next-blog-demo.enterspeed.com/))
+- [GraphCMS Example](https://github.com/vercel/next.js/tree/canary/examples/cms-graphcms) ([Demo](https://next-blog-graphcms.vercel.app/))
+- [Keystone Example](https://github.com/vercel/next.js/tree/canary/examples/cms-keystonejs-embedded) ([Demo](https://nextjs-keystone-demo.vercel.app/))
+- [Kontent.ai Example](https://github.com/vercel/next.js/tree/canary/examples/cms-kontent-ai) ([Demo](https://next-blog-kontent-ai.vercel.app/))
+- [Makeswift Example](https://github.com/vercel/next.js/tree/canary/examples/cms-makeswift) ([Demo](https://nextjs-makeswift-example.vercel.app/))
+- [Plasmic Example](https://github.com/vercel/next.js/tree/canary/examples/cms-plasmic) ([Demo](https://nextjs-plasmic-example.vercel.app/))
+- [Prepr Example](https://github.com/vercel/next.js/tree/canary/examples/cms-prepr) ([Demo](https://next-blog-prepr.vercel.app/))
+- [Prismic Example](https://github.com/vercel/next.js/tree/canary/examples/cms-prismic) ([Demo](https://next-blog-prismic.vercel.app/))
+- [Sanity Example](https://github.com/vercel/next.js/tree/canary/examples/cms-sanity) ([Demo](https://next-blog.sanity.build/))
+- [Sitecore XM Cloud Example](https://github.com/vercel/next.js/tree/canary/examples/cms-sitecore-xmcloud) ([Demo](https://vercel-sitecore-xmcloud-demo.vercel.app/))
+- [Storyblok Example](https://github.com/vercel/next.js/tree/canary/examples/cms-storyblok) ([Demo](https://next-blog-storyblok.vercel.app/))
+- [Strapi Example](https://github.com/vercel/next.js/tree/canary/examples/cms-strapi) ([Demo](https://next-blog-strapi.vercel.app/))
+- [TakeShape Example](https://github.com/vercel/next.js/tree/canary/examples/cms-takeshape) ([Demo](https://next-blog-takeshape.vercel.app/))
+- [Tina Example](https://github.com/vercel/next.js/tree/canary/examples/cms-tina) ([Demo](https://cms-tina-example.vercel.app/))
+- [Umbraco Example](https://github.com/vercel/next.js/tree/canary/examples/cms-umbraco) ([Demo](https://nextjs-umbraco-sample-blog.vercel.app/))
+- [Umbraco Heartcore Example](https://github.com/vercel/next.js/tree/canary/examples/cms-umbraco-heartcore) ([Demo](https://next-blog-umbraco-heartcore.vercel.app/))
+- [Webiny Example](https://github.com/vercel/next.js/tree/canary/examples/cms-webiny) ([Demo](https://webiny-headlesscms-nextjs-example.vercel.app/))
+- [WordPress Example](https://github.com/vercel/next.js/tree/canary/examples/cms-wordpress) ([Demo](https://next-blog-wordpress.vercel.app/))
+- [Blog Starter Example](https://github.com/vercel/next.js/tree/canary/examples/blog-starter) ([Demo](https://next-blog-starter.vercel.app/))
+- [Static Tweet (Demo)](https://react-tweet.vercel.app/)
+
+&lt;/details&gt;
+
+page가 **Static Generation**을 사용하면, page HTML은 **build 시점**에 생성됩니다. 즉, production에서는 `next build`를 실행할 때 page HTML이 생성됩니다. 이 HTML은 이후 각 request마다 재사용되며, CDN에 cache될 수 있습니다.
+
+Next.js에서는 **data가 있든 없든** page를 static하게 생성할 수 있습니다. 각 경우를 살펴보겠습니다.
+
+### Static Generation without data || data 없는 Static Generation
+
+기본적으로 Next.js는 data를 fetch하지 않고 Static Generation으로 page를 prerender합니다. 예시는 다음과 같습니다:
+
+[[CODE 1]]
+
+이 page는 prerender를 위해 외부 data를 fetch할 필요가 없다는 점에 주목하세요. 이런 경우 Next.js는 build 중에 page마다 HTML 파일을 하나씩 생성합니다.
+
+### Static Generation with data || data가 있는 Static Generation
+
+어떤 page는 prerender를 위해 외부 data를 fetch해야 합니다. 두 가지 시나리오가 있으며, 둘 중 하나 또는 둘 다 해당될 수 있습니다. 각 경우에 Next.js가 제공하는 다음 함수를 사용할 수 있습니다:
+
+1. page **content**가 외부 data에 의존하는 경우: `getStaticProps`를 사용하세요.
+2. page **paths**가 외부 data에 의존하는 경우: `getStaticPaths`를 사용하세요(보통 `getStaticProps`와 함께 사용).
+
+#### Scenario 1: Your page content depends on external data || 시나리오 1: page content가 외부 data에 의존하는 경우
+
+**예시**: 블로그 page에서 CMS(content management system)로부터 블로그 글 목록을 fetch해야 할 수 있습니다.
+
+[[CODE 2]]
+
+prerender 시 이 data를 fetch할 수 있도록, Next.js에서는 같은 파일에서 `getStaticProps`라는 `async` 함수를 `export`할 수 있습니다. 이 함수는 build 시점에 호출되며, prerender 시 fetch한 data를 page의 `props`로 전달할 수 있게 해 줍니다.
+
+[[CODE 3]]
+
+`getStaticProps`의 동작 방식을 더 알아보려면 [Data Fetching 문서](/docs/pages/building-your-application/data-fetching/get-static-props)를 확인하세요.
+
+#### Scenario 2: Your page paths depend on external data || 시나리오 2: page path가 외부 data에 의존하는 경우
+
+Next.js에서는 **dynamic route**를 가진 page를 만들 수 있습니다. 예를 들어 `pages/posts/[id].js`라는 파일을 만들어 `id`에 따라 블로그 글 하나를 보여 줄 수 있습니다. 그러면 `posts/1`에 접근했을 때 `id: 1`인 블로그 글을 보여 줄 수 있습니다.
+
+&gt; dynamic routing에 대해 더 알아보려면 [Dynamic Routing 문서](/docs/pages/building-your-application/routing/dynamic-routes)를 확인하세요.
+
+하지만 build 시점에 어떤 `id`를 prerender할지는 외부 data에 따라 달라질 수 있습니다.
+
+**예시**: database에 블로그 글을 하나만(`id: 1`) 추가했다고 가정해 봅시다. 이 경우 build 시점에 `posts/1`만 prerender하고 싶을 것입니다.
+
+나중에 `id: 2`인 두 번째 글을 추가할 수도 있습니다. 그러면 `posts/2`도 prerender하고 싶을 것입니다.
+
+따라서 prerender되는 page **paths**는 외부 data에 의존합니다. 이를 처리하기 위해 Next.js에서는 dynamic page(이 경우 `pages/posts/[id].js`)에서 `getStaticPaths`라는 `async` 함수를 `export`할 수 있습니다. 이 함수는 build 시점에 호출되며, prerender할 path를 지정할 수 있게 해 줍니다.
+
+[[CODE 4]]
+
+또한 `pages/posts/[id].js`에서 `getStaticProps`도 export해야 이 `id`에 해당하는 글의 data를 fetch하고 이를 사용해 page를 prerender할 수 있습니다:
+
+[[CODE 5]]
+
+`getStaticPaths`의 동작 방식을 더 알아보려면 [Data Fetching 문서](/docs/pages/building-your-application/data-fetching/get-static-paths)를 확인하세요.
+
+### When should I use Static Generation? || Static Generation은 언제 사용해야 하나요?
+
+가능하면 (data가 있든 없든) **Static Generation**을 사용하는 것을 권장합니다. page를 한 번 build해 CDN으로 제공할 수 있으므로, 모든 request마다 server가 page를 render하는 것보다 훨씬 빠르기 때문입니다.
+
+Static Generation은 다음을 포함한 다양한 종류의 page에 사용할 수 있습니다:
+
+- 마케팅 page
+- 블로그 글과 포트폴리오
+- E-commerce 상품 목록
+- 도움말과 문서
+
+스스로에게 이렇게 물어보세요: &quot;이 page를 사용자의 request **이전에** prerender할 수 있는가?&quot; 답이 &#x27;예&#x27;라면 Static Generation을 선택해야 합니다.
+
+반면 사용자의 request 이전에 page를 prerender할 수 없다면 Static Generation은 좋은 선택이 **아닙니다**. page가 자주 업데이트되는 data를 보여 주고, request마다 page content가 바뀔 수도 있습니다.
+
+이런 경우에는 다음 중 하나를 할 수 있습니다:
+
+- Static Generation과 **Client-side data fetching**을 함께 사용하기: page의 일부는 prerender를 건너뛰고 client-side JavaScript로 채울 수 있습니다. 이 방식에 대해 더 알아보려면 [Data Fetching 문서](/docs/pages/building-your-application/data-fetching/client-side)를 확인하세요.
+- **Server-Side Rendering** 사용하기: Next.js가 각 request마다 page를 prerender합니다. page를 CDN에 cache할 수 없으므로 더 느리지만, prerender된 page는 항상 최신 상태입니다. 이 방식은 아래에서 다룹니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>error.js (error.js) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/file-conventions/error" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/file-conventions/error" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/03-file-conventions/error.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-file-conventions.html">File-system conventions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">error.js<span class="sub">error.js</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><strong>error</strong> 파일을 사용하면 예상치 못한 runtime error를 처리하고 fallback UI를 표시할 수 있습니다.</p><div class="en-orig"><p>An <strong>error</strong> file allows you to handle unexpected runtime errors and display fallback UI.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/error-special-file.png" alt="error.js special file" width="1600" height="606" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/error-special-file.png" alt="error.js special file" width="1600" height="606" loading="lazy" /></figure>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/error.tsx" data-js="app/dashboard/error.js">app/dashboard/error.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27; // Error boundaries must be Client Components
+
+import { useEffect } from &#x27;react&#x27;
+
+export default function Error({
+  error,
+  retry,
+}: {
+  error: unknown
+  retry: () =&gt; void
+}) {
+  useEffect(() =&gt; {
+    // Log the error to an error reporting service
+    console.error(error)
+  }, [error])
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Something went wrong!&lt;/h2&gt;
+      &lt;button
+        onClick={
+          // Attempt to recover by re-fetching and re-rendering the segment
+          () =&gt; retry()
+        }
+      &gt;
+        Try again
+      &lt;/button&gt;
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27; // Error boundaries must be Client Components
+
+import { useEffect } from &#x27;react&#x27;
+
+export default function Error({ error, retry }) {
+  useEffect(() =&gt; {
+    // Log the error to an error reporting service
+    console.error(error)
+  }, [error])
+
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Something went wrong!&lt;/h2&gt;
+      &lt;button
+        onClick={
+          // Attempt to recover by re-fetching and re-rendering the segment
+          () =&gt; retry()
+        }
+      &gt;
+        Try again
+      &lt;/button&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p><code>error.js</code>는 route segment와 그 안에 중첩된 children을 <a href="https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary" target="_blank" rel="noopener">React Error Boundary</a>로 감쌉니다. boundary 안에서 error가 throw되면 <code>error</code> component가 fallback UI로 표시됩니다.</p><div class="en-orig"><p><code>error.js</code> wraps a route segment and its nested children in a <a href="https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary" target="_blank" rel="noopener">React Error Boundary</a>. When an error throws within the boundary, the <code>error</code> component shows as the fallback UI.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/error-overview.png" alt="error.js의 동작 방식" width="1600" height="903" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/error-overview.png" alt="error.js의 동작 방식" width="1600" height="903" loading="lazy" /></figure>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><a href="https://react.dev/learn/react-developer-tools" target="_blank" rel="noopener">React DevTools</a>를 사용하면 error boundary를 toggle해서 error 상태를 테스트할 수 있습니다.</li>
+<li>error가 상위 error boundary로 bubble up되게 하려면 <code>error</code> component를 render할 때 <code>throw</code>하면 됩니다.</li>
+<li><a href="app-api-reference-file-conventions-error.html"><code>error.js</code></a>처럼 route segment에 묶이지 않는 component 수준의 error 복구에는 <a href="app-api-reference-functions-catchError.html"><code>catchError</code></a> 함수를 사용하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>The <a href="https://react.dev/learn/react-developer-tools" target="_blank" rel="noopener">React DevTools</a> allow you to toggle error boundaries to test error states.</li>
+<li>If you want errors to bubble up to the parent error boundary, you can <code>throw</code> when rendering the <code>error</code> component.</li>
+<li>For component-level error recovery that aren't tied to route segments like <a href="app-api-reference-file-conventions-error.html"><code>error.js</code></a>, use the <a href="app-api-reference-functions-catchError.html"><code>catchError</code></a> function.</li>
+</ul></div></div></div>
+<p><a href="app-getting-started-project-structure.html#component-hierarchy">component hierarchy</a>에서 <code>error.js</code>는 <code>loading.js</code>, <code>not-found.js</code>, <code>page.js</code>, 그리고 중첩된 <code>layout.js</code> 파일을 React error boundary로 감쌉니다. 같은 segment에서 그 위에 있는 <code>layout.js</code>나 <code>template.js</code>는 감싸지 <strong>않습니다</strong>. root layout의 error를 처리하려면 <a href="app-api-reference-file-conventions-error.html#global-error"><code>global-error.js</code></a>를 사용하세요.</p><div class="en-orig"><p>In the <a href="app-getting-started-project-structure.html#component-hierarchy">component hierarchy</a>, <code>error.js</code> wraps <code>loading.js</code>, <code>not-found.js</code>, <code>page.js</code>, and nested <code>layout.js</code> files in a React error boundary. It does <strong>not</strong> wrap the <code>layout.js</code> or <code>template.js</code> above it in the same segment. To handle errors in the root layout, use <a href="app-api-reference-file-conventions-error.html#global-error"><code>global-error.js</code></a>.</p></div>
+<h2 class="sec" id="reference"><a class="anchor" href="#reference">Reference<span class="ko">레퍼런스</span></a></h2>
+<h3 class="sec" id="props"><a class="anchor" href="#props">Props</a></h3>
+<h4 class="sec" id="error"><a class="anchor" href="#error"><code>error</code></a></h4>
+<p>throw된 값으로, <code>error.js</code> Client Component로 전달됩니다. Server Component에서 발생한 error는 <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error" target="_blank" rel="noopener"><code>Error</code></a> instance로 전달되지만, Client Component에서 throw된 값은 그대로 전달되므로 <code>Error</code>가 아닐 수도 있습니다. <code>message</code>나 <code>digest</code> 같은 property를 읽기 전에 <code>instanceof Error</code> 등으로 type을 좁히세요.</p><div class="en-orig"><p>The value that was thrown, forwarded to the <code>error.js</code> Client Component. Errors from Server Components arrive as an <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error" target="_blank" rel="noopener"><code>Error</code></a> instance, while a value thrown in a Client Component is passed as-is and may not be an <code>Error</code>. Narrow it, for example with <code>instanceof Error</code>, before reading properties like <code>message</code> or <code>digest</code>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>development 중에는 client로 전달되는 <code>Error</code> 객체가 serialize되며, 디버깅을 쉽게 하도록 원래 error의 <code>message</code>를 포함합니다. 하지만 error에 포함될 수 있는 민감한 정보가 client로 유출되지 않도록 <strong>production에서는 이 동작이 다릅니다</strong>.</p><div class="en-orig"><p>During development, the <code>Error</code> object forwarded to the client will be serialized and include the <code>message</code> of the original error for easier debugging. However, <strong>this behavior is different in production</strong> to avoid leaking potentially sensitive details included in the error to the client.</p></div></div></div>
+<h4 class="sec" id="errormessage"><a class="anchor" href="#errormessage"><code>error.message</code></a></h4>
+<ul>
+<li>Client Component에서 전달된 error는 원래의 <code>Error</code> message를 보여 줍니다.</li>
+<li>Server Component에서 전달된 error는 identifier가 포함된 일반적인 message를 보여 줍니다. 민감한 정보 유출을 막기 위해서입니다. <code>error.digest</code>에 있는 identifier를 사용해 해당하는 server-side log를 찾을 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Errors forwarded from Client Components show the original <code>Error</code> message.</li>
+<li>Errors forwarded from Server Components show a generic message with an identifier. This is to prevent leaking sensitive details. You can use the identifier, under <code>error.digest</code>, to match the corresponding server-side logs.</li>
+</ul></div>
+<h4 class="sec" id="errordigest"><a class="anchor" href="#errordigest"><code>error.digest</code></a></h4>
+<p>throw된 error에 대해 자동으로 생성된 hash입니다. server-side log에서 해당 error를 찾는 데 사용할 수 있습니다.</p><div class="en-orig"><p>An automatically generated hash of the error thrown. It can be used to match the corresponding error in server-side logs.</p></div>
+<h4 class="sec" id="retry"><a class="anchor" href="#retry"><code>retry</code></a></h4>
+<p>error의 원인은 때로 일시적일 수 있습니다. 이런 경우 다시 시도하면 문제가 해결될 수도 있습니다.</p><div class="en-orig"><p>The cause of an error can sometimes be temporary. In these cases, trying again might resolve the issue.</p></div>
+<p>error component는 <code>retry()</code> 함수를 사용해 사용자가 error에서 복구를 시도하도록 유도할 수 있습니다. 이 함수를 실행하면 error boundary의 children을 다시 fetch하고 다시 render하려고 시도합니다. 성공하면 fallback error component가 re-render 결과로 대체됩니다.</p><div class="en-orig"><p>An error component can use the <code>retry()</code> function to prompt the user to attempt to recover from the error. When executed, the function will try to re-fetch and re-render the error boundary's children. If successful, the fallback error component is replaced with the result of the re-render.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/error.tsx" data-js="app/dashboard/error.js">app/dashboard/error.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27; // Error boundaries must be Client Components
+
+export default function Error({
+  error,
+  retry,
+}: {
+  error: unknown
+  retry: () =&gt; void
+}) {
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Something went wrong!&lt;/h2&gt;
+      &lt;button onClick={() =&gt; retry()}&gt;Try again&lt;/button&gt;
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27; // Error boundaries must be Client Components
+
+export default function Error({ error, retry }) {
+  return (
+    &lt;div&gt;
+      &lt;h2&gt;Something went wrong!&lt;/h2&gt;
+      &lt;button onClick={() =&gt; retry()}&gt;Try again&lt;/button&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<h4 class="sec" id="reset"><a class="anchor" href="#reset"><code>reset</code></a></h4>
+<p>대부분의 경우에는 <a href="#retry"><code>retry()</code></a>를 대신 사용해야 합니다. 하지만 content를 다시 fetch하지 않고 error 상태를 지운 뒤 error boundary의 children을 다시 render해야 할 특별한 이유가 있다면 <code>reset()</code> 함수를 사용할 수 있습니다.</p><div class="en-orig"><p>In most cases, you should use <a href="#retry"><code>retry()</code></a> instead. However, if you have a specific reason to clear the error state and re-render the error boundary's children without re-fetching the contents, you can use the <code>reset()</code> function.</p></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<h3 class="sec" id="global-error"><a class="anchor" href="#global-error">Global Error</a></h3>
+<p>흔하지는 않지만, <a href="app-guides-internationalization.html">internationalization</a>을 활용하는 경우에도 root app directory에 위치한 <code>global-error.jsx</code>를 사용해 root layout이나 template의 error를 처리할 수 있습니다. Global error UI는 자체 <code>&lt;html&gt;</code>과 <code>&lt;body&gt;</code> tag, 그리고 error page에 필요한 global style, font 등 기타 dependency를 직접 정의해야 합니다. 이 파일이 활성화되면 root layout이나 template을 대체합니다.</p><div class="en-orig"><p>While less common, you can handle errors in the root layout or template using <code>global-error.jsx</code>, located in the root app directory, even when leveraging <a href="app-guides-internationalization.html">internationalization</a>. Global error UI must define its own <code>&lt;html&gt;</code> and <code>&lt;body&gt;</code> tags, global styles, fonts, or other dependencies that your error page requires. This file replaces the root layout or template when active.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>global-error</code>와 기본 제공 500 page는 자체 document를 render하며 global style을 포함하지 <strong>않으므로</strong>, 앱 수준의 theme toggle(class나 <code>data-theme</code> attribute)이 적용되지 않습니다. 기본 UI는 OS color scheme을 따릅니다. 앱의 theme에 맞추려면 직접 만든 <code>global-error</code> component 안에서 theme을 적용하세요.</p><div class="en-orig"><p><code>global-error</code> and the built-in 500 page render their own document and do <strong>not</strong> include your global styles, so an app-level theme toggle (a class or <code>data-theme</code> attribute) won't reach them. The default UI follows the OS color scheme; to match your app's theme, apply it inside your own <code>global-error</code> component.</p></div></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Error boundary는 반드시 <a href="app-getting-started-server-and-client-components.html#using-client-components">Client Component</a>여야 하므로, <code>global-error.jsx</code>에서는 <a href="app-getting-started-metadata-and-og-images.html"><code>metadata</code>와 <code>generateMetadata</code></a> export가 지원되지 않습니다. 대안으로 React <a href="https://react.dev/reference/react-dom/components/title" target="_blank" rel="noopener"><code>&lt;title&gt;</code></a> component를 사용할 수 있습니다.</p><div class="en-orig"><p>Error boundaries must be <a href="app-getting-started-server-and-client-components.html#using-client-components">Client Components</a>, which means that <a href="app-getting-started-metadata-and-og-images.html"><code>metadata</code> and <code>generateMetadata</code></a> exports are not supported in <code>global-error.jsx</code>. As an alternative, you can use the React <a href="https://react.dev/reference/react-dom/components/title" target="_blank" rel="noopener"><code>&lt;title&gt;</code></a> component.</p></div></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/global-error.tsx" data-js="app/global-error.js">app/global-error.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27; // Error boundaries must be Client Components
+
+export default function GlobalError({
+  error,
+  retry,
+}: {
+  error: unknown
+  retry: () =&gt; void
+}) {
+  return (
+    // global-error must include html and body tags
+    &lt;html&gt;
+      &lt;body&gt;
+        &lt;h2&gt;Something went wrong!&lt;/h2&gt;
+        &lt;button onClick={() =&gt; retry()}&gt;Try again&lt;/button&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27; // Error boundaries must be Client Components
+
+export default function GlobalError({ error, retry }) {
+  return (
+    // global-error must include html and body tags
+    &lt;html&gt;
+      &lt;body&gt;
+        &lt;h2&gt;Something went wrong!&lt;/h2&gt;
+        &lt;button onClick={() =&gt; retry()}&gt;Try again&lt;/button&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="graceful-error-recovery-with-a-custom-error-boundary"><a class="anchor" href="#graceful-error-recovery-with-a-custom-error-boundary">Graceful error recovery with a custom error boundary<span class="ko">custom error boundary로 graceful하게 error 복구하기</span></a></h3>
+<p>client에서 rendering이 실패했을 때, 마지막으로 알려진 server render UI를 보여 주면 더 나은 사용자 경험을 제공할 수 있습니다.</p><div class="en-orig"><p>When rendering fails on the client, it can be useful to show the last known server rendered UI for a better user experience.</p></div>
+<p><code>GracefullyDegradingErrorBoundary</code>는 error가 발생하기 전에 현재 HTML을 capture해 보존하는 custom error boundary의 예시입니다. rendering error가 발생하면 capture한 HTML을 다시 render하고, 사용자에게 알리는 고정 notification bar를 표시합니다.</p><div class="en-orig"><p>The <code>GracefullyDegradingErrorBoundary</code> is an example of a custom error boundary that captures and preserves the current HTML before an error occurs. If a rendering error happens, it re-renders the captured HTML and displays a persistent notification bar to inform the user.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/error.tsx" data-js="app/dashboard/error.js">app/dashboard/error.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import React, { Component, ErrorInfo, ReactNode } from &#x27;react&#x27;
+
+interface ErrorBoundaryProps {
+  children: ReactNode
+  onError?: (error: Error, errorInfo: ErrorInfo) =&gt; void
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean
+}
+
+export class GracefullyDegradingErrorBoundary extends Component&lt;
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+&gt; {
+  private contentRef: React.RefObject&lt;HTMLDivElement | null&gt;
+
+  constructor(props: ErrorBoundaryProps) {
+    super(props)
+    this.state = { hasError: false }
+    this.contentRef = React.createRef()
+  }
+
+  static getDerivedStateFromError(_: Error): ErrorBoundaryState {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    if (this.props.onError) {
+      this.props.onError(error, errorInfo)
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // Render the current HTML content without hydration
+      return (
+        &lt;&gt;
+          &lt;div
+            ref={this.contentRef}
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{
+              __html: this.contentRef.current?.innerHTML || &#x27;&#x27;,
+            }}
+          /&gt;
+          &lt;div className=&quot;fixed bottom-0 left-0 right-0 bg-red-600 text-white py-4 px-6 text-center&quot;&gt;
+            &lt;p className=&quot;font-semibold&quot;&gt;
+              An error occurred during page rendering
+            &lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/&gt;
+      )
+    }
+
+    return &lt;div ref={this.contentRef}&gt;{this.props.children}&lt;/div&gt;
+  }
+}
+
+export default GracefullyDegradingErrorBoundary</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import React, { Component, createRef } from &#x27;react&#x27;
+
+class GracefullyDegradingErrorBoundary extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { hasError: false }
+    this.contentRef = createRef()
+  }
+
+  static getDerivedStateFromError(_) {
+    return { hasError: true }
+  }
+
+  componentDidCatch(error, errorInfo) {
+    if (this.props.onError) {
+      this.props.onError(error, errorInfo)
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // Render the current HTML content without hydration
+      return (
+        &lt;&gt;
+          &lt;div
+            ref={this.contentRef}
+            suppressHydrationWarning
+            dangerouslySetInnerHTML={{
+              __html: this.contentRef.current?.innerHTML || &#x27;&#x27;,
+            }}
+          /&gt;
+          &lt;div className=&quot;fixed bottom-0 left-0 right-0 bg-red-600 text-white py-4 px-6 text-center&quot;&gt;
+            &lt;p className=&quot;font-semibold&quot;&gt;
+              An error occurred during page rendering
+            &lt;/p&gt;
+          &lt;/div&gt;
+        &lt;/&gt;
+      )
+    }
+
+    return &lt;div ref={this.contentRef}&gt;{this.props.children}&lt;/div&gt;
+  }
+}
+
+export default GracefullyDegradingErrorBoundary</code></pre></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.3.0</code></td><td><code>retry</code> prop이 stable이 되었습니다.</td></tr>
+<tr><td><code>v16.2.0</code></td><td><code>unstable_retry</code> prop이 추가되었습니다.</td></tr>
+<tr><td><code>v15.2.0</code></td><td>development에서도 <code>global-error</code>를 표시합니다.</td></tr>
+<tr><td><code>v13.1.0</code></td><td><code>global-error</code>가 도입되었습니다.</td></tr>
+<tr><td><code>v13.0.0</code></td><td><code>error</code>가 도입되었습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.3.0</code></td><td><code>retry</code> prop became stable.</td></tr>
+<tr><td><code>v16.2.0</code></td><td><code>unstable_retry</code> prop added.</td></tr>
+<tr><td><code>v15.2.0</code></td><td>Also display <code>global-error</code> in development.</td></tr>
+<tr><td><code>v13.1.0</code></td><td><code>global-error</code> introduced.</td></tr>
+<tr><td><code>v13.0.0</code></td><td><code>error</code> introduced.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">error handling 더 알아보기</h2><div class="rgrid"><a class="rcard" href="app-getting-started-error-handling.html"><div class="rt">Error Handling</div><div class="rk">에러 처리</div><div class="rd">예상된 error를 표시하고 처리되지 않은 exception을 다루는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/03-file-conventions/error.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/file-conventions/error" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-file-conventions-dynamic-routes.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Dynamic Segments</div><div class="ttl-ko">Dynamic Route Segment</div></a>
+      <a href="app-api-reference-file-conventions-forbidden.html" class="next"><div class="dir">다음 →</div><div class="ttl">forbidden.js</div><div class="ttl-ko">forbidden.js</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/file-conventions/error" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#reference">Reference</a></li><li class="l3"><a href="#props">Props</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#global-error">Global Error</a></li><li class="l3"><a href="#graceful-error-recovery-with-a-custom-error-boundary">Graceful error recovery with a custom error boundary</a></li><li class="l2"><a href="#version-history">Version History</a></li><li class="l2"><a href="#next-steps">error handling 더 알아보기</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+**error** 파일을 사용하면 예상치 못한 runtime error를 처리하고 fallback UI를 표시할 수 있습니다.
+
+&lt;Image
+  alt=&quot;error.js special file&quot;
+  srcLight=&quot;/docs/light/error-special-file.png&quot;
+  srcDark=&quot;/docs/dark/error-special-file.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;606&quot;
+/&gt;
+
+[[CODE 1]]
+
+`error.js`는 route segment와 그 안에 중첩된 children을 [React Error Boundary](https://react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary)로 감쌉니다. boundary 안에서 error가 throw되면 `error` component가 fallback UI로 표시됩니다.
+
+&lt;Image
+  alt=&quot;error.js의 동작 방식&quot;
+  srcLight=&quot;/docs/light/error-overview.png&quot;
+  srcDark=&quot;/docs/dark/error-overview.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;903&quot;
+/&gt;
+
+&gt; **Good to know**:
+&gt;
+&gt; - [React DevTools](https://react.dev/learn/react-developer-tools)를 사용하면 error boundary를 toggle해서 error 상태를 테스트할 수 있습니다.
+&gt; - error가 상위 error boundary로 bubble up되게 하려면 `error` component를 render할 때 `throw`하면 됩니다.
+&gt; - [`error.js`](/docs/app/api-reference/file-conventions/error)처럼 route segment에 묶이지 않는 component 수준의 error 복구에는 [`catchError`](/docs/app/api-reference/functions/catchError) 함수를 사용하세요.
+
+[component hierarchy](/docs/app/getting-started/project-structure#component-hierarchy)에서 `error.js`는 `loading.js`, `not-found.js`, `page.js`, 그리고 중첩된 `layout.js` 파일을 React error boundary로 감쌉니다. 같은 segment에서 그 위에 있는 `layout.js`나 `template.js`는 감싸지 **않습니다**. root layout의 error를 처리하려면 [`global-error.js`](/docs/app/api-reference/file-conventions/error#global-error)를 사용하세요.
+
+## Reference || 레퍼런스
+
+### Props
+
+#### `error`
+
+throw된 값으로, `error.js` Client Component로 전달됩니다. Server Component에서 발생한 error는 [`Error`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Error) instance로 전달되지만, Client Component에서 throw된 값은 그대로 전달되므로 `Error`가 아닐 수도 있습니다. `message`나 `digest` 같은 property를 읽기 전에 `instanceof Error` 등으로 type을 좁히세요.
+
+&gt; **Good to know:** development 중에는 client로 전달되는 `Error` 객체가 serialize되며, 디버깅을 쉽게 하도록 원래 error의 `message`를 포함합니다. 하지만 error에 포함될 수 있는 민감한 정보가 client로 유출되지 않도록 **production에서는 이 동작이 다릅니다**.
+
+#### `error.message`
+
+- Client Component에서 전달된 error는 원래의 `Error` message를 보여 줍니다.
+- Server Component에서 전달된 error는 identifier가 포함된 일반적인 message를 보여 줍니다. 민감한 정보 유출을 막기 위해서입니다. `error.digest`에 있는 identifier를 사용해 해당하는 server-side log를 찾을 수 있습니다.
+
+#### `error.digest`
+
+throw된 error에 대해 자동으로 생성된 hash입니다. server-side log에서 해당 error를 찾는 데 사용할 수 있습니다.
+
+#### `retry`
+
+error의 원인은 때로 일시적일 수 있습니다. 이런 경우 다시 시도하면 문제가 해결될 수도 있습니다.
+
+error component는 `retry()` 함수를 사용해 사용자가 error에서 복구를 시도하도록 유도할 수 있습니다. 이 함수를 실행하면 error boundary의 children을 다시 fetch하고 다시 render하려고 시도합니다. 성공하면 fallback error component가 re-render 결과로 대체됩니다.
+
+[[CODE 2]]
+
+#### `reset`
+
+대부분의 경우에는 [`retry()`](#retry)를 대신 사용해야 합니다. 하지만 content를 다시 fetch하지 않고 error 상태를 지운 뒤 error boundary의 children을 다시 render해야 할 특별한 이유가 있다면 `reset()` 함수를 사용할 수 있습니다.
+
+## Examples || 예시
+
+### Global Error
+
+흔하지는 않지만, [internationalization](/docs/app/guides/internationalization)을 활용하는 경우에도 root app directory에 위치한 `global-error.jsx`를 사용해 root layout이나 template의 error를 처리할 수 있습니다. Global error UI는 자체 `&lt;html&gt;`과 `&lt;body&gt;` tag, 그리고 error page에 필요한 global style, font 등 기타 dependency를 직접 정의해야 합니다. 이 파일이 활성화되면 root layout이나 template을 대체합니다.
+
+&gt; **Good to know**: `global-error`와 기본 제공 500 page는 자체 document를 render하며 global style을 포함하지 **않으므로**, 앱 수준의 theme toggle(class나 `data-theme` attribute)이 적용되지 않습니다. 기본 UI는 OS color scheme을 따릅니다. 앱의 theme에 맞추려면 직접 만든 `global-error` component 안에서 theme을 적용하세요.
+
+&gt; **Good to know**: Error boundary는 반드시 [Client Component](/docs/app/getting-started/server-and-client-components#using-client-components)여야 하므로, `global-error.jsx`에서는 [`metadata`와 `generateMetadata`](/docs/app/getting-started/metadata-and-og-images) export가 지원되지 않습니다. 대안으로 React [`&lt;title&gt;`](https://react.dev/reference/react-dom/components/title) component를 사용할 수 있습니다.
+
+[[CODE 3]]
+
+### Graceful error recovery with a custom error boundary || custom error boundary로 graceful하게 error 복구하기
+
+client에서 rendering이 실패했을 때, 마지막으로 알려진 server render UI를 보여 주면 더 나은 사용자 경험을 제공할 수 있습니다.
+
+`GracefullyDegradingErrorBoundary`는 error가 발생하기 전에 현재 HTML을 capture해 보존하는 custom error boundary의 예시입니다. rendering error가 발생하면 capture한 HTML을 다시 render하고, 사용자에게 알리는 고정 notification bar를 표시합니다.
+
+[[CODE 4]]
+
+## Version History || 버전 기록
+
+| Version   | Changes                                     |
+| --------- | ------------------------------------------- |
+| `v16.3.0` | `retry` prop이 stable이 되었습니다.                 |
+| `v16.2.0` | `unstable_retry` prop이 추가되었습니다.                |
+| `v15.2.0` | development에서도 `global-error`를 표시합니다. |
+| `v13.1.0` | `global-error`가 도입되었습니다.                  |
+| `v13.0.0` | `error`가 도입되었습니다.                         |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

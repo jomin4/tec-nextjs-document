@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linking and Navigating (Link와 Navigation) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/getting-started/linking-and-navigating" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/getting-started/linking-and-navigating" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/04-linking-and-navigating.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-getting-started.html">Getting Started</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Linking and Navigating<span class="sub">Link와 Navigation</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js에서 route는 기본적으로 server에서 render됩니다. 이 때문에 새 route를 보여 주려면 client가 server response를 기다려야 하는 경우가 많습니다. Next.js에는 <a href="#prefetching">prefetching</a>, <a href="#streaming">streaming</a>, <a href="#client-side-transitions">client-side transition</a>이 내장되어 있어 navigation이 빠르고 반응성 있게 유지됩니다.</p><div class="en-orig"><p>In Next.js, routes are rendered on the server by default. This often means the client has to wait for a server response before a new route can be shown. Next.js comes with built-in <a href="#prefetching">prefetching</a>, <a href="#streaming">streaming</a>, and <a href="#client-side-transitions">client-side transitions</a> ensuring navigation stays fast and responsive.</p></div>
+<p>이 가이드에서는 Next.js에서 navigation이 어떻게 동작하는지, 그리고 <a href="#dynamic-routes-without-loadingtsx">dynamic route</a>와 <a href="#slow-networks">느린 network</a> 환경에서 navigation을 어떻게 최적화할 수 있는지 설명합니다.</p><div class="en-orig"><p>This guide explains how navigation works in Next.js and how you can optimize it for <a href="#dynamic-routes-without-loadingtsx">dynamic routes</a> and <a href="#slow-networks">slow networks</a>.</p></div>
+<h2 class="sec" id="how-navigation-works"><a class="anchor" href="#how-navigation-works">How navigation works<span class="ko">navigation 동작 방식</span></a></h2>
+<p>Next.js에서 navigation이 어떻게 동작하는지 이해하려면 다음 개념에 익숙해지는 것이 도움이 됩니다:</p><div class="en-orig"><p>To understand how navigation works in Next.js, it helps to be familiar with the following concepts:</p></div>
+<ul>
+<li><a href="#server-rendering">Server Rendering</a></li>
+<li><a href="#prefetching">Prefetching</a></li>
+<li><a href="#streaming">Streaming</a></li>
+<li><a href="#client-side-transitions">Client-side transitions</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="#server-rendering">Server Rendering</a></li>
+<li><a href="#prefetching">Prefetching</a></li>
+<li><a href="#streaming">Streaming</a></li>
+<li><a href="#client-side-transitions">Client-side transitions</a></li>
+</ul></div>
+<h3 class="sec" id="server-rendering"><a class="anchor" href="#server-rendering">Server Rendering</a></h3>
+<p>Next.js에서 <a href="app-getting-started-layouts-and-pages.html">Layout과 Page</a>는 기본적으로 <a href="https://react.dev/reference/rsc/server-components" target="_blank" rel="noopener">React Server Component</a>입니다. 최초 navigation과 이후 navigation에서 <a href="app-getting-started-server-and-client-components.html#how-do-server-and-client-components-work-in-nextjs">Server Component Payload</a>는 client로 전송되기 전에 server에서 생성됩니다.</p><div class="en-orig"><p>In Next.js, <a href="app-getting-started-layouts-and-pages.html">Layouts and Pages</a> are <a href="https://react.dev/reference/rsc/server-components" target="_blank" rel="noopener">React Server Components</a> by default. On initial and subsequent navigations, the <a href="app-getting-started-server-and-client-components.html#how-do-server-and-client-components-work-in-nextjs">Server Component Payload</a> is generated on the server before being sent to the client.</p></div>
+<p>server rendering은 <em>언제</em> 일어나느냐에 따라 두 가지 유형으로 나뉩니다:</p><div class="en-orig"><p>There are two types of server rendering, based on <em>when</em> it happens:</p></div>
+<ul>
+<li><strong>Prerendering</strong>은 build 시점 또는 <a href="app-getting-started-revalidating.html">revalidation</a> 중에 일어나며, 그 결과는 cache됩니다.</li>
+<li><strong>Dynamic Rendering</strong>은 client request에 응답해 request 시점에 일어납니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Prerendering</strong> happens at build time or during <a href="app-getting-started-revalidating.html">revalidation</a> and the result is cached.</li>
+<li><strong>Dynamic Rendering</strong> happens at request time in response to a client request.</li>
+</ul></div>
+<p>server rendering의 trade-off는 새 route를 보여 주기 전에 client가 server의 응답을 기다려야 한다는 점입니다. Next.js는 사용자가 방문할 가능성이 높은 route를 <a href="#prefetching">prefetching</a>하고 <a href="#client-side-transitions">client-side transition</a>을 수행해서 이 지연을 해결합니다.</p><div class="en-orig"><p>The trade-off of server rendering is that the client must wait for the server to respond before the new route can be shown. Next.js addresses this delay by <a href="#prefetching">prefetching</a> routes the user is likely to visit and performing <a href="#client-side-transitions">client-side transitions</a>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>최초 방문 시에는 HTML도 생성됩니다.</p><div class="en-orig"><p>HTML is also generated for the initial visit.</p></div></div></div>
+<h3 class="sec" id="prefetching"><a class="anchor" href="#prefetching">Prefetching</a></h3>
+<p>Prefetching은 사용자가 route로 이동하기 전에 background에서 그 route를 미리 load하는 과정입니다. 사용자가 link를 클릭할 때쯤이면 다음 route를 render할 데이터가 이미 client 쪽에 준비되어 있기 때문에, 애플리케이션의 route 간 navigation이 즉각적으로 느껴집니다.</p><div class="en-orig"><p>Prefetching is the process of loading a route in the background before the user navigates to it. This makes navigation between routes in your application feel instant, because by the time a user clicks on a link, the data to render the next route is already available client side.</p></div>
+<p>Next.js는 <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code> component</a>로 연결된 route가 사용자의 viewport에 들어오면 자동으로 prefetch합니다.</p><div class="en-orig"><p>Next.js automatically prefetches routes linked with the <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code> component</a> when they enter the user's viewport.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    &lt;html&gt;
+      &lt;body&gt;
+        &lt;nav&gt;
+          {/* Prefetched when the link is hovered or enters the viewport */}
+          &lt;Link href=&quot;/blog&quot;&gt;Blog&lt;/Link&gt;
+          {/* No prefetching */}
+          &lt;a href=&quot;/contact&quot;&gt;Contact&lt;/a&gt;
+        &lt;/nav&gt;
+        {children}
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Layout({ children }) {
+  return (
+    &lt;html&gt;
+      &lt;body&gt;
+        &lt;nav&gt;
+          {/* Prefetched when the link is hovered or enters the viewport */}
+          &lt;Link href=&quot;/blog&quot;&gt;Blog&lt;/Link&gt;
+          {/* No prefetching */}
+          &lt;a href=&quot;/contact&quot;&gt;Contact&lt;/a&gt;
+        &lt;/nav&gt;
+        {children}
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<p>route를 얼마나 prefetch하는지는 그 route가 static인지 dynamic인지에 따라 달라집니다:</p><div class="en-orig"><p>How much of the route is prefetched depends on whether it's static or dynamic:</p></div>
+<ul>
+<li><strong>Static Route</strong>: route 전체가 prefetch됩니다.</li>
+<li><strong>Dynamic Route</strong>: prefetching을 건너뛰거나, <a href="app-api-reference-file-conventions-loading.html"><code>loading.tsx</code></a>가 있으면 route가 부분적으로 prefetch됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Static Route</strong>: the full route is prefetched.</li>
+<li><strong>Dynamic Route</strong>: prefetching is skipped, or the route is partially prefetched if <a href="app-api-reference-file-conventions-loading.html"><code>loading.tsx</code></a> is present.</li>
+</ul></div>
+<p>dynamic route의 prefetching을 건너뛰거나 부분적으로만 수행함으로써, Next.js는 사용자가 결코 방문하지 않을 수도 있는 route에 대해 server에서 불필요한 작업을 하지 않습니다. 하지만 navigation 전에 server response를 기다리면 사용자는 앱이 응답하지 않는다는 인상을 받을 수 있습니다.</p><div class="en-orig"><p>By skipping or partially prefetching dynamic routes, Next.js avoids unnecessary work on the server for routes the users may never visit. However, waiting for a server response before navigation can give the users the impression that the app is not responding.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/server-rendering-without-streaming.png" alt="Streaming 없는 Server Rendering" width="1600" height="748" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/server-rendering-without-streaming.png" alt="Streaming 없는 Server Rendering" width="1600" height="748" loading="lazy" /></figure>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>link별로 prefetching을 제어하는 방법과 <a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching</a>을 도입했을 때 동작이 어떻게 바뀌는지 등 전체 동작은 <a href="app-guides-prefetching.html">Prefetching 가이드</a>를 참고하세요. link의 prefetch에 URL에 의존하는 콘텐츠를 포함하려면 <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching</a>을 참고하세요.</p><div class="en-orig"><p>See the <a href="app-guides-prefetching.html">Prefetching guide</a> for the full behavior, including how to control prefetching per link and how it changes when you adopt <a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching</a>. To include URL-dependent content in a link's prefetch, see <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching</a>.</p></div></div></div>
+<p>dynamic route로의 navigation 경험을 개선하려면 <a href="#streaming">streaming</a>을 사용할 수 있습니다.</p><div class="en-orig"><p>To improve the navigation experience to dynamic routes, you can use <a href="#streaming">streaming</a>.</p></div>
+<h3 class="sec" id="streaming"><a class="anchor" href="#streaming">Streaming</a></h3>
+<p>Streaming을 사용하면 server가 route 전체가 render될 때까지 기다리지 않고, dynamic route의 각 부분이 준비되는 즉시 client로 보낼 수 있습니다. 즉, page의 일부가 아직 load 중이더라도 사용자는 무언가를 더 빨리 볼 수 있습니다. Next.js에서 streaming이 어떻게 동작하는지 자세히 알아보려면 <a href="app-guides-streaming.html">Streaming 가이드</a>를 참고하세요.</p><div class="en-orig"><p>Streaming allows the server to send parts of a dynamic route to the client as soon as they're ready, rather than waiting for the entire route to be rendered. This means users see something sooner, even if parts of the page are still loading. See the <a href="app-guides-streaming.html">Streaming guide</a> for a deep dive into how streaming works in Next.js.</p></div>
+<p>dynamic route의 경우, 이는 route를 <strong>부분적으로 prefetch</strong>할 수 있다는 뜻입니다. 즉, 공유 layout과 loading skeleton을 미리 request할 수 있습니다.</p><div class="en-orig"><p>For dynamic routes, it means they can be <strong>partially prefetched</strong>. That is, shared layouts and loading skeletons can be requested ahead of time.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/server-rendering-with-streaming.png" alt="Streaming을 사용한 Server Rendering의 동작 방식" width="1600" height="785" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/server-rendering-with-streaming.png" alt="Streaming을 사용한 Server Rendering의 동작 방식" width="1600" height="785" loading="lazy" /></figure>
+<p>streaming을 사용하려면 route 폴더에 <code>loading.tsx</code>를 만드세요:</p><div class="en-orig"><p>To use streaming, create a <code>loading.tsx</code> in your route folder:</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/loading-special-file.png" alt="loading.js special 파일" width="1600" height="606" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/loading-special-file.png" alt="loading.js special 파일" width="1600" height="606" loading="lazy" /></figure>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/loading.tsx" data-js="app/dashboard/loading.js">app/dashboard/loading.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function Loading() {
+  // Add fallback UI that will be shown while the route is loading.
+  return &lt;LoadingSkeleton /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function Loading() {
+  // Add fallback UI that will be shown while the route is loading.
+  return &lt;LoadingSkeleton /&gt;
+}</code></pre></div></div>
+<p>내부적으로 Next.js는 <code>page.tsx</code>의 내용을 <code>&lt;Suspense&gt;</code> boundary로 자동으로 감쌉니다. route가 load되는 동안에는 prefetch된 fallback UI가 표시되고, 준비가 끝나면 실제 콘텐츠로 교체됩니다.</p><div class="en-orig"><p>Behind the scenes, Next.js will automatically wrap the <code>page.tsx</code> contents in a <code>&lt;Suspense&gt;</code> boundary. The prefetched fallback UI will be shown while the route is loading, and swapped for the actual content once ready.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a>를 사용해 중첩된 component에 대한 loading UI를 만들 수도 있습니다.</p><div class="en-orig"><p>You can also use <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> to create loading UI for nested components.</p></div></div></div>
+<p><code>loading.tsx</code>의 장점:</p><div class="en-orig"><p>Benefits of <code>loading.tsx</code>:</p></div>
+<ul>
+<li>사용자에게 즉각적인 navigation과 시각적 feedback을 제공합니다.</li>
+<li>공유 layout은 interactive한 상태로 유지되며, navigation을 중간에 취소할 수 있습니다(interruptible).</li>
+<li>Core Web Vitals 개선: <a href="https://web.dev/articles/ttfb" target="_blank" rel="noopener">TTFB</a>, <a href="https://web.dev/articles/fcp" target="_blank" rel="noopener">FCP</a>, <a href="https://web.dev/articles/tti" target="_blank" rel="noopener">TTI</a>.</li>
+</ul><div class="en-orig"><ul>
+<li>Immediate navigation and visual feedback for the user.</li>
+<li>Shared layouts remain interactive and navigation is interruptible.</li>
+<li>Improved Core Web Vitals: <a href="https://web.dev/articles/ttfb" target="_blank" rel="noopener">TTFB</a>, <a href="https://web.dev/articles/fcp" target="_blank" rel="noopener">FCP</a>, and <a href="https://web.dev/articles/tti" target="_blank" rel="noopener">TTI</a>.</li>
+</ul></div>
+<p>navigation 경험을 더 개선하기 위해 Next.js는 <code>&lt;Link&gt;</code> component로 <a href="#client-side-transitions">client-side transition</a>을 수행합니다.</p><div class="en-orig"><p>To further improve the navigation experience, Next.js performs a <a href="#client-side-transitions">client-side transition</a> with the <code>&lt;Link&gt;</code> component.</p></div>
+<h3 class="sec" id="client-side-transitions"><a class="anchor" href="#client-side-transitions">Client-side transitions<span class="ko">Client-side transition</span></a></h3>
+<p>전통적으로 server에서 render되는 page로 navigation하면 page 전체가 load됩니다. 이로 인해 state가 지워지고, scroll 위치가 초기화되며, interactivity가 막힙니다.</p><div class="en-orig"><p>Traditionally, navigation to a server-rendered page triggers a full page load. This clears state, resets scroll position, and blocks interactivity.</p></div>
+<p>Next.js는 <code>&lt;Link&gt;</code> component를 사용한 client-side transition으로 이를 피합니다. page를 다시 load하는 대신 다음과 같이 콘텐츠를 dynamic하게 업데이트합니다:</p><div class="en-orig"><p>Next.js avoids this with client-side transitions using the <code>&lt;Link&gt;</code> component. Instead of reloading the page, it updates the content dynamically by:</p></div>
+<ul>
+<li>공유 layout과 UI는 그대로 유지합니다.</li>
+<li>현재 page를 prefetch된 loading state로, 또는 준비되어 있다면 새 page로 교체합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Keeping any shared layouts and UI.</li>
+<li>Replacing the current page with the prefetched loading state or a new page if available.</li>
+</ul></div>
+<p>Client-side transition 덕분에 server에서 render되는 앱도 client에서 render되는 앱처럼 <em>느껴집니다</em>. 그리고 <a href="#prefetching">prefetching</a>, <a href="#streaming">streaming</a>과 함께 사용하면 dynamic route에서도 빠른 transition이 가능합니다.</p><div class="en-orig"><p>Client-side transitions make server-rendered apps <em>feel</em> like client-rendered apps. And when paired with <a href="#prefetching">prefetching</a> and <a href="#streaming">streaming</a>, they enable fast transitions, even for dynamic routes.</p></div>
+<p>Next.js는 client-side transition 중에 <a href="app-api-reference-components-link.html#scroll">page 맨 위로 scroll하는 것</a>도 처리합니다. navigation 후 콘텐츠가 sticky 또는 fixed header 뒤로 가려진다면 CSS <a href="app-api-reference-components-link.html#scroll-offset-with-sticky-headers"><code>scroll-padding-top</code></a>으로 해결할 수 있습니다.</p><div class="en-orig"><p>Next.js also handles <a href="app-api-reference-components-link.html#scroll">scrolling to the top of the page</a> during client-side transitions. If content scrolls behind a sticky or fixed header after navigation, you can fix this with CSS <a href="app-api-reference-components-link.html#scroll-offset-with-sticky-headers"><code>scroll-padding-top</code></a>.</p></div>
+<h2 class="sec" id="what-can-make-transitions-slow"><a class="anchor" href="#what-can-make-transitions-slow">What can make transitions slow?<span class="ko">transition이 느려지는 원인</span></a></h2>
+<p>이러한 Next.js 최적화 덕분에 navigation은 빠르고 반응성이 좋습니다. 하지만 특정 조건에서는 transition이 여전히 느리게 <em>느껴질</em> 수 있습니다. 흔한 원인과 사용자 경험을 개선하는 방법은 다음과 같습니다:</p><div class="en-orig"><p>These Next.js optimizations make navigation fast and responsive. However, under certain conditions, transitions can still <em>feel</em> slow. Here are some common causes and how to improve the user experience:</p></div>
+<h3 class="sec" id="dynamic-routes-without-loadingtsx"><a class="anchor" href="#dynamic-routes-without-loadingtsx">Dynamic routes without <code>loading.tsx</code><span class="ko"><code>loading.tsx</code>가 없는 dynamic route</span></a></h3>
+<p>dynamic route로 navigation할 때 client는 결과를 보여 주기 전에 server response를 기다려야 합니다. 이 때문에 사용자는 앱이 응답하지 않는다는 인상을 받을 수 있습니다.</p><div class="en-orig"><p>When navigating to a dynamic route, the client must wait for the server response before showing the result. This can give the users the impression that the app is not responding.</p></div>
+<p>dynamic route에 <code>loading.tsx</code>를 추가해 부분 prefetching을 활성화하고, 즉각적인 navigation을 일으키며, route가 render되는 동안 loading UI를 표시하는 것을 권장합니다.</p><div class="en-orig"><p>We recommend adding <code>loading.tsx</code> to dynamic routes to enable partial prefetching, trigger immediate navigation, and display a loading UI while the route renders.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/[slug]/loading.tsx" data-js="app/blog/[slug]/loading.js">app/blog/[slug]/loading.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function Loading() {
+  return &lt;LoadingSkeleton /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function Loading() {
+  return &lt;LoadingSkeleton /&gt;
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>development mode에서는 Next.js Devtools로 route가 static인지 dynamic인지 확인할 수 있습니다. 자세한 내용은 <a href="app-api-reference-config-next-config-js-devIndicators.html"><code>devIndicators</code></a>를 참고하세요.</p><div class="en-orig"><p>In development mode, you can use the Next.js Devtools to identify if the route is static or dynamic. See <a href="app-api-reference-config-next-config-js-devIndicators.html"><code>devIndicators</code></a> for more information.</p></div></div></div>
+<h3 class="sec" id="dynamic-segments-without-generatestaticparams"><a class="anchor" href="#dynamic-segments-without-generatestaticparams">Dynamic segments without <code>generateStaticParams</code><span class="ko"><code>generateStaticParams</code>가 없는 dynamic segment</span></a></h3>
+<p><a href="app-api-reference-file-conventions-dynamic-routes.html">dynamic segment</a>가 prerender될 수 있는데도 <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>가 없어서 prerender되지 않는다면, 그 route는 request 시점의 dynamic rendering으로 fallback됩니다.</p><div class="en-orig"><p>If a <a href="app-api-reference-file-conventions-dynamic-routes.html">dynamic segment</a> could be prerendered but isn't because it's missing <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>, the route will fallback to dynamic rendering at request time.</p></div>
+<p><code>generateStaticParams</code>를 추가해 route가 build 시점에 static하게 생성되도록 하세요:</p><div class="en-orig"><p>Ensure the route is statically generated at build time by adding <code>generateStaticParams</code>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/[slug]/page.tsx" data-js="app/blog/[slug]/page.js">app/blog/[slug]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function generateStaticParams() {
+  const posts = await fetch(&#x27;https://.../posts&#x27;).then((res) =&gt; res.json())
+
+  return posts.map((post) =&gt; ({
+    slug: post.slug,
+  }))
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise&lt;{ slug: string }&gt;
+}) {
+  const { slug } = await params
+  // ...
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function generateStaticParams() {
+  const posts = await fetch(&#x27;https://.../posts&#x27;).then((res) =&gt; res.json())
+
+  return posts.map((post) =&gt; ({
+    slug: post.slug,
+  }))
+}
+
+export default async function Page({ params }) {
+  const { slug } = await params
+  // ...
+}</code></pre></div></div>
+<h3 class="sec" id="slow-networks"><a class="anchor" href="#slow-networks">Slow networks<span class="ko">느린 network</span></a></h3>
+<p>느리거나 불안정한 network에서는 사용자가 link를 클릭하기 전에 prefetching이 끝나지 않을 수 있습니다. 이는 static route와 dynamic route 모두에 영향을 줄 수 있습니다. 이런 경우 <code>loading.js</code> fallback이 아직 prefetch되지 않았기 때문에 즉시 나타나지 않을 수 있습니다.</p><div class="en-orig"><p>On slow or unstable networks, prefetching may not finish before the user clicks a link. This can affect both static and dynamic routes. In these cases, the <code>loading.js</code> fallback may not appear immediately because it hasn't been prefetched yet.</p></div>
+<p>체감 성능을 개선하려면 <a href="app-api-reference-functions-use-link-status.html"><code>useLinkStatus</code> hook</a>을 사용해 transition이 진행되는 동안 즉각적인 feedback을 보여 줄 수 있습니다.</p><div class="en-orig"><p>To improve perceived performance, you can use the <a href="app-api-reference-functions-use-link-status.html"><code>useLinkStatus</code> hook</a> to show immediate feedback while the transition is in progress.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/ui/loading-indicator.tsx" data-js="app/ui/loading-indicator.js">app/ui/loading-indicator.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useLinkStatus } from &#x27;next/link&#x27;
+
+export default function LoadingIndicator() {
+  const { pending } = useLinkStatus()
+  return (
+    &lt;span aria-hidden className={`link-hint ${pending ? &#x27;is-pending&#x27; : &#x27;&#x27;}`} /&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useLinkStatus } from &#x27;next/link&#x27;
+
+export default function LoadingIndicator() {
+  const { pending } = useLinkStatus()
+  return (
+    &lt;span aria-hidden className={`link-hint ${pending ? &#x27;is-pending&#x27; : &#x27;&#x27;}`} /&gt;
+  )
+}</code></pre></div></div>
+<p>초기 animation delay(예: 100ms)를 추가하고 처음에는 보이지 않게(예: <code>opacity: 0</code>) 시작하면 hint를 "debounce"할 수 있습니다. 이렇게 하면 navigation이 지정한 delay보다 오래 걸릴 때만 loading indicator가 표시됩니다. CSS 예시는 <a href="app-api-reference-functions-use-link-status.html#gracefully-handling-fast-navigation"><code>useLinkStatus</code> reference</a>를 참고하세요.</p><div class="en-orig"><p>You can "debounce" the hint by adding an initial animation delay (e.g. 100ms) and starting as invisible (e.g. <code>opacity: 0</code>). This means the loading indicator will only be shown if the navigation takes longer than the specified delay. See the <a href="app-api-reference-functions-use-link-status.html#gracefully-handling-fast-navigation"><code>useLinkStatus</code> reference</a> for a CSS example.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><strong>experimental</strong> 기능인 <a href="app-api-reference-config-next-config-js-useOffline.html"><code>useOffline</code></a> hook을 사용하면 연결이 끊긴 동안에도 prefetch된 route로 navigation할 수 있습니다. <a href="app-guides-offline-support.html">offline support 가이드</a>를 참고하세요.</p><div class="en-orig"><p>An <strong>experimental</strong> <a href="app-api-reference-config-next-config-js-useOffline.html"><code>useOffline</code></a> hook can keep prefetched routes navigable during connectivity drops. See the <a href="app-guides-offline-support.html">offline support guide</a>.</p></div></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>progress bar 같은 다른 시각적 feedback 패턴을 사용할 수도 있습니다. 예시는 <a href="https://github.com/vercel/react-transition-progress" target="_blank" rel="noopener">여기</a>에서 확인하세요.</p><div class="en-orig"><p>You can use other visual feedback patterns like a progress bar. View an example <a href="https://github.com/vercel/react-transition-progress" target="_blank" rel="noopener">here</a>.</p></div></div></div>
+<h3 class="sec" id="disabling-prefetching"><a class="anchor" href="#disabling-prefetching">Disabling prefetching<span class="ko">prefetching 비활성화</span></a></h3>
+<p><code>&lt;Link&gt;</code> component의 <code>prefetch</code> prop을 <code>false</code>로 설정하면 prefetching을 사용하지 않을 수 있습니다. 이는 link가 많은 큰 목록(예: infinite scroll table)을 render할 때 불필요한 resource 사용을 피하는 데 유용합니다.</p><div class="en-orig"><p>You can opt out of prefetching by setting the <code>prefetch</code> prop to <code>false</code> on the <code>&lt;Link&gt;</code> component. This is useful to avoid unnecessary usage of resources when rendering large lists of links (e.g. an infinite scroll table).</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&lt;Link prefetch={false} href=&quot;/blog&quot;&gt;
+  Blog
+&lt;/Link&gt;</code></pre></div></div>
+<p>하지만 prefetching을 비활성화하면 trade-off가 따릅니다:</p><div class="en-orig"><p>However, disabling prefetching comes with trade-offs:</p></div>
+<ul>
+<li><strong>Static route</strong>는 사용자가 link를 클릭할 때만 fetch됩니다.</li>
+<li><strong>Dynamic route</strong>는 client가 navigation하기 전에 먼저 server에서 render되어야 합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Static routes</strong> will only be fetched when the user clicks the link.</li>
+<li><strong>Dynamic routes</strong> will need to be rendered on the server first before the client can navigate to it.</li>
+</ul></div>
+<p>prefetch를 완전히 끄지 않으면서 resource 사용을 줄이려면 hover 시에만 prefetch할 수 있습니다. 이렇게 하면 viewport 안의 모든 link가 아니라 사용자가 방문할 <em>가능성이 높은</em> route로 prefetching이 제한됩니다.</p><div class="en-orig"><p>To reduce resource usage without fully disabling prefetch, you can prefetch only on hover. This limits prefetching to routes the user is more <em>likely</em> to visit, rather than all links in the viewport.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/ui/hover-prefetch-link.tsx" data-js="app/ui/hover-prefetch-link.js">app/ui/hover-prefetch-link.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import Link from &#x27;next/link&#x27;
+import { useState } from &#x27;react&#x27;
+
+function HoverPrefetchLink({
+  href,
+  children,
+}: {
+  href: string
+  children: React.ReactNode
+}) {
+  const [active, setActive] = useState(false)
+
+  return (
+    &lt;Link
+      href={href}
+      prefetch={active ? null : false}
+      onMouseEnter={() =&gt; setActive(true)}
+    &gt;
+      {children}
+    &lt;/Link&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import Link from &#x27;next/link&#x27;
+import { useState } from &#x27;react&#x27;
+
+function HoverPrefetchLink({ href, children }) {
+  const [active, setActive] = useState(false)
+
+  return (
+    &lt;Link
+      href={href}
+      prefetch={active ? null : false}
+      onMouseEnter={() =&gt; setActive(true)}
+    &gt;
+      {children}
+    &lt;/Link&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="hydration-not-completed"><a class="anchor" href="#hydration-not-completed">Hydration not completed<span class="ko">Hydration이 완료되지 않은 경우</span></a></h3>
+<p><code>&lt;Link&gt;</code>는 Client Component이므로 route를 prefetch하려면 먼저 hydrate되어야 합니다. 최초 방문 시 JavaScript bundle이 크면 hydration이 지연되어 prefetching이 바로 시작되지 못할 수 있습니다.</p><div class="en-orig"><p><code>&lt;Link&gt;</code> is a Client Component and must be hydrated before it can prefetch routes. On the initial visit, large JavaScript bundles can delay hydration, preventing prefetching from starting right away.</p></div>
+<p>React는 Selective Hydration으로 이를 완화하며, 다음 방법으로 더 개선할 수 있습니다:</p><div class="en-orig"><p>React mitigates this with Selective Hydration and you can further improve this by:</p></div>
+<ul>
+<li><a href="app-guides-package-bundling.html#nextbundle-analyzer-for-webpack"><code>@next/bundle-analyzer</code></a> plugin으로 큰 dependency를 찾아 제거해 bundle 크기를 줄입니다.</li>
+<li>가능한 경우 logic을 client에서 server로 옮깁니다. 가이드는 <a href="app-getting-started-server-and-client-components.html">Server and Client Components</a> 문서를 참고하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>Using the <a href="app-guides-package-bundling.html#nextbundle-analyzer-for-webpack"><code>@next/bundle-analyzer</code></a> plugin to identify and reduce bundle size by removing large dependencies.</li>
+<li>Moving logic from the client to the server where possible. See the <a href="app-getting-started-server-and-client-components.html">Server and Client Components</a> docs for guidance.</li>
+</ul></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<h3 class="sec" id="native-history-api"><a class="anchor" href="#native-history-api">Native History API</a></h3>
+<p>Next.js에서는 native <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState" target="_blank" rel="noopener"><code>window.history.pushState</code></a>와 <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState" target="_blank" rel="noopener"><code>window.history.replaceState</code></a> method를 사용해 page를 다시 load하지 않고 브라우저의 history stack을 업데이트할 수 있습니다.</p><div class="en-orig"><p>Next.js allows you to use the native <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState" target="_blank" rel="noopener"><code>window.history.pushState</code></a> and <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState" target="_blank" rel="noopener"><code>window.history.replaceState</code></a> methods to update the browser's history stack without reloading the page.</p></div>
+<p><code>pushState</code>와 <code>replaceState</code> 호출은 Next.js Router와 통합되어 있어 <a href="app-api-reference-functions-use-pathname.html"><code>usePathname</code></a>, <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams</code></a>와 동기화할 수 있습니다.</p><div class="en-orig"><p><code>pushState</code> and <code>replaceState</code> calls integrate into the Next.js Router, allowing you to sync with <a href="app-api-reference-functions-use-pathname.html"><code>usePathname</code></a> and <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams</code></a>.</p></div>
+<h4 class="sec" id="windowhistorypushstate"><a class="anchor" href="#windowhistorypushstate"><code>window.history.pushState</code></a></h4>
+<p>브라우저의 history stack에 새 항목을 추가할 때 사용합니다. 사용자는 이전 state로 뒤로 이동할 수 있습니다. 예를 들어 상품 목록을 정렬하는 경우입니다:</p><div class="en-orig"><p>Use it to add a new entry to the browser's history stack. The user can navigate back to the previous state. For example, to sort a list of products:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="" data-js=""></span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useSearchParams } from &#x27;next/navigation&#x27;
+
+export default function SortProducts() {
+  const searchParams = useSearchParams()
+
+  function updateSorting(sortOrder: string) {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set(&#x27;sort&#x27;, sortOrder)
+    window.history.pushState(null, &#x27;&#x27;, `?${params.toString()}`)
+  }
+
+  return (
+    &lt;&gt;
+      &lt;button onClick={() =&gt; updateSorting(&#x27;asc&#x27;)}&gt;Sort Ascending&lt;/button&gt;
+      &lt;button onClick={() =&gt; updateSorting(&#x27;desc&#x27;)}&gt;Sort Descending&lt;/button&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useSearchParams } from &#x27;next/navigation&#x27;
+
+export default function SortProducts() {
+  const searchParams = useSearchParams()
+
+  function updateSorting(sortOrder) {
+    const params = new URLSearchParams(searchParams.toString())
+    params.set(&#x27;sort&#x27;, sortOrder)
+    window.history.pushState(null, &#x27;&#x27;, `?${params.toString()}`)
+  }
+
+  return (
+    &lt;&gt;
+      &lt;button onClick={() =&gt; updateSorting(&#x27;asc&#x27;)}&gt;Sort Ascending&lt;/button&gt;
+      &lt;button onClick={() =&gt; updateSorting(&#x27;desc&#x27;)}&gt;Sort Descending&lt;/button&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<h4 class="sec" id="windowhistoryreplacestate"><a class="anchor" href="#windowhistoryreplacestate"><code>window.history.replaceState</code></a></h4>
+<p>브라우저 history stack의 현재 항목을 교체할 때 사용합니다. 사용자는 이전 state로 뒤로 이동할 수 없습니다. 예를 들어 애플리케이션의 locale을 전환하는 경우입니다:</p><div class="en-orig"><p>Use it to replace the current entry on the browser's history stack. The user is not able to navigate back to the previous state. For example, to switch the application's locale:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="" data-js=""></span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { usePathname } from &#x27;next/navigation&#x27;
+
+export function LocaleSwitcher() {
+  const pathname = usePathname()
+
+  function switchLocale(locale: string) {
+    // e.g. &#x27;/en/about&#x27; or &#x27;/fr/contact&#x27;
+    const newPath = `/${locale}${pathname}`
+    window.history.replaceState(null, &#x27;&#x27;, newPath)
+  }
+
+  return (
+    &lt;&gt;
+      &lt;button onClick={() =&gt; switchLocale(&#x27;en&#x27;)}&gt;English&lt;/button&gt;
+      &lt;button onClick={() =&gt; switchLocale(&#x27;fr&#x27;)}&gt;French&lt;/button&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { usePathname } from &#x27;next/navigation&#x27;
+
+export function LocaleSwitcher() {
+  const pathname = usePathname()
+
+  function switchLocale(locale) {
+    // e.g. &#x27;/en/about&#x27; or &#x27;/fr/contact&#x27;
+    const newPath = `/${locale}${pathname}`
+    window.history.replaceState(null, &#x27;&#x27;, newPath)
+  }
+
+  return (
+    &lt;&gt;
+      &lt;button onClick={() =&gt; switchLocale(&#x27;en&#x27;)}&gt;English&lt;/button&gt;
+      &lt;button onClick={() =&gt; switchLocale(&#x27;fr&#x27;)}&gt;French&lt;/button&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><div class="rgrid"><a class="rcard" href="app-api-reference-components-link.html"><div class="rt">Link Component</div><div class="rk">Link 컴포넌트</div><div class="rd">내장 <code>next/link</code> component로 빠른 client-side navigation을 활성화합니다.</div></a><a class="rcard" href="app-api-reference-file-conventions-loading.html"><div class="rt">loading.js</div><div class="rk">loading.js</div><div class="rd">loading.js 파일에 대한 API reference입니다.</div></a><a class="rcard" href="app-guides-optimizing-prefetching.html"><div class="rt">Optimizing prefetching</div><div class="rk">prefetching 최적화</div><div class="rd">link별 URL data를 resolve하거나, session data를 App Shell에 포함하거나, 비용이 큰 작업을 이후 navigation 단계로 미루는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-prefetching.html"><div class="rt">Prefetching</div><div class="rk">Prefetching</div><div class="rd">Next.js에서 prefetching을 설정하는 방법을 알아봅니다</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/04-linking-and-navigating.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/getting-started/linking-and-navigating" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-getting-started-layouts-and-pages.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Layouts and Pages</div><div class="ttl-ko">Layout과 Page</div></a>
+      <a href="app-getting-started-server-and-client-components.html" class="next"><div class="dir">다음 →</div><div class="ttl">Server and Client Components</div><div class="ttl-ko">Server Component와 Client Component</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/getting-started/linking-and-navigating" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#how-navigation-works">How navigation works</a></li><li class="l3"><a href="#server-rendering">Server Rendering</a></li><li class="l3"><a href="#prefetching">Prefetching</a></li><li class="l3"><a href="#streaming">Streaming</a></li><li class="l3"><a href="#client-side-transitions">Client-side transitions</a></li><li class="l2"><a href="#what-can-make-transitions-slow">What can make transitions slow?</a></li><li class="l3"><a href="#dynamic-routes-without-loadingtsx">Dynamic routes without <code>loading.tsx</code></a></li><li class="l3"><a href="#dynamic-segments-without-generatestaticparams">Dynamic segments without <code>generateStaticParams</code></a></li><li class="l3"><a href="#slow-networks">Slow networks</a></li><li class="l3"><a href="#disabling-prefetching">Disabling prefetching</a></li><li class="l3"><a href="#hydration-not-completed">Hydration not completed</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#native-history-api">Native History API</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js에서 route는 기본적으로 server에서 render됩니다. 이 때문에 새 route를 보여 주려면 client가 server response를 기다려야 하는 경우가 많습니다. Next.js에는 [prefetching](#prefetching), [streaming](#streaming), [client-side transition](#client-side-transitions)이 내장되어 있어 navigation이 빠르고 반응성 있게 유지됩니다.
+
+이 가이드에서는 Next.js에서 navigation이 어떻게 동작하는지, 그리고 [dynamic route](#dynamic-routes-without-loadingtsx)와 [느린 network](#slow-networks) 환경에서 navigation을 어떻게 최적화할 수 있는지 설명합니다.
+
+## How navigation works || navigation 동작 방식
+
+Next.js에서 navigation이 어떻게 동작하는지 이해하려면 다음 개념에 익숙해지는 것이 도움이 됩니다:
+
+- [Server Rendering](#server-rendering)
+- [Prefetching](#prefetching)
+- [Streaming](#streaming)
+- [Client-side transitions](#client-side-transitions)
+
+### Server Rendering
+
+Next.js에서 [Layout과 Page](/docs/app/getting-started/layouts-and-pages)는 기본적으로 [React Server Component](https://react.dev/reference/rsc/server-components)입니다. 최초 navigation과 이후 navigation에서 [Server Component Payload](/docs/app/getting-started/server-and-client-components#how-do-server-and-client-components-work-in-nextjs)는 client로 전송되기 전에 server에서 생성됩니다.
+
+server rendering은 _언제_ 일어나느냐에 따라 두 가지 유형으로 나뉩니다:
+
+- **Prerendering**은 build 시점 또는 [revalidation](/docs/app/getting-started/revalidating) 중에 일어나며, 그 결과는 cache됩니다.
+- **Dynamic Rendering**은 client request에 응답해 request 시점에 일어납니다.
+
+server rendering의 trade-off는 새 route를 보여 주기 전에 client가 server의 응답을 기다려야 한다는 점입니다. Next.js는 사용자가 방문할 가능성이 높은 route를 [prefetching](#prefetching)하고 [client-side transition](#client-side-transitions)을 수행해서 이 지연을 해결합니다.
+
+&gt; **Good to know**: 최초 방문 시에는 HTML도 생성됩니다.
+
+### Prefetching
+
+Prefetching은 사용자가 route로 이동하기 전에 background에서 그 route를 미리 load하는 과정입니다. 사용자가 link를 클릭할 때쯤이면 다음 route를 render할 데이터가 이미 client 쪽에 준비되어 있기 때문에, 애플리케이션의 route 간 navigation이 즉각적으로 느껴집니다.
+
+Next.js는 [`&lt;Link&gt;` component](/docs/app/api-reference/components/link)로 연결된 route가 사용자의 viewport에 들어오면 자동으로 prefetch합니다.
+
+[[CODE 1]]
+
+route를 얼마나 prefetch하는지는 그 route가 static인지 dynamic인지에 따라 달라집니다:
+
+- **Static Route**: route 전체가 prefetch됩니다.
+- **Dynamic Route**: prefetching을 건너뛰거나, [`loading.tsx`](/docs/app/api-reference/file-conventions/loading)가 있으면 route가 부분적으로 prefetch됩니다.
+
+dynamic route의 prefetching을 건너뛰거나 부분적으로만 수행함으로써, Next.js는 사용자가 결코 방문하지 않을 수도 있는 route에 대해 server에서 불필요한 작업을 하지 않습니다. 하지만 navigation 전에 server response를 기다리면 사용자는 앱이 응답하지 않는다는 인상을 받을 수 있습니다.
+
+&lt;Image
+  alt=&quot;Streaming 없는 Server Rendering&quot;
+  srcLight=&quot;/docs/light/server-rendering-without-streaming.png&quot;
+  srcDark=&quot;/docs/dark/server-rendering-without-streaming.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;748&quot;
+/&gt;
+
+&gt; **Good to know:** link별로 prefetching을 제어하는 방법과 [Partial Prefetching](/docs/app/guides/adopting-partial-prefetching)을 도입했을 때 동작이 어떻게 바뀌는지 등 전체 동작은 [Prefetching 가이드](/docs/app/guides/prefetching)를 참고하세요. link의 prefetch에 URL에 의존하는 콘텐츠를 포함하려면 [Optimizing prefetching](/docs/app/guides/optimizing-prefetching)을 참고하세요.
+
+dynamic route로의 navigation 경험을 개선하려면 [streaming](#streaming)을 사용할 수 있습니다.
+
+### Streaming
+
+Streaming을 사용하면 server가 route 전체가 render될 때까지 기다리지 않고, dynamic route의 각 부분이 준비되는 즉시 client로 보낼 수 있습니다. 즉, page의 일부가 아직 load 중이더라도 사용자는 무언가를 더 빨리 볼 수 있습니다. Next.js에서 streaming이 어떻게 동작하는지 자세히 알아보려면 [Streaming 가이드](/docs/app/guides/streaming)를 참고하세요.
+
+dynamic route의 경우, 이는 route를 **부분적으로 prefetch**할 수 있다는 뜻입니다. 즉, 공유 layout과 loading skeleton을 미리 request할 수 있습니다.
+
+&lt;Image
+  alt=&quot;Streaming을 사용한 Server Rendering의 동작 방식&quot;
+  srcLight=&quot;/docs/light/server-rendering-with-streaming.png&quot;
+  srcDark=&quot;/docs/dark/server-rendering-with-streaming.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;785&quot;
+/&gt;
+
+streaming을 사용하려면 route 폴더에 `loading.tsx`를 만드세요:
+
+&lt;Image
+  alt=&quot;loading.js special 파일&quot;
+  srcLight=&quot;/docs/light/loading-special-file.png&quot;
+  srcDark=&quot;/docs/dark/loading-special-file.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;606&quot;
+/&gt;
+
+[[CODE 2]]
+
+내부적으로 Next.js는 `page.tsx`의 내용을 `&lt;Suspense&gt;` boundary로 자동으로 감쌉니다. route가 load되는 동안에는 prefetch된 fallback UI가 표시되고, 준비가 끝나면 실제 콘텐츠로 교체됩니다.
+
+&gt; **Good to know**: [`&lt;Suspense&gt;`](https://react.dev/reference/react/Suspense)를 사용해 중첩된 component에 대한 loading UI를 만들 수도 있습니다.
+
+`loading.tsx`의 장점:
+
+- 사용자에게 즉각적인 navigation과 시각적 feedback을 제공합니다.
+- 공유 layout은 interactive한 상태로 유지되며, navigation을 중간에 취소할 수 있습니다(interruptible).
+- Core Web Vitals 개선: [TTFB](https://web.dev/articles/ttfb), [FCP](https://web.dev/articles/fcp), [TTI](https://web.dev/articles/tti).
+
+navigation 경험을 더 개선하기 위해 Next.js는 `&lt;Link&gt;` component로 [client-side transition](#client-side-transitions)을 수행합니다.
+
+### Client-side transitions || Client-side transition
+
+전통적으로 server에서 render되는 page로 navigation하면 page 전체가 load됩니다. 이로 인해 state가 지워지고, scroll 위치가 초기화되며, interactivity가 막힙니다.
+
+Next.js는 `&lt;Link&gt;` component를 사용한 client-side transition으로 이를 피합니다. page를 다시 load하는 대신 다음과 같이 콘텐츠를 dynamic하게 업데이트합니다:
+
+- 공유 layout과 UI는 그대로 유지합니다.
+- 현재 page를 prefetch된 loading state로, 또는 준비되어 있다면 새 page로 교체합니다.
+
+Client-side transition 덕분에 server에서 render되는 앱도 client에서 render되는 앱처럼 *느껴집니다*. 그리고 [prefetching](#prefetching), [streaming](#streaming)과 함께 사용하면 dynamic route에서도 빠른 transition이 가능합니다.
+
+Next.js는 client-side transition 중에 [page 맨 위로 scroll하는 것](/docs/app/api-reference/components/link#scroll)도 처리합니다. navigation 후 콘텐츠가 sticky 또는 fixed header 뒤로 가려진다면 CSS [`scroll-padding-top`](/docs/app/api-reference/components/link#scroll-offset-with-sticky-headers)으로 해결할 수 있습니다.
+
+## What can make transitions slow? || transition이 느려지는 원인
+
+이러한 Next.js 최적화 덕분에 navigation은 빠르고 반응성이 좋습니다. 하지만 특정 조건에서는 transition이 여전히 느리게 *느껴질* 수 있습니다. 흔한 원인과 사용자 경험을 개선하는 방법은 다음과 같습니다:
+
+### Dynamic routes without `loading.tsx` || `loading.tsx`가 없는 dynamic route
+
+dynamic route로 navigation할 때 client는 결과를 보여 주기 전에 server response를 기다려야 합니다. 이 때문에 사용자는 앱이 응답하지 않는다는 인상을 받을 수 있습니다.
+
+dynamic route에 `loading.tsx`를 추가해 부분 prefetching을 활성화하고, 즉각적인 navigation을 일으키며, route가 render되는 동안 loading UI를 표시하는 것을 권장합니다.
+
+[[CODE 3]]
+
+&gt; **Good to know**: development mode에서는 Next.js Devtools로 route가 static인지 dynamic인지 확인할 수 있습니다. 자세한 내용은 [`devIndicators`](/docs/app/api-reference/config/next-config-js/devIndicators)를 참고하세요.
+
+### Dynamic segments without `generateStaticParams` || `generateStaticParams`가 없는 dynamic segment
+
+[dynamic segment](/docs/app/api-reference/file-conventions/dynamic-routes)가 prerender될 수 있는데도 [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)가 없어서 prerender되지 않는다면, 그 route는 request 시점의 dynamic rendering으로 fallback됩니다.
+
+`generateStaticParams`를 추가해 route가 build 시점에 static하게 생성되도록 하세요:
+
+[[CODE 4]]
+
+### Slow networks || 느린 network
+
+느리거나 불안정한 network에서는 사용자가 link를 클릭하기 전에 prefetching이 끝나지 않을 수 있습니다. 이는 static route와 dynamic route 모두에 영향을 줄 수 있습니다. 이런 경우 `loading.js` fallback이 아직 prefetch되지 않았기 때문에 즉시 나타나지 않을 수 있습니다.
+
+체감 성능을 개선하려면 [`useLinkStatus` hook](/docs/app/api-reference/functions/use-link-status)을 사용해 transition이 진행되는 동안 즉각적인 feedback을 보여 줄 수 있습니다.
+
+[[CODE 5]]
+
+초기 animation delay(예: 100ms)를 추가하고 처음에는 보이지 않게(예: `opacity: 0`) 시작하면 hint를 &quot;debounce&quot;할 수 있습니다. 이렇게 하면 navigation이 지정한 delay보다 오래 걸릴 때만 loading indicator가 표시됩니다. CSS 예시는 [`useLinkStatus` reference](/docs/app/api-reference/functions/use-link-status#gracefully-handling-fast-navigation)를 참고하세요.
+
+&gt; **Good to know**: **experimental** 기능인 [`useOffline`](/docs/app/api-reference/config/next-config-js/useOffline) hook을 사용하면 연결이 끊긴 동안에도 prefetch된 route로 navigation할 수 있습니다. [offline support 가이드](/docs/app/guides/offline-support)를 참고하세요.
+
+&gt; **Good to know**: progress bar 같은 다른 시각적 feedback 패턴을 사용할 수도 있습니다. 예시는 [여기](https://github.com/vercel/react-transition-progress)에서 확인하세요.
+
+### Disabling prefetching || prefetching 비활성화
+
+`&lt;Link&gt;` component의 `prefetch` prop을 `false`로 설정하면 prefetching을 사용하지 않을 수 있습니다. 이는 link가 많은 큰 목록(예: infinite scroll table)을 render할 때 불필요한 resource 사용을 피하는 데 유용합니다.
+
+[[CODE 6]]
+
+하지만 prefetching을 비활성화하면 trade-off가 따릅니다:
+
+- **Static route**는 사용자가 link를 클릭할 때만 fetch됩니다.
+- **Dynamic route**는 client가 navigation하기 전에 먼저 server에서 render되어야 합니다.
+
+prefetch를 완전히 끄지 않으면서 resource 사용을 줄이려면 hover 시에만 prefetch할 수 있습니다. 이렇게 하면 viewport 안의 모든 link가 아니라 사용자가 방문할 *가능성이 높은* route로 prefetching이 제한됩니다.
+
+[[CODE 7]]
+
+### Hydration not completed || Hydration이 완료되지 않은 경우
+
+`&lt;Link&gt;`는 Client Component이므로 route를 prefetch하려면 먼저 hydrate되어야 합니다. 최초 방문 시 JavaScript bundle이 크면 hydration이 지연되어 prefetching이 바로 시작되지 못할 수 있습니다.
+
+React는 Selective Hydration으로 이를 완화하며, 다음 방법으로 더 개선할 수 있습니다:
+
+- [`@next/bundle-analyzer`](/docs/app/guides/package-bundling#nextbundle-analyzer-for-webpack) plugin으로 큰 dependency를 찾아 제거해 bundle 크기를 줄입니다.
+- 가능한 경우 logic을 client에서 server로 옮깁니다. 가이드는 [Server and Client Components](/docs/app/getting-started/server-and-client-components) 문서를 참고하세요.
+
+## Examples || 예시
+
+### Native History API
+
+Next.js에서는 native [`window.history.pushState`](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState)와 [`window.history.replaceState`](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState) method를 사용해 page를 다시 load하지 않고 브라우저의 history stack을 업데이트할 수 있습니다.
+
+`pushState`와 `replaceState` 호출은 Next.js Router와 통합되어 있어 [`usePathname`](/docs/app/api-reference/functions/use-pathname), [`useSearchParams`](/docs/app/api-reference/functions/use-search-params)와 동기화할 수 있습니다.
+
+#### `window.history.pushState`
+
+브라우저의 history stack에 새 항목을 추가할 때 사용합니다. 사용자는 이전 state로 뒤로 이동할 수 있습니다. 예를 들어 상품 목록을 정렬하는 경우입니다:
+
+[[CODE 8]]
+
+#### `window.history.replaceState`
+
+브라우저 history stack의 현재 항목을 교체할 때 사용합니다. 사용자는 이전 state로 뒤로 이동할 수 없습니다. 예를 들어 애플리케이션의 locale을 전환하는 경우입니다:
+
+[[CODE 9]]
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

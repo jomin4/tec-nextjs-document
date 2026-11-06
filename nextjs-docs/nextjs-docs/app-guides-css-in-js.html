@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to use CSS-in-JS libraries (CSS-in-JS library 사용하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/css-in-js" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/css-in-js" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/css-in-js.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to use CSS-in-JS libraries<span class="sub">CSS-in-JS library 사용하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Warning</div><p>Server Component나 Streaming 같은 최신 React 기능과 함께 CSS-in-JS를 사용하려면, library 제작자가 <a href="https://react.dev/blog/2022/03/29/react-v18#what-is-concurrent-react" target="_blank" rel="noopener">concurrent rendering</a>을 포함한 최신 버전의 React를 지원해야 합니다.</p><div class="en-orig"><p>Using CSS-in-JS with newer React features like Server Components and Streaming requires library authors to support the latest version of React, including <a href="https://react.dev/blog/2022/03/29/react-v18#what-is-concurrent-react" target="_blank" rel="noopener">concurrent rendering</a>.</p></div></div></div>
+<p>다음 library는 <code>app</code> directory의 Client Component에서 지원됩니다(알파벳순):</p><div class="en-orig"><p>The following libraries are supported in Client Components in the <code>app</code> directory (alphabetical):</p></div>
+<ul>
+<li><a href="https://ant.design/docs/react/use-with-next#using-app-router" target="_blank" rel="noopener"><code>ant-design</code></a></li>
+<li><a href="https://chakra-ui.com/getting-started/nextjs-app-guide" target="_blank" rel="noopener"><code>chakra-ui</code></a></li>
+<li><a href="https://react.fluentui.dev/?path=/docs/concepts-developer-server-side-rendering-next-js-appdir-setup--page" target="_blank" rel="noopener"><code>@fluentui/react-components</code></a></li>
+<li><a href="https://kuma-ui.com" target="_blank" rel="noopener"><code>kuma-ui</code></a></li>
+<li><a href="https://mui.com/material-ui/guides/next-js-app-router/" target="_blank" rel="noopener"><code>@mui/material</code></a></li>
+<li><a href="https://mui.com/joy-ui/integrations/next-js-app-router/" target="_blank" rel="noopener"><code>@mui/joy</code></a></li>
+<li><a href="https://panda-css.com" target="_blank" rel="noopener"><code>pandacss</code></a></li>
+<li><a href="#styled-jsx"><code>styled-jsx</code></a></li>
+<li><a href="#styled-components"><code>styled-components</code></a></li>
+<li><a href="https://stylexjs.com" target="_blank" rel="noopener"><code>stylex</code></a></li>
+<li><a href="https://tamagui.dev/docs/guides/next-js#server-components" target="_blank" rel="noopener"><code>tamagui</code></a></li>
+<li><a href="https://tss-react.dev/" target="_blank" rel="noopener"><code>tss-react</code></a></li>
+<li><a href="https://vanilla-extract.style" target="_blank" rel="noopener"><code>vanilla-extract</code></a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://ant.design/docs/react/use-with-next#using-app-router" target="_blank" rel="noopener"><code>ant-design</code></a></li>
+<li><a href="https://chakra-ui.com/getting-started/nextjs-app-guide" target="_blank" rel="noopener"><code>chakra-ui</code></a></li>
+<li><a href="https://react.fluentui.dev/?path=/docs/concepts-developer-server-side-rendering-next-js-appdir-setup--page" target="_blank" rel="noopener"><code>@fluentui/react-components</code></a></li>
+<li><a href="https://kuma-ui.com" target="_blank" rel="noopener"><code>kuma-ui</code></a></li>
+<li><a href="https://mui.com/material-ui/guides/next-js-app-router/" target="_blank" rel="noopener"><code>@mui/material</code></a></li>
+<li><a href="https://mui.com/joy-ui/integrations/next-js-app-router/" target="_blank" rel="noopener"><code>@mui/joy</code></a></li>
+<li><a href="https://panda-css.com" target="_blank" rel="noopener"><code>pandacss</code></a></li>
+<li><a href="#styled-jsx"><code>styled-jsx</code></a></li>
+<li><a href="#styled-components"><code>styled-components</code></a></li>
+<li><a href="https://stylexjs.com" target="_blank" rel="noopener"><code>stylex</code></a></li>
+<li><a href="https://tamagui.dev/docs/guides/next-js#server-components" target="_blank" rel="noopener"><code>tamagui</code></a></li>
+<li><a href="https://tss-react.dev/" target="_blank" rel="noopener"><code>tss-react</code></a></li>
+<li><a href="https://vanilla-extract.style" target="_blank" rel="noopener"><code>vanilla-extract</code></a></li>
+</ul></div>
+<p>다음 library는 현재 지원 작업이 진행 중입니다:</p><div class="en-orig"><p>The following are currently working on support:</p></div>
+<ul>
+<li><a href="https://github.com/emotion-js/emotion/issues/2928" target="_blank" rel="noopener"><code>emotion</code></a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://github.com/emotion-js/emotion/issues/2928" target="_blank" rel="noopener"><code>emotion</code></a></li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>저희는 여러 CSS-in-JS library를 테스트하고 있으며, React 18 기능 및/또는 <code>app</code> directory를 지원하는 library의 예시를 더 추가할 예정입니다.</p><div class="en-orig"><p>We're testing out different CSS-in-JS libraries and we'll be adding more examples for libraries that support React 18 features and/or the <code>app</code> directory.</p></div></div></div>
+<h2 class="sec" id="configuring-css-in-js-in-app"><a class="anchor" href="#configuring-css-in-js-in-app">Configuring CSS-in-JS in <code>app</code><span class="ko"><code>app</code>에서 CSS-in-JS 설정하기</span></a></h2>
+<p>CSS-in-JS 설정은 다음 세 단계로 이루어지는 opt-in 과정입니다:</p><div class="en-orig"><p>Configuring CSS-in-JS is a three-step opt-in process that involves:</p></div>
+<ol>
+<li>render 중의 모든 CSS rule을 수집하는 <strong>style registry</strong>.</li>
+<li>rule을 사용할 수 있는 콘텐츠보다 먼저 rule을 주입하는 새로운 <code>useServerInsertedHTML</code> hook.</li>
+<li>초기 server-side rendering 중에 앱을 style registry로 감싸는 Client Component.</li>
+</ol><div class="en-orig"><ol>
+<li>A <strong>style registry</strong> to collect all CSS rules in a render.</li>
+<li>The new <code>useServerInsertedHTML</code> hook to inject rules before any content that might use them.</li>
+<li>A Client Component that wraps your app with the style registry during initial server-side rendering.</li>
+</ol></div>
+<h3 class="sec" id="styled-jsx"><a class="anchor" href="#styled-jsx"><code>styled-jsx</code></a></h3>
+<p>Client Component에서 <code>styled-jsx</code>를 사용하려면 <code>v5.1.0</code>이 필요합니다. 먼저 새 registry를 만드세요:</p><div class="en-orig"><p>Using <code>styled-jsx</code> in Client Components requires using <code>v5.1.0</code>. First, create a new registry:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/registry.tsx" data-js="app/registry.js">app/registry.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import React, { useState } from &#x27;react&#x27;
+import { useServerInsertedHTML } from &#x27;next/navigation&#x27;
+import { StyleRegistry, createStyleRegistry } from &#x27;styled-jsx&#x27;
+
+export default function StyledJsxRegistry({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  // Only create stylesheet once with lazy initial state
+  // x-ref: https://reactjs.org/docs/hooks-reference.html#lazy-initial-state
+  const [jsxStyleRegistry] = useState(() =&gt; createStyleRegistry())
+
+  useServerInsertedHTML(() =&gt; {
+    const styles = jsxStyleRegistry.styles()
+    jsxStyleRegistry.flush()
+    return &lt;&gt;{styles}&lt;/&gt;
+  })
+
+  return &lt;StyleRegistry registry={jsxStyleRegistry}&gt;{children}&lt;/StyleRegistry&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import React, { useState } from &#x27;react&#x27;
+import { useServerInsertedHTML } from &#x27;next/navigation&#x27;
+import { StyleRegistry, createStyleRegistry } from &#x27;styled-jsx&#x27;
+
+export default function StyledJsxRegistry({ children }) {
+  // Only create stylesheet once with lazy initial state
+  // x-ref: https://reactjs.org/docs/hooks-reference.html#lazy-initial-state
+  const [jsxStyleRegistry] = useState(() =&gt; createStyleRegistry())
+
+  useServerInsertedHTML(() =&gt; {
+    const styles = jsxStyleRegistry.styles()
+    jsxStyleRegistry.flush()
+    return &lt;&gt;{styles}&lt;/&gt;
+  })
+
+  return &lt;StyleRegistry registry={jsxStyleRegistry}&gt;{children}&lt;/StyleRegistry&gt;
+}</code></pre></div></div>
+<p>그다음 <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a>을 registry로 감싸세요:</p><div class="en-orig"><p>Then, wrap your <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a> with the registry:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import StyledJsxRegistry from &#x27;./registry&#x27;
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    &lt;html&gt;
+      &lt;body&gt;
+        &lt;StyledJsxRegistry&gt;{children}&lt;/StyledJsxRegistry&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import StyledJsxRegistry from &#x27;./registry&#x27;
+
+export default function RootLayout({ children }) {
+  return (
+    &lt;html&gt;
+      &lt;body&gt;
+        &lt;StyledJsxRegistry&gt;{children}&lt;/StyledJsxRegistry&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<p><a href="https://github.com/vercel/next.js/tree/canary/examples/with-styled-jsx" target="_blank" rel="noopener">여기에서 예시를 확인하세요</a>.</p><div class="en-orig"><p><a href="https://github.com/vercel/next.js/tree/canary/examples/with-styled-jsx" target="_blank" rel="noopener">View an example here</a>.</p></div>
+<h3 class="sec" id="styled-components"><a class="anchor" href="#styled-components">Styled Components</a></h3>
+<p>다음은 <code>styled-components@6</code> 이상을 설정하는 방법의 예시입니다:</p><div class="en-orig"><p>Below is an example of how to configure <code>styled-components@6</code> or newer:</p></div>
+<p>먼저 <code>next.config.js</code>에서 styled-components를 활성화하세요.</p><div class="en-orig"><p>First, enable styled-components in <code>next.config.js</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  compiler: {
+    styledComponents: true,
+  },
+}</code></pre></div></div>
+<p>그다음 <code>styled-components</code> API를 사용해 render 중에 생성되는 모든 CSS style rule을 수집하는 global registry component와 그 rule을 반환하는 함수를 만드세요. 그리고 <code>useServerInsertedHTML</code> hook을 사용해 registry에 수집된 style을 root layout의 <code>&lt;head&gt;</code> HTML tag에 주입하세요.</p><div class="en-orig"><p>Then, use the <code>styled-components</code> API to create a global registry component to collect all CSS style rules generated during a render, and a function to return those rules. Then use the <code>useServerInsertedHTML</code> hook to inject the styles collected in the registry into the <code>&lt;head&gt;</code> HTML tag in the root layout.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="lib/registry.tsx" data-js="lib/registry.js">lib/registry.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import React, { useState } from &#x27;react&#x27;
+import { useServerInsertedHTML } from &#x27;next/navigation&#x27;
+import { ServerStyleSheet, StyleSheetManager } from &#x27;styled-components&#x27;
+
+export default function StyledComponentsRegistry({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  // Only create stylesheet once with lazy initial state
+  // x-ref: https://reactjs.org/docs/hooks-reference.html#lazy-initial-state
+  const [styledComponentsStyleSheet] = useState(() =&gt; new ServerStyleSheet())
+
+  useServerInsertedHTML(() =&gt; {
+    const styles = styledComponentsStyleSheet.getStyleElement()
+    styledComponentsStyleSheet.instance.clearTag()
+    return &lt;&gt;{styles}&lt;/&gt;
+  })
+
+  if (typeof window !== &#x27;undefined&#x27;) return &lt;&gt;{children}&lt;/&gt;
+
+  return (
+    &lt;StyleSheetManager sheet={styledComponentsStyleSheet.instance}&gt;
+      {children}
+    &lt;/StyleSheetManager&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import React, { useState } from &#x27;react&#x27;
+import { useServerInsertedHTML } from &#x27;next/navigation&#x27;
+import { ServerStyleSheet, StyleSheetManager } from &#x27;styled-components&#x27;
+
+export default function StyledComponentsRegistry({ children }) {
+  // Only create stylesheet once with lazy initial state
+  // x-ref: https://reactjs.org/docs/hooks-reference.html#lazy-initial-state
+  const [styledComponentsStyleSheet] = useState(() =&gt; new ServerStyleSheet())
+
+  useServerInsertedHTML(() =&gt; {
+    const styles = styledComponentsStyleSheet.getStyleElement()
+    styledComponentsStyleSheet.instance.clearTag()
+    return &lt;&gt;{styles}&lt;/&gt;
+  })
+
+  if (typeof window !== &#x27;undefined&#x27;) return &lt;&gt;{children}&lt;/&gt;
+
+  return (
+    &lt;StyleSheetManager sheet={styledComponentsStyleSheet.instance}&gt;
+      {children}
+    &lt;/StyleSheetManager&gt;
+  )
+}</code></pre></div></div>
+<p>root layout의 <code>children</code>을 style registry component로 감싸세요:</p><div class="en-orig"><p>Wrap the <code>children</code> of the root layout with the style registry component:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import StyledComponentsRegistry from &#x27;./lib/registry&#x27;
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    &lt;html&gt;
+      &lt;body&gt;
+        &lt;StyledComponentsRegistry&gt;{children}&lt;/StyledComponentsRegistry&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import StyledComponentsRegistry from &#x27;./lib/registry&#x27;
+
+export default function RootLayout({ children }) {
+  return (
+    &lt;html&gt;
+      &lt;body&gt;
+        &lt;StyledComponentsRegistry&gt;{children}&lt;/StyledComponentsRegistry&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<p><a href="https://github.com/vercel/next.js/tree/canary/examples/with-styled-components" target="_blank" rel="noopener">여기에서 예시를 확인하세요</a>.</p><div class="en-orig"><p><a href="https://github.com/vercel/next.js/tree/canary/examples/with-styled-components" target="_blank" rel="noopener">View an example here</a>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>server rendering 중에 style은 global registry로 추출되어 HTML의 <code>&lt;head&gt;</code>로 flush됩니다. 이렇게 하면 style rule이 그 rule을 사용할 수 있는 콘텐츠보다 앞에 위치하게 됩니다. 앞으로는 곧 나올 React 기능을 사용해 style을 주입할 위치를 결정할 수도 있습니다.</li>
+<li>streaming 중에는 각 chunk의 style이 수집되어 기존 style 뒤에 추가됩니다. client-side hydration이 끝나면 <code>styled-components</code>가 평소처럼 이어받아 이후의 dynamic style을 주입합니다.</li>
+<li>style registry에 tree 최상위의 Client Component를 사용하는 것은 이 방식이 CSS rule을 추출하는 데 더 효율적이기 때문입니다. 이후 server render에서 style을 다시 생성하지 않게 하고, style이 Server Component payload에 포함되어 전송되는 것을 막습니다.</li>
+<li>styled-components compilation의 개별 property를 설정해야 하는 고급 사용 사례라면 <a href="architecture-nextjs-compiler.html#styled-components">Next.js styled-components API reference</a>를 읽어 보세요.</li>
+</ul><div class="en-orig"><ul>
+<li>During server rendering, styles will be extracted to a global registry and flushed to the <code>&lt;head&gt;</code> of your HTML. This ensures the style rules are placed before any content that might use them. In the future, we may use an upcoming React feature to determine where to inject the styles.</li>
+<li>During streaming, styles from each chunk will be collected and appended to existing styles. After client-side hydration is complete, <code>styled-components</code> will take over as usual and inject any further dynamic styles.</li>
+<li>We specifically use a Client Component at the top level of the tree for the style registry because it's more efficient to extract CSS rules this way. It avoids re-generating styles on subsequent server renders, and prevents them from being sent in the Server Component payload.</li>
+<li>For advanced use cases where you need to configure individual properties of styled-components compilation, you can read our <a href="architecture-nextjs-compiler.html#styled-components">Next.js styled-components API reference</a> to learn more.</li>
+</ul></div></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/css-in-js.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/css-in-js" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-content-security-policy.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Content Security Policy</div><div class="ttl-ko">Next.js 애플리케이션에 Content Security Policy(CSP) 설정하기</div></a>
+      <a href="app-guides-custom-server.html" class="next"><div class="dir">다음 →</div><div class="ttl">Custom Server</div><div class="ttl-ko">Next.js에서 custom server 설정하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/css-in-js" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#configuring-css-in-js-in-app">Configuring CSS-in-JS in <code>app</code></a></li><li class="l3"><a href="#styled-jsx"><code>styled-jsx</code></a></li><li class="l3"><a href="#styled-components">Styled Components</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+
+
+&gt; **Warning:** Server Component나 Streaming 같은 최신 React 기능과 함께 CSS-in-JS를 사용하려면, library 제작자가 [concurrent rendering](https://react.dev/blog/2022/03/29/react-v18#what-is-concurrent-react)을 포함한 최신 버전의 React를 지원해야 합니다.
+
+다음 library는 `app` directory의 Client Component에서 지원됩니다(알파벳순):
+
+- [`ant-design`](https://ant.design/docs/react/use-with-next#using-app-router)
+- [`chakra-ui`](https://chakra-ui.com/getting-started/nextjs-app-guide)
+- [`@fluentui/react-components`](https://react.fluentui.dev/?path=/docs/concepts-developer-server-side-rendering-next-js-appdir-setup--page)
+- [`kuma-ui`](https://kuma-ui.com)
+- [`@mui/material`](https://mui.com/material-ui/guides/next-js-app-router/)
+- [`@mui/joy`](https://mui.com/joy-ui/integrations/next-js-app-router/)
+- [`pandacss`](https://panda-css.com)
+- [`styled-jsx`](#styled-jsx)
+- [`styled-components`](#styled-components)
+- [`stylex`](https://stylexjs.com)
+- [`tamagui`](https://tamagui.dev/docs/guides/next-js#server-components)
+- [`tss-react`](https://tss-react.dev/)
+- [`vanilla-extract`](https://vanilla-extract.style)
+
+다음 library는 현재 지원 작업이 진행 중입니다:
+
+- [`emotion`](https://github.com/emotion-js/emotion/issues/2928)
+
+&gt; **Good to know**: 저희는 여러 CSS-in-JS library를 테스트하고 있으며, React 18 기능 및/또는 `app` directory를 지원하는 library의 예시를 더 추가할 예정입니다.
+
+## Configuring CSS-in-JS in `app` || `app`에서 CSS-in-JS 설정하기
+
+CSS-in-JS 설정은 다음 세 단계로 이루어지는 opt-in 과정입니다:
+
+1. render 중의 모든 CSS rule을 수집하는 **style registry**.
+2. rule을 사용할 수 있는 콘텐츠보다 먼저 rule을 주입하는 새로운 `useServerInsertedHTML` hook.
+3. 초기 server-side rendering 중에 앱을 style registry로 감싸는 Client Component.
+
+### `styled-jsx`
+
+Client Component에서 `styled-jsx`를 사용하려면 `v5.1.0`이 필요합니다. 먼저 새 registry를 만드세요:
+
+[[CODE 1]]
+
+그다음 [root layout](/docs/app/api-reference/file-conventions/layout#root-layout)을 registry로 감싸세요:
+
+[[CODE 2]]
+
+[여기에서 예시를 확인하세요](https://github.com/vercel/next.js/tree/canary/examples/with-styled-jsx).
+
+### Styled Components
+
+다음은 `styled-components@6` 이상을 설정하는 방법의 예시입니다:
+
+먼저 `next.config.js`에서 styled-components를 활성화하세요.
+
+[[CODE 3]]
+
+그다음 `styled-components` API를 사용해 render 중에 생성되는 모든 CSS style rule을 수집하는 global registry component와 그 rule을 반환하는 함수를 만드세요. 그리고 `useServerInsertedHTML` hook을 사용해 registry에 수집된 style을 root layout의 `&lt;head&gt;` HTML tag에 주입하세요.
+
+[[CODE 4]]
+
+root layout의 `children`을 style registry component로 감싸세요:
+
+[[CODE 5]]
+
+[여기에서 예시를 확인하세요](https://github.com/vercel/next.js/tree/canary/examples/with-styled-components).
+
+&gt; **Good to know**:
+&gt;
+&gt; - server rendering 중에 style은 global registry로 추출되어 HTML의 `&lt;head&gt;`로 flush됩니다. 이렇게 하면 style rule이 그 rule을 사용할 수 있는 콘텐츠보다 앞에 위치하게 됩니다. 앞으로는 곧 나올 React 기능을 사용해 style을 주입할 위치를 결정할 수도 있습니다.
+&gt; - streaming 중에는 각 chunk의 style이 수집되어 기존 style 뒤에 추가됩니다. client-side hydration이 끝나면 `styled-components`가 평소처럼 이어받아 이후의 dynamic style을 주입합니다.
+&gt; - style registry에 tree 최상위의 Client Component를 사용하는 것은 이 방식이 CSS rule을 추출하는 데 더 효율적이기 때문입니다. 이후 server render에서 style을 다시 생성하지 않게 하고, style이 Server Component payload에 포함되어 전송되는 것을 막습니다.
+&gt; - styled-components compilation의 개별 property를 설정해야 하는 고급 사용 사례라면 [Next.js styled-components API reference](/docs/architecture/nextjs-compiler#styled-components)를 읽어 보세요.
+
+
+
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Custom Errors (Custom Error) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/building-your-application/routing/custom-error" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/building-your-application/routing/custom-error" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/03-building-your-application/01-routing/08-custom-error.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-building-your-application.html">Building Your Application</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-building-your-application-routing.html">Routing</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Custom Errors<span class="sub">Custom Error</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<h2 class="sec" id="404-page"><a class="anchor" href="#404-page">404 Page</a></h2>
+<p>404 page는 매우 자주 접근될 수 있습니다. 방문할 때마다 error page를 server-render하면 Next.js server의 부하가 커집니다. 이는 비용 증가와 느린 사용자 경험으로 이어질 수 있습니다.</p><div class="en-orig"><p>A 404 page may be accessed very often. Server-rendering an error page for every visit increases the load of the Next.js server. This can result in increased costs and slow experiences.</p></div>
+<p>이런 문제를 피하기 위해, Next.js는 별도 파일을 추가하지 않아도 기본으로 static 404 page를 제공합니다.</p><div class="en-orig"><p>To avoid the above pitfalls, Next.js provides a static 404 page by default without having to add any additional files.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>기본 404 page와 500 page는 <code>prefers-color-scheme</code>을 통해 운영체제의 color scheme을 따르며, 앱 수준의 theme은 읽지 않습니다. <code>pages/404.js</code>와 <code>pages/500.js</code>는 custom <code>App</code> 안에서 render되므로, 직접 파일을 만들면 global style과 theme이 적용됩니다.</p><div class="en-orig"><p>The default 404 and 500 pages follow the operating system's color scheme via <code>prefers-color-scheme</code> and do not read an app-level theme. Because <code>pages/404.js</code> and <code>pages/500.js</code> render inside your custom <code>App</code>, providing your own files lets your global styles and theme apply.</p></div></div></div>
+<h3 class="sec" id="customizing-the-404-page"><a class="anchor" href="#customizing-the-404-page">Customizing The 404 Page<span class="ko">404 Page customize하기</span></a></h3>
+<p>custom 404 page를 만들려면 <code>pages/404.js</code> 파일을 만들면 됩니다. 이 파일은 build 시점에 static하게 생성됩니다.</p><div class="en-orig"><p>To create a custom 404 page you can create a <code>pages/404.js</code> file. This file is statically generated at build time.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/404.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export default function Custom404() {
+  return &lt;h1&gt;404 - Page Not Found&lt;/h1&gt;
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>build 시점에 data를 fetch해야 한다면 이 page 안에서 <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a>를 사용할 수 있습니다.</p><div class="en-orig"><p>You can use <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a> inside this page if you need to fetch data at build time.</p></div></div></div>
+<h2 class="sec" id="500-page"><a class="anchor" href="#500-page">500 Page</a></h2>
+<p>방문할 때마다 error page를 server-render하면 error에 응답하는 과정이 복잡해집니다. 사용자가 error에 대한 response를 최대한 빨리 받을 수 있도록, Next.js는 별도 파일을 추가하지 않아도 기본으로 static 500 page를 제공합니다.</p><div class="en-orig"><p>Server-rendering an error page for every visit adds complexity to responding to errors. To help users get responses to errors as fast as possible, Next.js provides a static 500 page by default without having to add any additional files.</p></div>
+<h3 class="sec" id="customizing-the-500-page"><a class="anchor" href="#customizing-the-500-page">Customizing The 500 Page<span class="ko">500 Page customize하기</span></a></h3>
+<p>500 page를 customize하려면 <code>pages/500.js</code> 파일을 만들면 됩니다. 이 파일은 build 시점에 static하게 생성됩니다.</p><div class="en-orig"><p>To customize the 500 page you can create a <code>pages/500.js</code> file. This file is statically generated at build time.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/500.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export default function Custom500() {
+  return &lt;h1&gt;500 - Server-side error occurred&lt;/h1&gt;
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>build 시점에 data를 fetch해야 한다면 이 page 안에서 <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a>를 사용할 수 있습니다.</p><div class="en-orig"><p>You can use <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a> inside this page if you need to fetch data at build time.</p></div></div></div>
+<h3 class="sec" id="more-advanced-error-page-customizing"><a class="anchor" href="#more-advanced-error-page-customizing">More Advanced Error Page Customizing<span class="ko">더 고급 Error Page customize</span></a></h3>
+<p>500 error는 client-side와 server-side 모두에서 <code>Error</code> component가 처리합니다. 이를 override하고 싶다면 <code>pages/_error.js</code> 파일을 정의하고 다음 코드를 추가하세요:</p><div class="en-orig"><p>500 errors are handled both client-side and server-side by the <code>Error</code> component. If you wish to override it, define the file <code>pages/_error.js</code> and add the following code:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">function Error({ statusCode }) {
+  return (
+    &lt;p&gt;
+      {statusCode
+        ? `An error ${statusCode} occurred on server`
+        : &#x27;An error occurred on client&#x27;}
+    &lt;/p&gt;
+  )
+}
+
+Error.getInitialProps = ({ res, err }) =&gt; {
+  const statusCode = res ? res.statusCode : err ? err.statusCode : 404
+  return { statusCode }
+}
+
+export default Error</code></pre></div></div>
+<blockquote><p><code>pages/_error.js</code>는 production에서만 사용됩니다. development에서는 error가 어디서 발생했는지 알 수 있도록 call stack과 함께 error가 표시됩니다.</p><div class="en-orig"><p><code>pages/_error.js</code> is only used in production. In development you’ll get an error with the call stack to know where the error originated from.</p></div></blockquote>
+<h3 class="sec" id="reusing-the-built-in-error-page"><a class="anchor" href="#reusing-the-built-in-error-page">Reusing the built-in error page<span class="ko">기본 제공 error page 재사용하기</span></a></h3>
+<p>기본 제공 error page를 render하고 싶다면 <code>Error</code> component를 import해서 사용할 수 있습니다:</p><div class="en-orig"><p>If you want to render the built-in error page you can by importing the <code>Error</code> component:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import Error from &#x27;next/error&#x27;
+
+export async function getServerSideProps() {
+  const res = await fetch(&#x27;https://api.github.com/repos/vercel/next.js&#x27;)
+  const errorCode = res.ok ? false : res.status
+  const json = await res.json()
+
+  return {
+    props: { errorCode, stars: json.stargazers_count },
+  }
+}
+
+export default function Page({ errorCode, stars }) {
+  if (errorCode) {
+    return &lt;Error statusCode={errorCode} /&gt;
+  }
+
+  return &lt;div&gt;Next stars: {stars}&lt;/div&gt;
+}</code></pre></div></div>
+<p><code>statusCode</code>와 함께 텍스트 메시지를 전달하고 싶다면 <code>Error</code> component에 <code>title</code> property도 전달할 수 있습니다.</p><div class="en-orig"><p>The <code>Error</code> component also takes <code>title</code> as a property if you want to pass in a text message along with a <code>statusCode</code>.</p></div>
+<p>custom <code>Error</code> component가 있다면 대신 그것을 import하세요. <code>next/error</code>는 Next.js가 사용하는 기본 component를 export합니다.</p><div class="en-orig"><p>If you have a custom <code>Error</code> component be sure to import that one instead. <code>next/error</code> exports the default component used by Next.js.</p></div>
+<h3 class="sec" id="caveats"><a class="anchor" href="#caveats">Caveats<span class="ko">주의 사항</span></a></h3>
+<ul>
+<li><code>Error</code>는 현재 <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a>나 <a href="pages-building-your-application-data-fetching-get-server-side-props.html"><code>getServerSideProps</code></a> 같은 Next.js <a href="pages-building-your-application-data-fetching.html">Data Fetching method</a>를 지원하지 않습니다.</li>
+<li><code>_error</code>는 <code>_app</code>처럼 예약된 pathname입니다. <code>_error</code>는 error page의 customize된 layout과 동작을 정의하는 데 사용됩니다. <a href="pages-building-your-application-routing.html">routing</a>으로 직접 접근하거나 <a href="pages-guides-custom-server.html">custom server</a>에서 render하면 <code>/_error</code>는 404를 render합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>Error</code> does not currently support Next.js <a href="pages-building-your-application-data-fetching.html">Data Fetching methods</a> like <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a> or <a href="pages-building-your-application-data-fetching-get-server-side-props.html"><code>getServerSideProps</code></a>.</li>
+<li><code>_error</code>, like <code>_app</code>, is a reserved pathname. <code>_error</code> is used to define the customized layouts and behaviors of the error pages. <code>/_error</code> will render 404 when accessed directly via <a href="pages-building-your-application-routing.html">routing</a> or rendering in a <a href="pages-guides-custom-server.html">custom server</a>.</li>
+</ul></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/03-building-your-application/01-routing/08-custom-error.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/building-your-application/routing/custom-error" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-building-your-application-routing-api-routes.html" class="prev"><div class="dir">← 이전</div><div class="ttl">API Routes</div><div class="ttl-ko">API Route</div></a>
+      <a href="pages-building-your-application-rendering.html" class="next"><div class="dir">다음 →</div><div class="ttl">Rendering</div><div class="ttl-ko">Rendering</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/building-your-application/routing/custom-error" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#404-page">404 Page</a></li><li class="l3"><a href="#customizing-the-404-page">Customizing The 404 Page</a></li><li class="l2"><a href="#500-page">500 Page</a></li><li class="l3"><a href="#customizing-the-500-page">Customizing The 500 Page</a></li><li class="l3"><a href="#more-advanced-error-page-customizing">More Advanced Error Page Customizing</a></li><li class="l3"><a href="#reusing-the-built-in-error-page">Reusing the built-in error page</a></li><li class="l3"><a href="#caveats">Caveats</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+## 404 Page || 404 Page
+
+404 page는 매우 자주 접근될 수 있습니다. 방문할 때마다 error page를 server-render하면 Next.js server의 부하가 커집니다. 이는 비용 증가와 느린 사용자 경험으로 이어질 수 있습니다.
+
+이런 문제를 피하기 위해, Next.js는 별도 파일을 추가하지 않아도 기본으로 static 404 page를 제공합니다.
+
+&gt; **Good to know**: 기본 404 page와 500 page는 `prefers-color-scheme`을 통해 운영체제의 color scheme을 따르며, 앱 수준의 theme은 읽지 않습니다. `pages/404.js`와 `pages/500.js`는 custom `App` 안에서 render되므로, 직접 파일을 만들면 global style과 theme이 적용됩니다.
+
+### Customizing The 404 Page || 404 Page customize하기
+
+custom 404 page를 만들려면 `pages/404.js` 파일을 만들면 됩니다. 이 파일은 build 시점에 static하게 생성됩니다.
+
+[[CODE 1]]
+
+&gt; **Good to know**: build 시점에 data를 fetch해야 한다면 이 page 안에서 [`getStaticProps`](/docs/pages/building-your-application/data-fetching/get-static-props)를 사용할 수 있습니다.
+
+## 500 Page || 500 Page
+
+방문할 때마다 error page를 server-render하면 error에 응답하는 과정이 복잡해집니다. 사용자가 error에 대한 response를 최대한 빨리 받을 수 있도록, Next.js는 별도 파일을 추가하지 않아도 기본으로 static 500 page를 제공합니다.
+
+### Customizing The 500 Page || 500 Page customize하기
+
+500 page를 customize하려면 `pages/500.js` 파일을 만들면 됩니다. 이 파일은 build 시점에 static하게 생성됩니다.
+
+[[CODE 2]]
+
+&gt; **Good to know**: build 시점에 data를 fetch해야 한다면 이 page 안에서 [`getStaticProps`](/docs/pages/building-your-application/data-fetching/get-static-props)를 사용할 수 있습니다.
+
+### More Advanced Error Page Customizing || 더 고급 Error Page customize
+
+500 error는 client-side와 server-side 모두에서 `Error` component가 처리합니다. 이를 override하고 싶다면 `pages/_error.js` 파일을 정의하고 다음 코드를 추가하세요:
+
+[[CODE 3]]
+
+&gt; `pages/_error.js`는 production에서만 사용됩니다. development에서는 error가 어디서 발생했는지 알 수 있도록 call stack과 함께 error가 표시됩니다.
+
+### Reusing the built-in error page || 기본 제공 error page 재사용하기
+
+기본 제공 error page를 render하고 싶다면 `Error` component를 import해서 사용할 수 있습니다:
+
+[[CODE 4]]
+
+`statusCode`와 함께 텍스트 메시지를 전달하고 싶다면 `Error` component에 `title` property도 전달할 수 있습니다.
+
+custom `Error` component가 있다면 대신 그것을 import하세요. `next/error`는 Next.js가 사용하는 기본 component를 export합니다.
+
+### Caveats || 주의 사항
+
+- `Error`는 현재 [`getStaticProps`](/docs/pages/building-your-application/data-fetching/get-static-props)나 [`getServerSideProps`](/docs/pages/building-your-application/data-fetching/get-server-side-props) 같은 Next.js [Data Fetching method](/docs/pages/building-your-application/data-fetching)를 지원하지 않습니다.
+- `_error`는 `_app`처럼 예약된 pathname입니다. `_error`는 error page의 customize된 layout과 동작을 정의하는 데 사용됩니다. [routing](/docs/pages/building-your-application/routing)으로 직접 접근하거나 [custom server](/docs/pages/guides/custom-server)에서 render하면 `/_error`는 404를 render합니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

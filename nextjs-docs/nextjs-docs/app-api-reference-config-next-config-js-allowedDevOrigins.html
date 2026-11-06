@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>allowedDevOrigins (allowedDevOrigins) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/config/next-config-js/allowedDevOrigins" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/allowedDevOrigins.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config.html">Configuration</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config-next-config-js.html">next.config.js</a></div>
+    <div class="title-row">
+      <h1 class="page-title">allowedDevOrigins<span class="sub">allowedDevOrigins</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js는 무단 접근을 막기 위해 기본적으로 개발 중 dev 전용 asset과 endpoint에 대한 cross-origin request를 차단합니다.</p><div class="en-orig"><p>Next.js blocks cross-origin requests to dev-only assets and endpoints during development by default to prevent unauthorized access.</p></div>
+<p>server가 초기화될 때 사용된 hostname(기본값 <code>localhost</code>) 이외의 origin에서 오는 request를 허용하도록 Next.js 애플리케이션을 설정하려면 <code>allowedDevOrigins</code> config option을 사용하세요.</p><div class="en-orig"><p>To configure a Next.js application to allow requests from origins other than the hostname the server was initialized with (<code>localhost</code> by default), use the <code>allowedDevOrigins</code> config option.</p></div>
+<p><code>allowedDevOrigins</code>를 사용하면 development mode에서 dev server에 request를 보낼 수 있는 추가 origin을 설정할 수 있습니다. 예를 들어 <code>localhost</code>뿐 아니라 <code>local-origin.dev</code>도 사용하려면 <code>next.config.js</code>를 열고 <code>allowedDevOrigins</code> config를 추가하세요:</p><div class="en-orig"><p><code>allowedDevOrigins</code> lets you set additional origins that can request the dev server in development mode. For example, to use <code>local-origin.dev</code> instead of only <code>localhost</code>, open <code>next.config.js</code> and add the <code>allowedDevOrigins</code> config:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  allowedDevOrigins: [&#x27;local-origin.dev&#x27;, &#x27;*.local-origin.dev&#x27;],
+}</code></pre></div></div>
+<p>request의 <code>Origin</code> header 중 <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/hostname" target="_blank" rel="noopener"><code>hostname</code></a>만 항목과 비교됩니다. <code>http://local-origin.dev:3000/dashboard?tab=1</code>에서 온 request라면 <code>local-origin.dev</code>가 비교 대상입니다. scheme, port, path, query string은 무시됩니다. 항목도 같은 방식으로 <code>https://</code>와 port 없이 작성하세요.</p><div class="en-orig"><p>Only the <a href="https://developer.mozilla.org/en-US/docs/Web/API/URL/hostname" target="_blank" rel="noopener"><code>hostname</code></a> of the request's <code>Origin</code> header is matched against your entries. For a request from <code>http://local-origin.dev:3000/dashboard?tab=1</code>, that is <code>local-origin.dev</code>. The scheme, the port, the path, and the query string are ignored. Write your entries that way too, without <code>https://</code> and without a port.</p></div>
+<p>dev asset을 불러오는 script tag처럼 no-cors cross-site request는 <code>Origin</code> header를 보내지 않습니다. 이런 request는 대신 <code>Referer</code>의 hostname으로 비교됩니다.</p><div class="en-orig"><p>A no-cors cross-site request, such as a script tag loading a dev asset, sends no <code>Origin</code> header. Those are matched on the <code>Referer</code> hostname instead.</p></div>
+<p>항목은 두 가지 wildcard로 확장할 수도 있습니다. <code>*</code>는 hostname의 label 정확히 하나를, <code>**</code>는 하나 이상의 label을 대신합니다. 그래서 위 예제에는 bare hostname용과 subdomain용, 두 개의 항목이 있습니다.</p><div class="en-orig"><p>Entries can also expand, through two wildcards: a <code>*</code> stands in for exactly one label of the hostname, and <code>**</code> for one or more. That is why the example above lists two entries, one for the bare hostname and one for its subdomains.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Entry</th><th>Matches</th><th>Does not match</th></tr></thead>
+<tbody>
+<tr><td><code>local-origin.dev</code></td><td><code>local-origin.dev</code></td><td><code>team.local-origin.dev</code></td></tr>
+<tr><td><code>*.local-origin.dev</code></td><td><code>team.local-origin.dev</code></td><td><code>local-origin.dev</code>, <code>team.eu.local-origin.dev</code></td></tr>
+<tr><td><code>**.local-origin.dev</code></td><td><code>team.local-origin.dev</code>, <code>team.eu.local-origin.dev</code></td><td><code>local-origin.dev</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Entry</th><th>Matches</th><th>Does not match</th></tr></thead>
+<tbody>
+<tr><td><code>local-origin.dev</code></td><td><code>local-origin.dev</code></td><td><code>team.local-origin.dev</code></td></tr>
+<tr><td><code>*.local-origin.dev</code></td><td><code>team.local-origin.dev</code></td><td><code>local-origin.dev</code>, <code>team.eu.local-origin.dev</code></td></tr>
+<tr><td><code>**.local-origin.dev</code></td><td><code>team.local-origin.dev</code>, <code>team.eu.local-origin.dev</code></td><td><code>local-origin.dev</code></td></tr>
+</tbody></table></div></div>
+<p>부분 치환은 지원되지 않습니다. <code>team-*.local-origin.dev</code> 대신 <code>*.local-origin.dev</code>로 작성하세요. <code>**</code>는 pattern의 맨 앞에서만 사용할 수 있습니다.</p><div class="en-orig"><p>Partial replacement is not supported. Write <code>*.local-origin.dev</code>, rather than <code>team-*.local-origin.dev</code>. Using <code>**</code> is only supported at the start of the pattern.</p></div>
+<p>dev server는 이미 <code>localhost</code>, 그 subdomain, 그리고 server를 시작할 때 사용한 hostname을 허용합니다. 원격 개발에 사용하는 tunnel처럼 그 밖의 hostname은 항목을 추가해야 합니다:</p><div class="en-orig"><p>The dev server already allows <code>localhost</code>, its subdomains, and the hostname it was started with. Any other hostname needs an entry, such as a tunnel used for remote development:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  allowedDevOrigins: [&#x27;*.tunnel.example.com&#x27;],
+}</code></pre></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/allowedDevOrigins.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-config-next-config-js-agentUpgrade.html" class="prev"><div class="dir">← 이전</div><div class="ttl">agentUpgrade</div><div class="ttl-ko">agentUpgrade</div></a>
+      <a href="app-api-reference-config-next-config-js-appDir.html" class="next"><div class="dir">다음 →</div><div class="ttl">appDir</div><div class="ttl-ko">appDir</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js는 무단 접근을 막기 위해 기본적으로 개발 중 dev 전용 asset과 endpoint에 대한 cross-origin request를 차단합니다.
+
+server가 초기화될 때 사용된 hostname(기본값 `localhost`) 이외의 origin에서 오는 request를 허용하도록 Next.js 애플리케이션을 설정하려면 `allowedDevOrigins` config option을 사용하세요.
+
+`allowedDevOrigins`를 사용하면 development mode에서 dev server에 request를 보낼 수 있는 추가 origin을 설정할 수 있습니다. 예를 들어 `localhost`뿐 아니라 `local-origin.dev`도 사용하려면 `next.config.js`를 열고 `allowedDevOrigins` config를 추가하세요:
+
+[[CODE 1]]
+
+request의 `Origin` header 중 [`hostname`](https://developer.mozilla.org/en-US/docs/Web/API/URL/hostname)만 항목과 비교됩니다. `http://local-origin.dev:3000/dashboard?tab=1`에서 온 request라면 `local-origin.dev`가 비교 대상입니다. scheme, port, path, query string은 무시됩니다. 항목도 같은 방식으로 `https://`와 port 없이 작성하세요.
+
+dev asset을 불러오는 script tag처럼 no-cors cross-site request는 `Origin` header를 보내지 않습니다. 이런 request는 대신 `Referer`의 hostname으로 비교됩니다.
+
+항목은 두 가지 wildcard로 확장할 수도 있습니다. `*`는 hostname의 label 정확히 하나를, `**`는 하나 이상의 label을 대신합니다. 그래서 위 예제에는 bare hostname용과 subdomain용, 두 개의 항목이 있습니다.
+
+| Entry                 | Matches                                             | Does not match                                 |
+| --------------------- | --------------------------------------------------- | ---------------------------------------------- |
+| `local-origin.dev`    | `local-origin.dev`                                  | `team.local-origin.dev`                        |
+| `*.local-origin.dev`  | `team.local-origin.dev`                             | `local-origin.dev`, `team.eu.local-origin.dev` |
+| `**.local-origin.dev` | `team.local-origin.dev`, `team.eu.local-origin.dev` | `local-origin.dev`                             |
+
+부분 치환은 지원되지 않습니다. `team-*.local-origin.dev` 대신 `*.local-origin.dev`로 작성하세요. `**`는 pattern의 맨 앞에서만 사용할 수 있습니다.
+
+dev server는 이미 `localhost`, 그 subdomain, 그리고 server를 시작할 때 사용한 hostname을 허용합니다. 원격 개발에 사용하는 tunnel처럼 그 밖의 hostname은 항목을 추가해야 합니다:
+
+[[CODE 2]]
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

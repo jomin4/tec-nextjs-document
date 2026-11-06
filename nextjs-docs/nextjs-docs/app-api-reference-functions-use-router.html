@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>useRouter (useRouter) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/functions/use-router" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/functions/use-router" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/use-router.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-functions.html">Functions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">useRouter<span class="sub">useRouter</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>useRouter</code> hook을 사용하면 <a href="app-getting-started-server-and-client-components.html">Client Components</a> 안에서 프로그래밍 방식으로 route를 변경할 수 있습니다.</p><div class="en-orig"><p>The <code>useRouter</code> hook allows you to programmatically change routes inside <a href="app-getting-started-server-and-client-components.html">Client Components</a>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Recommendation</div><p><code>useRouter</code>를 사용해야 하는 특별한 요구 사항이 없다면 navigation에는 <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code> component</a>를 사용하세요.</p><div class="en-orig"><p>Use the <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code> component</a> for navigation unless you have a specific requirement for using <code>useRouter</code>.</p></div></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/example-client-component.tsx" data-js="app/example-client-component.js">app/example-client-component.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useRouter } from &#x27;next/navigation&#x27;
+
+export default function Page() {
+  const router = useRouter()
+
+  return (
+    &lt;button type=&quot;button&quot; onClick={() =&gt; router.push(&#x27;/dashboard&#x27;)}&gt;
+      Dashboard
+    &lt;/button&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useRouter } from &#x27;next/navigation&#x27;
+
+export default function Page() {
+  const router = useRouter()
+
+  return (
+    &lt;button type=&quot;button&quot; onClick={() =&gt; router.push(&#x27;/dashboard&#x27;)}&gt;
+      Dashboard
+    &lt;/button&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="userouter"><a class="anchor" href="#userouter"><code>useRouter()</code></a></h2>
+<h3 class="sec" id="routerpush"><a class="anchor" href="#routerpush"><code>router.push()</code></a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">router.push(href: string, {
+  scroll: boolean
+  transitionTypes: string[]
+})</code></pre></div></div>
+<p>제공된 route로 client-side navigation을 수행합니다. <a href="https://developer.mozilla.org/docs/Web/API/History_API" target="_blank" rel="noopener">브라우저의 history stack</a>에 새 entry를 추가합니다. 선택적인 <code>transitionTypes</code>는 navigation Transition 안에서 <a href="https://react.dev/reference/react/addTransitionType" target="_blank" rel="noopener"><code>React.addTransitionType</code></a>에 전달됩니다.</p><div class="en-orig"><p>Perform a client-side navigation to the provided route. Adds a new entry into the <a href="https://developer.mozilla.org/docs/Web/API/History_API" target="_blank" rel="noopener">browser's history stack</a>. The optional <code>transitionTypes</code> are passed to <a href="https://react.dev/reference/react/addTransitionType" target="_blank" rel="noopener"><code>React.addTransitionType</code></a> inside the navigation Transition.</p></div>
+<h3 class="sec" id="routerreplace"><a class="anchor" href="#routerreplace"><code>router.replace()</code></a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">router.replace(href: string, {
+  scroll: boolean
+  transitionTypes: string[]
+})</code></pre></div></div>
+<p>브라우저의 history stack에 새 entry를 추가하지 않고 제공된 route로 client-side navigation을 수행합니다. 선택적인 <code>transitionTypes</code>는 navigation Transition 안에서 <a href="https://react.dev/reference/react/addTransitionType" target="_blank" rel="noopener"><code>React.addTransitionType</code></a>에 전달됩니다.</p><div class="en-orig"><p>Perform a client-side navigation to the provided route without adding a new entry into the browser’s history stack. The optional <code>transitionTypes</code> are passed to <a href="https://react.dev/reference/react/addTransitionType" target="_blank" rel="noopener"><code>React.addTransitionType</code></a> inside the navigation Transition.</p></div>
+<h3 class="sec" id="routerrefresh"><a class="anchor" href="#routerrefresh"><code>router.refresh()</code></a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">router.refresh()</code></pre></div></div>
+<p>현재 route를 refresh합니다. server에 새 request를 보내고, data request를 다시 fetch하고, Server Component를 re-render합니다. client는 영향을 받지 않는 client-side React state(예: <code>useState</code>)나 브라우저 state(예: scroll 위치)를 잃지 않고 업데이트된 React Server Component payload를 merge합니다. 이 작업은 현재 route의 <a href="app-glossary.html#client-cache">Client Cache</a>를 비우지만, server-side cache는 무효화하지 <strong>않습니다</strong>. server-side cached data를 무효화하려면 <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>나 <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>를 사용하세요.</p><div class="en-orig"><p>Refresh the current route. Making a new request to the server, re-fetching data requests, and re-rendering Server Components. The client will merge the updated React Server Component payload without losing unaffected client-side React (e.g. <code>useState</code>) or browser state (e.g. scroll position). This clears the <a href="app-glossary.html#client-cache">Client Cache</a> for the current route, but does <strong>not</strong> invalidate the server-side cache. Use <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a> or <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a> to invalidate server-side cached data.</p></div>
+<h3 class="sec" id="routerprefetch"><a class="anchor" href="#routerprefetch"><code>router.prefetch()</code></a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">router.prefetch(
+  href: string,
+  options?: {
+    kind?: &#x27;auto&#x27; | &#x27;full&#x27;
+    onInvalidate?: () =&gt; void
+  }
+)</code></pre></div></div>
+<p>더 빠른 client-side 전환을 위해 제공된 route를 <a href="app-getting-started-linking-and-navigating.html#prefetching">Prefetch</a>합니다. 선택적인 <code>kind</code>는 route를 얼마나 prefetch할지 제어합니다. 선택적인 <code>onInvalidate</code> callback은 <a href="app-guides-prefetching.html#extending-or-ejecting-link">prefetch된 data가 stale해질 때</a> 호출됩니다.</p><div class="en-orig"><p><a href="app-getting-started-linking-and-navigating.html#prefetching">Prefetch</a> the provided route for faster client-side transitions. The optional <code>kind</code> controls how much of the route to prefetch. The optional <code>onInvalidate</code> callback is called when the <a href="app-guides-prefetching.html#extending-or-ejecting-link">prefetched data becomes stale</a>.</p></div>
+<p><a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a>을 사용하면 각 <code>router.prefetch()</code> 호출은 <code>&lt;Link&gt;</code> prefetch option과 대응됩니다:</p><div class="en-orig"><p>With <a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a>, each <code>router.prefetch()</code> call matches a <code>&lt;Link&gt;</code> prefetch option:</p></div>
+<div>
+
+| `router.prefetch()` 호출                  | 동일한 `<div data-c="Link">`                  |
+| ----------------------------------------- | ------------------------------------ |
+| `router.prefetch(href)`                   | `<div data-c="Link" href={href}>`                 |
+| `router.prefetch(href, { kind: 'auto' })` | `<div data-c="Link" href={href}>`                 |
+| `router.prefetch(href, { kind: 'full' })` | `<div data-c="Link" href={href} prefetch={true}>` |
+
+</div>
+<p>기본값과 <code>&#x27;auto&#x27;</code> option은 route의 <a href="app-glossary.html#app-shell">App Shell</a>을 prefetch합니다. <code>&#x27;full&#x27;</code> option은 <a href="app-api-reference-functions-prefetch.html"><code>await prefetch()</code></a> 아래의 content를 포함한 link별 단계까지 함께 prefetch합니다.</p><div class="en-orig"><p>The default and <code>&#x27;auto&#x27;</code> options prefetch the route's <a href="app-glossary.html#app-shell">App Shell</a>. The <code>&#x27;full&#x27;</code> option also prefetches the per-link stage, including content below <a href="app-api-reference-functions-prefetch.html"><code>await prefetch()</code></a>.</p></div>
+<p>두 값 모두 <a href="app-api-reference-functions-navigation.html"><code>await navigation()</code></a>으로 지연된 content는 포함하지 않습니다. 그 content는 navigation이 시작될 때 render됩니다.</p><div class="en-orig"><p>Neither value includes content deferred with <a href="app-api-reference-functions-navigation.html"><code>await navigation()</code></a>. That content renders when navigation begins.</p></div>
+<h3 class="sec" id="routerback"><a class="anchor" href="#routerback"><code>router.back()</code></a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">router.back()</code></pre></div></div>
+<p>브라우저의 history stack에서 이전 route로 뒤로 이동합니다.</p><div class="en-orig"><p>Navigate back to the previous route in the browser’s history stack.</p></div>
+<h3 class="sec" id="routerforward"><a class="anchor" href="#routerforward"><code>router.forward()</code></a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">router.forward()</code></pre></div></div>
+<p>브라우저의 history stack에서 다음 page로 앞으로 이동합니다.</p><div class="en-orig"><p>Navigate forwards to the next page in the browser’s history stack.</p></div>
+<h3 class="sec" id="routerbfcacheid"><a class="anchor" href="#routerbfcacheid"><code>router.bfcacheId</code></a></h3>
+<p>현재 route segment에 scope가 지정된 불투명한(opaque) string 식별자입니다. 감싸고 있는 segment가 push 또는 replace navigation으로 새로 생성될 때 바뀌며, back/forward navigation, <code>router.refresh()</code>, 그리고 search param이나 hash만 바뀌는 navigation에서는 그대로 유지됩니다. 자세한 내용은 아래의 <a href="#bfcacheid"><code>bfcacheId</code></a>를 참고하세요.</p><div class="en-orig"><p>An opaque string identifier scoped to the current route segment. It changes when the surrounding segment is freshly created by a push or replace navigation, and stays the same for back/forward navigations, <code>router.refresh()</code>, and search-param- or hash-only navigations. See <a href="#bfcacheid"><code>bfcacheId</code></a> below for details.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>신뢰할 수 없거나 sanitize되지 않은 URL을 <code>router.push</code>나 <code>router.replace</code>에 전달하면 안 됩니다. 사이트가 cross-site scripting (XSS) 취약점에 노출될 수 있기 때문입니다. 예를 들어 <code>router.push</code>나 <code>router.replace</code>에 전달된 <code>javascript:</code> URL은 page의 context에서 실행됩니다.</li>
+<li><code>&lt;Link&gt;</code> component는 viewport에 보이게 되면 route를 자동으로 prefetch합니다.</li>
+<li>fetch request가 cache되어 있다면 <code>refresh()</code>가 같은 결과를 다시 만들어 낼 수 있습니다. <code>cookies</code>나 <code>headers</code> 같은 다른 Request-time API도 response를 바꿀 수 있습니다.</li>
+<li><code>onInvalidate</code> callback은 prefetch request당 최대 한 번 호출됩니다. 업데이트된 route data를 위해 새 prefetch를 trigger하고 싶을 수 있는 시점을 알려 줍니다.</li>
+</ul><div class="en-orig"><ul>
+<li>You must not send untrusted or unsanitized URLs to <code>router.push</code> or <code>router.replace</code>, as this can open your site to cross-site scripting (XSS) vulnerabilities. For example, <code>javascript:</code> URLs sent to <code>router.push</code> or <code>router.replace</code> will be executed in the context of your page.</li>
+<li>The <code>&lt;Link&gt;</code> component automatically prefetch routes as they become visible in the viewport.</li>
+<li><code>refresh()</code> could re-produce the same result if fetch requests are cached. Other Request-time APIs like <code>cookies</code> and <code>headers</code> could also change the response.</li>
+<li>The <code>onInvalidate</code> callback is called at most once per prefetch request. It signals when you may want to trigger a new prefetch for updated route data.</li>
+</ul></div></div></div>
+<h3 class="sec" id="migrating-from-nextrouter"><a class="anchor" href="#migrating-from-nextrouter">Migrating from <code>next/router</code><span class="ko"><code>next/router</code>에서 migrate하기</span></a></h3>
+<ul>
+<li>App Router를 사용할 때 <code>useRouter</code> hook은 <code>next/router</code>가 아니라 <code>next/navigation</code>에서 import해야 합니다</li>
+<li><code>pathname</code> string은 제거되었으며 <a href="app-api-reference-functions-use-pathname.html"><code>usePathname()</code></a>으로 대체되었습니다</li>
+<li><code>query</code> object는 제거되었으며 <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams()</code></a>로 대체되었습니다</li>
+<li><code>router.events</code>는 대체되었습니다. <a href="#router-events">아래를 참고하세요.</a></li>
+</ul><div class="en-orig"><ul>
+<li>The <code>useRouter</code> hook should be imported from <code>next/navigation</code> and not <code>next/router</code> when using the App Router</li>
+<li>The <code>pathname</code> string has been removed and is replaced by <a href="app-api-reference-functions-use-pathname.html"><code>usePathname()</code></a></li>
+<li>The <code>query</code> object has been removed and is replaced by <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams()</code></a></li>
+<li><code>router.events</code> has been replaced. <a href="#router-events">See below.</a></li>
+</ul></div>
+<p><a href="app-guides-migrating-app-router-migration.html">전체 migration 가이드 보기</a>.</p><div class="en-orig"><p><a href="app-guides-migrating-app-router-migration.html">View the full migration guide</a>.</p></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<h3 class="sec" id="router-events"><a class="anchor" href="#router-events">Router events<span class="ko">Router event</span></a></h3>
+<p><code>usePathname</code>, <code>useSearchParams</code> 같은 다른 Client Component hook을 조합해 page 변경을 감지할 수 있습니다.</p><div class="en-orig"><p>You can listen for page changes by composing other Client Component hooks like <code>usePathname</code> and <code>useSearchParams</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/components/navigation-events.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">&#x27;use client&#x27;
+
+import { useEffect } from &#x27;react&#x27;
+import { usePathname, useSearchParams } from &#x27;next/navigation&#x27;
+
+export function NavigationEvents() {
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  useEffect(() =&gt; {
+    const url = `${pathname}?${searchParams}`
+    console.log(url)
+    // You can now use the current URL
+    // ...
+  }, [pathname, searchParams])
+
+  return &#x27;...&#x27;
+}</code></pre></div></div>
+<p>이 component는 layout에 import할 수 있습니다.</p><div class="en-orig"><p>Which can be imported into a layout.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/layout.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { Suspense } from &#x27;react&#x27;
+import { NavigationEvents } from &#x27;./components/navigation-events&#x27;
+
+export default function Layout({ children }) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;body&gt;
+        {children}
+
+        &lt;Suspense fallback={null}&gt;
+          &lt;NavigationEvents /&gt;
+        &lt;/Suspense&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="app-glossary.html#prerendering">prerendering</a> 중에 <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams()</code></a>는 가장 가까운 <code>Suspense</code> boundary까지 client-side rendering을 일으키기 때문에 <code>&lt;NavigationEvents&gt;</code>는 <a href="app-api-reference-file-conventions-loading.html#examples"><code>Suspense</code> boundary</a>로 감싸져 있습니다. <a href="app-api-reference-functions-use-search-params.html#behavior">더 알아보기</a>.</p><div class="en-orig"><p><code>&lt;NavigationEvents&gt;</code> is wrapped in a <a href="app-api-reference-file-conventions-loading.html#examples"><code>Suspense</code> boundary</a> because<a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams()</code></a> causes client-side rendering up to the closest <code>Suspense</code> boundary during <a href="app-glossary.html#prerendering">prerendering</a>. <a href="app-api-reference-functions-use-search-params.html#behavior">Learn more</a>.</p></div></div></div>
+<h3 class="sec" id="disabling-scroll-to-top"><a class="anchor" href="#disabling-scroll-to-top">Disabling scroll to top<span class="ko">맨 위로 scroll 비활성화하기</span></a></h3>
+<p>기본적으로 Next.js는 새 route로 이동할 때 page 맨 위로 scroll합니다. <code>router.push()</code>나 <code>router.replace()</code>에 <code>scroll: false</code>를 전달하면 이 동작을 비활성화할 수 있습니다.</p><div class="en-orig"><p>By default, Next.js will scroll to the top of the page when navigating to a new route. You can disable this behavior by passing <code>scroll: false</code> to <code>router.push()</code> or <code>router.replace()</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/example-client-component.tsx" data-js="app/example-client-component.jsx">app/example-client-component.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useRouter } from &#x27;next/navigation&#x27;
+
+export default function Page() {
+  const router = useRouter()
+
+  return (
+    &lt;button
+      type=&quot;button&quot;
+      onClick={() =&gt; router.push(&#x27;/dashboard&#x27;, { scroll: false })}
+    &gt;
+      Dashboard
+    &lt;/button&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useRouter } from &#x27;next/navigation&#x27;
+
+export default function Page() {
+  const router = useRouter()
+
+  return (
+    &lt;button
+      type=&quot;button&quot;
+      onClick={() =&gt; router.push(&#x27;/dashboard&#x27;, { scroll: false })}
+    &gt;
+      Dashboard
+    &lt;/button&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="bfcacheid"><a class="anchor" href="#bfcacheid"><code>bfcacheId</code></a></h3>
+<p><code>router.bfcacheId</code>는 현재 route segment에 scope가 지정된 불투명한(opaque) string 식별자입니다. 감싸고 있는 segment가 push 또는 replace navigation으로 새로 생성될 때 바뀌며, back/forward navigation, <code>router.refresh()</code>, 그리고 search param이나 hash만 바뀌는 navigation에서는 그대로 유지됩니다.</p><div class="en-orig"><p><code>router.bfcacheId</code> is an opaque string identifier scoped to the current route segment. It changes when the surrounding segment is freshly created by a push or replace navigation, and stays the same for back/forward navigations, <code>router.refresh()</code>, and search-param- or hash-only navigations.</p></div>
+<p>권장 사용법은 이 값을 React <code>key</code>로 전달해, 새 navigation에서는 state 보존을 opt out하면서 back/forward navigation 중에는 state를 복원하는 것입니다:</p><div class="en-orig"><p>The recommended use is to pass it as a React <code>key</code> to opt out of state preservation on fresh navigations, while still restoring it during a back/forward navigation:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/example/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useRouter } from &#x27;next/navigation&#x27;
+
+export default function Page() {
+  const { bfcacheId } = useRouter()
+  return &lt;form key={bfcacheId}&gt;{/* ... */}&lt;/form&gt;
+}</code></pre></div></div>
+<p><code>cacheComponents</code>가 활성화되어 있으면 App Router는 React <code>&lt;Activity&gt;</code>를 사용해 navigation 간에 Client Component state를 보존합니다. component에 <code>bfcacheId</code>를 key로 지정하면 새 navigation마다 component가 reset되지만, 브라우저 back/forward navigation 간에는 state가 계속 보존됩니다. pattern별 권장 reset 방법은 <a href="app-guides-preserving-ui-state.html">Preserving UI state</a>를 참고하세요.</p><div class="en-orig"><p>When <code>cacheComponents</code> is enabled, the App Router preserves Client Component state across navigations using React <code>&lt;Activity&gt;</code>. Keying a component on <code>bfcacheId</code> resets it on each fresh navigation while still preserving its state across browser back/forward navigations. See <a href="app-guides-preserving-ui-state.html">Preserving UI state</a> for the recommended per-pattern resets.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>bfcacheId</code> 대신 event handler(예: <code>onSubmit</code>)에서 state를 명시적으로 reset하거나 data에서 key를 도출(예: server에서 받은 draft id)하는 방식을 선호하세요. <code>bfcacheId</code>는 기존 codebase를 migrate할 때처럼 최후의 수단으로만 사용하세요.</p><div class="en-orig"><p>Instead of <code>bfcacheId</code>, prefer resetting state explicitly in an event handler (for example, <code>onSubmit</code>) or deriving a key from your data (for example, a draft id from the server). Use <code>bfcacheId</code> only as a last resort, like when migrating an existing codebase.</p></div></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.5.0</code></td><td><code>router.prefetch</code>에 <code>kind</code> option 도입.</td></tr>
+<tr><td><code>v15.4.0</code></td><td><code>router.prefetch</code>에 선택적인 <code>onInvalidate</code> callback 도입</td></tr>
+<tr><td><code>v13.0.0</code></td><td><code>next/navigation</code>의 <code>useRouter</code> 도입.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.5.0</code></td><td><code>kind</code> option for <code>router.prefetch</code> introduced.</td></tr>
+<tr><td><code>v15.4.0</code></td><td>Optional <code>onInvalidate</code> callback for <code>router.prefetch</code> introduced</td></tr>
+<tr><td><code>v13.0.0</code></td><td><code>useRouter</code> from <code>next/navigation</code> introduced.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/use-router.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/functions/use-router" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-functions-use-report-web-vitals.html" class="prev"><div class="dir">← 이전</div><div class="ttl">useReportWebVitals</div><div class="ttl-ko">useReportWebVitals</div></a>
+      <a href="app-api-reference-functions-use-search-params.html" class="next"><div class="dir">다음 →</div><div class="ttl">useSearchParams</div><div class="ttl-ko">useSearchParams</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/functions/use-router" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#userouter"><code>useRouter()</code></a></li><li class="l3"><a href="#routerpush"><code>router.push()</code></a></li><li class="l3"><a href="#routerreplace"><code>router.replace()</code></a></li><li class="l3"><a href="#routerrefresh"><code>router.refresh()</code></a></li><li class="l3"><a href="#routerprefetch"><code>router.prefetch()</code></a></li><li class="l3"><a href="#routerback"><code>router.back()</code></a></li><li class="l3"><a href="#routerforward"><code>router.forward()</code></a></li><li class="l3"><a href="#routerbfcacheid"><code>router.bfcacheId</code></a></li><li class="l3"><a href="#migrating-from-nextrouter">Migrating from <code>next/router</code></a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#router-events">Router events</a></li><li class="l3"><a href="#disabling-scroll-to-top">Disabling scroll to top</a></li><li class="l3"><a href="#bfcacheid"><code>bfcacheId</code></a></li><li class="l2"><a href="#version-history">Version History</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`useRouter` hook을 사용하면 [Client Components](/docs/app/getting-started/server-and-client-components) 안에서 프로그래밍 방식으로 route를 변경할 수 있습니다.
+
+&gt; **Recommendation:** `useRouter`를 사용해야 하는 특별한 요구 사항이 없다면 navigation에는 [`&lt;Link&gt;` component](/docs/app/api-reference/components/link)를 사용하세요.
+
+[[CODE 1]]
+
+## `useRouter()`
+
+### `router.push()`
+
+[[CODE 2]]
+
+제공된 route로 client-side navigation을 수행합니다. [브라우저의 history stack](https://developer.mozilla.org/docs/Web/API/History_API)에 새 entry를 추가합니다. 선택적인 `transitionTypes`는 navigation Transition 안에서 [`React.addTransitionType`](https://react.dev/reference/react/addTransitionType)에 전달됩니다.
+
+### `router.replace()`
+
+[[CODE 3]]
+
+브라우저의 history stack에 새 entry를 추가하지 않고 제공된 route로 client-side navigation을 수행합니다. 선택적인 `transitionTypes`는 navigation Transition 안에서 [`React.addTransitionType`](https://react.dev/reference/react/addTransitionType)에 전달됩니다.
+
+### `router.refresh()`
+
+[[CODE 4]]
+
+현재 route를 refresh합니다. server에 새 request를 보내고, data request를 다시 fetch하고, Server Component를 re-render합니다. client는 영향을 받지 않는 client-side React state(예: `useState`)나 브라우저 state(예: scroll 위치)를 잃지 않고 업데이트된 React Server Component payload를 merge합니다. 이 작업은 현재 route의 [Client Cache](/docs/app/glossary#client-cache)를 비우지만, server-side cache는 무효화하지 **않습니다**. server-side cached data를 무효화하려면 [`revalidatePath`](/docs/app/api-reference/functions/revalidatePath)나 [`revalidateTag`](/docs/app/api-reference/functions/revalidateTag)를 사용하세요.
+
+### `router.prefetch()`
+
+[[CODE 5]]
+
+더 빠른 client-side 전환을 위해 제공된 route를 [Prefetch](/docs/app/getting-started/linking-and-navigating#prefetching)합니다. 선택적인 `kind`는 route를 얼마나 prefetch할지 제어합니다. 선택적인 `onInvalidate` callback은 [prefetch된 data가 stale해질 때](/docs/app/guides/prefetching#extending-or-ejecting-link) 호출됩니다.
+
+[Partial Prefetching](/docs/app/api-reference/config/next-config-js/partialPrefetching)을 사용하면 각 `router.prefetch()` 호출은 `&lt;Link&gt;` prefetch option과 대응됩니다:
+
+&lt;div style={{ overflowX: &#x27;auto&#x27;, width: &#x27;100%&#x27; }}&gt;
+
+| `router.prefetch()` 호출                  | 동일한 `&lt;Link&gt;`                  |
+| ----------------------------------------- | ------------------------------------ |
+| `router.prefetch(href)`                   | `&lt;Link href={href}&gt;`                 |
+| `router.prefetch(href, { kind: &#x27;auto&#x27; })` | `&lt;Link href={href}&gt;`                 |
+| `router.prefetch(href, { kind: &#x27;full&#x27; })` | `&lt;Link href={href} prefetch={true}&gt;` |
+
+&lt;/div&gt;
+
+기본값과 `&#x27;auto&#x27;` option은 route의 [App Shell](/docs/app/glossary#app-shell)을 prefetch합니다. `&#x27;full&#x27;` option은 [`await prefetch()`](/docs/app/api-reference/functions/prefetch) 아래의 content를 포함한 link별 단계까지 함께 prefetch합니다.
+
+두 값 모두 [`await navigation()`](/docs/app/api-reference/functions/navigation)으로 지연된 content는 포함하지 않습니다. 그 content는 navigation이 시작될 때 render됩니다.
+
+### `router.back()`
+
+[[CODE 6]]
+
+브라우저의 history stack에서 이전 route로 뒤로 이동합니다.
+
+### `router.forward()`
+
+[[CODE 7]]
+
+브라우저의 history stack에서 다음 page로 앞으로 이동합니다.
+
+### `router.bfcacheId`
+
+현재 route segment에 scope가 지정된 불투명한(opaque) string 식별자입니다. 감싸고 있는 segment가 push 또는 replace navigation으로 새로 생성될 때 바뀌며, back/forward navigation, `router.refresh()`, 그리고 search param이나 hash만 바뀌는 navigation에서는 그대로 유지됩니다. 자세한 내용은 아래의 [`bfcacheId`](#bfcacheid)를 참고하세요.
+
+&gt; **Good to know**:
+&gt;
+&gt; - 신뢰할 수 없거나 sanitize되지 않은 URL을 `router.push`나 `router.replace`에 전달하면 안 됩니다. 사이트가 cross-site scripting (XSS) 취약점에 노출될 수 있기 때문입니다. 예를 들어 `router.push`나 `router.replace`에 전달된 `javascript:` URL은 page의 context에서 실행됩니다.
+&gt; - `&lt;Link&gt;` component는 viewport에 보이게 되면 route를 자동으로 prefetch합니다.
+&gt; - fetch request가 cache되어 있다면 `refresh()`가 같은 결과를 다시 만들어 낼 수 있습니다. `cookies`나 `headers` 같은 다른 Request-time API도 response를 바꿀 수 있습니다.
+&gt; - `onInvalidate` callback은 prefetch request당 최대 한 번 호출됩니다. 업데이트된 route data를 위해 새 prefetch를 trigger하고 싶을 수 있는 시점을 알려 줍니다.
+
+### Migrating from `next/router` || `next/router`에서 migrate하기
+
+- App Router를 사용할 때 `useRouter` hook은 `next/router`가 아니라 `next/navigation`에서 import해야 합니다
+- `pathname` string은 제거되었으며 [`usePathname()`](/docs/app/api-reference/functions/use-pathname)으로 대체되었습니다
+- `query` object는 제거되었으며 [`useSearchParams()`](/docs/app/api-reference/functions/use-search-params)로 대체되었습니다
+- `router.events`는 대체되었습니다. [아래를 참고하세요.](#router-events)
+
+[전체 migration 가이드 보기](/docs/app/guides/migrating/app-router-migration).
+
+## Examples || 예시
+
+### Router events || Router event
+
+`usePathname`, `useSearchParams` 같은 다른 Client Component hook을 조합해 page 변경을 감지할 수 있습니다.
+
+[[CODE 8]]
+
+이 component는 layout에 import할 수 있습니다.
+
+[[CODE 9]]
+
+&gt; **Good to know**: [prerendering](/docs/app/glossary#prerendering) 중에 [`useSearchParams()`](/docs/app/api-reference/functions/use-search-params)는 가장 가까운 `Suspense` boundary까지 client-side rendering을 일으키기 때문에 `&lt;NavigationEvents&gt;`는 [`Suspense` boundary](/docs/app/api-reference/file-conventions/loading#examples)로 감싸져 있습니다. [더 알아보기](/docs/app/api-reference/functions/use-search-params#behavior).
+
+### Disabling scroll to top || 맨 위로 scroll 비활성화하기
+
+기본적으로 Next.js는 새 route로 이동할 때 page 맨 위로 scroll합니다. `router.push()`나 `router.replace()`에 `scroll: false`를 전달하면 이 동작을 비활성화할 수 있습니다.
+
+[[CODE 10]]
+
+### `bfcacheId`
+
+`router.bfcacheId`는 현재 route segment에 scope가 지정된 불투명한(opaque) string 식별자입니다. 감싸고 있는 segment가 push 또는 replace navigation으로 새로 생성될 때 바뀌며, back/forward navigation, `router.refresh()`, 그리고 search param이나 hash만 바뀌는 navigation에서는 그대로 유지됩니다.
+
+권장 사용법은 이 값을 React `key`로 전달해, 새 navigation에서는 state 보존을 opt out하면서 back/forward navigation 중에는 state를 복원하는 것입니다:
+
+[[CODE 11]]
+
+`cacheComponents`가 활성화되어 있으면 App Router는 React `&lt;Activity&gt;`를 사용해 navigation 간에 Client Component state를 보존합니다. component에 `bfcacheId`를 key로 지정하면 새 navigation마다 component가 reset되지만, 브라우저 back/forward navigation 간에는 state가 계속 보존됩니다. pattern별 권장 reset 방법은 [Preserving UI state](/docs/app/guides/preserving-ui-state)를 참고하세요.
+
+&gt; **Good to know**:
+&gt; `bfcacheId` 대신 event handler(예: `onSubmit`)에서 state를 명시적으로 reset하거나 data에서 key를 도출(예: server에서 받은 draft id)하는 방식을 선호하세요. `bfcacheId`는 기존 codebase를 migrate할 때처럼 최후의 수단으로만 사용하세요.
+
+## Version History || 버전 기록
+
+| Version   | Changes                                                           |
+| --------- | ----------------------------------------------------------------- |
+| `v16.5.0` | `router.prefetch`에 `kind` option 도입.                   |
+| `v15.4.0` | `router.prefetch`에 선택적인 `onInvalidate` callback 도입 |
+| `v13.0.0` | `next/navigation`의 `useRouter` 도입.                    |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

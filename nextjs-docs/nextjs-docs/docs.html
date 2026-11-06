@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next.js Docs (Next.js 문서) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs" data-router="shared">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/index.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Docs</span></div>
+    <div class="title-row">
+      <h1 class="page-title">Next.js Docs<span class="sub">Next.js 문서</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js 문서에 오신 것을 환영합니다!</p><div class="en-orig"><p>Welcome to the Next.js documentation!</p></div>
+<h2 class="sec" id="what-is-nextjs"><a class="anchor" href="#what-is-nextjs">What is Next.js?<span class="ko">Next.js란?</span></a></h2>
+<p>Next.js는 full-stack web 애플리케이션을 만들기 위한 React framework입니다. user interface는 React Component로 만들고, 추가 기능과 최적화는 Next.js로 처리합니다.</p><div class="en-orig"><p>Next.js is a React framework for building full-stack web applications. You use React Components to build user interfaces, and Next.js for additional features and optimizations.</p></div>
+<p>또한 bundler나 compiler 같은 저수준 도구를 자동으로 설정해 줍니다. 그 대신 여러분은 제품을 만들고 빠르게 출시하는 데 집중할 수 있습니다.</p><div class="en-orig"><p>It also automatically configures lower-level tools like bundlers and compilers. You can instead focus on building your product and shipping quickly.</p></div>
+<p>개인 개발자이든 큰 팀의 일원이든, Next.js는 interactive하고 dynamic하며 빠른 React 애플리케이션을 만드는 데 도움을 줍니다.</p><div class="en-orig"><p>Whether you're an individual developer or part of a larger team, Next.js can help you build interactive, dynamic, and fast React applications.</p></div>
+<h2 class="sec" id="how-to-use-the-docs"><a class="anchor" href="#how-to-use-the-docs">How to use the docs<span class="ko">문서 사용법</span></a></h2>
+<p>문서는 3개 섹션으로 구성되어 있습니다:</p><div class="en-orig"><p>The docs are organized into 3 sections:</p></div>
+<ul>
+<li><a href="app-getting-started.html">Getting Started</a>: 새 애플리케이션을 만들고 Next.js 핵심 기능을 배울 수 있도록 돕는 단계별 tutorial입니다.</li>
+<li><a href="app-guides.html">Guides</a>: 특정 use case에 대한 tutorial입니다. 필요한 것을 골라 보세요.</li>
+<li><a href="app-api-reference.html">API Reference</a>: 모든 기능에 대한 상세한 기술 reference입니다.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-getting-started.html">Getting Started</a>: Step-by-step tutorials to help you create a new application and learn the core Next.js features.</li>
+<li><a href="app-guides.html">Guides</a>: Tutorials on specific use cases, choose what's relevant to you.</li>
+<li><a href="app-api-reference.html">API Reference</a>: Detailed technical reference for every feature.</li>
+</ul></div>
+<p>sidebar로 섹션 사이를 이동하거나, 검색(<code>Ctrl+K</code> 또는 <code>Cmd+K</code>)으로 페이지를 빠르게 찾을 수 있습니다.</p><div class="en-orig"><p>Use the sidebar to navigate through the sections, or search (<code>Ctrl+K</code> or <code>Cmd+K</code>) to quickly find a page.</p></div>
+<h2 class="sec" id="app-router-and-pages-router"><a class="anchor" href="#app-router-and-pages-router">App Router and Pages Router<span class="ko">App Router와 Pages Router</span></a></h2>
+<p>Next.js에는 서로 다른 두 가지 router가 있습니다:</p><div class="en-orig"><p>Next.js has two different routers:</p></div>
+<ul>
+<li><strong>App Router</strong>: Server Component 같은 새로운 React 기능을 지원하는 더 새로운 router입니다.</li>
+<li><strong>Pages Router</strong>: 기존(original) router로, 여전히 지원되며 계속 개선되고 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>App Router</strong>: The newer router that supports new React features like Server Components.</li>
+<li><strong>Pages Router</strong>: The original router, still supported and being improved.</li>
+</ul></div>
+<p>sidebar 상단에는 <a href="app.html">App Router</a> 문서와 <a href="pages.html">Pages Router</a> 문서 사이를 전환할 수 있는 dropdown menu가 있습니다.</p><div class="en-orig"><p>At the top of the sidebar, you'll notice a dropdown menu that allows you to switch between the <a href="app.html">App Router</a> and the <a href="pages.html">Pages Router</a> docs.</p></div>
+<h3 class="sec" id="react-version-handling"><a class="anchor" href="#react-version-handling">React version handling<span class="ko">React 버전 처리</span></a></h3>
+<p>App Router와 Pages Router는 React 버전을 서로 다르게 처리합니다:</p><div class="en-orig"><p>The App Router and Pages Router handle React versions differently:</p></div>
+<ul>
+<li><strong>App Router</strong>: <a href="https://react.dev/blog/2023/05/03/react-canaries" target="_blank" rel="noopener">React canary release</a>를 내장해서 사용합니다. 여기에는 새 React release 이전에, 안정화된 React 19 변경 사항과 framework에서 검증 중인 새 기능이 모두 포함되어 있습니다.</li>
+<li><strong>Pages Router</strong>: 프로젝트의 <code>package.json</code>에 설치된 React 버전을 사용합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>App Router</strong>: Uses <a href="https://react.dev/blog/2023/05/03/react-canaries" target="_blank" rel="noopener">React canary releases</a> built-in, which include all the stable React 19 changes, as well as newer features being validated in frameworks, prior to a new React release.</li>
+<li><strong>Pages Router</strong>: Uses the React version installed in your project's <code>package.json</code>.</li>
+</ul></div>
+<p>이 방식 덕분에 App Router에서는 새 React 기능이 안정적으로 동작하고, 기존 Pages Router 애플리케이션은 backwards compatibility(하위 호환성)를 유지할 수 있습니다.</p><div class="en-orig"><p>This approach ensures new React features work reliably in the App Router while maintaining backwards compatibility for existing Pages Router applications.</p></div>
+<h2 class="sec" id="pre-requisite-knowledge"><a class="anchor" href="#pre-requisite-knowledge">Pre-requisite knowledge<span class="ko">사전 지식</span></a></h2>
+<p>이 문서는 web 개발에 어느 정도 익숙하다고 가정합니다. 시작하기 전에 다음 내용에 익숙하다면 도움이 됩니다:</p><div class="en-orig"><p>Our documentation assumes some familiarity with web development. Before getting started, it'll help if you're comfortable with:</p></div>
+<ul>
+<li>HTML</li>
+<li>CSS</li>
+<li>JavaScript</li>
+<li>React</li>
+</ul><div class="en-orig"><ul>
+<li>HTML</li>
+<li>CSS</li>
+<li>JavaScript</li>
+<li>React</li>
+</ul></div>
+<p>React가 처음이거나 복습이 필요하다면 <a href="https://nextjs.org/learn/react-foundations" target="_blank" rel="noopener">React Foundations course</a>와, 배우면서 직접 애플리케이션을 만들어 보는 <a href="https://nextjs.org/learn/dashboard-app" target="_blank" rel="noopener">Next.js Foundations course</a>부터 시작하는 것을 권장합니다.</p><div class="en-orig"><p>If you're new to React or need a refresher, we recommend starting with our <a href="https://nextjs.org/learn/react-foundations" target="_blank" rel="noopener">React Foundations course</a>, and the <a href="https://nextjs.org/learn/dashboard-app" target="_blank" rel="noopener">Next.js Foundations course</a> that has you building an application as you learn.</p></div>
+<h2 class="sec" id="accessibility"><a class="anchor" href="#accessibility">Accessibility<span class="ko">접근성</span></a></h2>
+<p>screen reader를 사용할 때 가장 좋은 경험을 위해 Firefox와 NVDA, 또는 Safari와 VoiceOver 조합을 권장합니다.</p><div class="en-orig"><p>For the best experience when using a screen reader, we recommend using Firefox and NVDA, or Safari and VoiceOver.</p></div>
+<h2 class="sec" id="join-our-community"><a class="anchor" href="#join-our-community">Join our Community<span class="ko">커뮤니티 참여하기</span></a></h2>
+<p>Next.js와 관련해 궁금한 점이 있다면 언제든 <a href="https://github.com/vercel/next.js/discussions" target="_blank" rel="noopener">GitHub Discussions</a>, <a href="https://discord.com/invite/bUG2bvbtHy" target="_blank" rel="noopener">Discord</a>, <a href="https://x.com/nextjs" target="_blank" rel="noopener">X (Twitter)</a>, <a href="https://www.reddit.com/r/nextjs" target="_blank" rel="noopener">Reddit</a>에서 커뮤니티에 질문하세요.</p><div class="en-orig"><p>If you have questions about anything related to Next.js, you're always welcome to ask our community on <a href="https://github.com/vercel/next.js/discussions" target="_blank" rel="noopener">GitHub Discussions</a>, <a href="https://discord.com/invite/bUG2bvbtHy" target="_blank" rel="noopener">Discord</a>, <a href="https://x.com/nextjs" target="_blank" rel="noopener">X (Twitter)</a>, and <a href="https://www.reddit.com/r/nextjs" target="_blank" rel="noopener">Reddit</a>.</p></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">다음 단계</h2><p>첫 애플리케이션을 만들고 Next.js의 핵심 기능을 알아봅니다.</p><div class="rgrid"><a class="rcard" href="app-getting-started.html"><div class="rt">Getting Started</div><div class="rk">시작하기</div><div class="rd">Next.js App Router로 full-stack web 애플리케이션을 만드는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/index.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <span></span>
+      <a href="app-getting-started.html" class="next"><div class="dir">다음 →</div><div class="ttl">Getting Started</div><div class="ttl-ko">시작하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#what-is-nextjs">What is Next.js?</a></li><li class="l2"><a href="#how-to-use-the-docs">How to use the docs</a></li><li class="l2"><a href="#app-router-and-pages-router">App Router and Pages Router</a></li><li class="l3"><a href="#react-version-handling">React version handling</a></li><li class="l2"><a href="#pre-requisite-knowledge">Pre-requisite knowledge</a></li><li class="l2"><a href="#accessibility">Accessibility</a></li><li class="l2"><a href="#join-our-community">Join our Community</a></li><li class="l2"><a href="#next-steps">다음 단계</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js 문서에 오신 것을 환영합니다!
+
+## What is Next.js? || Next.js란?
+
+Next.js는 full-stack web 애플리케이션을 만들기 위한 React framework입니다. user interface는 React Component로 만들고, 추가 기능과 최적화는 Next.js로 처리합니다.
+
+또한 bundler나 compiler 같은 저수준 도구를 자동으로 설정해 줍니다. 그 대신 여러분은 제품을 만들고 빠르게 출시하는 데 집중할 수 있습니다.
+
+개인 개발자이든 큰 팀의 일원이든, Next.js는 interactive하고 dynamic하며 빠른 React 애플리케이션을 만드는 데 도움을 줍니다.
+
+## How to use the docs || 문서 사용법
+
+문서는 3개 섹션으로 구성되어 있습니다:
+
+- [Getting Started](/docs/app/getting-started): 새 애플리케이션을 만들고 Next.js 핵심 기능을 배울 수 있도록 돕는 단계별 tutorial입니다.
+- [Guides](/docs/app/guides): 특정 use case에 대한 tutorial입니다. 필요한 것을 골라 보세요.
+- [API Reference](/docs/app/api-reference): 모든 기능에 대한 상세한 기술 reference입니다.
+
+sidebar로 섹션 사이를 이동하거나, 검색(`Ctrl+K` 또는 `Cmd+K`)으로 페이지를 빠르게 찾을 수 있습니다.
+
+## App Router and Pages Router || App Router와 Pages Router
+
+Next.js에는 서로 다른 두 가지 router가 있습니다:
+
+- **App Router**: Server Component 같은 새로운 React 기능을 지원하는 더 새로운 router입니다.
+- **Pages Router**: 기존(original) router로, 여전히 지원되며 계속 개선되고 있습니다.
+
+sidebar 상단에는 [App Router](/docs/app) 문서와 [Pages Router](/docs/pages) 문서 사이를 전환할 수 있는 dropdown menu가 있습니다.
+
+### React version handling || React 버전 처리
+
+App Router와 Pages Router는 React 버전을 서로 다르게 처리합니다:
+
+- **App Router**: [React canary release](https://react.dev/blog/2023/05/03/react-canaries)를 내장해서 사용합니다. 여기에는 새 React release 이전에, 안정화된 React 19 변경 사항과 framework에서 검증 중인 새 기능이 모두 포함되어 있습니다.
+
+- **Pages Router**: 프로젝트의 `package.json`에 설치된 React 버전을 사용합니다.
+
+이 방식 덕분에 App Router에서는 새 React 기능이 안정적으로 동작하고, 기존 Pages Router 애플리케이션은 backwards compatibility(하위 호환성)를 유지할 수 있습니다.
+
+## Pre-requisite knowledge || 사전 지식
+
+이 문서는 web 개발에 어느 정도 익숙하다고 가정합니다. 시작하기 전에 다음 내용에 익숙하다면 도움이 됩니다:
+
+- HTML
+- CSS
+- JavaScript
+- React
+
+React가 처음이거나 복습이 필요하다면 [React Foundations course](/learn/react-foundations)와, 배우면서 직접 애플리케이션을 만들어 보는 [Next.js Foundations course](/learn/dashboard-app)부터 시작하는 것을 권장합니다.
+
+## Accessibility || 접근성
+
+screen reader를 사용할 때 가장 좋은 경험을 위해 Firefox와 NVDA, 또는 Safari와 VoiceOver 조합을 권장합니다.
+
+## Join our Community || 커뮤니티 참여하기
+
+Next.js와 관련해 궁금한 점이 있다면 언제든 [GitHub Discussions](https://github.com/vercel/next.js/discussions), [Discord](https://discord.com/invite/bUG2bvbtHy), [X (Twitter)](https://x.com/nextjs), [Reddit](https://www.reddit.com/r/nextjs)에서 커뮤니티에 질문하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

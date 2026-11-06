@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cacheComponents (cacheComponents) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/config/next-config-js/cacheComponents" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheComponents" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/cacheComponents.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config.html">Configuration</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config-next-config-js.html">next.config.js</a></div>
+    <div class="title-row">
+      <h1 class="page-title">cacheComponents<span class="sub">cacheComponents</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Cache Components는 <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a> directive를 사용해 component 및 function 단위의 caching을 가능하게 합니다. data fetching은 기본적으로 dynamic이며, page, component, function 단위에서 무엇을 cache할지 직접 선택합니다. Next.js는 즉시 제공되는 static HTML shell을 prerender하고, dynamic content는 준비되는 대로 stream되므로 하나의 route 안에서 static content와 dynamic content를 섞어 사용할 수 있습니다.</p><div class="en-orig"><p>Cache Components enables component and function-level caching using the <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a> directive. Data fetching is dynamic by default, and you choose what to cache at the page, component, or function level. Next.js prerenders a static HTML shell that is served immediately while dynamic content streams in when ready, letting you mix static and dynamic content within a single route.</p></div>
+<h2 class="sec" id="usage"><a class="anchor" href="#usage">Usage<span class="ko">사용법</span></a></h2>
+<p><code>cacheComponents</code> flag를 활성화하려면 <code>next.config.ts</code> 파일에서 <a href="app-api-reference-config-next-config-js-partialPrefetching.html"><code>partialPrefetching</code></a>과 함께 <code>true</code>로 설정하세요:</p><div class="en-orig"><p>To enable the <code>cacheComponents</code> flag, set it to <code>true</code> in your <code>next.config.ts</code> file, together with <a href="app-api-reference-config-next-config-js-partialPrefetching.html"><code>partialPrefetching</code></a>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+  partialPrefetching: true,
+}
+
+export default nextConfig</code></pre></div></div>
+<p><code>partialPrefetching</code>은 명시적으로 설정하세요. Cache Components의 첫 release에는 Partial Prefetching이 포함되지 않았기 때문에, 설정하지 않으면 warning이 출력됩니다. <a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching 이전에 Cache Components를 도입한 앱을 migration</a>하는 동안에만 <code>false</code>로 설정하세요. 다음 major release에서는 두 기능이 모든 곳에서 활성화되며, 이 option들은 제거됩니다.</p><div class="en-orig"><p>Set <code>partialPrefetching</code> explicitly. Leaving it unset logs a warning, because the first release of Cache Components did not include Partial Prefetching. Set it to <code>false</code> only while <a href="app-guides-adopting-partial-prefetching.html">migrating an app that adopted Cache Components before Partial Prefetching</a>. Both features will be enabled everywhere in the next major release, and the options will be removed.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Cache Components는 Node.js runtime이 필요하며 <a href="app-api-reference-file-conventions-route-segment-config-runtime.html"><code>runtime</code> route segment config</a>를 지원하지 않습니다. <code>runtime = &#x27;nodejs&#x27;</code>와 deprecated된 <code>runtime = &#x27;edge&#x27;</code>를 포함해 모든 <code>runtime</code> export를 제거하세요. 다른 server-side JavaScript runtime은 동작이 보장되지 않습니다. <a href="app-guides-migrating-to-cache-components.html#runtime--edge">Migrating to Cache Components</a>를 참고하세요.</p><div class="en-orig"><p>Cache Components requires the Node.js runtime and does not support the <a href="app-api-reference-file-conventions-route-segment-config-runtime.html"><code>runtime</code> route segment config</a>. Remove any <code>runtime</code> export, including <code>runtime = &#x27;nodejs&#x27;</code> and the deprecated <code>runtime = &#x27;edge&#x27;</code>. Other server-side JavaScript runtimes are not guaranteed to work. See <a href="app-guides-migrating-to-cache-components.html#runtime--edge">Migrating to Cache Components</a>.</p></div></div></div>
+<p><code>cacheComponents</code>가 활성화되면 다음 cache 함수와 설정을 사용할 수 있습니다:</p><div class="en-orig"><p>When <code>cacheComponents</code> is enabled, you can use the following cache functions and configurations:</p></div>
+<ul>
+<li><a href="app-api-reference-directives-use-cache.html"><code>use cache</code> directive</a></li>
+<li><code>use cache</code>와 함께 사용하는 <a href="app-api-reference-config-next-config-js-cacheLife.html"><code>cacheLife</code> function</a></li>
+<li><a href="app-api-reference-functions-cacheTag.html"><code>cacheTag</code> function</a></li>
+</ul><div class="en-orig"><ul>
+<li>The <a href="app-api-reference-directives-use-cache.html"><code>use cache</code> directive</a></li>
+<li>The <a href="app-api-reference-config-next-config-js-cacheLife.html"><code>cacheLife</code> function</a> with <code>use cache</code></li>
+<li>The <a href="app-api-reference-functions-cacheTag.html"><code>cacheTag</code> function</a></li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>experimental.useCache</code> 또는 <code>experimental.dynamicIO</code>를 사용했다면 <a href="app-guides-upgrading-version-16.html#experimentaldynamicio-and-experimentalusecache">Version 16 upgrade guide</a>를 참고해 migration하세요. route segment config와 기타 caching pattern을 migration하려면 <a href="app-guides-migrating-to-cache-components.html">Migrating to Cache Components</a>를 참고하세요.</p><div class="en-orig"><p>If you used <code>experimental.useCache</code> or <code>experimental.dynamicIO</code>, migrate using the <a href="app-guides-upgrading-version-16.html#experimentaldynamicio-and-experimentalusecache">Version 16 upgrade guide</a>. To migrate route segment configs and other caching patterns, see <a href="app-guides-migrating-to-cache-components.html">Migrating to Cache Components</a>.</p></div></div></div>
+<p>또한 <code>cacheComponents</code>는 <strong><a href="app-glossary.html#partial-prerendering-ppr">Partial Prerendering (PPR)</a></strong> 방식을 App Router의 기본 동작으로 구현합니다. 따라서 <code>experimental.ppr</code> configuration flag와 <code>experimental_ppr</code> route segment configuration은 더 이상 필요하지 않으며 제거되었습니다.</p><div class="en-orig"><p>Additionally, <code>cacheComponents</code> implements <strong><a href="app-glossary.html#partial-prerendering-ppr">Partial Prerendering (PPR)</a></strong> as the default behavior in the App Router. This means the <code>experimental.ppr</code> configuration flag and the <code>experimental_ppr</code> route segment configuration are no longer necessary and have been removed.</p></div>
+<p>static shell과 streaming이 어떻게 함께 동작하는지는 <a href="app-getting-started-caching.html#prerendering">Prerendering</a>을 읽어 보세요.</p><div class="en-orig"><p>Read <a href="app-getting-started-caching.html#prerendering">Prerendering</a> for how the static shell and streaming fit together.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Next.js 15에서 experimental PPR을 사용했다면, migration 시 Version 16 upgrade guide의 <a href="app-guides-upgrading-version-16.html#partial-prerendering-ppr">Partial Prerendering (PPR)</a> 섹션을 참고하세요.</p><div class="en-orig"><p>If you used experimental PPR in Next.js 15, refer to the <a href="app-guides-upgrading-version-16.html#partial-prerendering-ppr">Partial Prerendering (PPR)</a> section of the Version 16 upgrade guide when migrating.</p></div></div></div>
+<h2 class="sec" id="navigation-with-activity"><a class="anchor" href="#navigation-with-activity">Navigation with Activity<span class="ko">Activity를 사용한 navigation</span></a></h2>
+<p><code>cacheComponents</code>가 활성화되면 Next.js는 React의 <a href="https://react.dev/reference/react/Activity" target="_blank" rel="noopener"><code>&lt;Activity&gt;</code></a> component를 사용해 client-side navigation 중에 component state를 보존합니다.</p><div class="en-orig"><p>When <code>cacheComponents</code> is enabled, Next.js uses React's <a href="https://react.dev/reference/react/Activity" target="_blank" rel="noopener"><code>&lt;Activity&gt;</code></a> component to preserve component state during client-side navigation.</p></div>
+<p>다른 곳으로 navigate할 때 이전 route를 unmount하는 대신, Next.js는 Activity mode를 <a href="https://react.dev/reference/react/Activity#activity" target="_blank" rel="noopener"><code>&quot;hidden&quot;</code></a>으로 설정합니다. 이는 다음을 의미합니다:</p><div class="en-orig"><p>Rather than unmounting the previous route when you navigate away, Next.js sets the Activity mode to <a href="https://react.dev/reference/react/Activity#activity" target="_blank" rel="noopener"><code>&quot;hidden&quot;</code></a>. This means:</p></div>
+<ul>
+<li>route 간에 navigate할 때 component state가 보존됩니다</li>
+<li>뒤로 navigate하면 이전 route가 state를 그대로 유지한 채 다시 나타납니다</li>
+<li>route가 hidden 상태가 되면 Effect가 정리(clean up)되고, 다시 visible 상태가 되면 새로 생성됩니다</li>
+</ul><div class="en-orig"><ul>
+<li>Component state is preserved when navigating between routes</li>
+<li>When you navigate back, the previous route reappears with its state intact</li>
+<li>Effects are cleaned up when a route is hidden, and recreated when it becomes visible again</li>
+</ul></div>
+<p>이 동작은 사용자가 route 사이를 오갈 때 UI state(form 입력값이나 펼친 섹션 등)를 유지하여 navigation 경험을 개선합니다.</p><div class="en-orig"><p>This behavior improves the navigation experience by maintaining UI state (form inputs, or expanded sections) when users navigate back and forth between routes.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Next.js는 heuristic을 사용해 최근 방문한 몇 개의 route를 <code>&quot;hidden&quot;</code> 상태로 유지하며, 과도한 증가를 막기 위해 오래된 route는 DOM에서 제거합니다.</p><div class="en-orig"><p>Next.js uses heuristics to keep a few recently visited routes <code>&quot;hidden&quot;</code>, while older routes are removed from the DOM to prevent excessive growth.</p></div></div></div>
+<p>일부 UI pattern은 component가 unmount되지 않고 mount된 상태로 유지될 때 다르게 동작합니다. dropdown, dialog, testing 같은 일반적인 pattern을 처리하는 방법은 <a href="app-guides-preserving-ui-state.html">Preserving UI state guide</a>를 참고하세요.</p><div class="en-orig"><p>Some UI patterns behave differently when components stay mounted instead of unmounting. See the <a href="app-guides-preserving-ui-state.html">Preserving UI state guide</a> for handling common patterns like dropdowns, dialogs, and testing.</p></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Change</th></tr></thead>
+<tbody>
+<tr><td>16.0.0</td><td><code>cacheComponents</code>가 stable이 되었고 <code>experimental.cacheComponents</code>에서 top-level <code>cacheComponents</code> option으로 이동했습니다. 이 flag는 <code>ppr</code>, <code>useCache</code>, <code>dynamicIO</code> flag를 하나의 통합된 configuration으로 제어합니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Change</th></tr></thead>
+<tbody>
+<tr><td>16.0.0</td><td><code>cacheComponents</code> stabilized and moved from <code>experimental.cacheComponents</code> to the top-level <code>cacheComponents</code> option. This flag controls the <code>ppr</code>, <code>useCache</code>, and <code>dynamicIO</code> flags as a single, unified configuration.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><div class="rgrid"><a class="rcard" href="app-getting-started-caching.html"><div class="rt">Caching</div><div class="rk">캐싱</div><div class="rd">Next.js에서 데이터와 UI를 cache하는 방법을 알아봅니다</div></a><a class="rcard" href="app-guides-incremental-static-regeneration-cache-components.html"><div class="rt">Incremental Static Regeneration with Cache Components</div><div class="rk">Cache Components와 함께 쓰는 ISR</div><div class="rd">dynamic route의 일부만 prerender하고, 나머지에는 App Shell을 제공한 뒤 첫 방문 이후 upgrade하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-directives-use-cache.html"><div class="rt">use cache</div><div class="rk">use cache</div><div class="rd">\"use cache\" directive로 Next.js 애플리케이션의 데이터를 cache하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-directives-use-cache-remote.html"><div class="rt">use cache: remote</div><div class="rk">use cache: remote</div><div class="rd">remote cache handler를 사용한 지속적이고 공유되는 caching을 위해 \"use cache: remote\" directive를 사용하는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/cacheComponents.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheComponents" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-config-next-config-js-basePath.html" class="prev"><div class="dir">← 이전</div><div class="ttl">basePath</div><div class="ttl-ko">basePath</div></a>
+      <a href="app-api-reference-config-next-config-js-cacheHandlers.html" class="next"><div class="dir">다음 →</div><div class="ttl">cacheHandlers</div><div class="ttl-ko">cacheHandlers</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/cacheComponents" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#usage">Usage</a></li><li class="l2"><a href="#navigation-with-activity">Navigation with Activity</a></li><li class="l2"><a href="#version-history">Version History</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Cache Components는 [`use cache`](/docs/app/api-reference/directives/use-cache) directive를 사용해 component 및 function 단위의 caching을 가능하게 합니다. data fetching은 기본적으로 dynamic이며, page, component, function 단위에서 무엇을 cache할지 직접 선택합니다. Next.js는 즉시 제공되는 static HTML shell을 prerender하고, dynamic content는 준비되는 대로 stream되므로 하나의 route 안에서 static content와 dynamic content를 섞어 사용할 수 있습니다.
+
+## Usage || 사용법
+
+`cacheComponents` flag를 활성화하려면 `next.config.ts` 파일에서 [`partialPrefetching`](/docs/app/api-reference/config/next-config-js/partialPrefetching)과 함께 `true`로 설정하세요:
+
+[[CODE 1]]
+
+`partialPrefetching`은 명시적으로 설정하세요. Cache Components의 첫 release에는 Partial Prefetching이 포함되지 않았기 때문에, 설정하지 않으면 warning이 출력됩니다. [Partial Prefetching 이전에 Cache Components를 도입한 앱을 migration](/docs/app/guides/adopting-partial-prefetching)하는 동안에만 `false`로 설정하세요. 다음 major release에서는 두 기능이 모든 곳에서 활성화되며, 이 option들은 제거됩니다.
+
+&gt; **Good to know**: Cache Components는 Node.js runtime이 필요하며 [`runtime` route segment config](/docs/app/api-reference/file-conventions/route-segment-config/runtime)를 지원하지 않습니다. `runtime = &#x27;nodejs&#x27;`와 deprecated된 `runtime = &#x27;edge&#x27;`를 포함해 모든 `runtime` export를 제거하세요. 다른 server-side JavaScript runtime은 동작이 보장되지 않습니다. [Migrating to Cache Components](/docs/app/guides/migrating-to-cache-components#runtime--edge)를 참고하세요.
+
+`cacheComponents`가 활성화되면 다음 cache 함수와 설정을 사용할 수 있습니다:
+
+- [`use cache` directive](/docs/app/api-reference/directives/use-cache)
+- `use cache`와 함께 사용하는 [`cacheLife` function](/docs/app/api-reference/config/next-config-js/cacheLife)
+- [`cacheTag` function](/docs/app/api-reference/functions/cacheTag)
+
+&gt; **Good to know**: `experimental.useCache` 또는 `experimental.dynamicIO`를 사용했다면 [Version 16 upgrade guide](/docs/app/guides/upgrading/version-16#experimentaldynamicio-and-experimentalusecache)를 참고해 migration하세요. route segment config와 기타 caching pattern을 migration하려면 [Migrating to Cache Components](/docs/app/guides/migrating-to-cache-components)를 참고하세요.
+
+또한 `cacheComponents`는 **[Partial Prerendering (PPR)](/docs/app/glossary#partial-prerendering-ppr)** 방식을 App Router의 기본 동작으로 구현합니다. 따라서 `experimental.ppr` configuration flag와 `experimental_ppr` route segment configuration은 더 이상 필요하지 않으며 제거되었습니다.
+
+static shell과 streaming이 어떻게 함께 동작하는지는 [Prerendering](/docs/app/getting-started/caching#prerendering)을 읽어 보세요.
+
+&gt; **Good to know**: Next.js 15에서 experimental PPR을 사용했다면, migration 시 Version 16 upgrade guide의 [Partial Prerendering (PPR)](/docs/app/guides/upgrading/version-16#partial-prerendering-ppr) 섹션을 참고하세요.
+
+## Navigation with Activity || Activity를 사용한 navigation
+
+`cacheComponents`가 활성화되면 Next.js는 React의 [`&lt;Activity&gt;`](https://react.dev/reference/react/Activity) component를 사용해 client-side navigation 중에 component state를 보존합니다.
+
+다른 곳으로 navigate할 때 이전 route를 unmount하는 대신, Next.js는 Activity mode를 [`&quot;hidden&quot;`](https://react.dev/reference/react/Activity#activity)으로 설정합니다. 이는 다음을 의미합니다:
+
+- route 간에 navigate할 때 component state가 보존됩니다
+- 뒤로 navigate하면 이전 route가 state를 그대로 유지한 채 다시 나타납니다
+- route가 hidden 상태가 되면 Effect가 정리(clean up)되고, 다시 visible 상태가 되면 새로 생성됩니다
+
+이 동작은 사용자가 route 사이를 오갈 때 UI state(form 입력값이나 펼친 섹션 등)를 유지하여 navigation 경험을 개선합니다.
+
+&gt; **Good to know**: Next.js는 heuristic을 사용해 최근 방문한 몇 개의 route를 `&quot;hidden&quot;` 상태로 유지하며, 과도한 증가를 막기 위해 오래된 route는 DOM에서 제거합니다.
+
+일부 UI pattern은 component가 unmount되지 않고 mount된 상태로 유지될 때 다르게 동작합니다. dropdown, dialog, testing 같은 일반적인 pattern을 처리하는 방법은 [Preserving UI state guide](/docs/app/guides/preserving-ui-state)를 참고하세요.
+
+## Version History || 버전 기록
+
+| Version | Change                                                                                                                                                                                                                    |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 16.0.0  | `cacheComponents`가 stable이 되었고 `experimental.cacheComponents`에서 top-level `cacheComponents` option으로 이동했습니다. 이 flag는 `ppr`, `useCache`, `dynamicIO` flag를 하나의 통합된 configuration으로 제어합니다. |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

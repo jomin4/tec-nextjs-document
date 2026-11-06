@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to build a Progressive Web Application (PWA) with Next.js (Next.js로 PWA 만들기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/progressive-web-apps" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/progressive-web-apps" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/progressive-web-apps.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to build a Progressive Web Application (PWA) with Next.js<span class="sub">Next.js로 PWA 만들기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Progressive Web Application(PWA)은 웹 애플리케이션의 도달 범위와 접근성에 native mobile 앱의 기능과 사용자 경험을 결합한 것입니다. Next.js를 사용하면 여러 codebase나 app store 승인 없이도 모든 플랫폼에서 매끄럽고 앱 같은 경험을 제공하는 PWA를 만들 수 있습니다.</p><div class="en-orig"><p>Progressive Web Applications (PWAs) offer the reach and accessibility of web applications combined with the features and user experience of native mobile apps. With Next.js, you can create PWAs that provide a seamless, app-like experience across all platforms without the need for multiple codebases or app store approvals.</p></div>
+<p>PWA를 사용하면 다음과 같은 것이 가능합니다:</p><div class="en-orig"><p>PWAs allow you to:</p></div>
+<ul>
+<li>app store 승인을 기다리지 않고 업데이트를 즉시 deploy</li>
+<li>하나의 codebase로 cross-platform 애플리케이션 제작</li>
+<li>홈 화면 설치, push notification 같은 native에 가까운 기능 제공</li>
+</ul><div class="en-orig"><ul>
+<li>Deploy updates instantly without waiting for app store approval</li>
+<li>Create cross-platform applications with a single codebase</li>
+<li>Provide native-like features such as home screen installation and push notifications</li>
+</ul></div>
+<h2 class="sec" id="creating-a-pwa-with-nextjs"><a class="anchor" href="#creating-a-pwa-with-nextjs">Creating a PWA with Next.js<span class="ko">Next.js로 PWA 만들기</span></a></h2>
+<h3 class="sec" id="1-creating-the-web-app-manifest"><a class="anchor" href="#1-creating-the-web-app-manifest">1. Creating the Web App Manifest<span class="ko">1. Web App Manifest 만들기</span></a></h3>
+<p>Next.js는 App Router를 사용한 <a href="app-api-reference-file-conventions-metadata-manifest.html">web app manifest</a> 생성을 기본으로 지원합니다. static 또는 dynamic manifest 파일 중 하나를 만들 수 있습니다:</p><div class="en-orig"><p>Next.js provides built-in support for creating a <a href="app-api-reference-file-conventions-metadata-manifest.html">web app manifest</a> using the App Router. You can create either a static or dynamic manifest file:</p></div>
+<p>예를 들어 <code>app/manifest.ts</code> 또는 <code>app/manifest.json</code> 파일을 만드세요:</p><div class="en-orig"><p>For example, create a <code>app/manifest.ts</code> or <code>app/manifest.json</code> file:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/manifest.ts" data-js="app/manifest.js">app/manifest.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { MetadataRoute } from &#x27;next&#x27;
+
+export default function manifest(): MetadataRoute.Manifest {
+  return {
+    name: &#x27;Next.js PWA&#x27;,
+    short_name: &#x27;NextPWA&#x27;,
+    description: &#x27;A Progressive Web App built with Next.js&#x27;,
+    start_url: &#x27;/&#x27;,
+    display: &#x27;standalone&#x27;,
+    background_color: &#x27;#ffffff&#x27;,
+    theme_color: &#x27;#000000&#x27;,
+    icons: [
+      {
+        src: &#x27;/icon-192x192.png&#x27;,
+        sizes: &#x27;192x192&#x27;,
+        type: &#x27;image/png&#x27;,
+      },
+      {
+        src: &#x27;/icon-512x512.png&#x27;,
+        sizes: &#x27;512x512&#x27;,
+        type: &#x27;image/png&#x27;,
+      },
+    ],
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function manifest() {
+  return {
+    name: &#x27;Next.js PWA&#x27;,
+    short_name: &#x27;NextPWA&#x27;,
+    description: &#x27;A Progressive Web App built with Next.js&#x27;,
+    start_url: &#x27;/&#x27;,
+    display: &#x27;standalone&#x27;,
+    background_color: &#x27;#ffffff&#x27;,
+    theme_color: &#x27;#000000&#x27;,
+    icons: [
+      {
+        src: &#x27;/icon-192x192.png&#x27;,
+        sizes: &#x27;192x192&#x27;,
+        type: &#x27;image/png&#x27;,
+      },
+      {
+        src: &#x27;/icon-512x512.png&#x27;,
+        sizes: &#x27;512x512&#x27;,
+        type: &#x27;image/png&#x27;,
+      },
+    ],
+  }
+}</code></pre></div></div>
+<p>이 파일에는 이름, icon, 그리고 사용자 기기에서 icon으로 어떻게 표시될지에 대한 정보가 들어 있어야 합니다. 그러면 사용자가 PWA를 홈 화면에 설치할 수 있어 native 앱 같은 경험을 제공할 수 있습니다.</p><div class="en-orig"><p>This file should contain information about the name, icons, and how it should be displayed as an icon on the user's device. This will allow users to install your PWA on their home screen, providing a native app-like experience.</p></div>
+<p><a href="https://realfavicongenerator.net/" target="_blank" rel="noopener">favicon generator</a> 같은 도구로 여러 icon 세트를 만들고, 생성된 파일을 <code>public/</code> 폴더에 넣을 수 있습니다.</p><div class="en-orig"><p>You can use tools like <a href="https://realfavicongenerator.net/" target="_blank" rel="noopener">favicon generators</a> to create the different icon sets and place the generated files in your <code>public/</code> folder.</p></div>
+<h3 class="sec" id="2-implementing-web-push-notifications"><a class="anchor" href="#2-implementing-web-push-notifications">2. Implementing Web Push Notifications<span class="ko">2. Web Push Notification 구현하기</span></a></h3>
+<p>Web Push Notification은 다음을 포함한 모든 최신 브라우저에서 지원됩니다:</p><div class="en-orig"><p>Web Push Notifications are supported with all modern browsers, including:</p></div>
+<ul>
+<li>홈 화면에 설치된 애플리케이션의 경우 iOS 16.4+</li>
+<li>macOS 13 이상의 Safari 16</li>
+<li>Chromium 기반 브라우저</li>
+<li>Firefox</li>
+</ul><div class="en-orig"><ul>
+<li>iOS 16.4+ for applications installed to the home screen</li>
+<li>Safari 16 for macOS 13 or later</li>
+<li>Chromium based browsers</li>
+<li>Firefox</li>
+</ul></div>
+<p>덕분에 PWA는 native 앱의 현실적인 대안이 됩니다. 특히 offline 지원 없이도 설치 prompt를 띄울 수 있습니다.</p><div class="en-orig"><p>This makes PWAs a viable alternative to native apps. Notably, you can trigger install prompts without needing offline support.</p></div>
+<p>Web Push Notification을 사용하면 사용자가 앱을 활발히 사용하지 않을 때도 다시 참여를 유도할 수 있습니다. Next.js 애플리케이션에서 구현하는 방법은 다음과 같습니다:</p><div class="en-orig"><p>Web Push Notifications allow you to re-engage users even when they're not actively using your app. Here's how to implement them in a Next.js application:</p></div>
+<p>먼저 <code>app/page.tsx</code>에 main page component를 만들어 봅시다. 이해하기 쉽도록 작은 부분으로 나누어 살펴보겠습니다. 먼저 필요한 import와 utility 몇 가지를 추가합니다. 참조하는 Server Action이 아직 없어도 괜찮습니다:</p><div class="en-orig"><p>First, let's create the main page component in <code>app/page.tsx</code>. We'll break it down into smaller parts for better understanding. First, we’ll add some of the imports and utilities we’ll need. It’s okay that the referenced Server Actions do not yet exist:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="" data-js=""></span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useState, useEffect } from &#x27;react&#x27;
+import { subscribeUser, unsubscribeUser, sendNotification } from &#x27;./actions&#x27;
+
+function urlBase64ToUint8Array(base64String: string) {
+  const padding = &#x27;=&#x27;.repeat((4 - (base64String.length % 4)) % 4)
+  const base64 = (base64String + padding).replace(/-/g, &#x27;+&#x27;).replace(/_/g, &#x27;/&#x27;)
+
+  const rawData = window.atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+
+  for (let i = 0; i &lt; rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i)
+  }
+  return outputArray
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useState, useEffect } from &#x27;react&#x27;
+import { subscribeUser, unsubscribeUser, sendNotification } from &#x27;./actions&#x27;
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = &#x27;=&#x27;.repeat((4 - (base64String.length % 4)) % 4)
+  const base64 = (base64String + padding)
+    .replace(/\\-/g, &#x27;+&#x27;)
+    .replace(/_/g, &#x27;/&#x27;)
+
+  const rawData = window.atob(base64)
+  const outputArray = new Uint8Array(rawData.length)
+
+  for (let i = 0; i &lt; rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i)
+  }
+  return outputArray
+}</code></pre></div></div>
+<p>이제 subscribe, unsubscribe, push notification 전송을 관리하는 component를 추가해 봅시다.</p><div class="en-orig"><p>Let’s now add a component to manage subscribing, unsubscribing, and sending push notifications.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="" data-js=""></span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">function PushNotificationManager() {
+  const [isSupported, setIsSupported] = useState(false)
+  const [subscription, setSubscription] = useState&lt;PushSubscription | null&gt;(
+    null
+  )
+  const [message, setMessage] = useState(&#x27;&#x27;)
+
+  useEffect(() =&gt; {
+    if (&#x27;serviceWorker&#x27; in navigator &amp;&amp; &#x27;PushManager&#x27; in window) {
+      setIsSupported(true)
+      registerServiceWorker()
+    }
+  }, [])
+
+  async function registerServiceWorker() {
+    const registration = await navigator.serviceWorker.register(
+      new URL(&#x27;../lib/service-worker.js&#x27;, import.meta.url),
+      {
+        scope: &#x27;/&#x27;,
+        updateViaCache: &#x27;none&#x27;,
+      }
+    )
+    const sub = await registration.pushManager.getSubscription()
+    setSubscription(sub)
+  }
+
+  async function subscribeToPush() {
+    const registration = await navigator.serviceWorker.ready
+    const sub = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(
+        process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
+      ),
+    })
+    setSubscription(sub)
+    const serializedSub = JSON.parse(JSON.stringify(sub))
+    await subscribeUser(serializedSub)
+  }
+
+  async function unsubscribeFromPush() {
+    await subscription?.unsubscribe()
+    setSubscription(null)
+    await unsubscribeUser()
+  }
+
+  async function sendTestNotification() {
+    if (subscription) {
+      await sendNotification(message)
+      setMessage(&#x27;&#x27;)
+    }
+  }
+
+  if (!isSupported) {
+    return &lt;p&gt;Push notifications are not supported in this browser.&lt;/p&gt;
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;Push Notifications&lt;/h3&gt;
+      {subscription ? (
+        &lt;&gt;
+          &lt;p&gt;You are subscribed to push notifications.&lt;/p&gt;
+          &lt;button onClick={unsubscribeFromPush}&gt;Unsubscribe&lt;/button&gt;
+          &lt;input
+            type=&quot;text&quot;
+            placeholder=&quot;Enter notification message&quot;
+            value={message}
+            onChange={(e) =&gt; setMessage(e.target.value)}
+          /&gt;
+          &lt;button onClick={sendTestNotification}&gt;Send Test&lt;/button&gt;
+        &lt;/&gt;
+      ) : (
+        &lt;&gt;
+          &lt;p&gt;You are not subscribed to push notifications.&lt;/p&gt;
+          &lt;button onClick={subscribeToPush}&gt;Subscribe&lt;/button&gt;
+        &lt;/&gt;
+      )}
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">function PushNotificationManager() {
+  const [isSupported, setIsSupported] = useState(false);
+  const [subscription, setSubscription] = useState(null);
+  const [message, setMessage] = useState(&#x27;&#x27;);
+
+  useEffect(() =&gt; {
+    if (&#x27;serviceWorker&#x27; in navigator &amp;&amp; &#x27;PushManager&#x27; in window) {
+      setIsSupported(true);
+      registerServiceWorker();
+    }
+  }, []);
+
+  async function registerServiceWorker() {
+    const registration = await navigator.serviceWorker.register(
+      new URL(&#x27;../lib/service-worker.js&#x27;, import.meta.url),
+      {
+        scope: &#x27;/&#x27;,
+        updateViaCache: &#x27;none&#x27;,
+      }
+    )
+    const sub = await registration.pushManager.getSubscription();
+    setSubscription(sub);
+  }
+
+  async function subscribeToPush() {
+    const registration = await navigator.serviceWorker.ready;
+    const sub = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(
+        process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
+      ),
+    });
+    setSubscription(sub);
+    await subscribeUser(sub);
+  }
+
+  async function unsubscribeFromPush() {
+    await subscription?.unsubscribe();
+    setSubscription(null);
+    await unsubscribeUser();
+  }
+
+  async function sendTestNotification() {
+    if (subscription) {
+      await sendNotification(message);
+      setMessage(&#x27;&#x27;);
+    }
+  }
+
+  if (!isSupported) {
+    return &lt;p&gt;Push notifications are not supported in this browser.&lt;/p&gt;;
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;Push Notifications&lt;/h3&gt;
+      {subscription ? (
+        &lt;&gt;
+          &lt;p&gt;You are subscribed to push notifications.&lt;/p&gt;
+          &lt;button onClick={unsubscribeFromPush}&gt;Unsubscribe&lt;/button&gt;
+          &lt;input
+            type=&quot;text&quot;
+            placeholder=&quot;Enter notification message&quot;
+            value={message}
+            onChange={(e) =&gt; setMessage(e.target.value)}
+          /&gt;
+          &lt;button onClick={sendTestNotification}&gt;Send Test&lt;/button&gt;
+        &lt;/&gt;
+      ) : (
+        &lt;&gt;
+          &lt;p&gt;You are not subscribed to push notifications.&lt;/p&gt;
+          &lt;button onClick={subscribeToPush}&gt;Subscribe&lt;/button&gt;
+        &lt;/&gt;
+      )}
+    &lt;/div&gt;
+  );
+}</code></pre></div></div>
+<p>마지막으로 iOS 기기에서 홈 화면에 설치하도록 안내하는 메시지를 보여 주는 component를 만들고, 앱이 아직 설치되지 않은 경우에만 표시되도록 합니다.</p><div class="en-orig"><p>Finally, let’s create a component to show a message for iOS devices to instruct them to install to their home screen, and only show this if the app is not already installed.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="" data-js=""></span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">function InstallPrompt() {
+  const [isIOS, setIsIOS] = useState(false)
+  const [isStandalone, setIsStandalone] = useState(false)
+
+  useEffect(() =&gt; {
+    setIsIOS(
+      /iPad|iPhone|iPod/.test(navigator.userAgent) &amp;&amp; !(window as any).MSStream
+    )
+
+    setIsStandalone(window.matchMedia(&#x27;(display-mode: standalone)&#x27;).matches)
+  }, [])
+
+  if (isStandalone) {
+    return null // Don&#x27;t show install button if already installed
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;Install App&lt;/h3&gt;
+      &lt;button&gt;Add to Home Screen&lt;/button&gt;
+      {isIOS &amp;&amp; (
+        &lt;p&gt;
+          To install this app on your iOS device, tap the share button
+          &lt;span role=&quot;img&quot; aria-label=&quot;share icon&quot;&gt;
+            {&#x27; &#x27;}
+            ⎋{&#x27; &#x27;}
+          &lt;/span&gt;
+          and then &quot;Add to Home Screen&quot;
+          &lt;span role=&quot;img&quot; aria-label=&quot;plus icon&quot;&gt;
+            {&#x27; &#x27;}
+            ➕{&#x27; &#x27;}
+          &lt;/span&gt;
+          .
+        &lt;/p&gt;
+      )}
+    &lt;/div&gt;
+  )
+}
+
+export default function Page() {
+  return (
+    &lt;div&gt;
+      &lt;PushNotificationManager /&gt;
+      &lt;InstallPrompt /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">function InstallPrompt() {
+  const [isIOS, setIsIOS] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
+
+  useEffect(() =&gt; {
+    setIsIOS(
+      /iPad|iPhone|iPod/.test(navigator.userAgent) &amp;&amp; !(window as any).MSStream
+    );
+
+    setIsStandalone(window.matchMedia(&#x27;(display-mode: standalone)&#x27;).matches);
+  }, []);
+
+  if (isStandalone) {
+    return null; // Don&#x27;t show install button if already installed
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;Install App&lt;/h3&gt;
+      &lt;button&gt;Add to Home Screen&lt;/button&gt;
+      {isIOS &amp;&amp; (
+        &lt;p&gt;
+          To install this app on your iOS device, tap the share button
+          &lt;span role=&quot;img&quot; aria-label=&quot;share icon&quot;&gt;
+            {&#x27; &#x27;}
+            ⎋{&#x27; &#x27;}
+          &lt;/span&gt;
+          and then &quot;Add to Home Screen&quot;
+          &lt;span role=&quot;img&quot; aria-label=&quot;plus icon&quot;&gt;
+            {&#x27; &#x27;}
+            ➕{&#x27; &#x27;}
+          &lt;/span&gt;
+          .
+        &lt;/p&gt;
+      )}
+    &lt;/div&gt;
+  );
+}
+
+export default function Page() {
+  return (
+    &lt;div&gt;
+      &lt;PushNotificationManager /&gt;
+      &lt;InstallPrompt /&gt;
+    &lt;/div&gt;
+  );
+}</code></pre></div></div>
+<p>이제 이 파일이 호출하는 Server Action을 만들어 봅시다.</p><div class="en-orig"><p>Now, let’s create the Server Actions which this file calls.</p></div>
+<h3 class="sec" id="3-implementing-server-actions"><a class="anchor" href="#3-implementing-server-actions">3. Implementing Server Actions<span class="ko">3. Server Action 구현하기</span></a></h3>
+<p><code>app/actions.ts</code>에 action을 담을 새 파일을 만드세요. 이 파일은 subscription 생성, subscription 삭제, notification 전송을 처리합니다.</p><div class="en-orig"><p>Create a new file to contain your actions at <code>app/actions.ts</code>. This file will handle creating subscriptions, deleting subscriptions, and sending notifications.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import webpush from &#x27;web-push&#x27;
+
+webpush.setVapidDetails(
+  &#x27;&lt;mailto:your-email@example.com&gt;&#x27;,
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+  process.env.VAPID_PRIVATE_KEY!
+)
+
+let subscription: PushSubscription | null = null
+
+export async function subscribeUser(sub: PushSubscription) {
+  subscription = sub
+  // In a production environment, you would want to store the subscription in a database
+  // For example: await db.subscriptions.create({ data: sub })
+  return { success: true }
+}
+
+export async function unsubscribeUser() {
+  subscription = null
+  // In a production environment, you would want to remove the subscription from the database
+  // For example: await db.subscriptions.delete({ where: { ... } })
+  return { success: true }
+}
+
+export async function sendNotification(message: string) {
+  if (!subscription) {
+    throw new Error(&#x27;No subscription available&#x27;)
+  }
+
+  try {
+    await webpush.sendNotification(
+      subscription,
+      JSON.stringify({
+        title: &#x27;Test Notification&#x27;,
+        body: message,
+        icon: &#x27;/icon.png&#x27;,
+      })
+    )
+    return { success: true }
+  } catch (error) {
+    console.error(&#x27;Error sending push notification:&#x27;, error)
+    return { success: false, error: &#x27;Failed to send notification&#x27; }
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;;
+
+import webpush from &#x27;web-push&#x27;;
+
+webpush.setVapidDetails(
+  &#x27;&lt;mailto:your-email@example.com&gt;&#x27;,
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
+  process.env.VAPID_PRIVATE_KEY!
+);
+
+let subscription= null;
+
+export async function subscribeUser(sub) {
+  subscription = sub;
+  // In a production environment, you would want to store the subscription in a database
+  // For example: await db.subscriptions.create({ data: sub })
+  return { success: true };
+}
+
+export async function unsubscribeUser() {
+  subscription = null;
+  // In a production environment, you would want to remove the subscription from the database
+  // For example: await db.subscriptions.delete({ where: { ... } })
+  return { success: true };
+}
+
+export async function sendNotification(message) {
+  if (!subscription) {
+    throw new Error(&#x27;No subscription available&#x27;);
+  }
+
+  try {
+    await webpush.sendNotification(
+      subscription,
+      JSON.stringify({
+        title: &#x27;Test Notification&#x27;,
+        body: message,
+        icon: &#x27;/icon.png&#x27;,
+      })
+    );
+    return { success: true };
+  } catch (error) {
+    console.error(&#x27;Error sending push notification:&#x27;, error);
+    return { success: false, error: &#x27;Failed to send notification&#x27; };
+  }
+}</code></pre></div></div>
+<p>notification 전송은 5단계에서 만드는 service worker가 처리합니다.</p><div class="en-orig"><p>Sending a notification will be handled by our service worker, created in step 5.</p></div>
+<p>production 환경에서는 server를 재시작해도 subscription이 유지되도록, 그리고 여러 사용자의 subscription을 관리할 수 있도록 subscription을 database에 저장하는 것이 좋습니다.</p><div class="en-orig"><p>In a production environment, you would want to store the subscription in a database for persistence across server restarts and to manage multiple users' subscriptions.</p></div>
+<h3 class="sec" id="4-generating-vapid-keys"><a class="anchor" href="#4-generating-vapid-keys">4. Generating VAPID Keys<span class="ko">4. VAPID Key 생성하기</span></a></h3>
+<p>Web Push API를 사용하려면 <a href="https://vapidkeys.com/" target="_blank" rel="noopener">VAPID</a> key를 생성해야 합니다. 가장 간단한 방법은 web-push CLI를 직접 사용하는 것입니다:</p><div class="en-orig"><p>To use the Web Push API, you need to generate <a href="https://vapidkeys.com/" target="_blank" rel="noopener">VAPID</a> keys. The simplest way is to use the web-push CLI directly:</p></div>
+<p>먼저 web-push를 global로 설치하세요:</p><div class="en-orig"><p>First, install web-push globally:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add -g web-push</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install -g web-push</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn global add web-push</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add -g web-push</code></pre></div></div>
+<p>다음을 실행해 VAPID key를 생성합니다:</p><div class="en-orig"><p>Generate the VAPID keys by running:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">web-push generate-vapid-keys</code></pre></div></div>
+<p>출력 결과를 복사해 key를 <code>.env</code> 파일에 붙여 넣으세요:</p><div class="en-orig"><p>Copy the output and paste the keys into your <code>.env</code> file:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-plaintext">NEXT_PUBLIC_VAPID_PUBLIC_KEY=your_public_key_here
+VAPID_PRIVATE_KEY=your_private_key_here</code></pre></div></div>
+<h3 class="sec" id="5-creating-a-service-worker"><a class="anchor" href="#5-creating-a-service-worker">5. Creating a Service Worker<span class="ko">5. Service Worker 만들기</span></a></h3>
+<p>service worker용 <code>lib/service-worker.js</code> 파일을 만드세요:</p><div class="en-orig"><p>Create a <code>lib/service-worker.js</code> file for your service worker:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">lib/service-worker.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">self.addEventListener(&#x27;push&#x27;, function (event) {
+  if (event.data) {
+    const data = event.data.json()
+    const options = {
+      body: data.body,
+      icon: data.icon || &#x27;/icon.png&#x27;,
+      badge: &#x27;/badge.png&#x27;,
+      vibrate: [100, 50, 100],
+      data: {
+        dateOfArrival: Date.now(),
+        primaryKey: &#x27;2&#x27;,
+      },
+    }
+    event.waitUntil(self.registration.showNotification(data.title, options))
+  }
+})
+
+self.addEventListener(&#x27;notificationclick&#x27;, function (event) {
+  console.log(&#x27;Notification click received.&#x27;)
+  event.notification.close()
+  event.waitUntil(clients.openWindow(&#x27;&lt;https://your-website.com&gt;&#x27;))
+})</code></pre></div></div>
+<p>이 service worker는 custom image와 notification을 지원합니다. 들어오는 push event와 notification 클릭을 처리합니다.</p><div class="en-orig"><p>This service worker supports custom images and notifications. It handles incoming push events and notification clicks.</p></div>
+<ul>
+<li><code>icon</code>과 <code>badge</code> property로 notification의 custom icon을 설정할 수 있습니다.</li>
+<li><code>vibrate</code> pattern을 조정해 지원되는 기기에서 custom 진동 알림을 만들 수 있습니다.</li>
+<li><code>data</code> property로 notification에 추가 data를 첨부할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>You can set custom icons for notifications using the <code>icon</code> and <code>badge</code> properties.</li>
+<li>The <code>vibrate</code> pattern can be adjusted to create custom vibration alerts on supported devices.</li>
+<li>Additional data can be attached to the notification using the <code>data</code> property.</li>
+</ul></div>
+<p>service worker가 다양한 기기와 브라우저에서 예상대로 동작하는지 철저히 테스트하세요. 또한 <code>notificationclick</code> event listener 안의 <code>&#x27;https://your-website.com&#x27;</code> link를 애플리케이션에 맞는 URL로 바꾸는 것을 잊지 마세요.</p><div class="en-orig"><p>Remember to test your service worker thoroughly to ensure it behaves as expected across different devices and browsers. Also, make sure to update the <code>&#x27;https://your-website.com&#x27;</code> link in the <code>notificationclick</code> event listener to the appropriate URL for your application.</p></div>
+<h3 class="sec" id="6-adding-to-home-screen"><a class="anchor" href="#6-adding-to-home-screen">6. Adding to Home Screen<span class="ko">6. 홈 화면에 추가하기</span></a></h3>
+<p>2단계에서 정의한 <code>InstallPrompt</code> component는 iOS 기기에서 홈 화면에 설치하도록 안내하는 메시지를 보여 줍니다.</p><div class="en-orig"><p>The <code>InstallPrompt</code> component defined in step 2 shows a message for iOS devices to instruct them to install to their home screen.</p></div>
+<p>애플리케이션을 mobile 홈 화면에 설치할 수 있게 하려면 다음이 필요합니다:</p><div class="en-orig"><p>To ensure your application can be installed to a mobile home screen, you must have:</p></div>
+<ol>
+<li>유효한 web app manifest(1단계에서 만든 것)</li>
+<li>HTTPS로 제공되는 웹사이트</li>
+</ol><div class="en-orig"><ol>
+<li>A valid web app manifest (created in step 1)</li>
+<li>The website served over HTTPS</li>
+</ol></div>
+<p>이 조건이 충족되면 최신 브라우저는 사용자에게 설치 prompt를 자동으로 보여 줍니다. <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeinstallprompt_event" target="_blank" rel="noopener"><code>beforeinstallprompt</code></a>로 custom 설치 버튼을 제공할 수도 있지만, 브라우저와 플랫폼 간에 호환되지 않기 때문에(Safari iOS에서 동작하지 않음) 권장하지 않습니다.</p><div class="en-orig"><p>Modern browsers will automatically show an installation prompt to users when these criteria are met. You can provide a custom installation button with <a href="https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeinstallprompt_event" target="_blank" rel="noopener"><code>beforeinstallprompt</code></a>, however, we do not recommend this as it is not cross browser and platform (does not work on Safari iOS).</p></div>
+<h3 class="sec" id="7-testing-locally"><a class="anchor" href="#7-testing-locally">7. Testing Locally<span class="ko">7. 로컬에서 테스트하기</span></a></h3>
+<p>로컬에서 notification을 볼 수 있으려면 다음을 확인하세요:</p><div class="en-orig"><p>To ensure you can view notifications locally, ensure that:</p></div>
+<ul>
+<li><a href="app-api-reference-cli-next.html#using-https-during-development">HTTPS로 로컬 실행</a>하고 있는지<ul>
+<li>테스트할 때는 <code>next dev --experimental-https</code>를 사용하세요</li>
+</ul></li>
+<li>브라우저(Chrome, Safari, Firefox)에서 notification이 활성화되어 있는지<ul>
+<li>로컬에서 prompt가 나타나면 notification 사용 권한을 허용하세요</li>
+<li>브라우저 전체에서 notification이 전역으로 비활성화되어 있지 않은지 확인하세요</li>
+<li>그래도 notification이 보이지 않으면 다른 브라우저로 debug해 보세요</li>
+</ul></li>
+</ul><div class="en-orig"><ul>
+<li>You are <a href="app-api-reference-cli-next.html#using-https-during-development">running locally with HTTPS</a><ul>
+<li>Use <code>next dev --experimental-https</code> for testing</li>
+</ul></li>
+<li>Your browser (Chrome, Safari, Firefox) has notifications enabled<ul>
+<li>When prompted locally, accept permissions to use notifications</li>
+<li>Ensure notifications are not disabled globally for the entire browser</li>
+<li>If you are still not seeing notifications, try using another browser to debug</li>
+</ul></li>
+</ul></div>
+<h3 class="sec" id="8-securing-your-application"><a class="anchor" href="#8-securing-your-application">8. Securing your application<span class="ko">8. 애플리케이션 보안 강화하기</span></a></h3>
+<p>보안은 모든 웹 애플리케이션, 특히 PWA에서 매우 중요한 요소입니다. Next.js에서는 <code>next.config.js</code> 파일로 security header를 설정할 수 있습니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>Security is a crucial aspect of any web application, especially for PWAs. Next.js allows you to configure security headers using the <code>next.config.js</code> file. For example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  async headers() {
+    return [
+      {
+        source: &#x27;/(.*)&#x27;,
+        headers: [
+          {
+            key: &#x27;X-Content-Type-Options&#x27;,
+            value: &#x27;nosniff&#x27;,
+          },
+          {
+            key: &#x27;X-Frame-Options&#x27;,
+            value: &#x27;DENY&#x27;,
+          },
+          {
+            key: &#x27;Referrer-Policy&#x27;,
+            value: &#x27;strict-origin-when-cross-origin&#x27;,
+          },
+        ],
+      },
+      {
+        source: &#x27;/sw.js&#x27;,
+        headers: [
+          {
+            key: &#x27;Content-Type&#x27;,
+            value: &#x27;application/javascript; charset=utf-8&#x27;,
+          },
+          {
+            key: &#x27;Cache-Control&#x27;,
+            value: &#x27;no-cache, no-store, must-revalidate&#x27;,
+          },
+          {
+            key: &#x27;Content-Security-Policy&#x27;,
+            value: &quot;default-src &#x27;self&#x27;; script-src &#x27;self&#x27;&quot;,
+          },
+        ],
+      },
+    ]
+  },
+}</code></pre></div></div>
+<p>각 option을 살펴보겠습니다:</p><div class="en-orig"><p>Let’s go over each of these options:</p></div>
+<ol>
+<li>Global Header(모든 route에 적용):<ol>
+<li><code>X-Content-Type-Options: nosniff</code>: MIME type sniffing을 막아 악성 파일 업로드 위험을 줄입니다.</li>
+<li><code>X-Frame-Options: DENY</code>: 사이트가 iframe에 embed되지 않도록 해 clickjacking 공격을 막습니다.</li>
+<li><code>Referrer-Policy: strict-origin-when-cross-origin</code>: request에 referrer 정보를 얼마나 포함할지 제어해 보안과 기능의 균형을 맞춥니다.</li>
+</ol></li>
+<li>Service Worker 전용 Header:<ol>
+<li><code>Content-Type: application/javascript; charset=utf-8</code>: service worker가 JavaScript로 올바르게 해석되도록 합니다.</li>
+<li><code>Cache-Control: no-cache, no-store, must-revalidate</code>: service worker가 cache되지 않게 해 사용자가 항상 최신 버전을 받도록 합니다.</li>
+<li><code>Content-Security-Policy: default-src &#x27;self&#x27;; script-src &#x27;self&#x27;</code>: service worker에 엄격한 Content Security Policy를 적용해 같은 origin의 script만 허용합니다.</li>
+</ol></li>
+</ol><div class="en-orig"><ol>
+<li>Global Headers (applied to all routes):<ol>
+<li><code>X-Content-Type-Options: nosniff</code>: Prevents MIME type sniffing, reducing the risk of malicious file uploads.</li>
+<li><code>X-Frame-Options: DENY</code>: Protects against clickjacking attacks by preventing your site from being embedded in iframes.</li>
+<li><code>Referrer-Policy: strict-origin-when-cross-origin</code>: Controls how much referrer information is included with requests, balancing security and functionality.</li>
+</ol></li>
+<li>Service Worker Specific Headers:<ol>
+<li><code>Content-Type: application/javascript; charset=utf-8</code>: Ensures the service worker is interpreted correctly as JavaScript.</li>
+<li><code>Cache-Control: no-cache, no-store, must-revalidate</code>: Prevents caching of the service worker, ensuring users always get the latest version.</li>
+<li><code>Content-Security-Policy: default-src &#x27;self&#x27;; script-src &#x27;self&#x27;</code>: Implements a strict Content Security Policy for the service worker, only allowing scripts from the same origin.</li>
+</ol></li>
+</ol></div>
+<p>Next.js에서 <a href="app-guides-content-security-policy.html">Content Security Policy</a>를 정의하는 방법을 더 알아보세요.</p><div class="en-orig"><p>Learn more about defining <a href="app-guides-content-security-policy.html">Content Security Policies</a> with Next.js.</p></div>
+<h2 class="sec" id="extending-your-pwa"><a class="anchor" href="#extending-your-pwa">Extending your PWA<span class="ko">PWA 확장하기</span></a></h2>
+<ol>
+<li><strong>Exploring PWA Capabilities</strong>: PWA는 다양한 web API를 활용해 고급 기능을 제공할 수 있습니다. background sync, periodic background sync, File System Access API 같은 기능을 살펴보며 애플리케이션을 개선해 보세요. PWA 기능에 대한 아이디어와 최신 정보는 <a href="https://whatpwacando.today/" target="_blank" rel="noopener">What PWA Can Do Today</a> 같은 자료를 참고할 수 있습니다.</li>
+<li><strong>Static Exports:</strong> 애플리케이션이 server를 실행하지 않고 파일의 static export를 사용해야 한다면, Next.js configuration을 업데이트해 이를 활성화할 수 있습니다. 자세한 내용은 <a href="app-guides-static-exports.html">Next.js Static Export 문서</a>를 참고하세요. 다만 Server Action을 외부 API 호출로 바꾸고, 정의한 header를 proxy로 옮겨야 합니다.</li>
+<li><strong>Offline Support</strong>: Next.js는 연결 상태를 인식하는 UI와, 실패한 navigation 및 Server Action request의 자동 재시도를 위한 experimental <a href="app-api-reference-functions-use-offline.html"><code>useOffline</code></a> hook과 이에 대응하는 <a href="app-api-reference-config-next-config-js-useOffline.html"><code>experimental.useOffline</code></a> config를 제공합니다. service worker 기반의 완전한 offline caching이 필요하다면 <a href="https://github.com/serwist/serwist" target="_blank" rel="noopener">Serwist</a>가 한 가지 선택지이며, <a href="https://github.com/serwist/serwist/tree/main/examples/next-turbo-basic" target="_blank" rel="noopener">Turbopack</a>과 <a href="https://github.com/serwist/serwist/tree/main/examples/next-basic" target="_blank" rel="noopener">webpack</a> 모두에 대한 Next.js 통합 예제를 제공합니다.</li>
+<li><strong>Security Considerations</strong>: service worker가 제대로 보호되고 있는지 확인하세요. 여기에는 HTTPS 사용, push message 출처 검증, 적절한 error 처리 구현이 포함됩니다.</li>
+<li><strong>User Experience</strong>: 사용자의 브라우저가 특정 PWA 기능을 지원하지 않을 때도 앱이 잘 동작하도록 progressive enhancement 기법 적용을 고려하세요.</li>
+</ol><div class="en-orig"><ol>
+<li><strong>Exploring PWA Capabilities</strong>: PWAs can leverage various web APIs to provide advanced functionality. Consider exploring features like background sync, periodic background sync, or the File System Access API to enhance your application. For inspiration and up-to-date information on PWA capabilities, you can refer to resources like <a href="https://whatpwacando.today/" target="_blank" rel="noopener">What PWA Can Do Today</a>.</li>
+<li><strong>Static Exports:</strong> If your application requires not running a server, and instead using a static export of files, you can update the Next.js configuration to enable this change. Learn more in the <a href="app-guides-static-exports.html">Next.js Static Export documentation</a>. However, you will need to move from Server Actions to calling an external API, as well as moving your defined headers to your proxy.</li>
+<li><strong>Offline Support</strong>: Next.js provides an experimental <a href="app-api-reference-functions-use-offline.html"><code>useOffline</code></a> hook and matching <a href="app-api-reference-config-next-config-js-useOffline.html"><code>experimental.useOffline</code></a> config for connectivity-aware UI and automatic retries of failed navigation and Server Action requests. For full service-worker-based offline caching, one option is <a href="https://github.com/serwist/serwist" target="_blank" rel="noopener">Serwist</a>, which provides Next.js integration examples for both <a href="https://github.com/serwist/serwist/tree/main/examples/next-turbo-basic" target="_blank" rel="noopener">Turbopack</a> and <a href="https://github.com/serwist/serwist/tree/main/examples/next-basic" target="_blank" rel="noopener">webpack</a>.</li>
+<li><strong>Security Considerations</strong>: Ensure that your service worker is properly secured. This includes using HTTPS, validating the source of push messages, and implementing proper error handling.</li>
+<li><strong>User Experience</strong>: Consider implementing progressive enhancement techniques to ensure your app works well even when certain PWA features are not supported by the user's browser.</li>
+</ol></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><div class="rgrid"><a class="rcard" href="app-api-reference-file-conventions-metadata-manifest.html"><div class="rt">manifest.json</div><div class="rk">manifest.json</div><div class="rd">manifest.json 파일에 대한 API Reference입니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/progressive-web-apps.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/progressive-web-apps" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-production-checklist.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Production</div><div class="ttl-ko">production을 위한 Next.js 애플리케이션 최적화</div></a>
+      <a href="app-guides-public-static-pages.html" class="next"><div class="dir">다음 →</div><div class="ttl">Public pages</div><div class="ttl-ko">Public page 만들기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/progressive-web-apps" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#creating-a-pwa-with-nextjs">Creating a PWA with Next.js</a></li><li class="l3"><a href="#1-creating-the-web-app-manifest">1. Creating the Web App Manifest</a></li><li class="l3"><a href="#2-implementing-web-push-notifications">2. Implementing Web Push Notifications</a></li><li class="l3"><a href="#3-implementing-server-actions">3. Implementing Server Actions</a></li><li class="l3"><a href="#4-generating-vapid-keys">4. Generating VAPID Keys</a></li><li class="l3"><a href="#5-creating-a-service-worker">5. Creating a Service Worker</a></li><li class="l3"><a href="#6-adding-to-home-screen">6. Adding to Home Screen</a></li><li class="l3"><a href="#7-testing-locally">7. Testing Locally</a></li><li class="l3"><a href="#8-securing-your-application">8. Securing your application</a></li><li class="l2"><a href="#extending-your-pwa">Extending your PWA</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Progressive Web Application(PWA)은 웹 애플리케이션의 도달 범위와 접근성에 native mobile 앱의 기능과 사용자 경험을 결합한 것입니다. Next.js를 사용하면 여러 codebase나 app store 승인 없이도 모든 플랫폼에서 매끄럽고 앱 같은 경험을 제공하는 PWA를 만들 수 있습니다.
+
+PWA를 사용하면 다음과 같은 것이 가능합니다:
+
+- app store 승인을 기다리지 않고 업데이트를 즉시 deploy
+- 하나의 codebase로 cross-platform 애플리케이션 제작
+- 홈 화면 설치, push notification 같은 native에 가까운 기능 제공
+
+## Creating a PWA with Next.js || Next.js로 PWA 만들기
+
+### 1. Creating the Web App Manifest || 1. Web App Manifest 만들기
+
+Next.js는 App Router를 사용한 [web app manifest](/docs/app/api-reference/file-conventions/metadata/manifest) 생성을 기본으로 지원합니다. static 또는 dynamic manifest 파일 중 하나를 만들 수 있습니다:
+
+예를 들어 `app/manifest.ts` 또는 `app/manifest.json` 파일을 만드세요:
+
+[[CODE 1]]
+
+이 파일에는 이름, icon, 그리고 사용자 기기에서 icon으로 어떻게 표시될지에 대한 정보가 들어 있어야 합니다. 그러면 사용자가 PWA를 홈 화면에 설치할 수 있어 native 앱 같은 경험을 제공할 수 있습니다.
+
+[favicon generator](https://realfavicongenerator.net/) 같은 도구로 여러 icon 세트를 만들고, 생성된 파일을 `public/` 폴더에 넣을 수 있습니다.
+
+### 2. Implementing Web Push Notifications || 2. Web Push Notification 구현하기
+
+Web Push Notification은 다음을 포함한 모든 최신 브라우저에서 지원됩니다:
+
+- 홈 화면에 설치된 애플리케이션의 경우 iOS 16.4+
+- macOS 13 이상의 Safari 16
+- Chromium 기반 브라우저
+- Firefox
+
+덕분에 PWA는 native 앱의 현실적인 대안이 됩니다. 특히 offline 지원 없이도 설치 prompt를 띄울 수 있습니다.
+
+Web Push Notification을 사용하면 사용자가 앱을 활발히 사용하지 않을 때도 다시 참여를 유도할 수 있습니다. Next.js 애플리케이션에서 구현하는 방법은 다음과 같습니다:
+
+먼저 `app/page.tsx`에 main page component를 만들어 봅시다. 이해하기 쉽도록 작은 부분으로 나누어 살펴보겠습니다. 먼저 필요한 import와 utility 몇 가지를 추가합니다. 참조하는 Server Action이 아직 없어도 괜찮습니다:
+
+[[CODE 2]]
+
+이제 subscribe, unsubscribe, push notification 전송을 관리하는 component를 추가해 봅시다.
+
+[[CODE 3]]
+
+마지막으로 iOS 기기에서 홈 화면에 설치하도록 안내하는 메시지를 보여 주는 component를 만들고, 앱이 아직 설치되지 않은 경우에만 표시되도록 합니다.
+
+[[CODE 4]]
+
+이제 이 파일이 호출하는 Server Action을 만들어 봅시다.
+
+### 3. Implementing Server Actions || 3. Server Action 구현하기
+
+`app/actions.ts`에 action을 담을 새 파일을 만드세요. 이 파일은 subscription 생성, subscription 삭제, notification 전송을 처리합니다.
+
+[[CODE 5]]
+
+notification 전송은 5단계에서 만드는 service worker가 처리합니다.
+
+production 환경에서는 server를 재시작해도 subscription이 유지되도록, 그리고 여러 사용자의 subscription을 관리할 수 있도록 subscription을 database에 저장하는 것이 좋습니다.
+
+### 4. Generating VAPID Keys || 4. VAPID Key 생성하기
+
+Web Push API를 사용하려면 [VAPID](https://vapidkeys.com/) key를 생성해야 합니다. 가장 간단한 방법은 web-push CLI를 직접 사용하는 것입니다:
+
+먼저 web-push를 global로 설치하세요:
+
+[[CODE 6]]
+
+다음을 실행해 VAPID key를 생성합니다:
+
+[[CODE 7]]
+
+출력 결과를 복사해 key를 `.env` 파일에 붙여 넣으세요:
+
+[[CODE 8]]
+
+### 5. Creating a Service Worker || 5. Service Worker 만들기
+
+service worker용 `lib/service-worker.js` 파일을 만드세요:
+
+[[CODE 9]]
+
+이 service worker는 custom image와 notification을 지원합니다. 들어오는 push event와 notification 클릭을 처리합니다.
+
+- `icon`과 `badge` property로 notification의 custom icon을 설정할 수 있습니다.
+- `vibrate` pattern을 조정해 지원되는 기기에서 custom 진동 알림을 만들 수 있습니다.
+- `data` property로 notification에 추가 data를 첨부할 수 있습니다.
+
+service worker가 다양한 기기와 브라우저에서 예상대로 동작하는지 철저히 테스트하세요. 또한 `notificationclick` event listener 안의 `&#x27;https://your-website.com&#x27;` link를 애플리케이션에 맞는 URL로 바꾸는 것을 잊지 마세요.
+
+### 6. Adding to Home Screen || 6. 홈 화면에 추가하기
+
+2단계에서 정의한 `InstallPrompt` component는 iOS 기기에서 홈 화면에 설치하도록 안내하는 메시지를 보여 줍니다.
+
+애플리케이션을 mobile 홈 화면에 설치할 수 있게 하려면 다음이 필요합니다:
+
+1. 유효한 web app manifest(1단계에서 만든 것)
+2. HTTPS로 제공되는 웹사이트
+
+이 조건이 충족되면 최신 브라우저는 사용자에게 설치 prompt를 자동으로 보여 줍니다. [`beforeinstallprompt`](https://developer.mozilla.org/en-US/docs/Web/API/Window/beforeinstallprompt_event)로 custom 설치 버튼을 제공할 수도 있지만, 브라우저와 플랫폼 간에 호환되지 않기 때문에(Safari iOS에서 동작하지 않음) 권장하지 않습니다.
+
+### 7. Testing Locally || 7. 로컬에서 테스트하기
+
+로컬에서 notification을 볼 수 있으려면 다음을 확인하세요:
+
+- [HTTPS로 로컬 실행](/docs/app/api-reference/cli/next#using-https-during-development)하고 있는지
+  - 테스트할 때는 `next dev --experimental-https`를 사용하세요
+- 브라우저(Chrome, Safari, Firefox)에서 notification이 활성화되어 있는지
+  - 로컬에서 prompt가 나타나면 notification 사용 권한을 허용하세요
+  - 브라우저 전체에서 notification이 전역으로 비활성화되어 있지 않은지 확인하세요
+  - 그래도 notification이 보이지 않으면 다른 브라우저로 debug해 보세요
+
+### 8. Securing your application || 8. 애플리케이션 보안 강화하기
+
+보안은 모든 웹 애플리케이션, 특히 PWA에서 매우 중요한 요소입니다. Next.js에서는 `next.config.js` 파일로 security header를 설정할 수 있습니다. 예를 들면 다음과 같습니다:
+
+[[CODE 10]]
+
+각 option을 살펴보겠습니다:
+
+1. Global Header(모든 route에 적용):
+   1. `X-Content-Type-Options: nosniff`: MIME type sniffing을 막아 악성 파일 업로드 위험을 줄입니다.
+   2. `X-Frame-Options: DENY`: 사이트가 iframe에 embed되지 않도록 해 clickjacking 공격을 막습니다.
+   3. `Referrer-Policy: strict-origin-when-cross-origin`: request에 referrer 정보를 얼마나 포함할지 제어해 보안과 기능의 균형을 맞춥니다.
+2. Service Worker 전용 Header:
+   1. `Content-Type: application/javascript; charset=utf-8`: service worker가 JavaScript로 올바르게 해석되도록 합니다.
+   2. `Cache-Control: no-cache, no-store, must-revalidate`: service worker가 cache되지 않게 해 사용자가 항상 최신 버전을 받도록 합니다.
+   3. `Content-Security-Policy: default-src &#x27;self&#x27;; script-src &#x27;self&#x27;`: service worker에 엄격한 Content Security Policy를 적용해 같은 origin의 script만 허용합니다.
+
+Next.js에서 [Content Security Policy](/docs/app/guides/content-security-policy)를 정의하는 방법을 더 알아보세요.
+
+## Extending your PWA || PWA 확장하기
+
+1. **Exploring PWA Capabilities**: PWA는 다양한 web API를 활용해 고급 기능을 제공할 수 있습니다. background sync, periodic background sync, File System Access API 같은 기능을 살펴보며 애플리케이션을 개선해 보세요. PWA 기능에 대한 아이디어와 최신 정보는 [What PWA Can Do Today](https://whatpwacando.today/) 같은 자료를 참고할 수 있습니다.
+2. **Static Exports:** 애플리케이션이 server를 실행하지 않고 파일의 static export를 사용해야 한다면, Next.js configuration을 업데이트해 이를 활성화할 수 있습니다. 자세한 내용은 [Next.js Static Export 문서](/docs/app/guides/static-exports)를 참고하세요. 다만 Server Action을 외부 API 호출로 바꾸고, 정의한 header를 proxy로 옮겨야 합니다.
+3. **Offline Support**: Next.js는 연결 상태를 인식하는 UI와, 실패한 navigation 및 Server Action request의 자동 재시도를 위한 experimental [`useOffline`](/docs/app/api-reference/functions/use-offline) hook과 이에 대응하는 [`experimental.useOffline`](/docs/app/api-reference/config/next-config-js/useOffline) config를 제공합니다. service worker 기반의 완전한 offline caching이 필요하다면 [Serwist](https://github.com/serwist/serwist)가 한 가지 선택지이며, [Turbopack](https://github.com/serwist/serwist/tree/main/examples/next-turbo-basic)과 [webpack](https://github.com/serwist/serwist/tree/main/examples/next-basic) 모두에 대한 Next.js 통합 예제를 제공합니다.
+4. **Security Considerations**: service worker가 제대로 보호되고 있는지 확인하세요. 여기에는 HTTPS 사용, push message 출처 검증, 적절한 error 처리 구현이 포함됩니다.
+5. **User Experience**: 사용자의 브라우저가 특정 PWA 기능을 지원하지 않을 때도 앱이 잘 동작하도록 progressive enhancement 기법 적용을 고려하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Client-side Rendering (CSR) (Client-side Rendering (CSR)) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/building-your-application/rendering/client-side-rendering" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/building-your-application/rendering/client-side-rendering" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/03-building-your-application/02-rendering/05-client-side-rendering.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-building-your-application.html">Building Your Application</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-building-your-application-rendering.html">Rendering</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Client-side Rendering (CSR)<span class="sub">Client-side Rendering (CSR)</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>React의 Client-Side Rendering(CSR)에서는 브라우저가 최소한의 HTML page와 그 page에 필요한 JavaScript를 download합니다. 그다음 JavaScript를 사용해 DOM을 업데이트하고 page를 render합니다. 애플리케이션이 처음 load될 때 사용자는 전체 page를 보기 전에 약간의 지연을 느낄 수 있습니다. 모든 JavaScript가 download되고, parse되고, 실행될 때까지 page가 완전히 render되지 않기 때문입니다.</p><div class="en-orig"><p>In Client-Side Rendering (CSR) with React, the browser downloads a minimal HTML page and the JavaScript needed for the page. The JavaScript is then used to update the DOM and render the page. When the application is first loaded, the user may notice a slight delay before they can see the full page, this is because the page isn't fully rendered until all the JavaScript is downloaded, parsed, and executed.</p></div>
+<p>page가 처음 load된 후에는 같은 웹사이트의 다른 page로 이동하는 것이 보통 더 빠릅니다. 필요한 data만 fetch하면 되고, JavaScript가 전체 page를 새로 고치지 않고도 page의 일부를 다시 render할 수 있기 때문입니다.</p><div class="en-orig"><p>After the page has been loaded for the first time, navigating to other pages on the same website is typically faster, as only necessary data needs to be fetched, and JavaScript can re-render parts of the page without requiring a full page refresh.</p></div>
+<p>Next.js에서 client-side rendering을 구현하는 방법은 두 가지입니다:</p><div class="en-orig"><p>In Next.js, there are two ways you can implement client-side rendering:</p></div>
+<ol>
+<li>page 안에서 server-side rendering method(<a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a>와 <a href="pages-building-your-application-data-fetching-get-server-side-props.html"><code>getServerSideProps</code></a>) 대신 React의 <code>useEffect()</code> hook을 사용하기.</li>
+<li><a href="https://swr.vercel.app/" target="_blank" rel="noopener">SWR</a>이나 <a href="https://tanstack.com/query/latest/" target="_blank" rel="noopener">TanStack Query</a> 같은 data fetching library를 사용해 client에서 data를 fetch하기(권장).</li>
+</ol><div class="en-orig"><ol>
+<li>Using React's <code>useEffect()</code> hook inside your pages instead of the server-side rendering methods (<a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a> and <a href="pages-building-your-application-data-fetching-get-server-side-props.html"><code>getServerSideProps</code></a>).</li>
+<li>Using a data fetching library like <a href="https://swr.vercel.app/" target="_blank" rel="noopener">SWR</a> or <a href="https://tanstack.com/query/latest/" target="_blank" rel="noopener">TanStack Query</a> to fetch data on the client (recommended).</li>
+</ol></div>
+<p>다음은 Next.js page 안에서 <code>useEffect()</code>를 사용하는 예시입니다:</p><div class="en-orig"><p>Here's an example of using <code>useEffect()</code> inside a Next.js page:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import React, { useState, useEffect } from &#x27;react&#x27;
+
+export function Page() {
+  const [data, setData] = useState(null)
+
+  useEffect(() =&gt; {
+    const fetchData = async () =&gt; {
+      const response = await fetch(&#x27;https://api.example.com/data&#x27;)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
+      const result = await response.json()
+      setData(result)
+    }
+
+    fetchData().catch((e) =&gt; {
+      // handle the error as needed
+      console.error(&#x27;An error occurred while fetching the data: &#x27;, e)
+    })
+  }, [])
+
+  return &lt;p&gt;{data ? `Your data: ${data}` : &#x27;Loading...&#x27;}&lt;/p&gt;
+}</code></pre></div></div>
+<p>위 예시에서 component는 먼저 <code>Loading...</code>을 render합니다. 그다음 data가 fetch되면 다시 render되어 data를 표시합니다.</p><div class="en-orig"><p>In the example above, the component starts by rendering <code>Loading...</code>. Then, once the data is fetched, it re-renders and displays the data.</p></div>
+<p><code>useEffect</code>에서 data를 fetch하는 것은 예전 React 애플리케이션에서 볼 수 있는 패턴이지만, 더 나은 performance, caching, optimistic update 등을 위해 data-fetching library 사용을 권장합니다. 다음은 <a href="https://swr.vercel.app/" target="_blank" rel="noopener">SWR</a>로 client에서 data를 fetch하는 최소 예시입니다:</p><div class="en-orig"><p>Although fetching data in a <code>useEffect</code> is a pattern you may see in older React Applications, we recommend using a data-fetching library for better performance, caching, optimistic updates, and more. Here's a minimum example using <a href="https://swr.vercel.app/" target="_blank" rel="noopener">SWR</a> to fetch data on the client:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import useSWR from &#x27;swr&#x27;
+
+export function Page() {
+  const { data, error, isLoading } = useSWR(
+    &#x27;https://api.example.com/data&#x27;,
+    fetcher
+  )
+
+  if (error) return &lt;p&gt;Failed to load.&lt;/p&gt;
+  if (isLoading) return &lt;p&gt;Loading...&lt;/p&gt;
+
+  return &lt;p&gt;Your Data: {data}&lt;/p&gt;
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>CSR은 SEO에 영향을 줄 수 있다는 점을 기억하세요. 일부 search engine crawler는 JavaScript를 실행하지 않아 애플리케이션의 초기 빈 상태나 loading 상태만 볼 수 있습니다. 또한 인터넷 연결이나 기기가 느린 사용자는 전체 page를 보기 전에 모든 JavaScript가 load되고 실행될 때까지 기다려야 하므로 performance 문제로 이어질 수 있습니다. Next.js는 애플리케이션의 <strong>각 page에 필요한 바에 따라</strong> <a href="pages-building-your-application-rendering-server-side-rendering.html">server-side rendering</a>, <a href="pages-building-your-application-rendering-static-site-generation.html">static site generation</a>, client-side rendering을 조합해 사용할 수 있는 hybrid 방식을 권장합니다. App Router에서는 <a href="app-api-reference-file-conventions-loading.html">Loading UI with Suspense</a>를 사용해 page가 render되는 동안 loading indicator를 보여 줄 수도 있습니다.</p><div class="en-orig"><p>Keep in mind that CSR can impact SEO. Some search engine crawlers might not execute JavaScript and therefore only see the initial empty or loading state of your application. It can also lead to performance issues for users with slower internet connections or devices, as they need to wait for all the JavaScript to load and run before they can see the full page. Next.js promotes a hybrid approach that allows you to use a combination of <a href="pages-building-your-application-rendering-server-side-rendering.html">server-side rendering</a>, <a href="pages-building-your-application-rendering-static-site-generation.html">static site generation</a>, and client-side rendering, <strong>depending on the needs of each page</strong> in your application. In the App Router, you can also use <a href="app-api-reference-file-conventions-loading.html">Loading UI with Suspense</a> to show a loading indicator while the page is being rendered.</p></div></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><p>Next.js의 다른 rendering 방식에 대해 알아봅니다.</p><div class="rgrid"><a class="rcard" href="pages-building-your-application-rendering-server-side-rendering.html"><div class="rt">Server-side Rendering (SSR)</div><div class="rk">Server-side Rendering (SSR)</div><div class="rd">Server-side Rendering을 사용해 각 request마다 page를 render합니다.</div></a><a class="rcard" href="pages-building-your-application-rendering-static-site-generation.html"><div class="rt">Static Site Generation (SSG)</div><div class="rk">Static Site Generation (SSG)</div><div class="rd">Static Site Generation(SSG)을 사용해 build 시점에 page를 prerender합니다.</div></a><a class="rcard" href="pages-guides-incremental-static-regeneration.html"><div class="rt">How to implement Incremental Static Regeneration (ISR)</div><div class="rk">Incremental Static Regeneration (ISR) 구현하기</div><div class="rd">Incremental Static Regeneration으로 runtime에 static page를 생성하거나 업데이트하는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/03-building-your-application/02-rendering/05-client-side-rendering.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/building-your-application/rendering/client-side-rendering" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-building-your-application-rendering-automatic-static-optimization.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Automatic Static Optimization</div><div class="ttl-ko">자동 Static 최적화</div></a>
+      <a href="pages-building-your-application-data-fetching.html" class="next"><div class="dir">다음 →</div><div class="ttl">Data Fetching</div><div class="ttl-ko">Data Fetching</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/building-your-application/rendering/client-side-rendering" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+React의 Client-Side Rendering(CSR)에서는 브라우저가 최소한의 HTML page와 그 page에 필요한 JavaScript를 download합니다. 그다음 JavaScript를 사용해 DOM을 업데이트하고 page를 render합니다. 애플리케이션이 처음 load될 때 사용자는 전체 page를 보기 전에 약간의 지연을 느낄 수 있습니다. 모든 JavaScript가 download되고, parse되고, 실행될 때까지 page가 완전히 render되지 않기 때문입니다.
+
+page가 처음 load된 후에는 같은 웹사이트의 다른 page로 이동하는 것이 보통 더 빠릅니다. 필요한 data만 fetch하면 되고, JavaScript가 전체 page를 새로 고치지 않고도 page의 일부를 다시 render할 수 있기 때문입니다.
+
+Next.js에서 client-side rendering을 구현하는 방법은 두 가지입니다:
+
+1. page 안에서 server-side rendering method([`getStaticProps`](/docs/pages/building-your-application/data-fetching/get-static-props)와 [`getServerSideProps`](/docs/pages/building-your-application/data-fetching/get-server-side-props)) 대신 React의 `useEffect()` hook을 사용하기.
+2. [SWR](https://swr.vercel.app/)이나 [TanStack Query](https://tanstack.com/query/latest/) 같은 data fetching library를 사용해 client에서 data를 fetch하기(권장).
+
+다음은 Next.js page 안에서 `useEffect()`를 사용하는 예시입니다:
+
+[[CODE 1]]
+
+위 예시에서 component는 먼저 `Loading...`을 render합니다. 그다음 data가 fetch되면 다시 render되어 data를 표시합니다.
+
+`useEffect`에서 data를 fetch하는 것은 예전 React 애플리케이션에서 볼 수 있는 패턴이지만, 더 나은 performance, caching, optimistic update 등을 위해 data-fetching library 사용을 권장합니다. 다음은 [SWR](https://swr.vercel.app/)로 client에서 data를 fetch하는 최소 예시입니다:
+
+[[CODE 2]]
+
+&gt; **Good to know**:
+&gt;
+&gt; CSR은 SEO에 영향을 줄 수 있다는 점을 기억하세요. 일부 search engine crawler는 JavaScript를 실행하지 않아 애플리케이션의 초기 빈 상태나 loading 상태만 볼 수 있습니다. 또한 인터넷 연결이나 기기가 느린 사용자는 전체 page를 보기 전에 모든 JavaScript가 load되고 실행될 때까지 기다려야 하므로 performance 문제로 이어질 수 있습니다. Next.js는 애플리케이션의 **각 page에 필요한 바에 따라** [server-side rendering](/docs/pages/building-your-application/rendering/server-side-rendering), [static site generation](/docs/pages/building-your-application/rendering/static-site-generation), client-side rendering을 조합해 사용할 수 있는 hybrid 방식을 권장합니다. App Router에서는 [Loading UI with Suspense](/docs/app/api-reference/file-conventions/loading)를 사용해 page가 render되는 동안 loading indicator를 보여 줄 수도 있습니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

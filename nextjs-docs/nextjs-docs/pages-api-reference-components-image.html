@@ -1,0 +1,1887 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Image (Image 컴포넌트) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/api-reference/components/image" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/api-reference/components/image" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/02-components/image.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference-components.html">Components</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Image<span class="sub">Image 컴포넌트</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js Image component는 자동 이미지 최적화를 위해 HTML <code>&lt;img&gt;</code> element를 확장합니다.</p><div class="en-orig"><p>The Next.js Image component extends the HTML <code>&lt;img&gt;</code> element for automatic image optimization.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import Image from &#x27;next/image&#x27;
+
+export default function Page() {
+  return (
+    &lt;Image
+      src=&quot;/profile.png&quot;
+      width={500}
+      height={500}
+      alt=&quot;Picture of the author&quot;
+    /&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Next.js 13 이전 버전을 사용 중이라면, component 이름이 바뀌었으므로 <a href="pages-api-reference-components-image-legacy.html">next/legacy/image</a> 문서를 참고하세요.</p><div class="en-orig"><p>If you are using a version of Next.js prior to 13, you'll want to use the <a href="pages-api-reference-components-image-legacy.html">next/legacy/image</a> documentation since the component was renamed.</p></div></div></div>
+<h2 class="sec" id="reference"><a class="anchor" href="#reference">Reference<span class="ko">레퍼런스</span></a></h2>
+<h3 class="sec" id="props"><a class="anchor" href="#props">Props</a></h3>
+<p>사용할 수 있는 props는 다음과 같습니다:</p><div class="en-orig"><p>The following props are available:</p></div>
+<div>
+| Prop                                      | 예시                                  | Type            | 상태     |
+| ----------------------------------------- | ---------------------------------------- | --------------- | ---------- |
+| [`src`](#src)                             | `src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/profile.png"`                     | String          | 필수   |
+| [`alt`](#alt)                             | `alt="Picture of the author"`            | String          | 필수   |
+| [`width`](#width-and-height)                         | `width={500}`                            | Integer (px)    | -   |
+| [`height`](#width-and-height)                       | `height={500}`                           | Integer (px)    | -   |
+| [`fill`](#fill)                           | `fill={true}`                            | Boolean         | -          |
+| [`loader`](#loader)                       | `loader={imageLoader}`                   | Function        | -          |
+| [`sizes`](#sizes)                         | `sizes="(max-width: 768px) 100vw, 33vw"` | String          | -          |
+| [`quality`](#quality)                     | `quality={80}`                           | Integer (1-100) | -          |
+| [`preload`](#preload)                     | `preload={true}`                         | Boolean         | -          |
+| [`placeholder`](#placeholder)             | `placeholder="blur"`                     | String          | -          |
+| [`style`](#style)                         | ``         | Object          | -          |
+| [`onLoadingComplete`](#onloadingcomplete) | `onLoadingComplete={img => done())}`     | Function        | Deprecated |
+| [`onLoad`](#onload)                       | `onLoad={event => done())}`              | Function        | -          |
+| [`onError`](#onerror)                     | `onError(event => fail()}`               | Function        | -          |
+| [`loading`](#loading)                     | `loading="lazy"`                         | String          | -          |
+| [`blurDataURL`](#blurdataurl)             | `blurDataURL="data:image/jpeg..."`       | String          | -          |
+| [`unoptimized`](#unoptimized)             | `unoptimized={true}`                     | Boolean         | -          |
+| [`overrideSrc`](#overridesrc)             | `overrideSrc="/seo.png"`                 | String          | -          |
+| [`decoding`](#decoding)                   | `decoding="async"`                       | String          | -          |
+</div>
+<h4 class="sec" id="src"><a class="anchor" href="#src"><code>src</code></a></h4>
+<p>이미지의 source입니다. 다음 중 하나를 사용할 수 있습니다:</p><div class="en-orig"><p>The source of the image. Can be one of the following:</p></div>
+<p>내부 경로 문자열.</p><div class="en-orig"><p>An internal path string.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&lt;Image src=&quot;/profile.png&quot; /&gt;</code></pre></div></div>
+<p>절대 외부 URL (<a href="#remotepatterns">remotePatterns</a>로 설정해야 함).</p><div class="en-orig"><p>An absolute external URL (must be configured with <a href="#remotepatterns">remotePatterns</a>).</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&lt;Image src=&quot;https://example.com/profile.png&quot; /&gt;</code></pre></div></div>
+<p>static import.</p><div class="en-orig"><p>A static import.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import profile from &#x27;./profile.png&#x27;
+
+export default function Page() {
+  return &lt;Image src={profile} /&gt;
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>보안상의 이유로, 기본 <a href="#loader">loader</a>를 사용하는 Image Optimization API는 <code>src</code> 이미지를 가져올 때 header를 전달하지 <em>않습니다</em>.
+<code>src</code> 이미지에 인증이 필요하다면 <a href="#unoptimized">unoptimized</a> property를 사용해 Image Optimization을 비활성화하는 것을 고려하세요.</p><div class="en-orig"><p>For security reasons, the Image Optimization API using the default <a href="#loader">loader</a> will <em>not</em> forward headers when fetching the <code>src</code> image.
+If the <code>src</code> image requires authentication, consider using the <a href="#unoptimized">unoptimized</a> property to disable Image Optimization.</p></div></div></div>
+<h4 class="sec" id="alt"><a class="anchor" href="#alt"><code>alt</code></a></h4>
+<p><code>alt</code> property는 screen reader와 검색 엔진을 위해 이미지를 설명하는 데 사용됩니다. 또한 이미지가 비활성화되었거나 이미지를 불러오는 중 오류가 발생했을 때 보여 주는 fallback 텍스트이기도 합니다.</p><div class="en-orig"><p>The <code>alt</code> property is used to describe the image for screen readers and search engines. It is also the fallback text if images have been disabled or an error occurs while loading the image.</p></div>
+<p>이 값에는 <a href="https://html.spec.whatwg.org/multipage/images.html#general-guidelines" target="_blank" rel="noopener">페이지의 의미를 바꾸지 않고</a> 이미지를 대체할 수 있는 텍스트가 들어가야 합니다. 이미지를 보충하기 위한 것이 아니므로, 이미지 위나 아래의 caption에서 이미 제공한 정보를 반복해서는 안 됩니다.</p><div class="en-orig"><p>It should contain text that could replace the image <a href="https://html.spec.whatwg.org/multipage/images.html#general-guidelines" target="_blank" rel="noopener">without changing the meaning of the page</a>. It is not meant to supplement the image and should not repeat information that is already provided in the captions above or below the image.</p></div>
+<p>이미지가 <a href="https://html.spec.whatwg.org/multipage/images.html#a-purely-decorative-image-that-doesn&#x27;t-add-any-information" target="_blank" rel="noopener">순전히 장식용</a>이거나 <a href="https://html.spec.whatwg.org/multipage/images.html#an-image-not-intended-for-the-user" target="_blank" rel="noopener">사용자를 위한 것이 아니라면</a>, <code>alt</code> property는 빈 문자열(<code>alt=&quot;&quot;</code>)이어야 합니다.</p><div class="en-orig"><p>If the image is <a href="https://html.spec.whatwg.org/multipage/images.html#a-purely-decorative-image-that-doesn&#x27;t-add-any-information" target="_blank" rel="noopener">purely decorative</a> or <a href="https://html.spec.whatwg.org/multipage/images.html#an-image-not-intended-for-the-user" target="_blank" rel="noopener">not intended for the user</a>, the <code>alt</code> property should be an empty string (<code>alt=&quot;&quot;</code>).</p></div>
+<blockquote><p><a href="https://html.spec.whatwg.org/multipage/images.html#alt" target="_blank" rel="noopener">이미지 접근성 가이드라인</a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about <a href="https://html.spec.whatwg.org/multipage/images.html#alt" target="_blank" rel="noopener">image accessibility guidelines</a>.</p></div></blockquote>
+<h4 class="sec" id="width-and-height"><a class="anchor" href="#width-and-height"><code>width</code> and <code>height</code><span class="ko"><code>width</code>와 <code>height</code></span></a></h4>
+<p><code>width</code>와 <code>height</code> property는 <a href="https://developer.mozilla.org/en-US/docs/Glossary/Intrinsic_Size" target="_blank" rel="noopener">intrinsic</a>(고유) 이미지 크기를 pixel 단위로 나타냅니다. 이 property는 브라우저가 이미지 공간을 미리 확보하고 로딩 중 layout shift를 피하기 위해 사용하는 올바른 <strong>aspect ratio</strong>(종횡비)를 추론하는 데 쓰입니다. 이미지의 _렌더링 크기_를 결정하지는 않으며, 렌더링 크기는 CSS로 제어됩니다.</p><div class="en-orig"><p>The <code>width</code> and <code>height</code> properties represent the <a href="https://developer.mozilla.org/en-US/docs/Glossary/Intrinsic_Size" target="_blank" rel="noopener">intrinsic</a> image size in pixels. This property is used to infer the correct <strong>aspect ratio</strong> used by browsers to reserve space for the image and avoid layout shift during loading. It does not determine the <em>rendered size</em> of the image, which is controlled by CSS.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&lt;Image src=&quot;/profile.png&quot; width={500} height={500} /&gt;</code></pre></div></div>
+<p>다음 경우가 아니라면 <code>width</code>와 <code>height</code> property를 <strong>반드시</strong> 모두 설정해야 합니다:</p><div class="en-orig"><p>You <strong>must</strong> set both <code>width</code> and <code>height</code> properties unless:</p></div>
+<ul>
+<li>이미지가 static import된 경우.</li>
+<li>이미지에 <a href="#fill"><code>fill</code> property</a>가 있는 경우</li>
+</ul><div class="en-orig"><ul>
+<li>The image is statically imported.</li>
+<li>The image has the <a href="#fill"><code>fill</code> property</a></li>
+</ul></div>
+<p>height와 width를 알 수 없다면 <a href="#fill"><code>fill</code> property</a> 사용을 권장합니다.</p><div class="en-orig"><p>If the height and width are unknown, we recommend using the <a href="#fill"><code>fill</code> property</a>.</p></div>
+<h4 class="sec" id="fill"><a class="anchor" href="#fill"><code>fill</code></a></h4>
+<p>이미지가 부모 element의 크기에 맞게 확장되도록 하는 boolean입니다.</p><div class="en-orig"><p>A boolean that causes the image to expand to the size of the parent element.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&lt;Image src=&quot;/profile.png&quot; fill={true} /&gt;</code></pre></div></div>
+<p><strong>Positioning</strong>:</p><div class="en-orig"><p><strong>Positioning</strong>:</p></div>
+<ul>
+<li>부모 element는 <strong>반드시</strong> <code>position: &quot;relative&quot;</code>, <code>&quot;fixed&quot;</code>, <code>&quot;absolute&quot;</code> 중 하나를 지정해야 합니다.</li>
+<li>기본적으로 <code>&lt;img&gt;</code> element는 <code>position: &quot;absolute&quot;</code>를 사용합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The parent element <strong>must</strong> assign <code>position: &quot;relative&quot;</code>, <code>&quot;fixed&quot;</code>, <code>&quot;absolute&quot;</code>.</li>
+<li>By default, the <code>&lt;img&gt;</code> element uses <code>position: &quot;absolute&quot;</code>.</li>
+</ul></div>
+<p><strong>Object Fit</strong>:</p><div class="en-orig"><p><strong>Object Fit</strong>:</p></div>
+<p>이미지에 아무 style도 적용하지 않으면 이미지가 container에 맞게 늘어납니다. <code>objectFit</code>을 사용해 잘라내기(cropping)와 크기 조정(scaling)을 제어할 수 있습니다.</p><div class="en-orig"><p>If no styles are applied to the image, the image will stretch to fit the container. You can use <code>objectFit</code> to control cropping and scaling.</p></div>
+<ul>
+<li><code>&quot;contain&quot;</code>: 이미지가 aspect ratio를 유지한 채 container에 맞게 축소됩니다.</li>
+<li><code>&quot;cover&quot;</code>: 이미지가 container를 가득 채우고 잘립니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>&quot;contain&quot;</code>: The image will be scaled down to fit the container and preserve aspect ratio.</li>
+<li><code>&quot;cover&quot;</code>: The image will fill the container and be cropped.</li>
+</ul></div>
+<blockquote><p><a href="https://developer.mozilla.org/en-US/docs/Web/CSS/position" target="_blank" rel="noopener"><code>position</code></a>과 <a href="https://developer.mozilla.org/docs/Web/CSS/object-fit" target="_blank" rel="noopener"><code>object-fit</code></a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/position" target="_blank" rel="noopener"><code>position</code></a> and <a href="https://developer.mozilla.org/docs/Web/CSS/object-fit" target="_blank" rel="noopener"><code>object-fit</code></a>.</p></div></blockquote>
+<h4 class="sec" id="loader"><a class="anchor" href="#loader"><code>loader</code></a></h4>
+<p>이미지 URL을 생성하는 데 사용하는 custom 함수입니다. 이 함수는 다음 parameter를 받아 이미지의 URL 문자열을 반환합니다:</p><div class="en-orig"><p>A custom function used to generate the image URL. The function receives the following parameters, and returns a URL string for the image:</p></div>
+<ul>
+<li><a href="#src"><code>src</code></a></li>
+<li><a href="#width-and-height"><code>width</code></a></li>
+<li><a href="#quality"><code>quality</code></a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="#src"><code>src</code></a></li>
+<li><a href="#width-and-height"><code>width</code></a></li>
+<li><a href="#quality"><code>quality</code></a></li>
+</ul></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import Image from &#x27;next/image&#x27;
+
+const imageLoader = ({ src, width, quality }) =&gt; {
+  return `https://example.com/${src}?w=${width}&amp;q=${quality || 75}`
+}
+
+export default function Page() {
+  return (
+    &lt;Image
+      loader={imageLoader}
+      src=&quot;me.png&quot;
+      alt=&quot;Picture of the author&quot;
+      width={500}
+      height={500}
+    /&gt;
+  )
+}</code></pre></div></div>
+<p>또는 prop을 전달하지 않고 <code>next.config.js</code>의 <a href="#loaderfile">loaderFile</a> 설정을 사용해 애플리케이션의 모든 <code>next/image</code> instance를 설정할 수도 있습니다.</p><div class="en-orig"><p>Alternatively, you can use the <a href="#loaderfile">loaderFile</a> configuration in <code>next.config.js</code> to configure every instance of <code>next/image</code> in your application, without passing a prop.</p></div>
+<h4 class="sec" id="sizes"><a class="anchor" href="#sizes"><code>sizes</code></a></h4>
+<p>여러 breakpoint에서의 이미지 크기를 정의합니다. 브라우저가 생성된 <code>srcset</code>에서 가장 적절한 크기를 고르는 데 사용합니다.</p><div class="en-orig"><p>Define the sizes of the image at different breakpoints. Used by the browser to choose the most appropriate size from the generated <code>srcset</code>.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import Image from &#x27;next/image&#x27;
+
+export default function Page() {
+  return (
+    &lt;div className=&quot;grid-element&quot;&gt;
+      &lt;Image
+        fill
+        src=&quot;/example.png&quot;
+        sizes=&quot;(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw&quot;
+      /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p><code>sizes</code>는 다음과 같은 경우에 사용해야 합니다:</p><div class="en-orig"><p><code>sizes</code> should be used when:</p></div>
+<ul>
+<li>이미지가 <a href="#fill"><code>fill</code></a> prop을 사용하는 경우</li>
+<li>CSS를 사용해 이미지를 responsive하게 만드는 경우</li>
+</ul><div class="en-orig"><ul>
+<li>The image is using the <a href="#fill"><code>fill</code></a> prop</li>
+<li>CSS is used to make the image responsive</li>
+</ul></div>
+<p><code>sizes</code>가 없으면 브라우저는 이미지가 viewport만큼 넓다고(<code>100vw</code>) 가정합니다. 이로 인해 불필요하게 큰 이미지가 다운로드될 수 있습니다.</p><div class="en-orig"><p>If <code>sizes</code> is missing, the browser assumes the image will be as wide as the viewport (<code>100vw</code>). This can cause unnecessarily large images to be downloaded.</p></div>
+<p>또한 <code>sizes</code>는 <code>srcset</code>이 생성되는 방식에도 영향을 줍니다:</p><div class="en-orig"><p>In addition, <code>sizes</code> affects how <code>srcset</code> is generated:</p></div>
+<ul>
+<li><code>width</code>가 있는 이미지에서 <code>sizes</code>가 없으면: Next.js는 고정 크기 이미지에 적합한 제한된 <code>srcset</code>(예: 1x, 2x)을 생성합니다.</li>
+<li><code>fill</code> 이미지에서 <code>sizes</code>가 없으면: Next.js는 이미지가 viewport 전체에 걸쳐 있는 것처럼 <a href="#devicesizes"><code>deviceSizes</code></a>만으로 <code>srcset</code>을 생성합니다.</li>
+<li><code>sizes</code>가 있으면: Next.js는 responsive layout에 최적화된 전체 <code>srcset</code>(예: 640w, 750w 등)을 생성합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Without <code>sizes</code>, on an image with a <code>width</code>: Next.js generates a limited <code>srcset</code> (e.g. 1x, 2x), suitable for fixed-size images.</li>
+<li>Without <code>sizes</code>, on a <code>fill</code> image: Next.js generates a <code>srcset</code> from <a href="#devicesizes"><code>deviceSizes</code></a> only, as if the image spans the full viewport.</li>
+<li>With <code>sizes</code>: Next.js generates a full <code>srcset</code> (e.g. 640w, 750w, etc.), optimized for responsive layouts.</li>
+</ul></div>
+<blockquote><p><a href="https://web.dev/learn/design/responsive-images/#sizes" target="_blank" rel="noopener">web.dev</a>와 <a href="https://developer.mozilla.org/docs/Web/HTML/Element/img#sizes" target="_blank" rel="noopener">mdn</a>에서 <code>srcset</code>과 <code>sizes</code>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about <code>srcset</code> and <code>sizes</code> on <a href="https://web.dev/learn/design/responsive-images/#sizes" target="_blank" rel="noopener">web.dev</a> and <a href="https://developer.mozilla.org/docs/Web/HTML/Element/img#sizes" target="_blank" rel="noopener">mdn</a>.</p></div></blockquote>
+<h4 class="sec" id="quality"><a class="anchor" href="#quality"><code>quality</code></a></h4>
+<p>최적화된 이미지의 품질을 설정하는 <code>1</code>에서 <code>100</code> 사이의 정수입니다. 값이 높을수록 파일 크기와 시각적 충실도가 높아집니다. 값이 낮을수록 파일 크기는 줄어들지만 선명도가 떨어질 수 있습니다.</p><div class="en-orig"><p>An integer between <code>1</code> and <code>100</code> that sets the quality of the optimized image. Higher values increase file size and visual fidelity. Lower values reduce file size but may affect sharpness.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// Default quality is 75
+&lt;Image quality={75} /&gt;</code></pre></div></div>
+<p><code>next.config.js</code>에 <a href="#qualities">qualities</a>를 설정했다면, 그 목록에 없는 값은 허용된 값 중 가장 가까운 값으로 강제 변환됩니다. 예를 들어 <code>qualities: [50, 75, 100]</code>일 때 <code>quality</code>가 <code>80</code>이면 <code>75</code>로 제공됩니다. 개발 중에는 warning을 log로 남기므로 해당 값을 allowlist에 추가할 수 있습니다.</p><div class="en-orig"><p>If you’ve configured <a href="#qualities">qualities</a> in <code>next.config.js</code>, a value outside that list is coerced to the closest allowed entry. For example, with <code>qualities: [50, 75, 100]</code>, a <code>quality</code> of <code>80</code> is served as <code>75</code>. Development logs a warning so you can add the value to the allowlist.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>원본 이미지가 이미 저품질이라면, 높은 quality 값을 설정해도 보기에는 나아지지 않고 파일 크기만 커집니다.</p><div class="en-orig"><p>If the original image is already low quality, setting a high quality value will increase the file size without improving appearance.</p></div></div></div>
+<h4 class="sec" id="style"><a class="anchor" href="#style"><code>style</code></a></h4>
+<p>내부 image element에 CSS style을 전달할 수 있게 합니다.</p><div class="en-orig"><p>Allows passing CSS styles to the underlying image element.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">const imageStyle = {
+  borderRadius: &#x27;50%&#x27;,
+  border: &#x27;1px solid #fff&#x27;,
+  width: &#x27;100px&#x27;,
+  height: &#x27;auto&#x27;,
+}
+
+export default function ProfileImage() {
+  return &lt;Image src=&quot;...&quot; style={imageStyle} /&gt;
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>style</code> prop으로 custom width를 설정한다면, 이미지의 aspect ratio를 유지하기 위해 <code>height: &#x27;auto&#x27;</code>도 함께 설정하세요.</p><div class="en-orig"><p>If you’re using the <code>style</code> prop to set a custom width, be sure to also set <code>height: &#x27;auto&#x27;</code> to preserve the image’s aspect ratio.</p></div></div></div>
+<h4 class="sec" id="preload"><a class="anchor" href="#preload"><code>preload</code></a></h4>
+<p>이미지를 preload할지 여부를 나타내는 boolean입니다.</p><div class="en-orig"><p>A boolean that indicates if the image should be preloaded.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// Default preload is false
+&lt;Image preload={false} /&gt;</code></pre></div></div>
+<ul>
+<li><code>true</code>: <code>&lt;head&gt;</code>에 <code>&lt;link&gt;</code>를 삽입해 이미지를 <a href="https://web.dev/preload-responsive-images/" target="_blank" rel="noopener">preload</a>합니다.</li>
+<li><code>false</code>: 이미지를 preload하지 않습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>true</code>: <a href="https://web.dev/preload-responsive-images/" target="_blank" rel="noopener">Preloads</a> the image by inserting a <code>&lt;link&gt;</code> in the <code>&lt;head&gt;</code>.</li>
+<li><code>false</code>: Does not preload the image.</li>
+</ul></div>
+<p><strong>사용해야 할 때:</strong></p><div class="en-orig"><p><strong>When to use it:</strong></p></div>
+<ul>
+<li>이미지가 <a href="https://nextjs.org/learn/seo/web-performance/lcp" target="_blank" rel="noopener">Largest Contentful Paint (LCP)</a> element인 경우.</li>
+<li>이미지가 above the fold(스크롤 없이 보이는 영역)에 있는 경우, 보통 hero 이미지.</li>
+<li>이미지가 나중에 <code>&lt;body&gt;</code>에서 발견되기 전에 <code>&lt;head&gt;</code>에서 로딩을 시작하고 싶은 경우.</li>
+</ul><div class="en-orig"><ul>
+<li>The image is the <a href="https://nextjs.org/learn/seo/web-performance/lcp" target="_blank" rel="noopener">Largest Contentful Paint (LCP)</a> element.</li>
+<li>The image is above the fold, typically the hero image.</li>
+<li>You want to begin loading the image in the <code>&lt;head&gt;</code>, before its discovered later in the <code>&lt;body&gt;</code>.</li>
+</ul></div>
+<p><strong>사용하지 말아야 할 때:</strong></p><div class="en-orig"><p><strong>When not to use it:</strong></p></div>
+<ul>
+<li>viewport에 따라 <a href="https://nextjs.org/learn/seo/web-performance/lcp" target="_blank" rel="noopener">Largest Contentful Paint (LCP)</a> element로 간주될 수 있는 이미지가 여러 개인 경우.</li>
+<li><code>loading</code> property를 사용하는 경우.</li>
+<li><code>fetchPriority</code> property를 사용하는 경우.</li>
+</ul><div class="en-orig"><ul>
+<li>When you have multiple images that could be considered the <a href="https://nextjs.org/learn/seo/web-performance/lcp" target="_blank" rel="noopener">Largest Contentful Paint (LCP)</a> element depending on the viewport.</li>
+<li>When the <code>loading</code> property is used.</li>
+<li>When the <code>fetchPriority</code> property is used.</li>
+</ul></div>
+<p>대부분의 경우 <code>preload</code> 대신 <code>loading=&quot;eager&quot;</code> 또는 <code>fetchPriority=&quot;high&quot;</code>를 사용해야 합니다.</p><div class="en-orig"><p>In most cases, you should use <code>loading=&quot;eager&quot;</code> or <code>fetchPriority=&quot;high&quot;</code> instead of <code>preload</code>.</p></div>
+<h4 class="sec" id="priority"><a class="anchor" href="#priority"><code>priority</code></a></h4>
+<p>Next.js 16부터는 동작을 명확히 하기 위해 <code>priority</code> property가 deprecated되었고 <a href="#preload"><code>preload</code></a> property로 대체되었습니다.</p><div class="en-orig"><p>Starting with Next.js 16, the <code>priority</code> property has been deprecated in favor of the <a href="#preload"><code>preload</code></a> property in order to make the behavior clear.</p></div>
+<h4 class="sec" id="loading"><a class="anchor" href="#loading"><code>loading</code></a></h4>
+<p>이미지가 언제 로딩을 시작할지 제어합니다.</p><div class="en-orig"><p>Controls when the image should start loading.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// Defaults to lazy
+&lt;Image loading=&quot;lazy&quot; /&gt;</code></pre></div></div>
+<ul>
+<li><code>lazy</code>: 이미지가 viewport로부터 계산된 거리에 도달할 때까지 로딩을 미룹니다.</li>
+<li><code>eager</code>: 페이지 내 위치와 관계없이 이미지를 즉시 로드합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>lazy</code>: Defer loading the image until it reaches a calculated distance from the viewport.</li>
+<li><code>eager</code>: Load the image immediately, regardless of its position in the page.</li>
+</ul></div>
+<p>이미지가 즉시 로드되도록 보장하고 싶을 때만 <code>eager</code>를 사용하세요.</p><div class="en-orig"><p>Use <code>eager</code> only when you want to ensure the image is loaded immediately.</p></div>
+<blockquote><p><a href="https://developer.mozilla.org/docs/Web/HTML/Element/img#loading" target="_blank" rel="noopener"><code>loading</code> attribute</a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about the <a href="https://developer.mozilla.org/docs/Web/HTML/Element/img#loading" target="_blank" rel="noopener"><code>loading</code> attribute</a>.</p></div></blockquote>
+<h4 class="sec" id="placeholder"><a class="anchor" href="#placeholder"><code>placeholder</code></a></h4>
+<p>이미지를 불러오는 동안 사용할 placeholder를 지정해 체감 로딩 성능을 개선합니다.</p><div class="en-orig"><p>Specifies a placeholder to use while the image is loading, improving the perceived loading performance.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// defaults to empty
+&lt;Image placeholder=&quot;empty&quot; /&gt;</code></pre></div></div>
+<ul>
+<li><code>empty</code>: 이미지를 불러오는 동안 placeholder가 없습니다.</li>
+<li><code>blur</code>: 흐리게 처리한 버전의 이미지를 placeholder로 사용합니다. <a href="#blurdataurl"><code>blurDataURL</code></a> property와 함께 사용해야 합니다.</li>
+<li><code>data:image/...</code>: <a href="https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/Data_URIs" target="_blank" rel="noopener">Data URL</a>을 placeholder로 사용합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>empty</code>: No placeholder while the image is loading.</li>
+<li><code>blur</code>: Use a blurred version of the image as a placeholder. Must be used with the <a href="#blurdataurl"><code>blurDataURL</code></a> property.</li>
+<li><code>data:image/...</code>: Uses the <a href="https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/Data_URIs" target="_blank" rel="noopener">Data URL</a> as the placeholder.</li>
+</ul></div>
+<p><strong>예시:</strong></p><div class="en-orig"><p><strong>Examples:</strong></p></div>
+<ul>
+<li><a href="https://image-component.nextjs.gallery/placeholder" target="_blank" rel="noopener"><code>blur</code> placeholder</a></li>
+<li><a href="https://image-component.nextjs.gallery/shimmer" target="_blank" rel="noopener">data URL <code>placeholder</code> prop을 사용한 Shimmer 효과</a></li>
+<li><a href="https://image-component.nextjs.gallery/color" target="_blank" rel="noopener"><code>blurDataURL</code> prop을 사용한 Color 효과</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://image-component.nextjs.gallery/placeholder" target="_blank" rel="noopener"><code>blur</code> placeholder</a></li>
+<li><a href="https://image-component.nextjs.gallery/shimmer" target="_blank" rel="noopener">Shimmer effect with data URL <code>placeholder</code> prop</a></li>
+<li><a href="https://image-component.nextjs.gallery/color" target="_blank" rel="noopener">Color effect with <code>blurDataURL</code> prop</a></li>
+</ul></div>
+<blockquote><p><a href="https://developer.mozilla.org/docs/Web/HTML/Element/img#placeholder" target="_blank" rel="noopener"><code>placeholder</code> attribute</a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about the <a href="https://developer.mozilla.org/docs/Web/HTML/Element/img#placeholder" target="_blank" rel="noopener"><code>placeholder</code> attribute</a>.</p></div></blockquote>
+<h4 class="sec" id="blurdataurl"><a class="anchor" href="#blurdataurl"><code>blurDataURL</code></a></h4>
+<p>이미지가 성공적으로 로드되기 전에 placeholder 이미지로 사용할 <a href="https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/Data_URIs" target="_blank" rel="noopener">Data URL</a>입니다.
+자동으로 설정되거나 <a href="#placeholder"><code>placeholder=&quot;blur&quot;</code></a> property와 함께 사용할 수 있습니다.</p><div class="en-orig"><p>A <a href="https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/Data_URIs" target="_blank" rel="noopener">Data URL</a> to
+be used as a placeholder image before the image successfully loads. Can be automatically set or used with the <a href="#placeholder"><code>placeholder=&quot;blur&quot;</code></a> property.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&lt;Image placeholder=&quot;blur&quot; blurDataURL=&quot;...&quot; /&gt;</code></pre></div></div>
+<p>이미지는 자동으로 확대되고 흐리게 처리되므로, 아주 작은 이미지(10px 이하)를 권장합니다.</p><div class="en-orig"><p>The image is automatically enlarged and blurred, so a very small image (10px or less) is recommended.</p></div>
+<p><strong>자동</strong></p><div class="en-orig"><p><strong>Automatic</strong></p></div>
+<p><code>src</code>가 <code>jpg</code>, <code>png</code>, <code>webp</code>, <code>avif</code> 파일의 static import라면, 애니메이션 이미지가 아닌 한 <code>blurDataURL</code>이 자동으로 추가됩니다.</p><div class="en-orig"><p>If <code>src</code> is a static import of a <code>jpg</code>, <code>png</code>, <code>webp</code>, or <code>avif</code> file, <code>blurDataURL</code> is added automatically—unless the image is animated.</p></div>
+<p><strong>수동 설정</strong></p><div class="en-orig"><p><strong>Manually set</strong></p></div>
+<p>이미지가 dynamic이거나 remote라면 <code>blurDataURL</code>을 직접 제공해야 합니다. 생성하려면 다음을 사용할 수 있습니다:</p><div class="en-orig"><p>If the image is dynamic or remote, you must provide <code>blurDataURL</code> yourself. To generate one, you can use:</p></div>
+<ul>
+<li><a href="https://png-pixel.com" target="_blank" rel="noopener">png-pixel.com 같은 온라인 도구</a></li>
+<li><a href="https://github.com/joe-bell/plaiceholder" target="_blank" rel="noopener">Plaiceholder 같은 library</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://png-pixel.com" target="_blank" rel="noopener">A online tool like png-pixel.com</a></li>
+<li><a href="https://github.com/joe-bell/plaiceholder" target="_blank" rel="noopener">A library like Plaiceholder</a></li>
+</ul></div>
+<p>blurDataURL이 크면 성능이 떨어질 수 있습니다. 작고 단순하게 유지하세요.</p><div class="en-orig"><p>A large blurDataURL may hurt performance. Keep it small and simple.</p></div>
+<p><strong>예시:</strong></p><div class="en-orig"><p><strong>Examples:</strong></p></div>
+<ul>
+<li><a href="https://image-component.nextjs.gallery/placeholder" target="_blank" rel="noopener">기본 <code>blurDataURL</code> prop</a></li>
+<li><a href="https://image-component.nextjs.gallery/color" target="_blank" rel="noopener"><code>blurDataURL</code> prop을 사용한 Color 효과</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://image-component.nextjs.gallery/placeholder" target="_blank" rel="noopener">Default <code>blurDataURL</code> prop</a></li>
+<li><a href="https://image-component.nextjs.gallery/color" target="_blank" rel="noopener">Color effect with <code>blurDataURL</code> prop</a></li>
+</ul></div>
+<h4 class="sec" id="onload"><a class="anchor" href="#onload"><code>onLoad</code></a></h4>
+<p>이미지가 완전히 로드되고 <a href="#placeholder">placeholder</a>가 제거된 후 호출되는 callback 함수입니다.</p><div class="en-orig"><p>A callback function that is invoked once the image is completely loaded and the <a href="#placeholder">placeholder</a> has been removed.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&lt;Image onLoad={(e) =&gt; console.log(e.target.naturalWidth)} /&gt;</code></pre></div></div>
+<p>callback 함수는 하나의 인자, 즉 내부 <code>&lt;img&gt;</code> element를 참조하는 <code>target</code>을 가진 event와 함께 호출됩니다.</p><div class="en-orig"><p>The callback function will be called with one argument, the event which has a <code>target</code> that references the underlying <code>&lt;img&gt;</code> element.</p></div>
+<h4 class="sec" id="onerror"><a class="anchor" href="#onerror"><code>onError</code></a></h4>
+<p>이미지 로드에 실패하면 호출되는 callback 함수입니다.</p><div class="en-orig"><p>A callback function that is invoked if the image fails to load.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&lt;Image onError={(e) =&gt; console.error(e.target.id)} /&gt;</code></pre></div></div>
+<h4 class="sec" id="unoptimized"><a class="anchor" href="#unoptimized"><code>unoptimized</code></a></h4>
+<p>이미지를 최적화할지 여부를 나타내는 boolean입니다. 작은 이미지(1KB 미만), vector 이미지(SVG), 애니메이션 이미지(GIF)처럼 최적화의 이점이 없는 이미지에 유용합니다.</p><div class="en-orig"><p>A boolean that indicates if the image should be optimized. This is useful for images that do not benefit from optimization such as small images (less than 1KB), vector images (SVG), or animated images (GIF).</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import Image from &#x27;next/image&#x27;
+
+const UnoptimizedImage = (props) =&gt; {
+  // Default is false
+  return &lt;Image {...props} unoptimized /&gt;
+}</code></pre></div></div>
+<ul>
+<li><code>true</code>: quality, 크기, format을 바꾸지 않고 source 이미지를 <code>src</code>에서 그대로 제공합니다.</li>
+<li><code>false</code>: source 이미지를 최적화합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>true</code>: The source image will be served as-is from the <code>src</code> instead of changing quality, size, or format.</li>
+<li><code>false</code>: The source image will be optimized.</li>
+</ul></div>
+<p>Next.js 12.3.0부터는 <code>next.config.js</code>를 다음 설정으로 업데이트해 모든 이미지에 이 prop을 지정할 수 있습니다:</p><div class="en-orig"><p>Since Next.js 12.3.0, this prop can be assigned to all images by updating <code>next.config.js</code> with the following configuration:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    unoptimized: true,
+  },
+}</code></pre></div></div>
+<h4 class="sec" id="overridesrc"><a class="anchor" href="#overridesrc"><code>overrideSrc</code></a></h4>
+<p><code>&lt;Image&gt;</code> component에 <code>src</code> prop을 제공하면, 결과로 만들어지는 <code>&lt;img&gt;</code>에 <code>srcset</code>과 <code>src</code> attribute가 모두 자동으로 생성됩니다.</p><div class="en-orig"><p>When providing the <code>src</code> prop to the <code>&lt;Image&gt;</code> component, both the <code>srcset</code> and <code>src</code> attributes are generated automatically for the resulting <code>&lt;img&gt;</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">input.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">&lt;Image src=&quot;/profile.jpg&quot; /&gt;</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">output.html</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;img
+  srcset=&quot;
+    /_next/image?url=%2Fprofile.jpg&amp;w=640&amp;q=75 1x,
+    /_next/image?url=%2Fprofile.jpg&amp;w=828&amp;q=75 2x
+  &quot;
+  src=&quot;/_next/image?url=%2Fprofile.jpg&amp;w=828&amp;q=75&quot;
+/&gt;</code></pre></div></div>
+<p>경우에 따라 <code>src</code> attribute가 생성되는 것이 바람직하지 않을 수 있으며, 이때 <code>overrideSrc</code> prop으로 이를 override할 수 있습니다.</p><div class="en-orig"><p>In some cases, it is not desirable to have the <code>src</code> attribute generated and you may wish to override it using the <code>overrideSrc</code> prop.</p></div>
+<p>예를 들어 기존 웹사이트를 <code>&lt;img&gt;</code>에서 <code>&lt;Image&gt;</code>로 업그레이드할 때, 이미지 순위 유지나 recrawl 방지 같은 SEO 목적으로 동일한 <code>src</code> attribute를 유지하고 싶을 수 있습니다.</p><div class="en-orig"><p>For example, when upgrading an existing website from <code>&lt;img&gt;</code> to <code>&lt;Image&gt;</code>, you may wish to maintain the same <code>src</code> attribute for SEO purposes such as image ranking or avoiding recrawl.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">input.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">&lt;Image src=&quot;/profile.jpg&quot; overrideSrc=&quot;/override.jpg&quot; /&gt;</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">output.html</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;img
+  srcset=&quot;
+    /_next/image?url=%2Fprofile.jpg&amp;w=640&amp;q=75 1x,
+    /_next/image?url=%2Fprofile.jpg&amp;w=828&amp;q=75 2x
+  &quot;
+  src=&quot;/override.jpg&quot;
+/&gt;</code></pre></div></div>
+<h4 class="sec" id="decoding"><a class="anchor" href="#decoding"><code>decoding</code></a></h4>
+<p>다른 콘텐츠 업데이트를 표시하기 전에 이미지가 decode될 때까지 기다려야 하는지를 브라우저에 알려 주는 hint입니다.</p><div class="en-orig"><p>A hint to the browser indicating if it should wait for the image to be decoded before presenting other content updates or not.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// Default is async
+&lt;Image decoding=&quot;async&quot; /&gt;</code></pre></div></div>
+<ul>
+<li><code>async</code>: 이미지를 비동기로 decode하고, 완료되기 전에 다른 콘텐츠가 렌더링되도록 허용합니다.</li>
+<li><code>sync</code>: 다른 콘텐츠와 함께 원자적으로(atomic) 표시되도록 이미지를 동기로 decode합니다.</li>
+<li><code>auto</code>: 선호 없음. 브라우저가 최적의 방식을 선택합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>async</code>: Asynchronously decode the image and allow other content to be rendered before it completes.</li>
+<li><code>sync</code>: Synchronously decode the image for atomic presentation with other content.</li>
+<li><code>auto</code>: No preference. The browser chooses the best approach.</li>
+</ul></div>
+<blockquote><p><a href="https://developer.mozilla.org/docs/Web/HTML/Element/img#decoding" target="_blank" rel="noopener"><code>decoding</code> attribute</a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about the <a href="https://developer.mozilla.org/docs/Web/HTML/Element/img#decoding" target="_blank" rel="noopener"><code>decoding</code> attribute</a>.</p></div></blockquote>
+<h3 class="sec" id="other-props"><a class="anchor" href="#other-props">Other Props<span class="ko">기타 Props</span></a></h3>
+<p><code>&lt;Image /&gt;</code> component의 다른 property는 다음을 제외하고 내부 <code>img</code> element로 전달됩니다:</p><div class="en-orig"><p>Other properties on the <code>&lt;Image /&gt;</code> component will be passed to the underlying <code>img</code> element with the exception of the following:</p></div>
+<ul>
+<li><code>srcSet</code>: 대신 <a href="#devicesizes">Device Sizes</a>를 사용하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><code>srcSet</code>: Use <a href="#devicesizes">Device Sizes</a> instead.</li>
+</ul></div>
+<h3 class="sec" id="deprecated-props"><a class="anchor" href="#deprecated-props">Deprecated props</a></h3>
+<h4 class="sec" id="onloadingcomplete"><a class="anchor" href="#onloadingcomplete"><code>onLoadingComplete</code></a></h4>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Warning</div><p>Next.js 14에서 deprecated되었습니다. 대신 <a href="#onload"><code>onLoad</code></a>를 사용하세요.</p><div class="en-orig"><p>Deprecated in Next.js 14, use <a href="#onload"><code>onLoad</code></a> instead.</p></div></div></div>
+<p>이미지가 완전히 로드되고 <a href="#placeholder">placeholder</a>가 제거된 후 호출되는 callback 함수입니다.</p><div class="en-orig"><p>A callback function that is invoked once the image is completely loaded and the <a href="#placeholder">placeholder</a> has been removed.</p></div>
+<p>callback 함수는 하나의 인자, 즉 내부 <code>&lt;img&gt;</code> element에 대한 reference와 함께 호출됩니다.</p><div class="en-orig"><p>The callback function will be called with one argument, a reference to the underlying <code>&lt;img&gt;</code> element.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&lt;Image onLoadingComplete={(img) =&gt; console.log(img.naturalWidth)} /&gt;</code></pre></div></div>
+<h3 class="sec" id="configuration-options"><a class="anchor" href="#configuration-options">Configuration options<span class="ko">설정 옵션</span></a></h3>
+<p><code>next.config.js</code>에서 Image Component를 설정할 수 있습니다. 사용할 수 있는 옵션은 다음과 같습니다:</p><div class="en-orig"><p>You can configure the Image Component in <code>next.config.js</code>. The following options are available:</p></div>
+<h4 class="sec" id="localpatterns"><a class="anchor" href="#localpatterns"><code>localPatterns</code></a></h4>
+<p><code>next.config.js</code> 파일에서 <code>localPatterns</code>를 사용해 특정 로컬 경로의 이미지만 최적화하도록 허용하고 나머지는 모두 차단합니다.</p><div class="en-orig"><p>Use <code>localPatterns</code> in your <code>next.config.js</code> file to allow images from specific local paths to be optimized and block all others.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    localPatterns: [
+      {
+        pathname: &#x27;/assets/images/**&#x27;,
+        search: &#x27;&#x27;,
+      },
+    ],
+  },
+}</code></pre></div></div>
+<p>위 예시는 <code>next/image</code>의 <code>src</code> property가 반드시 <code>/assets/images/</code>로 시작하고 query string이 없도록 보장합니다. 다른 경로를 최적화하려고 하면 <code>400</code> Bad Request 오류로 응답합니다.</p><div class="en-orig"><p>The example above will ensure the <code>src</code> property of <code>next/image</code> must start with <code>/assets/images/</code> and must not have a query string. Attempting to optimize any other path will respond with <code>400</code> Bad Request error.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>search</code> property를 생략하면 모든 search parameter가 허용되어, 악의적인 사용자가 의도하지 않은 URL을 최적화할 수 있게 됩니다. 정확히 일치하도록 <code>search: &#x27;?v=2&#x27;</code> 같은 구체적인 값을 사용해 보세요.</p><div class="en-orig"><p>Omitting the <code>search</code> property allows all search parameters which could allow malicious actors to optimize URLs you did not intend. Try using a specific value like <code>search: &#x27;?v=2&#x27;</code> to ensure an exact match.</p></div></div></div>
+<h4 class="sec" id="remotepatterns"><a class="anchor" href="#remotepatterns"><code>remotePatterns</code></a></h4>
+<p><code>next.config.js</code> 파일에서 <code>remotePatterns</code>를 사용해 특정 외부 경로의 이미지만 허용하고 나머지는 모두 차단합니다. 이렇게 하면 내 account의 외부 이미지만 제공되도록 보장할 수 있습니다.</p><div class="en-orig"><p>Use <code>remotePatterns</code> in your <code>next.config.js</code> file to allow images from specific external paths and block all others. This ensures that only external images from your account can be served.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    remotePatterns: [new URL(&#x27;https://example.com/account123/**&#x27;)],
+  },
+}</code></pre></div></div>
+<p>object를 사용해 <code>remotePatterns</code>를 설정할 수도 있습니다:</p><div class="en-orig"><p>You can also configure <code>remotePatterns</code> using the object:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: &#x27;https&#x27;,
+        hostname: &#x27;example.com&#x27;,
+        port: &#x27;&#x27;,
+        pathname: &#x27;/account123/**&#x27;,
+        search: &#x27;&#x27;,
+      },
+    ],
+  },
+}</code></pre></div></div>
+<p>위 예시는 <code>next/image</code>의 <code>src</code> property가 반드시 <code>https://example.com/account123/</code>로 시작하고 query string이 없도록 보장합니다. 그 외의 protocol, hostname, port, 또는 일치하지 않는 경로는 <code>400</code> Bad Request로 응답합니다.</p><div class="en-orig"><p>The example above will ensure the <code>src</code> property of <code>next/image</code> must start with <code>https://example.com/account123/</code> and must not have a query string. Any other protocol, hostname, port, or unmatched path will respond with <code>400</code> Bad Request.</p></div>
+<p><strong>Wildcard Patterns:</strong></p><div class="en-orig"><p><strong>Wildcard Patterns:</strong></p></div>
+<p>Wildcard pattern은 <code>pathname</code>과 <code>hostname</code> 모두에 사용할 수 있으며 문법은 다음과 같습니다:</p><div class="en-orig"><p>Wildcard patterns can be used for both <code>pathname</code> and <code>hostname</code> and have the following syntax:</p></div>
+<ul>
+<li><code>*</code>는 하나의 path segment 또는 subdomain과 일치합니다</li>
+<li><code>**</code>는 끝부분의 여러 path segment 또는 앞부분의 여러 subdomain과 일치합니다. 이 문법은 pattern의 중간에서는 동작하지 않습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>*</code> match a single path segment or subdomain</li>
+<li><code>**</code> match any number of path segments at the end or subdomains at the beginning. This syntax does not work in the middle of the pattern.</li>
+</ul></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: &#x27;https&#x27;,
+        hostname: &#x27;**.example.com&#x27;,
+        port: &#x27;&#x27;,
+        search: &#x27;&#x27;,
+      },
+    ],
+  },
+}</code></pre></div></div>
+<p>이렇게 하면 <code>image.example.com</code> 같은 subdomain이 허용됩니다. query string과 custom port는 여전히 차단됩니다.</p><div class="en-orig"><p>This allows subdomains like <code>image.example.com</code>. Query strings and custom ports are still blocked.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>protocol</code>, <code>port</code>, <code>pathname</code>, <code>search</code>를 생략하면 wildcard <code>**</code>가 적용된 것으로 간주됩니다. 악의적인 사용자가 의도하지 않은 url을 최적화할 수 있으므로 권장하지 않습니다.</p><div class="en-orig"><p>When omitting <code>protocol</code>, <code>port</code>, <code>pathname</code>, or <code>search</code> then the wildcard <code>**</code> is implied. This is not recommended because it may allow malicious actors to optimize urls you did not intend.</p></div></div></div>
+<p><strong>Query Strings</strong>:</p><div class="en-orig"><p><strong>Query Strings</strong>:</p></div>
+<p><code>search</code> property를 사용해 query string을 제한할 수도 있습니다:</p><div class="en-orig"><p>You can also restrict query strings using the <code>search</code> property:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: &#x27;https&#x27;,
+        hostname: &#x27;assets.example.com&#x27;,
+        search: &#x27;?v=1727111025337&#x27;,
+      },
+    ],
+  },
+}</code></pre></div></div>
+<p>위 예시는 <code>next/image</code>의 <code>src</code> property가 반드시 <code>https://assets.example.com</code>으로 시작하고 정확히 <code>?v=1727111025337</code> query string을 갖도록 보장합니다. 그 외의 protocol이나 query string은 <code>400</code> Bad Request로 응답합니다.</p><div class="en-orig"><p>The example above will ensure the <code>src</code> property of <code>next/image</code> must start with <code>https://assets.example.com</code> and must have the exact query string <code>?v=1727111025337</code>. Any other protocol or query string will respond with <code>400</code> Bad Request.</p></div>
+<p>허용된 <code>remotePatterns</code>가 redirect로 응답하는 경우, redirect 위치에 대해 <code>remotePatterns</code>를 다시 검증하지 않고 remote 이미지 서버의 redirect를 따라간다는 점에 유의하세요. <a href="#maximumredirects">maximumRedirects</a>를 설정해 redirect를 줄이거나 비활성화할 수 있습니다.</p><div class="en-orig"><p>Note that any allowed <code>remotePatterns</code> that respond with a redirect will follow the redirect from the remote image server without validating <code>remotePatterns</code> again on the redirect location. You can reduce or disable redirects by configuring <a href="#maximumredirects">maximumRedirects</a>.</p></div>
+<h4 class="sec" id="loaderfile"><a class="anchor" href="#loaderfile"><code>loaderFile</code></a></h4>
+<p><code>loaderFile</code>을 사용하면 Next.js 대신 custom 이미지 최적화 서비스를 사용할 수 있습니다.</p><div class="en-orig"><p><code>loaderFile</code> allows you to use a custom image optimization service instead of Next.js.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    loader: &#x27;custom&#x27;,
+    loaderFile: &#x27;./my/image/loader.js&#x27;,
+  },
+}</code></pre></div></div>
+<p>경로는 프로젝트 root 기준 상대 경로여야 합니다. 파일은 URL 문자열을 반환하는 default 함수를 export해야 합니다:</p><div class="en-orig"><p>The path must be relative to the project root. The file must export a default function that returns a URL string:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">my/image/loader.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export default function myImageLoader({ src, width, quality }) {
+  return `https://example.com/${src}?w=${width}&amp;q=${quality || 75}`
+}</code></pre></div></div>
+<p><strong>예시:</strong></p><div class="en-orig"><p><strong>Example:</strong></p></div>
+<ul>
+<li><a href="app-api-reference-config-next-config-js-images.html#example-loader-configuration">Custom Image Loader Configuration</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-config-next-config-js-images.html#example-loader-configuration">Custom Image Loader Configuration</a></li>
+</ul></div>
+<blockquote><p>또는 <a href="#loader"><code>loader</code> prop</a>을 사용해 <code>next/image</code>의 각 instance를 설정할 수도 있습니다.</p><div class="en-orig"><p>Alternatively, you can use the <a href="#loader"><code>loader</code> prop</a> to configure each instance of <code>next/image</code>.</p></div></blockquote>
+<h4 class="sec" id="path"><a class="anchor" href="#path"><code>path</code></a></h4>
+<p>Image Optimization API의 기본 경로를 바꾸거나 prefix를 붙이고 싶다면 <code>path</code> property로 할 수 있습니다. <code>path</code>의 기본값은 <code>/_next/image</code>입니다.</p><div class="en-orig"><p>If you want to change or prefix the default path for the Image Optimization API, you can do so with the <code>path</code> property. The default value for <code>path</code> is <code>/_next/image</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    path: &#x27;/my-prefix/_next/image&#x27;,
+  },
+}</code></pre></div></div>
+<h4 class="sec" id="devicesizes"><a class="anchor" href="#devicesizes"><code>deviceSizes</code></a></h4>
+<p><code>deviceSizes</code>로 기기 width breakpoint 목록을 지정할 수 있습니다. 이 width들은 <code>next/image</code> component가 <a href="#sizes"><code>sizes</code></a> prop을 사용하거나 <code>sizes</code> 없이 <a href="#fill"><code>fill</code></a> prop을 사용할 때, 사용자의 기기에 맞는 올바른 이미지가 제공되도록 하는 데 쓰입니다.</p><div class="en-orig"><p><code>deviceSizes</code> allows you to specify a list of device width breakpoints. These widths are used when the <code>next/image</code> component uses the <a href="#sizes"><code>sizes</code></a> prop, or the <a href="#fill"><code>fill</code></a> prop without <code>sizes</code>, to ensure the correct image is served for the user's device.</p></div>
+<p>설정을 제공하지 않으면 아래 기본값이 사용됩니다:</p><div class="en-orig"><p>If no configuration is provided, the default below is used:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+  },
+}</code></pre></div></div>
+<h4 class="sec" id="imagesizes"><a class="anchor" href="#imagesizes"><code>imageSizes</code></a></h4>
+<p><code>imageSizes</code>로 이미지 width 목록을 지정할 수 있습니다. 이 width들은 <a href="#devicesizes">device sizes</a> 배열과 이어 붙여져, 이미지 <a href="https://developer.mozilla.org/docs/Web/API/HTMLImageElement/srcset" target="_blank" rel="noopener">srcset</a>을 생성하는 데 쓰이는 전체 크기 배열을 구성합니다.</p><div class="en-orig"><p><code>imageSizes</code> allows you to specify a list of image widths. These widths are concatenated with the array of <a href="#devicesizes">device sizes</a> to form the full array of sizes used to generate image <a href="https://developer.mozilla.org/docs/Web/API/HTMLImageElement/srcset" target="_blank" rel="noopener">srcset</a>.</p></div>
+<p>설정을 제공하지 않으면 아래 기본값이 사용됩니다:</p><div class="en-orig"><p>If no configuration is provided, the default below is used:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    imageSizes: [32, 48, 64, 96, 128, 256, 384],
+  },
+}</code></pre></div></div>
+<p><code>imageSizes</code>는 <a href="#sizes"><code>sizes</code></a> prop을 제공하는 이미지에만 사용되며, 이는 이미지가 화면 전체 width보다 작다는 것을 의미합니다. 따라서 <code>imageSizes</code>의 크기는 모두 <code>deviceSizes</code>의 가장 작은 크기보다 작아야 합니다.</p><div class="en-orig"><p><code>imageSizes</code> is only used for images which provide a <a href="#sizes"><code>sizes</code></a> prop, which indicates that the image is less than the full width of the screen. Therefore, the sizes in <code>imageSizes</code> should all be smaller than the smallest size in <code>deviceSizes</code>.</p></div>
+<h4 class="sec" id="qualities"><a class="anchor" href="#qualities"><code>qualities</code></a></h4>
+<p><code>qualities</code>로 이미지 quality 값 목록을 지정할 수 있습니다.</p><div class="en-orig"><p><code>qualities</code> allows you to specify a list of image quality values.</p></div>
+<p>설정을 제공하지 않으면 아래 기본값이 사용됩니다:</p><div class="en-orig"><p>If not configuration is provided, the default below is used:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    qualities: [75],
+  },
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>제한 없는 접근을 허용하면 악의적인 사용자가 의도보다 많은 quality를 최적화할 수 있기 때문에, Next.js 16부터 이 필드는 필수입니다.</p><div class="en-orig"><p>This field is required starting with Next.js 16 because unrestricted access could allow malicious actors to optimize more qualities than you intended.</p></div></div></div>
+<p>다음과 같이 allowlist에 이미지 quality를 더 추가할 수 있습니다:</p><div class="en-orig"><p>You can add more image qualities to the allowlist, such as the following:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    qualities: [25, 50, 75, 100],
+  },
+}</code></pre></div></div>
+<p>위 예시에서는 25, 50, 75, 100 네 가지 quality만 허용됩니다.</p><div class="en-orig"><p>In the example above, only four qualities are allowed: 25, 50, 75, and 100.</p></div>
+<p><a href="#quality"><code>quality</code></a> prop이 이 배열의 값과 일치하지 않으면, 허용된 값 중 가장 가까운 값이 사용됩니다.</p><div class="en-orig"><p>If the <a href="#quality"><code>quality</code></a> prop does not match a value in this array, the closest allowed value will be used.</p></div>
+<p>이 배열의 값과 일치하지 않는 quality로 REST API에 직접 접근하면, 서버는 400 Bad Request response를 반환합니다.</p><div class="en-orig"><p>If the REST API is visited directly with a quality that does not match a value in this array, the server will return a 400 Bad Request response.</p></div>
+<h4 class="sec" id="formats"><a class="anchor" href="#formats"><code>formats</code></a></h4>
+<p><code>formats</code>로 사용할 이미지 format 목록을 지정할 수 있습니다.</p><div class="en-orig"><p><code>formats</code> allows you to specify a list of image formats to be used.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    // Default
+    formats: [&#x27;image/webp&#x27;],
+  },
+}</code></pre></div></div>
+<p>Next.js는 최적의 출력 format을 결정하기 위해 request의 <code>Accept</code> header를 통해 브라우저가 지원하는 이미지 format을 자동으로 감지합니다.</p><div class="en-orig"><p>Next.js automatically detects the browser's supported image formats via the request's <code>Accept</code> header in order to determine the best output format.</p></div>
+<p><code>Accept</code> header가 설정된 format 중 둘 이상과 일치하면 배열에서 첫 번째로 일치하는 것이 사용됩니다. 따라서 배열 순서가 중요합니다. 일치하는 것이 없거나(또는 source 이미지가 애니메이션이면) 원본 이미지의 format을 사용합니다.</p><div class="en-orig"><p>If the <code>Accept</code> header matches more than one of the configured formats, the first match in the array is used. Therefore, the array order matters. If there is no match (or the source image is animated), it will use the original image's format.</p></div>
+<p>AVIF 지원을 활성화할 수 있으며, 브라우저가 <a href="https://caniuse.com/avif" target="_blank" rel="noopener">AVIF를 지원하지 않으면</a> src 이미지의 원본 format으로 fallback합니다:</p><div class="en-orig"><p>You can enable AVIF support, which will fallback to the original format of the src image if the browser <a href="https://caniuse.com/avif" target="_blank" rel="noopener">does not support AVIF</a>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    formats: [&#x27;image/avif&#x27;],
+  },
+}</code></pre></div></div>
+<p>AVIF와 WebP format을 함께 활성화할 수도 있습니다. AVIF를 지원하는 브라우저에서는 AVIF가 우선 사용되고, WebP가 fallback이 됩니다:</p><div class="en-orig"><p>You can also enable both AVIF and WebP formats together. AVIF will be preferred for browsers that support it, with WebP as a fallback:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    formats: [&#x27;image/avif&#x27;, &#x27;image/webp&#x27;],
+  },
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>대부분의 경우에는 여전히 WebP 사용을 권장합니다.</li>
+<li>AVIF는 일반적으로 encode하는 데 50% 더 오래 걸리지만 WebP보다 20% 더 작게 압축됩니다. 즉, 이미지를 처음 request할 때는 보통 더 느리지만, cache된 이후의 request는 더 빠릅니다.</li>
+<li>여러 format을 사용하면 Next.js는 각 format을 따로 cache합니다. 서로 다른 브라우저 지원을 위해 이미지의 AVIF 버전과 WebP 버전이 모두 저장되므로, 단일 format을 사용할 때보다 저장 공간이 더 필요합니다.</li>
+<li>Next.js 앞단에 Proxy/CDN을 두고 self-host한다면, Proxy가 <code>Accept</code> header를 전달하도록 설정해야 합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>We still recommend using WebP for most use cases.</li>
+<li>AVIF generally takes 50% longer to encode but it compresses 20% smaller compared to WebP. This means that the first time an image is requested, it will typically be slower, but subsequent requests that are cached will be faster.</li>
+<li>When using multiple formats, Next.js will cache each format separately. This means increased storage requirements compared to using a single format, as both AVIF and WebP versions of images will be stored for different browser support.</li>
+<li>If you self-host with a Proxy/CDN in front of Next.js, you must configure the Proxy to forward the <code>Accept</code> header.</li>
+</ul></div></div></div>
+<h4 class="sec" id="minimumcachettl"><a class="anchor" href="#minimumcachettl"><code>minimumCacheTTL</code></a></h4>
+<p><code>minimumCacheTTL</code>로 cache된 최적화 이미지의 TTL(Time to Live)을 초 단위로 설정할 수 있습니다. 많은 경우 파일 내용을 자동으로 hash하고 수명이 긴 <code>immutable</code> <code>Cache-Control</code> header로 이미지를 cache하는 <a href="app-getting-started-images.html#local-images">Static Image Import</a>를 사용하는 편이 더 좋습니다.</p><div class="en-orig"><p><code>minimumCacheTTL</code> allows you to configure the Time to Live (TTL) in seconds for cached optimized images. In many cases, it's better to use a <a href="app-getting-started-images.html#local-images">Static Image Import</a> which will automatically hash the file contents and cache the image with a long-lived <code>immutable</code> <code>Cache-Control</code> header.</p></div>
+<p>설정을 제공하지 않으면 아래 기본값이 사용됩니다.</p><div class="en-orig"><p>If no configuration is provided, the default below is used.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    minimumCacheTTL: 14400, // 4 hours
+  },
+}</code></pre></div></div>
+<p>TTL을 늘려 revalidation 횟수를 줄이고 비용을 낮출 수 있습니다:</p><div class="en-orig"><p>You can increase the TTL to reduce the number of revalidations and potentially lower cost:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    minimumCacheTTL: 2678400, // 31 days
+  },
+}</code></pre></div></div>
+<p>최적화된 이미지의 만료(정확히는 Max Age)는 <code>minimumCacheTTL</code>과 upstream 이미지의 <code>Cache-Control</code> header 중 더 큰 값으로 정의됩니다.</p><div class="en-orig"><p>The expiration (or rather Max Age) of the optimized image is defined by either the <code>minimumCacheTTL</code> or the upstream image <code>Cache-Control</code> header, whichever is larger.</p></div>
+<p>이미지별로 caching 동작을 바꿔야 한다면, <a href="app-api-reference-config-next-config-js-headers.html"><code>headers</code></a>를 설정해 upstream 이미지(예: <code>/_next/image</code> 자체가 아니라 <code>/some-asset.jpg</code>)에 <code>Cache-Control</code> header를 지정할 수 있습니다.</p><div class="en-orig"><p>If you need to change the caching behavior per image, you can configure <a href="app-api-reference-config-next-config-js-headers.html"><code>headers</code></a> to set the <code>Cache-Control</code> header on the upstream image (e.g. <code>/some-asset.jpg</code>, not <code>/_next/image</code> itself).</p></div>
+<p>현재는 cache를 무효화하는 방법이 없으므로 <code>minimumCacheTTL</code>을 낮게 유지하는 것이 좋습니다. 그렇지 않으면 <a href="#src"><code>src</code></a> prop을 수동으로 바꾸거나 cache된 파일 <code>&lt;distDir&gt;/cache/images</code>를 삭제해야 할 수 있습니다.</p><div class="en-orig"><p>There is no mechanism to invalidate the cache at this time, so its best to keep <code>minimumCacheTTL</code> low. Otherwise you may need to manually change the <a href="#src"><code>src</code></a> prop or delete the cached file <code>&lt;distDir&gt;/cache/images</code>.</p></div>
+<h4 class="sec" id="disablestaticimages"><a class="anchor" href="#disablestaticimages"><code>disableStaticImages</code></a></h4>
+<p><code>disableStaticImages</code>로 static 이미지 import를 비활성화할 수 있습니다.</p><div class="en-orig"><p><code>disableStaticImages</code> allows you to disable static image imports.</p></div>
+<p>기본 동작에서는 <code>import icon from &#x27;./icon.png&#x27;</code>처럼 static 파일을 import한 뒤 <code>src</code> property에 전달할 수 있습니다. import가 다르게 동작하기를 기대하는 다른 plugin과 충돌한다면 이 기능을 비활성화하고 싶을 수 있습니다.</p><div class="en-orig"><p>The default behavior allows you to import static files such as <code>import icon from &#x27;./icon.png&#x27;</code> and then pass that to the <code>src</code> property. In some cases, you may wish to disable this feature if it conflicts with other plugins that expect the import to behave differently.</p></div>
+<p><code>next.config.js</code>에서 static 이미지 import를 비활성화할 수 있습니다:</p><div class="en-orig"><p>You can disable static image imports inside your <code>next.config.js</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    disableStaticImages: true,
+  },
+}</code></pre></div></div>
+<h4 class="sec" id="maximumredirects"><a class="anchor" href="#maximumredirects"><code>maximumRedirects</code></a></h4>
+<p>기본 이미지 최적화 loader는 remote 이미지를 가져올 때 HTTP redirect를 최대 3번까지 따라갑니다.</p><div class="en-orig"><p>The default image optimization loader will follow HTTP redirects when fetching remote images up to 3 times.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    maximumRedirects: 3,
+  },
+}</code></pre></div></div>
+<p>편의를 위해, 이 redirect들은 <a href="#remotepatterns">remotePatterns</a>를 충족하지 않아도 됩니다.</p><div class="en-orig"><p>For your convenience, these redirects do not need to satisfy <a href="#remotepatterns">remotePatterns</a>.</p></div>
+<p>remote 이미지를 가져올 때 따라갈 redirect 횟수를 설정할 수 있습니다. 값을 <code>0</code>으로 설정하면 redirect를 따라가지 않습니다.</p><div class="en-orig"><p>You can configure the number of redirects to follow when fetching remote images. Setting the value to <code>0</code> will disable following redirects.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    maximumRedirects: 0,
+  },
+}</code></pre></div></div>
+<h4 class="sec" id="maximumdiskcachesize"><a class="anchor" href="#maximumdiskcachesize"><code>maximumDiskCacheSize</code></a></h4>
+<p>기본 이미지 최적화 loader는 최적화된 이미지를 disk에 기록하여, 이후의 request를 disk cache에서 더 빠르게 제공할 수 있게 합니다.</p><div class="en-orig"><p>The default image optimization loader will write optimized images to disk so subsequent requests can be served faster from the disk cache.</p></div>
+<p>최대 disk cache 크기를 byte 단위로 설정할 수 있습니다. 예를 들어 500 MB는 다음과 같습니다:</p><div class="en-orig"><p>You can configure the maximum disk cache size in bytes, for example 500 MB:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    maximumDiskCacheSize: 500_000_000,
+  },
+}</code></pre></div></div>
+<p>값을 <code>0</code>으로 설정해 disk cache를 완전히 비활성화할 수도 있습니다.</p><div class="en-orig"><p>You can also disable the disk cache entirely by setting the value to <code>0</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    maximumDiskCacheSize: 0,
+  },
+}</code></pre></div></div>
+<p>값을 설정하지 않으면, 기본 동작은 시작 시 한 번 현재 사용 가능한 disk 공간을 확인하고 그 50%를 사용하는 것입니다.</p><div class="en-orig"><p>If no value is configured, the default behavior is to check the current available disk space once during startup and use 50%.</p></div>
+<p>disk cache가 설정된 크기를 초과하면, cache가 다시 한도 아래로 내려갈 때까지 가장 오래 사용되지 않은(least recently used) 최적화 이미지가 삭제됩니다.</p><div class="en-orig"><p>When the disk cache exceeds the configured size, the least recently used optimized images will be deleted until the cache is under the limit again.</p></div>
+<p>또는 <a href="app-api-reference-config-next-config-js-incrementalCacheHandlerPath.html"><code>cacheHandler</code></a>를 사용해 직접 cache handler를 구현할 수 있으며, 이 경우 <code>maximumDiskCacheSize</code> 설정은 무시됩니다.</p><div class="en-orig"><p>Alternatively, you can implement your own cache handler using <a href="app-api-reference-config-next-config-js-incrementalCacheHandlerPath.html"><code>cacheHandler</code></a> which will ignore the <code>maximumDiskCacheSize</code> configuration.</p></div>
+<h4 class="sec" id="maximumresponsebody"><a class="anchor" href="#maximumresponsebody"><code>maximumResponseBody</code></a></h4>
+<p>기본 이미지 최적화 loader는 최대 50 MB 크기의 source 이미지까지 가져옵니다.</p><div class="en-orig"><p>The default image optimization loader will fetch source images up to 50 MB in size.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    maximumResponseBody: 50_000_000,
+  },
+}</code></pre></div></div>
+<p>모든 source 이미지가 작다는 것을 알고 있다면, 이 값을 5 MB 같은 더 작은 값으로 줄여 메모리가 제한된 서버를 보호할 수 있습니다.</p><div class="en-orig"><p>If you know all your source images are small, you can protect memory constrained servers by reducing this to a smaller value such as 5 MB.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    maximumResponseBody: 5_000_000,
+  },
+}</code></pre></div></div>
+<h4 class="sec" id="dangerouslyallowlocalip"><a class="anchor" href="#dangerouslyallowlocalip"><code>dangerouslyAllowLocalIP</code></a></h4>
+<p>드물게 private network에서 Next.js를 self-host할 때, 같은 network의 로컬 IP 주소에서 오는 이미지를 최적화하도록 허용하고 싶을 수 있습니다. 악의적인 사용자가 내부 network의 콘텐츠에 접근할 수 있게 될 수 있으므로 대부분의 사용자에게는 권장하지 않습니다.</p><div class="en-orig"><p>In rare cases when self-hosting Next.js on a private network, you may want to allow optimizing images from local IP addresses on the same network. This is not recommended for most users because it could allow malicious users to access content on your internal network.</p></div>
+<p>기본값은 false입니다.</p><div class="en-orig"><p>By default, the value is false.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    dangerouslyAllowLocalIP: false,
+  },
+}</code></pre></div></div>
+<p>로컬 network의 다른 곳에 호스팅된 remote 이미지를 최적화해야 한다면 값을 true로 설정할 수 있습니다.</p><div class="en-orig"><p>If you need to optimize remote images hosted elsewhere in your local network, you can set the value to true.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    dangerouslyAllowLocalIP: true,
+  },
+}</code></pre></div></div>
+<p>split-horizon DNS를 사용하는 VPC에서 Next.js를 호스팅하면서 400 Bad Request status를 받는 경우에 필요할 수 있습니다. SSRF 위험을 이해한 경우에만 활성화하세요.</p><div class="en-orig"><p>This might be necessary when hosting Next.js in a VPC with split-horizon DNS and you receive status 400 Bad Request. Only enable once you understand the SSRF risk.</p></div>
+<h4 class="sec" id="dangerouslyallowsvg"><a class="anchor" href="#dangerouslyallowsvg"><code>dangerouslyAllowSVG</code></a></h4>
+<p><code>dangerouslyAllowSVG</code>로 SVG 이미지를 제공할 수 있습니다.</p><div class="en-orig"><p><code>dangerouslyAllowSVG</code> allows you to serve SVG images.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    dangerouslyAllowSVG: true,
+  },
+}</code></pre></div></div>
+<p>기본적으로 Next.js는 몇 가지 이유로 SVG 이미지를 최적화하지 않습니다:</p><div class="en-orig"><p>By default, Next.js does not optimize SVG images for a few reasons:</p></div>
+<ul>
+<li>SVG는 vector format이므로 손실 없이 크기를 조정할 수 있습니다.</li>
+<li>SVG는 HTML/CSS와 동일한 기능을 많이 가지고 있어, 적절한 <a href="app-api-reference-config-next-config-js-headers.html#content-security-policy">Content Security Policy (CSP) headers</a> 없이는 취약점으로 이어질 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>SVG is a vector format meaning it can be resized losslessly.</li>
+<li>SVG has many of the same features as HTML/CSS, which can lead to vulnerabilities without proper <a href="app-api-reference-config-next-config-js-headers.html#content-security-policy">Content Security Policy (CSP) headers</a>.</li>
+</ul></div>
+<p><a href="#src"><code>src</code></a> prop이 SVG임을 알고 있다면 <a href="#unoptimized"><code>unoptimized</code></a> prop 사용을 권장합니다. <code>src</code>가 <code>&quot;.svg&quot;</code>로 끝나면 이는 자동으로 적용됩니다.</p><div class="en-orig"><p>We recommend using the <a href="#unoptimized"><code>unoptimized</code></a> prop when the <a href="#src"><code>src</code></a> prop is known to be SVG. This happens automatically when <code>src</code> ends with <code>&quot;.svg&quot;</code>.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&lt;Image src=&quot;/my-image.svg&quot; unoptimized /&gt;</code></pre></div></div>
+<p>또한 브라우저가 이미지를 다운로드하도록 강제하는 <code>contentDispositionType</code>과, 이미지에 포함된 script가 실행되지 않도록 하는 <code>contentSecurityPolicy</code>도 함께 설정할 것을 강력히 권장합니다.</p><div class="en-orig"><p>In addition, it is strongly recommended to also set <code>contentDispositionType</code> to force the browser to download the image, as well as <code>contentSecurityPolicy</code> to prevent scripts embedded in the image from executing.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    dangerouslyAllowSVG: true,
+    contentDispositionType: &#x27;attachment&#x27;,
+    contentSecurityPolicy: &quot;default-src &#x27;self&#x27;; script-src &#x27;none&#x27;; sandbox;&quot;,
+  },
+}</code></pre></div></div>
+<h4 class="sec" id="contentdispositiontype"><a class="anchor" href="#contentdispositiontype"><code>contentDispositionType</code></a></h4>
+<p><code>contentDispositionType</code>으로 <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition#as_a_response_header_for_the_main_body" target="_blank" rel="noopener"><code>Content-Disposition</code></a> header를 설정할 수 있습니다.</p><div class="en-orig"><p><code>contentDispositionType</code> allows you to configure the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition#as_a_response_header_for_the_main_body" target="_blank" rel="noopener"><code>Content-Disposition</code></a> header.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    contentDispositionType: &#x27;inline&#x27;,
+  },
+}</code></pre></div></div>
+<h4 class="sec" id="contentsecuritypolicy"><a class="anchor" href="#contentsecuritypolicy"><code>contentSecurityPolicy</code></a></h4>
+<p><code>contentSecurityPolicy</code>로 이미지에 대한 <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP" target="_blank" rel="noopener"><code>Content-Security-Policy</code></a> header를 설정할 수 있습니다. 이는 <a href="#dangerouslyallowsvg"><code>dangerouslyAllowSVG</code></a>를 사용할 때 이미지에 포함된 script가 실행되지 않도록 하는 데 특히 중요합니다.</p><div class="en-orig"><p><code>contentSecurityPolicy</code> allows you to configure the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP" target="_blank" rel="noopener"><code>Content-Security-Policy</code></a> header for images. This is particularly important when using <a href="#dangerouslyallowsvg"><code>dangerouslyAllowSVG</code></a> to prevent scripts embedded in the image from executing.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    contentSecurityPolicy: &quot;default-src &#x27;self&#x27;; script-src &#x27;none&#x27;; sandbox;&quot;,
+  },
+}</code></pre></div></div>
+<p>기본적으로 <a href="#loader">loader</a>는 API가 임의의 remote 이미지를 제공할 수 있으므로, 추가 보호를 위해 <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition#as_a_response_header_for_the_main_body" target="_blank" rel="noopener"><code>Content-Disposition</code></a> header를 <code>attachment</code>로 설정합니다.</p><div class="en-orig"><p>By default, the <a href="#loader">loader</a> sets the <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition#as_a_response_header_for_the_main_body" target="_blank" rel="noopener"><code>Content-Disposition</code></a> header to <code>attachment</code> for added protection since the API can serve arbitrary remote images.</p></div>
+<p>기본값은 <code>attachment</code>이며, 직접 방문했을 때 브라우저가 이미지를 다운로드하도록 강제합니다. 이는 <a href="#dangerouslyallowsvg"><code>dangerouslyAllowSVG</code></a>가 true일 때 특히 중요합니다.</p><div class="en-orig"><p>The default value is <code>attachment</code> which forces the browser to download the image when visiting directly. This is particularly important when <a href="#dangerouslyallowsvg"><code>dangerouslyAllowSVG</code></a> is true.</p></div>
+<p>선택적으로 <code>inline</code>을 설정해, 직접 방문했을 때 다운로드하지 않고 브라우저가 이미지를 렌더링하도록 할 수 있습니다.</p><div class="en-orig"><p>You can optionally configure <code>inline</code> to allow the browser to render the image when visiting directly, without downloading it.</p></div>
+<h3 class="sec" id="deprecated-configuration-options"><a class="anchor" href="#deprecated-configuration-options">Deprecated configuration options<span class="ko">Deprecated 설정 옵션</span></a></h3>
+<h4 class="sec" id="domains"><a class="anchor" href="#domains"><code>domains</code></a></h4>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Warning</div><p>악의적인 사용자로부터 애플리케이션을 보호하기 위해, Next.js 14부터 deprecated되었으며 엄격한 <a href="#remotepatterns"><code>remotePatterns</code></a>로 대체되었습니다.</p><div class="en-orig"><p>Deprecated since Next.js 14 in favor of strict <a href="#remotepatterns"><code>remotePatterns</code></a> in order to protect your application from malicious users.</p></div></div></div>
+<p><a href="#remotepatterns"><code>remotePatterns</code></a>와 비슷하게, <code>domains</code> 설정은 외부 이미지에 허용할 hostname 목록을 제공하는 데 사용할 수 있습니다. 하지만 <code>domains</code> 설정은 wildcard pattern matching을 지원하지 않으며 protocol, port, pathname을 제한할 수 없습니다.</p><div class="en-orig"><p>Similar to <a href="#remotepatterns"><code>remotePatterns</code></a>, the <code>domains</code> configuration can be used to provide a list of allowed hostnames for external images. However, the <code>domains</code> configuration does not support wildcard pattern matching and it cannot restrict protocol, port, or pathname.</p></div>
+<p>대부분의 remote 이미지 서버는 여러 tenant가 공유하므로, 의도한 이미지만 최적화되도록 <code>remotePatterns</code>를 사용하는 것이 더 안전합니다.</p><div class="en-orig"><p>Since most remote image servers are shared between multiple tenants, it's safer to use <code>remotePatterns</code> to ensure only the intended images are optimized.</p></div>
+<p>아래는 <code>next.config.js</code> 파일에서 <code>domains</code> property를 사용하는 예시입니다:</p><div class="en-orig"><p>Below is an example of the <code>domains</code> property in the <code>next.config.js</code> file:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    domains: [&#x27;assets.acme.com&#x27;],
+  },
+}</code></pre></div></div>
+<h2 class="sec" id="functions"><a class="anchor" href="#functions">Functions<span class="ko">함수</span></a></h2>
+<h3 class="sec" id="getimageprops"><a class="anchor" href="#getimageprops"><code>getImageProps</code></a></h3>
+<p><code>getImageProps</code> 함수는 내부 <code>&lt;img&gt;</code> element에 전달될 props를 얻어, 대신 다른 component, style, canvas 등에 전달하는 데 사용할 수 있습니다.</p><div class="en-orig"><p>The <code>getImageProps</code> function can be used to get the props that would be passed to the underlying <code>&lt;img&gt;</code> element, and instead pass them to another component, style, canvas, etc.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { getImageProps } from &#x27;next/image&#x27;
+
+const { props } = getImageProps({
+  src: &#x27;https://example.com/image.jpg&#x27;,
+  alt: &#x27;A scenic mountain view&#x27;,
+  width: 1200,
+  height: 800,
+})
+
+function ImageWithCaption() {
+  return (
+    &lt;figure&gt;
+      &lt;img {...props} /&gt;
+      &lt;figcaption&gt;A scenic mountain view&lt;/figcaption&gt;
+    &lt;/figure&gt;
+  )
+}</code></pre></div></div>
+<p>또한 React <code>useState()</code> 호출을 피하므로 성능이 더 좋아질 수 있지만, placeholder가 절대 제거되지 않기 때문에 <a href="#placeholder"><code>placeholder</code></a> prop과 함께 사용할 수는 없습니다.</p><div class="en-orig"><p>This also avoid calling React <code>useState()</code> so it can lead to better performance, but it cannot be used with the <a href="#placeholder"><code>placeholder</code></a> prop because the placeholder will never be removed.</p></div>
+<h2 class="sec" id="known-browser-bugs"><a class="anchor" href="#known-browser-bugs">Known browser bugs<span class="ko">알려진 브라우저 버그</span></a></h2>
+<p>이 <code>next/image</code> component는 브라우저 네이티브 <a href="https://caniuse.com/loading-lazy-attr" target="_blank" rel="noopener">lazy loading</a>을 사용하며, Safari 15.4 이전의 오래된 브라우저에서는 eager loading으로 fallback될 수 있습니다. blur-up placeholder를 사용할 때 Safari 12 이전의 오래된 브라우저는 empty placeholder로 fallback됩니다. <code>width</code>/<code>height</code>가 <code>auto</code>인 style을 사용할 때, <a href="https://caniuse.com/mdn-html_elements_img_aspect_ratio_computed_from_attributes" target="_blank" rel="noopener">aspect ratio를 유지하지</a> 않는 Safari 15 이전의 오래된 브라우저에서는 <a href="https://web.dev/cls/" target="_blank" rel="noopener">Layout Shift</a>가 발생할 수 있습니다. 자세한 내용은 <a href="https://www.youtube.com/watch?v=4-d_SoCHeWE" target="_blank" rel="noopener">이 MDN 영상</a>을 참고하세요.</p><div class="en-orig"><p>This <code>next/image</code> component uses browser native <a href="https://caniuse.com/loading-lazy-attr" target="_blank" rel="noopener">lazy loading</a>, which may fallback to eager loading for older browsers before Safari 15.4. When using the blur-up placeholder, older browsers before Safari 12 will fallback to empty placeholder. When using styles with <code>width</code>/<code>height</code> of <code>auto</code>, it is possible to cause <a href="https://web.dev/cls/" target="_blank" rel="noopener">Layout Shift</a> on older browsers before Safari 15 that don't <a href="https://caniuse.com/mdn-html_elements_img_aspect_ratio_computed_from_attributes" target="_blank" rel="noopener">preserve the aspect ratio</a>. For more details, see <a href="https://www.youtube.com/watch?v=4-d_SoCHeWE" target="_blank" rel="noopener">this MDN video</a>.</p></div>
+<ul>
+<li><a href="https://bugs.webkit.org/show_bug.cgi?id=243601" target="_blank" rel="noopener">Safari 15 - 16.3</a>은 로딩 중 회색 테두리를 표시합니다. Safari 16.4에서 <a href="https://webkit.org/blog/13966/webkit-features-in-safari-16-4/#:~:text=Now%20in%20Safari%2016.4%2C%20a%20gray%20line%20no%20longer%20appears%20to%20mark%20the%20space%20where%20a%20lazy%2Dloaded%20image%20will%20appear%20once%20it%E2%80%99s%20been%20loaded." target="_blank" rel="noopener">이 문제가 수정되었습니다</a>. 가능한 해결책:<ul>
+<li>CSS <code>@supports (font: -apple-system-body) and (-webkit-appearance: none) { img[loading=&quot;lazy&quot;] { clip-path: inset(0.6px) } }</code> 사용</li>
+<li>이미지가 above the fold에 있다면 <a href="#loading"><code>loading=&quot;eager&quot;</code></a> 사용</li>
+</ul></li>
+<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1556156" target="_blank" rel="noopener">Firefox 67+</a>는 로딩 중 흰색 배경을 표시합니다. 가능한 해결책:<ul>
+<li><a href="#formats">AVIF <code>formats</code></a> 활성화</li>
+<li><a href="#placeholder"><code>placeholder</code></a> 사용</li>
+</ul></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://bugs.webkit.org/show_bug.cgi?id=243601" target="_blank" rel="noopener">Safari 15 - 16.3</a> display a gray border while loading. Safari 16.4 <a href="https://webkit.org/blog/13966/webkit-features-in-safari-16-4/#:~:text=Now%20in%20Safari%2016.4%2C%20a%20gray%20line%20no%20longer%20appears%20to%20mark%20the%20space%20where%20a%20lazy%2Dloaded%20image%20will%20appear%20once%20it%E2%80%99s%20been%20loaded." target="_blank" rel="noopener">fixed this issue</a>. Possible solutions:<ul>
+<li>Use CSS <code>@supports (font: -apple-system-body) and (-webkit-appearance: none) { img[loading=&quot;lazy&quot;] { clip-path: inset(0.6px) } }</code></li>
+<li>Use <a href="#loading"><code>loading=&quot;eager&quot;</code></a> if the image is above the fold</li>
+</ul></li>
+<li><a href="https://bugzilla.mozilla.org/show_bug.cgi?id=1556156" target="_blank" rel="noopener">Firefox 67+</a> displays a white background while loading. Possible solutions:<ul>
+<li>Enable <a href="#formats">AVIF <code>formats</code></a></li>
+<li>Use <a href="#placeholder"><code>placeholder</code></a></li>
+</ul></li>
+</ul></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<h3 class="sec" id="styling-images"><a class="anchor" href="#styling-images">Styling images<span class="ko">이미지 스타일링</span></a></h3>
+<p>Image component의 스타일링은 일반 <code>&lt;img&gt;</code> element의 스타일링과 비슷하지만, 몇 가지 유의할 가이드라인이 있습니다:</p><div class="en-orig"><p>Styling the Image component is similar to styling a normal <code>&lt;img&gt;</code> element, but there are a few guidelines to keep in mind:</p></div>
+<p><code>styled-jsx</code>가 아니라 <code>className</code>이나 <code>style</code>을 사용하세요. 대부분의 경우 <code>className</code> prop 사용을 권장합니다. import한 <a href="app-getting-started-css.html">CSS Module</a>, <a href="app-getting-started-css.html#global-css">global stylesheet</a> 등을 사용할 수 있습니다.</p><div class="en-orig"><p>Use <code>className</code> or <code>style</code>, not <code>styled-jsx</code>. In most cases, we recommend using the <code>className</code> prop. This can be an imported <a href="app-getting-started-css.html">CSS Module</a>, a <a href="app-getting-started-css.html#global-css">global stylesheet</a>, etc.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import styles from &#x27;./styles.module.css&#x27;
+
+export default function MyImage() {
+  return &lt;Image className={styles.image} src=&quot;/my-image.png&quot; alt=&quot;My Image&quot; /&gt;
+}</code></pre></div></div>
+<p><code>style</code> prop을 사용해 inline style을 지정할 수도 있습니다.</p><div class="en-orig"><p>You can also use the <code>style</code> prop to assign inline styles.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export default function MyImage() {
+  return (
+    &lt;Image style={{ borderRadius: &#x27;8px&#x27; }} src=&quot;/my-image.png&quot; alt=&quot;My Image&quot; /&gt;
+  )
+}</code></pre></div></div>
+<p><code>fill</code>을 사용할 때는 부모 element가 <code>position: relative</code>, <code>fixed</code>, <code>absolute</code>로 position이 지정되어 있어야 합니다. 이미지 자체는 <code>position: absolute</code>를 사용하므로, 가장 가까운 positioned 조상 element를 기준으로 크기가 정해집니다.</p><div class="en-orig"><p>When using <code>fill</code>, the parent element must be positioned, with <code>position: relative</code>, <code>fixed</code>, or <code>absolute</code>. The image itself uses <code>position: absolute</code>, so it sizes against the nearest positioned ancestor.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&lt;div style={{ position: &#x27;relative&#x27; }}&gt;
+  &lt;Image fill src=&quot;/my-image.png&quot; alt=&quot;My Image&quot; /&gt;
+&lt;/div&gt;</code></pre></div></div>
+<p><a href="app-guides-css-in-js.html">styled-jsx</a>는 현재 component로 scope가 한정되므로 사용할 수 없습니다(style을 <code>global</code>로 표시하지 않는 한).</p><div class="en-orig"><p>You cannot use <a href="app-guides-css-in-js.html">styled-jsx</a> because it's scoped to the current component (unless you mark the style as <code>global</code>).</p></div>
+<h3 class="sec" id="responsive-images-with-a-static-export"><a class="anchor" href="#responsive-images-with-a-static-export">Responsive images with a static export<span class="ko">static export를 사용한 responsive 이미지</span></a></h3>
+<p>static 이미지를 import하면 Next.js가 파일을 기반으로 width와 height를 자동으로 설정합니다. style을 설정해 이미지를 responsive하게 만들 수 있습니다:</p><div class="en-orig"><p>When you import a static image, Next.js automatically sets its width and height based on the file. You can make the image responsive by setting the style:</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/responsive-image.png" alt="부모 container의 width와 height를 채우는 responsive 이미지" width="1600" height="629" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/responsive-image.png" alt="부모 container의 width와 height를 채우는 responsive 이미지" width="1600" height="629" loading="lazy" /></figure>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import Image from &#x27;next/image&#x27;
+import mountains from &#x27;../public/mountains.jpg&#x27;
+
+export default function Responsive() {
+  return (
+    &lt;div style={{ display: &#x27;flex&#x27;, flexDirection: &#x27;column&#x27; }}&gt;
+      &lt;Image
+        alt=&quot;Mountains&quot;
+        // Importing an image will
+        // automatically set the width and height
+        src={mountains}
+        sizes=&quot;100vw&quot;
+        // Make the image display full width
+        // and preserve its aspect ratio
+        style={{
+          width: &#x27;100%&#x27;,
+          height: &#x27;auto&#x27;,
+        }}
+      /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="responsive-images-with-a-remote-url"><a class="anchor" href="#responsive-images-with-a-remote-url">Responsive images with a remote URL<span class="ko">remote URL을 사용한 responsive 이미지</span></a></h3>
+<p>source 이미지가 dynamic이거나 remote URL이라면, Next.js가 aspect ratio를 계산할 수 있도록 width와 height props를 제공해야 합니다:</p><div class="en-orig"><p>If the source image is a dynamic or a remote URL, you must provide the width and height props so Next.js can calculate the aspect ratio:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">components/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import Image from &#x27;next/image&#x27;
+
+export default function Page({ photoUrl }) {
+  return (
+    &lt;Image
+      src={photoUrl}
+      alt=&quot;Picture of the author&quot;
+      sizes=&quot;100vw&quot;
+      style={{
+        width: &#x27;100%&#x27;,
+        height: &#x27;auto&#x27;,
+      }}
+      width={500}
+      height={300}
+    /&gt;
+  )
+}</code></pre></div></div>
+<p>직접 해 보기:</p><div class="en-orig"><p>Try it out:</p></div>
+<ul>
+<li><a href="https://image-component.nextjs.gallery/responsive" target="_blank" rel="noopener">viewport에 반응하는 이미지 데모</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://image-component.nextjs.gallery/responsive" target="_blank" rel="noopener">Demo the image responsive to viewport</a></li>
+</ul></div>
+<h3 class="sec" id="responsive-image-with-fill"><a class="anchor" href="#responsive-image-with-fill">Responsive image with <code>fill</code><span class="ko"><code>fill</code>을 사용한 responsive 이미지</span></a></h3>
+<p>이미지의 aspect ratio를 모른다면, <a href="#fill"><code>fill</code> prop</a>을 추가하고 <code>objectFit</code> prop을 <code>cover</code>로 설정할 수 있습니다. 이렇게 하면 이미지가 부모 container의 전체 width를 채웁니다.</p><div class="en-orig"><p>If you don't know the aspect ratio of the image, you can add the <a href="#fill"><code>fill</code> prop</a> with the <code>objectFit</code> prop set to <code>cover</code>. This will make the image fill the full width of its parent container.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/fill-container.png" alt="부모 container width를 채우는 이미지 grid" width="1600" height="529" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/fill-container.png" alt="부모 container width를 채우는 이미지 grid" width="1600" height="529" loading="lazy" /></figure>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import Image from &#x27;next/image&#x27;
+import mountains from &#x27;../public/mountains.jpg&#x27;
+
+export default function Fill() {
+  return (
+    &lt;div
+      style={{
+        display: &#x27;grid&#x27;,
+        gridGap: &#x27;8px&#x27;,
+        gridTemplateColumns: &#x27;repeat(auto-fit, minmax(400px, auto))&#x27;,
+      }}
+    &gt;
+      &lt;div style={{ position: &#x27;relative&#x27;, width: &#x27;400px&#x27; }}&gt;
+        &lt;Image
+          alt=&quot;Mountains&quot;
+          src={mountains}
+          fill
+          sizes=&quot;(min-width: 808px) 50vw, 100vw&quot;
+          style={{
+            objectFit: &#x27;cover&#x27;, // cover, contain, none
+          }}
+        /&gt;
+      &lt;/div&gt;
+      {/* And more images in the grid... */}
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="background-image"><a class="anchor" href="#background-image">Background Image<span class="ko">배경 이미지</span></a></h3>
+<p><code>fill</code> prop을 사용해 이미지가 화면 전체 영역을 덮도록 만듭니다:</p><div class="en-orig"><p>Use the <code>fill</code> prop to make the image cover the entire screen area:</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/background-image.png" alt="페이지의 전체 width와 height를 차지하는 배경 이미지" width="1600" height="427" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/background-image.png" alt="페이지의 전체 width와 height를 차지하는 배경 이미지" width="1600" height="427" loading="lazy" /></figure>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import Image from &#x27;next/image&#x27;
+import mountains from &#x27;../public/mountains.jpg&#x27;
+
+export default function Background() {
+  return (
+    &lt;Image
+      alt=&quot;Mountains&quot;
+      src={mountains}
+      placeholder=&quot;blur&quot;
+      quality={100}
+      fill
+      sizes=&quot;100vw&quot;
+      style={{
+        objectFit: &#x27;cover&#x27;,
+      }}
+    /&gt;
+  )
+}</code></pre></div></div>
+<p>다양한 style로 사용된 Image component 예시는 <a href="https://image-component.nextjs.gallery" target="_blank" rel="noopener">Image Component Demo</a>를 참고하세요.</p><div class="en-orig"><p>For examples of the Image component used with the various styles, see the <a href="https://image-component.nextjs.gallery" target="_blank" rel="noopener">Image Component Demo</a>.</p></div>
+<h3 class="sec" id="remote-images"><a class="anchor" href="#remote-images">Remote images<span class="ko">Remote 이미지</span></a></h3>
+<p>remote 이미지를 사용하려면 <code>src</code> property가 URL 문자열이어야 합니다.</p><div class="en-orig"><p>To use a remote image, the <code>src</code> property should be a URL string.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import Image from &#x27;next/image&#x27;
+
+export default function Page() {
+  return (
+    &lt;Image
+      src=&quot;https://s3.amazonaws.com/my-bucket/profile.png&quot;
+      alt=&quot;Picture of the author&quot;
+      width={500}
+      height={500}
+    /&gt;
+  )
+}</code></pre></div></div>
+<p>Next.js는 build 과정에서 remote 파일에 접근할 수 없으므로, <a href="app-api-reference-components-image.html#width-and-height"><code>width</code></a>, <a href="app-api-reference-components-image.html#width-and-height"><code>height</code></a>, 그리고 선택적으로 <a href="app-api-reference-components-image.html#blurdataurl"><code>blurDataURL</code></a> props를 직접 제공해야 합니다.</p><div class="en-orig"><p>Since Next.js does not have access to remote files during the build process, you'll need to provide the <a href="app-api-reference-components-image.html#width-and-height"><code>width</code></a>, <a href="app-api-reference-components-image.html#width-and-height"><code>height</code></a> and optional <a href="app-api-reference-components-image.html#blurdataurl"><code>blurDataURL</code></a> props manually.</p></div>
+<p><code>width</code>와 <code>height</code> attribute는 이미지의 올바른 aspect ratio를 추론하고, 이미지 로딩으로 인한 layout shift를 피하는 데 사용됩니다. <code>width</code>와 <code>height</code>는 이미지 파일의 렌더링 크기를 결정하지 <em>않습니다</em>.</p><div class="en-orig"><p>The <code>width</code> and <code>height</code> attributes are used to infer the correct aspect ratio of image and avoid layout shift from the image loading in. The <code>width</code> and <code>height</code> do <em>not</em> determine the rendered size of the image file.</p></div>
+<p>이미지 최적화를 안전하게 허용하려면 <code>next.config.js</code>에 지원하는 URL pattern 목록을 정의하세요. 악용을 막기 위해 가능한 한 구체적으로 작성하세요. 예를 들어 다음 설정은 특정 AWS S3 bucket의 이미지만 허용합니다:</p><div class="en-orig"><p>To safely allow optimizing images, define a list of supported URL patterns in <code>next.config.js</code>. Be as specific as possible to prevent malicious usage. For example, the following configuration will only allow images from a specific AWS S3 bucket:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: &#x27;https&#x27;,
+        hostname: &#x27;s3.amazonaws.com&#x27;,
+        port: &#x27;&#x27;,
+        pathname: &#x27;/my-bucket/**&#x27;,
+        search: &#x27;&#x27;,
+      },
+    ],
+  },
+}</code></pre></div></div>
+<h3 class="sec" id="theme-detection"><a class="anchor" href="#theme-detection">Theme detection<span class="ko">테마 감지</span></a></h3>
+<p>light mode와 dark mode에서 서로 다른 이미지를 표시하고 싶다면, 두 개의 <code>&lt;Image&gt;</code> component를 감싸고 CSS media query에 따라 올바른 것을 보여 주는 새 component를 만들 수 있습니다.</p><div class="en-orig"><p>If you want to display a different image for light and dark mode, you can create a new component that wraps two <code>&lt;Image&gt;</code> components and reveals the correct one based on a CSS media query.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">components/theme-image.module.css</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-css">.imgDark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .imgLight {
+    display: none;
+  }
+  .imgDark {
+    display: unset;
+  }
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="components/theme-image.tsx" data-js="components/theme-image.js">components/theme-image.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import styles from &#x27;./theme-image.module.css&#x27;
+import Image, { ImageProps } from &#x27;next/image&#x27;
+
+type Props = Omit&lt;ImageProps, &#x27;src&#x27; | &#x27;preload&#x27; | &#x27;loading&#x27;&gt; &amp; {
+  srcLight: string
+  srcDark: string
+}
+
+const ThemeImage = (props: Props) =&gt; {
+  const { srcLight, srcDark, ...rest } = props
+
+  return (
+    &lt;&gt;
+      &lt;Image {...rest} src={srcLight} className={styles.imgLight} /&gt;
+      &lt;Image {...rest} src={srcDark} className={styles.imgDark} /&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import styles from &#x27;./theme-image.module.css&#x27;
+import Image from &#x27;next/image&#x27;
+
+const ThemeImage = (props) =&gt; {
+  const { srcLight, srcDark, ...rest } = props
+
+  return (
+    &lt;&gt;
+      &lt;Image {...rest} src={srcLight} className={styles.imgLight} /&gt;
+      &lt;Image {...rest} src={srcDark} className={styles.imgDark} /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>loading=&quot;lazy&quot;</code>의 기본 동작 덕분에 올바른 이미지만 로드됩니다. <code>preload</code>나 <code>loading=&quot;eager&quot;</code>를 사용하면 두 이미지가 모두 로드되므로 사용할 수 없습니다. 대신 <a href="https://developer.mozilla.org/docs/Web/API/HTMLImageElement/fetchPriority" target="_blank" rel="noopener"><code>fetchPriority=&quot;high&quot;</code></a>를 사용할 수 있습니다.</p><div class="en-orig"><p>The default behavior of <code>loading=&quot;lazy&quot;</code> ensures that only the correct image is loaded. You cannot use <code>preload</code> or <code>loading=&quot;eager&quot;</code> because that would cause both images to load. Instead, you can use <a href="https://developer.mozilla.org/docs/Web/API/HTMLImageElement/fetchPriority" target="_blank" rel="noopener"><code>fetchPriority=&quot;high&quot;</code></a>.</p></div></div></div>
+<p>직접 해 보기:</p><div class="en-orig"><p>Try it out:</p></div>
+<ul>
+<li><a href="https://image-component.nextjs.gallery/theme" target="_blank" rel="noopener">light/dark mode 테마 감지 데모</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://image-component.nextjs.gallery/theme" target="_blank" rel="noopener">Demo light/dark mode theme detection</a></li>
+</ul></div>
+<h3 class="sec" id="art-direction"><a class="anchor" href="#art-direction">Art direction</a></h3>
+<p>모바일과 데스크톱에서 서로 다른 이미지를 표시하고 싶다면(이를 <a href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images#art_direction" target="_blank" rel="noopener">Art Direction</a>이라고도 합니다), <code>getImageProps()</code>에 서로 다른 <code>src</code>, <code>width</code>, <code>height</code>, <code>quality</code> props를 제공할 수 있습니다.</p><div class="en-orig"><p>If you want to display a different image for mobile and desktop, sometimes called <a href="https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images#art_direction" target="_blank" rel="noopener">Art Direction</a>, you can provide different <code>src</code>, <code>width</code>, <code>height</code>, and <code>quality</code> props to <code>getImageProps()</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { getImageProps } from &#x27;next/image&#x27;
+
+export default function Home() {
+  const common = { alt: &#x27;Art Direction Example&#x27;, sizes: &#x27;100vw&#x27; }
+  const {
+    props: { srcSet: desktop },
+  } = getImageProps({
+    ...common,
+    width: 1440,
+    height: 875,
+    quality: 80,
+    src: &#x27;/desktop.jpg&#x27;,
+  })
+  const {
+    props: { srcSet: mobile, ...rest },
+  } = getImageProps({
+    ...common,
+    width: 750,
+    height: 1334,
+    quality: 70,
+    src: &#x27;/mobile.jpg&#x27;,
+  })
+
+  return (
+    &lt;picture&gt;
+      &lt;source media=&quot;(min-width: 1000px)&quot; srcSet={desktop} /&gt;
+      &lt;source media=&quot;(min-width: 500px)&quot; srcSet={mobile} /&gt;
+      &lt;img {...rest} style={{ width: &#x27;100%&#x27;, height: &#x27;auto&#x27; }} /&gt;
+    &lt;/picture&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="background-css"><a class="anchor" href="#background-css">Background CSS</a></h3>
+<p><code>srcSet</code> 문자열을 <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/image/image-set" target="_blank" rel="noopener"><code>image-set()</code></a> CSS 함수로 변환해 배경 이미지를 최적화할 수도 있습니다.</p><div class="en-orig"><p>You can even convert the <code>srcSet</code> string to the <a href="https://developer.mozilla.org/en-US/docs/Web/CSS/image/image-set" target="_blank" rel="noopener"><code>image-set()</code></a> CSS function to optimize a background image.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { getImageProps } from &#x27;next/image&#x27;
+
+function getBackgroundImage(srcSet = &#x27;&#x27;) {
+  const imageSet = srcSet
+    .split(&#x27;, &#x27;)
+    .map((str) =&gt; {
+      const [url, dpi] = str.split(&#x27; &#x27;)
+      return `url(&quot;${url}&quot;) ${dpi}`
+    })
+    .join(&#x27;, &#x27;)
+  return `image-set(${imageSet})`
+}
+
+export default function Home() {
+  const {
+    props: { srcSet },
+  } = getImageProps({ alt: &#x27;&#x27;, width: 128, height: 128, src: &#x27;/img.png&#x27; })
+  const backgroundImage = getBackgroundImage(srcSet)
+  const style = { height: &#x27;100vh&#x27;, width: &#x27;100vw&#x27;, backgroundImage }
+
+  return (
+    &lt;main style={style}&gt;
+      &lt;h1&gt;Hello World&lt;/h1&gt;
+    &lt;/main&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.1.7</code></td><td><code>maximumDiskCacheSize</code> 설정 추가.</td></tr>
+<tr><td><code>v16.1.2</code></td><td><code>maximumResponseBody</code> 설정 추가.</td></tr>
+<tr><td><code>v16.0.0</code></td><td><code>qualities</code> 기본 설정이 <code>[75]</code>로 변경, <code>preload</code> prop 추가, <code>priority</code> prop deprecated, <code>dangerouslyAllowLocalIP</code> config 추가, <code>maximumRedirects</code> config 추가.</td></tr>
+<tr><td><code>v15.3.0</code></td><td><code>remotePatterns</code>에 <code>URL</code> object 배열 지원 추가.</td></tr>
+<tr><td><code>v15.0.0</code></td><td><code>contentDispositionType</code> 설정의 기본값이 <code>attachment</code>로 변경.</td></tr>
+<tr><td><code>v14.2.23</code></td><td><code>qualities</code> 설정 추가.</td></tr>
+<tr><td><code>v14.2.15</code></td><td><code>decoding</code> prop 추가 및 <code>localPatterns</code> 설정 추가.</td></tr>
+<tr><td><code>v14.2.14</code></td><td><code>remotePatterns.search</code> prop 추가.</td></tr>
+<tr><td><code>v14.2.0</code></td><td><code>overrideSrc</code> prop 추가.</td></tr>
+<tr><td><code>v14.1.0</code></td><td><code>getImageProps()</code>가 stable이 됨.</td></tr>
+<tr><td><code>v14.0.0</code></td><td><code>onLoadingComplete</code> prop과 <code>domains</code> config deprecated.</td></tr>
+<tr><td><code>v13.4.14</code></td><td><code>placeholder</code> prop에 <code>data:/image...</code> 지원.</td></tr>
+<tr><td><code>v13.2.0</code></td><td><code>contentDispositionType</code> 설정 추가.</td></tr>
+<tr><td><code>v13.0.6</code></td><td><code>ref</code> prop 추가.</td></tr>
+<tr><td><code>v13.0.0</code></td><td><code>next/image</code> import가 <code>next/legacy/image</code>로 이름 변경. <code>next/future/image</code> import가 <code>next/image</code>로 이름 변경. import 이름을 안전하고 자동으로 바꿔 주는 <a href="app-guides-upgrading-codemods.html#next-image-to-legacy-image">codemod를 사용할 수 있습니다</a>. <code>&lt;span&gt;</code> wrapper 제거. <code>layout</code>, <code>objectFit</code>, <code>objectPosition</code>, <code>lazyBoundary</code>, <code>lazyRoot</code> props 제거. <code>alt</code> 필수. <code>onLoadingComplete</code>가 <code>img</code> element의 reference를 받음. 내장 loader config 제거.</td></tr>
+<tr><td><code>v12.3.0</code></td><td><code>remotePatterns</code>와 <code>unoptimized</code> 설정이 stable이 됨.</td></tr>
+<tr><td><code>v12.2.0</code></td><td>실험적 <code>remotePatterns</code>와 실험적 <code>unoptimized</code> 설정 추가. <code>layout=&quot;raw&quot;</code> 제거.</td></tr>
+<tr><td><code>v12.1.1</code></td><td><code>style</code> prop 추가. <code>layout=&quot;raw&quot;</code>에 대한 실험적 지원 추가.</td></tr>
+<tr><td><code>v12.1.0</code></td><td><code>dangerouslyAllowSVG</code>와 <code>contentSecurityPolicy</code> 설정 추가.</td></tr>
+<tr><td><code>v12.0.9</code></td><td><code>lazyRoot</code> prop 추가.</td></tr>
+<tr><td><code>v12.0.0</code></td><td><code>formats</code> 설정 추가.<br/>AVIF 지원 추가.<br/>Wrapper <code>&lt;div&gt;</code>가 <code>&lt;span&gt;</code>으로 변경.</td></tr>
+<tr><td><code>v11.1.0</code></td><td><code>onLoadingComplete</code>와 <code>lazyBoundary</code> props 추가.</td></tr>
+<tr><td><code>v11.0.0</code></td><td><code>src</code> prop에 static import 지원.<br/><code>placeholder</code> prop 추가.<br/><code>blurDataURL</code> prop 추가.</td></tr>
+<tr><td><code>v10.0.5</code></td><td><code>loader</code> prop 추가.</td></tr>
+<tr><td><code>v10.0.1</code></td><td><code>layout</code> prop 추가.</td></tr>
+<tr><td><code>v10.0.0</code></td><td><code>next/image</code> 도입.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.1.7</code></td><td><code>maximumDiskCacheSize</code> configuration added.</td></tr>
+<tr><td><code>v16.1.2</code></td><td><code>maximumResponseBody</code> configuration added.</td></tr>
+<tr><td><code>v16.0.0</code></td><td><code>qualities</code> default configuration changed to <code>[75]</code>, <code>preload</code> prop added, <code>priority</code> prop deprecated, <code>dangerouslyAllowLocalIP</code> config added, <code>maximumRedirects</code> config added.</td></tr>
+<tr><td><code>v15.3.0</code></td><td><code>remotePatterns</code> added support for array of <code>URL</code> objects.</td></tr>
+<tr><td><code>v15.0.0</code></td><td><code>contentDispositionType</code> configuration default changed to <code>attachment</code>.</td></tr>
+<tr><td><code>v14.2.23</code></td><td><code>qualities</code> configuration added.</td></tr>
+<tr><td><code>v14.2.15</code></td><td><code>decoding</code> prop added and <code>localPatterns</code> configuration added.</td></tr>
+<tr><td><code>v14.2.14</code></td><td><code>remotePatterns.search</code> prop added.</td></tr>
+<tr><td><code>v14.2.0</code></td><td><code>overrideSrc</code> prop added.</td></tr>
+<tr><td><code>v14.1.0</code></td><td><code>getImageProps()</code> is stable.</td></tr>
+<tr><td><code>v14.0.0</code></td><td><code>onLoadingComplete</code> prop and <code>domains</code> config deprecated.</td></tr>
+<tr><td><code>v13.4.14</code></td><td><code>placeholder</code> prop support for <code>data:/image...</code></td></tr>
+<tr><td><code>v13.2.0</code></td><td><code>contentDispositionType</code> configuration added.</td></tr>
+<tr><td><code>v13.0.6</code></td><td><code>ref</code> prop added.</td></tr>
+<tr><td><code>v13.0.0</code></td><td>The <code>next/image</code> import was renamed to <code>next/legacy/image</code>. The <code>next/future/image</code> import was renamed to <code>next/image</code>. A <a href="app-guides-upgrading-codemods.html#next-image-to-legacy-image">codemod is available</a> to safely and automatically rename your imports. <code>&lt;span&gt;</code> wrapper removed. <code>layout</code>, <code>objectFit</code>, <code>objectPosition</code>, <code>lazyBoundary</code>, <code>lazyRoot</code> props removed. <code>alt</code> is required. <code>onLoadingComplete</code> receives reference to <code>img</code> element. Built-in loader config removed.</td></tr>
+<tr><td><code>v12.3.0</code></td><td><code>remotePatterns</code> and <code>unoptimized</code> configuration is stable.</td></tr>
+<tr><td><code>v12.2.0</code></td><td>Experimental <code>remotePatterns</code> and experimental <code>unoptimized</code> configuration added. <code>layout=&quot;raw&quot;</code> removed.</td></tr>
+<tr><td><code>v12.1.1</code></td><td><code>style</code> prop added. Experimental support for <code>layout=&quot;raw&quot;</code> added.</td></tr>
+<tr><td><code>v12.1.0</code></td><td><code>dangerouslyAllowSVG</code> and <code>contentSecurityPolicy</code> configuration added.</td></tr>
+<tr><td><code>v12.0.9</code></td><td><code>lazyRoot</code> prop added.</td></tr>
+<tr><td><code>v12.0.0</code></td><td><code>formats</code> configuration added.<br/>AVIF support added.<br/>Wrapper <code>&lt;div&gt;</code> changed to <code>&lt;span&gt;</code>.</td></tr>
+<tr><td><code>v11.1.0</code></td><td><code>onLoadingComplete</code> and <code>lazyBoundary</code> props added.</td></tr>
+<tr><td><code>v11.0.0</code></td><td><code>src</code> prop support for static import.<br/><code>placeholder</code> prop added.<br/><code>blurDataURL</code> prop added.</td></tr>
+<tr><td><code>v10.0.5</code></td><td><code>loader</code> prop added.</td></tr>
+<tr><td><code>v10.0.1</code></td><td><code>layout</code> prop added.</td></tr>
+<tr><td><code>v10.0.0</code></td><td><code>next/image</code> introduced.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/02-components/image.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/api-reference/components/image" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-api-reference-components-image-legacy.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Image (Legacy)</div><div class="ttl-ko">Image (Legacy)</div></a>
+      <a href="pages-api-reference-components-link.html" class="next"><div class="dir">다음 →</div><div class="ttl">Link</div><div class="ttl-ko">Link 컴포넌트</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/api-reference/components/image" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#reference">Reference</a></li><li class="l3"><a href="#props">Props</a></li><li class="l3"><a href="#other-props">Other Props</a></li><li class="l3"><a href="#deprecated-props">Deprecated props</a></li><li class="l3"><a href="#configuration-options">Configuration options</a></li><li class="l3"><a href="#deprecated-configuration-options">Deprecated configuration options</a></li><li class="l2"><a href="#functions">Functions</a></li><li class="l3"><a href="#getimageprops"><code>getImageProps</code></a></li><li class="l2"><a href="#known-browser-bugs">Known browser bugs</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#styling-images">Styling images</a></li><li class="l3"><a href="#responsive-images-with-a-static-export">Responsive images with a static export</a></li><li class="l3"><a href="#responsive-images-with-a-remote-url">Responsive images with a remote URL</a></li><li class="l3"><a href="#responsive-image-with-fill">Responsive image with <code>fill</code></a></li><li class="l3"><a href="#background-image">Background Image</a></li><li class="l3"><a href="#remote-images">Remote images</a></li><li class="l3"><a href="#theme-detection">Theme detection</a></li><li class="l3"><a href="#art-direction">Art direction</a></li><li class="l3"><a href="#background-css">Background CSS</a></li><li class="l2"><a href="#version-history">Version History</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js Image component는 자동 이미지 최적화를 위해 HTML `&lt;img&gt;` element를 확장합니다.
+
+[[CODE 1]]
+
+
+
+&gt; **Good to know**: Next.js 13 이전 버전을 사용 중이라면, component 이름이 바뀌었으므로 [next/legacy/image](/docs/pages/api-reference/components/image-legacy) 문서를 참고하세요.
+
+
+
+## Reference || 레퍼런스
+
+### Props
+
+사용할 수 있는 props는 다음과 같습니다:
+
+&lt;div style={{ overflowX: &#x27;auto&#x27;, width: &#x27;100%&#x27; }}&gt;
+| Prop                                      | 예시                                  | Type            | 상태     |
+| ----------------------------------------- | ---------------------------------------- | --------------- | ---------- |
+| [`src`](#src)                             | `src=&quot;/profile.png&quot;`                     | String          | 필수   |
+| [`alt`](#alt)                             | `alt=&quot;Picture of the author&quot;`            | String          | 필수   |
+| [`width`](#width-and-height)                         | `width={500}`                            | Integer (px)    | -   |
+| [`height`](#width-and-height)                       | `height={500}`                           | Integer (px)    | -   |
+| [`fill`](#fill)                           | `fill={true}`                            | Boolean         | -          |
+| [`loader`](#loader)                       | `loader={imageLoader}`                   | Function        | -          |
+| [`sizes`](#sizes)                         | `sizes=&quot;(max-width: 768px) 100vw, 33vw&quot;` | String          | -          |
+| [`quality`](#quality)                     | `quality={80}`                           | Integer (1-100) | -          |
+| [`preload`](#preload)                     | `preload={true}`                         | Boolean         | -          |
+| [`placeholder`](#placeholder)             | `placeholder=&quot;blur&quot;`                     | String          | -          |
+| [`style`](#style)                         | `style={{objectFit: &quot;contain&quot;}}`         | Object          | -          |
+| [`onLoadingComplete`](#onloadingcomplete) | `onLoadingComplete={img =&gt; done())}`     | Function        | Deprecated |
+| [`onLoad`](#onload)                       | `onLoad={event =&gt; done())}`              | Function        | -          |
+| [`onError`](#onerror)                     | `onError(event =&gt; fail()}`               | Function        | -          |
+| [`loading`](#loading)                     | `loading=&quot;lazy&quot;`                         | String          | -          |
+| [`blurDataURL`](#blurdataurl)             | `blurDataURL=&quot;data:image/jpeg...&quot;`       | String          | -          |
+| [`unoptimized`](#unoptimized)             | `unoptimized={true}`                     | Boolean         | -          |
+| [`overrideSrc`](#overridesrc)             | `overrideSrc=&quot;/seo.png&quot;`                 | String          | -          |
+| [`decoding`](#decoding)                   | `decoding=&quot;async&quot;`                       | String          | -          |
+&lt;/div&gt;
+
+#### `src`
+
+이미지의 source입니다. 다음 중 하나를 사용할 수 있습니다:
+
+내부 경로 문자열.
+
+[[CODE 2]]
+
+절대 외부 URL ([remotePatterns](#remotepatterns)로 설정해야 함).
+
+[[CODE 3]]
+
+static import.
+
+[[CODE 4]]
+
+&gt; **Good to know**: 보안상의 이유로, 기본 [loader](#loader)를 사용하는 Image Optimization API는 `src` 이미지를 가져올 때 header를 전달하지 _않습니다_.
+&gt; `src` 이미지에 인증이 필요하다면 [unoptimized](#unoptimized) property를 사용해 Image Optimization을 비활성화하는 것을 고려하세요.
+
+#### `alt`
+
+`alt` property는 screen reader와 검색 엔진을 위해 이미지를 설명하는 데 사용됩니다. 또한 이미지가 비활성화되었거나 이미지를 불러오는 중 오류가 발생했을 때 보여 주는 fallback 텍스트이기도 합니다.
+
+이 값에는 [페이지의 의미를 바꾸지 않고](https://html.spec.whatwg.org/multipage/images.html#general-guidelines) 이미지를 대체할 수 있는 텍스트가 들어가야 합니다. 이미지를 보충하기 위한 것이 아니므로, 이미지 위나 아래의 caption에서 이미 제공한 정보를 반복해서는 안 됩니다.
+
+이미지가 [순전히 장식용](https://html.spec.whatwg.org/multipage/images.html#a-purely-decorative-image-that-doesn&#x27;t-add-any-information)이거나 [사용자를 위한 것이 아니라면](https://html.spec.whatwg.org/multipage/images.html#an-image-not-intended-for-the-user), `alt` property는 빈 문자열(`alt=&quot;&quot;`)이어야 합니다.
+
+&gt; [이미지 접근성 가이드라인](https://html.spec.whatwg.org/multipage/images.html#alt)에 대해 더 알아보세요.
+
+#### `width` and `height` || `width`와 `height`
+
+`width`와 `height` property는 [intrinsic](https://developer.mozilla.org/en-US/docs/Glossary/Intrinsic_Size)(고유) 이미지 크기를 pixel 단위로 나타냅니다. 이 property는 브라우저가 이미지 공간을 미리 확보하고 로딩 중 layout shift를 피하기 위해 사용하는 올바른 **aspect ratio**(종횡비)를 추론하는 데 쓰입니다. 이미지의 _렌더링 크기_를 결정하지는 않으며, 렌더링 크기는 CSS로 제어됩니다.
+
+[[CODE 5]]
+
+다음 경우가 아니라면 `width`와 `height` property를 **반드시** 모두 설정해야 합니다:
+
+- 이미지가 static import된 경우.
+- 이미지에 [`fill` property](#fill)가 있는 경우
+
+height와 width를 알 수 없다면 [`fill` property](#fill) 사용을 권장합니다.
+
+#### `fill`
+
+이미지가 부모 element의 크기에 맞게 확장되도록 하는 boolean입니다.
+
+[[CODE 6]]
+
+**Positioning**:
+
+- 부모 element는 **반드시** `position: &quot;relative&quot;`, `&quot;fixed&quot;`, `&quot;absolute&quot;` 중 하나를 지정해야 합니다.
+- 기본적으로 `&lt;img&gt;` element는 `position: &quot;absolute&quot;`를 사용합니다.
+
+**Object Fit**:
+
+이미지에 아무 style도 적용하지 않으면 이미지가 container에 맞게 늘어납니다. `objectFit`을 사용해 잘라내기(cropping)와 크기 조정(scaling)을 제어할 수 있습니다.
+
+- `&quot;contain&quot;`: 이미지가 aspect ratio를 유지한 채 container에 맞게 축소됩니다.
+- `&quot;cover&quot;`: 이미지가 container를 가득 채우고 잘립니다.
+
+&gt; [`position`](https://developer.mozilla.org/en-US/docs/Web/CSS/position)과 [`object-fit`](https://developer.mozilla.org/docs/Web/CSS/object-fit)에 대해 더 알아보세요.
+
+#### `loader`
+
+이미지 URL을 생성하는 데 사용하는 custom 함수입니다. 이 함수는 다음 parameter를 받아 이미지의 URL 문자열을 반환합니다:
+
+- [`src`](#src)
+- [`width`](#width-and-height)
+- [`quality`](#quality)
+
+
+
+
+
+[[CODE 8]]
+
+
+
+또는 prop을 전달하지 않고 `next.config.js`의 [loaderFile](#loaderfile) 설정을 사용해 애플리케이션의 모든 `next/image` instance를 설정할 수도 있습니다.
+
+#### `sizes`
+
+여러 breakpoint에서의 이미지 크기를 정의합니다. 브라우저가 생성된 `srcset`에서 가장 적절한 크기를 고르는 데 사용합니다.
+
+[[CODE 9]]
+
+`sizes`는 다음과 같은 경우에 사용해야 합니다:
+
+- 이미지가 [`fill`](#fill) prop을 사용하는 경우
+- CSS를 사용해 이미지를 responsive하게 만드는 경우
+
+`sizes`가 없으면 브라우저는 이미지가 viewport만큼 넓다고(`100vw`) 가정합니다. 이로 인해 불필요하게 큰 이미지가 다운로드될 수 있습니다.
+
+또한 `sizes`는 `srcset`이 생성되는 방식에도 영향을 줍니다:
+
+- `width`가 있는 이미지에서 `sizes`가 없으면: Next.js는 고정 크기 이미지에 적합한 제한된 `srcset`(예: 1x, 2x)을 생성합니다.
+- `fill` 이미지에서 `sizes`가 없으면: Next.js는 이미지가 viewport 전체에 걸쳐 있는 것처럼 [`deviceSizes`](#devicesizes)만으로 `srcset`을 생성합니다.
+- `sizes`가 있으면: Next.js는 responsive layout에 최적화된 전체 `srcset`(예: 640w, 750w 등)을 생성합니다.
+
+&gt; [web.dev](https://web.dev/learn/design/responsive-images/#sizes)와 [mdn](https://developer.mozilla.org/docs/Web/HTML/Element/img#sizes)에서 `srcset`과 `sizes`에 대해 더 알아보세요.
+
+#### `quality`
+
+최적화된 이미지의 품질을 설정하는 `1`에서 `100` 사이의 정수입니다. 값이 높을수록 파일 크기와 시각적 충실도가 높아집니다. 값이 낮을수록 파일 크기는 줄어들지만 선명도가 떨어질 수 있습니다.
+
+[[CODE 10]]
+
+`next.config.js`에 [qualities](#qualities)를 설정했다면, 그 목록에 없는 값은 허용된 값 중 가장 가까운 값으로 강제 변환됩니다. 예를 들어 `qualities: [50, 75, 100]`일 때 `quality`가 `80`이면 `75`로 제공됩니다. 개발 중에는 warning을 log로 남기므로 해당 값을 allowlist에 추가할 수 있습니다.
+
+&gt; **Good to know**: 원본 이미지가 이미 저품질이라면, 높은 quality 값을 설정해도 보기에는 나아지지 않고 파일 크기만 커집니다.
+
+#### `style`
+
+내부 image element에 CSS style을 전달할 수 있게 합니다.
+
+[[CODE 11]]
+
+&gt; **Good to know**: `style` prop으로 custom width를 설정한다면, 이미지의 aspect ratio를 유지하기 위해 `height: &#x27;auto&#x27;`도 함께 설정하세요.
+
+#### `preload`
+
+이미지를 preload할지 여부를 나타내는 boolean입니다.
+
+[[CODE 12]]
+
+- `true`: `&lt;head&gt;`에 `&lt;link&gt;`를 삽입해 이미지를 [preload](https://web.dev/preload-responsive-images/)합니다.
+- `false`: 이미지를 preload하지 않습니다.
+
+**사용해야 할 때:**
+
+- 이미지가 [Largest Contentful Paint (LCP)](https://nextjs.org/learn/seo/web-performance/lcp) element인 경우.
+- 이미지가 above the fold(스크롤 없이 보이는 영역)에 있는 경우, 보통 hero 이미지.
+- 이미지가 나중에 `&lt;body&gt;`에서 발견되기 전에 `&lt;head&gt;`에서 로딩을 시작하고 싶은 경우.
+
+**사용하지 말아야 할 때:**
+
+- viewport에 따라 [Largest Contentful Paint (LCP)](https://nextjs.org/learn/seo/web-performance/lcp) element로 간주될 수 있는 이미지가 여러 개인 경우.
+- `loading` property를 사용하는 경우.
+- `fetchPriority` property를 사용하는 경우.
+
+대부분의 경우 `preload` 대신 `loading=&quot;eager&quot;` 또는 `fetchPriority=&quot;high&quot;`를 사용해야 합니다.
+
+#### `priority`
+
+Next.js 16부터는 동작을 명확히 하기 위해 `priority` property가 deprecated되었고 [`preload`](#preload) property로 대체되었습니다.
+
+#### `loading`
+
+이미지가 언제 로딩을 시작할지 제어합니다.
+
+[[CODE 13]]
+
+- `lazy`: 이미지가 viewport로부터 계산된 거리에 도달할 때까지 로딩을 미룹니다.
+- `eager`: 페이지 내 위치와 관계없이 이미지를 즉시 로드합니다.
+
+이미지가 즉시 로드되도록 보장하고 싶을 때만 `eager`를 사용하세요.
+
+&gt; [`loading` attribute](https://developer.mozilla.org/docs/Web/HTML/Element/img#loading)에 대해 더 알아보세요.
+
+#### `placeholder`
+
+이미지를 불러오는 동안 사용할 placeholder를 지정해 체감 로딩 성능을 개선합니다.
+
+[[CODE 14]]
+
+- `empty`: 이미지를 불러오는 동안 placeholder가 없습니다.
+- `blur`: 흐리게 처리한 버전의 이미지를 placeholder로 사용합니다. [`blurDataURL`](#blurdataurl) property와 함께 사용해야 합니다.
+- `data:image/...`: [Data URL](https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)을 placeholder로 사용합니다.
+
+**예시:**
+
+- [`blur` placeholder](https://image-component.nextjs.gallery/placeholder)
+- [data URL `placeholder` prop을 사용한 Shimmer 효과](https://image-component.nextjs.gallery/shimmer)
+- [`blurDataURL` prop을 사용한 Color 효과](https://image-component.nextjs.gallery/color)
+
+&gt; [`placeholder` attribute](https://developer.mozilla.org/docs/Web/HTML/Element/img#placeholder)에 대해 더 알아보세요.
+
+#### `blurDataURL`
+
+이미지가 성공적으로 로드되기 전에 placeholder 이미지로 사용할 [Data URL](https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/Data_URIs)입니다.
+자동으로 설정되거나 [`placeholder=&quot;blur&quot;`](#placeholder) property와 함께 사용할 수 있습니다.
+
+[[CODE 15]]
+
+이미지는 자동으로 확대되고 흐리게 처리되므로, 아주 작은 이미지(10px 이하)를 권장합니다.
+
+**자동**
+
+`src`가 `jpg`, `png`, `webp`, `avif` 파일의 static import라면, 애니메이션 이미지가 아닌 한 `blurDataURL`이 자동으로 추가됩니다.
+
+**수동 설정**
+
+이미지가 dynamic이거나 remote라면 `blurDataURL`을 직접 제공해야 합니다. 생성하려면 다음을 사용할 수 있습니다:
+
+- [png-pixel.com 같은 온라인 도구](https://png-pixel.com)
+- [Plaiceholder 같은 library](https://github.com/joe-bell/plaiceholder)
+
+blurDataURL이 크면 성능이 떨어질 수 있습니다. 작고 단순하게 유지하세요.
+
+**예시:**
+
+- [기본 `blurDataURL` prop](https://image-component.nextjs.gallery/placeholder)
+- [`blurDataURL` prop을 사용한 Color 효과](https://image-component.nextjs.gallery/color)
+
+#### `onLoad`
+
+이미지가 완전히 로드되고 [placeholder](#placeholder)가 제거된 후 호출되는 callback 함수입니다.
+
+[[CODE 16]]
+
+callback 함수는 하나의 인자, 즉 내부 `&lt;img&gt;` element를 참조하는 `target`을 가진 event와 함께 호출됩니다.
+
+
+
+#### `onError`
+
+이미지 로드에 실패하면 호출되는 callback 함수입니다.
+
+[[CODE 17]]
+
+
+
+#### `unoptimized`
+
+이미지를 최적화할지 여부를 나타내는 boolean입니다. 작은 이미지(1KB 미만), vector 이미지(SVG), 애니메이션 이미지(GIF)처럼 최적화의 이점이 없는 이미지에 유용합니다.
+
+[[CODE 18]]
+
+- `true`: quality, 크기, format을 바꾸지 않고 source 이미지를 `src`에서 그대로 제공합니다.
+- `false`: source 이미지를 최적화합니다.
+
+Next.js 12.3.0부터는 `next.config.js`를 다음 설정으로 업데이트해 모든 이미지에 이 prop을 지정할 수 있습니다:
+
+[[CODE 19]]
+
+#### `overrideSrc`
+
+`&lt;Image&gt;` component에 `src` prop을 제공하면, 결과로 만들어지는 `&lt;img&gt;`에 `srcset`과 `src` attribute가 모두 자동으로 생성됩니다.
+
+[[CODE 20]]
+
+[[CODE 21]]
+
+경우에 따라 `src` attribute가 생성되는 것이 바람직하지 않을 수 있으며, 이때 `overrideSrc` prop으로 이를 override할 수 있습니다.
+
+예를 들어 기존 웹사이트를 `&lt;img&gt;`에서 `&lt;Image&gt;`로 업그레이드할 때, 이미지 순위 유지나 recrawl 방지 같은 SEO 목적으로 동일한 `src` attribute를 유지하고 싶을 수 있습니다.
+
+[[CODE 22]]
+
+[[CODE 23]]
+
+#### `decoding`
+
+다른 콘텐츠 업데이트를 표시하기 전에 이미지가 decode될 때까지 기다려야 하는지를 브라우저에 알려 주는 hint입니다.
+
+[[CODE 24]]
+
+- `async`: 이미지를 비동기로 decode하고, 완료되기 전에 다른 콘텐츠가 렌더링되도록 허용합니다.
+- `sync`: 다른 콘텐츠와 함께 원자적으로(atomic) 표시되도록 이미지를 동기로 decode합니다.
+- `auto`: 선호 없음. 브라우저가 최적의 방식을 선택합니다.
+
+&gt; [`decoding` attribute](https://developer.mozilla.org/docs/Web/HTML/Element/img#decoding)에 대해 더 알아보세요.
+
+### Other Props || 기타 Props
+
+`&lt;Image /&gt;` component의 다른 property는 다음을 제외하고 내부 `img` element로 전달됩니다:
+
+- `srcSet`: 대신 [Device Sizes](#devicesizes)를 사용하세요.
+
+### Deprecated props
+
+#### `onLoadingComplete`
+
+&gt; **Warning**: Next.js 14에서 deprecated되었습니다. 대신 [`onLoad`](#onload)를 사용하세요.
+
+이미지가 완전히 로드되고 [placeholder](#placeholder)가 제거된 후 호출되는 callback 함수입니다.
+
+callback 함수는 하나의 인자, 즉 내부 `&lt;img&gt;` element에 대한 reference와 함께 호출됩니다.
+
+
+
+
+
+[[CODE 26]]
+
+
+
+
+
+### Configuration options || 설정 옵션
+
+`next.config.js`에서 Image Component를 설정할 수 있습니다. 사용할 수 있는 옵션은 다음과 같습니다:
+
+#### `localPatterns`
+
+`next.config.js` 파일에서 `localPatterns`를 사용해 특정 로컬 경로의 이미지만 최적화하도록 허용하고 나머지는 모두 차단합니다.
+
+[[CODE 27]]
+
+위 예시는 `next/image`의 `src` property가 반드시 `/assets/images/`로 시작하고 query string이 없도록 보장합니다. 다른 경로를 최적화하려고 하면 `400` Bad Request 오류로 응답합니다.
+
+&gt; **Good to know**: `search` property를 생략하면 모든 search parameter가 허용되어, 악의적인 사용자가 의도하지 않은 URL을 최적화할 수 있게 됩니다. 정확히 일치하도록 `search: &#x27;?v=2&#x27;` 같은 구체적인 값을 사용해 보세요.
+
+#### `remotePatterns`
+
+`next.config.js` 파일에서 `remotePatterns`를 사용해 특정 외부 경로의 이미지만 허용하고 나머지는 모두 차단합니다. 이렇게 하면 내 account의 외부 이미지만 제공되도록 보장할 수 있습니다.
+
+[[CODE 28]]
+
+object를 사용해 `remotePatterns`를 설정할 수도 있습니다:
+
+[[CODE 29]]
+
+위 예시는 `next/image`의 `src` property가 반드시 `https://example.com/account123/`로 시작하고 query string이 없도록 보장합니다. 그 외의 protocol, hostname, port, 또는 일치하지 않는 경로는 `400` Bad Request로 응답합니다.
+
+**Wildcard Patterns:**
+
+Wildcard pattern은 `pathname`과 `hostname` 모두에 사용할 수 있으며 문법은 다음과 같습니다:
+
+- `*`는 하나의 path segment 또는 subdomain과 일치합니다
+- `**`는 끝부분의 여러 path segment 또는 앞부분의 여러 subdomain과 일치합니다. 이 문법은 pattern의 중간에서는 동작하지 않습니다.
+
+[[CODE 30]]
+
+이렇게 하면 `image.example.com` 같은 subdomain이 허용됩니다. query string과 custom port는 여전히 차단됩니다.
+
+&gt; **Good to know**: `protocol`, `port`, `pathname`, `search`를 생략하면 wildcard `**`가 적용된 것으로 간주됩니다. 악의적인 사용자가 의도하지 않은 url을 최적화할 수 있으므로 권장하지 않습니다.
+
+**Query Strings**:
+
+`search` property를 사용해 query string을 제한할 수도 있습니다:
+
+[[CODE 31]]
+
+위 예시는 `next/image`의 `src` property가 반드시 `https://assets.example.com`으로 시작하고 정확히 `?v=1727111025337` query string을 갖도록 보장합니다. 그 외의 protocol이나 query string은 `400` Bad Request로 응답합니다.
+
+허용된 `remotePatterns`가 redirect로 응답하는 경우, redirect 위치에 대해 `remotePatterns`를 다시 검증하지 않고 remote 이미지 서버의 redirect를 따라간다는 점에 유의하세요. [maximumRedirects](#maximumredirects)를 설정해 redirect를 줄이거나 비활성화할 수 있습니다.
+
+#### `loaderFile`
+
+`loaderFile`을 사용하면 Next.js 대신 custom 이미지 최적화 서비스를 사용할 수 있습니다.
+
+[[CODE 32]]
+
+경로는 프로젝트 root 기준 상대 경로여야 합니다. 파일은 URL 문자열을 반환하는 default 함수를 export해야 합니다:
+
+
+
+
+
+[[CODE 34]]
+
+
+
+**예시:**
+
+- [Custom Image Loader Configuration](/docs/app/api-reference/config/next-config-js/images#example-loader-configuration)
+
+&gt; 또는 [`loader` prop](#loader)을 사용해 `next/image`의 각 instance를 설정할 수도 있습니다.
+
+#### `path`
+
+Image Optimization API의 기본 경로를 바꾸거나 prefix를 붙이고 싶다면 `path` property로 할 수 있습니다. `path`의 기본값은 `/_next/image`입니다.
+
+[[CODE 35]]
+
+#### `deviceSizes`
+
+`deviceSizes`로 기기 width breakpoint 목록을 지정할 수 있습니다. 이 width들은 `next/image` component가 [`sizes`](#sizes) prop을 사용하거나 `sizes` 없이 [`fill`](#fill) prop을 사용할 때, 사용자의 기기에 맞는 올바른 이미지가 제공되도록 하는 데 쓰입니다.
+
+설정을 제공하지 않으면 아래 기본값이 사용됩니다:
+
+[[CODE 36]]
+
+#### `imageSizes`
+
+`imageSizes`로 이미지 width 목록을 지정할 수 있습니다. 이 width들은 [device sizes](#devicesizes) 배열과 이어 붙여져, 이미지 [srcset](https://developer.mozilla.org/docs/Web/API/HTMLImageElement/srcset)을 생성하는 데 쓰이는 전체 크기 배열을 구성합니다.
+
+설정을 제공하지 않으면 아래 기본값이 사용됩니다:
+
+[[CODE 37]]
+
+`imageSizes`는 [`sizes`](#sizes) prop을 제공하는 이미지에만 사용되며, 이는 이미지가 화면 전체 width보다 작다는 것을 의미합니다. 따라서 `imageSizes`의 크기는 모두 `deviceSizes`의 가장 작은 크기보다 작아야 합니다.
+
+#### `qualities`
+
+`qualities`로 이미지 quality 값 목록을 지정할 수 있습니다.
+
+설정을 제공하지 않으면 아래 기본값이 사용됩니다:
+
+[[CODE 38]]
+
+&gt; **Good to know**: 제한 없는 접근을 허용하면 악의적인 사용자가 의도보다 많은 quality를 최적화할 수 있기 때문에, Next.js 16부터 이 필드는 필수입니다.
+
+다음과 같이 allowlist에 이미지 quality를 더 추가할 수 있습니다:
+
+[[CODE 39]]
+
+위 예시에서는 25, 50, 75, 100 네 가지 quality만 허용됩니다.
+
+[`quality`](#quality) prop이 이 배열의 값과 일치하지 않으면, 허용된 값 중 가장 가까운 값이 사용됩니다.
+
+이 배열의 값과 일치하지 않는 quality로 REST API에 직접 접근하면, 서버는 400 Bad Request response를 반환합니다.
+
+#### `formats`
+
+`formats`로 사용할 이미지 format 목록을 지정할 수 있습니다.
+
+[[CODE 40]]
+
+Next.js는 최적의 출력 format을 결정하기 위해 request의 `Accept` header를 통해 브라우저가 지원하는 이미지 format을 자동으로 감지합니다.
+
+`Accept` header가 설정된 format 중 둘 이상과 일치하면 배열에서 첫 번째로 일치하는 것이 사용됩니다. 따라서 배열 순서가 중요합니다. 일치하는 것이 없거나(또는 source 이미지가 애니메이션이면) 원본 이미지의 format을 사용합니다.
+
+AVIF 지원을 활성화할 수 있으며, 브라우저가 [AVIF를 지원하지 않으면](https://caniuse.com/avif) src 이미지의 원본 format으로 fallback합니다:
+
+[[CODE 41]]
+
+AVIF와 WebP format을 함께 활성화할 수도 있습니다. AVIF를 지원하는 브라우저에서는 AVIF가 우선 사용되고, WebP가 fallback이 됩니다:
+
+[[CODE 42]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - 대부분의 경우에는 여전히 WebP 사용을 권장합니다.
+&gt; - AVIF는 일반적으로 encode하는 데 50% 더 오래 걸리지만 WebP보다 20% 더 작게 압축됩니다. 즉, 이미지를 처음 request할 때는 보통 더 느리지만, cache된 이후의 request는 더 빠릅니다.
+&gt; - 여러 format을 사용하면 Next.js는 각 format을 따로 cache합니다. 서로 다른 브라우저 지원을 위해 이미지의 AVIF 버전과 WebP 버전이 모두 저장되므로, 단일 format을 사용할 때보다 저장 공간이 더 필요합니다.
+&gt; - Next.js 앞단에 Proxy/CDN을 두고 self-host한다면, Proxy가 `Accept` header를 전달하도록 설정해야 합니다.
+
+#### `minimumCacheTTL`
+
+`minimumCacheTTL`로 cache된 최적화 이미지의 TTL(Time to Live)을 초 단위로 설정할 수 있습니다. 많은 경우 파일 내용을 자동으로 hash하고 수명이 긴 `immutable` `Cache-Control` header로 이미지를 cache하는 [Static Image Import](/docs/app/getting-started/images#local-images)를 사용하는 편이 더 좋습니다.
+
+설정을 제공하지 않으면 아래 기본값이 사용됩니다.
+
+[[CODE 43]]
+
+TTL을 늘려 revalidation 횟수를 줄이고 비용을 낮출 수 있습니다:
+
+[[CODE 44]]
+
+최적화된 이미지의 만료(정확히는 Max Age)는 `minimumCacheTTL`과 upstream 이미지의 `Cache-Control` header 중 더 큰 값으로 정의됩니다.
+
+이미지별로 caching 동작을 바꿔야 한다면, [`headers`](/docs/app/api-reference/config/next-config-js/headers)를 설정해 upstream 이미지(예: `/_next/image` 자체가 아니라 `/some-asset.jpg`)에 `Cache-Control` header를 지정할 수 있습니다.
+
+현재는 cache를 무효화하는 방법이 없으므로 `minimumCacheTTL`을 낮게 유지하는 것이 좋습니다. 그렇지 않으면 [`src`](#src) prop을 수동으로 바꾸거나 cache된 파일 `&lt;distDir&gt;/cache/images`를 삭제해야 할 수 있습니다.
+
+#### `disableStaticImages`
+
+`disableStaticImages`로 static 이미지 import를 비활성화할 수 있습니다.
+
+기본 동작에서는 `import icon from &#x27;./icon.png&#x27;`처럼 static 파일을 import한 뒤 `src` property에 전달할 수 있습니다. import가 다르게 동작하기를 기대하는 다른 plugin과 충돌한다면 이 기능을 비활성화하고 싶을 수 있습니다.
+
+`next.config.js`에서 static 이미지 import를 비활성화할 수 있습니다:
+
+[[CODE 45]]
+
+#### `maximumRedirects`
+
+기본 이미지 최적화 loader는 remote 이미지를 가져올 때 HTTP redirect를 최대 3번까지 따라갑니다.
+
+[[CODE 46]]
+
+편의를 위해, 이 redirect들은 [remotePatterns](#remotepatterns)를 충족하지 않아도 됩니다.
+
+remote 이미지를 가져올 때 따라갈 redirect 횟수를 설정할 수 있습니다. 값을 `0`으로 설정하면 redirect를 따라가지 않습니다.
+
+[[CODE 47]]
+
+#### `maximumDiskCacheSize`
+
+기본 이미지 최적화 loader는 최적화된 이미지를 disk에 기록하여, 이후의 request를 disk cache에서 더 빠르게 제공할 수 있게 합니다.
+
+최대 disk cache 크기를 byte 단위로 설정할 수 있습니다. 예를 들어 500 MB는 다음과 같습니다:
+
+[[CODE 48]]
+
+값을 `0`으로 설정해 disk cache를 완전히 비활성화할 수도 있습니다.
+
+[[CODE 49]]
+
+값을 설정하지 않으면, 기본 동작은 시작 시 한 번 현재 사용 가능한 disk 공간을 확인하고 그 50%를 사용하는 것입니다.
+
+disk cache가 설정된 크기를 초과하면, cache가 다시 한도 아래로 내려갈 때까지 가장 오래 사용되지 않은(least recently used) 최적화 이미지가 삭제됩니다.
+
+또는 [`cacheHandler`](/docs/app/api-reference/config/next-config-js/incrementalCacheHandlerPath)를 사용해 직접 cache handler를 구현할 수 있으며, 이 경우 `maximumDiskCacheSize` 설정은 무시됩니다.
+
+#### `maximumResponseBody`
+
+기본 이미지 최적화 loader는 최대 50 MB 크기의 source 이미지까지 가져옵니다.
+
+[[CODE 50]]
+
+모든 source 이미지가 작다는 것을 알고 있다면, 이 값을 5 MB 같은 더 작은 값으로 줄여 메모리가 제한된 서버를 보호할 수 있습니다.
+
+[[CODE 51]]
+
+#### `dangerouslyAllowLocalIP`
+
+드물게 private network에서 Next.js를 self-host할 때, 같은 network의 로컬 IP 주소에서 오는 이미지를 최적화하도록 허용하고 싶을 수 있습니다. 악의적인 사용자가 내부 network의 콘텐츠에 접근할 수 있게 될 수 있으므로 대부분의 사용자에게는 권장하지 않습니다.
+
+기본값은 false입니다.
+
+[[CODE 52]]
+
+로컬 network의 다른 곳에 호스팅된 remote 이미지를 최적화해야 한다면 값을 true로 설정할 수 있습니다.
+
+[[CODE 53]]
+
+split-horizon DNS를 사용하는 VPC에서 Next.js를 호스팅하면서 400 Bad Request status를 받는 경우에 필요할 수 있습니다. SSRF 위험을 이해한 경우에만 활성화하세요.
+
+#### `dangerouslyAllowSVG`
+
+`dangerouslyAllowSVG`로 SVG 이미지를 제공할 수 있습니다.
+
+[[CODE 54]]
+
+기본적으로 Next.js는 몇 가지 이유로 SVG 이미지를 최적화하지 않습니다:
+
+- SVG는 vector format이므로 손실 없이 크기를 조정할 수 있습니다.
+- SVG는 HTML/CSS와 동일한 기능을 많이 가지고 있어, 적절한 [Content Security Policy (CSP) headers](/docs/app/api-reference/config/next-config-js/headers#content-security-policy) 없이는 취약점으로 이어질 수 있습니다.
+
+[`src`](#src) prop이 SVG임을 알고 있다면 [`unoptimized`](#unoptimized) prop 사용을 권장합니다. `src`가 `&quot;.svg&quot;`로 끝나면 이는 자동으로 적용됩니다.
+
+[[CODE 55]]
+
+또한 브라우저가 이미지를 다운로드하도록 강제하는 `contentDispositionType`과, 이미지에 포함된 script가 실행되지 않도록 하는 `contentSecurityPolicy`도 함께 설정할 것을 강력히 권장합니다.
+
+[[CODE 56]]
+
+#### `contentDispositionType`
+
+`contentDispositionType`으로 [`Content-Disposition`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition#as_a_response_header_for_the_main_body) header를 설정할 수 있습니다.
+
+[[CODE 57]]
+
+#### `contentSecurityPolicy`
+
+`contentSecurityPolicy`로 이미지에 대한 [`Content-Security-Policy`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP) header를 설정할 수 있습니다. 이는 [`dangerouslyAllowSVG`](#dangerouslyallowsvg)를 사용할 때 이미지에 포함된 script가 실행되지 않도록 하는 데 특히 중요합니다.
+
+[[CODE 58]]
+
+기본적으로 [loader](#loader)는 API가 임의의 remote 이미지를 제공할 수 있으므로, 추가 보호를 위해 [`Content-Disposition`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Content-Disposition#as_a_response_header_for_the_main_body) header를 `attachment`로 설정합니다.
+
+기본값은 `attachment`이며, 직접 방문했을 때 브라우저가 이미지를 다운로드하도록 강제합니다. 이는 [`dangerouslyAllowSVG`](#dangerouslyallowsvg)가 true일 때 특히 중요합니다.
+
+선택적으로 `inline`을 설정해, 직접 방문했을 때 다운로드하지 않고 브라우저가 이미지를 렌더링하도록 할 수 있습니다.
+
+### Deprecated configuration options || Deprecated 설정 옵션
+
+#### `domains`
+
+&gt; **Warning**: 악의적인 사용자로부터 애플리케이션을 보호하기 위해, Next.js 14부터 deprecated되었으며 엄격한 [`remotePatterns`](#remotepatterns)로 대체되었습니다.
+
+[`remotePatterns`](#remotepatterns)와 비슷하게, `domains` 설정은 외부 이미지에 허용할 hostname 목록을 제공하는 데 사용할 수 있습니다. 하지만 `domains` 설정은 wildcard pattern matching을 지원하지 않으며 protocol, port, pathname을 제한할 수 없습니다.
+
+대부분의 remote 이미지 서버는 여러 tenant가 공유하므로, 의도한 이미지만 최적화되도록 `remotePatterns`를 사용하는 것이 더 안전합니다.
+
+아래는 `next.config.js` 파일에서 `domains` property를 사용하는 예시입니다:
+
+[[CODE 59]]
+
+## Functions || 함수
+
+### `getImageProps`
+
+`getImageProps` 함수는 내부 `&lt;img&gt;` element에 전달될 props를 얻어, 대신 다른 component, style, canvas 등에 전달하는 데 사용할 수 있습니다.
+
+[[CODE 60]]
+
+또한 React `useState()` 호출을 피하므로 성능이 더 좋아질 수 있지만, placeholder가 절대 제거되지 않기 때문에 [`placeholder`](#placeholder) prop과 함께 사용할 수는 없습니다.
+
+## Known browser bugs || 알려진 브라우저 버그
+
+이 `next/image` component는 브라우저 네이티브 [lazy loading](https://caniuse.com/loading-lazy-attr)을 사용하며, Safari 15.4 이전의 오래된 브라우저에서는 eager loading으로 fallback될 수 있습니다. blur-up placeholder를 사용할 때 Safari 12 이전의 오래된 브라우저는 empty placeholder로 fallback됩니다. `width`/`height`가 `auto`인 style을 사용할 때, [aspect ratio를 유지하지](https://caniuse.com/mdn-html_elements_img_aspect_ratio_computed_from_attributes) 않는 Safari 15 이전의 오래된 브라우저에서는 [Layout Shift](https://web.dev/cls/)가 발생할 수 있습니다. 자세한 내용은 [이 MDN 영상](https://www.youtube.com/watch?v=4-d_SoCHeWE)을 참고하세요.
+
+- [Safari 15 - 16.3](https://bugs.webkit.org/show_bug.cgi?id=243601)은 로딩 중 회색 테두리를 표시합니다. Safari 16.4에서 [이 문제가 수정되었습니다](https://webkit.org/blog/13966/webkit-features-in-safari-16-4/#:~:text=Now%20in%20Safari%2016.4%2C%20a%20gray%20line%20no%20longer%20appears%20to%20mark%20the%20space%20where%20a%20lazy%2Dloaded%20image%20will%20appear%20once%20it%E2%80%99s%20been%20loaded.). 가능한 해결책:
+  - CSS `@supports (font: -apple-system-body) and (-webkit-appearance: none) { img[loading=&quot;lazy&quot;] { clip-path: inset(0.6px) } }` 사용
+  - 이미지가 above the fold에 있다면 [`loading=&quot;eager&quot;`](#loading) 사용
+- [Firefox 67+](https://bugzilla.mozilla.org/show_bug.cgi?id=1556156)는 로딩 중 흰색 배경을 표시합니다. 가능한 해결책:
+  - [AVIF `formats`](#formats) 활성화
+  - [`placeholder`](#placeholder) 사용
+
+## Examples || 예시
+
+### Styling images || 이미지 스타일링
+
+Image component의 스타일링은 일반 `&lt;img&gt;` element의 스타일링과 비슷하지만, 몇 가지 유의할 가이드라인이 있습니다:
+
+`styled-jsx`가 아니라 `className`이나 `style`을 사용하세요. 대부분의 경우 `className` prop 사용을 권장합니다. import한 [CSS Module](/docs/app/getting-started/css), [global stylesheet](/docs/app/getting-started/css#global-css) 등을 사용할 수 있습니다.
+
+[[CODE 61]]
+
+`style` prop을 사용해 inline style을 지정할 수도 있습니다.
+
+[[CODE 62]]
+
+`fill`을 사용할 때는 부모 element가 `position: relative`, `fixed`, `absolute`로 position이 지정되어 있어야 합니다. 이미지 자체는 `position: absolute`를 사용하므로, 가장 가까운 positioned 조상 element를 기준으로 크기가 정해집니다.
+
+[[CODE 63]]
+
+[styled-jsx](/docs/app/guides/css-in-js)는 현재 component로 scope가 한정되므로 사용할 수 없습니다(style을 `global`로 표시하지 않는 한).
+
+### Responsive images with a static export || static export를 사용한 responsive 이미지
+
+static 이미지를 import하면 Next.js가 파일을 기반으로 width와 height를 자동으로 설정합니다. style을 설정해 이미지를 responsive하게 만들 수 있습니다:
+
+&lt;Image
+  alt=&quot;부모 container의 width와 height를 채우는 responsive 이미지&quot;
+  srcLight=&quot;/docs/light/responsive-image.png&quot;
+  srcDark=&quot;/docs/dark/responsive-image.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;629&quot;
+/&gt;
+
+[[CODE 64]]
+
+### Responsive images with a remote URL || remote URL을 사용한 responsive 이미지
+
+source 이미지가 dynamic이거나 remote URL이라면, Next.js가 aspect ratio를 계산할 수 있도록 width와 height props를 제공해야 합니다:
+
+[[CODE 65]]
+
+직접 해 보기:
+
+- [viewport에 반응하는 이미지 데모](https://image-component.nextjs.gallery/responsive)
+
+### Responsive image with `fill` || `fill`을 사용한 responsive 이미지
+
+이미지의 aspect ratio를 모른다면, [`fill` prop](#fill)을 추가하고 `objectFit` prop을 `cover`로 설정할 수 있습니다. 이렇게 하면 이미지가 부모 container의 전체 width를 채웁니다.
+
+&lt;Image
+  alt=&quot;부모 container width를 채우는 이미지 grid&quot;
+  srcLight=&quot;/docs/light/fill-container.png&quot;
+  srcDark=&quot;/docs/dark/fill-container.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;529&quot;
+/&gt;
+
+[[CODE 66]]
+
+### Background Image || 배경 이미지
+
+`fill` prop을 사용해 이미지가 화면 전체 영역을 덮도록 만듭니다:
+
+&lt;Image
+  alt=&quot;페이지의 전체 width와 height를 차지하는 배경 이미지&quot;
+  srcLight=&quot;/docs/light/background-image.png&quot;
+  srcDark=&quot;/docs/dark/background-image.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;427&quot;
+/&gt;
+
+[[CODE 67]]
+
+다양한 style로 사용된 Image component 예시는 [Image Component Demo](https://image-component.nextjs.gallery)를 참고하세요.
+
+### Remote images || Remote 이미지
+
+remote 이미지를 사용하려면 `src` property가 URL 문자열이어야 합니다.
+
+[[CODE 68]]
+
+Next.js는 build 과정에서 remote 파일에 접근할 수 없으므로, [`width`](/docs/app/api-reference/components/image#width-and-height), [`height`](/docs/app/api-reference/components/image#width-and-height), 그리고 선택적으로 [`blurDataURL`](/docs/app/api-reference/components/image#blurdataurl) props를 직접 제공해야 합니다.
+
+`width`와 `height` attribute는 이미지의 올바른 aspect ratio를 추론하고, 이미지 로딩으로 인한 layout shift를 피하는 데 사용됩니다. `width`와 `height`는 이미지 파일의 렌더링 크기를 결정하지 _않습니다_.
+
+이미지 최적화를 안전하게 허용하려면 `next.config.js`에 지원하는 URL pattern 목록을 정의하세요. 악용을 막기 위해 가능한 한 구체적으로 작성하세요. 예를 들어 다음 설정은 특정 AWS S3 bucket의 이미지만 허용합니다:
+
+[[CODE 69]]
+
+### Theme detection || 테마 감지
+
+light mode와 dark mode에서 서로 다른 이미지를 표시하고 싶다면, 두 개의 `&lt;Image&gt;` component를 감싸고 CSS media query에 따라 올바른 것을 보여 주는 새 component를 만들 수 있습니다.
+
+[[CODE 70]]
+
+[[CODE 71]]
+
+&gt; **Good to know**: `loading=&quot;lazy&quot;`의 기본 동작 덕분에 올바른 이미지만 로드됩니다. `preload`나 `loading=&quot;eager&quot;`를 사용하면 두 이미지가 모두 로드되므로 사용할 수 없습니다. 대신 [`fetchPriority=&quot;high&quot;`](https://developer.mozilla.org/docs/Web/API/HTMLImageElement/fetchPriority)를 사용할 수 있습니다.
+
+직접 해 보기:
+
+- [light/dark mode 테마 감지 데모](https://image-component.nextjs.gallery/theme)
+
+### Art direction
+
+모바일과 데스크톱에서 서로 다른 이미지를 표시하고 싶다면(이를 [Art Direction](https://developer.mozilla.org/en-US/docs/Learn/HTML/Multimedia_and_embedding/Responsive_images#art_direction)이라고도 합니다), `getImageProps()`에 서로 다른 `src`, `width`, `height`, `quality` props를 제공할 수 있습니다.
+
+[[CODE 72]]
+
+### Background CSS
+
+`srcSet` 문자열을 [`image-set()`](https://developer.mozilla.org/en-US/docs/Web/CSS/image/image-set) CSS 함수로 변환해 배경 이미지를 최적화할 수도 있습니다.
+
+[[CODE 73]]
+
+## Version History || 버전 기록
+
+| Version    | Changes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `v16.1.7`  | `maximumDiskCacheSize` 설정 추가.                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `v16.1.2`  | `maximumResponseBody` 설정 추가.                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `v16.0.0`  | `qualities` 기본 설정이 `[75]`로 변경, `preload` prop 추가, `priority` prop deprecated, `dangerouslyAllowLocalIP` config 추가, `maximumRedirects` config 추가.                                                                                                                                                                                                                                                                                                            |
+| `v15.3.0`  | `remotePatterns`에 `URL` object 배열 지원 추가.                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| `v15.0.0`  | `contentDispositionType` 설정의 기본값이 `attachment`로 변경.                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `v14.2.23` | `qualities` 설정 추가.                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| `v14.2.15` | `decoding` prop 추가 및 `localPatterns` 설정 추가.                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| `v14.2.14` | `remotePatterns.search` prop 추가.                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `v14.2.0`  | `overrideSrc` prop 추가.                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `v14.1.0`  | `getImageProps()`가 stable이 됨.                                                                                                                                                                                                                                                                                                                                                                                                                                                               |
+| `v14.0.0`  | `onLoadingComplete` prop과 `domains` config deprecated.                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `v13.4.14` | `placeholder` prop에 `data:/image...` 지원.                                                                                                                                                                                                                                                                                                                                                                                                                                            |
+| `v13.2.0`  | `contentDispositionType` 설정 추가.                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| `v13.0.6`  | `ref` prop 추가.                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| `v13.0.0`  | `next/image` import가 `next/legacy/image`로 이름 변경. `next/future/image` import가 `next/image`로 이름 변경. import 이름을 안전하고 자동으로 바꿔 주는 [codemod를 사용할 수 있습니다](/docs/app/guides/upgrading/codemods#next-image-to-legacy-image). `&lt;span&gt;` wrapper 제거. `layout`, `objectFit`, `objectPosition`, `lazyBoundary`, `lazyRoot` props 제거. `alt` 필수. `onLoadingComplete`가 `img` element의 reference를 받음. 내장 loader config 제거. |
+| `v12.3.0`  | `remotePatterns`와 `unoptimized` 설정이 stable이 됨.                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| `v12.2.0`  | 실험적 `remotePatterns`와 실험적 `unoptimized` 설정 추가. `layout=&quot;raw&quot;` 제거.                                                                                                                                                                                                                                                                                                                                                                                  |
+| `v12.1.1`  | `style` prop 추가. `layout=&quot;raw&quot;`에 대한 실험적 지원 추가.                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| `v12.1.0`  | `dangerouslyAllowSVG`와 `contentSecurityPolicy` 설정 추가.                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `v12.0.9`  | `lazyRoot` prop 추가.                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| `v12.0.0`  | `formats` 설정 추가.&lt;br/&gt;AVIF 지원 추가.&lt;br/&gt;Wrapper `&lt;div&gt;`가 `&lt;span&gt;`으로 변경.                                                                                                                                                                                                                                                                                                                                                                                            |
+| `v11.1.0`  | `onLoadingComplete`와 `lazyBoundary` props 추가.                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| `v11.0.0`  | `src` prop에 static import 지원.&lt;br/&gt;`placeholder` prop 추가.&lt;br/&gt;`blurDataURL` prop 추가.                                                                                                                                                                                                                                                                                                                                                                                          |
+| `v10.0.5`  | `loader` prop 추가.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `v10.0.1`  | `layout` prop 추가.                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| `v10.0.0`  | `next/image` 도입.                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

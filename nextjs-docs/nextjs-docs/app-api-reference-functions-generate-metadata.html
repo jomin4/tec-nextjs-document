@@ -1,0 +1,1769 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>generateMetadata (generateMetadata) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/functions/generate-metadata" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/functions/generate-metadata" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/generate-metadata.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-functions.html">Functions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">generateMetadata<span class="sub">generateMetadata</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>metadata</code> object나 <code>generateMetadata</code> 함수를 사용해 metadata를 정의할 수 있습니다.</p><div class="en-orig"><p>You can use the <code>metadata</code> object or the <code>generateMetadata</code> function to define metadata.</p></div>
+<h2 class="sec" id="the-metadata-object"><a class="anchor" href="#the-metadata-object">The <code>metadata</code> object<span class="ko"><code>metadata</code> object</span></a></h2>
+<p>static metadata를 정의하려면 <code>layout.js</code> 또는 <code>page.js</code> 파일에서 <a href="#metadata-fields"><code>Metadata</code> object</a>를 export하세요.</p><div class="en-orig"><p>To define static metadata, export a <a href="#metadata-fields"><code>Metadata</code> object</a> from a <code>layout.js</code> or <code>page.js</code> file.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="layout.tsx | page.tsx" data-js="layout.js | page.js">layout.tsx | page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export const metadata: Metadata = {
+  title: &#x27;...&#x27;,
+  description: &#x27;...&#x27;,
+}
+
+export default function Page() {}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const metadata = {
+  title: &#x27;...&#x27;,
+  description: &#x27;...&#x27;,
+}
+
+export default function Page() {}</code></pre></div></div>
+<blockquote><p>지원되는 option의 전체 목록은 <a href="#metadata-fields">Metadata Fields</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="#metadata-fields">Metadata Fields</a> for a complete list of supported options.</p></div></blockquote>
+<h2 class="sec" id="generatemetadata-function"><a class="anchor" href="#generatemetadata-function"><code>generateMetadata</code> function<span class="ko"><code>generateMetadata</code> 함수</span></a></h2>
+<p>현재 route parameter, 외부 데이터, parent segment의 <code>metadata</code> 같은 <strong>dynamic 정보</strong>에 의존하는 dynamic metadata는 <a href="#metadata-fields"><code>Metadata</code> object</a>를 반환하는 <code>generateMetadata</code> 함수를 export해서 설정할 수 있습니다.</p><div class="en-orig"><p>Dynamic metadata depends on <strong>dynamic information</strong>, such as the current route parameters, external data, or <code>metadata</code> in parent segments, can be set by exporting a <code>generateMetadata</code> function that returns a <a href="#metadata-fields"><code>Metadata</code> object</a>.</p></div>
+<p><code>generateMetadata</code>를 resolve하는 과정은 페이지 rendering의 일부입니다. 페이지가 prerender될 수 있고 <code>generateMetadata</code>가 dynamic 동작을 일으키지 않는다면, 결과 metadata는 페이지의 initial HTML에 포함됩니다.</p><div class="en-orig"><p>Resolving <code>generateMetadata</code> is part of rendering the page. If the page can be prerendered and <code>generateMetadata</code> doesn't introduce dynamic behavior, the resulting metadata is included in the page's initial HTML.</p></div>
+<p>그렇지 않으면 <code>generateMetadata</code>에서 resolve된 metadata는 initial UI를 보낸 뒤 <a href="app-api-reference-functions-generate-metadata.html#streaming-metadata">stream될 수 있습니다</a>.</p><div class="en-orig"><p>Otherwise the metadata resolved from <code>generateMetadata</code> <a href="app-api-reference-functions-generate-metadata.html#streaming-metadata">can be streamed</a> after sending the initial UI.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/products/[id]/page.tsx" data-js="app/products/[id]/page.js">app/products/[id]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Metadata, ResolvingMetadata } from &#x27;next&#x27;
+
+type Props = {
+  params: Promise&lt;{ id: string }&gt;
+  searchParams: Promise&lt;{ [key: string]: string | string[] | undefined }&gt;
+}
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise&lt;Metadata&gt; {
+  // read route params
+  const { id } = await params
+
+  // fetch data
+  const product = await fetch(`https://.../${id}`).then((res) =&gt; res.json())
+
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent).openGraph?.images || []
+
+  return {
+    title: product.title,
+    openGraph: {
+      images: [&#x27;/some-specific-page-image.jpg&#x27;, ...previousImages],
+    },
+  }
+}
+
+export default function Page({ params, searchParams }: Props) {}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function generateMetadata({ params, searchParams }, parent) {
+  // read route params
+  const { id } = await params
+
+  // fetch data
+  const product = await fetch(`https://.../${id}`).then((res) =&gt; res.json())
+
+  // optionally access and extend (rather than replace) parent metadata
+  const previousImages = (await parent).openGraph?.images || []
+
+  return {
+    title: product.title,
+    openGraph: {
+      images: [&#x27;/some-specific-page-image.jpg&#x27;, ...previousImages],
+    },
+  }
+}
+
+export default function Page({ params, searchParams }) {}</code></pre></div></div>
+<p><code>params</code>와 <code>searchParams</code>의 type completion을 위해, page에서는 <a href="app-api-reference-file-conventions-page.html#page-props-helper"><code>PageProps&lt;&#x27;/route&#x27;&gt;</code></a>로, layout에서는 <a href="app-api-reference-file-conventions-layout.html#layout-props-helper"><code>LayoutProps&lt;&#x27;/route&#x27;&gt;</code></a>로 첫 번째 argument의 type을 지정할 수 있습니다.</p><div class="en-orig"><p>For type completion of <code>params</code> and <code>searchParams</code>, you can type the first argument with <a href="app-api-reference-file-conventions-page.html#page-props-helper"><code>PageProps&lt;&#x27;/route&#x27;&gt;</code></a> or <a href="app-api-reference-file-conventions-layout.html#layout-props-helper"><code>LayoutProps&lt;&#x27;/route&#x27;&gt;</code></a> for pages and layouts respectively.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>Metadata는 <code>layout.js</code>와 <code>page.js</code> 파일에 추가할 수 있습니다.</li>
+<li>Next.js는 metadata를 자동으로 resolve하고 페이지에 맞는 <code>&lt;head&gt;</code> tag를 생성합니다.</li>
+<li><code>metadata</code> object와 <code>generateMetadata</code> 함수 export는 <strong>Server Component에서만 지원됩니다</strong>.</li>
+<li>같은 route segment에서 <code>metadata</code> object와 <code>generateMetadata</code> 함수를 동시에 export할 수 없습니다.</li>
+<li><code>generateMetadata</code> 안의 <code>fetch</code> request는 <code>generateMetadata</code>, <code>generateStaticParams</code>, Layout, Page, Server Component 전반에서 같은 데이터에 대해 자동으로 <a href="app-glossary.html#memoization">memoize</a>됩니다.</li>
+<li><code>fetch</code>를 사용할 수 없다면 React <a href="https://react.dev/reference/react/cache" target="_blank" rel="noopener"><code>cache</code>를 사용할 수 있습니다</a>.</li>
+<li><a href="app-api-reference-file-conventions-metadata.html">File-based metadata</a>가 더 높은 우선순위를 가지며 <code>metadata</code> object와 <code>generateMetadata</code> 함수를 override합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Metadata can be added to <code>layout.js</code> and <code>page.js</code> files.</li>
+<li>Next.js will automatically resolve the metadata, and create the relevant <code>&lt;head&gt;</code> tags for the page.</li>
+<li>The <code>metadata</code> object and <code>generateMetadata</code> function exports are <strong>only supported in Server Components</strong>.</li>
+<li>You cannot export both the <code>metadata</code> object and <code>generateMetadata</code> function from the same route segment.</li>
+<li><code>fetch</code> requests inside <code>generateMetadata</code> are automatically <a href="app-glossary.html#memoization">memoized</a> for the same data across <code>generateMetadata</code>, <code>generateStaticParams</code>, Layouts, Pages, and Server Components.</li>
+<li>React <a href="https://react.dev/reference/react/cache" target="_blank" rel="noopener"><code>cache</code> can be used</a> if <code>fetch</code> is unavailable.</li>
+<li><a href="app-api-reference-file-conventions-metadata.html">File-based metadata</a> has the higher priority and will override the <code>metadata</code> object and <code>generateMetadata</code> function.</li>
+</ul></div></div></div>
+<h2 class="sec" id="why-generatemetadata-is-server-component-only"><a class="anchor" href="#why-generatemetadata-is-server-component-only">Why <code>generateMetadata</code> is Server Component only<span class="ko"><code>generateMetadata</code>가 Server Component 전용인 이유</span></a></h2>
+<p><code>generateMetadata</code>와 <code>metadata</code> export는 Server Component에서만 지원됩니다. metadata는 page component가 render되기 전에 server에서 resolve되어야 하기 때문입니다. 이렇게 해야 Next.js가 initial HTML response에 metadata를 포함할 수 있습니다.</p><div class="en-orig"><p><code>generateMetadata</code> and the <code>metadata</code> export are only supported in Server Components because metadata must be resolved on the server before the page component is rendered. This allows Next.js to include the metadata in the initial HTML response.</p></div>
+<p>Client Component 기능을 사용해야 한다면 <code>page.tsx</code>는 Server Component로 유지하고, Client Component 로직은 별도 파일로 옮기세요:</p><div class="en-orig"><p>If you need to use Client Component features, keep your <code>page.tsx</code> as a Server Component and move the Client Component logic to a separate file:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+import { InteractiveComponent } from &#x27;./interactive-component&#x27;
+
+export const metadata: Metadata = {
+  title: &#x27;My Page&#x27;,
+}
+
+export default function Page() {
+  return &lt;InteractiveComponent /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { InteractiveComponent } from &#x27;./interactive-component&#x27;
+
+export const metadata = {
+  title: &#x27;My Page&#x27;,
+}
+
+export default function Page() {
+  return &lt;InteractiveComponent /&gt;
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/interactive-component.tsx" data-js="app/interactive-component.js">app/interactive-component.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+export function InteractiveComponent() {
+  // Client-side interactivity (hooks, event handlers, etc.)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+export function InteractiveComponent() {
+  // Client-side interactivity (hooks, event handlers, etc.)
+}</code></pre></div></div>
+<h2 class="sec" id="reference"><a class="anchor" href="#reference">Reference</a></h2>
+<h3 class="sec" id="parameters"><a class="anchor" href="#parameters">Parameters</a></h3>
+<p><code>generateMetadata</code> 함수는 다음 parameter를 받습니다:</p><div class="en-orig"><p><code>generateMetadata</code> function accepts the following parameters:</p></div>
+<ul>
+<li><code>props</code> - 현재 route의 parameter를 담은 object:<ul>
+<li><p><code>params</code> - root segment부터 <code>generateMetadata</code>가 호출되는 segment까지의 <a href="app-api-reference-file-conventions-dynamic-routes.html">dynamic route parameters</a> object를 담은 object입니다. 예시:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Route</th><th>URL</th><th><code>params</code></th></tr></thead>
+<tbody>
+<tr><td><code>app/shop/[slug]/page.js</code></td><td><code>/shop/1</code></td><td><code>{ slug: &#x27;1&#x27; }</code></td></tr>
+<tr><td><code>app/shop/[tag]/[item]/page.js</code></td><td><code>/shop/1/2</code></td><td><code>{ tag: &#x27;1&#x27;, item: &#x27;2&#x27; }</code></td></tr>
+<tr><td><code>app/shop/[...slug]/page.js</code></td><td><code>/shop/1/2</code></td><td><code>{ slug: [&#x27;1&#x27;, &#x27;2&#x27;] }</code></td></tr>
+</tbody></table></div></li>
+<li><p><code>searchParams</code> - 현재 URL의 <a href="https://developer.mozilla.org/docs/Learn/Common_questions/What_is_a_URL#parameters" target="_blank" rel="noopener">search params</a>를 담은 object입니다. 예시:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>URL</th><th><code>searchParams</code></th></tr></thead>
+<tbody>
+<tr><td><code>/shop?a=1</code></td><td><code>{ a: &#x27;1&#x27; }</code></td></tr>
+<tr><td><code>/shop?a=1&amp;b=2</code></td><td><code>{ a: &#x27;1&#x27;, b: &#x27;2&#x27; }</code></td></tr>
+<tr><td><code>/shop?a=1&amp;a=2</code></td><td><code>{ a: [&#x27;1&#x27;, &#x27;2&#x27;] }</code></td></tr>
+</tbody></table></div></li>
+</ul></li>
+<li><code>parent</code> - parent route segment에서 resolve된 metadata의 promise입니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>props</code> - An object containing the parameters of the current route:<ul>
+<li><p><code>params</code> - An object containing the <a href="app-api-reference-file-conventions-dynamic-routes.html">dynamic route parameters</a> object from the root segment down to the segment <code>generateMetadata</code> is called from. Examples:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>Route</th><th>URL</th><th><code>params</code></th></tr></thead>
+<tbody>
+<tr><td><code>app/shop/[slug]/page.js</code></td><td><code>/shop/1</code></td><td><code>{ slug: &#x27;1&#x27; }</code></td></tr>
+<tr><td><code>app/shop/[tag]/[item]/page.js</code></td><td><code>/shop/1/2</code></td><td><code>{ tag: &#x27;1&#x27;, item: &#x27;2&#x27; }</code></td></tr>
+<tr><td><code>app/shop/[...slug]/page.js</code></td><td><code>/shop/1/2</code></td><td><code>{ slug: [&#x27;1&#x27;, &#x27;2&#x27;] }</code></td></tr>
+</tbody></table></div></li>
+<li><p><code>searchParams</code> - An object containing the current URL's <a href="https://developer.mozilla.org/docs/Learn/Common_questions/What_is_a_URL#parameters" target="_blank" rel="noopener">search params</a>. Examples:</p>
+<div class="table-wrap"><table>
+<thead><tr><th>URL</th><th><code>searchParams</code></th></tr></thead>
+<tbody>
+<tr><td><code>/shop?a=1</code></td><td><code>{ a: &#x27;1&#x27; }</code></td></tr>
+<tr><td><code>/shop?a=1&amp;b=2</code></td><td><code>{ a: &#x27;1&#x27;, b: &#x27;2&#x27; }</code></td></tr>
+<tr><td><code>/shop?a=1&amp;a=2</code></td><td><code>{ a: [&#x27;1&#x27;, &#x27;2&#x27;] }</code></td></tr>
+</tbody></table></div></li>
+</ul></li>
+<li><code>parent</code> - A promise of the resolved metadata from parent route segments.</li>
+</ul></div>
+<h3 class="sec" id="returns"><a class="anchor" href="#returns">Returns</a></h3>
+<p><code>generateMetadata</code>는 하나 이상의 metadata field를 담은 <a href="#metadata-fields"><code>Metadata</code> object</a>를 반환해야 합니다.</p><div class="en-orig"><p><code>generateMetadata</code> should return a <a href="#metadata-fields"><code>Metadata</code> object</a> containing one or more metadata fields.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>metadata가 request 정보에 의존하지 않는다면 <code>generateMetadata</code> 대신 static <a href="#the-metadata-object"><code>metadata</code> object</a>로 정의해야 합니다.</li>
+<li><code>fetch</code> request는 <code>generateMetadata</code>, <code>generateStaticParams</code>, Layout, Page, Server Component 전반에서 같은 데이터에 대해 자동으로 memoize됩니다. <code>fetch</code>를 사용할 수 없다면 React <a href="https://react.dev/reference/react/cache" target="_blank" rel="noopener"><code>cache</code>를 사용할 수 있습니다</a>.</li>
+<li><code>searchParams</code>는 <code>page.js</code> segment에서만 사용할 수 있습니다.</li>
+<li>Next.js의 <a href="app-api-reference-functions-redirect.html"><code>redirect()</code></a>와 <a href="app-api-reference-functions-not-found.html"><code>notFound()</code></a> method도 <code>generateMetadata</code> 안에서 사용할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>If metadata doesn't depend on request information, it should be defined using the static <a href="#the-metadata-object"><code>metadata</code> object</a> rather than <code>generateMetadata</code>.</li>
+<li><code>fetch</code> requests are automatically memoized for the same data across <code>generateMetadata</code>, <code>generateStaticParams</code>, Layouts, Pages, and Server Components. React <a href="https://react.dev/reference/react/cache" target="_blank" rel="noopener"><code>cache</code> can be used</a> if <code>fetch</code> is unavailable.</li>
+<li><code>searchParams</code> are only available in <code>page.js</code> segments.</li>
+<li>The <a href="app-api-reference-functions-redirect.html"><code>redirect()</code></a> and <a href="app-api-reference-functions-not-found.html"><code>notFound()</code></a> Next.js methods can also be used inside <code>generateMetadata</code>.</li>
+</ul></div></div></div>
+<h3 class="sec" id="metadata-fields"><a class="anchor" href="#metadata-fields">Metadata Fields</a></h3>
+<p>다음 field가 지원됩니다:</p><div class="en-orig"><p>The following fields are supported:</p></div>
+<h4 class="sec" id="title"><a class="anchor" href="#title"><code>title</code></a></h4>
+<p><code>title</code> attribute는 문서의 제목을 설정하는 데 사용됩니다. 단순한 <a href="#string">string</a>이나 선택적인 <a href="#template">template object</a>로 정의할 수 있습니다.</p><div class="en-orig"><p>The <code>title</code> attribute is used to set the title of the document. It can be defined as a simple <a href="#string">string</a> or an optional <a href="#template">template object</a>.</p></div>
+<h5 class="sec" id="string"><a class="anchor" href="#string">String</a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  title: &#x27;Next.js&#x27;,
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;title&gt;Next.js&lt;/title&gt;</code></pre></div></div>
+<h5 class="sec" id="default"><a class="anchor" href="#default"><code>default</code></a></h5>
+<p><code>title.default</code>는 <code>title</code>을 정의하지 않은 child route segment에 <strong>fallback title</strong>을 제공하는 데 사용할 수 있습니다.</p><div class="en-orig"><p><code>title.default</code> can be used to provide a <strong>fallback title</strong> to child route segments that don't define a <code>title</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export const metadata: Metadata = {
+  title: {
+    default: &#x27;Acme&#x27;,
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/about/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export const metadata: Metadata = {}
+
+// Output: &lt;title&gt;Acme&lt;/title&gt;</code></pre></div></div>
+<h5 class="sec" id="template"><a class="anchor" href="#template"><code>template</code></a></h5>
+<p><code>title.template</code>은 <strong>child</strong> route segment에서 정의된 <code>titles</code>에 prefix나 suffix를 추가하는 데 사용할 수 있습니다.</p><div class="en-orig"><p><code>title.template</code> can be used to add a prefix or a suffix to <code>titles</code> defined in <strong>child</strong> route segments.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export const metadata: Metadata = {
+  title: {
+    template: &#x27;%s | Acme&#x27;,
+    default: &#x27;Acme&#x27;, // a default is required when creating a template
+  },
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const metadata = {
+  title: {
+    template: &#x27;%s | Acme&#x27;,
+    default: &#x27;Acme&#x27;, // a default is required when creating a template
+  },
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/about/page.tsx" data-js="app/about/page.js">app/about/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export const metadata: Metadata = {
+  title: &#x27;About&#x27;,
+}
+
+// Output: &lt;title&gt;About | Acme&lt;/title&gt;</code></pre><pre class="v-js" hidden><code class="language-javascript">export const metadata = {
+  title: &#x27;About&#x27;,
+}
+
+// Output: &lt;title&gt;About | Acme&lt;/title&gt;</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>title.template</code>은 정의된 segment 자체가 <strong>아니라</strong> <strong>child</strong> route segment에 적용됩니다. 즉:<ul>
+<li><code>title.template</code>을 추가할 때는 <code>title.default</code>가 <strong>필수</strong>입니다.</li>
+<li><code>layout.js</code>에서 정의한 <code>title.template</code>은 같은 route segment의 <code>page.js</code>에서 정의한 <code>title</code>에는 적용되지 않습니다.</li>
+<li>page는 항상 마지막(terminating) segment이므로(child route segment가 없음) <code>page.js</code>에서 정의한 <code>title.template</code>은 아무 효과가 없습니다.</li>
+</ul></li>
+<li>route가 <code>title</code>이나 <code>title.default</code>를 정의하지 않았다면 <code>title.template</code>은 <strong>아무 효과가 없습니다</strong>.</li>
+</ul><div class="en-orig"><ul>
+<li><code>title.template</code> applies to <strong>child</strong> route segments and <strong>not</strong> the segment it's defined in. This means:<ul>
+<li><code>title.default</code> is <strong>required</strong> when you add a <code>title.template</code>.</li>
+<li><code>title.template</code> defined in <code>layout.js</code> will not apply to a <code>title</code> defined in a <code>page.js</code> of the same route segment.</li>
+<li><code>title.template</code> defined in <code>page.js</code> has no effect because a page is always the terminating segment (it doesn't have any children route segments).</li>
+</ul></li>
+<li><code>title.template</code> has <strong>no effect</strong> if a route has not defined a <code>title</code> or <code>title.default</code>.</li>
+</ul></div></div></div>
+<h5 class="sec" id="absolute"><a class="anchor" href="#absolute"><code>absolute</code></a></h5>
+<p><code>title.absolute</code>는 parent segment에서 설정한 <code>title.template</code>을 <strong>무시하는</strong> title을 제공하는 데 사용할 수 있습니다.</p><div class="en-orig"><p><code>title.absolute</code> can be used to provide a title that <strong>ignores</strong> <code>title.template</code> set in parent segments.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export const metadata: Metadata = {
+  title: {
+    template: &#x27;%s | Acme&#x27;,
+  },
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const metadata = {
+  title: {
+    template: &#x27;%s | Acme&#x27;,
+  },
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/about/page.tsx" data-js="app/about/page.js">app/about/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export const metadata: Metadata = {
+  title: {
+    absolute: &#x27;About&#x27;,
+  },
+}
+
+// Output: &lt;title&gt;About&lt;/title&gt;</code></pre><pre class="v-js" hidden><code class="language-javascript">export const metadata = {
+  title: {
+    absolute: &#x27;About&#x27;,
+  },
+}
+
+// Output: &lt;title&gt;About&lt;/title&gt;</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>layout.js</code><ul>
+<li><code>title</code>(string)과 <code>title.default</code>는 (자체 <code>title</code>을 정의하지 않은) child segment의 기본 title을 정의합니다. 가장 가까운 parent segment에 <code>title.template</code>이 있으면 그것으로 보강됩니다.</li>
+<li><code>title.absolute</code>는 child segment의 기본 title을 정의합니다. parent segment의 <code>title.template</code>은 무시합니다.</li>
+<li><code>title.template</code>은 child segment를 위한 새 title template을 정의합니다.</li>
+</ul></li>
+<li><code>page.js</code><ul>
+<li>page가 자체 title을 정의하지 않으면 가장 가까운 parent에서 resolve된 title이 사용됩니다.</li>
+<li><code>title</code>(string)은 route의 title을 정의합니다. 가장 가까운 parent segment에 <code>title.template</code>이 있으면 그것으로 보강됩니다.</li>
+<li><code>title.absolute</code>는 route title을 정의합니다. parent segment의 <code>title.template</code>은 무시합니다.</li>
+<li>page는 항상 route의 마지막 segment이므로 <code>page.js</code>에서 <code>title.template</code>은 아무 효과가 없습니다.</li>
+</ul></li>
+</ul><div class="en-orig"><ul>
+<li><code>layout.js</code><ul>
+<li><code>title</code> (string) and <code>title.default</code> define the default title for child segments (that do not define their own <code>title</code>). It will augment <code>title.template</code> from the closest parent segment if it exists.</li>
+<li><code>title.absolute</code> defines the default title for child segments. It ignores <code>title.template</code> from parent segments.</li>
+<li><code>title.template</code> defines a new title template for child segments.</li>
+</ul></li>
+<li><code>page.js</code><ul>
+<li>If a page does not define its own title the closest parents resolved title will be used.</li>
+<li><code>title</code> (string) defines the routes title. It will augment <code>title.template</code> from the closest parent segment if it exists.</li>
+<li><code>title.absolute</code> defines the route title. It ignores <code>title.template</code> from parent segments.</li>
+<li><code>title.template</code> has no effect in <code>page.js</code> because a page is always the terminating segment of a route.</li>
+</ul></li>
+</ul></div></div></div>
+<h3 class="sec" id="description"><a class="anchor" href="#description"><code>description</code></a></h3>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  description: &#x27;The React Framework for the Web&#x27;,
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;description&quot; content=&quot;The React Framework for the Web&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="other-fields"><a class="anchor" href="#other-fields">Other fields<span class="ko">기타 field</span></a></h3>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  generator: &#x27;Next.js&#x27;,
+  applicationName: &#x27;Next.js&#x27;,
+  referrer: &#x27;origin-when-cross-origin&#x27;,
+  keywords: [&#x27;Next.js&#x27;, &#x27;React&#x27;, &#x27;JavaScript&#x27;],
+  authors: [{ name: &#x27;Seb&#x27; }, { name: &#x27;Josh&#x27;, url: &#x27;https://nextjs.org&#x27; }],
+  creator: &#x27;Jiachi Liu&#x27;,
+  publisher: &#x27;Sebastian Markbåge&#x27;,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;application-name&quot; content=&quot;Next.js&quot; /&gt;
+&lt;meta name=&quot;author&quot; content=&quot;Seb&quot; /&gt;
+&lt;link rel=&quot;author&quot; href=&quot;https://nextjs.org&quot; /&gt;
+&lt;meta name=&quot;author&quot; content=&quot;Josh&quot; /&gt;
+&lt;meta name=&quot;generator&quot; content=&quot;Next.js&quot; /&gt;
+&lt;meta name=&quot;keywords&quot; content=&quot;Next.js,React,JavaScript&quot; /&gt;
+&lt;meta name=&quot;referrer&quot; content=&quot;origin-when-cross-origin&quot; /&gt;
+&lt;meta name=&quot;creator&quot; content=&quot;Jiachi Liu&quot; /&gt;
+&lt;meta name=&quot;publisher&quot; content=&quot;Sebastian Markbåge&quot; /&gt;
+&lt;meta name=&quot;format-detection&quot; content=&quot;telephone=no, address=no, email=no&quot; /&gt;</code></pre></div></div>
+<h4 class="sec" id="metadatabase"><a class="anchor" href="#metadatabase"><code>metadataBase</code></a></h4>
+<p><code>metadataBase</code>는 fully qualified URL이 필요한 <code>metadata</code> field에 base URL prefix를 설정하는 편의 option입니다.</p><div class="en-orig"><p><code>metadataBase</code> is a convenience option to set a base URL prefix for <code>metadata</code> fields that require a fully qualified URL.</p></div>
+<ul>
+<li><code>metadataBase</code>를 사용하면 <strong>현재 route segment와 그 하위</strong>에서 정의된 URL 기반 <code>metadata</code> field가 원래 필요한 absolute URL 대신 <strong>relative path</strong>를 사용할 수 있습니다.</li>
+<li>field의 relative path는 <code>metadataBase</code>와 합쳐져 fully qualified URL이 됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>metadataBase</code> allows URL-based <code>metadata</code> fields defined in the <strong>current route segment and below</strong> to use a <strong>relative path</strong> instead of an otherwise required absolute URL.</li>
+<li>The field's relative path will be composed with <code>metadataBase</code> to form a fully qualified URL.</li>
+</ul></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  metadataBase: new URL(&#x27;https://acme.com&#x27;),
+  alternates: {
+    canonical: &#x27;/&#x27;,
+    languages: {
+      &#x27;en-US&#x27;: &#x27;/en-US&#x27;,
+      &#x27;de-DE&#x27;: &#x27;/de-DE&#x27;,
+    },
+  },
+  openGraph: {
+    images: &#x27;/og-image.png&#x27;,
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;canonical&quot; href=&quot;https://acme.com&quot; /&gt;
+&lt;link rel=&quot;alternate&quot; hreflang=&quot;en-US&quot; href=&quot;https://acme.com/en-US&quot; /&gt;
+&lt;link rel=&quot;alternate&quot; hreflang=&quot;de-DE&quot; href=&quot;https://acme.com/de-DE&quot; /&gt;
+&lt;meta property=&quot;og:image&quot; content=&quot;https://acme.com/og-image.png&quot; /&gt;</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>metadataBase</code>는 보통 root <code>app/layout.js</code>에 설정해 모든 route의 URL 기반 <code>metadata</code> field에 적용합니다.</li>
+<li><code>generateMetadata</code>가 <code>&#x27;use cache&#x27;</code>를 사용할 때는 반환값이 serializable해야 합니다. <code>URL</code> instance는 Cache Function에서 지원되지 않으므로, <code>metadataBase</code> 같은 값은 문자열로 반환해야 합니다(예: <code>url.toString()</code>). <a href="app-api-reference-directives-use-cache.html#serialization"><code>use cache</code> serialization 요구 사항</a>을 참고하세요.</li>
+<li>absolute URL이 필요한 모든 URL 기반 <code>metadata</code> field는 <code>metadataBase</code> option으로 설정할 수 있습니다.</li>
+<li><code>metadataBase</code>에는 <code>https://app.acme.com</code> 같은 subdomain이나 <code>https://acme.com/start/from/here</code> 같은 base path를 포함할 수 있습니다.</li>
+<li><code>metadata</code> field가 absolute URL을 제공하면 <code>metadataBase</code>는 무시됩니다.</li>
+<li><code>metadataBase</code>를 설정하지 않고 URL 기반 <code>metadata</code> field에 relative path를 사용하면 build error가 발생합니다.</li>
+<li>Next.js는 <code>metadataBase</code>(예: <code>https://acme.com/</code>)와 relative field(예: <code>/path</code>) 사이의 중복 slash를 하나의 slash로 정규화합니다(예: <code>https://acme.com/path</code>).</li>
+</ul><div class="en-orig"><ul>
+<li><code>metadataBase</code> is typically set in root <code>app/layout.js</code> to apply to URL-based <code>metadata</code> fields across all routes.</li>
+<li>When <code>generateMetadata</code> uses <code>&#x27;use cache&#x27;</code>, its return value must be serializable. <code>URL</code> instances are not supported by Cache Functions, so values such as <code>metadataBase</code> should be returned as strings (for example, <code>url.toString()</code>). See <a href="app-api-reference-directives-use-cache.html#serialization"><code>use cache</code> serialization requirements</a>.</li>
+<li>All URL-based <code>metadata</code> fields that require absolute URLs can be configured with a <code>metadataBase</code> option.</li>
+<li><code>metadataBase</code> can contain a subdomain e.g. <code>https://app.acme.com</code> or base path e.g. <code>https://acme.com/start/from/here</code></li>
+<li>If a <code>metadata</code> field provides an absolute URL, <code>metadataBase</code> will be ignored.</li>
+<li>Using a relative path in a URL-based <code>metadata</code> field without configuring a <code>metadataBase</code> will cause a build error.</li>
+<li>Next.js will normalize duplicate slashes between <code>metadataBase</code> (e.g. <code>https://acme.com/</code>) and a relative field (e.g. <code>/path</code>) to a single slash (e.g. <code>https://acme.com/path</code>)</li>
+</ul></div></div></div>
+<h4 class="sec" id="url-composition"><a class="anchor" href="#url-composition">URL Composition<span class="ko">URL 조합</span></a></h4>
+<p>URL 조합은 기본 directory 탐색 방식보다 개발자의 의도를 우선합니다.</p><div class="en-orig"><p>URL composition favors developer intent over default directory traversal semantics.</p></div>
+<ul>
+<li><code>metadataBase</code>와 <code>metadata</code> field 사이의 trailing slash는 정규화됩니다.</li>
+<li><code>metadata</code> field의 "absolute" path(일반적으로 URL path 전체를 대체하는 것)는 "relative" path(<code>metadataBase</code>의 끝에서부터 시작)로 취급됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Trailing slashes between <code>metadataBase</code> and <code>metadata</code> fields are normalized.</li>
+<li>An "absolute" path in a <code>metadata</code> field (that typically would replace the whole URL path) is treated as a "relative" path (starting from the end of <code>metadataBase</code>).</li>
+</ul></div>
+<p>예를 들어 다음과 같은 <code>metadataBase</code>가 있다고 하면:</p><div class="en-orig"><p>For example, given the following <code>metadataBase</code>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export const metadata: Metadata = {
+  metadataBase: new URL(&#x27;https://acme.com&#x27;),
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const metadata = {
+  metadataBase: new URL(&#x27;https://acme.com&#x27;),
+}</code></pre></div></div>
+<p>위 <code>metadataBase</code>를 상속하면서 자체 값을 설정하는 <code>metadata</code> field는 다음과 같이 resolve됩니다:</p><div class="en-orig"><p>Any <code>metadata</code> fields that inherit the above <code>metadataBase</code> and set their own value will be resolved as follows:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th><code>metadata</code> field</th><th>Resolved URL</th></tr></thead>
+<tbody>
+<tr><td><code>/</code></td><td><code>https://acme.com</code></td></tr>
+<tr><td><code>./</code></td><td><code>https://acme.com</code></td></tr>
+<tr><td><code>payments</code></td><td><code>https://acme.com/payments</code></td></tr>
+<tr><td><code>/payments</code></td><td><code>https://acme.com/payments</code></td></tr>
+<tr><td><code>./payments</code></td><td><code>https://acme.com/payments</code></td></tr>
+<tr><td><code>../payments</code></td><td><code>https://acme.com/payments</code></td></tr>
+<tr><td><code>https://beta.acme.com/payments</code></td><td><code>https://beta.acme.com/payments</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th><code>metadata</code> field</th><th>Resolved URL</th></tr></thead>
+<tbody>
+<tr><td><code>/</code></td><td><code>https://acme.com</code></td></tr>
+<tr><td><code>./</code></td><td><code>https://acme.com</code></td></tr>
+<tr><td><code>payments</code></td><td><code>https://acme.com/payments</code></td></tr>
+<tr><td><code>/payments</code></td><td><code>https://acme.com/payments</code></td></tr>
+<tr><td><code>./payments</code></td><td><code>https://acme.com/payments</code></td></tr>
+<tr><td><code>../payments</code></td><td><code>https://acme.com/payments</code></td></tr>
+<tr><td><code>https://beta.acme.com/payments</code></td><td><code>https://beta.acme.com/payments</code></td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="opengraph"><a class="anchor" href="#opengraph"><code>openGraph</code></a></h3>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  openGraph: {
+    title: &#x27;Next.js&#x27;,
+    description: &#x27;The React Framework for the Web&#x27;,
+    url: &#x27;https://nextjs.org&#x27;,
+    siteName: &#x27;Next.js&#x27;,
+    images: [
+      {
+        url: &#x27;https://nextjs.org/og.png&#x27;, // Must be an absolute URL
+        width: 800,
+        height: 600,
+      },
+      {
+        url: &#x27;https://nextjs.org/og-alt.png&#x27;, // Must be an absolute URL
+        width: 1800,
+        height: 1600,
+        alt: &#x27;My custom alt&#x27;,
+      },
+    ],
+    videos: [
+      {
+        url: &#x27;https://nextjs.org/video.mp4&#x27;, // Must be an absolute URL
+        width: 800,
+        height: 600,
+      },
+    ],
+    audio: [
+      {
+        url: &#x27;https://nextjs.org/audio.mp3&#x27;, // Must be an absolute URL
+      },
+    ],
+    locale: &#x27;en_US&#x27;,
+    type: &#x27;website&#x27;,
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta property=&quot;og:title&quot; content=&quot;Next.js&quot; /&gt;
+&lt;meta property=&quot;og:description&quot; content=&quot;The React Framework for the Web&quot; /&gt;
+&lt;meta property=&quot;og:url&quot; content=&quot;https://nextjs.org/&quot; /&gt;
+&lt;meta property=&quot;og:site_name&quot; content=&quot;Next.js&quot; /&gt;
+&lt;meta property=&quot;og:locale&quot; content=&quot;en_US&quot; /&gt;
+&lt;meta property=&quot;og:image&quot; content=&quot;https://nextjs.org/og.png&quot; /&gt;
+&lt;meta property=&quot;og:image:width&quot; content=&quot;800&quot; /&gt;
+&lt;meta property=&quot;og:image:height&quot; content=&quot;600&quot; /&gt;
+&lt;meta property=&quot;og:image&quot; content=&quot;https://nextjs.org/og-alt.png&quot; /&gt;
+&lt;meta property=&quot;og:image:width&quot; content=&quot;1800&quot; /&gt;
+&lt;meta property=&quot;og:image:height&quot; content=&quot;1600&quot; /&gt;
+&lt;meta property=&quot;og:image:alt&quot; content=&quot;My custom alt&quot; /&gt;
+&lt;meta property=&quot;og:video&quot; content=&quot;https://nextjs.org/video.mp4&quot; /&gt;
+&lt;meta property=&quot;og:video:width&quot; content=&quot;800&quot; /&gt;
+&lt;meta property=&quot;og:video:height&quot; content=&quot;600&quot; /&gt;
+&lt;meta property=&quot;og:audio&quot; content=&quot;https://nextjs.org/audio.mp3&quot; /&gt;
+&lt;meta property=&quot;og:type&quot; content=&quot;website&quot; /&gt;</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  openGraph: {
+    title: &#x27;Next.js&#x27;,
+    description: &#x27;The React Framework for the Web&#x27;,
+    type: &#x27;article&#x27;,
+    publishedTime: &#x27;2023-01-01T00:00:00.000Z&#x27;,
+    authors: [&#x27;Seb&#x27;, &#x27;Josh&#x27;],
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta property=&quot;og:title&quot; content=&quot;Next.js&quot; /&gt;
+&lt;meta property=&quot;og:description&quot; content=&quot;The React Framework for the Web&quot; /&gt;
+&lt;meta property=&quot;og:type&quot; content=&quot;article&quot; /&gt;
+&lt;meta property=&quot;article:published_time&quot; content=&quot;2023-01-01T00:00:00.000Z&quot; /&gt;
+&lt;meta property=&quot;article:author&quot; content=&quot;Seb&quot; /&gt;
+&lt;meta property=&quot;article:author&quot; content=&quot;Josh&quot; /&gt;</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>Open Graph 이미지에는 <a href="app-api-reference-file-conventions-metadata-opengraph-image.html#image-files-jpg-png-gif">file-based Metadata API</a>를 사용하는 것이 더 편리할 수 있습니다. config export를 실제 파일과 동기화할 필요 없이, file-based API가 올바른 metadata를 자동으로 생성해 줍니다.</li>
+</ul><div class="en-orig"><ul>
+<li>It may be more convenient to use the <a href="app-api-reference-file-conventions-metadata-opengraph-image.html#image-files-jpg-png-gif">file-based Metadata API</a> for Open Graph images. Rather than having to sync the config export with actual files, the file-based API will automatically generate the correct metadata for you.</li>
+</ul></div></div></div>
+<h3 class="sec" id="robots"><a class="anchor" href="#robots"><code>robots</code></a></h3>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">layout.tsx | page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export const metadata: Metadata = {
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: false,
+      &#x27;max-video-preview&#x27;: -1,
+      &#x27;max-image-preview&#x27;: &#x27;large&#x27;,
+      &#x27;max-snippet&#x27;: -1,
+    },
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;robots&quot; content=&quot;index, follow&quot; /&gt;
+&lt;meta
+  name=&quot;googlebot&quot;
+  content=&quot;index, follow, max-video-preview:-1, max-image-preview:large, max-snippet:-1&quot;
+/&gt;</code></pre></div></div>
+<h3 class="sec" id="icons"><a class="anchor" href="#icons"><code>icons</code></a></h3>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>가능하면 icon에는 <a href="app-api-reference-file-conventions-metadata-app-icons.html#image-files-ico-jpg-png">file-based Metadata API</a>를 사용하는 것을 권장합니다. config export를 실제 파일과 동기화할 필요 없이, file-based API가 올바른 metadata를 자동으로 생성해 줍니다.</p><div class="en-orig"><p>We recommend using the <a href="app-api-reference-file-conventions-metadata-app-icons.html#image-files-ico-jpg-png">file-based Metadata API</a> for icons where possible. Rather than having to sync the config export with actual files, the file-based API will automatically generate the correct metadata for you.</p></div></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  icons: {
+    icon: &#x27;/icon.png&#x27;,
+    shortcut: &#x27;/shortcut-icon.png&#x27;,
+    apple: &#x27;/apple-icon.png&#x27;,
+    other: {
+      rel: &#x27;apple-touch-icon-precomposed&#x27;,
+      url: &#x27;/apple-touch-icon-precomposed.png&#x27;,
+    },
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;shortcut icon&quot; href=&quot;/shortcut-icon.png&quot; /&gt;
+&lt;link rel=&quot;icon&quot; href=&quot;/icon.png&quot; /&gt;
+&lt;link rel=&quot;apple-touch-icon&quot; href=&quot;/apple-icon.png&quot; /&gt;
+&lt;link
+  rel=&quot;apple-touch-icon-precomposed&quot;
+  href=&quot;/apple-touch-icon-precomposed.png&quot;
+/&gt;</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  icons: {
+    icon: [
+      { url: &#x27;/icon.png&#x27; },
+      new URL(&#x27;/icon.png&#x27;, &#x27;https://example.com&#x27;),
+      { url: &#x27;/icon-dark.png&#x27;, media: &#x27;(prefers-color-scheme: dark)&#x27; },
+    ],
+    shortcut: [&#x27;/shortcut-icon.png&#x27;],
+    apple: [
+      { url: &#x27;/apple-icon.png&#x27; },
+      { url: &#x27;/apple-icon-x3.png&#x27;, sizes: &#x27;180x180&#x27;, type: &#x27;image/png&#x27; },
+    ],
+    other: [
+      {
+        rel: &#x27;apple-touch-icon-precomposed&#x27;,
+        url: &#x27;/apple-touch-icon-precomposed.png&#x27;,
+      },
+    ],
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;shortcut icon&quot; href=&quot;/shortcut-icon.png&quot; /&gt;
+&lt;link rel=&quot;icon&quot; href=&quot;/icon.png&quot; /&gt;
+&lt;link rel=&quot;icon&quot; href=&quot;https://example.com/icon.png&quot; /&gt;
+&lt;link rel=&quot;icon&quot; href=&quot;/icon-dark.png&quot; media=&quot;(prefers-color-scheme: dark)&quot; /&gt;
+&lt;link rel=&quot;apple-touch-icon&quot; href=&quot;/apple-icon.png&quot; /&gt;
+&lt;link
+  rel=&quot;apple-touch-icon-precomposed&quot;
+  href=&quot;/apple-touch-icon-precomposed.png&quot;
+/&gt;
+&lt;link
+  rel=&quot;apple-touch-icon&quot;
+  href=&quot;/apple-icon-x3.png&quot;
+  sizes=&quot;180x180&quot;
+  type=&quot;image/png&quot;
+/&gt;</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>msapplication-*</code> meta tag는 Chromium 기반 Microsoft Edge에서 더 이상 지원되지 않으므로 더 이상 필요하지 않습니다.</p><div class="en-orig"><p>The <code>msapplication-*</code> meta tags are no longer supported in Chromium builds of Microsoft Edge, and thus no longer needed.</p></div></div></div>
+<h3 class="sec" id="themecolor"><a class="anchor" href="#themecolor"><code>themeColor</code></a></h3>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Deprecated</div><p><code>metadata</code>의 <code>themeColor</code> option은 Next.js 14부터 deprecated되었습니다. 대신 <a href="app-api-reference-functions-generate-viewport.html"><code>viewport</code> configuration</a>을 사용하세요.</p><div class="en-orig"><p>The <code>themeColor</code> option in <code>metadata</code> is deprecated as of Next.js 14. Please use the <a href="app-api-reference-functions-generate-viewport.html"><code>viewport</code> configuration</a> instead.</p></div></div></div>
+<h3 class="sec" id="colorscheme"><a class="anchor" href="#colorscheme"><code>colorScheme</code></a></h3>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Deprecated</div><p><code>metadata</code>의 <code>colorScheme</code> option은 Next.js 14부터 deprecated되었습니다. 대신 <a href="app-api-reference-functions-generate-viewport.html"><code>viewport</code> configuration</a>을 사용하세요.</p><div class="en-orig"><p>The <code>colorScheme</code> option in <code>metadata</code> is deprecated as of Next.js 14. Please use the <a href="app-api-reference-functions-generate-viewport.html"><code>viewport</code> configuration</a> instead.</p></div></div></div>
+<h3 class="sec" id="manifest"><a class="anchor" href="#manifest"><code>manifest</code></a></h3>
+<p><a href="https://developer.mozilla.org/docs/Web/Manifest" target="_blank" rel="noopener">Web Application Manifest specification</a>에 정의된 web application manifest입니다.</p><div class="en-orig"><p>A web application manifest, as defined in the <a href="https://developer.mozilla.org/docs/Web/Manifest" target="_blank" rel="noopener">Web Application Manifest specification</a>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  manifest: &#x27;https://nextjs.org/manifest.json&#x27;,
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;manifest&quot; href=&quot;https://nextjs.org/manifest.json&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="twitter"><a class="anchor" href="#twitter"><code>twitter</code></a></h3>
+<p>Twitter specification은 (의외로) X(이전 이름 Twitter) 외의 곳에서도 사용됩니다.</p><div class="en-orig"><p>The Twitter specification is (surprisingly) used for more than just X (formerly known as Twitter).</p></div>
+<p><a href="https://developer.x.com/en/docs/twitter-for-websites/cards/overview/markup" target="_blank" rel="noopener">Twitter Card markup reference</a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about the <a href="https://developer.x.com/en/docs/twitter-for-websites/cards/overview/markup" target="_blank" rel="noopener">Twitter Card markup reference</a>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  twitter: {
+    card: &#x27;summary_large_image&#x27;,
+    title: &#x27;Next.js&#x27;,
+    description: &#x27;The React Framework for the Web&#x27;,
+    siteId: &#x27;1467726470533754880&#x27;,
+    creator: &#x27;@nextjs&#x27;,
+    creatorId: &#x27;1467726470533754880&#x27;,
+    images: [&#x27;https://nextjs.org/og.png&#x27;], // Must be an absolute URL
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;twitter:card&quot; content=&quot;summary_large_image&quot; /&gt;
+&lt;meta name=&quot;twitter:site:id&quot; content=&quot;1467726470533754880&quot; /&gt;
+&lt;meta name=&quot;twitter:creator&quot; content=&quot;@nextjs&quot; /&gt;
+&lt;meta name=&quot;twitter:creator:id&quot; content=&quot;1467726470533754880&quot; /&gt;
+&lt;meta name=&quot;twitter:title&quot; content=&quot;Next.js&quot; /&gt;
+&lt;meta name=&quot;twitter:description&quot; content=&quot;The React Framework for the Web&quot; /&gt;
+&lt;meta name=&quot;twitter:image&quot; content=&quot;https://nextjs.org/og.png&quot; /&gt;</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  twitter: {
+    card: &#x27;app&#x27;,
+    title: &#x27;Next.js&#x27;,
+    description: &#x27;The React Framework for the Web&#x27;,
+    siteId: &#x27;1467726470533754880&#x27;,
+    creator: &#x27;@nextjs&#x27;,
+    creatorId: &#x27;1467726470533754880&#x27;,
+    images: {
+      url: &#x27;https://nextjs.org/og.png&#x27;,
+      alt: &#x27;Next.js Logo&#x27;,
+    },
+    app: {
+      name: &#x27;twitter_app&#x27;,
+      id: {
+        iphone: &#x27;twitter_app://iphone&#x27;,
+        ipad: &#x27;twitter_app://ipad&#x27;,
+        googleplay: &#x27;twitter_app://googleplay&#x27;,
+      },
+      url: {
+        iphone: &#x27;https://iphone_url&#x27;,
+        ipad: &#x27;https://ipad_url&#x27;,
+      },
+    },
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;twitter:site:id&quot; content=&quot;1467726470533754880&quot; /&gt;
+&lt;meta name=&quot;twitter:creator&quot; content=&quot;@nextjs&quot; /&gt;
+&lt;meta name=&quot;twitter:creator:id&quot; content=&quot;1467726470533754880&quot; /&gt;
+&lt;meta name=&quot;twitter:title&quot; content=&quot;Next.js&quot; /&gt;
+&lt;meta name=&quot;twitter:description&quot; content=&quot;The React Framework for the Web&quot; /&gt;
+&lt;meta name=&quot;twitter:card&quot; content=&quot;app&quot; /&gt;
+&lt;meta name=&quot;twitter:image&quot; content=&quot;https://nextjs.org/og.png&quot; /&gt;
+&lt;meta name=&quot;twitter:image:alt&quot; content=&quot;Next.js Logo&quot; /&gt;
+&lt;meta name=&quot;twitter:app:name:iphone&quot; content=&quot;twitter_app&quot; /&gt;
+&lt;meta name=&quot;twitter:app:id:iphone&quot; content=&quot;twitter_app://iphone&quot; /&gt;
+&lt;meta name=&quot;twitter:app:id:ipad&quot; content=&quot;twitter_app://ipad&quot; /&gt;
+&lt;meta name=&quot;twitter:app:id:googleplay&quot; content=&quot;twitter_app://googleplay&quot; /&gt;
+&lt;meta name=&quot;twitter:app:url:iphone&quot; content=&quot;https://iphone_url&quot; /&gt;
+&lt;meta name=&quot;twitter:app:url:ipad&quot; content=&quot;https://ipad_url&quot; /&gt;
+&lt;meta name=&quot;twitter:app:name:ipad&quot; content=&quot;twitter_app&quot; /&gt;
+&lt;meta name=&quot;twitter:app:name:googleplay&quot; content=&quot;twitter_app&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="viewport"><a class="anchor" href="#viewport"><code>viewport</code></a></h3>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Deprecated</div><p><code>metadata</code>의 <code>viewport</code> option은 Next.js 14부터 deprecated되었습니다. 대신 <a href="app-api-reference-functions-generate-viewport.html"><code>viewport</code> configuration</a>을 사용하세요.</p><div class="en-orig"><p>The <code>viewport</code> option in <code>metadata</code> is deprecated as of Next.js 14. Please use the <a href="app-api-reference-functions-generate-viewport.html"><code>viewport</code> configuration</a> instead.</p></div></div></div>
+<h3 class="sec" id="verification"><a class="anchor" href="#verification"><code>verification</code></a></h3>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  verification: {
+    google: &#x27;google&#x27;,
+    yandex: &#x27;yandex&#x27;,
+    yahoo: &#x27;yahoo&#x27;,
+    other: {
+      me: [&#x27;my-email&#x27;, &#x27;my-link&#x27;],
+    },
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;google-site-verification&quot; content=&quot;google&quot; /&gt;
+&lt;meta name=&quot;y_key&quot; content=&quot;yahoo&quot; /&gt;
+&lt;meta name=&quot;yandex-verification&quot; content=&quot;yandex&quot; /&gt;
+&lt;meta name=&quot;me&quot; content=&quot;my-email&quot; /&gt;
+&lt;meta name=&quot;me&quot; content=&quot;my-link&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="applewebapp"><a class="anchor" href="#applewebapp"><code>appleWebApp</code></a></h3>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  itunes: {
+    appId: &#x27;myAppStoreID&#x27;,
+    appArgument: &#x27;myAppArgument&#x27;,
+  },
+  appleWebApp: {
+    title: &#x27;Apple Web App&#x27;,
+    statusBarStyle: &#x27;black-translucent&#x27;,
+    startupImage: [
+      &#x27;/assets/startup/apple-touch-startup-image-768x1004.png&#x27;,
+      {
+        url: &#x27;/assets/startup/apple-touch-startup-image-1536x2008.png&#x27;,
+        media: &#x27;(device-width: 768px) and (device-height: 1024px)&#x27;,
+      },
+    ],
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta
+  name=&quot;apple-itunes-app&quot;
+  content=&quot;app-id=myAppStoreID, app-argument=myAppArgument&quot;
+/&gt;
+&lt;meta name=&quot;mobile-web-app-capable&quot; content=&quot;yes&quot; /&gt;
+&lt;meta name=&quot;apple-mobile-web-app-title&quot; content=&quot;Apple Web App&quot; /&gt;
+&lt;link
+  href=&quot;/assets/startup/apple-touch-startup-image-768x1004.png&quot;
+  rel=&quot;apple-touch-startup-image&quot;
+/&gt;
+&lt;link
+  href=&quot;/assets/startup/apple-touch-startup-image-1536x2008.png&quot;
+  media=&quot;(device-width: 768px) and (device-height: 1024px)&quot;
+  rel=&quot;apple-touch-startup-image&quot;
+/&gt;
+&lt;meta
+  name=&quot;apple-mobile-web-app-status-bar-style&quot;
+  content=&quot;black-translucent&quot;
+/&gt;</code></pre></div></div>
+<h3 class="sec" id="alternates"><a class="anchor" href="#alternates"><code>alternates</code></a></h3>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  alternates: {
+    canonical: &#x27;https://nextjs.org&#x27;,
+    languages: {
+      &#x27;en-US&#x27;: &#x27;https://nextjs.org/en-US&#x27;,
+      &#x27;de-DE&#x27;: &#x27;https://nextjs.org/de-DE&#x27;,
+    },
+    media: {
+      &#x27;only screen and (max-width: 600px)&#x27;: &#x27;https://nextjs.org/mobile&#x27;,
+    },
+    types: {
+      &#x27;application/rss+xml&#x27;: &#x27;https://nextjs.org/rss&#x27;,
+    },
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;canonical&quot; href=&quot;https://nextjs.org&quot; /&gt;
+&lt;link rel=&quot;alternate&quot; hreflang=&quot;en-US&quot; href=&quot;https://nextjs.org/en-US&quot; /&gt;
+&lt;link rel=&quot;alternate&quot; hreflang=&quot;de-DE&quot; href=&quot;https://nextjs.org/de-DE&quot; /&gt;
+&lt;link
+  rel=&quot;alternate&quot;
+  media=&quot;only screen and (max-width: 600px)&quot;
+  href=&quot;https://nextjs.org/mobile&quot;
+/&gt;
+&lt;link
+  rel=&quot;alternate&quot;
+  type=&quot;application/rss+xml&quot;
+  href=&quot;https://nextjs.org/rss&quot;
+/&gt;</code></pre></div></div>
+<h3 class="sec" id="applinks"><a class="anchor" href="#applinks"><code>appLinks</code></a></h3>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  appLinks: {
+    ios: {
+      url: &#x27;https://nextjs.org/ios&#x27;,
+      app_store_id: &#x27;app_store_id&#x27;,
+    },
+    android: {
+      package: &#x27;com.example.android/package&#x27;,
+      app_name: &#x27;app_name_android&#x27;,
+    },
+    web: {
+      url: &#x27;https://nextjs.org/web&#x27;,
+      should_fallback: true,
+    },
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta property=&quot;al:ios:url&quot; content=&quot;https://nextjs.org/ios&quot; /&gt;
+&lt;meta property=&quot;al:ios:app_store_id&quot; content=&quot;app_store_id&quot; /&gt;
+&lt;meta property=&quot;al:android:package&quot; content=&quot;com.example.android/package&quot; /&gt;
+&lt;meta property=&quot;al:android:app_name&quot; content=&quot;app_name_android&quot; /&gt;
+&lt;meta property=&quot;al:web:url&quot; content=&quot;https://nextjs.org/web&quot; /&gt;
+&lt;meta property=&quot;al:web:should_fallback&quot; content=&quot;true&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="archives"><a class="anchor" href="#archives"><code>archives</code></a></h3>
+<p>역사적 가치가 있는 기록, 문서 또는 기타 자료의 모음을 설명합니다(<a href="https://www.w3.org/TR/2011/WD-html5-20110113/links.html#rel-archives" target="_blank" rel="noopener">출처</a>).</p><div class="en-orig"><p>Describes a collection of records, documents, or other materials of historical interest (<a href="https://www.w3.org/TR/2011/WD-html5-20110113/links.html#rel-archives" target="_blank" rel="noopener">source</a>).</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  archives: [&#x27;https://nextjs.org/13&#x27;],
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;archives&quot; href=&quot;https://nextjs.org/13&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="assets"><a class="anchor" href="#assets"><code>assets</code></a></h3>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  assets: [&#x27;https://nextjs.org/assets&#x27;],
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;assets&quot; href=&quot;https://nextjs.org/assets&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="bookmarks"><a class="anchor" href="#bookmarks"><code>bookmarks</code></a></h3>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  bookmarks: [&#x27;https://nextjs.org/13&#x27;],
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;bookmarks&quot; href=&quot;https://nextjs.org/13&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="pagination"><a class="anchor" href="#pagination"><code>pagination</code></a></h3>
+<p>pagination된 순서에서 이전 페이지와 다음 페이지를 설명합니다.</p><div class="en-orig"><p>Describes the previous and next pages in a paginated sequence.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  pagination: {
+    previous: &#x27;https://nextjs.org/blog?page=1&#x27;,
+    next: &#x27;https://nextjs.org/blog?page=3&#x27;,
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;prev&quot; href=&quot;https://nextjs.org/blog?page=1&quot; /&gt;
+&lt;link rel=&quot;next&quot; href=&quot;https://nextjs.org/blog?page=3&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="category"><a class="anchor" href="#category"><code>category</code></a></h3>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  category: &#x27;technology&#x27;,
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;category&quot; content=&quot;technology&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="facebook"><a class="anchor" href="#facebook"><code>facebook</code></a></h3>
+<p>특정 Facebook Social Plugin을 위해 Facebook app이나 Facebook 계정을 웹페이지에 연결할 수 있습니다. <a href="https://developers.facebook.com/docs/plugins/comments/#moderation-setup-instructions" target="_blank" rel="noopener">Facebook Documentation</a></p><div class="en-orig"><p>You can connect a Facebook app or Facebook account to your webpage for certain Facebook Social Plugins <a href="https://developers.facebook.com/docs/plugins/comments/#moderation-setup-instructions" target="_blank" rel="noopener">Facebook Documentation</a></p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>appId와 admins 중 하나만 지정할 수 있으며, 둘 다 지정할 수는 없습니다.</p><div class="en-orig"><p>You can specify either appId or admins, but not both.</p></div></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  facebook: {
+    appId: &#x27;12345678&#x27;,
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta property=&quot;fb:app_id&quot; content=&quot;12345678&quot; /&gt;</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  facebook: {
+    admins: &#x27;12345678&#x27;,
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta property=&quot;fb:admins&quot; content=&quot;12345678&quot; /&gt;</code></pre></div></div>
+<p>여러 개의 fb:admins meta tag를 생성하려면 array 값을 사용할 수 있습니다.</p><div class="en-orig"><p>If you want to generate multiple fb:admins meta tags you can use array value.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  facebook: {
+    admins: [&#x27;12345678&#x27;, &#x27;87654321&#x27;],
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta property=&quot;fb:admins&quot; content=&quot;12345678&quot; /&gt;
+&lt;meta property=&quot;fb:admins&quot; content=&quot;87654321&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="pinterest"><a class="anchor" href="#pinterest"><code>pinterest</code></a></h3>
+<p>웹페이지에서 <a href="https://developers.pinterest.com/docs/web-features/rich-pins-overview/" target="_blank" rel="noopener">Pinterest Rich Pins</a>를 활성화하거나 비활성화할 수 있습니다.</p><div class="en-orig"><p>You can enable or disable <a href="https://developers.pinterest.com/docs/web-features/rich-pins-overview/" target="_blank" rel="noopener">Pinterest Rich Pins</a> on your webpage.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  pinterest: {
+    richPin: true,
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;pinterest-rich-pin&quot; content=&quot;true&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="other"><a class="anchor" href="#other"><code>other</code></a></h3>
+<p>모든 metadata option은 built-in 지원으로 처리할 수 있어야 합니다. 하지만 사이트에 특화된 custom metadata tag나 새로 나온 metadata tag가 있을 수 있습니다. <code>other</code> option을 사용하면 어떤 custom metadata tag든 render할 수 있습니다.</p><div class="en-orig"><p>All metadata options should be covered using the built-in support. However, there may be custom metadata tags specific to your site, or brand new metadata tags just released. You can use the <code>other</code> option to render any custom metadata tag.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  other: {
+    custom: &#x27;meta&#x27;,
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;custom&quot; content=&quot;meta&quot; /&gt;</code></pre></div></div>
+<p>같은 key를 가진 meta tag를 여러 개 생성하려면 array 값을 사용할 수 있습니다.</p><div class="en-orig"><p>If you want to generate multiple same key meta tags you can use array value.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  other: {
+    custom: [&#x27;meta1&#x27;, &#x27;meta2&#x27;],
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;custom&quot; content=&quot;meta1&quot; /&gt; &lt;meta name=&quot;custom&quot; content=&quot;meta2&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="types"><a class="anchor" href="#types">Types</a></h3>
+<p><code>Metadata</code> type을 사용해 metadata에 type safety를 더할 수 있습니다. IDE에서 <a href="app-api-reference-config-typescript.html">built-in TypeScript plugin</a>을 사용하고 있다면 type을 직접 추가할 필요는 없지만, 원한다면 명시적으로 추가할 수도 있습니다.</p><div class="en-orig"><p>You can add type safety to your metadata by using the <code>Metadata</code> type. If you are using the <a href="app-api-reference-config-typescript.html">built-in TypeScript plugin</a> in your IDE, you do not need to manually add the type, but you can still explicitly add it if you want.</p></div>
+<h4 class="sec" id="metadata-object"><a class="anchor" href="#metadata-object"><code>metadata</code> object</a></h4>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">layout.tsx | page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export const metadata: Metadata = {
+  title: &#x27;Next.js&#x27;,
+}</code></pre></div></div>
+<h4 class="sec" id="generatemetadata-function-1"><a class="anchor" href="#generatemetadata-function-1"><code>generateMetadata</code> function<span class="ko"><code>generateMetadata</code> 함수</span></a></h4>
+<h5 class="sec" id="regular-function"><a class="anchor" href="#regular-function">Regular function<span class="ko">일반 함수</span></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">layout.tsx | page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export function generateMetadata(): Metadata {
+  return {
+    title: &#x27;Next.js&#x27;,
+  }
+}</code></pre></div></div>
+<h5 class="sec" id="async-function"><a class="anchor" href="#async-function">Async function<span class="ko">Async 함수</span></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">layout.tsx | page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export async function generateMetadata(): Promise&lt;Metadata&gt; {
+  return {
+    title: &#x27;Next.js&#x27;,
+  }
+}</code></pre></div></div>
+<h5 class="sec" id="with-segment-props"><a class="anchor" href="#with-segment-props">With segment props<span class="ko">segment props와 함께</span></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">layout.tsx | page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+type Props = {
+  params: Promise&lt;{ id: string }&gt;
+  searchParams: Promise&lt;{ [key: string]: string | string[] | undefined }&gt;
+}
+
+export function generateMetadata({ params, searchParams }: Props): Metadata {
+  return {
+    title: &#x27;Next.js&#x27;,
+  }
+}
+
+export default function Page({ params, searchParams }: Props) {}</code></pre></div></div>
+<h5 class="sec" id="with-parent-metadata"><a class="anchor" href="#with-parent-metadata">With parent metadata<span class="ko">parent metadata와 함께</span></a></h5>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">layout.tsx | page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { Metadata, ResolvingMetadata } from &#x27;next&#x27;
+
+export async function generateMetadata(
+  { params, searchParams }: Props,
+  parent: ResolvingMetadata
+): Promise&lt;Metadata&gt; {
+  return {
+    title: &#x27;Next.js&#x27;,
+  }
+}</code></pre></div></div>
+<h5 class="sec" id="javascript-projects"><a class="anchor" href="#javascript-projects">JavaScript Projects<span class="ko">JavaScript 프로젝트</span></a></h5>
+<p>JavaScript 프로젝트에서는 JSDoc을 사용해 type safety를 더할 수 있습니다.</p><div class="en-orig"><p>For JavaScript projects, you can use JSDoc to add type safety.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&quot;next&quot;).Metadata} */
+export const metadata = {
+  title: &#x27;Next.js&#x27;,
+}</code></pre></div></div>
+<h3 class="sec" id="unsupported-metadata"><a class="anchor" href="#unsupported-metadata">Unsupported Metadata<span class="ko">지원되지 않는 Metadata</span></a></h3>
+<p>다음 metadata type은 현재 built-in 지원이 없습니다. 하지만 layout이나 page 자체에서 직접 render할 수 있습니다.</p><div class="en-orig"><p>The following metadata types do not currently have built-in support. However, they can still be rendered in the layout or page itself.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Metadata</th><th>Recommendation</th></tr></thead>
+<tbody>
+<tr><td><code>&lt;meta http-equiv=&quot;...&quot;&gt;</code></td><td><a href="app-api-reference-functions-redirect.html"><code>redirect()</code></a>, <a href="app-api-reference-file-conventions-proxy.html#nextresponse">Proxy</a>, <a href="app-api-reference-config-next-config-js-headers.html">Security Headers</a>를 통해 적절한 HTTP Header를 사용하세요.</td></tr>
+<tr><td><code>&lt;base&gt;</code></td><td>layout이나 page 자체에서 tag를 render하세요.</td></tr>
+<tr><td><code>&lt;noscript&gt;</code></td><td>layout이나 page 자체에서 tag를 render하세요.</td></tr>
+<tr><td><code>&lt;style&gt;</code></td><td><a href="app-getting-started-css.html">Next.js에서의 styling</a>에 대해 더 알아보세요.</td></tr>
+<tr><td><code>&lt;script&gt;</code></td><td><a href="app-guides-scripts.html">script 사용하기</a>에 대해 더 알아보세요.</td></tr>
+<tr><td><code>&lt;link rel=&quot;stylesheet&quot; /&gt;</code></td><td>layout이나 page 자체에서 stylesheet를 직접 <code>import</code>하세요.</td></tr>
+<tr><td><code>&lt;link rel=&quot;preload&quot; /&gt;</code></td><td><a href="#link-relpreload">ReactDOM preload method</a>를 사용하세요.</td></tr>
+<tr><td><code>&lt;link rel=&quot;preconnect&quot; /&gt;</code></td><td><a href="#link-relpreconnect">ReactDOM preconnect method</a>를 사용하세요.</td></tr>
+<tr><td><code>&lt;link rel=&quot;dns-prefetch&quot; /&gt;</code></td><td><a href="#link-reldns-prefetch">ReactDOM prefetchDNS method</a>를 사용하세요.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Metadata</th><th>Recommendation</th></tr></thead>
+<tbody>
+<tr><td><code>&lt;meta http-equiv=&quot;...&quot;&gt;</code></td><td>Use appropriate HTTP Headers via <a href="app-api-reference-functions-redirect.html"><code>redirect()</code></a>, <a href="app-api-reference-file-conventions-proxy.html#nextresponse">Proxy</a>, <a href="app-api-reference-config-next-config-js-headers.html">Security Headers</a></td></tr>
+<tr><td><code>&lt;base&gt;</code></td><td>Render the tag in the layout or page itself.</td></tr>
+<tr><td><code>&lt;noscript&gt;</code></td><td>Render the tag in the layout or page itself.</td></tr>
+<tr><td><code>&lt;style&gt;</code></td><td>Learn more about <a href="app-getting-started-css.html">styling in Next.js</a>.</td></tr>
+<tr><td><code>&lt;script&gt;</code></td><td>Learn more about <a href="app-guides-scripts.html">using scripts</a>.</td></tr>
+<tr><td><code>&lt;link rel=&quot;stylesheet&quot; /&gt;</code></td><td><code>import</code> stylesheets directly in the layout or page itself.</td></tr>
+<tr><td><code>&lt;link rel=&quot;preload&quot; /&gt;</code></td><td>Use <a href="#link-relpreload">ReactDOM preload method</a></td></tr>
+<tr><td><code>&lt;link rel=&quot;preconnect&quot; /&gt;</code></td><td>Use <a href="#link-relpreconnect">ReactDOM preconnect method</a></td></tr>
+<tr><td><code>&lt;link rel=&quot;dns-prefetch&quot; /&gt;</code></td><td>Use <a href="#link-reldns-prefetch">ReactDOM prefetchDNS method</a></td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="resource-hints"><a class="anchor" href="#resource-hints">Resource hints</a></h3>
+<p><code>&lt;link&gt;</code> element에는 외부 resource가 필요할 가능성이 높다는 것을 브라우저에 hint로 알려 주는 여러 <code>rel</code> keyword가 있습니다. 브라우저는 이 정보를 이용해 keyword에 따라 preloading 최적화를 적용합니다.</p><div class="en-orig"><p>The <code>&lt;link&gt;</code> element has a number of <code>rel</code> keywords that can be used to hint to the browser that an external resource is likely to be needed. The browser uses this information to apply preloading optimizations depending on the keyword.</p></div>
+<p>Metadata API는 이 hint들을 직접 지원하지 않지만, 새로운 <a href="https://github.com/facebook/react/pull/26237" target="_blank" rel="noopener"><code>ReactDOM</code> method</a>를 사용해 문서의 <code>&lt;head&gt;</code>에 안전하게 삽입할 수 있습니다.</p><div class="en-orig"><p>While the Metadata API doesn't directly support these hints, you can use new <a href="https://github.com/facebook/react/pull/26237" target="_blank" rel="noopener"><code>ReactDOM</code> methods</a> to safely insert them into the <code>&lt;head&gt;</code> of the document.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/preload-resources.tsx" data-js="app/preload-resources.js">app/preload-resources.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import ReactDOM from &#x27;react-dom&#x27;
+
+export function PreloadResources() {
+  ReactDOM.preload(&#x27;...&#x27;, { as: &#x27;...&#x27; })
+  ReactDOM.preconnect(&#x27;...&#x27;, { crossOrigin: &#x27;...&#x27; })
+  ReactDOM.prefetchDNS(&#x27;...&#x27;)
+
+  return &#x27;...&#x27;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import ReactDOM from &#x27;react-dom&#x27;
+
+export function PreloadResources() {
+  ReactDOM.preload(&#x27;...&#x27;, { as: &#x27;...&#x27; })
+  ReactDOM.preconnect(&#x27;...&#x27;, { crossOrigin: &#x27;...&#x27; })
+  ReactDOM.prefetchDNS(&#x27;...&#x27;)
+
+  return &#x27;...&#x27;
+}</code></pre></div></div>
+<h4 class="sec" id="link-relpreload"><a class="anchor" href="#link-relpreload"><code>&lt;link rel=&quot;preload&quot;&gt;</code></a></h4>
+<p>페이지 rendering(브라우저) lifecycle 초기에 resource 로딩을 시작합니다. <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes/rel/preload" target="_blank" rel="noopener">MDN Docs</a>.</p><div class="en-orig"><p>Start loading a resource early in the page rendering (browser) lifecycle. <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes/rel/preload" target="_blank" rel="noopener">MDN Docs</a>.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">ReactDOM.preload(href: string, options: { as: string })</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;preload&quot; href=&quot;...&quot; as=&quot;...&quot; /&gt;</code></pre></div></div>
+<h5 class="sec" id="link-relpreconnect"><a class="anchor" href="#link-relpreconnect"><code>&lt;link rel=&quot;preconnect&quot;&gt;</code></a></h5>
+<p>origin에 대한 연결을 미리 시작합니다. <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes/rel/preconnect" target="_blank" rel="noopener">MDN Docs</a>.</p><div class="en-orig"><p>Preemptively initiate a connection to an origin. <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes/rel/preconnect" target="_blank" rel="noopener">MDN Docs</a>.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">ReactDOM.preconnect(href: string, options?: { crossOrigin?: string })</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;preconnect&quot; href=&quot;...&quot; crossorigin /&gt;</code></pre></div></div>
+<h4 class="sec" id="link-reldns-prefetch"><a class="anchor" href="#link-reldns-prefetch"><code>&lt;link rel=&quot;dns-prefetch&quot;&gt;</code></a></h4>
+<p>resource가 request되기 전에 domain name을 미리 resolve하려고 시도합니다. <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes/rel/dns-prefetch" target="_blank" rel="noopener">MDN Docs</a>.</p><div class="en-orig"><p>Attempt to resolve a domain name before resources get requested. <a href="https://developer.mozilla.org/docs/Web/HTML/Attributes/rel/dns-prefetch" target="_blank" rel="noopener">MDN Docs</a>.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">ReactDOM.prefetchDNS(href: string)</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;dns-prefetch&quot; href=&quot;...&quot; /&gt;</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>이 method들은 현재 Client Component에서만 지원되며, Client Component도 initial page load 시에는 Server Side Rendering됩니다.</li>
+<li><code>next/font</code>, <code>next/image</code>, <code>next/script</code> 같은 Next.js 내장 기능은 관련 resource hint를 자동으로 처리합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>These methods are currently only supported in Client Components, which are still Server Side Rendered on initial page load.</li>
+<li>Next.js in-built features such as <code>next/font</code>, <code>next/image</code> and <code>next/script</code> automatically handle relevant resource hints.</li>
+</ul></div></div></div>
+<h2 class="sec" id="behavior"><a class="anchor" href="#behavior">Behavior<span class="ko">동작</span></a></h2>
+<h3 class="sec" id="default-fields"><a class="anchor" href="#default-fields">Default Fields<span class="ko">기본 field</span></a></h3>
+<p>route가 metadata를 정의하지 않더라도 항상 추가되는 기본 <code>meta</code> tag가 두 개 있습니다:</p><div class="en-orig"><p>There are two default <code>meta</code> tags that are always added even if a route doesn't define metadata:</p></div>
+<ul>
+<li><a href="https://developer.mozilla.org/docs/Web/HTML/Element/meta#attr-charset" target="_blank" rel="noopener">meta charset tag</a>는 웹사이트의 character encoding을 설정합니다.</li>
+<li><a href="https://developer.mozilla.org/docs/Web/HTML/Viewport_meta_tag" target="_blank" rel="noopener">meta viewport tag</a>는 다양한 기기에 맞게 웹사이트의 viewport 너비와 배율을 설정합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The <a href="https://developer.mozilla.org/docs/Web/HTML/Element/meta#attr-charset" target="_blank" rel="noopener">meta charset tag</a> sets the character encoding for the website.</li>
+<li>The <a href="https://developer.mozilla.org/docs/Web/HTML/Viewport_meta_tag" target="_blank" rel="noopener">meta viewport tag</a> sets the viewport width and scale for the website to adjust for different devices.</li>
+</ul></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-xml">&lt;meta charset=&quot;utf-8&quot; /&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>기본 <a href="app-api-reference-functions-generate-metadata.html#viewport"><code>viewport</code></a> meta tag를 덮어쓸 수 있습니다.</p><div class="en-orig"><p>You can overwrite the default <a href="app-api-reference-functions-generate-metadata.html#viewport"><code>viewport</code></a> meta tag.</p></div></div></div>
+<h3 class="sec" id="streaming-metadata"><a class="anchor" href="#streaming-metadata">Streaming metadata</a></h3>
+<p>Streaming metadata를 사용하면 Next.js가 <code>generateMetadata</code>가 완료되기를 기다리지 않고 initial UI를 render해 브라우저로 보낼 수 있습니다.</p><div class="en-orig"><p>Streaming metadata allows Next.js to render and send the initial UI to the browser, without waiting for <code>generateMetadata</code> to complete.</p></div>
+<p><code>generateMetadata</code>가 resolve되면 결과 metadata tag가 <code>&lt;body&gt;</code> tag에 추가됩니다. JavaScript를 실행하고 전체 DOM을 검사하는 bot(예: <code>Googlebot</code>)이 metadata를 올바르게 해석한다는 것을 확인했습니다.</p><div class="en-orig"><p>When <code>generateMetadata</code> resolves, the resulting metadata tags are appended to the <code>&lt;body&gt;</code> tag. We have verified that metadata is interpreted correctly by bots that execute JavaScript and inspect the full DOM (e.g. <code>Googlebot</code>).</p></div>
+<p>JavaScript를 실행할 수 없는 <strong>HTML-limited bot</strong>(예: <code>facebookexternalhit</code>)에 대해서는 metadata가 계속 페이지 rendering을 block합니다. 결과 metadata는 <code>&lt;head&gt;</code> tag에서 사용할 수 있습니다.</p><div class="en-orig"><p>For <strong>HTML-limited bots</strong> that can’t execute JavaScript (e.g. <code>facebookexternalhit</code>), metadata continues to block page rendering. The resulting metadata will be available in the <code>&lt;head&gt;</code> tag.</p></div>
+<p>Next.js는 User Agent header를 보고 <strong>HTML-limited bot</strong>을 자동으로 감지합니다. Next.js config 파일의 <a href="app-api-reference-config-next-config-js-htmlLimitedBots.html"><code>htmlLimitedBots</code></a> option을 사용해 기본 <a href="https://github.com/vercel/next.js/blob/canary/packages/next/src/shared/lib/router/utils/html-bots.ts" target="_blank" rel="noopener">User Agent 목록</a>을 override할 수 있습니다.</p><div class="en-orig"><p>Next.js automatically detects <strong>HTML-limited bots</strong> by looking at the User Agent header. You can use the <a href="app-api-reference-config-next-config-js-htmlLimitedBots.html"><code>htmlLimitedBots</code></a> option in your Next.js config file to override the default <a href="https://github.com/vercel/next.js/blob/canary/packages/next/src/shared/lib/router/utils/html-bots.ts" target="_blank" rel="noopener">User Agent list</a>.</p></div>
+<p>streaming metadata를 완전히 비활성화하려면:</p><div class="en-orig"><p>To fully disable streaming metadata:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const config: NextConfig = {
+  htmlLimitedBots: /.*/,
+}
+
+export default config</code></pre><pre class="v-js" hidden><code class="language-javascript">module.exports = {
+  htmlLimitedBots: /.*/,
+}</code></pre></div></div>
+<p>Streaming metadata는 <a href="https://developer.mozilla.org/docs/Glossary/Time_to_first_byte" target="_blank" rel="noopener">TTFB</a>를 줄여 체감 성능을 높이고, <a href="https://developer.mozilla.org/docs/Glossary/Largest_contentful_paint" target="_blank" rel="noopener">LCP</a> 시간을 낮추는 데 도움이 될 수 있습니다.</p><div class="en-orig"><p>Streaming metadata improves perceived performance by reducing <a href="https://developer.mozilla.org/docs/Glossary/Time_to_first_byte" target="_blank" rel="noopener">TTFB</a> and can help lowering <a href="https://developer.mozilla.org/docs/Glossary/Largest_contentful_paint" target="_blank" rel="noopener">LCP</a> time.</p></div>
+<p><code>htmlLimitedBots</code>를 override하면 response 시간이 길어질 수 있습니다. Streaming metadata는 고급 기능이며, 대부분의 경우 기본값으로 충분합니다.</p><div class="en-orig"><p>Overriding <code>htmlLimitedBots</code> could lead to longer response times. Streaming metadata is an advanced feature, and the default should be sufficient for most cases.</p></div>
+<h3 class="sec" id="with-cache-components"><a class="anchor" href="#with-cache-components">With Cache Components<span class="ko">Cache Components와 함께 사용하기</span></a></h3>
+<p><a href="app-getting-started-caching.html">Cache Components</a>가 활성화되어 있으면 <code>generateMetadata</code>는 다른 component와 같은 규칙을 따릅니다. metadata가 runtime 데이터(<code>cookies()</code>, <code>headers()</code>, <code>params</code>, <code>searchParams</code>)에 접근하거나 cache되지 않은 data fetching을 수행하면 request time으로 미뤄집니다.</p><div class="en-orig"><p>When <a href="app-getting-started-caching.html">Cache Components</a> is enabled, <code>generateMetadata</code> follows the same rules as other components. If metadata accesses runtime data (<code>cookies()</code>, <code>headers()</code>, <code>params</code>, <code>searchParams</code>) or performs uncached data fetching, it defers to request time.</p></div>
+<p>Next.js가 이를 처리하는 방식은 페이지의 나머지 부분에 따라 달라집니다:</p><div class="en-orig"><p>How Next.js handles this depends on the rest of your page:</p></div>
+<ul>
+<li><strong>다른 부분도 request time으로 미뤄지는 경우</strong>: prerendering이 static shell을 생성하고, metadata는 다른 지연된 콘텐츠와 함께 stream됩니다.</li>
+<li><strong>page나 layout이 그 외에는 완전히 prerender 가능한 경우</strong>: Next.js는 명시적인 선택을 요구합니다. 가능하면 데이터를 cache하거나, 지연된 rendering이 의도된 것임을 알려야 합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>If other parts also defer to request time</strong>: Prerendering generates a static shell, and metadata streams in with other deferred content.</li>
+<li><strong>If the page or layout is otherwise fully prerenderable</strong>: Next.js requires an explicit choice: cache the data if possible, or signal that deferred rendering is intentional.</li>
+</ul></div>
+<p>페이지의 나머지 부분이 완전히 prerender 가능한데 metadata만 runtime에 stream하는 경우는 흔하지 않습니다. 이 동작이 의도된 것인지 확인하기 위해, 어떤 page나 layout을 처리해야 하는지 알려 주는 error가 발생합니다.</p><div class="en-orig"><p>Streaming metadata at runtime while the rest of the page is fully prerenderable is not common. To ensure this behavior is intentional, an error is raised indicating which page or layout needs to be handled.</p></div>
+<p>이를 해결하는 방법은 두 가지입니다. metadata가 외부 데이터에는 의존하지만 runtime 데이터에는 의존하지 않는다면 <code>use cache</code>를 사용하세요:</p><div class="en-orig"><p>To resolve this, you have two options. If metadata depends on external data but not runtime data, use <code>use cache</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export async function generateMetadata() {
+  &#x27;use cache&#x27;
+  const { title, description } = await db.query(&#x27;site-metadata&#x27;)
+  return { title, description }
+}</code></pre></div></div>
+<p>metadata가 정말로 runtime 데이터를 필요로 한다면 페이지에 dynamic marker component를 추가하세요:</p><div class="en-orig"><p>If metadata genuinely requires runtime data, add a dynamic marker component to your page:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+import { connection } from &#x27;next/server&#x27;
+
+export async function generateMetadata() {
+  const token = (await cookies()).get(&#x27;token&#x27;)?.value
+  // ... use token to fetch personalized metadata
+  return { title: &#x27;Personalized Title&#x27; }
+}
+
+const Connection = async () =&gt; {
+  await connection()
+  return null
+}
+
+async function DynamicMarker() {
+  return (
+    &lt;Suspense&gt;
+      &lt;Connection /&gt;
+    &lt;/Suspense&gt;
+  )
+}
+
+export default function Page() {
+  // DO NOT place await connection() here
+  // doing so prevents the article tag content from
+  // being included in the static shell
+  return (
+    &lt;&gt;
+      &lt;article&gt;Static content&lt;/article&gt;
+      &lt;DynamicMarker /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p><code>DynamicMarker</code> component는 아무것도 render하지 않지만, 페이지에 의도된 dynamic 콘텐츠가 있다는 것을 Next.js에 알려 줍니다. 이를 Suspense로 감싸면 static 콘텐츠는 여전히 정상적으로 prerender됩니다.</p><div class="en-orig"><p>The <code>DynamicMarker</code> component renders nothing but tells Next.js the page has intentional dynamic content. By wrapping it in Suspense, the static content still prerenders normally.</p></div>
+<p>전체 해결 방법과 trade-off는 <a href="https://nextjs.org/docs/messages/blocking-prerender-metadata-runtime" target="_blank" rel="noopener">Next.js encountered runtime data in <code>generateMetadata()</code></a>와 <a href="https://nextjs.org/docs/messages/blocking-prerender-metadata-dynamic" target="_blank" rel="noopener">Next.js encountered uncached data in <code>generateMetadata()</code></a>를 참고하세요.</p><div class="en-orig"><p>See <a href="https://nextjs.org/docs/messages/blocking-prerender-metadata-runtime" target="_blank" rel="noopener">Next.js encountered runtime data in <code>generateMetadata()</code></a> and <a href="https://nextjs.org/docs/messages/blocking-prerender-metadata-dynamic" target="_blank" rel="noopener">Next.js encountered uncached data in <code>generateMetadata()</code></a> for full fix options and trade-offs.</p></div>
+<h3 class="sec" id="ordering"><a class="anchor" href="#ordering">Ordering<span class="ko">순서</span></a></h3>
+<p>Metadata는 root segment부터 최종 <code>page.js</code> segment에 가장 가까운 segment까지 순서대로 평가됩니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>Metadata is evaluated in order, starting from the root segment down to the segment closest to the final <code>page.js</code> segment. For example:</p></div>
+<ol>
+<li><code>app/layout.tsx</code> (Root Layout)</li>
+<li><code>app/blog/layout.tsx</code> (중첩된 Blog Layout)</li>
+<li><code>app/blog/[slug]/page.tsx</code> (Blog Page)</li>
+</ol><div class="en-orig"><ol>
+<li><code>app/layout.tsx</code> (Root Layout)</li>
+<li><code>app/blog/layout.tsx</code> (Nested Blog Layout)</li>
+<li><code>app/blog/[slug]/page.tsx</code> (Blog Page)</li>
+</ol></div>
+<h3 class="sec" id="merging"><a class="anchor" href="#merging">Merging<span class="ko">병합</span></a></h3>
+<p><a href="#ordering">평가 순서</a>에 따라, 같은 route의 여러 segment에서 export된 Metadata object는 <strong>shallow</strong>하게 병합되어 route의 최종 metadata 결과가 됩니다. 중복된 key는 순서에 따라 <strong>대체됩니다</strong>.</p><div class="en-orig"><p>Following the <a href="#ordering">evaluation order</a>, Metadata objects exported from multiple segments in the same route are <strong>shallowly</strong> merged together to form the final metadata output of a route. Duplicate keys are <strong>replaced</strong> based on their ordering.</p></div>
+<p>즉, 앞선 segment에서 정의한 <a href="app-api-reference-functions-generate-metadata.html#opengraph"><code>openGraph</code></a>나 <a href="app-api-reference-functions-generate-metadata.html#robots"><code>robots</code></a> 같은 중첩 field를 가진 metadata는 마지막으로 이를 정의한 segment에 의해 <strong>덮어써집니다</strong>.</p><div class="en-orig"><p>This means metadata with nested fields such as <a href="app-api-reference-functions-generate-metadata.html#opengraph"><code>openGraph</code></a> and <a href="app-api-reference-functions-generate-metadata.html#robots"><code>robots</code></a> that are defined in an earlier segment are <strong>overwritten</strong> by the last segment to define them.</p></div>
+<h4 class="sec" id="overwriting-fields"><a class="anchor" href="#overwriting-fields">Overwriting fields<span class="ko">field 덮어쓰기</span></a></h4>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/layout.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  title: &#x27;Acme&#x27;,
+  openGraph: {
+    title: &#x27;Acme&#x27;,
+    description: &#x27;Acme is a...&#x27;,
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/blog/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  title: &#x27;Blog&#x27;,
+  openGraph: {
+    title: &#x27;Blog&#x27;,
+  },
+}
+
+// Output:
+// &lt;title&gt;Blog&lt;/title&gt;
+// &lt;meta property=&quot;og:title&quot; content=&quot;Blog&quot; /&gt;</code></pre></div></div>
+<p>위 예제에서:</p><div class="en-orig"><p>In the example above:</p></div>
+<ul>
+<li><code>app/layout.js</code>의 <code>title</code>은 <code>app/blog/page.js</code>의 <code>title</code>로 <strong>대체됩니다</strong>.</li>
+<li><code>app/blog/page.js</code>가 <code>openGraph</code> metadata를 설정하므로 <code>app/layout.js</code>의 모든 <code>openGraph</code> field가 <code>app/blog/page.js</code>에서 <strong>대체됩니다</strong>. <code>openGraph.description</code>이 없다는 점에 주목하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><code>title</code> from <code>app/layout.js</code> is <strong>replaced</strong> by <code>title</code> in <code>app/blog/page.js</code>.</li>
+<li>All <code>openGraph</code> fields from <code>app/layout.js</code> are <strong>replaced</strong> in <code>app/blog/page.js</code> because <code>app/blog/page.js</code> sets <code>openGraph</code> metadata. Note the absence of <code>openGraph.description</code>.</li>
+</ul></div>
+<p>일부 중첩 field는 segment 간에 공유하고 나머지는 덮어쓰고 싶다면, 공유할 field를 별도 변수로 분리할 수 있습니다:</p><div class="en-orig"><p>If you'd like to share some nested fields between segments while overwriting others, you can pull them out into a separate variable:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/shared-metadata.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const openGraphImage = { images: [&#x27;http://...&#x27;] }</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { openGraphImage } from &#x27;./shared-metadata&#x27;
+
+export const metadata = {
+  openGraph: {
+    ...openGraphImage,
+    title: &#x27;Home&#x27;,
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/about/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { openGraphImage } from &#x27;../shared-metadata&#x27;
+
+export const metadata = {
+  openGraph: {
+    ...openGraphImage,
+    title: &#x27;About&#x27;,
+  },
+}</code></pre></div></div>
+<p>위 예제에서 OG 이미지는 <code>app/layout.js</code>와 <code>app/about/page.js</code> 간에 공유되지만 title은 서로 다릅니다.</p><div class="en-orig"><p>In the example above, the OG image is shared between <code>app/layout.js</code> and <code>app/about/page.js</code> while the titles are different.</p></div>
+<h4 class="sec" id="inheriting-fields"><a class="anchor" href="#inheriting-fields">Inheriting fields<span class="ko">field 상속</span></a></h4>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/layout.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  title: &#x27;Acme&#x27;,
+  openGraph: {
+    title: &#x27;Acme&#x27;,
+    description: &#x27;Acme is a...&#x27;,
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/about/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const metadata = {
+  title: &#x27;About&#x27;,
+}
+
+// Output:
+// &lt;title&gt;About&lt;/title&gt;
+// &lt;meta property=&quot;og:title&quot; content=&quot;Acme&quot; /&gt;
+// &lt;meta property=&quot;og:description&quot; content=&quot;Acme is a...&quot; /&gt;</code></pre></div></div>
+<p><strong>Notes</strong></p><div class="en-orig"><p><strong>Notes</strong></p></div>
+<ul>
+<li><code>app/layout.js</code>의 <code>title</code>은 <code>app/about/page.js</code>의 <code>title</code>로 <strong>대체됩니다</strong>.</li>
+<li><code>app/about/page.js</code>가 <code>openGraph</code> metadata를 설정하지 않으므로 <code>app/layout.js</code>의 모든 <code>openGraph</code> field가 <code>app/about/page.js</code>에 <strong>상속됩니다</strong>.</li>
+</ul><div class="en-orig"><ul>
+<li><code>title</code> from <code>app/layout.js</code> is <strong>replaced</strong> by <code>title</code> in <code>app/about/page.js</code>.</li>
+<li>All <code>openGraph</code> fields from <code>app/layout.js</code> are <strong>inherited</strong> in <code>app/about/page.js</code> because <code>app/about/page.js</code> doesn't set <code>openGraph</code> metadata.</li>
+</ul></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v15.2.0</code></td><td><code>generateMetadata</code>에 streaming 지원이 도입되었습니다.</td></tr>
+<tr><td><code>v14.0.0</code></td><td><code>viewport</code>, <code>themeColor</code>, <code>colorScheme</code>이 deprecated되고 <a href="app-api-reference-functions-generate-viewport.html"><code>viewport</code> configuration</a>으로 대체되었습니다.</td></tr>
+<tr><td><code>v13.2.0</code></td><td><code>metadata</code>와 <code>generateMetadata</code>가 도입되었습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v15.2.0</code></td><td>Introduced streaming support to <code>generateMetadata</code>.</td></tr>
+<tr><td><code>v14.0.0</code></td><td><code>viewport</code>, <code>themeColor</code>, and <code>colorScheme</code> deprecated in favor of the <a href="app-api-reference-functions-generate-viewport.html"><code>viewport</code> configuration</a>.</td></tr>
+<tr><td><code>v13.2.0</code></td><td><code>metadata</code> and <code>generateMetadata</code> introduced.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">다음 단계</h2><p>모든 Metadata API option을 살펴보세요.</p><div class="rgrid"><a class="rcard" href="app-api-reference-file-conventions-metadata.html"><div class="rt">Metadata Files API Reference</div><div class="rk">Metadata 파일 API Reference</div><div class="rd">metadata file convention에 대한 API 문서입니다.</div></a><a class="rcard" href="app-api-reference-functions-generate-viewport.html"><div class="rt">generateViewport</div><div class="rk">generateViewport</div><div class="rd">generateViewport 함수에 대한 API Reference입니다.</div></a><a class="rcard" href="app-getting-started-caching.html"><div class="rt">Caching</div><div class="rk">캐싱</div><div class="rd">Next.js에서 데이터와 UI를 cache하는 방법을 알아봅니다</div></a><a class="rcard" href="app-api-reference-config-next-config-js-cacheComponents.html"><div class="rt">cacheComponents</div><div class="rk">cacheComponents</div><div class="rd">Next.js에서 cacheComponents flag를 활성화하는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/generate-metadata.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/functions/generate-metadata" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-functions-generate-image-metadata.html" class="prev"><div class="dir">← 이전</div><div class="ttl">generateImageMetadata</div><div class="ttl-ko">generateImageMetadata</div></a>
+      <a href="app-api-reference-functions-generate-sitemaps.html" class="next"><div class="dir">다음 →</div><div class="ttl">generateSitemaps</div><div class="ttl-ko">generateSitemaps</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/functions/generate-metadata" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#the-metadata-object">The <code>metadata</code> object</a></li><li class="l2"><a href="#generatemetadata-function"><code>generateMetadata</code> function</a></li><li class="l2"><a href="#why-generatemetadata-is-server-component-only">Why <code>generateMetadata</code> is Server Component only</a></li><li class="l2"><a href="#reference">Reference</a></li><li class="l3"><a href="#parameters">Parameters</a></li><li class="l3"><a href="#returns">Returns</a></li><li class="l3"><a href="#metadata-fields">Metadata Fields</a></li><li class="l3"><a href="#description"><code>description</code></a></li><li class="l3"><a href="#other-fields">Other fields</a></li><li class="l3"><a href="#opengraph"><code>openGraph</code></a></li><li class="l3"><a href="#robots"><code>robots</code></a></li><li class="l3"><a href="#icons"><code>icons</code></a></li><li class="l3"><a href="#themecolor"><code>themeColor</code></a></li><li class="l3"><a href="#colorscheme"><code>colorScheme</code></a></li><li class="l3"><a href="#manifest"><code>manifest</code></a></li><li class="l3"><a href="#twitter"><code>twitter</code></a></li><li class="l3"><a href="#viewport"><code>viewport</code></a></li><li class="l3"><a href="#verification"><code>verification</code></a></li><li class="l3"><a href="#applewebapp"><code>appleWebApp</code></a></li><li class="l3"><a href="#alternates"><code>alternates</code></a></li><li class="l3"><a href="#applinks"><code>appLinks</code></a></li><li class="l3"><a href="#archives"><code>archives</code></a></li><li class="l3"><a href="#assets"><code>assets</code></a></li><li class="l3"><a href="#bookmarks"><code>bookmarks</code></a></li><li class="l3"><a href="#pagination"><code>pagination</code></a></li><li class="l3"><a href="#category"><code>category</code></a></li><li class="l3"><a href="#facebook"><code>facebook</code></a></li><li class="l3"><a href="#pinterest"><code>pinterest</code></a></li><li class="l3"><a href="#other"><code>other</code></a></li><li class="l3"><a href="#types">Types</a></li><li class="l3"><a href="#unsupported-metadata">Unsupported Metadata</a></li><li class="l3"><a href="#resource-hints">Resource hints</a></li><li class="l2"><a href="#behavior">Behavior</a></li><li class="l3"><a href="#default-fields">Default Fields</a></li><li class="l3"><a href="#streaming-metadata">Streaming metadata</a></li><li class="l3"><a href="#with-cache-components">With Cache Components</a></li><li class="l3"><a href="#ordering">Ordering</a></li><li class="l3"><a href="#merging">Merging</a></li><li class="l2"><a href="#version-history">Version History</a></li><li class="l2"><a href="#next-steps">다음 단계</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`metadata` object나 `generateMetadata` 함수를 사용해 metadata를 정의할 수 있습니다.
+
+## The `metadata` object || `metadata` object
+
+static metadata를 정의하려면 `layout.js` 또는 `page.js` 파일에서 [`Metadata` object](#metadata-fields)를 export하세요.
+
+[[CODE 1]]
+
+&gt; 지원되는 option의 전체 목록은 [Metadata Fields](#metadata-fields)를 참고하세요.
+
+## `generateMetadata` function || `generateMetadata` 함수
+
+현재 route parameter, 외부 데이터, parent segment의 `metadata` 같은 **dynamic 정보**에 의존하는 dynamic metadata는 [`Metadata` object](#metadata-fields)를 반환하는 `generateMetadata` 함수를 export해서 설정할 수 있습니다.
+
+`generateMetadata`를 resolve하는 과정은 페이지 rendering의 일부입니다. 페이지가 prerender될 수 있고 `generateMetadata`가 dynamic 동작을 일으키지 않는다면, 결과 metadata는 페이지의 initial HTML에 포함됩니다.
+
+그렇지 않으면 `generateMetadata`에서 resolve된 metadata는 initial UI를 보낸 뒤 [stream될 수 있습니다](/docs/app/api-reference/functions/generate-metadata#streaming-metadata).
+
+[[CODE 2]]
+
+`params`와 `searchParams`의 type completion을 위해, page에서는 [`PageProps&lt;&#x27;/route&#x27;&gt;`](/docs/app/api-reference/file-conventions/page#page-props-helper)로, layout에서는 [`LayoutProps&lt;&#x27;/route&#x27;&gt;`](/docs/app/api-reference/file-conventions/layout#layout-props-helper)로 첫 번째 argument의 type을 지정할 수 있습니다.
+
+&gt; **Good to know**:
+&gt;
+&gt; - Metadata는 `layout.js`와 `page.js` 파일에 추가할 수 있습니다.
+&gt; - Next.js는 metadata를 자동으로 resolve하고 페이지에 맞는 `&lt;head&gt;` tag를 생성합니다.
+&gt; - `metadata` object와 `generateMetadata` 함수 export는 **Server Component에서만 지원됩니다**.
+&gt; - 같은 route segment에서 `metadata` object와 `generateMetadata` 함수를 동시에 export할 수 없습니다.
+&gt; - `generateMetadata` 안의 `fetch` request는 `generateMetadata`, `generateStaticParams`, Layout, Page, Server Component 전반에서 같은 데이터에 대해 자동으로 [memoize](/docs/app/glossary#memoization)됩니다.
+&gt; - `fetch`를 사용할 수 없다면 React [`cache`를 사용할 수 있습니다](https://react.dev/reference/react/cache).
+&gt; - [File-based metadata](/docs/app/api-reference/file-conventions/metadata)가 더 높은 우선순위를 가지며 `metadata` object와 `generateMetadata` 함수를 override합니다.
+
+## Why `generateMetadata` is Server Component only || `generateMetadata`가 Server Component 전용인 이유
+
+`generateMetadata`와 `metadata` export는 Server Component에서만 지원됩니다. metadata는 page component가 render되기 전에 server에서 resolve되어야 하기 때문입니다. 이렇게 해야 Next.js가 initial HTML response에 metadata를 포함할 수 있습니다.
+
+Client Component 기능을 사용해야 한다면 `page.tsx`는 Server Component로 유지하고, Client Component 로직은 별도 파일로 옮기세요:
+
+[[CODE 3]]
+
+[[CODE 4]]
+
+## Reference
+
+### Parameters
+
+`generateMetadata` 함수는 다음 parameter를 받습니다:
+
+- `props` - 현재 route의 parameter를 담은 object:
+  - `params` - root segment부터 `generateMetadata`가 호출되는 segment까지의 [dynamic route parameters](/docs/app/api-reference/file-conventions/dynamic-routes) object를 담은 object입니다. 예시:
+
+    | Route                           | URL         | `params`                  |
+    | ------------------------------- | ----------- | ------------------------- |
+    | `app/shop/[slug]/page.js`       | `/shop/1`   | `{ slug: &#x27;1&#x27; }`           |
+    | `app/shop/[tag]/[item]/page.js` | `/shop/1/2` | `{ tag: &#x27;1&#x27;, item: &#x27;2&#x27; }` |
+    | `app/shop/[...slug]/page.js`    | `/shop/1/2` | `{ slug: [&#x27;1&#x27;, &#x27;2&#x27;] }`    |
+
+  - `searchParams` - 현재 URL의 [search params](https://developer.mozilla.org/docs/Learn/Common_questions/What_is_a_URL#parameters)를 담은 object입니다. 예시:
+
+    | URL             | `searchParams`       |
+    | --------------- | -------------------- |
+    | `/shop?a=1`     | `{ a: &#x27;1&#x27; }`         |
+    | `/shop?a=1&amp;b=2` | `{ a: &#x27;1&#x27;, b: &#x27;2&#x27; }` |
+    | `/shop?a=1&amp;a=2` | `{ a: [&#x27;1&#x27;, &#x27;2&#x27;] }`  |
+
+- `parent` - parent route segment에서 resolve된 metadata의 promise입니다.
+
+### Returns
+
+`generateMetadata`는 하나 이상의 metadata field를 담은 [`Metadata` object](#metadata-fields)를 반환해야 합니다.
+
+&gt; **Good to know**:
+&gt;
+&gt; - metadata가 request 정보에 의존하지 않는다면 `generateMetadata` 대신 static [`metadata` object](#the-metadata-object)로 정의해야 합니다.
+&gt; - `fetch` request는 `generateMetadata`, `generateStaticParams`, Layout, Page, Server Component 전반에서 같은 데이터에 대해 자동으로 memoize됩니다. `fetch`를 사용할 수 없다면 React [`cache`를 사용할 수 있습니다](https://react.dev/reference/react/cache).
+&gt; - `searchParams`는 `page.js` segment에서만 사용할 수 있습니다.
+&gt; - Next.js의 [`redirect()`](/docs/app/api-reference/functions/redirect)와 [`notFound()`](/docs/app/api-reference/functions/not-found) method도 `generateMetadata` 안에서 사용할 수 있습니다.
+
+### Metadata Fields
+
+다음 field가 지원됩니다:
+
+#### `title`
+
+`title` attribute는 문서의 제목을 설정하는 데 사용됩니다. 단순한 [string](#string)이나 선택적인 [template object](#template)로 정의할 수 있습니다.
+
+##### String
+
+[[CODE 5]]
+
+[[CODE 6]]
+
+##### `default`
+
+`title.default`는 `title`을 정의하지 않은 child route segment에 **fallback title**을 제공하는 데 사용할 수 있습니다.
+
+[[CODE 7]]
+
+[[CODE 8]]
+
+##### `template`
+
+`title.template`은 **child** route segment에서 정의된 `titles`에 prefix나 suffix를 추가하는 데 사용할 수 있습니다.
+
+[[CODE 9]]
+
+[[CODE 10]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - `title.template`은 정의된 segment 자체가 **아니라** **child** route segment에 적용됩니다. 즉:
+&gt;   - `title.template`을 추가할 때는 `title.default`가 **필수**입니다.
+&gt;   - `layout.js`에서 정의한 `title.template`은 같은 route segment의 `page.js`에서 정의한 `title`에는 적용되지 않습니다.
+&gt;   - page는 항상 마지막(terminating) segment이므로(child route segment가 없음) `page.js`에서 정의한 `title.template`은 아무 효과가 없습니다.
+&gt; - route가 `title`이나 `title.default`를 정의하지 않았다면 `title.template`은 **아무 효과가 없습니다**.
+
+##### `absolute`
+
+`title.absolute`는 parent segment에서 설정한 `title.template`을 **무시하는** title을 제공하는 데 사용할 수 있습니다.
+
+[[CODE 11]]
+
+[[CODE 12]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - `layout.js`
+&gt;   - `title`(string)과 `title.default`는 (자체 `title`을 정의하지 않은) child segment의 기본 title을 정의합니다. 가장 가까운 parent segment에 `title.template`이 있으면 그것으로 보강됩니다.
+&gt;   - `title.absolute`는 child segment의 기본 title을 정의합니다. parent segment의 `title.template`은 무시합니다.
+&gt;   - `title.template`은 child segment를 위한 새 title template을 정의합니다.
+&gt; - `page.js`
+&gt;   - page가 자체 title을 정의하지 않으면 가장 가까운 parent에서 resolve된 title이 사용됩니다.
+&gt;   - `title`(string)은 route의 title을 정의합니다. 가장 가까운 parent segment에 `title.template`이 있으면 그것으로 보강됩니다.
+&gt;   - `title.absolute`는 route title을 정의합니다. parent segment의 `title.template`은 무시합니다.
+&gt;   - page는 항상 route의 마지막 segment이므로 `page.js`에서 `title.template`은 아무 효과가 없습니다.
+
+### `description`
+
+[[CODE 13]]
+
+[[CODE 14]]
+
+### Other fields || 기타 field
+
+[[CODE 15]]
+
+[[CODE 16]]
+
+#### `metadataBase`
+
+`metadataBase`는 fully qualified URL이 필요한 `metadata` field에 base URL prefix를 설정하는 편의 option입니다.
+
+- `metadataBase`를 사용하면 **현재 route segment와 그 하위**에서 정의된 URL 기반 `metadata` field가 원래 필요한 absolute URL 대신 **relative path**를 사용할 수 있습니다.
+- field의 relative path는 `metadataBase`와 합쳐져 fully qualified URL이 됩니다.
+
+[[CODE 17]]
+
+[[CODE 18]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - `metadataBase`는 보통 root `app/layout.js`에 설정해 모든 route의 URL 기반 `metadata` field에 적용합니다.
+&gt; - `generateMetadata`가 `&#x27;use cache&#x27;`를 사용할 때는 반환값이 serializable해야 합니다. `URL` instance는 Cache Function에서 지원되지 않으므로, `metadataBase` 같은 값은 문자열로 반환해야 합니다(예: `url.toString()`). [`use cache` serialization 요구 사항](/docs/app/api-reference/directives/use-cache#serialization)을 참고하세요.
+&gt; - absolute URL이 필요한 모든 URL 기반 `metadata` field는 `metadataBase` option으로 설정할 수 있습니다.
+&gt; - `metadataBase`에는 `https://app.acme.com` 같은 subdomain이나 `https://acme.com/start/from/here` 같은 base path를 포함할 수 있습니다.
+&gt; - `metadata` field가 absolute URL을 제공하면 `metadataBase`는 무시됩니다.
+&gt; - `metadataBase`를 설정하지 않고 URL 기반 `metadata` field에 relative path를 사용하면 build error가 발생합니다.
+&gt; - Next.js는 `metadataBase`(예: `https://acme.com/`)와 relative field(예: `/path`) 사이의 중복 slash를 하나의 slash로 정규화합니다(예: `https://acme.com/path`).
+
+#### URL Composition || URL 조합
+
+URL 조합은 기본 directory 탐색 방식보다 개발자의 의도를 우선합니다.
+
+- `metadataBase`와 `metadata` field 사이의 trailing slash는 정규화됩니다.
+- `metadata` field의 &quot;absolute&quot; path(일반적으로 URL path 전체를 대체하는 것)는 &quot;relative&quot; path(`metadataBase`의 끝에서부터 시작)로 취급됩니다.
+
+예를 들어 다음과 같은 `metadataBase`가 있다고 하면:
+
+[[CODE 19]]
+
+위 `metadataBase`를 상속하면서 자체 값을 설정하는 `metadata` field는 다음과 같이 resolve됩니다:
+
+| `metadata` field                 | Resolved URL                     |
+| -------------------------------- | -------------------------------- |
+| `/`                              | `https://acme.com`               |
+| `./`                             | `https://acme.com`               |
+| `payments`                       | `https://acme.com/payments`      |
+| `/payments`                      | `https://acme.com/payments`      |
+| `./payments`                     | `https://acme.com/payments`      |
+| `../payments`                    | `https://acme.com/payments`      |
+| `https://beta.acme.com/payments` | `https://beta.acme.com/payments` |
+
+### `openGraph`
+
+[[CODE 20]]
+
+[[CODE 21]]
+
+[[CODE 22]]
+
+[[CODE 23]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - Open Graph 이미지에는 [file-based Metadata API](/docs/app/api-reference/file-conventions/metadata/opengraph-image#image-files-jpg-png-gif)를 사용하는 것이 더 편리할 수 있습니다. config export를 실제 파일과 동기화할 필요 없이, file-based API가 올바른 metadata를 자동으로 생성해 줍니다.
+
+### `robots`
+
+[[CODE 24]]
+
+[[CODE 25]]
+
+### `icons`
+
+&gt; **Good to know**: 가능하면 icon에는 [file-based Metadata API](/docs/app/api-reference/file-conventions/metadata/app-icons#image-files-ico-jpg-png)를 사용하는 것을 권장합니다. config export를 실제 파일과 동기화할 필요 없이, file-based API가 올바른 metadata를 자동으로 생성해 줍니다.
+
+[[CODE 26]]
+
+[[CODE 27]]
+
+[[CODE 28]]
+
+[[CODE 29]]
+
+&gt; **Good to know**: `msapplication-*` meta tag는 Chromium 기반 Microsoft Edge에서 더 이상 지원되지 않으므로 더 이상 필요하지 않습니다.
+
+### `themeColor`
+
+&gt; **Deprecated**: `metadata`의 `themeColor` option은 Next.js 14부터 deprecated되었습니다. 대신 [`viewport` configuration](/docs/app/api-reference/functions/generate-viewport)을 사용하세요.
+
+### `colorScheme`
+
+&gt; **Deprecated**: `metadata`의 `colorScheme` option은 Next.js 14부터 deprecated되었습니다. 대신 [`viewport` configuration](/docs/app/api-reference/functions/generate-viewport)을 사용하세요.
+
+### `manifest`
+
+[Web Application Manifest specification](https://developer.mozilla.org/docs/Web/Manifest)에 정의된 web application manifest입니다.
+
+[[CODE 30]]
+
+[[CODE 31]]
+
+### `twitter`
+
+Twitter specification은 (의외로) X(이전 이름 Twitter) 외의 곳에서도 사용됩니다.
+
+[Twitter Card markup reference](https://developer.x.com/en/docs/twitter-for-websites/cards/overview/markup)에 대해 더 알아보세요.
+
+[[CODE 32]]
+
+[[CODE 33]]
+
+[[CODE 34]]
+
+[[CODE 35]]
+
+### `viewport`
+
+&gt; **Deprecated**: `metadata`의 `viewport` option은 Next.js 14부터 deprecated되었습니다. 대신 [`viewport` configuration](/docs/app/api-reference/functions/generate-viewport)을 사용하세요.
+
+### `verification`
+
+[[CODE 36]]
+
+[[CODE 37]]
+
+### `appleWebApp`
+
+[[CODE 38]]
+
+[[CODE 39]]
+
+### `alternates`
+
+[[CODE 40]]
+
+[[CODE 41]]
+
+### `appLinks`
+
+[[CODE 42]]
+
+[[CODE 43]]
+
+### `archives`
+
+역사적 가치가 있는 기록, 문서 또는 기타 자료의 모음을 설명합니다([출처](https://www.w3.org/TR/2011/WD-html5-20110113/links.html#rel-archives)).
+
+[[CODE 44]]
+
+[[CODE 45]]
+
+### `assets`
+
+[[CODE 46]]
+
+[[CODE 47]]
+
+### `bookmarks`
+
+[[CODE 48]]
+
+[[CODE 49]]
+
+### `pagination`
+
+pagination된 순서에서 이전 페이지와 다음 페이지를 설명합니다.
+
+[[CODE 50]]
+
+[[CODE 51]]
+
+### `category`
+
+[[CODE 52]]
+
+[[CODE 53]]
+
+### `facebook`
+
+특정 Facebook Social Plugin을 위해 Facebook app이나 Facebook 계정을 웹페이지에 연결할 수 있습니다. [Facebook Documentation](https://developers.facebook.com/docs/plugins/comments/#moderation-setup-instructions)
+
+&gt; **Good to know**: appId와 admins 중 하나만 지정할 수 있으며, 둘 다 지정할 수는 없습니다.
+
+[[CODE 54]]
+
+[[CODE 55]]
+
+[[CODE 56]]
+
+[[CODE 57]]
+
+여러 개의 fb:admins meta tag를 생성하려면 array 값을 사용할 수 있습니다.
+
+[[CODE 58]]
+
+[[CODE 59]]
+
+### `pinterest`
+
+웹페이지에서 [Pinterest Rich Pins](https://developers.pinterest.com/docs/web-features/rich-pins-overview/)를 활성화하거나 비활성화할 수 있습니다.
+
+[[CODE 60]]
+
+[[CODE 61]]
+
+### `other`
+
+모든 metadata option은 built-in 지원으로 처리할 수 있어야 합니다. 하지만 사이트에 특화된 custom metadata tag나 새로 나온 metadata tag가 있을 수 있습니다. `other` option을 사용하면 어떤 custom metadata tag든 render할 수 있습니다.
+
+[[CODE 62]]
+
+[[CODE 63]]
+
+같은 key를 가진 meta tag를 여러 개 생성하려면 array 값을 사용할 수 있습니다.
+
+[[CODE 64]]
+
+[[CODE 65]]
+
+### Types
+
+`Metadata` type을 사용해 metadata에 type safety를 더할 수 있습니다. IDE에서 [built-in TypeScript plugin](/docs/app/api-reference/config/typescript)을 사용하고 있다면 type을 직접 추가할 필요는 없지만, 원한다면 명시적으로 추가할 수도 있습니다.
+
+#### `metadata` object
+
+[[CODE 66]]
+
+#### `generateMetadata` function || `generateMetadata` 함수
+
+##### Regular function || 일반 함수
+
+[[CODE 67]]
+
+##### Async function || Async 함수
+
+[[CODE 68]]
+
+##### With segment props || segment props와 함께
+
+[[CODE 69]]
+
+##### With parent metadata || parent metadata와 함께
+
+[[CODE 70]]
+
+##### JavaScript Projects || JavaScript 프로젝트
+
+JavaScript 프로젝트에서는 JSDoc을 사용해 type safety를 더할 수 있습니다.
+
+[[CODE 71]]
+
+### Unsupported Metadata || 지원되지 않는 Metadata
+
+다음 metadata type은 현재 built-in 지원이 없습니다. 하지만 layout이나 page 자체에서 직접 render할 수 있습니다.
+
+| Metadata                      | Recommendation                                                                                                                                                                                                                               |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `&lt;meta http-equiv=&quot;...&quot;&gt;`     | [`redirect()`](/docs/app/api-reference/functions/redirect), [Proxy](/docs/app/api-reference/file-conventions/proxy#nextresponse), [Security Headers](/docs/app/api-reference/config/next-config-js/headers)를 통해 적절한 HTTP Header를 사용하세요. |
+| `&lt;base&gt;`                      | layout이나 page 자체에서 tag를 render하세요.                                                                                                                                                                                                 |
+| `&lt;noscript&gt;`                  | layout이나 page 자체에서 tag를 render하세요.                                                                                                                                                                                                 |
+| `&lt;style&gt;`                     | [Next.js에서의 styling](/docs/app/getting-started/css)에 대해 더 알아보세요.                                                                                                                                                                        |
+| `&lt;script&gt;`                    | [script 사용하기](/docs/app/guides/scripts)에 대해 더 알아보세요.                                                                                                                                                                                  |
+| `&lt;link rel=&quot;stylesheet&quot; /&gt;`   | layout이나 page 자체에서 stylesheet를 직접 `import`하세요.                                                                                                                                                                                  |
+| `&lt;link rel=&quot;preload&quot; /&gt;`      | [ReactDOM preload method](#link-relpreload)를 사용하세요.                                                                                                                                                                                              |
+| `&lt;link rel=&quot;preconnect&quot; /&gt;`   | [ReactDOM preconnect method](#link-relpreconnect)를 사용하세요.                                                                                                                                                                                        |
+| `&lt;link rel=&quot;dns-prefetch&quot; /&gt;` | [ReactDOM prefetchDNS method](#link-reldns-prefetch)를 사용하세요.                                                                                                                                                                                     |
+
+### Resource hints
+
+`&lt;link&gt;` element에는 외부 resource가 필요할 가능성이 높다는 것을 브라우저에 hint로 알려 주는 여러 `rel` keyword가 있습니다. 브라우저는 이 정보를 이용해 keyword에 따라 preloading 최적화를 적용합니다.
+
+Metadata API는 이 hint들을 직접 지원하지 않지만, 새로운 [`ReactDOM` method](https://github.com/facebook/react/pull/26237)를 사용해 문서의 `&lt;head&gt;`에 안전하게 삽입할 수 있습니다.
+
+[[CODE 72]]
+
+#### `&lt;link rel=&quot;preload&quot;&gt;`
+
+페이지 rendering(브라우저) lifecycle 초기에 resource 로딩을 시작합니다. [MDN Docs](https://developer.mozilla.org/docs/Web/HTML/Attributes/rel/preload).
+
+[[CODE 73]]
+
+[[CODE 74]]
+
+##### `&lt;link rel=&quot;preconnect&quot;&gt;`
+
+origin에 대한 연결을 미리 시작합니다. [MDN Docs](https://developer.mozilla.org/docs/Web/HTML/Attributes/rel/preconnect).
+
+[[CODE 75]]
+
+[[CODE 76]]
+
+#### `&lt;link rel=&quot;dns-prefetch&quot;&gt;`
+
+resource가 request되기 전에 domain name을 미리 resolve하려고 시도합니다. [MDN Docs](https://developer.mozilla.org/docs/Web/HTML/Attributes/rel/dns-prefetch).
+
+[[CODE 77]]
+
+[[CODE 78]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - 이 method들은 현재 Client Component에서만 지원되며, Client Component도 initial page load 시에는 Server Side Rendering됩니다.
+&gt; - `next/font`, `next/image`, `next/script` 같은 Next.js 내장 기능은 관련 resource hint를 자동으로 처리합니다.
+
+## Behavior || 동작
+
+### Default Fields || 기본 field
+
+route가 metadata를 정의하지 않더라도 항상 추가되는 기본 `meta` tag가 두 개 있습니다:
+
+- [meta charset tag](https://developer.mozilla.org/docs/Web/HTML/Element/meta#attr-charset)는 웹사이트의 character encoding을 설정합니다.
+- [meta viewport tag](https://developer.mozilla.org/docs/Web/HTML/Viewport_meta_tag)는 다양한 기기에 맞게 웹사이트의 viewport 너비와 배율을 설정합니다.
+
+[[CODE 79]]
+
+&gt; **Good to know**: 기본 [`viewport`](/docs/app/api-reference/functions/generate-metadata#viewport) meta tag를 덮어쓸 수 있습니다.
+
+### Streaming metadata
+
+Streaming metadata를 사용하면 Next.js가 `generateMetadata`가 완료되기를 기다리지 않고 initial UI를 render해 브라우저로 보낼 수 있습니다.
+
+`generateMetadata`가 resolve되면 결과 metadata tag가 `&lt;body&gt;` tag에 추가됩니다. JavaScript를 실행하고 전체 DOM을 검사하는 bot(예: `Googlebot`)이 metadata를 올바르게 해석한다는 것을 확인했습니다.
+
+JavaScript를 실행할 수 없는 **HTML-limited bot**(예: `facebookexternalhit`)에 대해서는 metadata가 계속 페이지 rendering을 block합니다. 결과 metadata는 `&lt;head&gt;` tag에서 사용할 수 있습니다.
+
+Next.js는 User Agent header를 보고 **HTML-limited bot**을 자동으로 감지합니다. Next.js config 파일의 [`htmlLimitedBots`](/docs/app/api-reference/config/next-config-js/htmlLimitedBots) option을 사용해 기본 [User Agent 목록](https://github.com/vercel/next.js/blob/canary/packages/next/src/shared/lib/router/utils/html-bots.ts)을 override할 수 있습니다.
+
+streaming metadata를 완전히 비활성화하려면:
+
+[[CODE 80]]
+
+Streaming metadata는 [TTFB](https://developer.mozilla.org/docs/Glossary/Time_to_first_byte)를 줄여 체감 성능을 높이고, [LCP](https://developer.mozilla.org/docs/Glossary/Largest_contentful_paint) 시간을 낮추는 데 도움이 될 수 있습니다.
+
+`htmlLimitedBots`를 override하면 response 시간이 길어질 수 있습니다. Streaming metadata는 고급 기능이며, 대부분의 경우 기본값으로 충분합니다.
+
+### With Cache Components || Cache Components와 함께 사용하기
+
+[Cache Components](/docs/app/getting-started/caching)가 활성화되어 있으면 `generateMetadata`는 다른 component와 같은 규칙을 따릅니다. metadata가 runtime 데이터(`cookies()`, `headers()`, `params`, `searchParams`)에 접근하거나 cache되지 않은 data fetching을 수행하면 request time으로 미뤄집니다.
+
+Next.js가 이를 처리하는 방식은 페이지의 나머지 부분에 따라 달라집니다:
+
+- **다른 부분도 request time으로 미뤄지는 경우**: prerendering이 static shell을 생성하고, metadata는 다른 지연된 콘텐츠와 함께 stream됩니다.
+- **page나 layout이 그 외에는 완전히 prerender 가능한 경우**: Next.js는 명시적인 선택을 요구합니다. 가능하면 데이터를 cache하거나, 지연된 rendering이 의도된 것임을 알려야 합니다.
+
+페이지의 나머지 부분이 완전히 prerender 가능한데 metadata만 runtime에 stream하는 경우는 흔하지 않습니다. 이 동작이 의도된 것인지 확인하기 위해, 어떤 page나 layout을 처리해야 하는지 알려 주는 error가 발생합니다.
+
+이를 해결하는 방법은 두 가지입니다. metadata가 외부 데이터에는 의존하지만 runtime 데이터에는 의존하지 않는다면 `use cache`를 사용하세요:
+
+[[CODE 81]]
+
+metadata가 정말로 runtime 데이터를 필요로 한다면 페이지에 dynamic marker component를 추가하세요:
+
+[[CODE 82]]
+
+`DynamicMarker` component는 아무것도 render하지 않지만, 페이지에 의도된 dynamic 콘텐츠가 있다는 것을 Next.js에 알려 줍니다. 이를 Suspense로 감싸면 static 콘텐츠는 여전히 정상적으로 prerender됩니다.
+
+전체 해결 방법과 trade-off는 [Next.js encountered runtime data in `generateMetadata()`](/docs/messages/blocking-prerender-metadata-runtime)와 [Next.js encountered uncached data in `generateMetadata()`](/docs/messages/blocking-prerender-metadata-dynamic)를 참고하세요.
+
+### Ordering || 순서
+
+Metadata는 root segment부터 최종 `page.js` segment에 가장 가까운 segment까지 순서대로 평가됩니다. 예를 들면 다음과 같습니다:
+
+1. `app/layout.tsx` (Root Layout)
+2. `app/blog/layout.tsx` (중첩된 Blog Layout)
+3. `app/blog/[slug]/page.tsx` (Blog Page)
+
+### Merging || 병합
+
+[평가 순서](#ordering)에 따라, 같은 route의 여러 segment에서 export된 Metadata object는 **shallow**하게 병합되어 route의 최종 metadata 결과가 됩니다. 중복된 key는 순서에 따라 **대체됩니다**.
+
+즉, 앞선 segment에서 정의한 [`openGraph`](/docs/app/api-reference/functions/generate-metadata#opengraph)나 [`robots`](/docs/app/api-reference/functions/generate-metadata#robots) 같은 중첩 field를 가진 metadata는 마지막으로 이를 정의한 segment에 의해 **덮어써집니다**.
+
+#### Overwriting fields || field 덮어쓰기
+
+[[CODE 83]]
+
+[[CODE 84]]
+
+위 예제에서:
+
+- `app/layout.js`의 `title`은 `app/blog/page.js`의 `title`로 **대체됩니다**.
+- `app/blog/page.js`가 `openGraph` metadata를 설정하므로 `app/layout.js`의 모든 `openGraph` field가 `app/blog/page.js`에서 **대체됩니다**. `openGraph.description`이 없다는 점에 주목하세요.
+
+일부 중첩 field는 segment 간에 공유하고 나머지는 덮어쓰고 싶다면, 공유할 field를 별도 변수로 분리할 수 있습니다:
+
+[[CODE 85]]
+
+[[CODE 86]]
+
+[[CODE 87]]
+
+위 예제에서 OG 이미지는 `app/layout.js`와 `app/about/page.js` 간에 공유되지만 title은 서로 다릅니다.
+
+#### Inheriting fields || field 상속
+
+[[CODE 88]]
+
+[[CODE 89]]
+
+**Notes**
+
+- `app/layout.js`의 `title`은 `app/about/page.js`의 `title`로 **대체됩니다**.
+- `app/about/page.js`가 `openGraph` metadata를 설정하지 않으므로 `app/layout.js`의 모든 `openGraph` field가 `app/about/page.js`에 **상속됩니다**.
+
+## Version History || 버전 기록
+
+| Version   | Changes                                                                                                                                                 |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `v15.2.0` | `generateMetadata`에 streaming 지원이 도입되었습니다.                                                                                                     |
+| `v14.0.0` | `viewport`, `themeColor`, `colorScheme`이 deprecated되고 [`viewport` configuration](/docs/app/api-reference/functions/generate-viewport)으로 대체되었습니다. |
+| `v13.2.0` | `metadata`와 `generateMetadata`가 도입되었습니다.                                                                                                           |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

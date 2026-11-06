@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Using a CDN with Next.js (Next.js에서 CDN 사용하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/cdn-caching" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/cdn-caching" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/cdn-caching.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Using a CDN with Next.js<span class="sub">Next.js에서 CDN 사용하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js는 CDN이 edge에서 response를 cache하는 데 사용할 수 있는 표준 <code>Cache-Control</code> header를 설정합니다. 이 페이지에서는 현재 동작하는 것, CDN caching이 까다로운 부분, 그리고 custom header 의존성을 없애는 방향을 다룹니다.</p><div class="en-orig"><p>Next.js sets standard <code>Cache-Control</code> headers that CDNs can use to cache responses at the edge. This page covers what works today, where CDN caching is challenging, and the direction toward eliminating custom-header dependencies.</p></div>
+<h2 class="sec" id="what-works-today"><a class="anchor" href="#what-works-today">What Works Today<span class="ko">현재 동작하는 것</span></a></h2>
+<h3 class="sec" id="cache-control-headers"><a class="anchor" href="#cache-control-headers">Cache-Control headers<span class="ko">Cache-Control header</span></a></h3>
+<p>Next.js는 각 route의 rendering 전략에 따라 <code>Cache-Control</code> header를 설정합니다:</p><div class="en-orig"><p>Next.js sets <code>Cache-Control</code> headers based on the rendering strategy of each route:</p></div>
+<ul>
+<li><strong>Static page</strong> (revalidation 없음): <code>s-maxage=31536000</code> (1년)</li>
+<li><strong>ISR page</strong> (시간 기반 revalidation): <code>s-maxage={revalidate}, stale-while-revalidate={expire - revalidate}</code>. 기본 <code>expire</code>는 1년이므로 기본적으로 response header에 <code>stale-while-revalidate</code>가 포함됩니다. <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a>로 customize할 수 있습니다.</li>
+<li><strong>Dynamic page</strong> (caching 없음): <code>private, no-cache, no-store, max-age=0, must-revalidate</code></li>
+</ul><div class="en-orig"><ul>
+<li><strong>Static pages</strong> (no revalidation): <code>s-maxage=31536000</code> (one year)</li>
+<li><strong>ISR pages</strong> (time-based revalidation): <code>s-maxage={revalidate}, stale-while-revalidate={expire - revalidate}</code>. The default <code>expire</code> is one year, so <code>stale-while-revalidate</code> is included in the response header by default. You can customize this with <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a>.</li>
+<li><strong>Dynamic pages</strong> (no caching): <code>private, no-cache, no-store, max-age=0, must-revalidate</code></li>
+</ul></div>
+<p><code>s-maxage</code>와 <code>stale-while-revalidate</code>를 따르는 CDN은 static page와 ISR page를 edge에서 cache할 수 있습니다. 하지만 CDN 수준의 caching만으로는 on-demand revalidation(<a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag()</code></a> / <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath()</code></a>)을 지원하지 않습니다. 이 호출들은 Next.js server cache를 invalidate하지만, CDN은 <code>s-maxage</code> TTL이 만료될 때까지 cache된 사본을 계속 제공합니다. on-demand revalidation을 CDN까지 전파하려면 revalidation 호출과 함께 CDN purge를 trigger하세요. 일반적인 패턴은 <code>revalidateTag()</code>/<code>revalidatePath()</code>를 호출해 Next.js server cache를 invalidate한 다음, 영향을 받는 key(HTML과 RSC variant 모두 포함)에 대해 CDN purge API를 호출하는 것입니다.</p><div class="en-orig"><p>CDNs that respect <code>s-maxage</code> and <code>stale-while-revalidate</code> can cache static and ISR pages at the edge. However, CDN-level caching alone does not support on-demand revalidation (<a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag()</code></a> / <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath()</code></a>): those calls invalidate the Next.js server cache, but the CDN will continue serving its cached copy until the <code>s-maxage</code> TTL expires. To propagate on-demand revalidation to the CDN, trigger CDN purges alongside your revalidation call. A common pattern is: call <code>revalidateTag()</code>/<code>revalidatePath()</code> to invalidate the Next.js server cache, then call your CDN purge API for the affected keys (including both HTML and RSC variants).</p></div>
+<h3 class="sec" id="static-assets"><a class="anchor" href="#static-assets">Static assets<span class="ko">Static asset</span></a></h3>
+<p><code>/_next/static/</code>에서 제공되는 static asset(JavaScript, CSS, 이미지, font)은 파일 이름에 content hash가 들어 있고, 1년짜리 <code>max-age</code>와 <code>immutable</code> directive를 가집니다: <code>public, max-age=31536000, immutable</code></p><div class="en-orig"><p>Static assets (JavaScript, CSS, images, fonts) served from <code>/_next/static/</code> include content hashes in their filenames and have a 1 year <code>max-age</code> and <code>immutable</code> directive: <code>public, max-age=31536000, immutable</code></p></div>
+<p><a href="app-api-reference-config-next-config-js-assetPrefix.html"><code>assetPrefix</code></a>를 사용하면 다른 domain이나 CDN origin에서 static asset을 제공할 수 있습니다.</p><div class="en-orig"><p>You can use <a href="app-api-reference-config-next-config-js-assetPrefix.html"><code>assetPrefix</code></a> to serve static assets from a different domain or CDN origin.</p></div>
+<h3 class="sec" id="static-prefetches-ppr-enabled-routes"><a class="anchor" href="#static-prefetches-ppr-enabled-routes">Static prefetches (PPR-enabled routes)<span class="ko">Static prefetch (PPR이 활성화된 route)</span></a></h3>
+<p>route에 Partial Prerendering이 활성화되어 있고 <code>next-router-prefetch</code> header가 설정되어 있으면(static prefetch임을 나타냄), response는 결정적(deterministic)입니다. 즉, client의 router state와 관계없이 같은 prerender된 콘텐츠를 반환합니다. 이런 request에서는 <code>next-router-state-tree</code> header를 parse하지 않으므로 response에 영향을 주지 않습니다.</p><div class="en-orig"><p>When a route has Partial Prerendering enabled and the <code>next-router-prefetch</code> header is set (indicating a static prefetch), the response is deterministic: it returns the same prerendered content regardless of the client's router state. The <code>next-router-state-tree</code> header is not parsed for these requests, so it does not affect the response.</p></div>
+<p>PPR이 활성화된 route에서 CDN은 다음 조건을 만족하면 static prefetch response를 cache할 수 있습니다:</p><div class="en-orig"><p>For PPR-enabled routes, a CDN can cache static prefetch responses if it:</p></div>
+<ol>
+<li>cache key에 <code>_rsc</code> search parameter를 포함합니다(prefetch variant와 HTML response를 구분하기 위해).</li>
+<li>Next.js가 response에 설정한 <code>Cache-Control</code> header를 따릅니다.</li>
+</ol><div class="en-orig"><ol>
+<li>Includes the <code>_rsc</code> search parameter in the cache key (to distinguish prefetch variants from HTML responses).</li>
+<li>Respects the <code>Cache-Control</code> headers Next.js sets on the response.</li>
+</ol></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>PPR이 없는 route에서는 prefetch request 중에 어떤 segment를 포함할지 결정하기 위해 <code>next-router-state-tree</code> header를 읽는데, 이 header가 현재 router state를 전달하므로 cache <code>vary</code>가 늘어납니다. Cache Components가 활성화되어 있으면 segment 수준 prefetch는 이미 pathname 기반 route(예: <code>/page.segments/_tree.segment.rsc</code>)를 사용하며, CDN은 표준 pathname 기반 cache key로 이를 cache할 수 있습니다.</p><div class="en-orig"><p>For routes without PPR, the <code>next-router-state-tree</code> header is read during prefetch requests to determine which segments to include, which increases cache <code>vary</code> as it passes the current router state. When Cache Components is enabled, segment-level prefetches already use pathname-based routes (for example, <code>/page.segments/_tree.segment.rsc</code>), and CDNs can cache these with standard pathname-based cache keys.</p></div></div></div>
+<h2 class="sec" id="where-cdn-caching-is-challenging"><a class="anchor" href="#where-cdn-caching-is-challenging">Where CDN Caching Is Challenging<span class="ko">CDN caching이 까다로운 부분</span></a></h2>
+<p>App Router response는 여러 custom request header에 따라 달라질 수 있습니다. Next.js는 response에 <code>Vary</code> header를 설정해 CDN에 이를 알립니다:</p><div class="en-orig"><p>App Router responses can vary based on several custom request headers. Next.js sets a <code>Vary</code> header on responses to signal this to CDNs:</p></div>
+<ul>
+<li><code>rsc</code> — request가 HTML 대신 React Server Components(RSC) payload를 반환해야 하는지 여부</li>
+<li><code>next-router-state-tree</code> — client의 현재 router state로, dynamic navigation 중 대상 segment 업데이트에 사용됨</li>
+<li><code>next-router-prefetch</code> — prefetch request인지 여부</li>
+<li><code>next-router-segment-prefetch</code> — prefetch되는 특정 segment</li>
+<li><code>next-url</code> — <a href="app-api-reference-file-conventions-intercepting-routes.html">interception route</a>를 사용하는 route에만 추가되며, intercept되는 URL을 전달함</li>
+</ul><div class="en-orig"><ul>
+<li><code>rsc</code> — whether the request should return a React Server Components (RSC) payload instead of HTML</li>
+<li><code>next-router-state-tree</code> — the client's current router state, used for targeted segment updates during dynamic navigations</li>
+<li><code>next-router-prefetch</code> — whether this is a prefetch request</li>
+<li><code>next-router-segment-prefetch</code> — the specific segment being prefetched</li>
+<li><code>next-url</code> — added only for routes that use <a href="app-api-reference-file-conventions-intercepting-routes.html">interception routes</a>, carries the URL being intercepted</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="app-api-reference-file-conventions-proxy.html"><code>proxy.js</code></a>(이전 이름 Middleware)는 CDN cache보다 먼저 실행되어야 auth, redirect, rewrite의 source of truth로 남을 수 있습니다. deployment에서 <code>proxy.js</code>가 CDN 뒤에 위치한다면, <code>proxy.js</code>의 결정에 의존하는 route는 caching을 우회하도록 cache layer를 설정하세요.</p><div class="en-orig"><p><a href="app-api-reference-file-conventions-proxy.html"><code>proxy.js</code></a> (previously Middleware) should run before the CDN cache so it remains the source of truth for auth, redirects, and rewrites. If your deployment places <code>proxy.js</code> behind the CDN, configure the cache layer to bypass caching for routes that depend on <code>proxy.js</code> decisions.</p></div></div></div>
+<p>많은 CDN은 추가 설정 없이는 <code>Vary</code>를 지원하지 않습니다. Next.js는 이 문제를 <code>_rsc</code> search parameter로 해결합니다. 이 값은 관련 request header 값들의 hash로, cache-key 역할을 해서 서로 다른 response variant가 서로 다른 cache key를 갖도록 보장합니다. 덕분에 <code>Vary</code>를 무시하는 CDN에서도 올바른 response가 보장됩니다.</p><div class="en-orig"><p>Many CDNs don't support <code>Vary</code> without additional configuration. Next.js addresses this with the <code>_rsc</code> search parameter: a hash of the relevant request header values that acts as a cache-key, ensuring different response variants get different cache keys. This ensures correct responses even on CDNs that ignore <code>Vary</code>.</p></div>
+<h2 class="sec" id="handling-headers-at-the-cdn"><a class="anchor" href="#handling-headers-at-the-cdn">Handling Headers at the CDN<span class="ko">CDN에서 header 처리하기</span></a></h2>
+<h3 class="sec" id="what-you-can-safely-ignore"><a class="anchor" href="#what-you-can-safely-ignore">What you can safely ignore<span class="ko">안전하게 무시할 수 있는 것</span></a></h3>
+<p>다음 header는 특정 경우에 생략해도 protocol error가 발생하지 않습니다. server는 여전히 parse 가능한 response를 반환하지만, response가 더 커지거나 특정 navigation에 덜 최적화될 수 있습니다:</p><div class="en-orig"><p>These headers can be omitted in specific cases without causing protocol errors. The server still returns a parseable response, but it may be larger or less targeted to the specific navigation:</p></div>
+<p><strong><code>next-router-state-tree</code></strong>: prefetch가 아닌 RSC request에서 생략하면, server는 대상 segment 업데이트 대신 전체 payload를 반환합니다.</p><div class="en-orig"><p><strong><code>next-router-state-tree</code></strong>: when omitted on non-prefetch RSC requests, the server returns a full payload instead of a targeted segment update.</p></div>
+<p><strong><code>next-router-segment-prefetch</code></strong>: prefetch request에서 생략하면, server는 segment별 payload 대신 더 넓은 범위의 prefetch payload로 fallback합니다.</p><div class="en-orig"><p><strong><code>next-router-segment-prefetch</code></strong>: when omitted on prefetch requests, the server falls back to a broader prefetch payload instead of a segment-specific one.</p></div>
+<p><strong><code>next-url</code></strong>: <a href="app-api-reference-file-conventions-intercepting-routes.html">interception route</a>에서 referring page에 따라 response를 다르게 하기 위해 사용됩니다. 생략하면 server가 어떤 원래 path와 match해야 할지 알 수 없으므로 interception route가 지원되지 않습니다. <code>next-url</code>이 생략되면 일반 navigation에 대한 response가 반환되어, 사용자는 intercept된 대상 page 대신 대상 page를 보게 됩니다.</p><div class="en-orig"><p><strong><code>next-url</code></strong>: used for <a href="app-api-reference-file-conventions-intercepting-routes.html">interception routes</a> to vary the response based on the referring page. If omitted, interception routes are not supported as the server doesn't know what original path to match against. The response returned is for regular navigation when <code>next-url</code> is omitted: the user sees the target page instead of the intercepted target page.</p></div>
+<h3 class="sec" id="what-you-must-preserve"><a class="anchor" href="#what-you-must-preserve">What you must preserve<span class="ko">반드시 유지해야 하는 것</span></a></h3>
+<p><strong><code>rsc</code> header</strong>는 반드시 client에서 server로 전달되어야 합니다. 이 header는 server에 HTML 대신 RSC payload를 반환하라고 알려 줍니다. CDN이 이 header를 제거하면, client-side router가 RSC 데이터를 기대하는데 server가 HTML을 반환하게 되어 client-side navigation이 깨지고 대신 브라우저 navigation이 발생합니다. <code>Vary</code> header와 <code>_rsc</code> parameter는 바로 CDN이 RSC request에 cache된 HTML response를 제공하는 것(또는 그 반대)을 막기 위해 존재합니다.</p><div class="en-orig"><p><strong>The <code>rsc</code> header</strong> must be forwarded from the client to the server. This header tells the server to return an RSC payload instead of HTML. If a CDN strips it, the server returns HTML when the client-side router expects RSC data, which breaks client-side navigation, causing browser navigations instead. The <code>Vary</code> header and <code>_rsc</code> parameter exist specifically to prevent CDNs from serving a cached HTML response to an RSC request (or vice versa).</p></div>
+<p><strong><code>next-router-prefetch</code>가 있으면 prefetch header와 <code>_rsc</code> search parameter를 모두 유지하세요.</strong> prefetch 흐름에서 <code>_rsc</code>는 필수 cache-busting 구분자이므로 반드시 있어야 하는 값으로 취급해야 합니다.</p><div class="en-orig"><p><strong>When <code>next-router-prefetch</code> is present, preserve both the prefetch header and the <code>_rsc</code> search parameter.</strong> For prefetch flows, <code>_rsc</code> is a required cache-busting discriminator and should be treated as mandatory.</p></div>
+<p><strong><code>_rsc</code> search parameter</strong>는 반드시 cache key에 포함되어야 합니다. 이 값은 response variant(HTML vs. RSC, 서로 다른 prefetch 유형)를 구분합니다. 일부 CDN은 기본적으로 cache key에서 query parameter를 제거하므로, CDN이 그렇게 하지 않도록 확인하세요. 기본적으로 RSC request가 올바른 <code>_rsc</code> 값 없이 도착하면, server는 올바른 hash가 붙은 URL로 <strong>307 redirect</strong> 응답을 보냅니다. 이 동작은 <code>experimental.validateRSCRequestHeaders</code>를 <code>false</code>로 설정해 끌 수 있습니다. CDN은 이 redirect를 따라가야 합니다. upstream에서 hash를 계산하는 플랫폼은 추가 round trip을 피하기 위해 request를 전달하기 전에 올바른 <code>_rsc</code>를 포함하도록 rewrite할 수 있습니다.</p><div class="en-orig"><p><strong>The <code>_rsc</code> search parameter</strong> must be included in the cache key. It distinguishes response variants (HTML vs. RSC, different prefetch types). Ensure your CDN does not strip query parameters from cache keys, as some CDNs do this by default. By default, when an RSC request arrives without the correct <code>_rsc</code> value, the server responds with a <strong>307 redirect</strong> to the URL with the correct hash. This behavior can be disabled by setting <code>experimental.validateRSCRequestHeaders</code> to <code>false</code>. CDNs should follow this redirect. Platforms that compute the hash upstream can rewrite requests to include the correct <code>_rsc</code> before forwarding to avoid an extra round trip.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>현재는 static prefetch 중에도 <code>next-url</code>이 <code>_rsc</code> hash에 포함됩니다. 따라서 현재 방식에서는 cache miss가 발생할 위험 없이 이 header를 안전하게 무시할 수 없습니다. 아래에서 설명하는 pathname 기반 방향이 이 공백을 해결합니다.</p><div class="en-orig"><p>Today, <code>next-url</code> is included in the <code>_rsc</code> hash even during static prefetches. This means you cannot safely ignore it under the current scheme without potentially getting cache misses. The pathname-based direction described below resolves this gap.</p></div></div></div>
+<h2 class="sec" id="direction-pathname-based-cache-keying"><a class="anchor" href="#direction-pathname-based-cache-keying">Direction: Pathname-Based Cache Keying<span class="ko">방향: Pathname 기반 Cache Keying</span></a></h2>
+<p>Next.js 팀은 cache에 영향을 주는 모든 입력을 URL pathname으로 옮기는 작업을 진행하고 있습니다. 이렇게 하면 custom header에 대한 <code>Vary</code>가 필요 없어지고 <code>_rsc</code> search parameter도 제거됩니다. 이는 위에서 설명한 CDN caching 문제를 해결합니다.</p><div class="en-orig"><p>The Next.js team is working on moving all cache-affecting inputs into the URL pathname, eliminating the need for <code>Vary</code> on custom headers and removing the <code>_rsc</code> search parameter. This resolves the CDN caching challenges described above.</p></div>
+<h3 class="sec" id="how-it-works"><a class="anchor" href="#how-it-works">How it works<span class="ko">동작 방식</span></a></h3>
+<p>이 접근 방식은 <a href="app-guides-static-exports.html"><code>output: &#x27;export&#x27;</code></a>와 segment prefetch가 이미 사용하고 있는 routing 방식을 확장합니다. pathname의 파일 확장자가 response 유형을 식별합니다:</p><div class="en-orig"><p>The approach extends the routing scheme that <a href="app-guides-static-exports.html"><code>output: &#x27;export&#x27;</code></a> and segment prefetches already use today. File extensions in the pathname identify the response type:</p></div>
+<ul>
+<li><strong>Full page RSC</strong>: <code>/my/page.rsc</code>는 page 전체에 대한 RSC payload를 반환합니다</li>
+<li><strong>Segment RSC</strong>: <code>/my/page.segments/path/to/segment.segment.rsc</code>는 특정 segment에 대한 RSC payload를 반환합니다</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Full page RSC</strong>: <code>/my/page.rsc</code> returns the RSC payload for the entire page</li>
+<li><strong>Segment RSC</strong>: <code>/my/page.segments/path/to/segment.segment.rsc</code> returns the RSC payload for a specific segment</li>
+</ul></div>
+<p>이 모델에서는:</p><div class="en-orig"><p>Under this model:</p></div>
+<ul>
+<li><strong>pathname이 cache key를 결정합니다.</strong> pathname에 있는 모든 것이 어떤 response variant가 반환될지에 영향을 줍니다.</li>
+<li><strong>search parameter는 안전하게 버릴 수 있으며</strong>, 반환되는 response에 영향을 주지 않습니다.</li>
+<li><strong>표준 HTTP cache header</strong>(<code>Cache-Control</code>, <code>max-age</code> 등)는 평소처럼 적용됩니다.</li>
+<li>CDN에서 <strong><code>Vary</code> 지원이 필요 없습니다</strong>.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>The pathname determines the cache key.</strong> Anything in the pathname affects which response variant is returned.</li>
+<li><strong>Search parameters can be safely dropped</strong> without affecting returned responses.</li>
+<li><strong>Standard HTTP cache headers</strong> (<code>Cache-Control</code>, <code>max-age</code>, etc.) are respected as usual.</li>
+<li><strong>No <code>Vary</code> support needed</strong> from the CDN.</li>
+</ul></div>
+<p>CDN은 pathname을 cache key로 사용하고, search parameter를 무시하며, 표준 <code>Cache-Control</code> header를 따르는 방식으로 Next.js response를 cache하게 됩니다. <code>Vary</code>를 이해하거나, custom header를 검사하거나, edge logic을 작성할 필요가 없습니다.</p><div class="en-orig"><p>A CDN would cache Next.js responses by using the pathname as the cache key, ignoring search parameters, and respecting standard <code>Cache-Control</code> headers. No need to understand <code>Vary</code>, inspect custom headers, or program edge logic.</p></div>
+<h3 class="sec" id="what-changes-for-interception-routes"><a class="anchor" href="#what-changes-for-interception-routes">What changes for interception routes<span class="ko">Interception route에서 달라지는 점</span></a></h3>
+<p>현재 방식에서는 <code>next-url</code>이 <code>_rsc</code> hash에 반영되므로, 이를 버리면 cache miss가 발생합니다. pathname 기반 방식에서는 interception variability가 (pathname이 아닌) search parameter에 encode됩니다:</p><div class="en-orig"><p>Under the current scheme, <code>next-url</code> contributes to the <code>_rsc</code> hash, so dropping it causes cache misses. Under the pathname-based scheme, interception variability would be encoded in a search parameter (not the pathname):</p></div>
+<ul>
+<li>CDN이 search param을 유지하면 interception이 올바르게 동작합니다.</li>
+<li>CDN이 search param을 버리면 interception이 지원되지 않습니다. 이 경우 intercept되지 않은 page로 자연스럽게 degrade되며, client-side navigation은 깨지지 않습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>If a CDN preserves search params, interception works correctly.</li>
+<li>If a CDN drops search params, interception is not supported. It would gracefully degrade to the non-intercepted page, client-side navigations won't break.</li>
+</ul></div>
+<p>따라서 interception route 지원은 필수 요구 사항이 아니라 CDN이 opt-in하는 기능이 됩니다.</p><div class="en-orig"><p>This makes interception route support an opt-in CDN capability rather than a requirement.</p></div>
+<h3 class="sec" id="current-status"><a class="anchor" href="#current-status">Current status<span class="ko">현재 상태</span></a></h3>
+<p>이 방향은 codebase에서 이미 동작하고 있는 패턴(segment prefetch path, <code>output: &#x27;export&#x27;</code> mode)을 확장한 것입니다. 현재 활발하게 설계 중입니다.</p><div class="en-orig"><p>This direction extends patterns that are already operational in the codebase (segment prefetch paths, <code>output: &#x27;export&#x27;</code> mode). It is in active design.</p></div>
+<h2 class="sec" id="cdn-feature-compatibility"><a class="anchor" href="#cdn-feature-compatibility">CDN Feature Compatibility<span class="ko">CDN 기능 호환성</span></a></h2>
+<p>주요 CDN마다 사용할 수 있는 infrastructure primitive(edge compute, key-value storage, blob storage, PPR resuming)를 보여 주는 전체 표는 <a href="app-guides-deploying-to-platforms.html#cdn-infrastructure-compatibility">Deploying to Platforms</a>를 참고하세요.</p><div class="en-orig"><p>For a full table showing the infrastructure primitives available on every major CDN (edge compute, key-value storage, blob storage, PPR resuming), see <a href="app-guides-deploying-to-platforms.html#cdn-infrastructure-compatibility">Deploying to Platforms</a>.</p></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><p>관련 가이드와 reference.</p><div class="rgrid"><a class="rcard" href="app-guides-deploying-to-platforms.html"><div class="rt">Deploying Next.js to different platforms</div><div class="rk">다양한 플랫폼에 Next.js deploy하기</div><div class="rd">어떤 Next.js 기능에 특정 플랫폼 capability가 필요한지, 그리고 알맞은 deployment target을 고르는 방법을 이해합니다.</div></a><a class="rcard" href="app-guides-self-hosting.html"><div class="rt">How to self-host your Next.js application</div><div class="rk">Next.js 애플리케이션 self-hosting하기</div><div class="rd">Next.js 애플리케이션을 Node.js server, Docker image, 또는 static HTML 파일(static export)로 self-host하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-streaming.html"><div class="rt">Streaming</div><div class="rk">스트리밍</div><div class="rd">Next.js에서 streaming이 어떻게 동작하는지, 그리고 데이터가 준비되는 대로 UI를 점진적으로 render하는 데 이를 어떻게 활용하는지 알아봅니다.</div></a><a class="rcard" href="app-api-reference-config-next-config-js-assetPrefix.html"><div class="rt">assetPrefix</div><div class="rk">assetPrefix</div><div class="rd">assetPrefix config option을 사용해 CDN을 설정하는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/cdn-caching.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/cdn-caching" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-caching-without-cache-components.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Caching (Previous Model)</div><div class="ttl-ko">Caching과 Revalidating (이전 모델)</div></a>
+      <a href="app-guides-ci-build-caching.html" class="next"><div class="dir">다음 →</div><div class="ttl">CI Build Caching</div><div class="ttl-ko">CI build caching 설정하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/cdn-caching" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#what-works-today">What Works Today</a></li><li class="l3"><a href="#cache-control-headers">Cache-Control headers</a></li><li class="l3"><a href="#static-assets">Static assets</a></li><li class="l3"><a href="#static-prefetches-ppr-enabled-routes">Static prefetches (PPR-enabled routes)</a></li><li class="l2"><a href="#where-cdn-caching-is-challenging">Where CDN Caching Is Challenging</a></li><li class="l2"><a href="#handling-headers-at-the-cdn">Handling Headers at the CDN</a></li><li class="l3"><a href="#what-you-can-safely-ignore">What you can safely ignore</a></li><li class="l3"><a href="#what-you-must-preserve">What you must preserve</a></li><li class="l2"><a href="#direction-pathname-based-cache-keying">Direction: Pathname-Based Cache Keying</a></li><li class="l3"><a href="#how-it-works">How it works</a></li><li class="l3"><a href="#what-changes-for-interception-routes">What changes for interception routes</a></li><li class="l3"><a href="#current-status">Current status</a></li><li class="l2"><a href="#cdn-feature-compatibility">CDN Feature Compatibility</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js는 CDN이 edge에서 response를 cache하는 데 사용할 수 있는 표준 `Cache-Control` header를 설정합니다. 이 페이지에서는 현재 동작하는 것, CDN caching이 까다로운 부분, 그리고 custom header 의존성을 없애는 방향을 다룹니다.
+
+## What Works Today || 현재 동작하는 것
+
+### Cache-Control headers || Cache-Control header
+
+Next.js는 각 route의 rendering 전략에 따라 `Cache-Control` header를 설정합니다:
+
+- **Static page** (revalidation 없음): `s-maxage=31536000` (1년)
+- **ISR page** (시간 기반 revalidation): `s-maxage={revalidate}, stale-while-revalidate={expire - revalidate}`. 기본 `expire`는 1년이므로 기본적으로 response header에 `stale-while-revalidate`가 포함됩니다. [`cacheLife`](/docs/app/api-reference/functions/cacheLife)로 customize할 수 있습니다.
+- **Dynamic page** (caching 없음): `private, no-cache, no-store, max-age=0, must-revalidate`
+
+`s-maxage`와 `stale-while-revalidate`를 따르는 CDN은 static page와 ISR page를 edge에서 cache할 수 있습니다. 하지만 CDN 수준의 caching만으로는 on-demand revalidation([`revalidateTag()`](/docs/app/api-reference/functions/revalidateTag) / [`revalidatePath()`](/docs/app/api-reference/functions/revalidatePath))을 지원하지 않습니다. 이 호출들은 Next.js server cache를 invalidate하지만, CDN은 `s-maxage` TTL이 만료될 때까지 cache된 사본을 계속 제공합니다. on-demand revalidation을 CDN까지 전파하려면 revalidation 호출과 함께 CDN purge를 trigger하세요. 일반적인 패턴은 `revalidateTag()`/`revalidatePath()`를 호출해 Next.js server cache를 invalidate한 다음, 영향을 받는 key(HTML과 RSC variant 모두 포함)에 대해 CDN purge API를 호출하는 것입니다.
+
+### Static assets || Static asset
+
+`/_next/static/`에서 제공되는 static asset(JavaScript, CSS, 이미지, font)은 파일 이름에 content hash가 들어 있고, 1년짜리 `max-age`와 `immutable` directive를 가집니다: `public, max-age=31536000, immutable`
+
+[`assetPrefix`](/docs/app/api-reference/config/next-config-js/assetPrefix)를 사용하면 다른 domain이나 CDN origin에서 static asset을 제공할 수 있습니다.
+
+### Static prefetches (PPR-enabled routes) || Static prefetch (PPR이 활성화된 route)
+
+route에 Partial Prerendering이 활성화되어 있고 `next-router-prefetch` header가 설정되어 있으면(static prefetch임을 나타냄), response는 결정적(deterministic)입니다. 즉, client의 router state와 관계없이 같은 prerender된 콘텐츠를 반환합니다. 이런 request에서는 `next-router-state-tree` header를 parse하지 않으므로 response에 영향을 주지 않습니다.
+
+PPR이 활성화된 route에서 CDN은 다음 조건을 만족하면 static prefetch response를 cache할 수 있습니다:
+
+1. cache key에 `_rsc` search parameter를 포함합니다(prefetch variant와 HTML response를 구분하기 위해).
+2. Next.js가 response에 설정한 `Cache-Control` header를 따릅니다.
+
+&gt; **Good to know:** PPR이 없는 route에서는 prefetch request 중에 어떤 segment를 포함할지 결정하기 위해 `next-router-state-tree` header를 읽는데, 이 header가 현재 router state를 전달하므로 cache `vary`가 늘어납니다. Cache Components가 활성화되어 있으면 segment 수준 prefetch는 이미 pathname 기반 route(예: `/page.segments/_tree.segment.rsc`)를 사용하며, CDN은 표준 pathname 기반 cache key로 이를 cache할 수 있습니다.
+
+## Where CDN Caching Is Challenging || CDN caching이 까다로운 부분
+
+App Router response는 여러 custom request header에 따라 달라질 수 있습니다. Next.js는 response에 `Vary` header를 설정해 CDN에 이를 알립니다:
+
+- `rsc` — request가 HTML 대신 React Server Components(RSC) payload를 반환해야 하는지 여부
+- `next-router-state-tree` — client의 현재 router state로, dynamic navigation 중 대상 segment 업데이트에 사용됨
+- `next-router-prefetch` — prefetch request인지 여부
+- `next-router-segment-prefetch` — prefetch되는 특정 segment
+- `next-url` — [interception route](/docs/app/api-reference/file-conventions/intercepting-routes)를 사용하는 route에만 추가되며, intercept되는 URL을 전달함
+
+&gt; **Good to know:** [`proxy.js`](/docs/app/api-reference/file-conventions/proxy)(이전 이름 Middleware)는 CDN cache보다 먼저 실행되어야 auth, redirect, rewrite의 source of truth로 남을 수 있습니다. deployment에서 `proxy.js`가 CDN 뒤에 위치한다면, `proxy.js`의 결정에 의존하는 route는 caching을 우회하도록 cache layer를 설정하세요.
+
+많은 CDN은 추가 설정 없이는 `Vary`를 지원하지 않습니다. Next.js는 이 문제를 `_rsc` search parameter로 해결합니다. 이 값은 관련 request header 값들의 hash로, cache-key 역할을 해서 서로 다른 response variant가 서로 다른 cache key를 갖도록 보장합니다. 덕분에 `Vary`를 무시하는 CDN에서도 올바른 response가 보장됩니다.
+
+## Handling Headers at the CDN || CDN에서 header 처리하기
+
+### What you can safely ignore || 안전하게 무시할 수 있는 것
+
+다음 header는 특정 경우에 생략해도 protocol error가 발생하지 않습니다. server는 여전히 parse 가능한 response를 반환하지만, response가 더 커지거나 특정 navigation에 덜 최적화될 수 있습니다:
+
+**`next-router-state-tree`**: prefetch가 아닌 RSC request에서 생략하면, server는 대상 segment 업데이트 대신 전체 payload를 반환합니다.
+
+**`next-router-segment-prefetch`**: prefetch request에서 생략하면, server는 segment별 payload 대신 더 넓은 범위의 prefetch payload로 fallback합니다.
+
+**`next-url`**: [interception route](/docs/app/api-reference/file-conventions/intercepting-routes)에서 referring page에 따라 response를 다르게 하기 위해 사용됩니다. 생략하면 server가 어떤 원래 path와 match해야 할지 알 수 없으므로 interception route가 지원되지 않습니다. `next-url`이 생략되면 일반 navigation에 대한 response가 반환되어, 사용자는 intercept된 대상 page 대신 대상 page를 보게 됩니다.
+
+### What you must preserve || 반드시 유지해야 하는 것
+
+**`rsc` header**는 반드시 client에서 server로 전달되어야 합니다. 이 header는 server에 HTML 대신 RSC payload를 반환하라고 알려 줍니다. CDN이 이 header를 제거하면, client-side router가 RSC 데이터를 기대하는데 server가 HTML을 반환하게 되어 client-side navigation이 깨지고 대신 브라우저 navigation이 발생합니다. `Vary` header와 `_rsc` parameter는 바로 CDN이 RSC request에 cache된 HTML response를 제공하는 것(또는 그 반대)을 막기 위해 존재합니다.
+
+**`next-router-prefetch`가 있으면 prefetch header와 `_rsc` search parameter를 모두 유지하세요.** prefetch 흐름에서 `_rsc`는 필수 cache-busting 구분자이므로 반드시 있어야 하는 값으로 취급해야 합니다.
+
+**`_rsc` search parameter**는 반드시 cache key에 포함되어야 합니다. 이 값은 response variant(HTML vs. RSC, 서로 다른 prefetch 유형)를 구분합니다. 일부 CDN은 기본적으로 cache key에서 query parameter를 제거하므로, CDN이 그렇게 하지 않도록 확인하세요. 기본적으로 RSC request가 올바른 `_rsc` 값 없이 도착하면, server는 올바른 hash가 붙은 URL로 **307 redirect** 응답을 보냅니다. 이 동작은 `experimental.validateRSCRequestHeaders`를 `false`로 설정해 끌 수 있습니다. CDN은 이 redirect를 따라가야 합니다. upstream에서 hash를 계산하는 플랫폼은 추가 round trip을 피하기 위해 request를 전달하기 전에 올바른 `_rsc`를 포함하도록 rewrite할 수 있습니다.
+
+&gt; **Good to know:** 현재는 static prefetch 중에도 `next-url`이 `_rsc` hash에 포함됩니다. 따라서 현재 방식에서는 cache miss가 발생할 위험 없이 이 header를 안전하게 무시할 수 없습니다. 아래에서 설명하는 pathname 기반 방향이 이 공백을 해결합니다.
+
+## Direction: Pathname-Based Cache Keying || 방향: Pathname 기반 Cache Keying
+
+Next.js 팀은 cache에 영향을 주는 모든 입력을 URL pathname으로 옮기는 작업을 진행하고 있습니다. 이렇게 하면 custom header에 대한 `Vary`가 필요 없어지고 `_rsc` search parameter도 제거됩니다. 이는 위에서 설명한 CDN caching 문제를 해결합니다.
+
+### How it works || 동작 방식
+
+이 접근 방식은 [`output: &#x27;export&#x27;`](/docs/app/guides/static-exports)와 segment prefetch가 이미 사용하고 있는 routing 방식을 확장합니다. pathname의 파일 확장자가 response 유형을 식별합니다:
+
+- **Full page RSC**: `/my/page.rsc`는 page 전체에 대한 RSC payload를 반환합니다
+- **Segment RSC**: `/my/page.segments/path/to/segment.segment.rsc`는 특정 segment에 대한 RSC payload를 반환합니다
+
+이 모델에서는:
+
+- **pathname이 cache key를 결정합니다.** pathname에 있는 모든 것이 어떤 response variant가 반환될지에 영향을 줍니다.
+- **search parameter는 안전하게 버릴 수 있으며**, 반환되는 response에 영향을 주지 않습니다.
+- **표준 HTTP cache header**(`Cache-Control`, `max-age` 등)는 평소처럼 적용됩니다.
+- CDN에서 **`Vary` 지원이 필요 없습니다**.
+
+CDN은 pathname을 cache key로 사용하고, search parameter를 무시하며, 표준 `Cache-Control` header를 따르는 방식으로 Next.js response를 cache하게 됩니다. `Vary`를 이해하거나, custom header를 검사하거나, edge logic을 작성할 필요가 없습니다.
+
+### What changes for interception routes || Interception route에서 달라지는 점
+
+현재 방식에서는 `next-url`이 `_rsc` hash에 반영되므로, 이를 버리면 cache miss가 발생합니다. pathname 기반 방식에서는 interception variability가 (pathname이 아닌) search parameter에 encode됩니다:
+
+- CDN이 search param을 유지하면 interception이 올바르게 동작합니다.
+- CDN이 search param을 버리면 interception이 지원되지 않습니다. 이 경우 intercept되지 않은 page로 자연스럽게 degrade되며, client-side navigation은 깨지지 않습니다.
+
+따라서 interception route 지원은 필수 요구 사항이 아니라 CDN이 opt-in하는 기능이 됩니다.
+
+### Current status || 현재 상태
+
+이 방향은 codebase에서 이미 동작하고 있는 패턴(segment prefetch path, `output: &#x27;export&#x27;` mode)을 확장한 것입니다. 현재 활발하게 설계 중입니다.
+
+## CDN Feature Compatibility || CDN 기능 호환성
+
+주요 CDN마다 사용할 수 있는 infrastructure primitive(edge compute, key-value storage, blob storage, PPR resuming)를 보여 주는 전체 표는 [Deploying to Platforms](/docs/app/guides/deploying-to-platforms#cdn-infrastructure-compatibility)를 참고하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

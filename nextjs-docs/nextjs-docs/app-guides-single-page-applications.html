@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to build single-page applications with Next.js (Next.js로 Single-Page Application 만들기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/single-page-applications" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/single-page-applications" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/single-page-applications.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to build single-page applications with Next.js<span class="sub">Next.js로 Single-Page Application 만들기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>client-side navigation과 data fetching으로 Single-Page Application(SPA)을 만들어 보세요. Next.js는 같은 앱 안에서 client 패턴과 server 패턴을 모두 지원하며, 기존 SPA를 전부 다시 작성하지 않고도 migrate할 수 있습니다.</p><div class="en-orig"><p>Build Single-Page Applications (SPAs) with client-side navigation and data fetching. Next.js supports client and server patterns in the same app, and existing SPAs can migrate without a full rewrite.</p></div>
+<h2 class="sec" id="what-is-a-single-page-application"><a class="anchor" href="#what-is-a-single-page-application">What is a Single-Page Application?<span class="ko">Single-Page Application이란?</span></a></h2>
+<p>SPA의 정의는 다양합니다. 여기서는 "strict SPA"를 다음과 같이 정의합니다:</p><div class="en-orig"><p>The definition of a SPA varies. We'll define a "strict SPA" as:</p></div>
+<ul>
+<li><strong>Client-side rendering (CSR)</strong>: 앱이 하나의 HTML 파일(예: <code>index.html</code>)로 제공됩니다. 모든 route, page 전환, data fetch를 브라우저의 JavaScript가 처리합니다.</li>
+<li><strong>전체 page reload 없음</strong>: route마다 새 document를 request하는 대신, client-side JavaScript가 현재 page의 DOM을 조작하고 필요에 따라 데이터를 fetch합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Client-side rendering (CSR)</strong>: The app is served by one HTML file (e.g. <code>index.html</code>). Every route, page transition, and data fetch is handled by JavaScript in the browser.</li>
+<li><strong>No full-page reloads</strong>: Rather than requesting a new document for each route, client-side JavaScript manipulates the current page's DOM and fetches data as needed.</li>
+</ul></div>
+<p>strict SPA는 page가 interactive해지기 전에 많은 양의 JavaScript를 로드해야 하는 경우가 많습니다. 게다가 client 데이터 waterfall은 관리하기 어려울 수 있습니다. Next.js로 SPA를 만들면 이런 문제를 해결할 수 있습니다.</p><div class="en-orig"><p>Strict SPAs often require large amounts of JavaScript to load before the page can be interactive. Further, client data waterfalls can be challenging to manage. Building SPAs with Next.js can address these issues.</p></div>
+<h2 class="sec" id="why-use-nextjs-for-spas"><a class="anchor" href="#why-use-nextjs-for-spas">Why use Next.js for SPAs?<span class="ko">SPA에 Next.js를 쓰는 이유</span></a></h2>
+<p>Next.js는 JavaScript bundle을 자동으로 code split하고, 여러 route에 대한 여러 HTML entry point를 생성할 수 있습니다. 이렇게 하면 client-side에서 불필요한 JavaScript 코드를 로드하지 않게 되어 bundle 크기가 줄고 page 로드가 빨라집니다.</p><div class="en-orig"><p>Next.js can automatically code split your JavaScript bundles, and generate multiple HTML entry points into different routes. This avoids loading unnecessary JavaScript code on the client-side, reducing the bundle size and enabling faster page loads.</p></div>
+<p><a href="app-api-reference-components-link.html"><code>next/link</code></a> component는 route를 자동으로 <a href="app-api-reference-components-link.html#prefetch">prefetch</a>하므로, strict SPA처럼 빠른 page 전환을 제공하면서도 애플리케이션 routing state를 URL에 유지해 링크하고 공유할 수 있다는 이점까지 갖습니다.</p><div class="en-orig"><p>The <a href="app-api-reference-components-link.html"><code>next/link</code></a> component automatically <a href="app-api-reference-components-link.html#prefetch">prefetches</a> routes, giving you the fast page transitions of a strict SPA, but with the advantage of persisting application routing state to the URL for linking and sharing.</p></div>
+<p>Next.js는 static site로, 또는 모든 것을 client-side에서 render하는 strict SPA로도 시작할 수 있습니다. 프로젝트가 커지면 필요에 따라 server 기능(예: <a href="app-getting-started-server-and-client-components.html">React Server Components</a>, <a href="app-guides-server-actions.html">Server Actions</a> 등)을 점진적으로 추가할 수 있습니다.</p><div class="en-orig"><p>Next.js can start as a static site or even a strict SPA where everything is rendered client-side. If your project grows, you can progressively add more server features (e.g. <a href="app-getting-started-server-and-client-components.html">React Server Components</a>, <a href="app-guides-server-actions.html">Server Actions</a>, and more) as needed.</p></div>
+<h2 class="sec" id="build-common-spa-patterns"><a class="anchor" href="#build-common-spa-patterns">Build common SPA patterns<span class="ko">흔한 SPA 패턴 만들기</span></a></h2>
+<p>다음 예제들은 Next.js로 SPA를 만들 때 흔히 쓰는 패턴을 다룹니다. 함께 제공되는 <a href="https://next-spa-patterns.labs.vercel.dev" target="_blank" rel="noopener">demo</a>(<a href="https://github.com/nextjs/next-spa-patterns" target="_blank" rel="noopener">source</a>)에서 각 패턴이 실제로 동작하는 모습을 볼 수 있습니다.</p><div class="en-orig"><p>The following examples cover common patterns for building an SPA with Next.js. The companion <a href="https://next-spa-patterns.labs.vercel.dev" target="_blank" rel="noopener">demo</a> (<a href="https://github.com/nextjs/next-spa-patterns" target="_blank" rel="noopener">source</a>) shows each pattern in action.</p></div>
+<h3 class="sec" id="using-reacts-use-within-a-context-provider"><a class="anchor" href="#using-reacts-use-within-a-context-provider">Using React's <code>use</code> within a Context Provider<span class="ko">Context Provider 안에서 React의 <code>use</code> 사용하기</span></a></h3>
+<p>React의 <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use</code> API</a>를 사용하면 server에서 Client Component로 데이터를 stream할 수 있습니다. Server Component(parent나 layout)에서 데이터를 fetch하고 Promise를 아래로 전달하세요. Client Component는 render 중에 <code>await</code>할 수 없으므로 <code>use()</code>로 Promise를 unwrap합니다.</p><div class="en-orig"><p>You can use React's <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use</code> API</a> to stream data from the server to a Client Component. Fetch the data in a Server Component (a parent or layout) and pass the Promise down. The Client Component unwraps it with <code>use()</code>, since it cannot <code>await</code> during render.</p></div>
+<p>앱의 나머지 부분이 render되기 전에 server에서 request를 시작하면 response가 즉시 stream되고 client-side request waterfall을 피할 수 있습니다.</p><div class="en-orig"><p>Starting the request on the server, before the rest of the app renders, lets the response stream immediately and avoids client-side request waterfalls.</p></div>
+<p>하나의 Promise를 prop으로 전달해 <code>use()</code>로 unwrap할 수도 있고, React context provider와 짝지어 어떤 Client Component든 custom hook으로 값을 읽게 할 수도 있습니다.</p><div class="en-orig"><p>You can pass a single Promise as a prop and unwrap it with <code>use()</code>, or pair it with a React context provider so any Client Component can read the value through a custom hook.</p></div>
+<p>Client Component에 focus revalidation, polling, mutation, request deduplication이 필요하다면 SWR이나 TanStack Query 같은 library를 사용하세요. 브라우저에서 직접 fetch하는 방법, Server Component에서 초기 데이터를 제공하는 방법, library cache를 Next.js server cache 및 client cache와 조율하는 방법은 <a href="app-guides-client-side-data-fetching.html">Client-side data fetching</a>을 참고하세요.</p><div class="en-orig"><p>When a Client Component needs focus revalidation, polling, mutations, or request deduplication, use a library such as SWR or TanStack Query. See <a href="app-guides-client-side-data-fetching.html">Client-side data fetching</a> for direct browser fetching, providing initial data from a Server Component, and coordinating the library cache with the Next.js server and client caches.</p></div>
+<p>Server Component(여기서는 root layout)에서 await하지 않고 request를 시작한 뒤, Promise를 provider에 전달하세요:</p><div class="en-orig"><p>Start the request in a Server Component (here, the root layout) without awaiting it, and pass the Promise to the provider:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { UserProvider } from &#x27;./user-provider&#x27;
+import { getUser } from &#x27;./user&#x27; // some server-side function
+
+export default function RootLayout({ children }: LayoutProps&lt;&#x27;/&#x27;&gt;) {
+  let userPromise = getUser() // do NOT await
+
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;body&gt;
+        &lt;UserProvider userPromise={userPromise}&gt;{children}&lt;/UserProvider&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { UserProvider } from &#x27;./user-provider&#x27;
+import { getUser } from &#x27;./user&#x27; // some server-side function
+
+export default function RootLayout({ children }) {
+  let userPromise = getUser() // do NOT await
+
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;body&gt;
+        &lt;UserProvider userPromise={userPromise}&gt;{children}&lt;/UserProvider&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>tree 상위에서 설정한 Promise를 다시 fetch하면 그것을 설정한 Server Component가 다시 실행됩니다. 따라서 앱의 일부만 필요로 하는 데이터라면 provider를 root layout 대신 해당 subtree에 두세요. React의 <a href="https://react.dev/reference/react/use#reading-a-promise-from-context" target="_blank" rel="noopener">context에서 Promise를 읽을 때의 주의 사항</a>을 참고하세요.</p><div class="en-orig"><p>Refetching a Promise set high in the tree re-runs the Server Component that set it, so for data only part of the app needs, place the provider on that subtree instead of the root layout. See React's <a href="https://react.dev/reference/react/use#reading-a-promise-from-context" target="_blank" rel="noopener">caveat on reading a Promise from context</a>.</p></div></div></div>
+<p>여러 component가 한 request 안에서 같은 데이터를 읽는다면, <code>getUser</code>를 React의 <a href="https://react.dev/reference/react/cache" target="_blank" rel="noopener"><code>cache</code></a>로 감싸서 한 번의 호출을 공유하게 하세요. 이 패턴에 대한 자세한 내용은 <a href="app-getting-started-fetching-data.html#reusing-data-with-reactcache">Reusing data with <code>React.cache</code></a>를 참고하세요.</p><div class="en-orig"><p>If several components read the same data in one request, wrap <code>getUser</code> in React's <a href="https://react.dev/reference/react/cache" target="_blank" rel="noopener"><code>cache</code></a> so they share a single call. See <a href="app-getting-started-fetching-data.html#reusing-data-with-reactcache">Reusing data with <code>React.cache</code></a> for more on this pattern.</p></div>
+<p>provider는 context를 통해 Promise를 전달합니다:</p><div class="en-orig"><p>The provider forwards the Promise through context:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/user-provider.tsx" data-js="app/user-provider.js">app/user-provider.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { createContext, useContext } from &#x27;react&#x27;
+
+type User = { id: string; name: string }
+
+const UserContext = createContext&lt;Promise&lt;User&gt; | null&gt;(null)
+
+export function useUser() {
+  const userPromise = useContext(UserContext)
+  if (!userPromise) {
+    throw new Error(&#x27;useUser must be used within a UserProvider&#x27;)
+  }
+  return userPromise
+}
+
+export function UserProvider({
+  children,
+  userPromise,
+}: {
+  children: React.ReactNode
+  userPromise: Promise&lt;User&gt;
+}) {
+  return (
+    &lt;UserContext.Provider value={userPromise}&gt;{children}&lt;/UserContext.Provider&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { createContext, useContext } from &#x27;react&#x27;
+
+const UserContext = createContext(null)
+
+export function useUser() {
+  const userPromise = useContext(UserContext)
+  if (!userPromise) {
+    throw new Error(&#x27;useUser must be used within a UserProvider&#x27;)
+  }
+  return userPromise
+}
+
+export function UserProvider({ children, userPromise }) {
+  return (
+    &lt;UserContext.Provider value={userPromise}&gt;{children}&lt;/UserContext.Provider&gt;
+  )
+}</code></pre></div></div>
+<p>마지막으로 어떤 Client Component에서든 <code>useUser()</code> hook을 호출하고 <code>use()</code>로 Promise를 unwrap하세요. <code>use()</code>는 데이터가 준비될 때까지 component를 suspend합니다:</p><div class="en-orig"><p>Finally, call the <code>useUser()</code> hook in any Client Component and unwrap the Promise with <code>use()</code>, which suspends the component until the data is ready:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/profile.tsx" data-js="app/profile.js">app/profile.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { use } from &#x27;react&#x27;
+import { useUser } from &#x27;./user-provider&#x27;
+
+export function Profile() {
+  const userPromise = useUser()
+  const user = use(userPromise)
+
+  return &lt;p&gt;{user.name}&lt;/p&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { use } from &#x27;react&#x27;
+import { useUser } from &#x27;./user-provider&#x27;
+
+export function Profile() {
+  const userPromise = useUser()
+  const user = use(userPromise)
+
+  return &lt;p&gt;{user.name}&lt;/p&gt;
+}</code></pre></div></div>
+<p>Promise가 resolve되는 동안 fallback을 보여 주려면 consumer를 <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> boundary로 감싸세요:</p><div class="en-orig"><p>Wrap the consumer in a <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> boundary to show a fallback while the Promise resolves:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { Profile } from &#x27;./profile&#x27;
+
+export default function Page() {
+  return (
+    &lt;Suspense fallback={&lt;p&gt;Loading…&lt;/p&gt;}&gt;
+      &lt;Profile /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { Suspense } from &#x27;react&#x27;
+import { Profile } from &#x27;./profile&#x27;
+
+export default function Page() {
+  return (
+    &lt;Suspense fallback={&lt;p&gt;Loading…&lt;/p&gt;}&gt;
+      &lt;Profile /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre></div></div>
+<p>Promise를 소비하는 component(예: 위의 <code>Profile</code>)는 Promise가 resolve되는 동안 suspend되므로, JavaScript 로딩이 끝나기 전에 stream된 prerender HTML을 볼 수 있습니다.</p><div class="en-orig"><p>The component that consumes the Promise (e.g. <code>Profile</code> above) suspends while the Promise resolves, so you see the streamed, prerendered HTML before JavaScript has finished loading.</p></div>
+<p><a href="https://next-spa-patterns.labs.vercel.dev/use-context" target="_blank" rel="noopener">live demo</a>와 그 <a href="https://github.com/nextjs/next-spa-patterns/tree/main/app/use-context" target="_blank" rel="noopener">source code</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="https://next-spa-patterns.labs.vercel.dev/use-context" target="_blank" rel="noopener">live demo</a> and its <a href="https://github.com/nextjs/next-spa-patterns/tree/main/app/use-context" target="_blank" rel="noopener">source code</a>.</p></div>
+<h3 class="sec" id="rendering-components-only-in-the-browser"><a class="anchor" href="#rendering-components-only-in-the-browser">Rendering components only in the browser<span class="ko">브라우저에서만 component render하기</span></a></h3>
+<p>Client component는 <code>next build</code> 중에 <a href="https://github.com/reactwg/server-components/discussions/4" target="_blank" rel="noopener">prerender</a>됩니다. Client Component의 prerendering을 비활성화하고 브라우저 환경에서만 로드하고 싶다면 <a href="app-guides-lazy-loading.html#nextdynamic"><code>next/dynamic</code></a>을 사용할 수 있습니다:</p><div class="en-orig"><p>Client components are <a href="https://github.com/reactwg/server-components/discussions/4" target="_blank" rel="noopener">prerendered</a> during <code>next build</code>. If you want to disable prerendering for a Client Component and only load it in the browser environment, you can use <a href="app-guides-lazy-loading.html#nextdynamic"><code>next/dynamic</code></a>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import dynamic from &#x27;next/dynamic&#x27;
+
+const ClientOnlyComponent = dynamic(() =&gt; import(&#x27;./component&#x27;), {
+  ssr: false,
+})</code></pre></div></div>
+<p>이는 <code>window</code>나 <code>document</code> 같은 브라우저 API에 의존하는 third-party library에 유용할 수 있습니다. 또는 이런 API가 존재하는지 확인하는 <code>useEffect</code>를 추가하고, 존재하지 않으면 <code>null</code>이나 prerender될 loading state를 반환하게 할 수도 있습니다.</p><div class="en-orig"><p>This can be useful for third-party libraries that rely on browser APIs like <code>window</code> or <code>document</code>. You can also add a <code>useEffect</code> that checks for the existence of these APIs, and if they do not exist, return <code>null</code> or a loading state which would be prerendered.</p></div>
+<p>React 19.3에는 <a href="https://react.dev/reference/react-dom/browser" target="_blank" rel="noopener"><code>browser</code></a> API가 포함되어 있습니다. <code>use(browser())</code>는 Client Component의 첫 브라우저 render가 server-rendered HTML과 일치할 수 없는 경우에만 사용하세요.</p><div class="en-orig"><p>React 19.3 includes the <a href="https://react.dev/reference/react-dom/browser" target="_blank" rel="noopener"><code>browser</code></a> API. Use <code>use(browser())</code> only when a Client Component's first browser render cannot match server-rendered HTML.</p></div>
+<p>prerendering 중에 <code>use(browser())</code>는 가장 가까운 <code>&lt;Suspense&gt;</code> boundary까지 suspend합니다. fallback이 component의 초기 HTML이 되므로, JavaScript를 실행하지 않는 crawler는 component 대신 fallback을 보게 됩니다. index되어야 하는 콘텐츠는 browser 전용 boundary 바깥에 두세요.</p><div class="en-orig"><p>During prerendering, <code>use(browser())</code> suspends to the closest <code>&lt;Suspense&gt;</code> boundary. The fallback becomes the component's initial HTML, so crawlers that don't execute JavaScript see the fallback instead of the component. Keep content that should be indexed outside the browser-only boundary.</p></div>
+<p>예를 들어, 이 editor는 <code>localStorage</code>에서 저장된 draft를 읽습니다:</p><div class="en-orig"><p>For example, this editor reads a saved draft from <code>localStorage</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/browser-only-editor.jsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">&#x27;use client&#x27;
+
+import { use, useState } from &#x27;react&#x27;
+import { browser } from &#x27;react-dom&#x27;
+
+export default function BrowserOnlyEditor() {
+  use(browser(&#x27;The saved draft is stored in localStorage.&#x27;))
+
+  const [draft, setDraft] = useState(() =&gt; localStorage.getItem(&#x27;draft&#x27;) ?? &#x27;&#x27;)
+
+  function handleChange(event) {
+    const nextDraft = event.target.value
+    setDraft(nextDraft)
+    localStorage.setItem(&#x27;draft&#x27;, nextDraft)
+  }
+
+  return &lt;textarea value={draft} onChange={handleChange} /&gt;
+}</code></pre></div></div>
+<p>그다음 Suspense boundary로 감싸세요:</p><div class="en-orig"><p>Then wrap it in a Suspense boundary:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.jsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { Suspense } from &#x27;react&#x27;
+import BrowserOnlyEditor from &#x27;./browser-only-editor&#x27;
+
+export default function Page() {
+  return (
+    &lt;Suspense fallback={&lt;p&gt;Loading editor…&lt;/p&gt;}&gt;
+      &lt;BrowserOnlyEditor /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre></div></div>
+<p>브라우저에서는 <code>browser()</code>가 <code>undefined</code>를 반환하고, editor는 저장된 draft와 함께 render됩니다.</p><div class="en-orig"><p>In the browser, <code>browser()</code> returns <code>undefined</code>, and the editor renders with the saved draft.</p></div>
+<p>두 가지 접근 방식 모두 <a href="https://next-spa-patterns.labs.vercel.dev/browser-only" target="_blank" rel="noopener">live demo</a>에서 확인하세요. <a href="https://github.com/nextjs/next-spa-patterns/tree/main/app/browser-only" target="_blank" rel="noopener">demo source</a>에 전체 예제가 들어 있습니다.</p><div class="en-orig"><p>See both approaches in the <a href="https://next-spa-patterns.labs.vercel.dev/browser-only" target="_blank" rel="noopener">live demo</a>. The <a href="https://github.com/nextjs/next-spa-patterns/tree/main/app/browser-only" target="_blank" rel="noopener">demo source</a> contains the complete examples.</p></div>
+<h3 class="sec" id="shallow-routing-on-the-client"><a class="anchor" href="#shallow-routing-on-the-client">Shallow routing on the client<span class="ko">Client에서의 shallow routing</span></a></h3>
+<p><a href="app-guides-migrating-from-create-react-app.html">Create React App</a>이나 <a href="app-guides-migrating-from-vite.html">Vite</a> 같은 strict SPA에서 migrate하는 중이라면, URL state를 업데이트하기 위해 shallow routing하는 기존 코드가 있을 수 있습니다. 이는 기본 Next.js file-system routing을 사용하지 <em>않고</em> 애플리케이션 안의 view 사이를 수동으로 전환할 때 유용할 수 있습니다.</p><div class="en-orig"><p>If you are migrating from a strict SPA like <a href="app-guides-migrating-from-create-react-app.html">Create React App</a> or <a href="app-guides-migrating-from-vite.html">Vite</a>, you might have existing code which shallow routes to update the URL state. This can be useful for manual transitions between views in your application <em>without</em> using the default Next.js file-system routing.</p></div>
+<p>Next.js에서는 native <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState" target="_blank" rel="noopener"><code>window.history.pushState</code></a>와 <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState" target="_blank" rel="noopener"><code>window.history.replaceState</code></a> method를 사용해 page를 reload하지 않고 브라우저의 history stack을 업데이트할 수 있습니다.</p><div class="en-orig"><p>Next.js lets you use the native <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/pushState" target="_blank" rel="noopener"><code>window.history.pushState</code></a> and <a href="https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState" target="_blank" rel="noopener"><code>window.history.replaceState</code></a> methods to update the browser's history stack without reloading the page.</p></div>
+<p><code>pushState</code>와 <code>replaceState</code> 호출은 Next.js Router와 통합되므로 <a href="app-api-reference-functions-use-pathname.html"><code>usePathname</code></a>, <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams</code></a>와 동기화할 수 있습니다.</p><div class="en-orig"><p>The <code>pushState</code> and <code>replaceState</code> calls integrate into the Next.js Router, allowing you to sync with <a href="app-api-reference-functions-use-pathname.html"><code>usePathname</code></a> and <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams</code></a>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/ui/sort-products.tsx" data-js="app/ui/sort-products.js">app/ui/sort-products.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useSearchParams } from &#x27;next/navigation&#x27;
+
+export default function SortProducts() {
+  const searchParams = useSearchParams()
+
+  function updateSorting(sortOrder: string) {
+    const urlSearchParams = new URLSearchParams(searchParams.toString())
+    urlSearchParams.set(&#x27;sort&#x27;, sortOrder)
+    window.history.pushState(null, &#x27;&#x27;, `?${urlSearchParams.toString()}`)
+  }
+
+  return (
+    &lt;&gt;
+      &lt;button onClick={() =&gt; updateSorting(&#x27;asc&#x27;)}&gt;Sort Ascending&lt;/button&gt;
+      &lt;button onClick={() =&gt; updateSorting(&#x27;desc&#x27;)}&gt;Sort Descending&lt;/button&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useSearchParams } from &#x27;next/navigation&#x27;
+
+export default function SortProducts() {
+  const searchParams = useSearchParams()
+
+  function updateSorting(sortOrder) {
+    const urlSearchParams = new URLSearchParams(searchParams.toString())
+    urlSearchParams.set(&#x27;sort&#x27;, sortOrder)
+    window.history.pushState(null, &#x27;&#x27;, `?${urlSearchParams.toString()}`)
+  }
+
+  return (
+    &lt;&gt;
+      &lt;button onClick={() =&gt; updateSorting(&#x27;asc&#x27;)}&gt;Sort Ascending&lt;/button&gt;
+      &lt;button onClick={() =&gt; updateSorting(&#x27;desc&#x27;)}&gt;Sort Descending&lt;/button&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p>Next.js에서 <a href="app-getting-started-linking-and-navigating.html#how-navigation-works">routing과 navigation</a>이 어떻게 동작하는지 더 알아보세요.</p><div class="en-orig"><p>Learn more about how <a href="app-getting-started-linking-and-navigating.html#how-navigation-works">routing and navigation</a> work in Next.js.</p></div>
+<p><a href="https://next-spa-patterns.labs.vercel.dev/shallow-routing" target="_blank" rel="noopener">live demo</a>와 그 <a href="https://github.com/nextjs/next-spa-patterns/tree/main/app/shallow-routing" target="_blank" rel="noopener">source code</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="https://next-spa-patterns.labs.vercel.dev/shallow-routing" target="_blank" rel="noopener">live demo</a> and its <a href="https://github.com/nextjs/next-spa-patterns/tree/main/app/shallow-routing" target="_blank" rel="noopener">source code</a>.</p></div>
+<h3 class="sec" id="mutating-data-with-server-actions"><a class="anchor" href="#mutating-data-with-server-actions">Mutating data with Server Actions<span class="ko">Server Action으로 데이터 변경하기</span></a></h3>
+<p>interactivity에는 흔히 데이터 쓰기가 필요합니다. Client Component는 <a href="app-guides-server-actions.html">Server Action</a>을 호출해 server에서 mutation을 실행할 수 있습니다. <a href="app-guides-client-side-data-fetching.html#coordinate-mutations">client-side data fetching 가이드</a>에서 보여 주듯이, client data-fetching library가 같은 Server Action을 중심으로 브라우저의 optimistic 업데이트를 조율할 수도 있습니다. 이 섹션의 나머지 부분에서는 React의 내장 state API로 Server Action을 조율합니다.</p><div class="en-orig"><p>Interactivity often requires writing data. A Client Component can call a <a href="app-guides-server-actions.html">Server Action</a> to run the mutation on the server. A client data-fetching library can coordinate an optimistic browser update around the same Server Action, as shown in the <a href="app-guides-client-side-data-fetching.html#coordinate-mutations">client-side data fetching guide</a>. The rest of this section coordinates the Server Action with React's built-in state APIs.</p></div>
+<p>Server Action은 시간이 걸리고 실패할 수도 있습니다. React에는 action이 실행되는 동안 UI의 반응성을 유지해 주는 유용한 도구가 있어서, mutation이 client-rendered SPA처럼 즉각적으로 느껴지게 할 수 있습니다: <a href="https://react.dev/reference/react/useTransition" target="_blank" rel="noopener">transitions</a>, <a href="https://react.dev/reference/react/useOptimistic" target="_blank" rel="noopener"><code>useOptimistic</code></a>, <a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener"><code>useActionState</code></a>, <a href="https://react.dev/reference/react-dom/hooks/useFormStatus" target="_blank" rel="noopener"><code>useFormStatus</code></a>.</p><div class="en-orig"><p>A Server Action takes time and can fail. React has useful tools to keep the UI responsive while it runs, so a mutation can feel as instant as a client-rendered SPA: <a href="https://react.dev/reference/react/useTransition" target="_blank" rel="noopener">transitions</a>, <a href="https://react.dev/reference/react/useOptimistic" target="_blank" rel="noopener"><code>useOptimistic</code></a>, <a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener"><code>useActionState</code></a>, and <a href="https://react.dev/reference/react-dom/hooks/useFormStatus" target="_blank" rel="noopener"><code>useFormStatus</code></a>.</p></div>
+<p>가장 단순하게는, Client Component가 transition 안에서 Server Action을 호출하고 pending state로 피드백을 보여 줍니다:</p><div class="en-orig"><p>At its simplest, a Client Component calls a Server Action inside a transition and uses the pending state for feedback:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/delete-post.tsx" data-js="app/delete-post.js">app/delete-post.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useTransition } from &#x27;react&#x27;
+import { deletePost } from &#x27;./actions&#x27;
+
+export function DeletePost({ id }: { id: string }) {
+  const [isPending, startTransition] = useTransition()
+
+  return (
+    &lt;button
+      disabled={isPending}
+      onClick={() =&gt; startTransition(() =&gt; deletePost(id))}
+    &gt;
+      {isPending ? &#x27;Deleting…&#x27; : &#x27;Delete&#x27;}
+    &lt;/button&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useTransition } from &#x27;react&#x27;
+import { deletePost } from &#x27;./actions&#x27;
+
+export function DeletePost({ id }) {
+  const [isPending, startTransition] = useTransition()
+
+  return (
+    &lt;button
+      disabled={isPending}
+      onClick={() =&gt; startTransition(() =&gt; deletePost(id))}
+    &gt;
+      {isPending ? &#x27;Deleting…&#x27; : &#x27;Delete&#x27;}
+    &lt;/button&gt;
+  )
+}</code></pre></div></div>
+<p>변경 사항이 즉시 나타나야 하는 목록 형태의 state라면 <code>useActionState</code>와 <code>useOptimistic</code>을 조합할 수 있습니다. 아래 예제는 to-do 목록입니다: 순수 reducer가 각 action이 목록을 어떻게 바꾸는지 정의하므로, client와 server가 그 로직의 사본 하나를 공유합니다:</p><div class="en-orig"><p>For list-like state where each change should appear instantly, you can combine <code>useActionState</code> with <code>useOptimistic</code>. The example below is a to-do list: a pure reducer defines how each action changes the list, so the client and server share one copy of that logic:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/todos-reducer.ts" data-js="app/todos-reducer.js">app/todos-reducer.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export type Todo = { id: string; text: string; done: boolean }
+
+export type TodoAction =
+  | { type: &#x27;add&#x27;; id: string; text: string }
+  | { type: &#x27;toggle&#x27;; id: string }
+  | { type: &#x27;edit&#x27;; id: string; text: string }
+  | { type: &#x27;delete&#x27;; id: string }
+
+export function todosReducer(todos: Todo[], action: TodoAction): Todo[] {
+  switch (action.type) {
+    case &#x27;add&#x27;:
+      return [...todos, { id: action.id, text: action.text, done: false }]
+    case &#x27;toggle&#x27;:
+      return todos.map((todo) =&gt;
+        todo.id === action.id ? { ...todo, done: !todo.done } : todo
+      )
+    case &#x27;edit&#x27;:
+      return todos.map((todo) =&gt;
+        todo.id === action.id ? { ...todo, text: action.text } : todo
+      )
+    case &#x27;delete&#x27;:
+      return todos.filter((todo) =&gt; todo.id !== action.id)
+    default:
+      return todos
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export function todosReducer(todos, action) {
+  switch (action.type) {
+    case &#x27;add&#x27;:
+      return [...todos, { id: action.id, text: action.text, done: false }]
+    case &#x27;toggle&#x27;:
+      return todos.map((todo) =&gt;
+        todo.id === action.id ? { ...todo, done: !todo.done } : todo
+      )
+    case &#x27;edit&#x27;:
+      return todos.map((todo) =&gt;
+        todo.id === action.id ? { ...todo, text: action.text } : todo
+      )
+    case &#x27;delete&#x27;:
+      return todos.filter((todo) =&gt; todo.id !== action.id)
+    default:
+      return todos
+  }
+}</code></pre></div></div>
+<p>Server Action은 reducer를 적용하고, 결과를 저장한 뒤, 다음 목록을 반환합니다:</p><div class="en-orig"><p>The Server Action applies the reducer, persists the result, and returns the next list:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { db } from &#x27;./db&#x27;
+import { todosReducer, type Todo, type TodoAction } from &#x27;./todos-reducer&#x27;
+
+export async function saveTodos(
+  todos: Todo[],
+  action: TodoAction
+): Promise&lt;Todo[]&gt; {
+  const next = todosReducer(todos, action)
+  await db.saveTodos(next)
+  return next
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { db } from &#x27;./db&#x27;
+import { todosReducer } from &#x27;./todos-reducer&#x27;
+
+export async function saveTodos(todos, action) {
+  const next = todosReducer(todos, action)
+  await db.saveTodos(next)
+  return next
+}</code></pre></div></div>
+<p>client는 같은 reducer를 <code>useOptimistic</code>에 전달하므로, optimistic 업데이트와 server가 다음 state를 똑같이 계산합니다. <code>runAction</code> helper는 같은 transition 안에서 optimistic 변경을 적용하고 Server Action을 dispatch하므로, 모든 변경 사항이 즉시 표시됩니다:</p><div class="en-orig"><p>The client passes the same reducer to <code>useOptimistic</code>, so the optimistic update and the server compute the next state identically. A <code>runAction</code> helper applies the optimistic change and dispatches the Server Action in the same transition, so every change shows immediately:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/todo-list.tsx" data-js="app/todo-list.js">app/todo-list.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useActionState, useOptimistic, startTransition } from &#x27;react&#x27;
+import { saveTodos } from &#x27;./actions&#x27;
+import { todosReducer, type Todo, type TodoAction } from &#x27;./todos-reducer&#x27;
+
+export function TodoList({ initialTodos }: { initialTodos: Todo[] }) {
+  const [todos, dispatch, isPending] = useActionState(saveTodos, initialTodos)
+  const [optimisticTodos, addOptimistic] = useOptimistic(todos, todosReducer)
+
+  function runAction(action: TodoAction) {
+    startTransition(() =&gt; {
+      addOptimistic(action)
+      dispatch(action)
+    })
+  }
+
+  return (
+    &lt;&gt;
+      &lt;form
+        action={(formData) =&gt;
+          runAction({
+            type: &#x27;add&#x27;,
+            id: crypto.randomUUID(),
+            text: String(formData.get(&#x27;text&#x27;)),
+          })
+        }
+      &gt;
+        &lt;input name=&quot;text&quot; /&gt;
+        &lt;button&gt;Add&lt;/button&gt;
+      &lt;/form&gt;
+      &lt;ul&gt;
+        {optimisticTodos.map((todo) =&gt; (
+          &lt;li key={todo.id}&gt;
+            &lt;input
+              type=&quot;checkbox&quot;
+              checked={todo.done}
+              onChange={() =&gt; runAction({ type: &#x27;toggle&#x27;, id: todo.id })}
+            /&gt;
+            &lt;span
+              style={{ textDecoration: todo.done ? &#x27;line-through&#x27; : &#x27;none&#x27; }}
+            &gt;
+              {todo.text}
+            &lt;/span&gt;
+            &lt;button onClick={() =&gt; runAction({ type: &#x27;delete&#x27;, id: todo.id })}&gt;
+              Delete
+            &lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+      {isPending &amp;&amp; &lt;p&gt;Syncing to server…&lt;/p&gt;}
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useActionState, useOptimistic, startTransition } from &#x27;react&#x27;
+import { saveTodos } from &#x27;./actions&#x27;
+import { todosReducer } from &#x27;./todos-reducer&#x27;
+
+export function TodoList({ initialTodos }) {
+  const [todos, dispatch, isPending] = useActionState(saveTodos, initialTodos)
+  const [optimisticTodos, addOptimistic] = useOptimistic(todos, todosReducer)
+
+  function runAction(action) {
+    startTransition(() =&gt; {
+      addOptimistic(action)
+      dispatch(action)
+    })
+  }
+
+  return (
+    &lt;&gt;
+      &lt;form
+        action={(formData) =&gt;
+          runAction({
+            type: &#x27;add&#x27;,
+            id: crypto.randomUUID(),
+            text: String(formData.get(&#x27;text&#x27;)),
+          })
+        }
+      &gt;
+        &lt;input name=&quot;text&quot; /&gt;
+        &lt;button&gt;Add&lt;/button&gt;
+      &lt;/form&gt;
+      &lt;ul&gt;
+        {optimisticTodos.map((todo) =&gt; (
+          &lt;li key={todo.id}&gt;
+            &lt;input
+              type=&quot;checkbox&quot;
+              checked={todo.done}
+              onChange={() =&gt; runAction({ type: &#x27;toggle&#x27;, id: todo.id })}
+            /&gt;
+            &lt;span
+              style={{ textDecoration: todo.done ? &#x27;line-through&#x27; : &#x27;none&#x27; }}
+            &gt;
+              {todo.text}
+            &lt;/span&gt;
+            &lt;button onClick={() =&gt; runAction({ type: &#x27;delete&#x27;, id: todo.id })}&gt;
+              Delete
+            &lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+      {isPending &amp;&amp; &lt;p&gt;Syncing to server…&lt;/p&gt;}
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p>optimistic 업데이트는 즉시 표시되고, <code>useActionState</code>의 pending flag를 사용하면 Server Action이 resolve될 때까지 은은한 indicator(예: <code>Syncing to server…</code>)를 보여 줄 수 있습니다.</p><div class="en-orig"><p>The optimistic update shows instantly, while <code>useActionState</code>'s pending flag lets you display a subtle indicator (such as <code>Syncing to server…</code>) until the Server Action resolves.</p></div>
+<p><a href="https://next-spa-patterns.labs.vercel.dev/mutations" target="_blank" rel="noopener">live demo</a>와 그 <a href="https://github.com/nextjs/next-spa-patterns/tree/main/app/mutations" target="_blank" rel="noopener">source code</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="https://next-spa-patterns.labs.vercel.dev/mutations" target="_blank" rel="noopener">live demo</a> and its <a href="https://github.com/nextjs/next-spa-patterns/tree/main/app/mutations" target="_blank" rel="noopener">source code</a>.</p></div>
+<p>server-rendered 앱 위에 interactivity를 더해 SPA처럼 느껴지게 하는 방법은 <a href="app-guides-interactive-apps.html">Building interactive apps</a> 가이드와 실행 가능한 demo를 참고하세요.</p><div class="en-orig"><p>To learn more about adding interactivity on top of server-rendered apps so they feel like SPAs, see the <a href="app-guides-interactive-apps.html">Building interactive apps</a> guide and its runnable demo.</p></div>
+<h2 class="sec" id="static-export-optional"><a class="anchor" href="#static-export-optional">Static export (optional)<span class="ko">Static export (선택)</span></a></h2>
+<p>Next.js는 완전한 <a href="app-guides-static-exports.html">static site</a> 생성도 지원합니다. 이는 strict SPA에 비해 몇 가지 장점이 있습니다:</p><div class="en-orig"><p>Next.js also supports generating a fully <a href="app-guides-static-exports.html">static site</a>. This has some advantages over strict SPAs:</p></div>
+<ul>
+<li><strong>자동 code-splitting</strong>: 하나의 <code>index.html</code>을 전달하는 대신 Next.js가 route마다 HTML 파일을 생성하므로, 방문자는 client JavaScript bundle을 기다리지 않고 콘텐츠를 더 빨리 받습니다.</li>
+<li><strong>향상된 사용자 경험:</strong> 모든 route에 최소한의 skeleton을 보여 주는 대신, route마다 완전히 render된 page를 제공합니다. 사용자가 client side에서 navigate할 때도 전환은 여전히 즉각적이고 SPA처럼 동작합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Automatic code-splitting</strong>: Instead of shipping a single <code>index.html</code>, Next.js will generate an HTML file per route, so your visitors get the content faster without waiting for the client JavaScript bundle.</li>
+<li><strong>Improved user experience:</strong> Instead of a minimal skeleton for all routes, you get fully rendered pages for each route. When users navigate client side, transitions are still instant and SPA-like.</li>
+</ul></div>
+<p>static export를 활성화하려면 configuration을 업데이트하세요:</p><div class="en-orig"><p>To enable a static export, update your configuration:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  output: &#x27;export&#x27;,
+}
+
+export default nextConfig</code></pre></div></div>
+<p><code>next build</code>를 실행하면 Next.js가 애플리케이션의 HTML/CSS/JS asset이 담긴 <code>out</code> 폴더를 만듭니다.</p><div class="en-orig"><p>After running <code>next build</code>, Next.js will create an <code>out</code> folder with the HTML/CSS/JS assets for your application.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p>static export에서는 Next.js server 기능이 지원되지 않습니다. <a href="app-guides-static-exports.html#unsupported-features">더 알아보기</a>.</p><div class="en-orig"><p>Next.js server features are not supported with static exports. <a href="app-guides-static-exports.html#unsupported-features">Learn more</a>.</p></div></div></div>
+<h2 class="sec" id="migrating-existing-projects-to-nextjs"><a class="anchor" href="#migrating-existing-projects-to-nextjs">Migrating existing projects to Next.js<span class="ko">기존 프로젝트를 Next.js로 migrate하기</span></a></h2>
+<p>다음 가이드를 따라 Next.js로 점진적으로 migrate할 수 있습니다:</p><div class="en-orig"><p>You can incrementally migrate to Next.js by following our guides:</p></div>
+<ul>
+<li><a href="app-guides-migrating-from-create-react-app.html">Migrating from Create React App</a></li>
+<li><a href="app-guides-migrating-from-vite.html">Migrating from Vite</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-guides-migrating-from-create-react-app.html">Migrating from Create React App</a></li>
+<li><a href="app-guides-migrating-from-vite.html">Migrating from Vite</a></li>
+</ul></div>
+<p>이미 Pages Router로 SPA를 사용하고 있다면 <a href="app-guides-migrating-app-router-migration.html">App Router를 점진적으로 도입</a>하는 방법을 알아볼 수 있습니다.</p><div class="en-orig"><p>If you are already using a SPA with the Pages Router, you can learn how to <a href="app-guides-migrating-app-router-migration.html">incrementally adopt the App Router</a>.</p></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><p>관련 가이드와 reference.</p><div class="rgrid"><a class="rcard" href="app-guides-client-side-data-fetching.html"><div class="rt">Client-side data fetching</div><div class="rk">Client-side data fetching</div><div class="rd">data-fetching library로 Client Component에서 데이터를 fetch하고, 필요하면 Server Component에서 초기 데이터를 제공하며, server와 client cache를 조율하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-interactive-apps.html"><div class="rt">Building interactive apps</div><div class="rk">인터랙티브 앱 만들기</div><div class="rd">Server Function, transition, optimistic UI, pending feedback으로 반응성 좋은 interaction을 만드는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-server-actions.html"><div class="rt">Server Actions and Mutations</div><div class="rk">Server Action과 Mutation</div><div class="rd">single-roundtrip response 모델, 순차 dispatch, 보안, caching 통합을 포함해 Next.js에서 Server Action이 동작하는 방식을 알아봅니다.</div></a><a class="rcard" href="app-guides-forms.html"><div class="rt">How to create forms with Server Actions</div><div class="rk">Server Actions로 form 만들기</div><div class="rd">React Server Actions로 Next.js에서 form을 만드는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-streaming.html"><div class="rt">Streaming</div><div class="rk">스트리밍</div><div class="rd">Next.js에서 streaming이 어떻게 동작하는지, 그리고 데이터가 준비되는 대로 UI를 점진적으로 render하는 데 이를 어떻게 활용하는지 알아봅니다.</div></a><a class="rcard" href="app-guides-static-exports.html"><div class="rt">How to create a static export of your Next.js application</div><div class="rk">Next.js 애플리케이션을 static export하는 방법</div><div class="rd">Next.js는 static site나 Single-Page Application(SPA)으로 시작한 뒤, 나중에 필요하면 server가 필요한 기능을 사용하도록 upgrade할 수 있게 해 줍니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/single-page-applications.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/single-page-applications" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-server-and-client-boundary.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Server and Client Boundary</div><div class="ttl-ko">Server와 Client 경계</div></a>
+      <a href="app-guides-static-exports.html" class="next"><div class="dir">다음 →</div><div class="ttl">Static Exports</div><div class="ttl-ko">Next.js 애플리케이션을 static export하는 방법</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/single-page-applications" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#what-is-a-single-page-application">What is a Single-Page Application?</a></li><li class="l2"><a href="#why-use-nextjs-for-spas">Why use Next.js for SPAs?</a></li><li class="l2"><a href="#build-common-spa-patterns">Build common SPA patterns</a></li><li class="l3"><a href="#using-reacts-use-within-a-context-provider">Using React's <code>use</code> within a Context Provider</a></li><li class="l3"><a href="#rendering-components-only-in-the-browser">Rendering components only in the browser</a></li><li class="l3"><a href="#shallow-routing-on-the-client">Shallow routing on the client</a></li><li class="l3"><a href="#mutating-data-with-server-actions">Mutating data with Server Actions</a></li><li class="l2"><a href="#static-export-optional">Static export (optional)</a></li><li class="l2"><a href="#migrating-existing-projects-to-nextjs">Migrating existing projects to Next.js</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+client-side navigation과 data fetching으로 Single-Page Application(SPA)을 만들어 보세요. Next.js는 같은 앱 안에서 client 패턴과 server 패턴을 모두 지원하며, 기존 SPA를 전부 다시 작성하지 않고도 migrate할 수 있습니다.
+
+## What is a Single-Page Application? || Single-Page Application이란?
+
+SPA의 정의는 다양합니다. 여기서는 &quot;strict SPA&quot;를 다음과 같이 정의합니다:
+
+- **Client-side rendering (CSR)**: 앱이 하나의 HTML 파일(예: `index.html`)로 제공됩니다. 모든 route, page 전환, data fetch를 브라우저의 JavaScript가 처리합니다.
+- **전체 page reload 없음**: route마다 새 document를 request하는 대신, client-side JavaScript가 현재 page의 DOM을 조작하고 필요에 따라 데이터를 fetch합니다.
+
+strict SPA는 page가 interactive해지기 전에 많은 양의 JavaScript를 로드해야 하는 경우가 많습니다. 게다가 client 데이터 waterfall은 관리하기 어려울 수 있습니다. Next.js로 SPA를 만들면 이런 문제를 해결할 수 있습니다.
+
+## Why use Next.js for SPAs? || SPA에 Next.js를 쓰는 이유
+
+Next.js는 JavaScript bundle을 자동으로 code split하고, 여러 route에 대한 여러 HTML entry point를 생성할 수 있습니다. 이렇게 하면 client-side에서 불필요한 JavaScript 코드를 로드하지 않게 되어 bundle 크기가 줄고 page 로드가 빨라집니다.
+
+[`next/link`](/docs/app/api-reference/components/link) component는 route를 자동으로 [prefetch](/docs/app/api-reference/components/link#prefetch)하므로, strict SPA처럼 빠른 page 전환을 제공하면서도 애플리케이션 routing state를 URL에 유지해 링크하고 공유할 수 있다는 이점까지 갖습니다.
+
+Next.js는 static site로, 또는 모든 것을 client-side에서 render하는 strict SPA로도 시작할 수 있습니다. 프로젝트가 커지면 필요에 따라 server 기능(예: [React Server Components](/docs/app/getting-started/server-and-client-components), [Server Actions](/docs/app/guides/server-actions) 등)을 점진적으로 추가할 수 있습니다.
+
+## Build common SPA patterns || 흔한 SPA 패턴 만들기
+
+다음 예제들은 Next.js로 SPA를 만들 때 흔히 쓰는 패턴을 다룹니다. 함께 제공되는 [demo](https://next-spa-patterns.labs.vercel.dev)([source](https://github.com/nextjs/next-spa-patterns))에서 각 패턴이 실제로 동작하는 모습을 볼 수 있습니다.
+
+### Using React&#x27;s `use` within a Context Provider || Context Provider 안에서 React의 `use` 사용하기
+
+React의 [`use` API](https://react.dev/reference/react/use)를 사용하면 server에서 Client Component로 데이터를 stream할 수 있습니다. Server Component(parent나 layout)에서 데이터를 fetch하고 Promise를 아래로 전달하세요. Client Component는 render 중에 `await`할 수 없으므로 `use()`로 Promise를 unwrap합니다.
+
+앱의 나머지 부분이 render되기 전에 server에서 request를 시작하면 response가 즉시 stream되고 client-side request waterfall을 피할 수 있습니다.
+
+하나의 Promise를 prop으로 전달해 `use()`로 unwrap할 수도 있고, React context provider와 짝지어 어떤 Client Component든 custom hook으로 값을 읽게 할 수도 있습니다.
+
+Client Component에 focus revalidation, polling, mutation, request deduplication이 필요하다면 SWR이나 TanStack Query 같은 library를 사용하세요. 브라우저에서 직접 fetch하는 방법, Server Component에서 초기 데이터를 제공하는 방법, library cache를 Next.js server cache 및 client cache와 조율하는 방법은 [Client-side data fetching](/docs/app/guides/client-side-data-fetching)을 참고하세요.
+
+Server Component(여기서는 root layout)에서 await하지 않고 request를 시작한 뒤, Promise를 provider에 전달하세요:
+
+[[CODE 1]]
+
+&gt; **Good to know:** tree 상위에서 설정한 Promise를 다시 fetch하면 그것을 설정한 Server Component가 다시 실행됩니다. 따라서 앱의 일부만 필요로 하는 데이터라면 provider를 root layout 대신 해당 subtree에 두세요. React의 [context에서 Promise를 읽을 때의 주의 사항](https://react.dev/reference/react/use#reading-a-promise-from-context)을 참고하세요.
+
+여러 component가 한 request 안에서 같은 데이터를 읽는다면, `getUser`를 React의 [`cache`](https://react.dev/reference/react/cache)로 감싸서 한 번의 호출을 공유하게 하세요. 이 패턴에 대한 자세한 내용은 [Reusing data with `React.cache`](/docs/app/getting-started/fetching-data#reusing-data-with-reactcache)를 참고하세요.
+
+provider는 context를 통해 Promise를 전달합니다:
+
+[[CODE 2]]
+
+마지막으로 어떤 Client Component에서든 `useUser()` hook을 호출하고 `use()`로 Promise를 unwrap하세요. `use()`는 데이터가 준비될 때까지 component를 suspend합니다:
+
+[[CODE 3]]
+
+Promise가 resolve되는 동안 fallback을 보여 주려면 consumer를 [`&lt;Suspense&gt;`](https://react.dev/reference/react/Suspense) boundary로 감싸세요:
+
+[[CODE 4]]
+
+Promise를 소비하는 component(예: 위의 `Profile`)는 Promise가 resolve되는 동안 suspend되므로, JavaScript 로딩이 끝나기 전에 stream된 prerender HTML을 볼 수 있습니다.
+
+[live demo](https://next-spa-patterns.labs.vercel.dev/use-context)와 그 [source code](https://github.com/nextjs/next-spa-patterns/tree/main/app/use-context)를 참고하세요.
+
+### Rendering components only in the browser || 브라우저에서만 component render하기
+
+Client component는 `next build` 중에 [prerender](https://github.com/reactwg/server-components/discussions/4)됩니다. Client Component의 prerendering을 비활성화하고 브라우저 환경에서만 로드하고 싶다면 [`next/dynamic`](/docs/app/guides/lazy-loading#nextdynamic)을 사용할 수 있습니다:
+
+[[CODE 5]]
+
+이는 `window`나 `document` 같은 브라우저 API에 의존하는 third-party library에 유용할 수 있습니다. 또는 이런 API가 존재하는지 확인하는 `useEffect`를 추가하고, 존재하지 않으면 `null`이나 prerender될 loading state를 반환하게 할 수도 있습니다.
+
+React 19.3에는 [`browser`](https://react.dev/reference/react-dom/browser) API가 포함되어 있습니다. `use(browser())`는 Client Component의 첫 브라우저 render가 server-rendered HTML과 일치할 수 없는 경우에만 사용하세요.
+
+prerendering 중에 `use(browser())`는 가장 가까운 `&lt;Suspense&gt;` boundary까지 suspend합니다. fallback이 component의 초기 HTML이 되므로, JavaScript를 실행하지 않는 crawler는 component 대신 fallback을 보게 됩니다. index되어야 하는 콘텐츠는 browser 전용 boundary 바깥에 두세요.
+
+예를 들어, 이 editor는 `localStorage`에서 저장된 draft를 읽습니다:
+
+[[CODE 6]]
+
+그다음 Suspense boundary로 감싸세요:
+
+[[CODE 7]]
+
+브라우저에서는 `browser()`가 `undefined`를 반환하고, editor는 저장된 draft와 함께 render됩니다.
+
+두 가지 접근 방식 모두 [live demo](https://next-spa-patterns.labs.vercel.dev/browser-only)에서 확인하세요. [demo source](https://github.com/nextjs/next-spa-patterns/tree/main/app/browser-only)에 전체 예제가 들어 있습니다.
+
+### Shallow routing on the client || Client에서의 shallow routing
+
+[Create React App](/docs/app/guides/migrating/from-create-react-app)이나 [Vite](/docs/app/guides/migrating/from-vite) 같은 strict SPA에서 migrate하는 중이라면, URL state를 업데이트하기 위해 shallow routing하는 기존 코드가 있을 수 있습니다. 이는 기본 Next.js file-system routing을 사용하지 _않고_ 애플리케이션 안의 view 사이를 수동으로 전환할 때 유용할 수 있습니다.
+
+Next.js에서는 native [`window.history.pushState`](https://developer.mozilla.org/en-US/docs/Web/API/History/pushState)와 [`window.history.replaceState`](https://developer.mozilla.org/en-US/docs/Web/API/History/replaceState) method를 사용해 page를 reload하지 않고 브라우저의 history stack을 업데이트할 수 있습니다.
+
+`pushState`와 `replaceState` 호출은 Next.js Router와 통합되므로 [`usePathname`](/docs/app/api-reference/functions/use-pathname), [`useSearchParams`](/docs/app/api-reference/functions/use-search-params)와 동기화할 수 있습니다.
+
+[[CODE 8]]
+
+Next.js에서 [routing과 navigation](/docs/app/getting-started/linking-and-navigating#how-navigation-works)이 어떻게 동작하는지 더 알아보세요.
+
+[live demo](https://next-spa-patterns.labs.vercel.dev/shallow-routing)와 그 [source code](https://github.com/nextjs/next-spa-patterns/tree/main/app/shallow-routing)를 참고하세요.
+
+### Mutating data with Server Actions || Server Action으로 데이터 변경하기
+
+interactivity에는 흔히 데이터 쓰기가 필요합니다. Client Component는 [Server Action](/docs/app/guides/server-actions)을 호출해 server에서 mutation을 실행할 수 있습니다. [client-side data fetching 가이드](/docs/app/guides/client-side-data-fetching#coordinate-mutations)에서 보여 주듯이, client data-fetching library가 같은 Server Action을 중심으로 브라우저의 optimistic 업데이트를 조율할 수도 있습니다. 이 섹션의 나머지 부분에서는 React의 내장 state API로 Server Action을 조율합니다.
+
+Server Action은 시간이 걸리고 실패할 수도 있습니다. React에는 action이 실행되는 동안 UI의 반응성을 유지해 주는 유용한 도구가 있어서, mutation이 client-rendered SPA처럼 즉각적으로 느껴지게 할 수 있습니다: [transitions](https://react.dev/reference/react/useTransition), [`useOptimistic`](https://react.dev/reference/react/useOptimistic), [`useActionState`](https://react.dev/reference/react/useActionState), [`useFormStatus`](https://react.dev/reference/react-dom/hooks/useFormStatus).
+
+가장 단순하게는, Client Component가 transition 안에서 Server Action을 호출하고 pending state로 피드백을 보여 줍니다:
+
+[[CODE 9]]
+
+변경 사항이 즉시 나타나야 하는 목록 형태의 state라면 `useActionState`와 `useOptimistic`을 조합할 수 있습니다. 아래 예제는 to-do 목록입니다: 순수 reducer가 각 action이 목록을 어떻게 바꾸는지 정의하므로, client와 server가 그 로직의 사본 하나를 공유합니다:
+
+[[CODE 10]]
+
+Server Action은 reducer를 적용하고, 결과를 저장한 뒤, 다음 목록을 반환합니다:
+
+[[CODE 11]]
+
+client는 같은 reducer를 `useOptimistic`에 전달하므로, optimistic 업데이트와 server가 다음 state를 똑같이 계산합니다. `runAction` helper는 같은 transition 안에서 optimistic 변경을 적용하고 Server Action을 dispatch하므로, 모든 변경 사항이 즉시 표시됩니다:
+
+[[CODE 12]]
+
+optimistic 업데이트는 즉시 표시되고, `useActionState`의 pending flag를 사용하면 Server Action이 resolve될 때까지 은은한 indicator(예: `Syncing to server…`)를 보여 줄 수 있습니다.
+
+[live demo](https://next-spa-patterns.labs.vercel.dev/mutations)와 그 [source code](https://github.com/nextjs/next-spa-patterns/tree/main/app/mutations)를 참고하세요.
+
+server-rendered 앱 위에 interactivity를 더해 SPA처럼 느껴지게 하는 방법은 [Building interactive apps](/docs/app/guides/interactive-apps) 가이드와 실행 가능한 demo를 참고하세요.
+
+## Static export (optional) || Static export (선택)
+
+Next.js는 완전한 [static site](/docs/app/guides/static-exports) 생성도 지원합니다. 이는 strict SPA에 비해 몇 가지 장점이 있습니다:
+
+- **자동 code-splitting**: 하나의 `index.html`을 전달하는 대신 Next.js가 route마다 HTML 파일을 생성하므로, 방문자는 client JavaScript bundle을 기다리지 않고 콘텐츠를 더 빨리 받습니다.
+- **향상된 사용자 경험:** 모든 route에 최소한의 skeleton을 보여 주는 대신, route마다 완전히 render된 page를 제공합니다. 사용자가 client side에서 navigate할 때도 전환은 여전히 즉각적이고 SPA처럼 동작합니다.
+
+static export를 활성화하려면 configuration을 업데이트하세요:
+
+[[CODE 13]]
+
+`next build`를 실행하면 Next.js가 애플리케이션의 HTML/CSS/JS asset이 담긴 `out` 폴더를 만듭니다.
+
+&gt; **Note:** static export에서는 Next.js server 기능이 지원되지 않습니다. [더 알아보기](/docs/app/guides/static-exports#unsupported-features).
+
+## Migrating existing projects to Next.js || 기존 프로젝트를 Next.js로 migrate하기
+
+다음 가이드를 따라 Next.js로 점진적으로 migrate할 수 있습니다:
+
+- [Migrating from Create React App](/docs/app/guides/migrating/from-create-react-app)
+- [Migrating from Vite](/docs/app/guides/migrating/from-vite)
+
+이미 Pages Router로 SPA를 사용하고 있다면 [App Router를 점진적으로 도입](/docs/app/guides/migrating/app-router-migration)하는 방법을 알아볼 수 있습니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

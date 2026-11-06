@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to use debugging tools with Next.js (Next.js에서 debugging 도구 사용하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/debugging" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/debugging" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/debugging.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to use debugging tools with Next.js<span class="sub">Next.js에서 debugging 도구 사용하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>이 문서는 <a href="https://code.visualstudio.com/docs/editor/debugging" target="_blank" rel="noopener">VS Code debugger</a>, <a href="https://developers.google.com/web/tools/chrome-devtools" target="_blank" rel="noopener">Chrome DevTools</a>, <a href="https://firefox-source-docs.mozilla.org/devtools-user/" target="_blank" rel="noopener">Firefox DevTools</a>를 사용해 source map을 완전히 지원하는 상태로 Next.js frontend와 backend 코드를 debug하는 방법을 설명합니다.</p><div class="en-orig"><p>This documentation explains how you can debug your Next.js frontend and backend code with full source maps support using the <a href="https://code.visualstudio.com/docs/editor/debugging" target="_blank" rel="noopener">VS Code debugger</a>, <a href="https://developers.google.com/web/tools/chrome-devtools" target="_blank" rel="noopener">Chrome DevTools</a>, or <a href="https://firefox-source-docs.mozilla.org/devtools-user/" target="_blank" rel="noopener">Firefox DevTools</a>.</p></div>
+<p>Node.js에 attach할 수 있는 debugger라면 무엇이든 Next.js 애플리케이션을 debug하는 데 사용할 수 있습니다. 자세한 내용은 Node.js <a href="https://nodejs.org/learn/getting-started/debugging/" target="_blank" rel="noopener">Debugging Guide</a>에서 확인할 수 있습니다.</p><div class="en-orig"><p>Any debugger that can attach to Node.js can also be used to debug a Next.js application. You can find more details in the Node.js <a href="https://nodejs.org/learn/getting-started/debugging/" target="_blank" rel="noopener">Debugging Guide</a>.</p></div>
+<h2 class="sec" id="debugging-with-vs-code"><a class="anchor" href="#debugging-with-vs-code">Debugging with VS Code<span class="ko">VS Code로 debugging하기</span></a></h2>
+<p>프로젝트 root에 다음 내용으로 <code>.vscode/launch.json</code> 파일을 만드세요:</p><div class="en-orig"><p>Create a file named <code>.vscode/launch.json</code> at the root of your project with the following content:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">launch.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;version&quot;: &quot;0.2.0&quot;,
+  &quot;configurations&quot;: [
+    {
+      &quot;name&quot;: &quot;Next.js: debug server-side&quot;,
+      &quot;type&quot;: &quot;node-terminal&quot;,
+      &quot;request&quot;: &quot;launch&quot;,
+      &quot;command&quot;: &quot;npm run dev -- --inspect&quot;
+    },
+    {
+      &quot;name&quot;: &quot;Next.js: debug client-side&quot;,
+      &quot;type&quot;: &quot;chrome&quot;,
+      &quot;request&quot;: &quot;launch&quot;,
+      &quot;url&quot;: &quot;http://localhost:3000&quot;
+    },
+    {
+      &quot;name&quot;: &quot;Next.js: debug client-side (Firefox)&quot;,
+      &quot;type&quot;: &quot;firefox&quot;,
+      &quot;request&quot;: &quot;launch&quot;,
+      &quot;url&quot;: &quot;http://localhost:3000&quot;,
+      &quot;reAttach&quot;: true,
+      &quot;pathMappings&quot;: [
+        {
+          &quot;url&quot;: &quot;webpack://_N_E&quot;,
+          &quot;path&quot;: &quot;${workspaceFolder}&quot;
+        }
+      ]
+    },
+    {
+      &quot;name&quot;: &quot;Next.js: debug full stack&quot;,
+      &quot;type&quot;: &quot;node&quot;,
+      &quot;request&quot;: &quot;launch&quot;,
+      &quot;program&quot;: &quot;${workspaceFolder}/node_modules/next/dist/bin/next&quot;,
+      &quot;runtimeArgs&quot;: [&quot;--inspect&quot;],
+      &quot;skipFiles&quot;: [&quot;&lt;node_internals&gt;/**&quot;],
+      &quot;serverReadyAction&quot;: {
+        &quot;action&quot;: &quot;debugWithEdge&quot;,
+        &quot;killOnServerStop&quot;: true,
+        &quot;pattern&quot;: &quot;- Local:.+(https?://.+)&quot;,
+        &quot;uriFormat&quot;: &quot;%s&quot;,
+        &quot;webRoot&quot;: &quot;${workspaceFolder}&quot;
+      }
+    }
+  ]
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p>VS Code에서 Firefox debugging을 사용하려면 <a href="https://marketplace.visualstudio.com/items?itemName=firefox-devtools.vscode-firefox-debug" target="_blank" rel="noopener">Firefox Debugger extension</a>을 설치해야 합니다.</p><div class="en-orig"><p>To use Firefox debugging in VS Code, you'll need to install the <a href="https://marketplace.visualstudio.com/items?itemName=firefox-devtools.vscode-firefox-debug" target="_blank" rel="noopener">Firefox Debugger extension</a>.</p></div></div></div>
+<p>Yarn을 사용한다면 <code>npm run dev</code>를 <code>yarn dev</code>로, pnpm을 사용한다면 <code>pnpm dev</code>로 바꿔도 됩니다.</p><div class="en-orig"><p><code>npm run dev</code> can be replaced with <code>yarn dev</code> if you're using Yarn or <code>pnpm dev</code> if you're using pnpm.</p></div>
+<p>"Next.js: debug full stack" configuration에서 <code>serverReadyAction.action</code>은 server가 준비되었을 때 어떤 브라우저를 열지 지정합니다. <code>debugWithEdge</code>는 Edge 브라우저를 실행한다는 뜻입니다. Chrome을 사용한다면 이 값을 <code>debugWithChrome</code>으로 바꾸세요.</p><div class="en-orig"><p>In the "Next.js: debug full stack" configuration, <code>serverReadyAction.action</code> specifies which browser to open when the server is ready. <code>debugWithEdge</code> means to launch the Edge browser. If you are using Chrome, change this value to <code>debugWithChrome</code>.</p></div>
+<p>애플리케이션이 시작되는 <a href="pages-api-reference-cli-next.html#next-dev-options">port 번호를 변경</a>했다면, <code>http://localhost:3000</code>의 <code>3000</code>을 사용 중인 port로 바꾸세요.</p><div class="en-orig"><p>If you're <a href="pages-api-reference-cli-next.html#next-dev-options">changing the port number</a> your application starts on, replace the <code>3000</code> in <code>http://localhost:3000</code> with the port you're using instead.</p></div>
+<p>root가 아닌 다른 directory에서 Next.js를 실행한다면(예: Turborepo를 사용하는 경우) server-side와 full stack debugging task에 <code>cwd</code>를 추가해야 합니다. 예: <code>&quot;cwd&quot;: &quot;${workspaceFolder}/apps/web&quot;</code>.</p><div class="en-orig"><p>If you're running Next.js from a directory other than root (for example, if you're using Turborepo) then you need to add <code>cwd</code> to the server-side and full stack debugging tasks. For example, <code>&quot;cwd&quot;: &quot;${workspaceFolder}/apps/web&quot;</code>.</p></div>
+<p>이제 Debug panel(Windows/Linux에서는 <code>Ctrl+Shift+D</code>, macOS에서는 <code>⇧+⌘+D</code>)로 이동해 launch configuration을 선택한 다음, <code>F5</code>를 누르거나 Command Palette에서 <strong>Debug: Start Debugging</strong>을 선택해 debugging session을 시작하세요.</p><div class="en-orig"><p>Now go to the Debug panel (<code>Ctrl+Shift+D</code> on Windows/Linux, <code>⇧+⌘+D</code> on macOS), select a launch configuration, then press <code>F5</code> or select <strong>Debug: Start Debugging</strong> from the Command Palette to start your debugging session.</p></div>
+<h2 class="sec" id="using-the-debugger-in-jetbrains-webstorm"><a class="anchor" href="#using-the-debugger-in-jetbrains-webstorm">Using the Debugger in Jetbrains WebStorm<span class="ko">Jetbrains WebStorm에서 Debugger 사용하기</span></a></h2>
+<p>runtime configuration 목록이 있는 drop down 메뉴를 클릭하고 <code>Edit Configurations...</code>를 클릭하세요. URL을 <code>http://localhost:3000</code>으로 하는 <code>JavaScript Debug</code> debug configuration을 만듭니다. 원하는 대로 설정(예: debugging용 브라우저, project 파일로 저장)한 뒤 <code>OK</code>를 클릭하세요. 이 debug configuration을 실행하면 선택한 브라우저가 자동으로 열립니다. 이 시점에는 debug mode인 애플리케이션이 2개 있어야 합니다: Next.js node 애플리케이션과 client/브라우저 애플리케이션입니다.</p><div class="en-orig"><p>Click the drop down menu listing the runtime configuration, and click <code>Edit Configurations...</code>. Create a <code>JavaScript Debug</code> debug configuration with <code>http://localhost:3000</code> as the URL. Customize to your liking (e.g. Browser for debugging, store as project file), and click <code>OK</code>. Run this debug configuration, and the selected browser should automatically open. At this point, you should have 2 applications in debug mode: the Next.js node application, and the client/browser application.</p></div>
+<h2 class="sec" id="debugging-with-browser-devtools"><a class="anchor" href="#debugging-with-browser-devtools">Debugging with Browser DevTools<span class="ko">브라우저 DevTools로 debugging하기</span></a></h2>
+<h3 class="sec" id="client-side-code"><a class="anchor" href="#client-side-code">Client-side code<span class="ko">Client-side 코드</span></a></h3>
+<p>평소처럼 <code>next dev</code>, <code>npm run dev</code>, <code>yarn dev</code> 중 하나를 실행해 development server를 시작하세요. server가 시작되면 선호하는 브라우저에서 <code>http://localhost:3000</code>(또는 대체 URL)을 여세요.</p><div class="en-orig"><p>Start your development server as usual by running <code>next dev</code>, <code>npm run dev</code>, or <code>yarn dev</code>. Once the server starts, open <code>http://localhost:3000</code> (or your alternate URL) in your preferred browser.</p></div>
+<p>Chrome의 경우:</p><div class="en-orig"><p>For Chrome:</p></div>
+<ul>
+<li>Chrome Developer Tools 열기(Windows/Linux에서는 <code>Ctrl+Shift+J</code>, macOS에서는 <code>⌥+⌘+I</code>)</li>
+<li><strong>Sources</strong> tab으로 이동</li>
+</ul><div class="en-orig"><ul>
+<li>Open Chrome's Developer Tools (<code>Ctrl+Shift+J</code> on Windows/Linux, <code>⌥+⌘+I</code> on macOS)</li>
+<li>Go to the <strong>Sources</strong> tab</li>
+</ul></div>
+<p>Firefox의 경우:</p><div class="en-orig"><p>For Firefox:</p></div>
+<ul>
+<li>Firefox Developer Tools 열기(Windows/Linux에서는 <code>Ctrl+Shift+I</code>, macOS에서는 <code>⌥+⌘+I</code>)</li>
+<li><strong>Debugger</strong> tab으로 이동</li>
+</ul><div class="en-orig"><ul>
+<li>Open Firefox's Developer Tools (<code>Ctrl+Shift+I</code> on Windows/Linux, <code>⌥+⌘+I</code> on macOS)</li>
+<li>Go to the <strong>Debugger</strong> tab</li>
+</ul></div>
+<p>어느 브라우저에서든 client-side 코드가 <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/debugger" target="_blank" rel="noopener"><code>debugger</code></a> 문에 도달하면 코드 실행이 일시 정지되고 해당 파일이 debug 영역에 나타납니다. 파일을 검색해 breakpoint를 수동으로 설정할 수도 있습니다:</p><div class="en-orig"><p>In either browser, any time your client-side code reaches a <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/debugger" target="_blank" rel="noopener"><code>debugger</code></a> statement, code execution will pause and that file will appear in the debug area. You can also search for files to set breakpoints manually:</p></div>
+<ul>
+<li>Chrome: Windows/Linux에서는 <code>Ctrl+P</code>, macOS에서는 <code>⌘+P</code>를 누르세요</li>
+<li>Firefox: Windows/Linux에서는 <code>Ctrl+P</code>, macOS에서는 <code>⌘+P</code>를 누르거나 왼쪽 panel의 file tree를 사용하세요</li>
+</ul><div class="en-orig"><ul>
+<li>In Chrome: Press <code>Ctrl+P</code> on Windows/Linux or <code>⌘+P</code> on macOS</li>
+<li>In Firefox: Press <code>Ctrl+P</code> on Windows/Linux or <code>⌘+P</code> on macOS, or use the file tree in the left panel</li>
+</ul></div>
+<p>검색할 때 source 파일의 경로는 <code>webpack://_N_E/./</code>로 시작한다는 점에 유의하세요.</p><div class="en-orig"><p>Note that when searching, your source files will have paths starting with <code>webpack://_N_E/./</code>.</p></div>
+<h3 class="sec" id="react-developer-tools"><a class="anchor" href="#react-developer-tools">React Developer Tools</a></h3>
+<p>React에 특화된 debugging을 하려면 <a href="https://react.dev/learn/react-developer-tools" target="_blank" rel="noopener">React Developer Tools</a> 브라우저 extension을 설치하세요. 이 필수 도구로 다음을 할 수 있습니다:</p><div class="en-orig"><p>For React-specific debugging, install the <a href="https://react.dev/learn/react-developer-tools" target="_blank" rel="noopener">React Developer Tools</a> browser extension. This essential tool helps you:</p></div>
+<ul>
+<li>React component 검사</li>
+<li>props와 state 수정</li>
+<li>performance 문제 파악</li>
+</ul><div class="en-orig"><ul>
+<li>Inspect React components</li>
+<li>Edit props and state</li>
+<li>Identify performance problems</li>
+</ul></div>
+<h3 class="sec" id="server-side-code"><a class="anchor" href="#server-side-code">Server-side code<span class="ko">Server-side 코드</span></a></h3>
+<p>브라우저 DevTools로 server-side Next.js 코드를 debug하려면 <code>--inspect</code> flag를 전달해야 합니다:</p><div class="en-orig"><p>To debug server-side Next.js code with browser DevTools, you need to pass the <code>--inspect</code> flag:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm dev --inspect</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm run dev -- --inspect</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn dev --inspect</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun run dev --inspect</code></pre></div></div>
+<p><code>--inspect</code>의 값은 내부의 Node.js process로 전달됩니다. 고급 사용 사례는 <a href="https://nodejs.org/api/cli.html#--inspecthostport" target="_blank" rel="noopener"><code>--inspect</code> 문서</a>를 확인하세요.</p><div class="en-orig"><p>The value of <code>--inspect</code> is passed to the underlying Node.js process. Check out the <a href="https://nodejs.org/api/cli.html#--inspecthostport" target="_blank" rel="noopener"><code>--inspect</code> docs for advanced use cases</a>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Docker container에서 앱을 실행하는 경우처럼 localhost 밖에서 원격 debugging 접근을 허용하려면 <code>--inspect=0.0.0.0</code>을 사용하세요.</p><div class="en-orig"><p>Use <code>--inspect=0.0.0.0</code> to allow remote debugging access outside localhost, such as when running the app in a Docker container.</p></div></div></div>
+<p><code>--inspect</code> flag로 Next.js server를 실행하면 다음과 비슷하게 표시됩니다:</p><div class="en-orig"><p>Launching the Next.js server with the <code>--inspect</code> flag will look something like this:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">Debugger listening on ws://127.0.0.1:9229/0cf90313-350d-4466-a748-cd60f4e47c95
+For help, see: https://nodejs.org/learn/getting-started/debugging
+ready - started server on 0.0.0.0:3000, url: http://localhost:3000</code></pre></div></div>
+<p>Chrome의 경우:</p><div class="en-orig"><p>For Chrome:</p></div>
+<ol>
+<li>새 tab을 열고 <code>chrome://inspect</code>에 방문합니다</li>
+<li><strong>Remote Target</strong> 섹션에서 Next.js 애플리케이션을 찾습니다</li>
+<li><strong>inspect</strong>를 클릭해 별도의 DevTools 창을 엽니다</li>
+<li><strong>Sources</strong> tab으로 이동합니다</li>
+</ol><div class="en-orig"><ol>
+<li>Open a new tab and visit <code>chrome://inspect</code></li>
+<li>Look for your Next.js application in the <strong>Remote Target</strong> section</li>
+<li>Click <strong>inspect</strong> to open a separate DevTools window</li>
+<li>Go to the <strong>Sources</strong> tab</li>
+</ol></div>
+<p>Firefox의 경우:</p><div class="en-orig"><p>For Firefox:</p></div>
+<ol>
+<li>새 tab을 열고 <code>about:debugging</code>에 방문합니다</li>
+<li>왼쪽 sidebar에서 <strong>This Firefox</strong>를 클릭합니다</li>
+<li><strong>Remote Targets</strong> 아래에서 Next.js 애플리케이션을 찾습니다</li>
+<li><strong>Inspect</strong>를 클릭해 debugger를 엽니다</li>
+<li><strong>Debugger</strong> tab으로 이동합니다</li>
+</ol><div class="en-orig"><ol>
+<li>Open a new tab and visit <code>about:debugging</code></li>
+<li>Click <strong>This Firefox</strong> in the left sidebar</li>
+<li>Under <strong>Remote Targets</strong>, find your Next.js application</li>
+<li>Click <strong>Inspect</strong> to open the debugger</li>
+<li>Go to the <strong>Debugger</strong> tab</li>
+</ol></div>
+<p>server-side 코드 debugging은 client-side debugging과 비슷하게 동작합니다. 파일을 검색할 때(<code>Ctrl+P</code>/<code>⌘+P</code>) source 파일의 경로는 <code>webpack://{application-name}/./</code>로 시작합니다(<code>{application-name}</code>은 <code>package.json</code> 파일에 따른 애플리케이션 이름으로 대체됩니다).</p><div class="en-orig"><p>Debugging server-side code works similarly to client-side debugging. When searching for files (<code>Ctrl+P</code>/<code>⌘+P</code>), your source files will have paths starting with <code>webpack://{application-name}/./</code> (where <code>{application-name}</code> will be replaced with the name of your application according to your <code>package.json</code> file).</p></div>
+<p><code>--inspect-brk</code>나 <code>--inspect-wait</code>를 사용하려면 대신 <code>NODE_OPTIONS</code>를 지정해야 합니다. 예: <code>NODE_OPTIONS=--inspect-brk next dev</code>.</p><div class="en-orig"><p>To use <code>--inspect-brk</code> or <code>--inspect-wait</code>, you have to specify <code>NODE_OPTIONS</code> instead. e.g. <code>NODE_OPTIONS=--inspect-brk next dev</code>.</p></div>
+<h3 class="sec" id="inspect-server-errors-with-browser-devtools"><a class="anchor" href="#inspect-server-errors-with-browser-devtools">Inspect Server Errors with Browser DevTools<span class="ko">브라우저 DevTools로 Server Error 검사하기</span></a></h3>
+<p>error가 발생했을 때 source 코드를 검사하면 error의 근본 원인을 추적하는 데 도움이 됩니다.</p><div class="en-orig"><p>When you encounter an error, inspecting the source code can help trace the root cause of errors.</p></div>
+<p>Next.js는 error overlay의 Next.js version indicator 아래에 Node.js 아이콘을 표시합니다. 이 아이콘을 클릭하면 DevTools URL이 clipboard에 복사됩니다. 그 URL로 새 브라우저 tab을 열어 Next.js server process를 검사할 수 있습니다.</p><div class="en-orig"><p>Next.js will display a Node.js icon underneath the Next.js version indicator on the error overlay. By clicking that icon, the DevTools URL is copied to your clipboard. You can open a new browser tab with that URL to inspect the Next.js server process.</p></div>
+<h3 class="sec" id="debugging-on-windows"><a class="anchor" href="#debugging-on-windows">Debugging on Windows<span class="ko">Windows에서 debugging하기</span></a></h3>
+<p>컴퓨터에서 Windows Defender가 비활성화되어 있는지 확인하세요. 이 외부 서비스는 *모든 파일 읽기*를 검사하는데, 이로 인해 <code>next dev</code>의 Fast Refresh 시간이 크게 늘어난다는 보고가 있습니다. 이는 Next.js와 관련 없는 알려진 문제이지만 Next.js 개발에 영향을 줍니다.</p><div class="en-orig"><p>Ensure Windows Defender is disabled on your machine. This external service will check <em>every file read</em>, which has been reported to greatly increase Fast Refresh time with <code>next dev</code>. This is a known issue, not related to Next.js, but it does affect Next.js development.</p></div>
+<h2 class="sec" id="more-information"><a class="anchor" href="#more-information">More information<span class="ko">더 알아보기</span></a></h2>
+<p>JavaScript debugger 사용법에 대해 더 알아보려면 다음 문서를 살펴보세요:</p><div class="en-orig"><p>To learn more about how to use a JavaScript debugger, take a look at the following documentation:</p></div>
+<ul>
+<li><a href="https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_breakpoints" target="_blank" rel="noopener">Node.js debugging in VS Code: Breakpoints</a></li>
+<li><a href="https://developers.google.com/web/tools/chrome-devtools/javascript" target="_blank" rel="noopener">Chrome DevTools: Debug JavaScript</a></li>
+<li><a href="https://firefox-source-docs.mozilla.org/devtools-user/debugger/" target="_blank" rel="noopener">Firefox DevTools: Debugger</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_breakpoints" target="_blank" rel="noopener">Node.js debugging in VS Code: Breakpoints</a></li>
+<li><a href="https://developers.google.com/web/tools/chrome-devtools/javascript" target="_blank" rel="noopener">Chrome DevTools: Debug JavaScript</a></li>
+<li><a href="https://firefox-source-docs.mozilla.org/devtools-user/debugger/" target="_blank" rel="noopener">Firefox DevTools: Debugger</a></li>
+</ul></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/debugging.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/debugging" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-data-security.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Data Security</div><div class="ttl-ko">Next.js의 데이터 보안을 생각하는 방법</div></a>
+      <a href="app-guides-deploying-to-platforms.html" class="next"><div class="dir">다음 →</div><div class="ttl">Deploying to Platforms</div><div class="ttl-ko">다양한 플랫폼에 Next.js deploy하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/debugging" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#debugging-with-vs-code">Debugging with VS Code</a></li><li class="l2"><a href="#using-the-debugger-in-jetbrains-webstorm">Using the Debugger in Jetbrains WebStorm</a></li><li class="l2"><a href="#debugging-with-browser-devtools">Debugging with Browser DevTools</a></li><li class="l3"><a href="#client-side-code">Client-side code</a></li><li class="l3"><a href="#react-developer-tools">React Developer Tools</a></li><li class="l3"><a href="#server-side-code">Server-side code</a></li><li class="l3"><a href="#inspect-server-errors-with-browser-devtools">Inspect Server Errors with Browser DevTools</a></li><li class="l3"><a href="#debugging-on-windows">Debugging on Windows</a></li><li class="l2"><a href="#more-information">More information</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+이 문서는 [VS Code debugger](https://code.visualstudio.com/docs/editor/debugging), [Chrome DevTools](https://developers.google.com/web/tools/chrome-devtools), [Firefox DevTools](https://firefox-source-docs.mozilla.org/devtools-user/)를 사용해 source map을 완전히 지원하는 상태로 Next.js frontend와 backend 코드를 debug하는 방법을 설명합니다.
+
+Node.js에 attach할 수 있는 debugger라면 무엇이든 Next.js 애플리케이션을 debug하는 데 사용할 수 있습니다. 자세한 내용은 Node.js [Debugging Guide](https://nodejs.org/learn/getting-started/debugging/)에서 확인할 수 있습니다.
+
+## Debugging with VS Code || VS Code로 debugging하기
+
+프로젝트 root에 다음 내용으로 `.vscode/launch.json` 파일을 만드세요:
+
+[[CODE 1]]
+
+&gt; **Note**: VS Code에서 Firefox debugging을 사용하려면 [Firefox Debugger extension](https://marketplace.visualstudio.com/items?itemName=firefox-devtools.vscode-firefox-debug)을 설치해야 합니다.
+
+Yarn을 사용한다면 `npm run dev`를 `yarn dev`로, pnpm을 사용한다면 `pnpm dev`로 바꿔도 됩니다.
+
+&quot;Next.js: debug full stack&quot; configuration에서 `serverReadyAction.action`은 server가 준비되었을 때 어떤 브라우저를 열지 지정합니다. `debugWithEdge`는 Edge 브라우저를 실행한다는 뜻입니다. Chrome을 사용한다면 이 값을 `debugWithChrome`으로 바꾸세요.
+
+애플리케이션이 시작되는 [port 번호를 변경](/docs/pages/api-reference/cli/next#next-dev-options)했다면, `http://localhost:3000`의 `3000`을 사용 중인 port로 바꾸세요.
+
+root가 아닌 다른 directory에서 Next.js를 실행한다면(예: Turborepo를 사용하는 경우) server-side와 full stack debugging task에 `cwd`를 추가해야 합니다. 예: `&quot;cwd&quot;: &quot;${workspaceFolder}/apps/web&quot;`.
+
+이제 Debug panel(Windows/Linux에서는 `Ctrl+Shift+D`, macOS에서는 `⇧+⌘+D`)로 이동해 launch configuration을 선택한 다음, `F5`를 누르거나 Command Palette에서 **Debug: Start Debugging**을 선택해 debugging session을 시작하세요.
+
+## Using the Debugger in Jetbrains WebStorm || Jetbrains WebStorm에서 Debugger 사용하기
+
+runtime configuration 목록이 있는 drop down 메뉴를 클릭하고 `Edit Configurations...`를 클릭하세요. URL을 `http://localhost:3000`으로 하는 `JavaScript Debug` debug configuration을 만듭니다. 원하는 대로 설정(예: debugging용 브라우저, project 파일로 저장)한 뒤 `OK`를 클릭하세요. 이 debug configuration을 실행하면 선택한 브라우저가 자동으로 열립니다. 이 시점에는 debug mode인 애플리케이션이 2개 있어야 합니다: Next.js node 애플리케이션과 client/브라우저 애플리케이션입니다.
+
+## Debugging with Browser DevTools || 브라우저 DevTools로 debugging하기
+
+### Client-side code || Client-side 코드
+
+평소처럼 `next dev`, `npm run dev`, `yarn dev` 중 하나를 실행해 development server를 시작하세요. server가 시작되면 선호하는 브라우저에서 `http://localhost:3000`(또는 대체 URL)을 여세요.
+
+Chrome의 경우:
+
+- Chrome Developer Tools 열기(Windows/Linux에서는 `Ctrl+Shift+J`, macOS에서는 `⌥+⌘+I`)
+- **Sources** tab으로 이동
+
+Firefox의 경우:
+
+- Firefox Developer Tools 열기(Windows/Linux에서는 `Ctrl+Shift+I`, macOS에서는 `⌥+⌘+I`)
+- **Debugger** tab으로 이동
+
+어느 브라우저에서든 client-side 코드가 [`debugger`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Statements/debugger) 문에 도달하면 코드 실행이 일시 정지되고 해당 파일이 debug 영역에 나타납니다. 파일을 검색해 breakpoint를 수동으로 설정할 수도 있습니다:
+
+- Chrome: Windows/Linux에서는 `Ctrl+P`, macOS에서는 `⌘+P`를 누르세요
+- Firefox: Windows/Linux에서는 `Ctrl+P`, macOS에서는 `⌘+P`를 누르거나 왼쪽 panel의 file tree를 사용하세요
+
+검색할 때 source 파일의 경로는 `webpack://_N_E/./`로 시작한다는 점에 유의하세요.
+
+### React Developer Tools
+
+React에 특화된 debugging을 하려면 [React Developer Tools](https://react.dev/learn/react-developer-tools) 브라우저 extension을 설치하세요. 이 필수 도구로 다음을 할 수 있습니다:
+
+- React component 검사
+- props와 state 수정
+- performance 문제 파악
+
+### Server-side code || Server-side 코드
+
+브라우저 DevTools로 server-side Next.js 코드를 debug하려면 `--inspect` flag를 전달해야 합니다:
+
+[[CODE 2]]
+
+`--inspect`의 값은 내부의 Node.js process로 전달됩니다. 고급 사용 사례는 [`--inspect` 문서](https://nodejs.org/api/cli.html#--inspecthostport)를 확인하세요.
+
+&gt; **Good to know**: Docker container에서 앱을 실행하는 경우처럼 localhost 밖에서 원격 debugging 접근을 허용하려면 `--inspect=0.0.0.0`을 사용하세요.
+
+`--inspect` flag로 Next.js server를 실행하면 다음과 비슷하게 표시됩니다:
+
+[[CODE 3]]
+
+Chrome의 경우:
+
+1. 새 tab을 열고 `chrome://inspect`에 방문합니다
+1. **Remote Target** 섹션에서 Next.js 애플리케이션을 찾습니다
+1. **inspect**를 클릭해 별도의 DevTools 창을 엽니다
+1. **Sources** tab으로 이동합니다
+
+Firefox의 경우:
+
+1. 새 tab을 열고 `about:debugging`에 방문합니다
+1. 왼쪽 sidebar에서 **This Firefox**를 클릭합니다
+1. **Remote Targets** 아래에서 Next.js 애플리케이션을 찾습니다
+1. **Inspect**를 클릭해 debugger를 엽니다
+1. **Debugger** tab으로 이동합니다
+
+server-side 코드 debugging은 client-side debugging과 비슷하게 동작합니다. 파일을 검색할 때(`Ctrl+P`/`⌘+P`) source 파일의 경로는 `webpack://{application-name}/./`로 시작합니다(`{application-name}`은 `package.json` 파일에 따른 애플리케이션 이름으로 대체됩니다).
+
+`--inspect-brk`나 `--inspect-wait`를 사용하려면 대신 `NODE_OPTIONS`를 지정해야 합니다. 예: `NODE_OPTIONS=--inspect-brk next dev`.
+
+### Inspect Server Errors with Browser DevTools || 브라우저 DevTools로 Server Error 검사하기
+
+error가 발생했을 때 source 코드를 검사하면 error의 근본 원인을 추적하는 데 도움이 됩니다.
+
+Next.js는 error overlay의 Next.js version indicator 아래에 Node.js 아이콘을 표시합니다. 이 아이콘을 클릭하면 DevTools URL이 clipboard에 복사됩니다. 그 URL로 새 브라우저 tab을 열어 Next.js server process를 검사할 수 있습니다.
+
+### Debugging on Windows || Windows에서 debugging하기
+
+컴퓨터에서 Windows Defender가 비활성화되어 있는지 확인하세요. 이 외부 서비스는 *모든 파일 읽기*를 검사하는데, 이로 인해 `next dev`의 Fast Refresh 시간이 크게 늘어난다는 보고가 있습니다. 이는 Next.js와 관련 없는 알려진 문제이지만 Next.js 개발에 영향을 줍니다.
+
+## More information || 더 알아보기
+
+JavaScript debugger 사용법에 대해 더 알아보려면 다음 문서를 살펴보세요:
+
+- [Node.js debugging in VS Code: Breakpoints](https://code.visualstudio.com/docs/nodejs/nodejs-debugging#_breakpoints)
+- [Chrome DevTools: Debug JavaScript](https://developers.google.com/web/tools/chrome-devtools/javascript)
+- [Firefox DevTools: Debugger](https://firefox-source-docs.mozilla.org/devtools-user/debugger/)
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

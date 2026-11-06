@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>getServerSideProps (getServerSideProps) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/building-your-application/data-fetching/get-server-side-props" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/building-your-application/data-fetching/get-server-side-props" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/03-building-your-application/03-data-fetching/03-get-server-side-props.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-building-your-application.html">Building Your Application</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-building-your-application-data-fetching.html">Data Fetching</a></div>
+    <div class="title-row">
+      <h1 class="page-title">getServerSideProps<span class="sub">getServerSideProps</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>getServerSideProps</code>는 request time에 data를 fetch하고 page 내용을 render하는 데 사용할 수 있는 Next.js 함수입니다.</p><div class="en-orig"><p><code>getServerSideProps</code> is a Next.js function that can be used to fetch data and render the contents of a page at request time.</p></div>
+<h2 class="sec" id="example"><a class="anchor" href="#example">Example<span class="ko">예제</span></a></h2>
+<p><code>getServerSideProps</code>는 Page Component에서 export해서 사용할 수 있습니다. 아래 예제는 <code>getServerSideProps</code>에서 3rd party API로부터 data를 fetch하고, 그 data를 props로 page에 전달하는 방법을 보여 줍니다:</p><div class="en-orig"><p>You can use <code>getServerSideProps</code> by exporting it from a Page Component. The example below shows how you can fetch data from a 3rd party API in <code>getServerSideProps</code>, and pass the data to the page as props:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/index.tsx" data-js="pages/index.js">pages/index.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { InferGetServerSidePropsType, GetServerSideProps } from &#x27;next&#x27;
+
+type Repo = {
+  name: string
+  stargazers_count: number
+}
+
+export const getServerSideProps = (async () =&gt; {
+  // Fetch data from external API
+  const res = await fetch(&#x27;https://api.github.com/repos/vercel/next.js&#x27;)
+  const repo: Repo = await res.json()
+  // Pass data to the page via props
+  return { props: { repo } }
+}) satisfies GetServerSideProps&lt;{ repo: Repo }&gt;
+
+export default function Page({
+  repo,
+}: InferGetServerSidePropsType&lt;typeof getServerSideProps&gt;) {
+  return (
+    &lt;main&gt;
+      &lt;p&gt;{repo.stargazers_count}&lt;/p&gt;
+    &lt;/main&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function getServerSideProps() {
+  // Fetch data from external API
+  const res = await fetch(&#x27;https://api.github.com/repos/vercel/next.js&#x27;)
+  const repo = await res.json()
+  // Pass data to the page via props
+  return { props: { repo } }
+}
+
+export default function Page({ repo }) {
+  return (
+    &lt;main&gt;
+      &lt;p&gt;{repo.stargazers_count}&lt;/p&gt;
+    &lt;/main&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="when-should-i-use-getserversideprops"><a class="anchor" href="#when-should-i-use-getserversideprops">When should I use <code>getServerSideProps</code>?<span class="ko"><code>getServerSideProps</code>는 언제 사용해야 하나요?</span></a></h2>
+<p>개인화된 사용자 data나 request time에만 알 수 있는 정보에 의존하는 page를 render해야 한다면 <code>getServerSideProps</code>를 사용해야 합니다. 예를 들어 <code>authorization</code> header나 geolocation 같은 정보입니다.</p><div class="en-orig"><p>You should use <code>getServerSideProps</code> if you need to render a page that relies on personalized user data, or information that can only be known at request time. For example, <code>authorization</code> headers or a geolocation.</p></div>
+<p>request time에 data를 fetch할 필요가 없거나, data와 prerender된 HTML을 cache하고 싶다면 <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a> 사용을 권장합니다.</p><div class="en-orig"><p>If you do not need to fetch the data at request time, or would prefer to cache the data and prerendered HTML, we recommend using <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a>.</p></div>
+<h2 class="sec" id="behavior"><a class="anchor" href="#behavior">Behavior<span class="ko">동작</span></a></h2>
+<ul>
+<li><code>getServerSideProps</code>는 server에서 실행됩니다.</li>
+<li><code>getServerSideProps</code>는 <strong>page</strong>에서만 export할 수 있습니다.</li>
+<li><code>getServerSideProps</code>는 JSON을 반환합니다.</li>
+<li>사용자가 page를 방문하면 <code>getServerSideProps</code>가 request time에 data를 fetch하는 데 사용되고, 그 data로 page의 initial HTML을 render합니다.</li>
+<li>page component로 전달된 <code>props</code>는 initial HTML의 일부로 client에서 볼 수 있습니다. 이는 page가 올바르게 <a href="https://react.dev/reference/react-dom/hydrate" target="_blank" rel="noopener">hydrate</a>될 수 있도록 하기 위함입니다. client에 노출되면 안 되는 민감한 정보를 <code>props</code>로 전달하지 않도록 주의하세요.</li>
+<li>사용자가 <a href="pages-api-reference-components-link.html"><code>next/link</code></a>나 <a href="pages-api-reference-functions-use-router.html"><code>next/router</code></a>를 통해 page를 방문하면, Next.js는 server에 API request를 보내고 server는 <code>getServerSideProps</code>를 실행합니다.</li>
+<li><code>getServerSideProps</code>를 사용할 때는 함수가 server에서 실행되므로 data를 fetch하기 위해 Next.js <a href="pages-building-your-application-routing-api-routes.html">API Route</a>를 호출할 필요가 없습니다. 대신 <code>getServerSideProps</code> 안에서 CMS, database 또는 다른 third-party API를 직접 호출할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>getServerSideProps</code> runs on the server.</li>
+<li><code>getServerSideProps</code> can only be exported from a <strong>page</strong>.</li>
+<li><code>getServerSideProps</code> returns JSON.</li>
+<li>When a user visits a page, <code>getServerSideProps</code> will be used to fetch data at request time, and the data is used to render the initial HTML of the page.</li>
+<li><code>props</code> passed to the page component can be viewed on the client as part of the initial HTML. This is to allow the page to be <a href="https://react.dev/reference/react-dom/hydrate" target="_blank" rel="noopener">hydrated</a> correctly. Make sure that you don't pass any sensitive information that shouldn't be available on the client in <code>props</code>.</li>
+<li>When a user visits the page through <a href="pages-api-reference-components-link.html"><code>next/link</code></a> or <a href="pages-api-reference-functions-use-router.html"><code>next/router</code></a>, Next.js sends an API request to the server, which runs <code>getServerSideProps</code>.</li>
+<li>You do not have to call a Next.js <a href="pages-building-your-application-routing-api-routes.html">API Route</a> to fetch data when using <code>getServerSideProps</code> since the function runs on the server. Instead, you can call a CMS, database, or other third-party APIs directly from inside <code>getServerSideProps</code>.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>getServerSideProps</code>와 함께 사용할 수 있는 parameter와 props는 <a href="pages-api-reference-functions-get-server-side-props.html"><code>getServerSideProps</code> API reference</a>를 참고하세요.</li>
+<li>Next.js가 client-side bundle에서 무엇을 제거하는지 확인하려면 <a href="https://next-code-elimination.vercel.app/" target="_blank" rel="noopener">next-code-elimination tool</a>을 사용할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>See <a href="pages-api-reference-functions-get-server-side-props.html"><code>getServerSideProps</code> API reference</a> for parameters and props that can be used with <code>getServerSideProps</code>.</li>
+<li>You can use the <a href="https://next-code-elimination.vercel.app/" target="_blank" rel="noopener">next-code-elimination tool</a> to verify what Next.js eliminates from the client-side bundle.</li>
+</ul></div></div></div>
+<h2 class="sec" id="error-handling"><a class="anchor" href="#error-handling">Error Handling<span class="ko">에러 처리</span></a></h2>
+<p><code>getServerSideProps</code> 안에서 error가 throw되면 <code>pages/500.js</code> 파일이 표시됩니다. 이 파일을 만드는 방법은 <a href="pages-building-your-application-routing-custom-error.html#500-page">500 page</a> 문서를 참고하세요. development 중에는 이 파일이 사용되지 않고 대신 development error overlay가 표시됩니다.</p><div class="en-orig"><p>If an error is thrown inside <code>getServerSideProps</code>, it will show the <code>pages/500.js</code> file. Check out the documentation for <a href="pages-building-your-application-routing-custom-error.html#500-page">500 page</a> to learn more on how to create it. During development, this file will not be used and the development error overlay will be shown instead.</p></div>
+<h2 class="sec" id="edge-cases"><a class="anchor" href="#edge-cases">Edge Cases<span class="ko">엣지 케이스</span></a></h2>
+<h3 class="sec" id="caching-with-server-side-rendering-ssr"><a class="anchor" href="#caching-with-server-side-rendering-ssr">Caching with Server-Side Rendering (SSR)<span class="ko">Server-Side Rendering(SSR)에서 caching하기</span></a></h3>
+<p><code>getServerSideProps</code> 안에서 caching header(<code>Cache-Control</code>)를 사용해 dynamic response를 cache할 수 있습니다. 예를 들어 <a href="https://web.dev/stale-while-revalidate/" target="_blank" rel="noopener"><code>stale-while-revalidate</code></a>를 사용할 수 있습니다.</p><div class="en-orig"><p>You can use caching headers (<code>Cache-Control</code>) inside <code>getServerSideProps</code> to cache dynamic responses. For example, using <a href="https://web.dev/stale-while-revalidate/" target="_blank" rel="noopener"><code>stale-while-revalidate</code></a>.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// This value is considered fresh for ten seconds (s-maxage=10).
+// If a request is repeated within the next 10 seconds, the previously
+// cached value will still be fresh. If the request is repeated before 59 seconds,
+// the cached value will be stale but still render (stale-while-revalidate=59).
+//
+// In the background, a revalidation request will be made to populate the cache
+// with a fresh value. If you refresh the page, you will see the new value.
+export async function getServerSideProps({ req, res }) {
+  res.setHeader(
+    &#x27;Cache-Control&#x27;,
+    &#x27;public, s-maxage=10, stale-while-revalidate=59&#x27;
+  )
+
+  return {
+    props: {},
+  }
+}</code></pre></div></div>
+<p>하지만 <code>cache-control</code>을 사용하기 전에, <a href="pages-guides-incremental-static-regeneration.html">ISR</a>과 함께 <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a>를 사용하는 것이 여러분의 use case에 더 적합한지 먼저 확인해 보길 권장합니다.</p><div class="en-orig"><p>However, before reaching for <code>cache-control</code>, we recommend seeing if <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a> with <a href="pages-guides-incremental-static-regeneration.html">ISR</a> is a better fit for your use case.</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/03-building-your-application/03-data-fetching/03-get-server-side-props.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/building-your-application/data-fetching/get-server-side-props" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-building-your-application-data-fetching-get-static-paths.html" class="prev"><div class="dir">← 이전</div><div class="ttl">getStaticPaths</div><div class="ttl-ko">getStaticPaths</div></a>
+      <a href="pages-building-your-application-data-fetching-client-side.html" class="next"><div class="dir">다음 →</div><div class="ttl">Client-side Fetching</div><div class="ttl-ko">Client-side Fetching</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/building-your-application/data-fetching/get-server-side-props" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#example">Example</a></li><li class="l2"><a href="#when-should-i-use-getserversideprops">When should I use <code>getServerSideProps</code>?</a></li><li class="l2"><a href="#behavior">Behavior</a></li><li class="l2"><a href="#error-handling">Error Handling</a></li><li class="l2"><a href="#edge-cases">Edge Cases</a></li><li class="l3"><a href="#caching-with-server-side-rendering-ssr">Caching with Server-Side Rendering (SSR)</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`getServerSideProps`는 request time에 data를 fetch하고 page 내용을 render하는 데 사용할 수 있는 Next.js 함수입니다.
+
+## Example || 예제
+
+`getServerSideProps`는 Page Component에서 export해서 사용할 수 있습니다. 아래 예제는 `getServerSideProps`에서 3rd party API로부터 data를 fetch하고, 그 data를 props로 page에 전달하는 방법을 보여 줍니다:
+
+[[CODE 1]]
+
+## When should I use `getServerSideProps`? || `getServerSideProps`는 언제 사용해야 하나요?
+
+개인화된 사용자 data나 request time에만 알 수 있는 정보에 의존하는 page를 render해야 한다면 `getServerSideProps`를 사용해야 합니다. 예를 들어 `authorization` header나 geolocation 같은 정보입니다.
+
+request time에 data를 fetch할 필요가 없거나, data와 prerender된 HTML을 cache하고 싶다면 [`getStaticProps`](/docs/pages/building-your-application/data-fetching/get-static-props) 사용을 권장합니다.
+
+## Behavior || 동작
+
+- `getServerSideProps`는 server에서 실행됩니다.
+- `getServerSideProps`는 **page**에서만 export할 수 있습니다.
+- `getServerSideProps`는 JSON을 반환합니다.
+- 사용자가 page를 방문하면 `getServerSideProps`가 request time에 data를 fetch하는 데 사용되고, 그 data로 page의 initial HTML을 render합니다.
+- page component로 전달된 `props`는 initial HTML의 일부로 client에서 볼 수 있습니다. 이는 page가 올바르게 [hydrate](https://react.dev/reference/react-dom/hydrate)될 수 있도록 하기 위함입니다. client에 노출되면 안 되는 민감한 정보를 `props`로 전달하지 않도록 주의하세요.
+- 사용자가 [`next/link`](/docs/pages/api-reference/components/link)나 [`next/router`](/docs/pages/api-reference/functions/use-router)를 통해 page를 방문하면, Next.js는 server에 API request를 보내고 server는 `getServerSideProps`를 실행합니다.
+- `getServerSideProps`를 사용할 때는 함수가 server에서 실행되므로 data를 fetch하기 위해 Next.js [API Route](/docs/pages/building-your-application/routing/api-routes)를 호출할 필요가 없습니다. 대신 `getServerSideProps` 안에서 CMS, database 또는 다른 third-party API를 직접 호출할 수 있습니다.
+
+&gt; **Good to know:**
+&gt;
+&gt; - `getServerSideProps`와 함께 사용할 수 있는 parameter와 props는 [`getServerSideProps` API reference](/docs/pages/api-reference/functions/get-server-side-props)를 참고하세요.
+&gt; - Next.js가 client-side bundle에서 무엇을 제거하는지 확인하려면 [next-code-elimination tool](https://next-code-elimination.vercel.app/)을 사용할 수 있습니다.
+
+## Error Handling || 에러 처리
+
+`getServerSideProps` 안에서 error가 throw되면 `pages/500.js` 파일이 표시됩니다. 이 파일을 만드는 방법은 [500 page](/docs/pages/building-your-application/routing/custom-error#500-page) 문서를 참고하세요. development 중에는 이 파일이 사용되지 않고 대신 development error overlay가 표시됩니다.
+
+## Edge Cases || 엣지 케이스
+
+### Caching with Server-Side Rendering (SSR) || Server-Side Rendering(SSR)에서 caching하기
+
+`getServerSideProps` 안에서 caching header(`Cache-Control`)를 사용해 dynamic response를 cache할 수 있습니다. 예를 들어 [`stale-while-revalidate`](https://web.dev/stale-while-revalidate/)를 사용할 수 있습니다.
+
+[[CODE 2]]
+
+하지만 `cache-control`을 사용하기 전에, [ISR](/docs/pages/guides/incremental-static-regeneration)과 함께 [`getStaticProps`](/docs/pages/building-your-application/data-fetching/get-static-props)를 사용하는 것이 여러분의 use case에 더 적합한지 먼저 확인해 보길 권장합니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

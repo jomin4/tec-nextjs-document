@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caching (캐싱) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/getting-started/caching" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/getting-started/caching" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/08-caching.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-getting-started.html">Getting Started</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Caching<span class="sub">캐싱</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<blockquote><p>이 페이지는 <code>next.config.ts</code> 파일에서 <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents: true</code></a>를 설정해 활성화하는 <a href="app-api-reference-config-next-config-js-cacheComponents.html">Cache Components</a> 기반의 caching을 다룹니다. Cache Components를 사용하지 않는다면 <a href="app-guides-caching-without-cache-components.html">Caching and Revalidating (Previous Model)</a> 가이드를 참고하세요.</p><div class="en-orig"><p>This page covers caching with <a href="app-api-reference-config-next-config-js-cacheComponents.html">Cache Components</a>, enabled by setting <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents: true</code></a> in your <code>next.config.ts</code> file. If you're not using Cache Components, see the <a href="app-guides-caching-without-cache-components.html">Caching and Revalidating (Previous Model)</a> guide.</p></div></blockquote>
+<p>caching은 data fetching과 기타 연산의 결과를 저장해 두어, 이후 같은 데이터에 대한 request가 들어왔을 때 작업을 다시 하지 않고 더 빠르게 제공하는 기법입니다.</p><div class="en-orig"><p>Caching is a technique for storing the result of data fetching and other computations so that future requests for the same data can be served faster, without doing the work again.</p></div>
+<h2 class="sec" id="enabling-cache-components"><a class="anchor" href="#enabling-cache-components">Enabling Cache Components<span class="ko">Cache Components 활성화하기</span></a></h2>
+<p>권장 <a href="app-api-reference-cli-create-next-app.html"><code>create-next-app</code></a> 기본값으로 만든 새 App Router 앱에는 Cache Components와 Partial Prefetching이 이미 활성화되어 있습니다.</p><div class="en-orig"><p>New App Router apps created with the recommended <a href="app-api-reference-cli-create-next-app.html"><code>create-next-app</code></a> defaults already have Cache Components and Partial Prefetching enabled.</p></div>
+<p>기존 앱이나 직접 만든 앱에서 활성화하려면 Next config 파일에 <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a>와 <a href="app-api-reference-config-next-config-js-partialPrefetching.html"><code>partialPrefetching</code></a> option을 추가하세요:</p><div class="en-orig"><p>To enable it in an existing or manually created app, add the <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a> and <a href="app-api-reference-config-next-config-js-partialPrefetching.html"><code>partialPrefetching</code></a> options to your Next config file:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+  partialPrefetching: true,
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  cacheComponents: true,
+  partialPrefetching: true,
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p><code>partialPrefetching</code>은 명시적으로 설정하세요. Cache Components의 첫 release에는 Partial Prefetching이 포함되지 않았기 때문에, 설정하지 않고 두면 warning이 log에 출력됩니다. <a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching 이전에 Cache Components를 도입한 앱을 migrate하는</a> 동안에만 <code>false</code>로 설정하세요. 다음 major release에서는 두 기능이 모든 곳에서 활성화되고 이 option들은 제거될 예정입니다.</p><div class="en-orig"><p>Set <code>partialPrefetching</code> explicitly. Leaving it unset logs a warning, because the first release of Cache Components did not include Partial Prefetching. Set it to <code>false</code> only while <a href="app-guides-adopting-partial-prefetching.html">migrating an app that adopted Cache Components before Partial Prefetching</a>. Both features will be enabled everywhere in the next major release, and the options will be removed.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Cache Components가 활성화되면 <code>GET</code> Route Handler도 page와 같은 prerendering 모델을 따릅니다. 자세한 내용은 <a href="app-getting-started-route-handlers.html#with-cache-components">Route Handlers with Cache Components</a>를 참고하세요.</p><div class="en-orig"><p>When Cache Components is enabled, <code>GET</code> Route Handlers follow the same prerendering model as pages. See <a href="app-getting-started-route-handlers.html#with-cache-components">Route Handlers with Cache Components</a> for details.</p></div></div></div>
+<h2 class="sec" id="usage"><a class="anchor" href="#usage">Usage<span class="ko">사용법</span></a></h2>
+<p><a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a> directive는 async 함수와 component의 반환값을 cache합니다. 두 가지 수준에서 적용할 수 있습니다:</p><div class="en-orig"><p>The <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a> directive caches the return value of async functions and components. You can apply it at two levels:</p></div>
+<ul>
+<li><strong>Data-level</strong>: 데이터를 fetch하거나 계산하는 함수를 cache합니다(예: <code>getProducts()</code>, <code>getUser(id)</code>)</li>
+<li><strong>UI-level</strong>: component나 page 전체를 cache합니다(예: <code>async function BlogPosts()</code>)</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Data-level</strong>: Cache a function that fetches or computes data (e.g., <code>getProducts()</code>, <code>getUser(id)</code>)</li>
+<li><strong>UI-level</strong>: Cache an entire component or page (e.g., <code>async function BlogPosts()</code>)</li>
+</ul></div>
+<p>cache directive는 결과에 lifetime(수명)을 부여하며, Next.js는 이를 시간 기반 revalidation과 rendering 최적화에 사용합니다. mutation 이후의 on-demand revalidation은 <a href="app-getting-started-revalidating.html">Revalidating</a>을 참고하세요. cache된 결과가 어떻게 static shell의 일부가 되고 <a href="#prefetching">prefetch</a>에 포함될 수 있는지는 <a href="#prerendering">Prerendering</a>을 참고하세요.</p><div class="en-orig"><p>A cache directive gives a result a lifetime, which Next.js uses for time-based revalidation and rendering optimizations. For on-demand revalidation after a mutation, see <a href="app-getting-started-revalidating.html">Revalidating</a>. See <a href="#prerendering">Prerendering</a> for how cached results become part of the static shell and may be included in a <a href="#prefetching">prefetch</a>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>모든 cache directive에 <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a>를 함께 지정하는 것을 권장합니다. 지정하지 않으면 암묵적으로 <code>default</code> profile이 적용됩니다.</p><div class="en-orig"><p>We recommend pairing every cache directive with a <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a>. Without one, the implicit <code>default</code> profile applies.</p></div></div></div>
+<p>인자(argument)와 상위 scope에서 capture된 값은 자동으로 <a href="app-api-reference-directives-use-cache.html#cache-keys">cache key</a>의 일부가 됩니다. 즉, 입력이 다르면 별도의 cache entry가 만들어집니다. entry에 무엇이 저장되는지는 <a href="app-api-reference-directives-use-cache.html#cache-output">cache output</a>을, 무엇을 cache할 수 있고 인자가 어떻게 동작하는지는 <a href="app-api-reference-directives-use-cache.html#constraints">serialization 요구 사항과 제약</a>을 참고하세요.</p><div class="en-orig"><p>Arguments and any values captured from parent scopes automatically become part of the <a href="app-api-reference-directives-use-cache.html#cache-keys">cache key</a>, which means different inputs will produce separate cache entries. See <a href="app-api-reference-directives-use-cache.html#cache-output">cache output</a> for what an entry holds, and <a href="app-api-reference-directives-use-cache.html#constraints">serialization requirements and constraints</a> for details on what can be cached and how arguments work.</p></div>
+<h3 class="sec" id="data-level-caching"><a class="anchor" href="#data-level-caching">Data-level caching</a></h3>
+<p>데이터를 fetch하는 비동기 함수를 cache하려면 함수 본문 맨 위에 <code>use cache</code> directive를 추가하세요:</p><div class="en-orig"><p>To cache an asynchronous function that fetches data, add the <code>use cache</code> directive at the top of the function body:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/lib/data.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife } from &#x27;next/cache&#x27;
+
+export async function getUsers() {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;hours&#x27;)
+  return db.query(&#x27;SELECT * FROM users&#x27;)
+}</code></pre></div></div>
+<p>Data-level caching은 같은 데이터를 여러 component에서 사용하거나, 데이터를 UI와 독립적으로 cache하고 싶을 때 유용합니다.</p><div class="en-orig"><p>Data-level caching is useful when the same data is used across multiple components, or when you want to cache the data independently from the UI.</p></div>
+<h3 class="sec" id="ui-level-caching"><a class="anchor" href="#ui-level-caching">UI-level caching</a></h3>
+<p>component, page, layout 전체를 cache하려면 component나 page 본문 맨 위에 <code>use cache</code> directive를 추가하세요:</p><div class="en-orig"><p>To cache an entire component, page, or layout, add the <code>use cache</code> directive at the top of the component or page body:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife } from &#x27;next/cache&#x27;
+
+export default async function Page() {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;hours&#x27;)
+
+  const users = await db.query(&#x27;SELECT * FROM users&#x27;)
+
+  return (
+    &lt;ul&gt;
+      {users.map((user) =&gt; (
+        &lt;li key={user.id}&gt;{user.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div></div>
+<blockquote><p>파일 맨 위에 "<code>use cache</code>"를 추가하면 그 파일에서 export되는 모든 함수가 cache됩니다.</p><div class="en-orig"><p>If you add "<code>use cache</code>" at the top of a file, all exported functions in the file will be cached.</p></div></blockquote>
+<h3 class="sec" id="streaming-uncached-data"><a class="anchor" href="#streaming-uncached-data">Streaming uncached data<span class="ko">cache되지 않은 데이터 streaming하기</span></a></h3>
+<p>API, database 또는 기타 async 작업 같은 비동기 source에서 데이터를 fetch하고 매 request마다 최신 데이터가 필요한 component에는 <code>&quot;use cache&quot;</code>를 사용하지 마세요.</p><div class="en-orig"><p>For components that fetch data from an asynchronous source such as an API, a database, or any other async operation, and require fresh data on every request, do not use <code>&quot;use cache&quot;</code>.</p></div>
+<p>대신 component를 <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a>로 감싸고 fallback UI를 제공하세요. async 작업이 request 시점에 실행되는 동안 fallback은 prerender된 shell과 함께 전달됩니다.</p><div class="en-orig"><p>Instead, wrap the component in <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> and provide a fallback UI. The fallback ships with the prerendered shell while the async work runs at request time.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+
+async function LatestPosts() {
+  const data = await fetch(&#x27;https://api.example.com/posts&#x27;)
+  const posts = await data.json()
+  return (
+    &lt;ul&gt;
+      {posts.map((post) =&gt; (
+        &lt;li key={post.id}&gt;{post.title}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}
+
+export default function Page() {
+  return (
+    &lt;&gt;
+      &lt;h1&gt;My Blog&lt;/h1&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading posts...&lt;/p&gt;}&gt;
+        &lt;LatestPosts /&gt;
+      &lt;/Suspense&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p>예를 들어 <code>&lt;p&gt;Loading posts...&lt;/p&gt;</code>는 static shell에 포함되고, post들은 request 시점에 stream되어 들어옵니다.</p><div class="en-orig"><p>For example, <code>&lt;p&gt;Loading posts...&lt;/p&gt;</code> is included in the static shell, and the posts stream in at request time.</p></div>
+<p>cache되지 않은 read를 <code>&lt;Suspense&gt;</code> boundary로 감싸지 않으면, dev overlay가 다음 해결책과 함께 <strong>blocking-route</strong> insight를 표시합니다:</p><div class="en-orig"><p>Without a <code>&lt;Suspense&gt;</code> boundary around the uncached read, the dev overlay surfaces the <strong>blocking-route</strong> insight with this fix:</p></div>
+<div class="fixgrid"><a class="fixcard" href="https://nextjs.org/docs/messages/blocking-prerender-dynamic#wrap-in-or-move-into-suspense" target="_blank" rel="noopener"><div class="fc-t">Wrap in or move into Suspense</div><div class="fc-c"><div class="fl hl">&lt;Suspense fallback={…}&gt;</div></div></a></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>각 fix card는 패턴, 코드 예제, trade-off를 담은 자세한 walkthrough로 연결됩니다. card를 클릭해 자세히 살펴보세요.</p><div class="en-orig"><p>Each fix card links to a detailed walkthrough with patterns, code samples, and trade-offs. Click a card to dive in.</p></div></div></div>
+<p><code>&lt;Suspense&gt;</code>는 async 작업이 완료되는 동안 fallback UI를 제공하지만, 그 자체로 component를 dynamic rendering으로 전환(opt into)하지는 않습니다. component가 동기 작업만 수행한다면 <code>&lt;Suspense&gt;</code>로 감쌌는지와 관계없이 prerendering 중에 완료됩니다.</p><div class="en-orig"><p><code>&lt;Suspense&gt;</code> provides a fallback UI while async work completes, but it does not itself opt a component into dynamic rendering. If a component only performs synchronous work, it will complete during prerendering regardless of whether it is wrapped in <code>&lt;Suspense&gt;</code>.</p></div>
+<h2 class="sec" id="working-with-runtime-apis"><a class="anchor" href="#working-with-runtime-apis">Working with runtime APIs<span class="ko">runtime API 다루기</span></a></h2>
+<p>runtime API는 사용자가 request를 보낼 때만 알 수 있는 정보를 필요로 합니다. 여기에는 다음이 포함됩니다:</p><div class="en-orig"><p>Runtime APIs require information that is only available when a user makes a request. These include:</p></div>
+<ul>
+<li><a href="app-api-reference-functions-cookies.html"><code>cookies</code></a> - 사용자의 cookie 데이터</li>
+<li><a href="app-api-reference-functions-headers.html"><code>headers</code></a> - request header</li>
+<li><a href="app-api-reference-file-conventions-page.html#searchparams-optional"><code>searchParams</code></a> - URL query parameter</li>
+<li><a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code></a> - dynamic route parameter. build 시점에 특정 값을 prerender하려면 <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>를 사용하고, 알 수 없는 param이 background에서 resolve되는 동안 <a href="app-glossary.html#app-shell">App Shell</a>을 제공하려면 <a href="app-guides-incremental-static-regeneration-cache-components.html">ISR with Cache Components</a>를 사용하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-functions-cookies.html"><code>cookies</code></a> - User's cookie data</li>
+<li><a href="app-api-reference-functions-headers.html"><code>headers</code></a> - Request headers</li>
+<li><a href="app-api-reference-file-conventions-page.html#searchparams-optional"><code>searchParams</code></a> - URL query parameters</li>
+<li><a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code></a> - Dynamic route parameters. Use <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a> to prerender specific values at build time, or <a href="app-guides-incremental-static-regeneration-cache-components.html">ISR with Cache Components</a> to serve an <a href="app-glossary.html#app-shell">App Shell</a> while unknown params resolve in the background.</li>
+</ul></div>
+<p>runtime API에 접근하는 component는 <code>&lt;Suspense&gt;</code>로 감싸야 합니다:</p><div class="en-orig"><p>Components that access runtime APIs should be wrapped in <code>&lt;Suspense&gt;</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cookies } from &#x27;next/headers&#x27;
+import { Suspense } from &#x27;react&#x27;
+
+async function UserGreeting() {
+  const cookieStore = await cookies()
+  const theme = cookieStore.get(&#x27;theme&#x27;)?.value || &#x27;light&#x27;
+  return &lt;p&gt;Your theme: {theme}&lt;/p&gt;
+}
+
+export default function Page() {
+  return (
+    &lt;&gt;
+      &lt;h1&gt;Dashboard&lt;/h1&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading...&lt;/p&gt;}&gt;
+        &lt;UserGreeting /&gt;
+      &lt;/Suspense&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p><code>&lt;Suspense&gt;</code> 없이 runtime API에 접근하면 dev overlay에 같은 <strong>blocking-route</strong> insight가 같은 해결책과 함께 표시됩니다:</p><div class="en-orig"><p>A runtime API access without <code>&lt;Suspense&gt;</code> surfaces the same <strong>blocking-route</strong> insight in the dev overlay, with the same fix:</p></div>
+<div class="fixgrid"><a class="fixcard" href="https://nextjs.org/docs/messages/blocking-prerender-dynamic#wrap-in-or-move-into-suspense" target="_blank" rel="noopener"><div class="fc-t">Wrap in or move into Suspense</div><div class="fc-c"><div class="fl hl">&lt;Suspense fallback={…}&gt;</div></div></a></div>
+<p>runtime에 의존하는 데이터도 Cache Components와 함께 제공되는 또 다른 variant인 <a href="app-api-reference-directives-use-cache-private.html"><code>&quot;use cache: private&quot;</code></a>로 cache lifetime을 부여할 수 있습니다. 이 directive는 cookie, header, <code>searchParams</code>를 직접 읽는 함수에 lifetime을 부여하므로, 그 결과가 <a href="#prefetching">prefetch</a>에 포함될 수 있습니다.</p><div class="en-orig"><p>Runtime-dependent data can still be given a cache lifetime with <a href="app-api-reference-directives-use-cache-private.html"><code>&quot;use cache: private&quot;</code></a>, another variant that ships with Cache Components. It gives a lifetime to a function that reads cookies, headers, or <code>searchParams</code> directly, so it can be included in a <a href="#prefetching">prefetch</a>.</p></div>
+<p>다음 섹션에서는 <code>use cache: private</code>의 대안으로, runtime 값을 추출해 공유되는 cache 함수에 전달하는 방법을 보여 줍니다.</p><div class="en-orig"><p>The following section shows an alternative to <code>use cache: private</code>: extracting a runtime value and passing it to a shared cached function.</p></div>
+<h3 class="sec" id="passing-runtime-values-to-cached-functions"><a class="anchor" href="#passing-runtime-values-to-cached-functions">Passing runtime values to cached functions<span class="ko">runtime 값을 cache 함수에 전달하기</span></a></h3>
+<p>runtime API에서 값을 추출해 cache 함수의 인자로 전달할 수 있습니다:</p><div class="en-orig"><p>You can extract values from runtime APIs and pass them as arguments to cached functions:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/profile/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cookies } from &#x27;next/headers&#x27;
+import { Suspense } from &#x27;react&#x27;
+
+export default function Page() {
+  return (
+    &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+      &lt;ProfileContent /&gt;
+    &lt;/Suspense&gt;
+  )
+}
+
+// Component (not cached) reads runtime data
+async function ProfileContent() {
+  const session = (await cookies()).get(&#x27;session&#x27;)?.value
+  return &lt;CachedContent sessionId={session} /&gt;
+}
+
+// Cached component receives extracted value as a prop
+async function CachedContent({ sessionId }: { sessionId: string }) {
+  &#x27;use cache&#x27;
+  // sessionId becomes part of the cache key
+  const data = await fetchUserData(sessionId)
+  return &lt;div&gt;{data}&lt;/div&gt;
+}</code></pre></div></div>
+<p>request 시점에 일치하는 cache entry가 없으면 <code>&lt;CachedContent /&gt;</code>가 실행되고, 같은 <code>sessionId</code>를 가진 이후 request를 위해 결과를 저장합니다.</p><div class="en-orig"><p>At request time, <code>&lt;CachedContent /&gt;</code> executes if no matching cache entry is found, and stores the result for future requests with the same <code>sessionId</code>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>&lt;CachedContent /&gt;</code>는 request 데이터 뒤에 놓여 있으므로 prerender된 static shell에 추가되지 않습니다. runtime에는 기본적으로 <a href="app-api-reference-directives-use-cache.html#runtime-caching-considerations">in-memory</a>에 cache되는데, 이는 serverless request 간에 유지되지 않으므로 매 request마다 다시 평가될 수 있습니다. 지속적이고 공유되는 caching이 필요하다면 <a href="app-api-reference-directives-use-cache-remote.html"><code>&#x27;use cache: remote&#x27;</code></a>를 사용하세요.</p><div class="en-orig"><p>Because <code>&lt;CachedContent /&gt;</code> is gated behind request data, it isn't added to the prerendered static shell. At runtime it's cached <a href="app-api-reference-directives-use-cache.html#runtime-caching-considerations">in-memory</a> by default, which doesn't persist across serverless requests, so it may re-evaluate on each request. Reach for <a href="app-api-reference-directives-use-cache-remote.html"><code>&#x27;use cache: remote&#x27;</code></a> for durable, shared caching.</p></div></div></div>
+<p>이 패턴을 사용하면 <a href="#prefetching">prefetching</a>이 client transition 중에 사용자의 실제 session으로 <code>&lt;CachedContent /&gt;</code>를 prerender해, 클릭하기 전에 결과를 준비해 둘 수 있습니다. server-side entry가 request 사이에 거의 살아남지 못하더라도 이 방식은 동작합니다. 여러분이 부여한 lifetime 덕분에 결과가 prefetch에 포함되고, client는 그 결과를 <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a>의 <code>stale</code> 기간 동안 fresh한 것으로 취급하기 때문입니다.</p><div class="en-orig"><p>With this pattern, <a href="#prefetching">prefetching</a> can prerender <code>&lt;CachedContent /&gt;</code> with the user's actual session during a client transition and have the result ready before the click. This works even when server-side entries rarely survive between requests, because the lifetime you assign is what lets the result join the prefetch, where the client treats it as fresh for its <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a> <code>stale</code> window.</p></div>
+<h2 class="sec" id="static-cached-and-streaming"><a class="anchor" href="#static-cached-and-streaming">Static, cached, and streaming<span class="ko">Static, cached, streaming</span></a></h2>
+<p>다음은 static 콘텐츠, cache된 dynamic 콘텐츠, streaming되는 dynamic 콘텐츠가 한 page에서 함께 동작하는 전체 예제입니다:</p><div class="en-orig"><p>Here's a complete example showing static content, cached dynamic content, and streaming dynamic content working together on a single page:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/blog/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+import { cacheLife, cacheTag } from &#x27;next/cache&#x27;
+import Link from &#x27;next/link&#x27;
+
+export default function BlogPage() {
+  return (
+    &lt;&gt;
+      {/* Static content - prerendered automatically */}
+      &lt;header&gt;
+        &lt;h1&gt;Our Blog&lt;/h1&gt;
+        &lt;nav&gt;
+          &lt;Link href=&quot;/&quot;&gt;Home&lt;/Link&gt; | &lt;Link href=&quot;/about&quot;&gt;About&lt;/Link&gt;
+        &lt;/nav&gt;
+      &lt;/header&gt;
+
+      {/* Cached dynamic content - included in the static shell */}
+      &lt;BlogPosts /&gt;
+
+      {/* Runtime dynamic content - streams at request time */}
+      &lt;Suspense fallback={&lt;p&gt;Loading your preferences...&lt;/p&gt;}&gt;
+        &lt;UserPreferences /&gt;
+      &lt;/Suspense&gt;
+    &lt;/&gt;
+  )
+}
+
+type Post = { id: string; title: string; author: string; date: string }
+
+// Everyone sees the same blog posts (revalidated every hour)
+async function BlogPosts() {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;hours&#x27;)
+  cacheTag(&#x27;posts&#x27;)
+
+  const res = await fetch(&#x27;https://api.vercel.app/blog&#x27;)
+  const posts: Post[] = await res.json()
+
+  return (
+    &lt;section&gt;
+      &lt;h2&gt;Latest Posts&lt;/h2&gt;
+      &lt;ul&gt;
+        {posts.map((post) =&gt; (
+          &lt;li key={post.id}&gt;
+            &lt;h3&gt;{post.title}&lt;/h3&gt;
+            &lt;p&gt;
+              By {post.author} on {post.date}
+            &lt;/p&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/section&gt;
+  )
+}
+
+// UI that depends on a value stored in cookies
+async function UserPreferences() {
+  const theme = (await cookies()).get(&#x27;theme&#x27;)?.value || &#x27;light&#x27;
+  const favoriteCategory = (await cookies()).get(&#x27;category&#x27;)?.value
+
+  return (
+    &lt;aside&gt;
+      &lt;p&gt;Your theme: {theme}&lt;/p&gt;
+      {favoriteCategory &amp;&amp; &lt;p&gt;Favorite category: {favoriteCategory}&lt;/p&gt;}
+    &lt;/aside&gt;
+  )
+}</code></pre></div></div>
+<p>prerendering 중에 header(static)와 blog post(<code>use cache</code>로 cache됨)는 사용자 preference용 fallback UI와 함께 static shell의 일부가 됩니다. cookie에 저장된 UI preference는 request 시점에 stream되어 들어옵니다.</p><div class="en-orig"><p>During prerendering, the header (static) and blog posts (cached with <code>use cache</code>) become part of the static shell, along with the fallback UI for user preferences. The UI preferences stored in cookies stream in at request time.</p></div>
+<p>여기서 <code>cookies()</code>를 읽어도, 이전 rendering 모델처럼 route 전체가 dynamic rendering으로 전환되지는 않습니다. Suspense boundary가 runtime 접근이 stream되는 곳에 fallback UI를 제공하고, static 콘텐츠와 cache된 콘텐츠는 여전히 initial HTML에 담겨 전달됩니다.</p><div class="en-orig"><p>Reading <code>cookies()</code> here doesn't opt-in the whole route into dynamic rendering, the way the previous rendering model did. The Suspense boundary provides fallback UI where the runtime access streams, while static and cached content still ship in the initial HTML.</p></div>
+<p><code>&lt;Suspense&gt;</code>가 async 접근을 감싸 가두는 것처럼, <strong>error boundary</strong>는 실패를 가둡니다. rendering 중에 error가 날 수 있는 subtree를 error boundary로 감싸세요. component 수준 boundary에는 <a href="app-api-reference-functions-catchError.html"><code>catchError</code></a>를, route 수준 boundary에는 <a href="app-api-reference-file-conventions-error.html"><code>error.js</code></a> file convention을 사용하세요.</p><div class="en-orig"><p>Just as <code>&lt;Suspense&gt;</code> contains async access, an <strong>error boundary</strong> contains failures: wrap them around a subtree that might error during rendering. Use <a href="app-api-reference-functions-catchError.html"><code>catchError</code></a> for component-level boundaries, or the <a href="app-api-reference-file-conventions-error.html"><code>error.js</code></a> file convention for route-level boundaries.</p></div>
+<p>개발하면서, <a href="app-api-reference-functions-generate-metadata.html#with-cache-components"><code>generateMetadata</code></a>와 <a href="app-api-reference-functions-generate-viewport.html#with-cache-components"><code>generateViewport</code></a> 안에서 cache되지 않은 fetch나 runtime 데이터 접근을 하면 page에서와 같은 insight와 error가 표시되어 의도한 rendering으로 안내한다는 점을 기억하세요. 알려진 param 값과 알 수 없는 param 값을 모두 다루는 incremental static regeneration은 <a href="app-guides-incremental-static-regeneration-cache-components.html">ISR with Cache Components</a>를 참고하세요.</p><div class="en-orig"><p>As you build, consider that inside <a href="app-api-reference-functions-generate-metadata.html#with-cache-components"><code>generateMetadata</code></a> and <a href="app-api-reference-functions-generate-viewport.html#with-cache-components"><code>generateViewport</code></a>, uncached fetches or runtime data access surface the same insights and errors as in your page, guiding you to the rendering you intend. For incremental static regeneration with both known and unknown param values, see <a href="app-guides-incremental-static-regeneration-cache-components.html">ISR with Cache Components</a>.</p></div>
+<h2 class="sec" id="random-values-and-timestamps"><a class="anchor" href="#random-values-and-timestamps">Random values and timestamps<span class="ko">무작위 값과 timestamp</span></a></h2>
+<p><code>Math.random()</code>, <code>Date.now()</code>, <code>crypto.randomUUID()</code> 같은 작업은 실행할 때마다 다른 값을 만듭니다. Cache Components에서는 이런 작업을 명시적으로 처리해야 합니다.</p><div class="en-orig"><p>Operations like <code>Math.random()</code>, <code>Date.now()</code>, or <code>crypto.randomUUID()</code> produce different values each time they execute. Cache Components requires you to explicitly handle these.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>performance.now()</code>는 telemetry용이므로 Next.js는 이를 보호해야 할 값으로 취급하지 않습니다. 시간 측정에 사용하고, 결과는 render하지 말고 logger나 metrics로 전달하세요.</p><div class="en-orig"><p><code>performance.now()</code> is meant for telemetry, so Next.js doesn't treat it as a value to guard. Use it for timing and pass the result to your logger or metrics rather than rendering it.</p></div></div></div>
+<p><strong>request마다 고유한 값을 생성하려면</strong> 이런 작업 전에 <a href="app-api-reference-functions-connection.html"><code>connection()</code></a>을 호출해 request 시점으로 미루고, component를 <code>&lt;Suspense&gt;</code>로 감싸세요:</p><div class="en-orig"><p><strong>To generate unique values per request</strong>, defer to request time by calling <a href="app-api-reference-functions-connection.html"><code>connection()</code></a> before these operations, and wrap the component in <code>&lt;Suspense&gt;</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { connection } from &#x27;next/server&#x27;
+import { Suspense } from &#x27;react&#x27;
+
+async function UniqueContent() {
+  await connection()
+  const uuid = crypto.randomUUID()
+  return &lt;p&gt;Request ID: {uuid}&lt;/p&gt;
+}
+
+export default function Page() {
+  return (
+    &lt;Suspense fallback={&lt;p&gt;Loading...&lt;/p&gt;}&gt;
+      &lt;UniqueContent /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre></div></div>
+<p>또는 <strong>결과를 cache해서</strong> revalidation 전까지 모든 사용자가 같은 값을 보게 할 수도 있습니다:</p><div class="en-orig"><p>Alternatively, you can <strong>cache the result</strong> so all users see the same value until revalidation:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export default async function Page() {
+  &#x27;use cache&#x27;
+  const buildId = crypto.randomUUID()
+  return &lt;p&gt;Build ID: {buildId}&lt;/p&gt;
+}</code></pre></div></div>
+<p>어떤 작업이 이렇게 동작하는지 외울 필요는 없습니다. dev overlay가 (호출에 따라) <strong>blocking-prerender-random</strong>, <strong>blocking-prerender-current-time</strong>, <strong>blocking-prerender-crypto</strong> insight를 다음 해결책과 함께 표시합니다:</p><div class="en-orig"><p>You don't need to memorize which operations behave this way. The dev overlay surfaces a <strong>blocking-prerender-random</strong>, <strong>blocking-prerender-current-time</strong>, or <strong>blocking-prerender-crypto</strong> insight (depending on the call) with these fixes:</p></div>
+<div class="fixgrid"><a class="fixcard" href="https://nextjs.org/docs/messages/blocking-prerender-random#generate-on-every-request" target="_blank" rel="noopener"><div class="fc-t">Generate on every request</div><div class="fc-c"><div class="fl hl">await connection()</div><div class="fl">const id = Math.random()</div></div></a><a class="fixcard" href="https://nextjs.org/docs/messages/blocking-prerender-random#cache-the-random-value" target="_blank" rel="noopener"><div class="fc-t">Cache the value</div><div class="fc-c"><div class="fl">function RandomId() {</div><div class="fl hl">  &quot;use cache&quot;</div><div class="fl">  return String(Math.random())</div></div></a></div>
+<h2 class="sec" id="predictable-values"><a class="anchor" href="#predictable-values">Predictable values<span class="ko">예측 가능한 값</span></a></h2>
+<p>render할 때마다 달라질 수 있는 무작위 값이나 timestamp와 달리, module import, 동기 I/O, 순수 연산은 실행할 때마다 같은 결과를 냅니다. 이런 작업만 사용하는 component는 자동으로 prerender되며, 그 출력은 build 시점에 static HTML의 일부가 됩니다.</p><div class="en-orig"><p>Unlike random values and timestamps, which can vary between renders, module imports, synchronous I/O, and pure computations produce the same result every time they run. Components using only these operations are prerendered automatically, and their output becomes part of the static HTML at build time.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import fs from &#x27;node:fs&#x27;
+
+export default async function Page() {
+  const constants = await import(&#x27;./constants.json&#x27;)
+  const content = fs.readFileSync(&#x27;./config.json&#x27;, &#x27;utf-8&#x27;)
+  const items = JSON.parse(content).items ?? []
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{constants.appName}&lt;/h1&gt;
+      &lt;ul&gt;
+        {items.map((item) =&gt; (
+          &lt;li key={item.id}&gt;{item.value}&lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>여기에는 <code>better-sqlite3</code>나 Node.js 내장 <a href="https://nodejs.org/api/sqlite.html" target="_blank" rel="noopener"><code>node:sqlite</code></a>처럼 동기 API를 가진 embedded database에 대한 query도 포함됩니다. 동기 source에서 request마다 데이터를 가져와야 한다면 query 전에 <a href="app-api-reference-functions-connection.html"><code>connection()</code></a>을 호출하세요.</p><div class="en-orig"><p>This includes queries to embedded databases with synchronous APIs, such as <code>better-sqlite3</code> or Node.js's built-in <a href="https://nodejs.org/api/sqlite.html" target="_blank" rel="noopener"><code>node:sqlite</code></a>. If you need per-request data from a synchronous source, call <a href="app-api-reference-functions-connection.html"><code>connection()</code></a> before the query.</p></div></div></div>
+<p>일부 비동기 API는 font나 configuration 파일처럼 들어오는 request에 의존하지 않는 로컬 리소스를 읽습니다. 이런 리소스가 모든 request에서 같을 것으로 예상된다면, rendering 중이 아니라 module scope에서 한 번만 읽으세요</p><div class="en-orig"><p>Some asynchronous APIs read local resources that don't depend on the incoming request, such as fonts or configuration files. When those resources are expected to be the same for every request, read them once at module scope instead of during rendering</p></div>
+<p>대신 데이터를 rendering 중에 계산하고 request 간에 재사용해야 한다면, read를 <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a>로 감싸세요. 데이터가 들어오는 request에 의존하거나 시간이 지나면서 바뀔 것으로 예상된다면, request 시점 rendering 중에 읽으세요.</p><div class="en-orig"><p>If the data should instead be computed during rendering and reused across requests, wrap the read in <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a>. If the data depends on the incoming request or is expected to change over time, read it during request-time rendering.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { readFile } from &#x27;node:fs/promises&#x27;
+
+const content = await readFile(&#x27;./config.json&#x27;, &#x27;utf-8&#x27;)
+const items = JSON.parse(content).items ?? []
+
+export default function Page() {
+  return (
+    &lt;ul&gt;
+      {items.map((item) =&gt; (
+        &lt;li key={item.id}&gt;{item.value}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div></div>
+<p>이 예제에서 configuration 파일은 모든 request에서 같을 것으로 예상되므로 module scope에서 한 번만 읽습니다. component 안에서 <code>await readFile()</code>을 호출하면 cache되지 않은 데이터로 취급되어, <code>use cache</code> 안에서 접근하거나 <code>&lt;Suspense&gt;</code> boundary 뒤에 두어야 합니다. 이 파일은 request에 의존하지 않고 바뀔 것으로 예상되지도 않으므로 module scope가 가장 간단한 선택입니다.</p><div class="en-orig"><p>In this example, the configuration file is expected to be the same for every request, so it is read once at module scope. Calling <code>await readFile()</code> inside the component would be treated as uncached data that must be either accessed within <code>use cache</code> or behind a <code>&lt;Suspense&gt;</code> boundary. Since this file does not depend on the request and is not expected to change, module scope is the simplest option.</p></div>
+<h2 class="sec" id="prerendering"><a class="anchor" href="#prerendering">Prerendering</a></h2>
+<p>build 시점에 Next.js는 route의 component tree를 render합니다. 각 component가 처리되는 방식은 사용하는 API에 따라 다릅니다:</p><div class="en-orig"><p>At build time, Next.js renders your route's component tree. How each component is handled depends on the APIs it uses:</p></div>
+<ul>
+<li><a href="#usage"><code>use cache</code></a>: lifetime이 <a href="app-api-reference-functions-cacheLife.html#prerendering-behavior">너무 짧지 않다면</a> 결과가 cache되어 static shell에 포함됩니다</li>
+<li><a href="#streaming-uncached-data"><code>&lt;Suspense&gt;</code></a>: 콘텐츠가 request 시점에 stream되는 동안 fallback UI가 static shell에 포함됩니다</li>
+<li><a href="#predictable-values">Predictable values</a>: module import, <code>fs.readFileSync</code>, 순수 연산은 prerender 중에 완료되어 자동으로 static shell에 포함됩니다</li>
+<li><a href="#random-values-and-timestamps">Random values and timestamps</a>: request마다 고유한 값을 얻으려면 <code>connection()</code> + <code>&lt;Suspense&gt;</code>를, 모든 사용자가 하나의 값을 공유하게 하려면 <code>use cache</code>를 사용하세요</li>
+</ul><div class="en-orig"><ul>
+<li><a href="#usage"><code>use cache</code></a>: the result is cached and included in the static shell, as long as its lifetime <a href="app-api-reference-functions-cacheLife.html#prerendering-behavior">isn't too short</a></li>
+<li><a href="#streaming-uncached-data"><code>&lt;Suspense&gt;</code></a>: fallback UI is included in the static shell while the content streams at request time</li>
+<li><a href="#predictable-values">Predictable values</a>: module imports, <code>fs.readFileSync</code>, and pure computations complete during prerender and are included in the static shell automatically</li>
+<li><a href="#random-values-and-timestamps">Random values and timestamps</a>: use <code>connection()</code> + <code>&lt;Suspense&gt;</code> to get a unique value per request, or <code>use cache</code> to share one across users</li>
+</ul></div>
+<p>이렇게 하면 초기 page 로드를 위한 HTML과 client-side navigation을 위한 serialize된 <a href="app-getting-started-server-and-client-components.html#on-the-server">RSC Payload</a>로 구성된 static shell이 생성됩니다. 덕분에 사용자가 URL로 직접 이동하든 다른 page에서 transition하든 브라우저는 완전히 render된 콘텐츠를 즉시 받습니다. 이 rendering 방식을 <strong>Partial Prerendering (PPR)</strong> 이라고 하며, Cache Components의 기본 동작입니다.</p><div class="en-orig"><p>This generates a static shell consisting of HTML for initial page loads and a serialized <a href="app-getting-started-server-and-client-components.html#on-the-server">RSC Payload</a> for client-side navigation, ensuring the browser receives fully rendered content instantly whether users navigate directly to the URL or transition from another page. This rendering approach is called <strong>Partial Prerendering (PPR)</strong>, the default behavior with Cache Components.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/learn/light/thinking-in-ppr.png" alt="static nav와 상품 정보, dynamic 장바구니와 추천 상품을 보여 주는 부분적으로 re-render된 Product Page" width="1600" height="632" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/learn/dark/thinking-in-ppr.png" alt="static nav와 상품 정보, dynamic 장바구니와 추천 상품을 보여 주는 부분적으로 re-render된 Product Page" width="1600" height="632" loading="lazy" /></figure>
+<p>생성된 모든 static shell은 upstream server를 거치지 않고 CDN에서 바로 제공할 수 있습니다. 그래서 직접 navigation이 <a href="#instant-navigation">instant</a>해집니다.</p><div class="en-orig"><p>Every produced static shell can be served directly from a CDN, without going through to the upstream server. This makes direct navigations <a href="#instant-navigation">instant</a>.</p></div>
+<p>route의 static shell에 무엇이 들어가는지는 build 시점에 무엇을 알 수 있는지에 따라 달라집니다. route의 <a href="app-api-reference-functions-generate-static-params.html">dynamic params</a>를 알고 있다면 shell에는 그 구체적인 콘텐츠가 담기고, 나머지 cache되지 않은 데이터나 runtime 데이터는 여전히 <code>&lt;Suspense&gt;</code> fallback 뒤에서 stream됩니다. param을 알 수 없다면 재사용 가능하고 URL과 무관한 버전이 <a href="app-glossary.html#app-shell"><strong>App Shell</strong></a>입니다. App Shell은 param에 특화된 부분을 fallback 뒤에 남겨 둔 같은 static shell입니다. <a href="#incremental-static-regeneration">Incremental Static Regeneration</a>은 첫 방문 이후 구체적인 버전을 채워 넣습니다.</p><div class="en-orig"><p>What ends up in a route's static shell depends on what's known at build time. When a route's <a href="app-api-reference-functions-generate-static-params.html">dynamic params</a> are known, the shell contains that concrete content, and any remaining uncached or runtime data still streams behind its <code>&lt;Suspense&gt;</code> fallback. When the params aren't known, the reusable, URL-independent version is the <a href="app-glossary.html#app-shell"><strong>App Shell</strong></a>: the same static shell with the param-specific parts left behind their fallbacks. <a href="#incremental-static-regeneration">Incremental Static Regeneration</a> fills in the concrete versions after the first visit.</p></div>
+<p>Next.js에서는 prerendering 중에 완료될 수 없는 component를 명시적으로 처리해야 합니다. Next.js는 dev overlay와 dev server console에 validation insight를 표시하는데, 여기에는 route 이름과 해결책(접근을 cache하기, <code>&lt;Suspense&gt;</code> boundary 안으로 옮기기, route를 opt out하기)이 안내됩니다. 이 validation 덕분에 모든 route가 static shell을 생성하므로 직접 navigation이 계속 instant하게 유지됩니다.</p><div class="en-orig"><p>Next.js requires you to explicitly handle components that can't complete during prerendering. It surfaces a validation insight in the dev overlay and dev server console that names the route and points at fixes (cache the access, move it into a <code>&lt;Suspense&gt;</code> boundary, or opt the route out). This validation keeps every route producing a static shell, so direct navigations stay instant.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/server-rendering-with-streaming.png" alt="stream 중인 chunk에 대해 loading UI를 보여 주며 client에서 부분적으로 render된 page를 나타낸 다이어그램." width="1600" height="785" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/server-rendering-with-streaming.png" alt="stream 중인 chunk에 대해 loading UI를 보여 주며 client에서 부분적으로 render된 page를 나타낸 다이어그램." width="1600" height="785" loading="lazy" /></figure>
+<blockquote><p><strong>🎥 Watch:</strong> Partial Prerendering이 왜 필요하고 어떻게 동작하는지 → <a href="https://www.youtube.com/watch?v=MTcPrTIBkpA" target="_blank" rel="noopener">YouTube (10분)</a>.</p><div class="en-orig"><p><strong>🎥 Watch:</strong> Why Partial Prerendering and how it works → <a href="https://www.youtube.com/watch?v=MTcPrTIBkpA" target="_blank" rel="noopener">YouTube (10 minutes)</a>.</p></div></blockquote>
+<h3 class="sec" id="maximizing-the-static-shell"><a class="anchor" href="#maximizing-the-static-shell">Maximizing the static shell<span class="ko">static shell 최대화하기</span></a></h3>
+<p>async 작업이 tree 깊숙이 있을수록 page의 더 많은 부분을 prerender할 수 있습니다. 이것이 Cache Components가 보상해 주는 구조적 패턴입니다. 모든 곳에 적용할 만한 일반적인 practice이며, 이어서 설명할 instant navigation과 prefetching의 기반이 됩니다. 이 원칙은 모든 <a href="#working-with-runtime-apis">runtime API</a>와 data fetch 같은 async 작업에 적용됩니다.</p><div class="en-orig"><p>The deeper your async work sits in the tree, the more of the page can be prerendered. This is the structural pattern Cache Components rewards: a general practice worth applying everywhere, and the foundation for the instant navigation and prefetching that follow. It applies to all <a href="#working-with-runtime-apis">runtime APIs</a> and async operations like data fetches.</p></div>
+<p>최상위에서 <code>params</code>를 destructure하는 layout을 생각해 봅시다:</p><div class="en-orig"><p>Consider a layout that destructures <code>params</code> at the top level:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/shop/[slug]/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export default async function Layout({
+  children,
+  params,
+}: LayoutProps&lt;&#x27;/shop/[slug]&#x27;&gt;) {
+  const { slug } = await params
+
+  return (
+    &lt;div&gt;
+      &lt;Sidebar /&gt;
+      &lt;h1&gt;{slug}&lt;/h1&gt;
+      {children}
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>이 param이 dynamic이라면(<a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>로 제공되지 않는다면) runtime 데이터이므로 layout을 prerender할 수 없습니다.</p><div class="en-orig"><p>If this param is dynamic (not provided by <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>), it is runtime data and the layout cannot be prerendered.</p></div>
+<p>하지만 parameter 값을 tree의 더 아래쪽에서 읽을 수 있는 경우가 많습니다. layout 수준에서 await하는 대신 params promise를 아래로 전달하고 그곳에서 await하세요:</p><div class="en-orig"><p>However, it is often possible to read the parameter value further down the tree. Instead of awaiting at the layout level, pass the params promise down and await there:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/shop/[slug]/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+
+// Not async: this layout never awaits params
+export default function Layout({
+  children,
+  params,
+}: LayoutProps&lt;&#x27;/shop/[slug]&#x27;&gt;) {
+  return (
+    &lt;div&gt;
+      &lt;Sidebar /&gt;
+      &lt;Suspense fallback={&lt;h1&gt;Loading...&lt;/h1&gt;}&gt;
+        {/* await happens inside the boundary, so the shell still renders */}
+        {params.then(({ slug }) =&gt; (
+          &lt;SlugHeading slug={slug} /&gt;
+        ))}
+      &lt;/Suspense&gt;
+      {children}
+    &lt;/div&gt;
+  )
+}
+
+function SlugHeading({ slug }: { slug: string }) {
+  return &lt;h1&gt;{slug}&lt;/h1&gt;
+}</code></pre></div></div>
+<p>이제 <code>&lt;Sidebar /&gt;</code>, <code>{children}</code>, Suspense fallback이 모두 static shell의 일부가 됩니다. <code>SlugHeading</code>만 request 시점에 stream되어 들어옵니다. <code>params</code> promise 전체를 전달하고 child component에서 await할 수도 있습니다.</p><div class="en-orig"><p>Now <code>&lt;Sidebar /&gt;</code>, <code>{children}</code>, and the Suspense fallback are all part of the static shell. Only <code>SlugHeading</code> streams in at request time. You can also pass the entire <code>params</code> promise and await it in the child component.</p></div>
+<p>같은 원칙이 <code>cookies()</code>, <code>headers()</code>, <code>searchParams</code>, data fetch에도 적용됩니다. 관련 패턴은 <a href="app-getting-started-fetching-data.html#reusing-data-with-reactcache">Reusing data with <code>React.cache</code></a>를 참고하세요.</p><div class="en-orig"><p>The same principle applies to <code>cookies()</code>, <code>headers()</code>, <code>searchParams</code>, and data fetches. See <a href="app-getting-started-fetching-data.html#reusing-data-with-reactcache">Reusing data with <code>React.cache</code></a> for a related pattern.</p></div>
+<p>전체 workflow는 <a href="app-guides-optimizing-the-static-shell.html">Optimizing the static shell</a>을 참고하세요.</p><div class="en-orig"><p>For a complete workflow, see <a href="app-guides-optimizing-the-static-shell.html">Optimizing the static shell</a>.</p></div>
+<h3 class="sec" id="instant-navigation"><a class="anchor" href="#instant-navigation">Instant navigation</a></h3>
+<p>Cache Components는 16.0.0에서 route에 직접 방문했을 때 static shell이 생성되는지 검증하는 기능과 함께 출시되었습니다. client navigation은 다릅니다. 직접 방문을 감싸는 <code>&lt;Suspense&gt;</code> boundary가 transition 중의 render에는 포함되지 않을 수 있습니다. framework가 개입해 주면 이런 구조를 올바르게 잡기가 더 쉽습니다. 이제 Cache Components는 이런 navigation도 검증하여, route로의 navigation을 instant하게 만들도록 안내하는 insight와 error를 제공합니다. 예를 들어 데이터를 <code>&lt;Suspense&gt;</code>로 감싸거나, <code>use cache</code>로 cache하거나, 접근이 일어나는 위치를 옮기는 식입니다.</p><div class="en-orig"><p>Cache Components shipped in 16.0.0 with verification that direct visits to a route produce a static shell. Client navigations are different: a <code>&lt;Suspense&gt;</code> boundary that covers a direct visit may not be part of the render during a transition. Getting that structure right is easier when the framework steps in. Cache Components now validates these navigations too, giving you insights and errors that guide you to make navigations to your route instant. For example, wrap data in <code>&lt;Suspense&gt;</code>, cache it with <code>use cache</code>, or move where the access happens.</p></div>
+<p>예제와 검사 도구는 <a href="app-guides-instant-navigation.html">Instant navigation 가이드</a>를 참고하세요.</p><div class="en-orig"><p>Read the <a href="app-guides-instant-navigation.html">Instant navigation guide</a> for examples and inspection tools.</p></div>
+<h3 class="sec" id="prefetching"><a class="anchor" href="#prefetching">Prefetching</a></h3>
+<p><a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a>이 활성화되면 router는 기본적으로 각 route의 <a href="app-glossary.html#app-shell">App Shell</a>을 prefetch합니다. App Shell에는 static 콘텐츠와 <code>cookies()</code>, <code>headers()</code>에서 파생된 session 데이터가 포함됩니다. <code>searchParams</code>나 dynamic <code>params</code>처럼 link의 <strong>URL data</strong>에 의존하는 cache된 콘텐츠까지 prefetch하려면 해당 link에 <code>prefetch={true}</code>를 설정하세요.</p><div class="en-orig"><p>With <a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a> enabled, the router prefetches each route's <a href="app-glossary.html#app-shell">App Shell</a> by default. The App Shell includes static content and session data derived from <code>cookies()</code> and <code>headers()</code>. To also prefetch cached content that depends on a link's <strong>URL data</strong>, such as <code>searchParams</code> or dynamic <code>params</code>, set <code>prefetch={true}</code> on that link.</p></div>
+<p><a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a> route를 가리키는 <a href="app-api-reference-components-link.html#prefetch"><code>&lt;Link prefetch={true}&gt;</code></a>를 사용하면, Next.js는 prefetch 시점에 이번에는 목적지 URL이 resolve된 상태로 그 route의 component tree를 다시 render합니다. 같은 규칙이 적용되지만, 이제 <code>searchParams</code>와 <code>params</code>가 scope 안에 있으므로 tree의 더 많은 부분이 resolve됩니다:</p><div class="en-orig"><p>With <a href="app-api-reference-components-link.html#prefetch"><code>&lt;Link prefetch={true}&gt;</code></a> pointing at a <a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a> route, Next.js renders that route's component tree again at prefetch time, this time with the destination URL resolved. The same rules apply, but more of the tree resolves now that its <code>searchParams</code> and <code>params</code> are in scope:</p></div>
+<ul>
+<li>runtime API에서 추출한 값(인자로 전달된 값)으로 호출된 <a href="#usage"><code>use cache</code></a>는 link별 prefetch에 포함됩니다</li>
+<li><a href="app-api-reference-directives-use-cache-private.html"><code>use cache: private</code></a>는 server에서 실행되어 runtime 데이터를 직접 읽고, 그 결과를 link별 prefetch의 일부로 브라우저에 cache합니다</li>
+<li>cache되지 않은 콘텐츠가 request 시점에 stream되는 동안 <a href="#streaming-uncached-data"><code>&lt;Suspense&gt;</code></a> fallback은 prefetch된 UI에 남아 있습니다</li>
+</ul><div class="en-orig"><ul>
+<li><a href="#usage"><code>use cache</code></a> called with values extracted from runtime APIs (passed as arguments) joins the per-link prefetch</li>
+<li><a href="app-api-reference-directives-use-cache-private.html"><code>use cache: private</code></a> executes on the server, reads runtime data directly, and caches the result in the browser as part of the per-link prefetch</li>
+<li><a href="#streaming-uncached-data"><code>&lt;Suspense&gt;</code></a> fallbacks stay in the prefetched UI while uncached content streams at request time</li>
+</ul></div>
+<p>이 link별 prefetch에는 목적지 URL을 알게 된 후 resolve되는 cache된 콘텐츠가 포함됩니다. prefetch 가능한 link마다 server 호출 한 번의 비용이 듭니다.</p><div class="en-orig"><p>This per-link prefetch includes cached content that resolves after the destination URL is known. It costs a server invocation per prefetchable link.</p></div>
+<p>예를 들어 URL에서 <code>searchParams</code>를 읽는 검색 page를 생각해 봅시다:</p><div class="en-orig"><p>For example, take a search page that reads <code>searchParams</code> from the URL:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/search/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+
+export default function SearchPage(props: PageProps&lt;&#x27;/search&#x27;&gt;) {
+  return (
+    &lt;Suspense fallback={&lt;p&gt;Loading results...&lt;/p&gt;}&gt;
+      &lt;Results searchParams={props.searchParams} /&gt;
+    &lt;/Suspense&gt;
+  )
+}
+
+async function Results({
+  searchParams,
+}: Pick&lt;PageProps&lt;&#x27;/search&#x27;&gt;, &#x27;searchParams&#x27;&gt;) {
+  const { q } = await searchParams
+  const results = await search(q)
+  return (
+    &lt;ul&gt;
+      {results.map((result) =&gt; (
+        &lt;li key={result.id}&gt;{result.title}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}
+
+async function search(query: string | string[] | undefined) {
+  &#x27;use cache&#x27;
+  return db.search(query)
+}</code></pre></div></div>
+<p>직접 방문하면 <code>&lt;Results&gt;</code>는 fallback 뒤에서 stream되어 들어옵니다.</p><div class="en-orig"><p>On a direct visit, <code>&lt;Results&gt;</code> streams in behind the fallback.</p></div>
+<p><code>/search?q=shoes</code>로 가는 <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code></a>가 prefetch되면, framework는 link의 URL에서 <code>searchParams</code>를 resolve하므로 cache된 <code>search</code> 결과가 클릭 전에 runtime prerender에 포함됩니다. 그런 다음 브라우저는 <a href="app-api-reference-functions-cacheLife.html#stale"><code>stale</code></a> 시간이 지나거나 <code>searchParams</code>가 바뀔 때까지 이 결과를 재사용합니다.</p><div class="en-orig"><p>When a <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code></a> to <code>/search?q=shoes</code> is prefetched, the framework resolves <code>searchParams</code> from the link's URL, so the cached <code>search</code> result is included in the runtime prerender before the click. The browser then reuses it until its <a href="app-api-reference-functions-cacheLife.html#stale"><code>stale</code></a> time passes or the <code>searchParams</code> change.</p></div>
+<p><code>&lt;Link&gt;</code> prefetching이 어떻게 동작하고 어떻게 도입하는지 이해하려면 <a href="app-guides-adopting-partial-prefetching.html">Adopting Partial Prefetching</a>을 참고하세요.</p><div class="en-orig"><p>See <a href="app-guides-adopting-partial-prefetching.html">Adopting Partial Prefetching</a> to understand how <code>&lt;Link&gt;</code> prefetching behaves and how to adopt it.</p></div>
+<p>전체 패턴은 <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching 가이드</a>를, 모든 mode는 <a href="app-api-reference-file-conventions-route-segment-config-prefetch.html"><code>prefetch</code> reference</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching guide</a> for full patterns and the <a href="app-api-reference-file-conventions-route-segment-config-prefetch.html"><code>prefetch</code> reference</a> for all modes.</p></div>
+<h2 class="sec" id="where-cached-content-is-stored"><a class="anchor" href="#where-cached-content-is-stored">Where cached content is stored<span class="ko">cache된 콘텐츠가 저장되는 곳</span></a></h2>
+<p>cache 함수의 출력은 build 시점이나 runtime에 <strong>RSC payload</strong> 형태로 serialize됩니다. 다른 모든 것은 이 payload를 바탕으로 동작합니다. Next.js는 이를 HTML로 render하거나, server 또는 remote store에 보관하거나, 브라우저로 보내며, <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a>는 각 사본이 얼마나 오래 fresh하게 유지되는지 정합니다:</p><div class="en-orig"><p>A cached function's output is serialized into an <strong>RSC payload</strong>, at build time or at runtime. This payload is what everything else works from. Next.js renders it into HTML, keeps it in a server or remote store, or sends it to the browser, and <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a> sets how long each copy stays fresh:</p></div>
+<ul>
+<li><strong>Prerendered HTML.</strong> payload는 HTML로 render되어, self-hosting 시에는 디스크에, 그렇지 않으면 CDN 뒤에 있는 플랫폼의 durable storage에 저장됩니다. 이 HTML은 build 시점에는 <a href="#prerendering">static shell</a>이고, <a href="#incremental-static-regeneration">ISR</a> upgrade 이후에는 구체적인 page이며, 언제 다시 build될지는 <a href="app-api-reference-functions-cacheLife.html#revalidate"><code>revalidate</code></a>와 <a href="app-api-reference-functions-cacheLife.html#expire"><code>expire</code></a>가 제어합니다.</li>
+<li><strong>Shared store.</strong> 기본적으로 결과는 instance별 in-memory store에 남으며, serverless 환경에서는 일시적(ephemeral)입니다. <a href="app-api-reference-directives-use-cache-remote.html"><code>use cache: remote</code></a>는 이를 instance 간에 공유되는 durable한 <a href="app-api-reference-config-next-config-js-cacheHandlers.html">cache handler</a>로 옮깁니다. 이는 network roundtrip이 추가되므로 <strong>high hit rate</strong>(높은 적중률)일 때만 이득이 됩니다.</li>
+<li><strong>Browser.</strong> payload는 client navigation이나 <a href="#prefetching">prefetch</a>를 위해 전송되는 RSC에 포함되며, 브라우저는 이를 <a href="app-api-reference-functions-cacheLife.html#stale"><code>stale</code></a> 기간 동안 fresh하게 유지합니다. <a href="app-api-reference-directives-use-cache-private.html"><code>use cache: private</code></a> 결과는 오직 여기에만 존재합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Prerendered HTML.</strong> The payload is rendered to HTML and stored on disk when self-hosting, or in your platform's durable storage behind a CDN. That HTML is the <a href="#prerendering">static shell</a> at build time and the concrete page after an <a href="#incremental-static-regeneration">ISR</a> upgrade, with <a href="app-api-reference-functions-cacheLife.html#revalidate"><code>revalidate</code></a> and <a href="app-api-reference-functions-cacheLife.html#expire"><code>expire</code></a> controlling when it's rebuilt.</li>
+<li><strong>Shared store.</strong> By default the result stays in a per-instance, in-memory store that is ephemeral on serverless. <a href="app-api-reference-directives-use-cache-remote.html"><code>use cache: remote</code></a> moves it to a durable <a href="app-api-reference-config-next-config-js-cacheHandlers.html">cache handler</a> shared across instances, a network roundtrip that pays off only at a <strong>high hit rate</strong>.</li>
+<li><strong>Browser.</strong> The payload is included in the RSC sent for a client navigation or <a href="#prefetching">prefetch</a>, where the browser keeps it fresh for its <a href="app-api-reference-functions-cacheLife.html#stale"><code>stale</code></a> window. <a href="app-api-reference-directives-use-cache-private.html"><code>use cache: private</code></a> results live only here.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>cookies()</code>나 <code>headers()</code>를 읽는 <a href="app-glossary.html#app-shell">App Shell</a>은 session별로 달라지므로, 공유 server cache가 아니라 client에서 session별로 cache됩니다.</p><div class="en-orig"><p>An <a href="app-glossary.html#app-shell">App Shell</a> that reads <code>cookies()</code> or <code>headers()</code> is session-specific, cached per session on the client rather than in the shared server cache.</p></div></div></div>
+<p>이 모든 store는 단일 deployment 범위로 한정됩니다. 새로 deploy하면 처음부터 다시 시작하고, 새 prerender가 build되며, <code>use cache</code> entry는 durable한 <a href="app-api-reference-directives-use-cache-remote.html"><code>remote</code></a> entry조차 이어지지 않습니다. <a href="app-api-reference-directives-use-cache.html#cache-keys">cache key</a>에 build id가 포함되기 때문입니다. 환경별 동작은 <a href="app-api-reference-directives-use-cache.html#runtime-caching-considerations">Runtime caching considerations</a>를, server cache 설정은 <a href="app-guides-self-hosting.html#caching-and-isr">Self-hosting</a>을 참고하세요.</p><div class="en-orig"><p>All of these stores are scoped to a single deployment. A new deploy starts fresh, new prerenders are built, and <code>use cache</code> entries don't carry over, even durable <a href="app-api-reference-directives-use-cache-remote.html"><code>remote</code></a> ones, because the <a href="app-api-reference-directives-use-cache.html#cache-keys">cache key</a> includes the build id. See <a href="app-api-reference-directives-use-cache.html#runtime-caching-considerations">Runtime caching considerations</a> for per-environment behavior and <a href="app-guides-self-hosting.html#caching-and-isr">Self-hosting</a> for configuring the server cache.</p></div>
+<h2 class="sec" id="incremental-static-regeneration"><a class="anchor" href="#incremental-static-regeneration">Incremental Static Regeneration</a></h2>
+<p>dynamic param segment가 있는 route에서 <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>는 나열한 URL을 build 시점에 prerender합니다. 그 밖의 URL에는 <a href="app-glossary.html#app-shell">App Shell</a>이 즉시 제공되고, 이후 background에서 이제 알게 된 param으로 upgrade되어 다음 방문자를 위해 cache됩니다.</p><div class="en-orig"><p>In a route with dynamic param segments, <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a> prerenders the URLs you list at build time. Any other URL is served the <a href="app-glossary.html#app-shell">App Shell</a> instantly, then upgraded in the background with its now-known params and cached for the next visitor.</p></div>
+<p>전체 walkthrough는 <a href="app-guides-incremental-static-regeneration-cache-components.html">ISR with Cache Components</a>를 참고하세요.</p><div class="en-orig"><p>See <a href="app-guides-incremental-static-regeneration-cache-components.html">ISR with Cache Components</a> for the full walkthrough.</p></div>
+<h2 class="sec" id="bots-and-crawlers"><a class="anchor" href="#bots-and-crawlers">Bots and crawlers<span class="ko">Bot과 crawler</span></a></h2>
+<p><a href="#prerendering">Partial Prerendering</a>을 사용하면 page의 나머지 부분은 static shell로 prerender하면서 metadata는 dynamic하게 둘 수 있습니다. shell이 즉시 제공되고 metadata는 그 뒤에 stream되어 들어옵니다. 일부 bot과 crawler는 이를 처리하지 못하며, document의 <code>&lt;head&gt;</code> tag 안에 metadata가 포함되어 있어야 합니다. Next.js는 user agent로 이들을 감지해 static shell을 건너뛰고 request 시점에 page를 dynamic하게 render합니다.</p><div class="en-orig"><p>With <a href="#prerendering">Partial Prerendering</a>, metadata can be dynamic while the rest of the page is prerendered into a static shell. The shell is served immediately and the metadata streams in after. Some bots and crawlers cannot handle this, and need to see the metadata included in the <code>&lt;head&gt;</code> tag of the document. Next.js detects them by their user agent, skips the static shell, and renders the page dynamically at request time.</p></div>
+<p>build 시점 prerender 중에 사용할 수 있었던 data source는 request 시점에도 사용할 수 있어야 합니다. 그렇지 않으면 render가 throw할 수 있고, 이런 bot은 500 error를 받게 됩니다. 어떤 user agent가 해당되는지와 목록을 바꾸는 방법은 Streaming 가이드의 <a href="app-guides-streaming.html#bots-and-crawlers">Bots and crawlers</a>를 참고하세요.</p><div class="en-orig"><p>Data sources available during the build-time prerender have to be available at request time too. Otherwise the render may throw, and these bots receive a 500 error. See <a href="app-guides-streaming.html#bots-and-crawlers">Bots and crawlers</a> in the Streaming guide for which user agents this covers and how to change the list.</p></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">다음 단계</h2><p>revalidation과 이 페이지에서 언급한 API에 대해 더 알아보세요.</p><div class="rgrid"><a class="rcard" href="app-getting-started-revalidating.html"><div class="rt">Revalidating</div><div class="rk">Revalidation</div><div class="rd">시간 기반 전략과 on-demand 전략으로 cache된 데이터를 revalidate하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-directives-use-cache.html"><div class="rt">use cache</div><div class="rk">use cache</div><div class="rd">\"use cache\" directive로 Next.js 애플리케이션의 데이터를 cache하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-config-next-config-js-cacheComponents.html"><div class="rt">cacheComponents</div><div class="rk">cacheComponents</div><div class="rd">Next.js에서 cacheComponents flag를 활성화하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-instant-navigation.html"><div class="rt">Ensuring instant navigations</div><div class="rk">즉각적인 navigation 보장하기</div><div class="rd">더 많은 콘텐츠를 prefetch하고 prerender하도록 앱을 구성해, 즉각적인 페이지 로드와 client navigation을 제공하는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/08-caching.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/getting-started/caching" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-getting-started-mutating-data.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Mutating Data</div><div class="ttl-ko">데이터 변경하기</div></a>
+      <a href="app-getting-started-revalidating.html" class="next"><div class="dir">다음 →</div><div class="ttl">Revalidating</div><div class="ttl-ko">Revalidation</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/getting-started/caching" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#enabling-cache-components">Enabling Cache Components</a></li><li class="l2"><a href="#usage">Usage</a></li><li class="l3"><a href="#data-level-caching">Data-level caching</a></li><li class="l3"><a href="#ui-level-caching">UI-level caching</a></li><li class="l3"><a href="#streaming-uncached-data">Streaming uncached data</a></li><li class="l2"><a href="#working-with-runtime-apis">Working with runtime APIs</a></li><li class="l3"><a href="#passing-runtime-values-to-cached-functions">Passing runtime values to cached functions</a></li><li class="l2"><a href="#static-cached-and-streaming">Static, cached, and streaming</a></li><li class="l2"><a href="#random-values-and-timestamps">Random values and timestamps</a></li><li class="l2"><a href="#predictable-values">Predictable values</a></li><li class="l2"><a href="#prerendering">Prerendering</a></li><li class="l3"><a href="#maximizing-the-static-shell">Maximizing the static shell</a></li><li class="l3"><a href="#instant-navigation">Instant navigation</a></li><li class="l3"><a href="#prefetching">Prefetching</a></li><li class="l2"><a href="#where-cached-content-is-stored">Where cached content is stored</a></li><li class="l2"><a href="#incremental-static-regeneration">Incremental Static Regeneration</a></li><li class="l2"><a href="#bots-and-crawlers">Bots and crawlers</a></li><li class="l2"><a href="#next-steps">다음 단계</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+&gt; 이 페이지는 `next.config.ts` 파일에서 [`cacheComponents: true`](/docs/app/api-reference/config/next-config-js/cacheComponents)를 설정해 활성화하는 [Cache Components](/docs/app/api-reference/config/next-config-js/cacheComponents) 기반의 caching을 다룹니다. Cache Components를 사용하지 않는다면 [Caching and Revalidating (Previous Model)](/docs/app/guides/caching-without-cache-components) 가이드를 참고하세요.
+
+caching은 data fetching과 기타 연산의 결과를 저장해 두어, 이후 같은 데이터에 대한 request가 들어왔을 때 작업을 다시 하지 않고 더 빠르게 제공하는 기법입니다.
+
+## Enabling Cache Components || Cache Components 활성화하기
+
+권장 [`create-next-app`](/docs/app/api-reference/cli/create-next-app) 기본값으로 만든 새 App Router 앱에는 Cache Components와 Partial Prefetching이 이미 활성화되어 있습니다.
+
+기존 앱이나 직접 만든 앱에서 활성화하려면 Next config 파일에 [`cacheComponents`](/docs/app/api-reference/config/next-config-js/cacheComponents)와 [`partialPrefetching`](/docs/app/api-reference/config/next-config-js/partialPrefetching) option을 추가하세요:
+
+[[CODE 1]]
+
+`partialPrefetching`은 명시적으로 설정하세요. Cache Components의 첫 release에는 Partial Prefetching이 포함되지 않았기 때문에, 설정하지 않고 두면 warning이 log에 출력됩니다. [Partial Prefetching 이전에 Cache Components를 도입한 앱을 migrate하는](/docs/app/guides/adopting-partial-prefetching) 동안에만 `false`로 설정하세요. 다음 major release에서는 두 기능이 모든 곳에서 활성화되고 이 option들은 제거될 예정입니다.
+
+&gt; **Good to know:** Cache Components가 활성화되면 `GET` Route Handler도 page와 같은 prerendering 모델을 따릅니다. 자세한 내용은 [Route Handlers with Cache Components](/docs/app/getting-started/route-handlers#with-cache-components)를 참고하세요.
+
+## Usage || 사용법
+
+[`use cache`](/docs/app/api-reference/directives/use-cache) directive는 async 함수와 component의 반환값을 cache합니다. 두 가지 수준에서 적용할 수 있습니다:
+
+- **Data-level**: 데이터를 fetch하거나 계산하는 함수를 cache합니다(예: `getProducts()`, `getUser(id)`)
+- **UI-level**: component나 page 전체를 cache합니다(예: `async function BlogPosts()`)
+
+cache directive는 결과에 lifetime(수명)을 부여하며, Next.js는 이를 시간 기반 revalidation과 rendering 최적화에 사용합니다. mutation 이후의 on-demand revalidation은 [Revalidating](/docs/app/getting-started/revalidating)을 참고하세요. cache된 결과가 어떻게 static shell의 일부가 되고 [prefetch](#prefetching)에 포함될 수 있는지는 [Prerendering](#prerendering)을 참고하세요.
+
+&gt; **Good to know:** 모든 cache directive에 [`cacheLife`](/docs/app/api-reference/functions/cacheLife)를 함께 지정하는 것을 권장합니다. 지정하지 않으면 암묵적으로 `default` profile이 적용됩니다.
+
+인자(argument)와 상위 scope에서 capture된 값은 자동으로 [cache key](/docs/app/api-reference/directives/use-cache#cache-keys)의 일부가 됩니다. 즉, 입력이 다르면 별도의 cache entry가 만들어집니다. entry에 무엇이 저장되는지는 [cache output](/docs/app/api-reference/directives/use-cache#cache-output)을, 무엇을 cache할 수 있고 인자가 어떻게 동작하는지는 [serialization 요구 사항과 제약](/docs/app/api-reference/directives/use-cache#constraints)을 참고하세요.
+
+### Data-level caching || Data-level caching
+
+데이터를 fetch하는 비동기 함수를 cache하려면 함수 본문 맨 위에 `use cache` directive를 추가하세요:
+
+[[CODE 2]]
+
+Data-level caching은 같은 데이터를 여러 component에서 사용하거나, 데이터를 UI와 독립적으로 cache하고 싶을 때 유용합니다.
+
+### UI-level caching || UI-level caching
+
+component, page, layout 전체를 cache하려면 component나 page 본문 맨 위에 `use cache` directive를 추가하세요:
+
+[[CODE 3]]
+
+&gt; 파일 맨 위에 &quot;`use cache`&quot;를 추가하면 그 파일에서 export되는 모든 함수가 cache됩니다.
+
+### Streaming uncached data || cache되지 않은 데이터 streaming하기
+
+API, database 또는 기타 async 작업 같은 비동기 source에서 데이터를 fetch하고 매 request마다 최신 데이터가 필요한 component에는 `&quot;use cache&quot;`를 사용하지 마세요.
+
+대신 component를 [`&lt;Suspense&gt;`](https://react.dev/reference/react/Suspense)로 감싸고 fallback UI를 제공하세요. async 작업이 request 시점에 실행되는 동안 fallback은 prerender된 shell과 함께 전달됩니다.
+
+[[CODE 4]]
+
+예를 들어 `&lt;p&gt;Loading posts...&lt;/p&gt;`는 static shell에 포함되고, post들은 request 시점에 stream되어 들어옵니다.
+
+cache되지 않은 read를 `&lt;Suspense&gt;` boundary로 감싸지 않으면, dev overlay가 다음 해결책과 함께 **blocking-route** insight를 표시합니다:
+
+&lt;FixCardGrid&gt;
+  &lt;FixCard
+    group=&quot;stream&quot;
+    title=&quot;Wrap in or move into Suspense&quot;
+    href=&quot;/docs/messages/blocking-prerender-dynamic#wrap-in-or-move-into-suspense&quot;
+    snippets={[
+      { text: &#x27;&lt;Suspense fallback={…}&gt;&#x27;, highlight: true },
+      { text: &#x27;  &lt;DataChild /&gt;&#x27; },
+      { text: &#x27;&lt;/Suspense&gt;&#x27;, highlight: true },
+    ]}
+  /&gt;
+&lt;/FixCardGrid&gt;
+
+&gt; **Good to know:** 각 fix card는 패턴, 코드 예제, trade-off를 담은 자세한 walkthrough로 연결됩니다. card를 클릭해 자세히 살펴보세요.
+
+`&lt;Suspense&gt;`는 async 작업이 완료되는 동안 fallback UI를 제공하지만, 그 자체로 component를 dynamic rendering으로 전환(opt into)하지는 않습니다. component가 동기 작업만 수행한다면 `&lt;Suspense&gt;`로 감쌌는지와 관계없이 prerendering 중에 완료됩니다.
+
+## Working with runtime APIs || runtime API 다루기
+
+runtime API는 사용자가 request를 보낼 때만 알 수 있는 정보를 필요로 합니다. 여기에는 다음이 포함됩니다:
+
+- [`cookies`](/docs/app/api-reference/functions/cookies) - 사용자의 cookie 데이터
+- [`headers`](/docs/app/api-reference/functions/headers) - request header
+- [`searchParams`](/docs/app/api-reference/file-conventions/page#searchparams-optional) - URL query parameter
+- [`params`](/docs/app/api-reference/file-conventions/page#params-optional) - dynamic route parameter. build 시점에 특정 값을 prerender하려면 [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)를 사용하고, 알 수 없는 param이 background에서 resolve되는 동안 [App Shell](/docs/app/glossary#app-shell)을 제공하려면 [ISR with Cache Components](/docs/app/guides/incremental-static-regeneration-cache-components)를 사용하세요.
+
+runtime API에 접근하는 component는 `&lt;Suspense&gt;`로 감싸야 합니다:
+
+[[CODE 5]]
+
+`&lt;Suspense&gt;` 없이 runtime API에 접근하면 dev overlay에 같은 **blocking-route** insight가 같은 해결책과 함께 표시됩니다:
+
+&lt;FixCardGrid&gt;
+  &lt;FixCard
+    group=&quot;stream&quot;
+    title=&quot;Wrap in or move into Suspense&quot;
+    href=&quot;/docs/messages/blocking-prerender-dynamic#wrap-in-or-move-into-suspense&quot;
+    snippets={[
+      { text: &#x27;&lt;Suspense fallback={…}&gt;&#x27;, highlight: true },
+      { text: &#x27;  &lt;DataChild /&gt;&#x27; },
+      { text: &#x27;&lt;/Suspense&gt;&#x27;, highlight: true },
+    ]}
+  /&gt;
+&lt;/FixCardGrid&gt;
+
+runtime에 의존하는 데이터도 Cache Components와 함께 제공되는 또 다른 variant인 [`&quot;use cache: private&quot;`](/docs/app/api-reference/directives/use-cache-private)로 cache lifetime을 부여할 수 있습니다. 이 directive는 cookie, header, `searchParams`를 직접 읽는 함수에 lifetime을 부여하므로, 그 결과가 [prefetch](#prefetching)에 포함될 수 있습니다.
+
+다음 섹션에서는 `use cache: private`의 대안으로, runtime 값을 추출해 공유되는 cache 함수에 전달하는 방법을 보여 줍니다.
+
+### Passing runtime values to cached functions || runtime 값을 cache 함수에 전달하기
+
+runtime API에서 값을 추출해 cache 함수의 인자로 전달할 수 있습니다:
+
+[[CODE 6]]
+
+request 시점에 일치하는 cache entry가 없으면 `&lt;CachedContent /&gt;`가 실행되고, 같은 `sessionId`를 가진 이후 request를 위해 결과를 저장합니다.
+
+&gt; **Good to know:** `&lt;CachedContent /&gt;`는 request 데이터 뒤에 놓여 있으므로 prerender된 static shell에 추가되지 않습니다. runtime에는 기본적으로 [in-memory](/docs/app/api-reference/directives/use-cache#runtime-caching-considerations)에 cache되는데, 이는 serverless request 간에 유지되지 않으므로 매 request마다 다시 평가될 수 있습니다. 지속적이고 공유되는 caching이 필요하다면 [`&#x27;use cache: remote&#x27;`](/docs/app/api-reference/directives/use-cache-remote)를 사용하세요.
+
+이 패턴을 사용하면 [prefetching](#prefetching)이 client transition 중에 사용자의 실제 session으로 `&lt;CachedContent /&gt;`를 prerender해, 클릭하기 전에 결과를 준비해 둘 수 있습니다. server-side entry가 request 사이에 거의 살아남지 못하더라도 이 방식은 동작합니다. 여러분이 부여한 lifetime 덕분에 결과가 prefetch에 포함되고, client는 그 결과를 [`cacheLife`](/docs/app/api-reference/functions/cacheLife)의 `stale` 기간 동안 fresh한 것으로 취급하기 때문입니다.
+
+## Static, cached, and streaming || Static, cached, streaming
+
+다음은 static 콘텐츠, cache된 dynamic 콘텐츠, streaming되는 dynamic 콘텐츠가 한 page에서 함께 동작하는 전체 예제입니다:
+
+[[CODE 7]]
+
+prerendering 중에 header(static)와 blog post(`use cache`로 cache됨)는 사용자 preference용 fallback UI와 함께 static shell의 일부가 됩니다. cookie에 저장된 UI preference는 request 시점에 stream되어 들어옵니다.
+
+여기서 `cookies()`를 읽어도, 이전 rendering 모델처럼 route 전체가 dynamic rendering으로 전환되지는 않습니다. Suspense boundary가 runtime 접근이 stream되는 곳에 fallback UI를 제공하고, static 콘텐츠와 cache된 콘텐츠는 여전히 initial HTML에 담겨 전달됩니다.
+
+`&lt;Suspense&gt;`가 async 접근을 감싸 가두는 것처럼, **error boundary**는 실패를 가둡니다. rendering 중에 error가 날 수 있는 subtree를 error boundary로 감싸세요. component 수준 boundary에는 [`catchError`](/docs/app/api-reference/functions/catchError)를, route 수준 boundary에는 [`error.js`](/docs/app/api-reference/file-conventions/error) file convention을 사용하세요.
+
+개발하면서, [`generateMetadata`](/docs/app/api-reference/functions/generate-metadata#with-cache-components)와 [`generateViewport`](/docs/app/api-reference/functions/generate-viewport#with-cache-components) 안에서 cache되지 않은 fetch나 runtime 데이터 접근을 하면 page에서와 같은 insight와 error가 표시되어 의도한 rendering으로 안내한다는 점을 기억하세요. 알려진 param 값과 알 수 없는 param 값을 모두 다루는 incremental static regeneration은 [ISR with Cache Components](/docs/app/guides/incremental-static-regeneration-cache-components)를 참고하세요.
+
+## Random values and timestamps || 무작위 값과 timestamp
+
+`Math.random()`, `Date.now()`, `crypto.randomUUID()` 같은 작업은 실행할 때마다 다른 값을 만듭니다. Cache Components에서는 이런 작업을 명시적으로 처리해야 합니다.
+
+&gt; **Good to know:** `performance.now()`는 telemetry용이므로 Next.js는 이를 보호해야 할 값으로 취급하지 않습니다. 시간 측정에 사용하고, 결과는 render하지 말고 logger나 metrics로 전달하세요.
+
+**request마다 고유한 값을 생성하려면** 이런 작업 전에 [`connection()`](/docs/app/api-reference/functions/connection)을 호출해 request 시점으로 미루고, component를 `&lt;Suspense&gt;`로 감싸세요:
+
+[[CODE 8]]
+
+또는 **결과를 cache해서** revalidation 전까지 모든 사용자가 같은 값을 보게 할 수도 있습니다:
+
+[[CODE 9]]
+
+어떤 작업이 이렇게 동작하는지 외울 필요는 없습니다. dev overlay가 (호출에 따라) **blocking-prerender-random**, **blocking-prerender-current-time**, **blocking-prerender-crypto** insight를 다음 해결책과 함께 표시합니다:
+
+&lt;FixCardGrid&gt;
+  &lt;FixCard
+    group=&quot;dynamic&quot;
+    title=&quot;Generate on every request&quot;
+    href=&quot;/docs/messages/blocking-prerender-random#generate-on-every-request&quot;
+    snippets={[
+      { text: &#x27;await connection()&#x27;, highlight: true },
+      { text: &#x27;const id = Math.random()&#x27; },
+      { text: &#x27;return &lt;Item id={id} /&gt;&#x27; },
+    ]}
+  /&gt;
+  &lt;FixCard
+    group=&quot;cache&quot;
+    title=&quot;Cache the value&quot;
+    href=&quot;/docs/messages/blocking-prerender-random#cache-the-random-value&quot;
+    snippets={[
+      { text: &#x27;function RandomId() {&#x27; },
+      { text: &#x27;  &quot;use cache&quot;&#x27;, highlight: true },
+      { text: &#x27;  return String(Math.random())&#x27; },
+    ]}
+  /&gt;
+&lt;/FixCardGrid&gt;
+
+## Predictable values || 예측 가능한 값
+
+render할 때마다 달라질 수 있는 무작위 값이나 timestamp와 달리, module import, 동기 I/O, 순수 연산은 실행할 때마다 같은 결과를 냅니다. 이런 작업만 사용하는 component는 자동으로 prerender되며, 그 출력은 build 시점에 static HTML의 일부가 됩니다.
+
+[[CODE 10]]
+
+&gt; **Good to know:** 여기에는 `better-sqlite3`나 Node.js 내장 [`node:sqlite`](https://nodejs.org/api/sqlite.html)처럼 동기 API를 가진 embedded database에 대한 query도 포함됩니다. 동기 source에서 request마다 데이터를 가져와야 한다면 query 전에 [`connection()`](/docs/app/api-reference/functions/connection)을 호출하세요.
+
+일부 비동기 API는 font나 configuration 파일처럼 들어오는 request에 의존하지 않는 로컬 리소스를 읽습니다. 이런 리소스가 모든 request에서 같을 것으로 예상된다면, rendering 중이 아니라 module scope에서 한 번만 읽으세요
+
+대신 데이터를 rendering 중에 계산하고 request 간에 재사용해야 한다면, read를 [`use cache`](/docs/app/api-reference/directives/use-cache)로 감싸세요. 데이터가 들어오는 request에 의존하거나 시간이 지나면서 바뀔 것으로 예상된다면, request 시점 rendering 중에 읽으세요.
+
+[[CODE 11]]
+
+이 예제에서 configuration 파일은 모든 request에서 같을 것으로 예상되므로 module scope에서 한 번만 읽습니다. component 안에서 `await readFile()`을 호출하면 cache되지 않은 데이터로 취급되어, `use cache` 안에서 접근하거나 `&lt;Suspense&gt;` boundary 뒤에 두어야 합니다. 이 파일은 request에 의존하지 않고 바뀔 것으로 예상되지도 않으므로 module scope가 가장 간단한 선택입니다.
+
+## Prerendering
+
+build 시점에 Next.js는 route의 component tree를 render합니다. 각 component가 처리되는 방식은 사용하는 API에 따라 다릅니다:
+
+- [`use cache`](#usage): lifetime이 [너무 짧지 않다면](/docs/app/api-reference/functions/cacheLife#prerendering-behavior) 결과가 cache되어 static shell에 포함됩니다
+- [`&lt;Suspense&gt;`](#streaming-uncached-data): 콘텐츠가 request 시점에 stream되는 동안 fallback UI가 static shell에 포함됩니다
+- [Predictable values](#predictable-values): module import, `fs.readFileSync`, 순수 연산은 prerender 중에 완료되어 자동으로 static shell에 포함됩니다
+- [Random values and timestamps](#random-values-and-timestamps): request마다 고유한 값을 얻으려면 `connection()` + `&lt;Suspense&gt;`를, 모든 사용자가 하나의 값을 공유하게 하려면 `use cache`를 사용하세요
+
+이렇게 하면 초기 page 로드를 위한 HTML과 client-side navigation을 위한 serialize된 [RSC Payload](/docs/app/getting-started/server-and-client-components#on-the-server)로 구성된 static shell이 생성됩니다. 덕분에 사용자가 URL로 직접 이동하든 다른 page에서 transition하든 브라우저는 완전히 render된 콘텐츠를 즉시 받습니다. 이 rendering 방식을 **Partial Prerendering (PPR)** 이라고 하며, Cache Components의 기본 동작입니다.
+
+&lt;Image
+  alt=&quot;static nav와 상품 정보, dynamic 장바구니와 추천 상품을 보여 주는 부분적으로 re-render된 Product Page&quot;
+  srcLight=&quot;/learn/light/thinking-in-ppr.png&quot;
+  srcDark=&quot;/learn/dark/thinking-in-ppr.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;632&quot;
+/&gt;
+
+생성된 모든 static shell은 upstream server를 거치지 않고 CDN에서 바로 제공할 수 있습니다. 그래서 직접 navigation이 [instant](#instant-navigation)해집니다.
+
+route의 static shell에 무엇이 들어가는지는 build 시점에 무엇을 알 수 있는지에 따라 달라집니다. route의 [dynamic params](/docs/app/api-reference/functions/generate-static-params)를 알고 있다면 shell에는 그 구체적인 콘텐츠가 담기고, 나머지 cache되지 않은 데이터나 runtime 데이터는 여전히 `&lt;Suspense&gt;` fallback 뒤에서 stream됩니다. param을 알 수 없다면 재사용 가능하고 URL과 무관한 버전이 [**App Shell**](/docs/app/glossary#app-shell)입니다. App Shell은 param에 특화된 부분을 fallback 뒤에 남겨 둔 같은 static shell입니다. [Incremental Static Regeneration](#incremental-static-regeneration)은 첫 방문 이후 구체적인 버전을 채워 넣습니다.
+
+Next.js에서는 prerendering 중에 완료될 수 없는 component를 명시적으로 처리해야 합니다. Next.js는 dev overlay와 dev server console에 validation insight를 표시하는데, 여기에는 route 이름과 해결책(접근을 cache하기, `&lt;Suspense&gt;` boundary 안으로 옮기기, route를 opt out하기)이 안내됩니다. 이 validation 덕분에 모든 route가 static shell을 생성하므로 직접 navigation이 계속 instant하게 유지됩니다.
+
+&lt;Image
+  alt=&quot;stream 중인 chunk에 대해 loading UI를 보여 주며 client에서 부분적으로 render된 page를 나타낸 다이어그램.&quot;
+  srcLight=&quot;/docs/light/server-rendering-with-streaming.png&quot;
+  srcDark=&quot;/docs/dark/server-rendering-with-streaming.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;785&quot;
+/&gt;
+
+&gt; **🎥 Watch:** Partial Prerendering이 왜 필요하고 어떻게 동작하는지 → [YouTube (10분)](https://www.youtube.com/watch?v=MTcPrTIBkpA).
+
+### Maximizing the static shell || static shell 최대화하기
+
+async 작업이 tree 깊숙이 있을수록 page의 더 많은 부분을 prerender할 수 있습니다. 이것이 Cache Components가 보상해 주는 구조적 패턴입니다. 모든 곳에 적용할 만한 일반적인 practice이며, 이어서 설명할 instant navigation과 prefetching의 기반이 됩니다. 이 원칙은 모든 [runtime API](#working-with-runtime-apis)와 data fetch 같은 async 작업에 적용됩니다.
+
+최상위에서 `params`를 destructure하는 layout을 생각해 봅시다:
+
+[[CODE 12]]
+
+이 param이 dynamic이라면([`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)로 제공되지 않는다면) runtime 데이터이므로 layout을 prerender할 수 없습니다.
+
+하지만 parameter 값을 tree의 더 아래쪽에서 읽을 수 있는 경우가 많습니다. layout 수준에서 await하는 대신 params promise를 아래로 전달하고 그곳에서 await하세요:
+
+[[CODE 13]]
+
+이제 `&lt;Sidebar /&gt;`, `{children}`, Suspense fallback이 모두 static shell의 일부가 됩니다. `SlugHeading`만 request 시점에 stream되어 들어옵니다. `params` promise 전체를 전달하고 child component에서 await할 수도 있습니다.
+
+같은 원칙이 `cookies()`, `headers()`, `searchParams`, data fetch에도 적용됩니다. 관련 패턴은 [Reusing data with `React.cache`](/docs/app/getting-started/fetching-data#reusing-data-with-reactcache)를 참고하세요.
+
+전체 workflow는 [Optimizing the static shell](/docs/app/guides/optimizing-the-static-shell)을 참고하세요.
+
+### Instant navigation
+
+Cache Components는 16.0.0에서 route에 직접 방문했을 때 static shell이 생성되는지 검증하는 기능과 함께 출시되었습니다. client navigation은 다릅니다. 직접 방문을 감싸는 `&lt;Suspense&gt;` boundary가 transition 중의 render에는 포함되지 않을 수 있습니다. framework가 개입해 주면 이런 구조를 올바르게 잡기가 더 쉽습니다. 이제 Cache Components는 이런 navigation도 검증하여, route로의 navigation을 instant하게 만들도록 안내하는 insight와 error를 제공합니다. 예를 들어 데이터를 `&lt;Suspense&gt;`로 감싸거나, `use cache`로 cache하거나, 접근이 일어나는 위치를 옮기는 식입니다.
+
+예제와 검사 도구는 [Instant navigation 가이드](/docs/app/guides/instant-navigation)를 참고하세요.
+
+### Prefetching
+
+[Partial Prefetching](/docs/app/api-reference/config/next-config-js/partialPrefetching)이 활성화되면 router는 기본적으로 각 route의 [App Shell](/docs/app/glossary#app-shell)을 prefetch합니다. App Shell에는 static 콘텐츠와 `cookies()`, `headers()`에서 파생된 session 데이터가 포함됩니다. `searchParams`나 dynamic `params`처럼 link의 **URL data**에 의존하는 cache된 콘텐츠까지 prefetch하려면 해당 link에 `prefetch={true}`를 설정하세요.
+
+[Partial Prefetching](/docs/app/api-reference/config/next-config-js/partialPrefetching) route를 가리키는 [`&lt;Link prefetch={true}&gt;`](/docs/app/api-reference/components/link#prefetch)를 사용하면, Next.js는 prefetch 시점에 이번에는 목적지 URL이 resolve된 상태로 그 route의 component tree를 다시 render합니다. 같은 규칙이 적용되지만, 이제 `searchParams`와 `params`가 scope 안에 있으므로 tree의 더 많은 부분이 resolve됩니다:
+
+- runtime API에서 추출한 값(인자로 전달된 값)으로 호출된 [`use cache`](#usage)는 link별 prefetch에 포함됩니다
+- [`use cache: private`](/docs/app/api-reference/directives/use-cache-private)는 server에서 실행되어 runtime 데이터를 직접 읽고, 그 결과를 link별 prefetch의 일부로 브라우저에 cache합니다
+- cache되지 않은 콘텐츠가 request 시점에 stream되는 동안 [`&lt;Suspense&gt;`](#streaming-uncached-data) fallback은 prefetch된 UI에 남아 있습니다
+
+이 link별 prefetch에는 목적지 URL을 알게 된 후 resolve되는 cache된 콘텐츠가 포함됩니다. prefetch 가능한 link마다 server 호출 한 번의 비용이 듭니다.
+
+예를 들어 URL에서 `searchParams`를 읽는 검색 page를 생각해 봅시다:
+
+[[CODE 14]]
+
+직접 방문하면 `&lt;Results&gt;`는 fallback 뒤에서 stream되어 들어옵니다.
+
+`/search?q=shoes`로 가는 [`&lt;Link&gt;`](/docs/app/api-reference/components/link)가 prefetch되면, framework는 link의 URL에서 `searchParams`를 resolve하므로 cache된 `search` 결과가 클릭 전에 runtime prerender에 포함됩니다. 그런 다음 브라우저는 [`stale`](/docs/app/api-reference/functions/cacheLife#stale) 시간이 지나거나 `searchParams`가 바뀔 때까지 이 결과를 재사용합니다.
+
+`&lt;Link&gt;` prefetching이 어떻게 동작하고 어떻게 도입하는지 이해하려면 [Adopting Partial Prefetching](/docs/app/guides/adopting-partial-prefetching)을 참고하세요.
+
+전체 패턴은 [Optimizing prefetching 가이드](/docs/app/guides/optimizing-prefetching)를, 모든 mode는 [`prefetch` reference](/docs/app/api-reference/file-conventions/route-segment-config/prefetch)를 참고하세요.
+
+## Where cached content is stored || cache된 콘텐츠가 저장되는 곳
+
+cache 함수의 출력은 build 시점이나 runtime에 **RSC payload** 형태로 serialize됩니다. 다른 모든 것은 이 payload를 바탕으로 동작합니다. Next.js는 이를 HTML로 render하거나, server 또는 remote store에 보관하거나, 브라우저로 보내며, [`cacheLife`](/docs/app/api-reference/functions/cacheLife)는 각 사본이 얼마나 오래 fresh하게 유지되는지 정합니다:
+
+- **Prerendered HTML.** payload는 HTML로 render되어, self-hosting 시에는 디스크에, 그렇지 않으면 CDN 뒤에 있는 플랫폼의 durable storage에 저장됩니다. 이 HTML은 build 시점에는 [static shell](#prerendering)이고, [ISR](#incremental-static-regeneration) upgrade 이후에는 구체적인 page이며, 언제 다시 build될지는 [`revalidate`](/docs/app/api-reference/functions/cacheLife#revalidate)와 [`expire`](/docs/app/api-reference/functions/cacheLife#expire)가 제어합니다.
+- **Shared store.** 기본적으로 결과는 instance별 in-memory store에 남으며, serverless 환경에서는 일시적(ephemeral)입니다. [`use cache: remote`](/docs/app/api-reference/directives/use-cache-remote)는 이를 instance 간에 공유되는 durable한 [cache handler](/docs/app/api-reference/config/next-config-js/cacheHandlers)로 옮깁니다. 이는 network roundtrip이 추가되므로 **high hit rate**(높은 적중률)일 때만 이득이 됩니다.
+- **Browser.** payload는 client navigation이나 [prefetch](#prefetching)를 위해 전송되는 RSC에 포함되며, 브라우저는 이를 [`stale`](/docs/app/api-reference/functions/cacheLife#stale) 기간 동안 fresh하게 유지합니다. [`use cache: private`](/docs/app/api-reference/directives/use-cache-private) 결과는 오직 여기에만 존재합니다.
+
+&gt; **Good to know:** `cookies()`나 `headers()`를 읽는 [App Shell](/docs/app/glossary#app-shell)은 session별로 달라지므로, 공유 server cache가 아니라 client에서 session별로 cache됩니다.
+
+이 모든 store는 단일 deployment 범위로 한정됩니다. 새로 deploy하면 처음부터 다시 시작하고, 새 prerender가 build되며, `use cache` entry는 durable한 [`remote`](/docs/app/api-reference/directives/use-cache-remote) entry조차 이어지지 않습니다. [cache key](/docs/app/api-reference/directives/use-cache#cache-keys)에 build id가 포함되기 때문입니다. 환경별 동작은 [Runtime caching considerations](/docs/app/api-reference/directives/use-cache#runtime-caching-considerations)를, server cache 설정은 [Self-hosting](/docs/app/guides/self-hosting#caching-and-isr)을 참고하세요.
+
+## Incremental Static Regeneration
+
+dynamic param segment가 있는 route에서 [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)는 나열한 URL을 build 시점에 prerender합니다. 그 밖의 URL에는 [App Shell](/docs/app/glossary#app-shell)이 즉시 제공되고, 이후 background에서 이제 알게 된 param으로 upgrade되어 다음 방문자를 위해 cache됩니다.
+
+전체 walkthrough는 [ISR with Cache Components](/docs/app/guides/incremental-static-regeneration-cache-components)를 참고하세요.
+
+## Bots and crawlers || Bot과 crawler
+
+[Partial Prerendering](#prerendering)을 사용하면 page의 나머지 부분은 static shell로 prerender하면서 metadata는 dynamic하게 둘 수 있습니다. shell이 즉시 제공되고 metadata는 그 뒤에 stream되어 들어옵니다. 일부 bot과 crawler는 이를 처리하지 못하며, document의 `&lt;head&gt;` tag 안에 metadata가 포함되어 있어야 합니다. Next.js는 user agent로 이들을 감지해 static shell을 건너뛰고 request 시점에 page를 dynamic하게 render합니다.
+
+build 시점 prerender 중에 사용할 수 있었던 data source는 request 시점에도 사용할 수 있어야 합니다. 그렇지 않으면 render가 throw할 수 있고, 이런 bot은 500 error를 받게 됩니다. 어떤 user agent가 해당되는지와 목록을 바꾸는 방법은 Streaming 가이드의 [Bots and crawlers](/docs/app/guides/streaming#bots-and-crawlers)를 참고하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

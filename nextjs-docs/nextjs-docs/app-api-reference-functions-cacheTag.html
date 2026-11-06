@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cacheTag (cacheTag) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/functions/cacheTag" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/functions/cacheTag" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/cacheTag.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-functions.html">Functions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">cacheTag<span class="sub">cacheTag</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>cacheTag</code> 함수를 사용하면 on-demand 무효화를 위해 cache된 데이터에 tag를 붙일 수 있습니다. cache entry에 tag를 연결하면 다른 cache 데이터에 영향을 주지 않고 특정 cache entry만 선택적으로 purge하거나 revalidate할 수 있습니다.</p><div class="en-orig"><p>The <code>cacheTag</code> function allows you to tag cached data for on-demand invalidation. By associating tags with cache entries, you can selectively purge or revalidate specific cache entries without affecting other cached data.</p></div>
+<h2 class="sec" id="usage"><a class="anchor" href="#usage">Usage<span class="ko">사용법</span></a></h2>
+<p><code>cacheTag</code>를 사용하려면 <code>next.config.js</code> 파일에서 <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code> flag</a>를 활성화하세요:</p><div class="en-orig"><p>To use <code>cacheTag</code>, enable the <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code> flag</a> in your <code>next.config.js</code> file:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">const nextConfig = {
+  cacheComponents: true,
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p><code>cacheTag</code> 함수는 하나 이상의 문자열 값을 받습니다.</p><div class="en-orig"><p>The <code>cacheTag</code> function takes one or more string values.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/data.ts" data-js="app/data.js">app/data.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { cacheTag } from &#x27;next/cache&#x27;
+
+export async function getData() {
+  &#x27;use cache&#x27;
+  cacheTag(&#x27;my-data&#x27;)
+  const res = await fetch(&#x27;https://api.example.com/data&#x27;)
+  const data = await res.json()
+  return data
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { cacheTag } from &#x27;next/cache&#x27;
+
+export async function getData() {
+  &#x27;use cache&#x27;
+  cacheTag(&#x27;my-data&#x27;)
+  const res = await fetch(&#x27;https://api.example.com/data&#x27;)
+  const data = await res.json()
+  return data
+}</code></pre></div></div>
+<p>그런 다음 <a href="app-getting-started-mutating-data.html">Server Function</a>이나 <a href="app-api-reference-file-conventions-route.html">Route Handler</a>에서 on-demand로 cache를 purge할 수 있습니다:</p><div class="en-orig"><p>You can then purge the cache on-demand from a <a href="app-getting-started-mutating-data.html">Server Function</a> or <a href="app-api-reference-file-conventions-route.html">Route Handler</a>:</p></div>
+<ul>
+<li>사용자가 변경을 하고 다음 읽기에서 즉시 새 데이터를 가져와야 하는 form 등 사용자가 trigger하는 mutation 같은 read-your-own-writes 시나리오에는 <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>를 사용하세요. <code>updateTag</code>는 Server Function 안에서만 사용할 수 있습니다.</li>
+<li>background에서 revalidation이 일어나는 동안 stale 데이터를 제공해도 괜찮은 경우, 또는 <a href="app-api-reference-file-conventions-route.html">Route Handler</a>나 다른 context에서 revalidate하는 경우에는 <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>를 사용하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>Use <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a> for read-your-own-writes scenarios, such as forms and other user-triggered mutations, where a user makes a change and the next read should fetch fresh data immediately. <code>updateTag</code> is only available inside Server Functions.</li>
+<li>Use <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a> when it is acceptable to serve stale data while revalidation happens in the background, or when revalidating from a <a href="app-api-reference-file-conventions-route.html">Route Handler</a> or other context.</li>
+</ul></div>
+<p>예를 들어 다음 Server Function은 post를 추가한 뒤 <code>&#x27;my-data&#x27;</code> tag가 붙은 모든 cache entry를 purge하여 다음 읽기에 변경 사항이 반영되도록 합니다:</p><div class="en-orig"><p>For example, this Server Function adds a post and then purges every cache entry tagged <code>&#x27;my-data&#x27;</code> so the next read reflects the change:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/action.ts" data-js="app/action.js">app/action.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { updateTag } from &#x27;next/cache&#x27;
+
+export default async function submit() {
+  await addPost()
+  updateTag(&#x27;my-data&#x27;)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { updateTag } from &#x27;next/cache&#x27;
+
+export default async function submit() {
+  await addPost()
+  updateTag(&#x27;my-data&#x27;)
+}</code></pre></div></div>
+<h2 class="sec" id="good-to-know"><a class="anchor" href="#good-to-know">Good to know</a></h2>
+<ul>
+<li><strong>Idempotent Tags</strong>: 같은 tag를 여러 번 적용해도 추가 효과는 없습니다.</li>
+<li><strong>Multiple Tags</strong>: <code>cacheTag</code>에 여러 문자열 값을 전달하면 하나의 cache entry에 여러 tag를 지정할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Idempotent Tags</strong>: Applying the same tag multiple times has no additional effect.</li>
+<li><strong>Multiple Tags</strong>: You can assign multiple tags to a single cache entry by passing multiple string values to <code>cacheTag</code>.</li>
+</ul></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">cacheTag(&#x27;tag-one&#x27;, &#x27;tag-two&#x27;)</code></pre></div></div>
+<ul>
+<li><strong>Limits</strong>: 한 번의 <code>cacheTag()</code> 호출은 최대 128개의 tag를 받으며, 각 tag의 최대 길이는 256자입니다. 256자보다 긴 tag는 건너뛰고, 한 호출에서 128번째 이후의 tag는 버려집니다. 두 경우 모두 console warning이 기록됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Limits</strong>: A single <code>cacheTag()</code> call accepts up to 128 tags, each with a maximum length of 256 characters. Tags longer than 256 characters are skipped, and any tags past the 128th in one call are dropped. Both cases log a console warning.</li>
+</ul></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<h3 class="sec" id="tagging-components-or-functions"><a class="anchor" href="#tagging-components-or-functions">Tagging components or functions<span class="ko">Component나 함수에 tag 붙이기</span></a></h3>
+<p>cache된 함수나 component 안에서 <code>cacheTag</code>를 호출해 cache된 데이터에 tag를 붙이세요:</p><div class="en-orig"><p>Tag your cached data by calling <code>cacheTag</code> within a cached function or component:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/components/bookings.tsx" data-js="app/components/bookings.js">app/components/bookings.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { cacheTag } from &#x27;next/cache&#x27;
+
+interface BookingsProps {
+  type: string
+}
+
+export async function Bookings({ type = &#x27;haircut&#x27; }: BookingsProps) {
+  &#x27;use cache&#x27;
+  cacheTag(&#x27;bookings-data&#x27;)
+
+  async function getBookingsData() {
+    const response = await fetch(
+      `https://api.example.com/bookings?type=${encodeURIComponent(type)}`
+    )
+    const data = await response.json()
+    return data
+  }
+
+  return //...
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { cacheTag } from &#x27;next/cache&#x27;
+
+export async function Bookings({ type = &#x27;haircut&#x27; }) {
+  &#x27;use cache&#x27;
+  cacheTag(&#x27;bookings-data&#x27;)
+
+  async function getBookingsData() {
+    const response = await fetch(
+      `https://api.example.com/bookings?type=${encodeURIComponent(type)}`
+    )
+    const data = await response.json()
+    return data
+  }
+
+  return //...
+}</code></pre></div></div>
+<h3 class="sec" id="creating-tags-from-external-data"><a class="anchor" href="#creating-tags-from-external-data">Creating tags from external data<span class="ko">외부 데이터로 tag 만들기</span></a></h3>
+<p>async 함수가 반환한 데이터를 사용해 cache entry에 tag를 붙일 수 있습니다.</p><div class="en-orig"><p>You can use the data returned from an async function to tag the cache entry.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/components/bookings.tsx" data-js="app/components/bookings.js">app/components/bookings.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { cacheTag } from &#x27;next/cache&#x27;
+
+interface BookingsProps {
+  type: string
+}
+
+export async function Bookings({ type = &#x27;haircut&#x27; }: BookingsProps) {
+  async function getBookingsData() {
+    &#x27;use cache&#x27;
+    const response = await fetch(
+      `https://api.example.com/bookings?type=${encodeURIComponent(type)}`
+    )
+    const data = await response.json()
+    cacheTag(&#x27;bookings-data&#x27;, data.id)
+    return data
+  }
+  return //...
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { cacheTag } from &#x27;next/cache&#x27;
+
+export async function Bookings({ type = &#x27;haircut&#x27; }) {
+  async function getBookingsData() {
+    &#x27;use cache&#x27;
+    const response = await fetch(
+      `https://api.example.com/bookings?type=${encodeURIComponent(type)}`
+    )
+    const data = await response.json()
+    cacheTag(&#x27;bookings-data&#x27;, data.id)
+    return data
+  }
+  return //...
+}</code></pre></div></div>
+<h3 class="sec" id="invalidating-tagged-cache"><a class="anchor" href="#invalidating-tagged-cache">Invalidating tagged cache<span class="ko">Tag가 붙은 cache 무효화하기</span></a></h3>
+<p><a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>를 사용하면 필요할 때 특정 tag의 cache를 무효화할 수 있습니다:</p><div class="en-orig"><p>Using <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>, you can invalidate the cache for a specific tag when needed:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { revalidateTag } from &#x27;next/cache&#x27;
+
+export async function updateBookings() {
+  await updateBookingData()
+  revalidateTag(&#x27;bookings-data&#x27;, &#x27;max&#x27;)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { revalidateTag } from &#x27;next/cache&#x27;
+
+export async function updateBookings() {
+  await updateBookingData()
+  revalidateTag(&#x27;bookings-data&#x27;, &#x27;max&#x27;)
+}</code></pre></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.0.0</code></td><td><code>cacheTag</code> stable화. <code>unstable_cacheTag</code> deprecated.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.0.0</code></td><td><code>cacheTag</code> stabilized. <code>unstable_cacheTag</code> deprecated.</td></tr>
+</tbody></table></div></div>
+<p><code>unstable_cacheTag</code>에서 <code>cacheTag</code>로 import를 업데이트하려면 <a href="app-guides-upgrading-version-16.html#cachelife-and-cachetag">Next.js 16 upgrade guide</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-guides-upgrading-version-16.html#cachelife-and-cachetag">Next.js 16 upgrade guide</a> to update imports from <code>unstable_cacheTag</code> to <code>cacheTag</code>.</p></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">관련 문서</h2><p>관련 API reference를 확인하세요.</p><div class="rgrid"><a class="rcard" href="app-api-reference-config-next-config-js-cacheComponents.html"><div class="rt">cacheComponents</div><div class="rk">cacheComponents</div><div class="rd">Next.js에서 cacheComponents flag를 활성화하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-directives-use-cache.html"><div class="rt">use cache</div><div class="rk">use cache</div><div class="rd">\"use cache\" directive로 Next.js 애플리케이션의 데이터를 cache하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-functions-revalidateTag.html"><div class="rt">revalidateTag</div><div class="rk">revalidateTag</div><div class="rd">revalidateTag 함수에 대한 API Reference입니다.</div></a><a class="rcard" href="app-api-reference-functions-updateTag.html"><div class="rt">updateTag</div><div class="rk">updateTag</div><div class="rd">updateTag 함수에 대한 API Reference입니다.</div></a><a class="rcard" href="app-api-reference-functions-cacheLife.html"><div class="rt">cacheLife</div><div class="rk">cacheLife</div><div class="rd">cacheLife 함수를 사용해 cache된 함수나 component의 cache 만료 시간을 설정하는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/cacheTag.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/functions/cacheTag" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-functions-cacheLife.html" class="prev"><div class="dir">← 이전</div><div class="ttl">cacheLife</div><div class="ttl-ko">cacheLife</div></a>
+      <a href="app-api-reference-functions-catchError.html" class="next"><div class="dir">다음 →</div><div class="ttl">catchError</div><div class="ttl-ko">catchError</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/functions/cacheTag" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#usage">Usage</a></li><li class="l2"><a href="#good-to-know">Good to know</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#tagging-components-or-functions">Tagging components or functions</a></li><li class="l3"><a href="#creating-tags-from-external-data">Creating tags from external data</a></li><li class="l3"><a href="#invalidating-tagged-cache">Invalidating tagged cache</a></li><li class="l2"><a href="#version-history">Version History</a></li><li class="l2"><a href="#next-steps">관련 문서</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`cacheTag` 함수를 사용하면 on-demand 무효화를 위해 cache된 데이터에 tag를 붙일 수 있습니다. cache entry에 tag를 연결하면 다른 cache 데이터에 영향을 주지 않고 특정 cache entry만 선택적으로 purge하거나 revalidate할 수 있습니다.
+
+## Usage || 사용법
+
+`cacheTag`를 사용하려면 `next.config.js` 파일에서 [`cacheComponents` flag](/docs/app/api-reference/config/next-config-js/cacheComponents)를 활성화하세요:
+
+[[CODE 1]]
+
+`cacheTag` 함수는 하나 이상의 문자열 값을 받습니다.
+
+[[CODE 2]]
+
+그런 다음 [Server Function](/docs/app/getting-started/mutating-data)이나 [Route Handler](/docs/app/api-reference/file-conventions/route)에서 on-demand로 cache를 purge할 수 있습니다:
+
+- 사용자가 변경을 하고 다음 읽기에서 즉시 새 데이터를 가져와야 하는 form 등 사용자가 trigger하는 mutation 같은 read-your-own-writes 시나리오에는 [`updateTag`](/docs/app/api-reference/functions/updateTag)를 사용하세요. `updateTag`는 Server Function 안에서만 사용할 수 있습니다.
+- background에서 revalidation이 일어나는 동안 stale 데이터를 제공해도 괜찮은 경우, 또는 [Route Handler](/docs/app/api-reference/file-conventions/route)나 다른 context에서 revalidate하는 경우에는 [`revalidateTag`](/docs/app/api-reference/functions/revalidateTag)를 사용하세요.
+
+예를 들어 다음 Server Function은 post를 추가한 뒤 `&#x27;my-data&#x27;` tag가 붙은 모든 cache entry를 purge하여 다음 읽기에 변경 사항이 반영되도록 합니다:
+
+[[CODE 3]]
+
+## Good to know
+
+- **Idempotent Tags**: 같은 tag를 여러 번 적용해도 추가 효과는 없습니다.
+- **Multiple Tags**: `cacheTag`에 여러 문자열 값을 전달하면 하나의 cache entry에 여러 tag를 지정할 수 있습니다.
+
+[[CODE 4]]
+
+- **Limits**: 한 번의 `cacheTag()` 호출은 최대 128개의 tag를 받으며, 각 tag의 최대 길이는 256자입니다. 256자보다 긴 tag는 건너뛰고, 한 호출에서 128번째 이후의 tag는 버려집니다. 두 경우 모두 console warning이 기록됩니다.
+
+## Examples || 예시
+
+### Tagging components or functions || Component나 함수에 tag 붙이기
+
+cache된 함수나 component 안에서 `cacheTag`를 호출해 cache된 데이터에 tag를 붙이세요:
+
+[[CODE 5]]
+
+### Creating tags from external data || 외부 데이터로 tag 만들기
+
+async 함수가 반환한 데이터를 사용해 cache entry에 tag를 붙일 수 있습니다.
+
+[[CODE 6]]
+
+### Invalidating tagged cache || Tag가 붙은 cache 무효화하기
+
+[`revalidateTag`](/docs/app/api-reference/functions/revalidateTag)를 사용하면 필요할 때 특정 tag의 cache를 무효화할 수 있습니다:
+
+[[CODE 7]]
+
+## Version History || 버전 기록
+
+| Version   | Changes                                                |
+| --------- | ------------------------------------------------------ |
+| `v16.0.0` | `cacheTag` stable화. `unstable_cacheTag` deprecated. |
+
+`unstable_cacheTag`에서 `cacheTag`로 import를 업데이트하려면 [Next.js 16 upgrade guide](/docs/app/guides/upgrading/version-16#cachelife-and-cachetag)를 참고하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

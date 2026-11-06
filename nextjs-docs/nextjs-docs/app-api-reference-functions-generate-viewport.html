@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>generateViewport (generateViewport) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/functions/generate-viewport" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/functions/generate-viewport" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/generate-viewport.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-functions.html">Functions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">generateViewport<span class="sub">generateViewport</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>static <code>viewport</code> object나 dynamic <code>generateViewport</code> 함수로 페이지의 초기 viewport를 customize할 수 있습니다.</p><div class="en-orig"><p>You can customize the initial viewport of the page with the static <code>viewport</code> object or the dynamic <code>generateViewport</code> function.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>viewport</code> object와 <code>generateViewport</code> 함수 export는 <strong>Server Component에서만 지원됩니다</strong>.</li>
+<li>같은 route segment에서 <code>viewport</code> object와 <code>generateViewport</code> 함수를 동시에 export할 수 없습니다.</li>
+<li><code>metadata</code> export에서 migrate하는 중이라면 <a href="app-guides-upgrading-codemods.html#metadata-to-viewport-export">metadata-to-viewport-export codemod</a>를 사용해 변경 사항을 업데이트할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The <code>viewport</code> object and <code>generateViewport</code> function exports are <strong>only supported in Server Components</strong>.</li>
+<li>You cannot export both the <code>viewport</code> object and <code>generateViewport</code> function from the same route segment.</li>
+<li>If you're coming from migrating <code>metadata</code> exports, you can use <a href="app-guides-upgrading-codemods.html#metadata-to-viewport-export">metadata-to-viewport-export codemod</a> to update your changes.</li>
+</ul></div></div></div>
+<h2 class="sec" id="the-viewport-object"><a class="anchor" href="#the-viewport-object">The <code>viewport</code> object<span class="ko"><code>viewport</code> object</span></a></h2>
+<p>viewport option을 정의하려면 <code>layout.jsx</code> 또는 <code>page.jsx</code> 파일에서 <code>viewport</code> object를 export하세요.</p><div class="en-orig"><p>To define the viewport options, export a <code>viewport</code> object from a <code>layout.jsx</code> or <code>page.jsx</code> file.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="layout.tsx | page.tsx" data-js="layout.jsx | page.jsx">layout.tsx | page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Viewport } from &#x27;next&#x27;
+
+export const viewport: Viewport = {
+  themeColor: &#x27;black&#x27;,
+}
+
+export default function Page() {}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const viewport = {
+  themeColor: &#x27;black&#x27;,
+}
+
+export default function Page() {}</code></pre></div></div>
+<h2 class="sec" id="generateviewport-function"><a class="anchor" href="#generateviewport-function"><code>generateViewport</code> function<span class="ko"><code>generateViewport</code> 함수</span></a></h2>
+<p><code>generateViewport</code>는 하나 이상의 viewport field를 담은 <a href="#viewport-fields"><code>Viewport</code> object</a>를 반환해야 합니다.</p><div class="en-orig"><p><code>generateViewport</code> should return a <a href="#viewport-fields"><code>Viewport</code> object</a> containing one or more viewport fields.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">layout.tsx | page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export function generateViewport({ params }) {
+  return {
+    themeColor: &#x27;...&#x27;,
+  }
+}</code></pre></div></div>
+<p>TypeScript에서는 <code>generateViewport</code>가 정의된 위치에 따라 <a href="app-api-reference-file-conventions-page.html#page-props-helper"><code>PageProps&lt;&#x27;/route&#x27;&gt;</code></a> 또는 <a href="app-api-reference-file-conventions-layout.html#layout-props-helper"><code>LayoutProps&lt;&#x27;/route&#x27;&gt;</code></a>로 <code>params</code> argument의 type을 지정할 수 있습니다.</p><div class="en-orig"><p>In TypeScript, the <code>params</code> argument can be typed via <a href="app-api-reference-file-conventions-page.html#page-props-helper"><code>PageProps&lt;&#x27;/route&#x27;&gt;</code></a> or <a href="app-api-reference-file-conventions-layout.html#layout-props-helper"><code>LayoutProps&lt;&#x27;/route&#x27;&gt;</code></a> depending on where <code>generateViewport</code> is defined.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">layout.js | page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export function generateViewport({ params }) {
+  return {
+    themeColor: &#x27;...&#x27;,
+  }
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>viewport가 request 정보에 의존하지 않는다면 <code>generateViewport</code> 대신 static <a href="#the-viewport-object"><code>viewport</code> object</a>로 정의해야 합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>If the viewport doesn't depend on request information, it should be defined using the static <a href="#the-viewport-object"><code>viewport</code> object</a> rather than <code>generateViewport</code>.</li>
+</ul></div></div></div>
+<h2 class="sec" id="viewport-fields"><a class="anchor" href="#viewport-fields">Viewport Fields</a></h2>
+<h3 class="sec" id="themecolor"><a class="anchor" href="#themecolor"><code>themeColor</code></a></h3>
+<p><a href="https://developer.mozilla.org/docs/Web/HTML/Element/meta/name/theme-color" target="_blank" rel="noopener"><code>theme-color</code></a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about <a href="https://developer.mozilla.org/docs/Web/HTML/Element/meta/name/theme-color" target="_blank" rel="noopener"><code>theme-color</code></a>.</p></div>
+<p><strong>단순 theme color</strong></p><div class="en-orig"><p><strong>Simple theme color</strong></p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="layout.tsx | page.tsx" data-js="layout.jsx | page.jsx">layout.tsx | page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Viewport } from &#x27;next&#x27;
+
+export const viewport: Viewport = {
+  themeColor: &#x27;black&#x27;,
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const viewport = {
+  themeColor: &#x27;black&#x27;,
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;theme-color&quot; content=&quot;black&quot; /&gt;</code></pre></div></div>
+<p><strong>media attribute와 함께 사용</strong></p><div class="en-orig"><p><strong>With media attribute</strong></p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="layout.tsx | page.tsx" data-js="layout.jsx | page.jsx">layout.tsx | page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Viewport } from &#x27;next&#x27;
+
+export const viewport: Viewport = {
+  themeColor: [
+    { media: &#x27;(prefers-color-scheme: light)&#x27;, color: &#x27;cyan&#x27; },
+    { media: &#x27;(prefers-color-scheme: dark)&#x27;, color: &#x27;black&#x27; },
+  ],
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const viewport = {
+  themeColor: [
+    { media: &#x27;(prefers-color-scheme: light)&#x27;, color: &#x27;cyan&#x27; },
+    { media: &#x27;(prefers-color-scheme: dark)&#x27;, color: &#x27;black&#x27; },
+  ],
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;theme-color&quot; media=&quot;(prefers-color-scheme: light)&quot; content=&quot;cyan&quot; /&gt;
+&lt;meta name=&quot;theme-color&quot; media=&quot;(prefers-color-scheme: dark)&quot; content=&quot;black&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="width-initialscale-maximumscale-and-userscalable"><a class="anchor" href="#width-initialscale-maximumscale-and-userscalable"><code>width</code>, <code>initialScale</code>, <code>maximumScale</code> and <code>userScalable</code><span class="ko"><code>width</code>, <code>initialScale</code>, <code>maximumScale</code>, <code>userScalable</code></span></a></h3>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>viewport</code> meta tag는 자동으로 설정되며, 기본값으로 충분하므로 보통은 직접 설정할 필요가 없습니다. 다만 완전성을 위해 정보를 제공합니다.</p><div class="en-orig"><p>The <code>viewport</code> meta tag is automatically set, and manual configuration is usually unnecessary as the default is sufficient. However, the information is provided for completeness.</p></div></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="layout.tsx | page.tsx" data-js="layout.jsx | page.jsx">layout.tsx | page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Viewport } from &#x27;next&#x27;
+
+export const viewport: Viewport = {
+  width: &#x27;device-width&#x27;,
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  // Also supported but less commonly used
+  // interactiveWidget: &#x27;resizes-visual&#x27;,
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const viewport = {
+  width: &#x27;device-width&#x27;,
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  // Also supported but less commonly used
+  // interactiveWidget: &#x27;resizes-visual&#x27;,
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta
+  name=&quot;viewport&quot;
+  content=&quot;width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no&quot;
+/&gt;</code></pre></div></div>
+<h3 class="sec" id="colorscheme"><a class="anchor" href="#colorscheme"><code>colorScheme</code></a></h3>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name#:~:text=color%2Dscheme%3A%20specifies,of%20the%20following%3A" target="_blank" rel="noopener"><code>color-scheme</code></a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name#:~:text=color%2Dscheme%3A%20specifies,of%20the%20following%3A" target="_blank" rel="noopener"><code>color-scheme</code></a>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="layout.tsx | page.tsx" data-js="layout.jsx | page.jsx">layout.tsx | page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Viewport } from &#x27;next&#x27;
+
+export const viewport: Viewport = {
+  colorScheme: &#x27;dark&#x27;,
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const viewport = {
+  colorScheme: &#x27;dark&#x27;,
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;color-scheme&quot; content=&quot;dark&quot; /&gt;</code></pre></div></div>
+<h2 class="sec" id="with-cache-components"><a class="anchor" href="#with-cache-components">With Cache Components<span class="ko">Cache Components와 함께 사용하기</span></a></h2>
+<p><a href="app-getting-started-caching.html">Cache Components</a>가 활성화되어 있으면 <code>generateViewport</code>는 다른 component와 같은 규칙을 따릅니다. viewport가 runtime 데이터(<code>cookies()</code>, <code>headers()</code>, <code>params</code>, <code>searchParams</code>)에 접근하거나 cache되지 않은 data fetching을 수행하면 request time으로 미뤄집니다.</p><div class="en-orig"><p>When <a href="app-getting-started-caching.html">Cache Components</a> is enabled, <code>generateViewport</code> follows the same rules as other components. If viewport accesses runtime data (<code>cookies()</code>, <code>headers()</code>, <code>params</code>, <code>searchParams</code>) or performs uncached data fetching, it defers to request time.</p></div>
+<p>metadata와 달리 viewport는 initial page load UI에 영향을 주기 때문에 stream될 수 없습니다. <code>generateViewport</code>가 request time으로 미뤄지면 페이지는 resolve될 때까지 block되어야 합니다.</p><div class="en-orig"><p>Unlike metadata, viewport cannot be streamed because it affects initial page load UI. If <code>generateViewport</code> defers to request time, the page would need to block until resolved.</p></div>
+<p>viewport가 외부 데이터에는 의존하지만 runtime 데이터에는 의존하지 않는다면 <code>use cache</code>를 사용하세요:</p><div class="en-orig"><p>If viewport depends on external data but not runtime data, use <code>use cache</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export async function generateViewport() {
+  &#x27;use cache&#x27;
+  const { width, initialScale } = await db.query(&#x27;viewport-size&#x27;)
+  return { width, initialScale }
+}</code></pre></div></div>
+<p>viewport가 정말로 runtime 데이터를 필요로 한다면, 문서의 <code>&lt;body&gt;</code>를 <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> boundary로 감싸 route 전체가 dynamic해야 한다는 것을 알리세요. shell은 즉시 전송되고, viewport가 resolve되면 문서가 stream됩니다:</p><div class="en-orig"><p>If viewport genuinely requires runtime data, wrap the document <code>&lt;body&gt;</code> in a <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> boundary to signal that the entire route should be dynamic. The shell ships immediately and the document streams in once the viewport resolves:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+
+export async function generateViewport() {
+  const cookieJar = await cookies()
+  return {
+    themeColor: cookieJar.get(&#x27;theme-color&#x27;)?.value,
+  }
+}
+
+export default function RootLayout({ children }) {
+  return (
+    &lt;Suspense&gt;
+      &lt;html&gt;
+        &lt;body&gt;{children}&lt;/body&gt;
+      &lt;/html&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre></div></div>
+<p>또는 <a href="app-api-reference-file-conventions-route-segment-config-instant.html"><code>instant = false</code></a>로 segment를 instant-navigation 검증에서 제외할 수도 있습니다. 이 경우 route는 매 request마다 render되며, navigation은 render가 완료될 때까지 block됩니다:</p><div class="en-orig"><p>Alternatively, opt the segment out of instant-navigation validation with <a href="app-api-reference-file-conventions-route-segment-config-instant.html"><code>instant = false</code></a>. The route renders on every request and the navigation blocks until the render completes:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/dashboard/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cookies } from &#x27;next/headers&#x27;
+
+export const instant = false
+
+export async function generateViewport() {
+  const cookieJar = await cookies()
+  return {
+    themeColor: cookieJar.get(&#x27;theme-color&#x27;)?.value,
+  }
+}
+
+export default function DashboardLayout({ children }) {
+  return &lt;section&gt;{children}&lt;/section&gt;
+}</code></pre></div></div>
+<p><code>instant = false</code>를 설정하면 이를 export한 segment만 제외됩니다. 하위 segment는 여전히 global 기본값에 따라 검증됩니다. 전체 해결 방법, trade-off, subtree 전체를 제외하는 방법은 <a href="https://nextjs.org/docs/messages/blocking-prerender-viewport-runtime" target="_blank" rel="noopener">Next.js encountered runtime data in <code>generateViewport()</code></a>를 참고하세요.</p><div class="en-orig"><p>Setting <code>instant = false</code> opts only the segment that exports it out. Descendant segments are still validated by the global default. See <a href="https://nextjs.org/docs/messages/blocking-prerender-viewport-runtime" target="_blank" rel="noopener">Next.js encountered runtime data in <code>generateViewport()</code></a> for the full set of fix options, trade-offs, and the subtree-wide opt-out.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="app-api-reference-file-conventions-layout.html#root-layout">여러 root layout</a>을 사용하면 완전히 dynamic한 viewport를 특정 route로 격리하면서, 애플리케이션의 다른 route는 여전히 static shell을 생성하도록 할 수 있습니다.</p><div class="en-orig"><p>Use <a href="app-api-reference-file-conventions-layout.html#root-layout">multiple root layouts</a> to isolate fully dynamic viewport to specific routes, while still letting other routes in your application generate a static shell.</p></div></div></div>
+<h2 class="sec" id="types"><a class="anchor" href="#types">Types</a></h2>
+<p><code>Viewport</code> type을 사용해 viewport object에 type safety를 더할 수 있습니다. IDE에서 <a href="app-api-reference-config-typescript.html">built-in TypeScript plugin</a>을 사용하고 있다면 type을 직접 추가할 필요는 없지만, 원한다면 명시적으로 추가할 수도 있습니다.</p><div class="en-orig"><p>You can add type safety to your viewport object by using the <code>Viewport</code> type. If you are using the <a href="app-api-reference-config-typescript.html">built-in TypeScript plugin</a> in your IDE, you do not need to manually add the type, but you can still explicitly add it if you want.</p></div>
+<h3 class="sec" id="viewport-object"><a class="anchor" href="#viewport-object"><code>viewport</code> object</a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import type { Viewport } from &#x27;next&#x27;
+
+export const viewport: Viewport = {
+  themeColor: &#x27;black&#x27;,
+}</code></pre></div></div>
+<h3 class="sec" id="generateviewport-function-1"><a class="anchor" href="#generateviewport-function-1"><code>generateViewport</code> function<span class="ko"><code>generateViewport</code> 함수</span></a></h3>
+<h4 class="sec" id="regular-function"><a class="anchor" href="#regular-function">Regular function<span class="ko">일반 함수</span></a></h4>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import type { Viewport } from &#x27;next&#x27;
+
+export function generateViewport(): Viewport {
+  return {
+    themeColor: &#x27;black&#x27;,
+  }
+}</code></pre></div></div>
+<h4 class="sec" id="with-segment-props"><a class="anchor" href="#with-segment-props">With segment props<span class="ko">segment props와 함께</span></a></h4>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import type { Viewport } from &#x27;next&#x27;
+
+type Props = {
+  params: Promise&lt;{ id: string }&gt;
+  searchParams: Promise&lt;{ [key: string]: string | string[] | undefined }&gt;
+}
+
+export function generateViewport({ params, searchParams }: Props): Viewport {
+  return {
+    themeColor: &#x27;black&#x27;,
+  }
+}
+
+export default function Page({ params, searchParams }: Props) {}</code></pre></div></div>
+<h4 class="sec" id="javascript-projects"><a class="anchor" href="#javascript-projects">JavaScript Projects<span class="ko">JavaScript 프로젝트</span></a></h4>
+<p>JavaScript 프로젝트에서는 JSDoc을 사용해 type safety를 더할 수 있습니다.</p><div class="en-orig"><p>For JavaScript projects, you can use JSDoc to add type safety.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">/** @type {import(&quot;next&quot;).Viewport} */
+export const viewport = {
+  themeColor: &#x27;black&#x27;,
+}</code></pre></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v14.0.0</code></td><td><code>viewport</code>와 <code>generateViewport</code>가 도입되었습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v14.0.0</code></td><td><code>viewport</code> and <code>generateViewport</code> introduced.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">다음 단계</h2><p>모든 Metadata API option을 살펴보세요.</p><div class="rgrid"><a class="rcard" href="app-api-reference-file-conventions-metadata.html"><div class="rt">Metadata Files API Reference</div><div class="rk">Metadata 파일 API Reference</div><div class="rd">metadata file convention에 대한 API 문서입니다.</div></a><a class="rcard" href="app-getting-started-caching.html"><div class="rt">Caching</div><div class="rk">캐싱</div><div class="rd">Next.js에서 데이터와 UI를 cache하는 방법을 알아봅니다</div></a><a class="rcard" href="app-api-reference-config-next-config-js-cacheComponents.html"><div class="rt">cacheComponents</div><div class="rk">cacheComponents</div><div class="rd">Next.js에서 cacheComponents flag를 활성화하는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/generate-viewport.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/functions/generate-viewport" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-functions-generate-static-params.html" class="prev"><div class="dir">← 이전</div><div class="ttl">generateStaticParams</div><div class="ttl-ko">generateStaticParams</div></a>
+      <a href="app-api-reference-functions-headers.html" class="next"><div class="dir">다음 →</div><div class="ttl">headers</div><div class="ttl-ko">headers</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/functions/generate-viewport" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#the-viewport-object">The <code>viewport</code> object</a></li><li class="l2"><a href="#generateviewport-function"><code>generateViewport</code> function</a></li><li class="l2"><a href="#viewport-fields">Viewport Fields</a></li><li class="l3"><a href="#themecolor"><code>themeColor</code></a></li><li class="l3"><a href="#width-initialscale-maximumscale-and-userscalable"><code>width</code>, <code>initialScale</code>, <code>maximumScale</code> and <code>userScalable</code></a></li><li class="l3"><a href="#colorscheme"><code>colorScheme</code></a></li><li class="l2"><a href="#with-cache-components">With Cache Components</a></li><li class="l2"><a href="#types">Types</a></li><li class="l3"><a href="#viewport-object"><code>viewport</code> object</a></li><li class="l3"><a href="#generateviewport-function-1"><code>generateViewport</code> function</a></li><li class="l2"><a href="#version-history">Version History</a></li><li class="l2"><a href="#next-steps">다음 단계</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+static `viewport` object나 dynamic `generateViewport` 함수로 페이지의 초기 viewport를 customize할 수 있습니다.
+
+&gt; **Good to know**:
+&gt;
+&gt; - `viewport` object와 `generateViewport` 함수 export는 **Server Component에서만 지원됩니다**.
+&gt; - 같은 route segment에서 `viewport` object와 `generateViewport` 함수를 동시에 export할 수 없습니다.
+&gt; - `metadata` export에서 migrate하는 중이라면 [metadata-to-viewport-export codemod](/docs/app/guides/upgrading/codemods#metadata-to-viewport-export)를 사용해 변경 사항을 업데이트할 수 있습니다.
+
+## The `viewport` object || `viewport` object
+
+viewport option을 정의하려면 `layout.jsx` 또는 `page.jsx` 파일에서 `viewport` object를 export하세요.
+
+[[CODE 1]]
+
+## `generateViewport` function || `generateViewport` 함수
+
+`generateViewport`는 하나 이상의 viewport field를 담은 [`Viewport` object](#viewport-fields)를 반환해야 합니다.
+
+[[CODE 2]]
+
+TypeScript에서는 `generateViewport`가 정의된 위치에 따라 [`PageProps&lt;&#x27;/route&#x27;&gt;`](/docs/app/api-reference/file-conventions/page#page-props-helper) 또는 [`LayoutProps&lt;&#x27;/route&#x27;&gt;`](/docs/app/api-reference/file-conventions/layout#layout-props-helper)로 `params` argument의 type을 지정할 수 있습니다.
+
+[[CODE 3]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - viewport가 request 정보에 의존하지 않는다면 `generateViewport` 대신 static [`viewport` object](#the-viewport-object)로 정의해야 합니다.
+
+## Viewport Fields
+
+### `themeColor`
+
+[`theme-color`](https://developer.mozilla.org/docs/Web/HTML/Element/meta/name/theme-color)에 대해 더 알아보세요.
+
+**단순 theme color**
+
+[[CODE 4]]
+
+[[CODE 5]]
+
+**media attribute와 함께 사용**
+
+[[CODE 6]]
+
+[[CODE 7]]
+
+### `width`, `initialScale`, `maximumScale` and `userScalable` || `width`, `initialScale`, `maximumScale`, `userScalable`
+
+&gt; **Good to know**: `viewport` meta tag는 자동으로 설정되며, 기본값으로 충분하므로 보통은 직접 설정할 필요가 없습니다. 다만 완전성을 위해 정보를 제공합니다.
+
+[[CODE 8]]
+
+[[CODE 9]]
+
+### `colorScheme`
+
+[`color-scheme`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta/name#:~:text=color%2Dscheme%3A%20specifies,of%20the%20following%3A)에 대해 더 알아보세요.
+
+[[CODE 10]]
+
+[[CODE 11]]
+
+## With Cache Components || Cache Components와 함께 사용하기
+
+[Cache Components](/docs/app/getting-started/caching)가 활성화되어 있으면 `generateViewport`는 다른 component와 같은 규칙을 따릅니다. viewport가 runtime 데이터(`cookies()`, `headers()`, `params`, `searchParams`)에 접근하거나 cache되지 않은 data fetching을 수행하면 request time으로 미뤄집니다.
+
+metadata와 달리 viewport는 initial page load UI에 영향을 주기 때문에 stream될 수 없습니다. `generateViewport`가 request time으로 미뤄지면 페이지는 resolve될 때까지 block되어야 합니다.
+
+viewport가 외부 데이터에는 의존하지만 runtime 데이터에는 의존하지 않는다면 `use cache`를 사용하세요:
+
+[[CODE 12]]
+
+viewport가 정말로 runtime 데이터를 필요로 한다면, 문서의 `&lt;body&gt;`를 [`&lt;Suspense&gt;`](https://react.dev/reference/react/Suspense) boundary로 감싸 route 전체가 dynamic해야 한다는 것을 알리세요. shell은 즉시 전송되고, viewport가 resolve되면 문서가 stream됩니다:
+
+[[CODE 13]]
+
+또는 [`instant = false`](/docs/app/api-reference/file-conventions/route-segment-config/instant)로 segment를 instant-navigation 검증에서 제외할 수도 있습니다. 이 경우 route는 매 request마다 render되며, navigation은 render가 완료될 때까지 block됩니다:
+
+[[CODE 14]]
+
+`instant = false`를 설정하면 이를 export한 segment만 제외됩니다. 하위 segment는 여전히 global 기본값에 따라 검증됩니다. 전체 해결 방법, trade-off, subtree 전체를 제외하는 방법은 [Next.js encountered runtime data in `generateViewport()`](/docs/messages/blocking-prerender-viewport-runtime)를 참고하세요.
+
+&gt; **Good to know**: [여러 root layout](/docs/app/api-reference/file-conventions/layout#root-layout)을 사용하면 완전히 dynamic한 viewport를 특정 route로 격리하면서, 애플리케이션의 다른 route는 여전히 static shell을 생성하도록 할 수 있습니다.
+
+## Types
+
+`Viewport` type을 사용해 viewport object에 type safety를 더할 수 있습니다. IDE에서 [built-in TypeScript plugin](/docs/app/api-reference/config/typescript)을 사용하고 있다면 type을 직접 추가할 필요는 없지만, 원한다면 명시적으로 추가할 수도 있습니다.
+
+### `viewport` object
+
+[[CODE 15]]
+
+### `generateViewport` function || `generateViewport` 함수
+
+#### Regular function || 일반 함수
+
+[[CODE 16]]
+
+#### With segment props || segment props와 함께
+
+[[CODE 17]]
+
+#### JavaScript Projects || JavaScript 프로젝트
+
+JavaScript 프로젝트에서는 JSDoc을 사용해 type safety를 더할 수 있습니다.
+
+[[CODE 18]]
+
+## Version History || 버전 기록
+
+| Version   | Changes                                       |
+| --------- | --------------------------------------------- |
+| `v14.0.0` | `viewport`와 `generateViewport`가 도입되었습니다. |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

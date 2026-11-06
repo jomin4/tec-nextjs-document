@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>opengraph-image and twitter-image (opengraph-image, twitter-image) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/file-conventions/metadata/opengraph-image" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/file-conventions/metadata/opengraph-image" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/03-file-conventions/01-metadata/opengraph-image.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-file-conventions.html">File-system conventions</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-file-conventions-metadata.html">Metadata Files</a></div>
+    <div class="title-row">
+      <h1 class="page-title">opengraph-image and twitter-image<span class="sub">opengraph-image, twitter-image</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>opengraph-image</code>와 <code>twitter-image</code> file convention을 사용하면 route segment의 Open Graph 이미지와 Twitter 이미지를 설정할 수 있습니다.</p><div class="en-orig"><p>The <code>opengraph-image</code> and <code>twitter-image</code> file conventions allow you to set Open Graph and Twitter images for a route segment.</p></div>
+<p>사용자가 사이트 링크를 공유할 때 소셜 네트워크나 메신저 앱에 표시되는 이미지를 설정할 때 유용합니다.</p><div class="en-orig"><p>They are useful for setting the images that appear on social networks and messaging apps when a user shares a link to your site.</p></div>
+<p>Open Graph 이미지와 Twitter 이미지를 설정하는 방법은 두 가지입니다:</p><div class="en-orig"><p>There are two ways to set Open Graph and Twitter images:</p></div>
+<ul>
+<li><a href="#image-files-jpg-png-gif">이미지 파일 사용 (.jpg, .png, .gif)</a></li>
+<li><a href="#generate-images-using-code-js-ts-tsx">코드로 이미지 생성 (.js, .ts, .tsx)</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="#image-files-jpg-png-gif">Using image files (.jpg, .png, .gif)</a></li>
+<li><a href="#generate-images-using-code-js-ts-tsx">Using code to generate images (.js, .ts, .tsx)</a></li>
+</ul></div>
+<h2 class="sec" id="image-files-jpg-png-gif"><a class="anchor" href="#image-files-jpg-png-gif">Image files (.jpg, .png, .gif)<span class="ko">이미지 파일 (.jpg, .png, .gif)</span></a></h2>
+<p>segment에 <code>opengraph-image</code> 또는 <code>twitter-image</code> 이미지 파일을 두어, 이미지 파일로 route segment의 공유 이미지를 설정합니다.</p><div class="en-orig"><p>Use an image file to set a route segment's shared image by placing an <code>opengraph-image</code> or <code>twitter-image</code> image file in the segment.</p></div>
+<p>Next.js는 파일을 평가해 앱의 <code>&lt;head&gt;</code> element에 적절한 tag를 자동으로 추가합니다.</p><div class="en-orig"><p>Next.js will evaluate the file and automatically add the appropriate tags to your app's <code>&lt;head&gt;</code> element.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>File convention</th><th>지원 파일 형식</th></tr></thead>
+<tbody>
+<tr><td><a href="#opengraph-image"><code>opengraph-image</code></a></td><td><code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>, <code>.gif</code></td></tr>
+<tr><td><a href="#twitter-image"><code>twitter-image</code></a></td><td><code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>, <code>.gif</code></td></tr>
+<tr><td><a href="#opengraph-imagealttxt"><code>opengraph-image.alt</code></a></td><td><code>.txt</code></td></tr>
+<tr><td><a href="#twitter-imagealttxt"><code>twitter-image.alt</code></a></td><td><code>.txt</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>File convention</th><th>Supported file types</th></tr></thead>
+<tbody>
+<tr><td><a href="#opengraph-image"><code>opengraph-image</code></a></td><td><code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>, <code>.gif</code></td></tr>
+<tr><td><a href="#twitter-image"><code>twitter-image</code></a></td><td><code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>, <code>.gif</code></td></tr>
+<tr><td><a href="#opengraph-imagealttxt"><code>opengraph-image.alt</code></a></td><td><code>.txt</code></td></tr>
+<tr><td><a href="#twitter-imagealttxt"><code>twitter-image.alt</code></a></td><td><code>.txt</code></td></tr>
+</tbody></table></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>twitter-image</code> 파일 크기는 <a href="https://developer.x.com/en/docs/x-for-websites/cards/overview/summary" target="_blank" rel="noopener">5MB</a>를, <code>opengraph-image</code> 파일 크기는 <a href="https://developers.facebook.com/docs/sharing/webmasters/images" target="_blank" rel="noopener">8MB</a>를 넘으면 안 됩니다. 이미지 파일 크기가 이 제한을 넘으면 build가 실패합니다.</p><div class="en-orig"><p>The <code>twitter-image</code> file size must not exceed <a href="https://developer.x.com/en/docs/x-for-websites/cards/overview/summary" target="_blank" rel="noopener">5MB</a>, and the <code>opengraph-image</code> file size must not exceed <a href="https://developers.facebook.com/docs/sharing/webmasters/images" target="_blank" rel="noopener">8MB</a>. If the image file size exceeds these limits, the build will fail.</p></div></div></div>
+<h3 class="sec" id="opengraph-image"><a class="anchor" href="#opengraph-image"><code>opengraph-image</code></a></h3>
+<p>아무 route segment에나 <code>opengraph-image.(jpg|jpeg|png|gif)</code> 이미지 파일을 추가하세요.</p><div class="en-orig"><p>Add an <code>opengraph-image.(jpg|jpeg|png|gif)</code> image file to any route segment.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta property=&quot;og:image&quot; content=&quot;&lt;generated&gt;&quot; /&gt;
+&lt;meta property=&quot;og:image:type&quot; content=&quot;&lt;generated&gt;&quot; /&gt;
+&lt;meta property=&quot;og:image:width&quot; content=&quot;&lt;generated&gt;&quot; /&gt;
+&lt;meta property=&quot;og:image:height&quot; content=&quot;&lt;generated&gt;&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="twitter-image"><a class="anchor" href="#twitter-image"><code>twitter-image</code></a></h3>
+<p>아무 route segment에나 <code>twitter-image.(jpg|jpeg|png|gif)</code> 이미지 파일을 추가하세요.</p><div class="en-orig"><p>Add a <code>twitter-image.(jpg|jpeg|png|gif)</code> image file to any route segment.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;twitter:image&quot; content=&quot;&lt;generated&gt;&quot; /&gt;
+&lt;meta name=&quot;twitter:image:type&quot; content=&quot;&lt;generated&gt;&quot; /&gt;
+&lt;meta name=&quot;twitter:image:width&quot; content=&quot;&lt;generated&gt;&quot; /&gt;
+&lt;meta name=&quot;twitter:image:height&quot; content=&quot;&lt;generated&gt;&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="opengraph-imagealttxt"><a class="anchor" href="#opengraph-imagealttxt"><code>opengraph-image.alt.txt</code></a></h3>
+<p><code>opengraph-image.(jpg|jpeg|png|gif)</code> 이미지와 같은 route segment에, 그 이미지의 alt text를 담은 <code>opengraph-image.alt.txt</code> 파일을 함께 추가하세요.</p><div class="en-orig"><p>Add an accompanying <code>opengraph-image.alt.txt</code> file in the same route segment as the <code>opengraph-image.(jpg|jpeg|png|gif)</code> image its alt text.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">opengraph-image.alt.txt</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-plaintext">About Acme</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta property=&quot;og:image:alt&quot; content=&quot;About Acme&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="twitter-imagealttxt"><a class="anchor" href="#twitter-imagealttxt"><code>twitter-image.alt.txt</code></a></h3>
+<p><code>twitter-image.(jpg|jpeg|png|gif)</code> 이미지와 같은 route segment에, 그 이미지의 alt text를 담은 <code>twitter-image.alt.txt</code> 파일을 함께 추가하세요.</p><div class="en-orig"><p>Add an accompanying <code>twitter-image.alt.txt</code> file in the same route segment as the <code>twitter-image.(jpg|jpeg|png|gif)</code> image its alt text.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">twitter-image.alt.txt</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-plaintext">About Acme</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta name=&quot;twitter:image:alt&quot; content=&quot;About Acme&quot; /&gt;</code></pre></div></div>
+<h2 class="sec" id="generate-images-using-code-js-ts-tsx"><a class="anchor" href="#generate-images-using-code-js-ts-tsx">Generate images using code (.js, .ts, .tsx)<span class="ko">코드로 이미지 생성하기 (.js, .ts, .tsx)</span></a></h2>
+<p><a href="#image-files-jpg-png-gif">실제 이미지 파일</a>을 사용하는 것 외에도, 코드로 이미지를 프로그래밍 방식으로 <strong>생성</strong>할 수 있습니다.</p><div class="en-orig"><p>In addition to using <a href="#image-files-jpg-png-gif">literal image files</a>, you can programmatically <strong>generate</strong> images using code.</p></div>
+<p>함수를 default export하는 <code>opengraph-image</code> 또는 <code>twitter-image</code> route를 만들어 route segment의 공유 이미지를 생성합니다.</p><div class="en-orig"><p>Generate a route segment's shared image by creating an <code>opengraph-image</code> or <code>twitter-image</code> route that default exports a function.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>File convention</th><th>지원 파일 형식</th></tr></thead>
+<tbody>
+<tr><td><code>opengraph-image</code></td><td><code>.js</code>, <code>.ts</code>, <code>.tsx</code></td></tr>
+<tr><td><code>twitter-image</code></td><td><code>.js</code>, <code>.ts</code>, <code>.tsx</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>File convention</th><th>Supported file types</th></tr></thead>
+<tbody>
+<tr><td><code>opengraph-image</code></td><td><code>.js</code>, <code>.ts</code>, <code>.tsx</code></td></tr>
+<tr><td><code>twitter-image</code></td><td><code>.js</code>, <code>.ts</code>, <code>.tsx</code></td></tr>
+</tbody></table></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>기본적으로 생성된 이미지는 <a href="app-glossary.html#request-time-apis">Request-time API</a>나 cache되지 않은 데이터를 사용하지 않는 한 <a href="app-glossary.html#prerendering"><strong>statically optimized</strong></a> 됩니다(build 시점에 생성되고 cache됨).</li>
+<li><a href="app-api-reference-functions-generate-image-metadata.html"><code>generateImageMetadata</code></a>를 사용하면 같은 파일에서 여러 이미지를 생성할 수 있습니다.</li>
+<li><code>opengraph-image.js</code>와 <code>twitter-image.js</code>는 특수한 Route Handler로, <a href="app-glossary.html#request-time-apis">Request-time API</a>나 <a href="app-guides-caching-without-cache-components.html#dynamic">dynamic config</a> option을 사용하지 않는 한 기본적으로 cache됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>By default, generated images are <a href="app-glossary.html#prerendering"><strong>statically optimized</strong></a> (generated at build time and cached) unless they use <a href="app-glossary.html#request-time-apis">Request-time APIs</a> or uncached data.</li>
+<li>You can generate multiple Images in the same file using <a href="app-api-reference-functions-generate-image-metadata.html"><code>generateImageMetadata</code></a>.</li>
+<li><code>opengraph-image.js</code> and <code>twitter-image.js</code> are special Route Handlers that are cached by default unless it uses a <a href="app-glossary.html#request-time-apis">Request-time API</a> or <a href="app-guides-caching-without-cache-components.html#dynamic">dynamic config</a> option.</li>
+</ul></div></div></div>
+<p>이미지를 생성하는 가장 쉬운 방법은 <code>next/og</code>의 <a href="app-api-reference-functions-image-response.html">ImageResponse</a> API를 사용하는 것입니다.</p><div class="en-orig"><p>The easiest way to generate an image is to use the <a href="app-api-reference-functions-image-response.html">ImageResponse</a> API from <code>next/og</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/about/opengraph-image.tsx" data-js="app/about/opengraph-image.js">app/about/opengraph-image.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { ImageResponse } from &#x27;next/og&#x27;
+import { readFile } from &#x27;node:fs/promises&#x27;
+import { join } from &#x27;node:path&#x27;
+
+// Image metadata
+export const alt = &#x27;About Acme&#x27;
+export const size = {
+  width: 1200,
+  height: 630,
+}
+
+export const contentType = &#x27;image/png&#x27;
+
+const interSemiBold = await readFile(
+  join(process.cwd(), &#x27;assets/Inter-SemiBold.ttf&#x27;)
+)
+
+// Image generation
+export default async function Image() {
+  return new ImageResponse(
+    (
+      // ImageResponse JSX element
+      &lt;div
+        style={{
+          fontSize: 128,
+          background: &#x27;white&#x27;,
+          width: &#x27;100%&#x27;,
+          height: &#x27;100%&#x27;,
+          display: &#x27;flex&#x27;,
+          alignItems: &#x27;center&#x27;,
+          justifyContent: &#x27;center&#x27;,
+        }}
+      &gt;
+        About Acme
+      &lt;/div&gt;
+    ),
+    // ImageResponse options
+    {
+      // For convenience, we can re-use the exported opengraph-image
+      // size config to also set the ImageResponse&#x27;s width and height.
+      ...size,
+      fonts: [
+        {
+          name: &#x27;Inter&#x27;,
+          data: interSemiBold,
+          style: &#x27;normal&#x27;,
+          weight: 400,
+        },
+      ],
+    }
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { ImageResponse } from &#x27;next/og&#x27;
+import { readFile } from &#x27;node:fs/promises&#x27;
+import { join } from &#x27;node:path&#x27;
+
+// Image metadata
+export const alt = &#x27;About Acme&#x27;
+export const size = {
+  width: 1200,
+  height: 630,
+}
+
+export const contentType = &#x27;image/png&#x27;
+
+const interSemiBold = await readFile(
+  join(process.cwd(), &#x27;assets/Inter-SemiBold.ttf&#x27;)
+)
+
+// Image generation
+export default async function Image() {
+  return new ImageResponse(
+    (
+      // ImageResponse JSX element
+      &lt;div
+        style={{
+          fontSize: 128,
+          background: &#x27;white&#x27;,
+          width: &#x27;100%&#x27;,
+          height: &#x27;100%&#x27;,
+          display: &#x27;flex&#x27;,
+          alignItems: &#x27;center&#x27;,
+          justifyContent: &#x27;center&#x27;,
+        }}
+      &gt;
+        About Acme
+      &lt;/div&gt;
+    ),
+    // ImageResponse options
+    {
+      // For convenience, we can re-use the exported opengraph-image
+      // size config to also set the ImageResponse&#x27;s width and height.
+      ...size,
+      fonts: [
+        {
+          name: &#x27;Inter&#x27;,
+          data: interSemiBold,
+          style: &#x27;normal&#x27;,
+          weight: 400,
+        },
+      ],
+    }
+  )
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta property=&quot;og:image&quot; content=&quot;&lt;generated&gt;&quot; /&gt;
+&lt;meta property=&quot;og:image:alt&quot; content=&quot;About Acme&quot; /&gt;
+&lt;meta property=&quot;og:image:type&quot; content=&quot;image/png&quot; /&gt;
+&lt;meta property=&quot;og:image:width&quot; content=&quot;1200&quot; /&gt;
+&lt;meta property=&quot;og:image:height&quot; content=&quot;630&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="props"><a class="anchor" href="#props">Props</a></h3>
+<p>default export 함수는 다음 props를 받습니다:</p><div class="en-orig"><p>The default export function receives the following props:</p></div>
+<h4 class="sec" id="params-optional"><a class="anchor" href="#params-optional"><code>params</code> (optional)</a></h4>
+<p>root segment부터 <code>opengraph-image</code> 또는 <code>twitter-image</code>가 함께 위치한(colocated) segment까지의 <a href="app-api-reference-file-conventions-dynamic-routes.html">dynamic route parameter</a> 객체를 담은 객체로 resolve되는 promise입니다.</p><div class="en-orig"><p>A promise that resolves to an object containing the <a href="app-api-reference-file-conventions-dynamic-routes.html">dynamic route parameters</a> object from the root segment down to the segment <code>opengraph-image</code> or <code>twitter-image</code> is colocated in.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="app-api-reference-functions-generate-image-metadata.html"><code>generateImageMetadata</code></a>를 사용하면 함수는 <code>id</code> prop도 받습니다. 이 prop은 <code>generateImageMetadata</code>가 반환한 항목 중 하나의 <code>id</code> 값으로 resolve되는 promise입니다.</p><div class="en-orig"><p>If you use <a href="app-api-reference-functions-generate-image-metadata.html"><code>generateImageMetadata</code></a>, the function will also receive an <code>id</code> prop that is a promise resolving to the <code>id</code> value from one of the items returned by <code>generateImageMetadata</code>.</p></div></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/shop/[slug]/opengraph-image.tsx" data-js="app/shop/[slug]/opengraph-image.js">app/shop/[slug]/opengraph-image.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default async function Image({
+  params,
+}: {
+  params: Promise&lt;{ slug: string }&gt;
+}) {
+  const { slug } = await params
+  // ...
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function Image({ params }) {
+  const { slug } = await params
+  // ...
+}</code></pre></div></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Route</th><th>URL</th><th><code>params</code></th></tr></thead>
+<tbody>
+<tr><td><code>app/shop/opengraph-image.js</code></td><td><code>/shop</code></td><td><code>undefined</code></td></tr>
+<tr><td><code>app/shop/[slug]/opengraph-image.js</code></td><td><code>/shop/1</code></td><td><code>Promise&lt;{ slug: &#x27;1&#x27; }&gt;</code></td></tr>
+<tr><td><code>app/shop/[tag]/[item]/opengraph-image.js</code></td><td><code>/shop/1/2</code></td><td><code>Promise&lt;{ tag: &#x27;1&#x27;, item: &#x27;2&#x27; }&gt;</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Route</th><th>URL</th><th><code>params</code></th></tr></thead>
+<tbody>
+<tr><td><code>app/shop/opengraph-image.js</code></td><td><code>/shop</code></td><td><code>undefined</code></td></tr>
+<tr><td><code>app/shop/[slug]/opengraph-image.js</code></td><td><code>/shop/1</code></td><td><code>Promise&lt;{ slug: &#x27;1&#x27; }&gt;</code></td></tr>
+<tr><td><code>app/shop/[tag]/[item]/opengraph-image.js</code></td><td><code>/shop/1/2</code></td><td><code>Promise&lt;{ tag: &#x27;1&#x27;, item: &#x27;2&#x27; }&gt;</code></td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="returns"><a class="anchor" href="#returns">Returns</a></h3>
+<p>default export 함수는 <code>Response</code>를 반환해야 합니다.</p><div class="en-orig"><p>The default export function should return a <code>Response</code>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>ImageResponse</code>는 이 return type을 만족합니다.</p><div class="en-orig"><p><code>ImageResponse</code> satisfies this return type.</p></div></div></div>
+<h3 class="sec" id="config-exports"><a class="anchor" href="#config-exports">Config exports</a></h3>
+<p>선택적으로 <code>opengraph-image</code> 또는 <code>twitter-image</code> route에서 <code>alt</code>, <code>size</code>, <code>contentType</code> 변수를 export해 이미지의 metadata를 설정할 수 있습니다.</p><div class="en-orig"><p>You can optionally configure the image's metadata by exporting <code>alt</code>, <code>size</code>, and <code>contentType</code> variables from <code>opengraph-image</code> or <code>twitter-image</code> route.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Type</th></tr></thead>
+<tbody>
+<tr><td><a href="#alt"><code>alt</code></a></td><td><code>string</code></td></tr>
+<tr><td><a href="#size"><code>size</code></a></td><td><code>{ width: number; height: number }</code></td></tr>
+<tr><td><a href="#contenttype"><code>contentType</code></a></td><td><code>string</code> - <a href="https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/MIME_types#image_types" target="_blank" rel="noopener">image MIME type</a></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Type</th></tr></thead>
+<tbody>
+<tr><td><a href="#alt"><code>alt</code></a></td><td><code>string</code></td></tr>
+<tr><td><a href="#size"><code>size</code></a></td><td><code>{ width: number; height: number }</code></td></tr>
+<tr><td><a href="#contenttype"><code>contentType</code></a></td><td><code>string</code> - <a href="https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/MIME_types#image_types" target="_blank" rel="noopener">image MIME type</a></td></tr>
+</tbody></table></div></div>
+<h4 class="sec" id="alt"><a class="anchor" href="#alt"><code>alt</code></a></h4>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="opengraph-image.tsx | twitter-image.tsx" data-js="opengraph-image.js | twitter-image.js">opengraph-image.tsx | twitter-image.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export const alt = &#x27;My images alt text&#x27;
+
+export default function Image() {}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const alt = &#x27;My images alt text&#x27;
+
+export default function Image() {}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta property=&quot;og:image:alt&quot; content=&quot;My images alt text&quot; /&gt;</code></pre></div></div>
+<h4 class="sec" id="size"><a class="anchor" href="#size"><code>size</code></a></h4>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="opengraph-image.tsx | twitter-image.tsx" data-js="opengraph-image.js | twitter-image.js">opengraph-image.tsx | twitter-image.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export const size = { width: 1200, height: 630 }
+
+export default function Image() {}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const size = { width: 1200, height: 630 }
+
+export default function Image() {}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta property=&quot;og:image:width&quot; content=&quot;1200&quot; /&gt;
+&lt;meta property=&quot;og:image:height&quot; content=&quot;630&quot; /&gt;</code></pre></div></div>
+<h4 class="sec" id="contenttype"><a class="anchor" href="#contenttype"><code>contentType</code></a></h4>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="opengraph-image.tsx | twitter-image.tsx" data-js="opengraph-image.js | twitter-image.js">opengraph-image.tsx | twitter-image.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export const contentType = &#x27;image/png&#x27;
+
+export default function Image() {}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const contentType = &#x27;image/png&#x27;
+
+export default function Image() {}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;meta property=&quot;og:image:type&quot; content=&quot;image/png&quot; /&gt;</code></pre></div></div>
+<h4 class="sec" id="route-segment-config"><a class="anchor" href="#route-segment-config">Route Segment Config</a></h4>
+<p><code>opengraph-image</code>와 <code>twitter-image</code>는 특수한 <a href="app-api-reference-file-conventions-route.html">Route Handler</a>로, Page 및 Layout과 같은 <a href="app-api-reference-file-conventions-route-segment-config.html">route segment configuration</a> option을 사용할 수 있습니다.</p><div class="en-orig"><p><code>opengraph-image</code> and <code>twitter-image</code> are specialized <a href="app-api-reference-file-conventions-route.html">Route Handlers</a> that can use the same <a href="app-api-reference-file-conventions-route-segment-config.html">route segment configuration</a> options as Pages and Layouts.</p></div>
+<h3 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h3>
+<h4 class="sec" id="using-external-data"><a class="anchor" href="#using-external-data">Using external data<span class="ko">외부 데이터 사용하기</span></a></h4>
+<p>이 예시는 <code>params</code> 객체와 외부 데이터를 사용해 이미지를 생성합니다.</p><div class="en-orig"><p>This example uses the <code>params</code> object and external data to generate the image.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>기본적으로 이렇게 생성된 이미지는 statically optimized 됩니다. 이 동작을 바꾸려면 개별 <code>fetch</code> <a href="app-api-reference-functions-fetch.html"><code>options</code></a>나 route segment <a href="app-guides-caching-without-cache-components.html#route-segment-config-revalidate">option</a>을 설정하세요.</p><div class="en-orig"><p>By default, this generated image will be statically optimized. You can configure the individual <code>fetch</code> <a href="app-api-reference-functions-fetch.html"><code>options</code></a> or route segments <a href="app-guides-caching-without-cache-components.html#route-segment-config-revalidate">options</a> to change this behavior.</p></div></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/posts/[slug]/opengraph-image.tsx" data-js="app/posts/[slug]/opengraph-image.js">app/posts/[slug]/opengraph-image.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { ImageResponse } from &#x27;next/og&#x27;
+
+export const alt = &#x27;About Acme&#x27;
+export const size = {
+  width: 1200,
+  height: 630,
+}
+export const contentType = &#x27;image/png&#x27;
+
+export default async function Image({
+  params,
+}: {
+  params: Promise&lt;{ slug: string }&gt;
+}) {
+  const { slug } = await params
+  const post = await fetch(`https://.../posts/${slug}`).then((res) =&gt;
+    res.json()
+  )
+
+  return new ImageResponse(
+    (
+      &lt;div
+        style={{
+          fontSize: 48,
+          background: &#x27;white&#x27;,
+          width: &#x27;100%&#x27;,
+          height: &#x27;100%&#x27;,
+          display: &#x27;flex&#x27;,
+          alignItems: &#x27;center&#x27;,
+          justifyContent: &#x27;center&#x27;,
+        }}
+      &gt;
+        {post.title}
+      &lt;/div&gt;
+    ),
+    {
+      ...size,
+    }
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { ImageResponse } from &#x27;next/og&#x27;
+
+export const alt = &#x27;About Acme&#x27;
+export const size = {
+  width: 1200,
+  height: 630,
+}
+export const contentType = &#x27;image/png&#x27;
+
+export default async function Image({ params }) {
+  const { slug } = await params
+  const post = await fetch(`https://.../posts/${slug}`).then((res) =&gt;
+    res.json()
+  )
+
+  return new ImageResponse(
+    (
+      &lt;div
+        style={{
+          fontSize: 48,
+          background: &#x27;white&#x27;,
+          width: &#x27;100%&#x27;,
+          height: &#x27;100%&#x27;,
+          display: &#x27;flex&#x27;,
+          alignItems: &#x27;center&#x27;,
+          justifyContent: &#x27;center&#x27;,
+        }}
+      &gt;
+        {post.title}
+      &lt;/div&gt;
+    ),
+    {
+      ...size,
+    }
+  )
+}</code></pre></div></div>
+<h4 class="sec" id="using-nodejs-runtime-with-local-assets"><a class="anchor" href="#using-nodejs-runtime-with-local-assets">Using Node.js runtime with local assets<span class="ko">로컬 asset과 함께 Node.js runtime 사용하기</span></a></h4>
+<p>이 예시들은 Node.js runtime을 사용해 file system에서 로컬 이미지를 가져온 뒤, base64 문자열이나 <code>ArrayBuffer</code>로 <code>&lt;img&gt;</code>의 <code>src</code> attribute에 전달합니다. 로컬 asset은 예시 소스 파일이 아니라 프로젝트 root를 기준으로 배치하세요.</p><div class="en-orig"><p>These examples use the Node.js runtime to fetch a local image from the file system and pass it to the <code>&lt;img&gt;</code> <code>src</code> attribute, either as a base64 string or an <code>ArrayBuffer</code>. Place the local asset relative to the project root, not the example source file.</p></div>
+<p>이 asset은 request 데이터에 의존하지 않으므로 module scope에서 한 번만 읽으세요. <a href="app-getting-started-caching.html#predictable-values">Predictable values</a>를 참고하세요.</p><div class="en-orig"><p>The asset doesn't depend on request data, so read it once at module scope. See <a href="app-getting-started-caching.html#predictable-values">Predictable values</a>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/opengraph-image.tsx" data-js="app/opengraph-image.js">app/opengraph-image.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { ImageResponse } from &#x27;next/og&#x27;
+import { join } from &#x27;node:path&#x27;
+import { readFile } from &#x27;node:fs/promises&#x27;
+
+const logoData = await readFile(join(process.cwd(), &#x27;logo.png&#x27;), &#x27;base64&#x27;)
+const logoSrc = `data:image/png;base64,${logoData}`
+
+export default async function Image() {
+  return new ImageResponse(
+    (
+      &lt;div
+        style={{
+          display: &#x27;flex&#x27;,
+          alignItems: &#x27;center&#x27;,
+          justifyContent: &#x27;center&#x27;,
+        }}
+      &gt;
+        &lt;img src={logoSrc} height=&quot;100&quot; /&gt;
+      &lt;/div&gt;
+    )
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { ImageResponse } from &#x27;next/og&#x27;
+import { join } from &#x27;node:path&#x27;
+import { readFile } from &#x27;node:fs/promises&#x27;
+
+const logoData = await readFile(join(process.cwd(), &#x27;logo.png&#x27;), &#x27;base64&#x27;)
+const logoSrc = `data:image/png;base64,${logoData}`
+
+export default async function Image() {
+  return new ImageResponse(
+    (
+      &lt;div
+        style={{
+          display: &#x27;flex&#x27;,
+          alignItems: &#x27;center&#x27;,
+          justifyContent: &#x27;center&#x27;,
+        }}
+      &gt;
+        &lt;img src={logoSrc} height=&quot;100&quot; /&gt;
+      &lt;/div&gt;
+    )
+  )
+}</code></pre></div></div>
+<p><code>&lt;img&gt;</code> element의 <code>src</code> attribute에 <code>ArrayBuffer</code>를 전달하는 것은 HTML spec에 포함되지 않습니다. <code>next/og</code>가 사용하는 rendering engine은 이를 지원하지만, TypeScript 정의는 spec을 따르기 때문에 이 <a href="https://github.com/vercel/satori/issues/606#issuecomment-2144000453" target="_blank" rel="noopener">기능</a>을 사용하려면 <code>@ts-expect-error</code> directive 같은 것이 필요합니다.</p><div class="en-orig"><p>Passing an <code>ArrayBuffer</code> to the <code>src</code> attribute of an <code>&lt;img&gt;</code> element is not part of the HTML spec. The rendering engine used by <code>next/og</code> supports it, but because TypeScript definitions follow the spec, you need a <code>@ts-expect-error</code> directive or similar to use this <a href="https://github.com/vercel/satori/issues/606#issuecomment-2144000453" target="_blank" rel="noopener">feature</a>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/opengraph-image.tsx" data-js="app/opengraph-image.js">app/opengraph-image.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { ImageResponse } from &#x27;next/og&#x27;
+import { join } from &#x27;node:path&#x27;
+import { readFile } from &#x27;node:fs/promises&#x27;
+
+const logoData = await readFile(join(process.cwd(), &#x27;logo.png&#x27;))
+const logoSrc = Uint8Array.from(logoData).buffer
+
+export default async function Image() {
+  return new ImageResponse(
+    (
+      &lt;div
+        style={{
+          display: &#x27;flex&#x27;,
+          alignItems: &#x27;center&#x27;,
+          justifyContent: &#x27;center&#x27;,
+        }}
+      &gt;
+        {/* @ts-expect-error Satori accepts ArrayBuffer/typed arrays for &lt;img src&gt; at runtime */}
+        &lt;img src={logoSrc} height=&quot;100&quot; /&gt;
+      &lt;/div&gt;
+    )
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { ImageResponse } from &#x27;next/og&#x27;
+import { join } from &#x27;node:path&#x27;
+import { readFile } from &#x27;node:fs/promises&#x27;
+
+const logoData = await readFile(join(process.cwd(), &#x27;logo.png&#x27;))
+const logoSrc = Uint8Array.from(logoData).buffer
+
+export default async function Image() {
+  return new ImageResponse(
+    (
+      &lt;div
+        style={{
+          display: &#x27;flex&#x27;,
+          alignItems: &#x27;center&#x27;,
+          justifyContent: &#x27;center&#x27;,
+        }}
+      &gt;
+        &lt;img src={logoSrc} height=&quot;100&quot; /&gt;
+      &lt;/div&gt;
+    )
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.0.0</code></td><td>이제 <code>params</code>는 객체로 resolve되는 promise입니다</td></tr>
+<tr><td><code>v13.3.0</code></td><td><code>opengraph-image</code>와 <code>twitter-image</code>가 도입되었습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.0.0</code></td><td><code>params</code> is now a promise that resolves to an object</td></tr>
+<tr><td><code>v13.3.0</code></td><td><code>opengraph-image</code> and <code>twitter-image</code> introduced.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/03-file-conventions/01-metadata/opengraph-image.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/file-conventions/metadata/opengraph-image" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-file-conventions-metadata-manifest.html" class="prev"><div class="dir">← 이전</div><div class="ttl">manifest.json</div><div class="ttl-ko">manifest.json</div></a>
+      <a href="app-api-reference-file-conventions-metadata-robots.html" class="next"><div class="dir">다음 →</div><div class="ttl">robots.txt</div><div class="ttl-ko">robots.txt</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/file-conventions/metadata/opengraph-image" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#image-files-jpg-png-gif">Image files (.jpg, .png, .gif)</a></li><li class="l3"><a href="#opengraph-image"><code>opengraph-image</code></a></li><li class="l3"><a href="#twitter-image"><code>twitter-image</code></a></li><li class="l3"><a href="#opengraph-imagealttxt"><code>opengraph-image.alt.txt</code></a></li><li class="l3"><a href="#twitter-imagealttxt"><code>twitter-image.alt.txt</code></a></li><li class="l2"><a href="#generate-images-using-code-js-ts-tsx">Generate images using code (.js, .ts, .tsx)</a></li><li class="l3"><a href="#props">Props</a></li><li class="l3"><a href="#returns">Returns</a></li><li class="l3"><a href="#config-exports">Config exports</a></li><li class="l3"><a href="#examples">Examples</a></li><li class="l2"><a href="#version-history">Version History</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`opengraph-image`와 `twitter-image` file convention을 사용하면 route segment의 Open Graph 이미지와 Twitter 이미지를 설정할 수 있습니다.
+
+사용자가 사이트 링크를 공유할 때 소셜 네트워크나 메신저 앱에 표시되는 이미지를 설정할 때 유용합니다.
+
+Open Graph 이미지와 Twitter 이미지를 설정하는 방법은 두 가지입니다:
+
+- [이미지 파일 사용 (.jpg, .png, .gif)](#image-files-jpg-png-gif)
+- [코드로 이미지 생성 (.js, .ts, .tsx)](#generate-images-using-code-js-ts-tsx)
+
+## Image files (.jpg, .png, .gif) || 이미지 파일 (.jpg, .png, .gif)
+
+segment에 `opengraph-image` 또는 `twitter-image` 이미지 파일을 두어, 이미지 파일로 route segment의 공유 이미지를 설정합니다.
+
+Next.js는 파일을 평가해 앱의 `&lt;head&gt;` element에 적절한 tag를 자동으로 추가합니다.
+
+| File convention                                 | 지원 파일 형식            |
+| ----------------------------------------------- | ------------------------------- |
+| [`opengraph-image`](#opengraph-image)           | `.jpg`, `.jpeg`, `.png`, `.gif` |
+| [`twitter-image`](#twitter-image)               | `.jpg`, `.jpeg`, `.png`, `.gif` |
+| [`opengraph-image.alt`](#opengraph-imagealttxt) | `.txt`                          |
+| [`twitter-image.alt`](#twitter-imagealttxt)     | `.txt`                          |
+
+&gt; **Good to know**:
+&gt;
+&gt; `twitter-image` 파일 크기는 [5MB](https://developer.x.com/en/docs/x-for-websites/cards/overview/summary)를, `opengraph-image` 파일 크기는 [8MB](https://developers.facebook.com/docs/sharing/webmasters/images)를 넘으면 안 됩니다. 이미지 파일 크기가 이 제한을 넘으면 build가 실패합니다.
+
+### `opengraph-image`
+
+아무 route segment에나 `opengraph-image.(jpg|jpeg|png|gif)` 이미지 파일을 추가하세요.
+
+[[CODE 1]]
+
+### `twitter-image`
+
+아무 route segment에나 `twitter-image.(jpg|jpeg|png|gif)` 이미지 파일을 추가하세요.
+
+[[CODE 2]]
+
+### `opengraph-image.alt.txt`
+
+`opengraph-image.(jpg|jpeg|png|gif)` 이미지와 같은 route segment에, 그 이미지의 alt text를 담은 `opengraph-image.alt.txt` 파일을 함께 추가하세요.
+
+[[CODE 3]]
+
+[[CODE 4]]
+
+### `twitter-image.alt.txt`
+
+`twitter-image.(jpg|jpeg|png|gif)` 이미지와 같은 route segment에, 그 이미지의 alt text를 담은 `twitter-image.alt.txt` 파일을 함께 추가하세요.
+
+[[CODE 5]]
+
+[[CODE 6]]
+
+## Generate images using code (.js, .ts, .tsx) || 코드로 이미지 생성하기 (.js, .ts, .tsx)
+
+[실제 이미지 파일](#image-files-jpg-png-gif)을 사용하는 것 외에도, 코드로 이미지를 프로그래밍 방식으로 **생성**할 수 있습니다.
+
+함수를 default export하는 `opengraph-image` 또는 `twitter-image` route를 만들어 route segment의 공유 이미지를 생성합니다.
+
+| File convention   | 지원 파일 형식 |
+| ----------------- | -------------------- |
+| `opengraph-image` | `.js`, `.ts`, `.tsx` |
+| `twitter-image`   | `.js`, `.ts`, `.tsx` |
+
+&gt; **Good to know**:
+&gt;
+&gt; - 기본적으로 생성된 이미지는 [Request-time API](/docs/app/glossary#request-time-apis)나 cache되지 않은 데이터를 사용하지 않는 한 [**statically optimized**](/docs/app/glossary#prerendering) 됩니다(build 시점에 생성되고 cache됨).
+&gt; - [`generateImageMetadata`](/docs/app/api-reference/functions/generate-image-metadata)를 사용하면 같은 파일에서 여러 이미지를 생성할 수 있습니다.
+&gt; - `opengraph-image.js`와 `twitter-image.js`는 특수한 Route Handler로, [Request-time API](/docs/app/glossary#request-time-apis)나 [dynamic config](/docs/app/guides/caching-without-cache-components#dynamic) option을 사용하지 않는 한 기본적으로 cache됩니다.
+
+이미지를 생성하는 가장 쉬운 방법은 `next/og`의 [ImageResponse](/docs/app/api-reference/functions/image-response) API를 사용하는 것입니다.
+
+[[CODE 7]]
+
+[[CODE 8]]
+
+### Props
+
+default export 함수는 다음 props를 받습니다:
+
+#### `params` (optional)
+
+root segment부터 `opengraph-image` 또는 `twitter-image`가 함께 위치한(colocated) segment까지의 [dynamic route parameter](/docs/app/api-reference/file-conventions/dynamic-routes) 객체를 담은 객체로 resolve되는 promise입니다.
+
+&gt; **Good to know**: [`generateImageMetadata`](/docs/app/api-reference/functions/generate-image-metadata)를 사용하면 함수는 `id` prop도 받습니다. 이 prop은 `generateImageMetadata`가 반환한 항목 중 하나의 `id` 값으로 resolve되는 promise입니다.
+
+[[CODE 9]]
+
+| Route                                      | URL         | `params`                           |
+| ------------------------------------------ | ----------- | ---------------------------------- |
+| `app/shop/opengraph-image.js`              | `/shop`     | `undefined`                        |
+| `app/shop/[slug]/opengraph-image.js`       | `/shop/1`   | `Promise&lt;{ slug: &#x27;1&#x27; }&gt;`           |
+| `app/shop/[tag]/[item]/opengraph-image.js` | `/shop/1/2` | `Promise&lt;{ tag: &#x27;1&#x27;, item: &#x27;2&#x27; }&gt;` |
+
+### Returns
+
+default export 함수는 `Response`를 반환해야 합니다.
+
+&gt; **Good to know**: `ImageResponse`는 이 return type을 만족합니다.
+
+### Config exports
+
+선택적으로 `opengraph-image` 또는 `twitter-image` route에서 `alt`, `size`, `contentType` 변수를 export해 이미지의 metadata를 설정할 수 있습니다.
+
+| Option                        | Type                                                                                                            |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| [`alt`](#alt)                 | `string`                                                                                                        |
+| [`size`](#size)               | `{ width: number; height: number }`                                                                             |
+| [`contentType`](#contenttype) | `string` - [image MIME type](https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/MIME_types#image_types) |
+
+#### `alt`
+
+[[CODE 10]]
+
+[[CODE 11]]
+
+#### `size`
+
+[[CODE 12]]
+
+[[CODE 13]]
+
+#### `contentType`
+
+[[CODE 14]]
+
+[[CODE 15]]
+
+#### Route Segment Config
+
+`opengraph-image`와 `twitter-image`는 특수한 [Route Handler](/docs/app/api-reference/file-conventions/route)로, Page 및 Layout과 같은 [route segment configuration](/docs/app/api-reference/file-conventions/route-segment-config) option을 사용할 수 있습니다.
+
+### Examples || 예시
+
+#### Using external data || 외부 데이터 사용하기
+
+이 예시는 `params` 객체와 외부 데이터를 사용해 이미지를 생성합니다.
+
+&gt; **Good to know**:
+&gt; 기본적으로 이렇게 생성된 이미지는 statically optimized 됩니다. 이 동작을 바꾸려면 개별 `fetch` [`options`](/docs/app/api-reference/functions/fetch)나 route segment [option](/docs/app/guides/caching-without-cache-components#route-segment-config-revalidate)을 설정하세요.
+
+[[CODE 16]]
+
+#### Using Node.js runtime with local assets || 로컬 asset과 함께 Node.js runtime 사용하기
+
+이 예시들은 Node.js runtime을 사용해 file system에서 로컬 이미지를 가져온 뒤, base64 문자열이나 `ArrayBuffer`로 `&lt;img&gt;`의 `src` attribute에 전달합니다. 로컬 asset은 예시 소스 파일이 아니라 프로젝트 root를 기준으로 배치하세요.
+
+이 asset은 request 데이터에 의존하지 않으므로 module scope에서 한 번만 읽으세요. [Predictable values](/docs/app/getting-started/caching#predictable-values)를 참고하세요.
+
+[[CODE 17]]
+
+`&lt;img&gt;` element의 `src` attribute에 `ArrayBuffer`를 전달하는 것은 HTML spec에 포함되지 않습니다. `next/og`가 사용하는 rendering engine은 이를 지원하지만, TypeScript 정의는 spec을 따르기 때문에 이 [기능](https://github.com/vercel/satori/issues/606#issuecomment-2144000453)을 사용하려면 `@ts-expect-error` directive 같은 것이 필요합니다.
+
+[[CODE 18]]
+
+## Version History || 버전 기록
+
+| Version   | Changes                                              |
+| --------- | ---------------------------------------------------- |
+| `v16.0.0` | 이제 `params`는 객체로 resolve되는 promise입니다 |
+| `v13.3.0` | `opengraph-image`와 `twitter-image`가 도입되었습니다.    |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Layouts and Pages (Layout과 Page) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/getting-started/layouts-and-pages" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/getting-started/layouts-and-pages" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/03-layouts-and-pages.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-getting-started.html">Getting Started</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Layouts and Pages<span class="sub">Layout과 Page</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js는 <strong>file-system 기반 routing</strong>을 사용합니다. 즉, 폴더와 파일로 route를 정의할 수 있습니다. 이 페이지에서는 layout과 page를 만들고 서로 연결하는 방법을 안내합니다.</p><div class="en-orig"><p>Next.js uses <strong>file-system based routing</strong>, meaning you can use folders and files to define routes. This page will guide you through how to create layouts and pages, and link between them.</p></div>
+<h2 class="sec" id="creating-a-page"><a class="anchor" href="#creating-a-page">Creating a page<span class="ko">page 만들기</span></a></h2>
+<p><strong>page</strong>는 특정 route에서 render되는 UI입니다. page를 만들려면 <code>app</code> directory 안에 <a href="app-api-reference-file-conventions-page.html"><code>page</code> 파일</a>을 추가하고 React component를 default export하세요. 예를 들어 index page(<code>/</code>)를 만들려면 다음과 같이 합니다:</p><div class="en-orig"><p>A <strong>page</strong> is UI that is rendered on a specific route. To create a page, add a <a href="app-api-reference-file-conventions-page.html"><code>page</code> file</a> inside the <code>app</code> directory and default export a React component. For example, to create an index page (<code>/</code>):</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/page-special-file.png" alt="page.js special 파일" width="1600" height="282" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/page-special-file.png" alt="page.js special 파일" width="1600" height="282" loading="lazy" /></figure>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function Page() {
+  return &lt;h1&gt;Hello Next.js!&lt;/h1&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function Page() {
+  return &lt;h1&gt;Hello Next.js!&lt;/h1&gt;
+}</code></pre></div></div>
+<h2 class="sec" id="creating-a-layout"><a class="anchor" href="#creating-a-layout">Creating a layout<span class="ko">layout 만들기</span></a></h2>
+<p>layout은 여러 page 사이에서 <strong>공유되는</strong> UI입니다. navigation 시 layout은 state를 유지하고, interactive한 상태로 남으며, 다시 render되지 않습니다.</p><div class="en-orig"><p>A layout is UI that is <strong>shared</strong> between multiple pages. On navigation, layouts preserve state, remain interactive, and do not rerender.</p></div>
+<p><a href="app-api-reference-file-conventions-layout.html"><code>layout</code> 파일</a>에서 React component를 default export하면 layout을 정의할 수 있습니다. 이 component는 page 또는 다른 <a href="#nesting-layouts">layout</a>이 될 수 있는 <code>children</code> prop을 받아야 합니다.</p><div class="en-orig"><p>You can define a layout by default exporting a React component from a <a href="app-api-reference-file-conventions-layout.html"><code>layout</code> file</a>. The component should accept a <code>children</code> prop which can be a page or another <a href="#nesting-layouts">layout</a>.</p></div>
+<p>예를 들어 index page를 child로 받는 layout을 만들려면 <code>app</code> directory 안에 <code>layout</code> 파일을 추가하세요:</p><div class="en-orig"><p>For example, to create a layout that accepts your index page as child, add a <code>layout</code> file inside the <code>app</code> directory:</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/layout-special-file.png" alt="layout.js special 파일" width="1600" height="363" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/layout-special-file.png" alt="layout.js special 파일" width="1600" height="363" loading="lazy" /></figure>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;body&gt;
+        {/* Layout UI */}
+        {/* Place children where you want to render a page or nested layout */}
+        &lt;main&gt;{children}&lt;/main&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function DashboardLayout({ children }) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;body&gt;
+        {/* Layout UI */}
+        {/* Place children where you want to render a page or nested layout */}
+        &lt;main&gt;{children}&lt;/main&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<p>위 layout은 <code>app</code> directory의 root에 정의되어 있기 때문에 <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a>이라고 부릅니다. root layout은 <strong>필수</strong>이며 <code>html</code>과 <code>body</code> tag를 반드시 포함해야 합니다.</p><div class="en-orig"><p>The layout above is called a <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a> because it's defined at the root of the <code>app</code> directory. The root layout is <strong>required</strong> and must contain <code>html</code> and <code>body</code> tags.</p></div>
+<h2 class="sec" id="creating-a-nested-route"><a class="anchor" href="#creating-a-nested-route">Creating a nested route<span class="ko">중첩 route 만들기</span></a></h2>
+<p>중첩 route는 여러 URL segment로 구성된 route입니다. 예를 들어 <code>/blog/[slug]</code> route는 세 개의 segment로 구성됩니다:</p><div class="en-orig"><p>A nested route is a route composed of multiple URL segments. For example, the <code>/blog/[slug]</code> route is composed of three segments:</p></div>
+<ul>
+<li><code>/</code> (Root Segment)</li>
+<li><code>blog</code> (Segment)</li>
+<li><code>[slug]</code> (Leaf Segment)</li>
+</ul><div class="en-orig"><ul>
+<li><code>/</code> (Root Segment)</li>
+<li><code>blog</code> (Segment)</li>
+<li><code>[slug]</code> (Leaf Segment)</li>
+</ul></div>
+<p>Next.js에서는:</p><div class="en-orig"><p>In Next.js:</p></div>
+<ul>
+<li><strong>폴더</strong>로 URL segment에 mapping되는 route segment를 정의합니다.</li>
+<li><strong>파일</strong>(<code>page</code>, <code>layout</code> 등)로 segment에 표시되는 UI를 만듭니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Folders</strong> are used to define the route segments that map to URL segments.</li>
+<li><strong>Files</strong> (like <code>page</code> and <code>layout</code>) are used to create UI that is shown for a segment.</li>
+</ul></div>
+<p>중첩 route를 만들려면 폴더 안에 폴더를 중첩하면 됩니다. 예를 들어 <code>/blog</code> route를 추가하려면 <code>app</code> directory에 <code>blog</code>라는 폴더를 만드세요. 그다음 <code>/blog</code>를 공개적으로 접근 가능하게 하려면 <code>page.tsx</code> 파일을 추가합니다:</p><div class="en-orig"><p>To create nested routes, you can nest folders inside each other. For example, to add a route for <code>/blog</code>, create a folder called <code>blog</code> in the <code>app</code> directory. Then, to make <code>/blog</code> publicly accessible, add a <code>page.tsx</code> file:</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/blog-nested-route.png" alt="blog 폴더와 page.js 파일을 보여주는 파일 계층 구조" width="1600" height="525" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/blog-nested-route.png" alt="blog 폴더와 page.js 파일을 보여주는 파일 계층 구조" width="1600" height="525" loading="lazy" /></figure>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/page.tsx" data-js="app/blog/page.js">app/blog/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// Dummy imports
+import { getPosts } from &#x27;@/lib/posts&#x27;
+import { Post } from &#x27;@/ui/post&#x27;
+
+export default async function Page() {
+  const posts = await getPosts()
+
+  return (
+    &lt;ul&gt;
+      {posts.map((post) =&gt; (
+        &lt;Post key={post.id} post={post} /&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// Dummy imports
+import { getPosts } from &#x27;@/lib/posts&#x27;
+import { Post } from &#x27;@/ui/post&#x27;
+
+export default async function Page() {
+  const posts = await getPosts()
+
+  return (
+    &lt;ul&gt;
+      {posts.map((post) =&gt; (
+        &lt;Post key={post.id} post={post} /&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div></div>
+<p>폴더를 계속 중첩해서 중첩 route를 만들 수 있습니다. 예를 들어 특정 blog post를 위한 route를 만들려면 <code>blog</code> 안에 새 <code>[slug]</code> 폴더를 만들고 <code>page</code> 파일을 추가하세요:</p><div class="en-orig"><p>You can continue nesting folders to create nested routes. For example, to create a route for a specific blog post, create a new <code>[slug]</code> folder inside <code>blog</code> and add a <code>page</code> file:</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/blog-post-nested-route.png" alt="중첩된 slug 폴더와 page.js 파일이 있는 blog 폴더를 보여주는 파일 계층 구조" width="1600" height="687" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/blog-post-nested-route.png" alt="중첩된 slug 폴더와 page.js 파일이 있는 blog 폴더를 보여주는 파일 계층 구조" width="1600" height="687" loading="lazy" /></figure>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/[slug]/page.tsx" data-js="app/blog/[slug]/page.js">app/blog/[slug]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export function generateStaticParams() {}
+
+export default function Page() {
+  return &lt;h1&gt;Hello, Blog Post Page!&lt;/h1&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export function generateStaticParams() {}
+
+export default function Page() {
+  return &lt;h1&gt;Hello, Blog Post Page!&lt;/h1&gt;
+}</code></pre></div></div>
+<p>폴더 이름을 대괄호로 감싸면(예: <code>[slug]</code>) <a href="app-api-reference-file-conventions-dynamic-routes.html">dynamic route segment</a>가 만들어지며, 이는 데이터로부터 여러 page를 생성하는 데 사용됩니다. 예: blog post, 상품 page 등.</p><div class="en-orig"><p>Wrapping a folder name in square brackets (e.g. <code>[slug]</code>) creates a <a href="app-api-reference-file-conventions-dynamic-routes.html">dynamic route segment</a> which is used to generate multiple pages from data. e.g. blog posts, product pages, etc.</p></div>
+<h2 class="sec" id="nesting-layouts"><a class="anchor" href="#nesting-layouts">Nesting layouts<span class="ko">layout 중첩하기</span></a></h2>
+<p>기본적으로 폴더 계층 안의 layout도 중첩됩니다. 즉, layout은 <code>children</code> prop을 통해 child layout을 감쌉니다. 특정 route segment(폴더) 안에 <code>layout</code>을 추가하면 layout을 중첩할 수 있습니다.</p><div class="en-orig"><p>By default, layouts in the folder hierarchy are also nested, which means they wrap child layouts via their <code>children</code> prop. You can nest layouts by adding <code>layout</code> inside specific route segments (folders).</p></div>
+<p>예를 들어 <code>/blog</code> route용 layout을 만들려면 <code>blog</code> 폴더 안에 새 <code>layout</code> 파일을 추가하세요.</p><div class="en-orig"><p>For example, to create a layout for the <code>/blog</code> route, add a new <code>layout</code> file inside the <code>blog</code> folder.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/nested-layouts.png" alt="root layout이 blog layout을 감싸는 파일 계층 구조" width="1600" height="768" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/nested-layouts.png" alt="root layout이 blog layout을 감싸는 파일 계층 구조" width="1600" height="768" loading="lazy" /></figure>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/layout.tsx" data-js="app/blog/layout.js">app/blog/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function BlogLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return &lt;section&gt;{children}&lt;/section&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function BlogLayout({ children }) {
+  return &lt;section&gt;{children}&lt;/section&gt;
+}</code></pre></div></div>
+<p>위 두 layout을 합치면 root layout(<code>app/layout.js</code>)이 blog layout(<code>app/blog/layout.js</code>)을 감싸고, blog layout은 다시 blog page(<code>app/blog/page.js</code>)와 blog post page(<code>app/blog/[slug]/page.js</code>)를 감쌉니다.</p><div class="en-orig"><p>If you were to combine the two layouts above, the root layout (<code>app/layout.js</code>) would wrap the blog layout (<code>app/blog/layout.js</code>), which would wrap the blog (<code>app/blog/page.js</code>) and blog post page (<code>app/blog/[slug]/page.js</code>).</p></div>
+<h2 class="sec" id="creating-a-dynamic-segment"><a class="anchor" href="#creating-a-dynamic-segment">Creating a dynamic segment<span class="ko">dynamic segment 만들기</span></a></h2>
+<p><a href="app-api-reference-file-conventions-dynamic-routes.html">Dynamic segment</a>를 사용하면 데이터로부터 생성되는 route를 만들 수 있습니다. 예를 들어 blog post마다 route를 직접 만드는 대신, dynamic segment를 만들어 blog post 데이터를 바탕으로 route를 생성할 수 있습니다.</p><div class="en-orig"><p><a href="app-api-reference-file-conventions-dynamic-routes.html">Dynamic segments</a> allow you to create routes that are generated from data. For example, instead of manually creating a route for each individual blog post, you can create a dynamic segment to generate the routes based on blog post data.</p></div>
+<p>dynamic segment를 만들려면 segment(폴더) 이름을 대괄호로 감싸세요: <code>[segmentName]</code>. 예를 들어 <code>app/blog/[slug]/page.tsx</code> route에서는 <code>[slug]</code>가 dynamic segment입니다.</p><div class="en-orig"><p>To create a dynamic segment, wrap the segment (folder) name in square brackets: <code>[segmentName]</code>. For example, in the <code>app/blog/[slug]/page.tsx</code> route, the <code>[slug]</code> is the dynamic segment.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/[slug]/page.tsx" data-js="app/blog/[slug]/page.js">app/blog/[slug]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default async function BlogPostPage({
+  params,
+}: {
+  params: Promise&lt;{ slug: string }&gt;
+}) {
+  const { slug } = await params
+  const post = await getPost(slug)
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{post.title}&lt;/h1&gt;
+      &lt;p&gt;{post.content}&lt;/p&gt;
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function BlogPostPage({ params }) {
+  const { slug } = await params
+  const post = await getPost(slug)
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{post.title}&lt;/h1&gt;
+      &lt;p&gt;{post.content}&lt;/p&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p><a href="app-api-reference-file-conventions-dynamic-routes.html">Dynamic Segment</a>와 <a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code></a> props에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about <a href="app-api-reference-file-conventions-dynamic-routes.html">Dynamic Segments</a> and the <a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code></a> props.</p></div>
+<p><a href="app-api-reference-file-conventions-layout.html#params-optional">Dynamic Segment 안의 중첩 layout</a>도 <code>params</code> props에 접근할 수 있습니다.</p><div class="en-orig"><p>Nested <a href="app-api-reference-file-conventions-layout.html#params-optional">layouts within Dynamic Segments</a> can also access the <code>params</code> props.</p></div>
+<h2 class="sec" id="rendering-with-search-params"><a class="anchor" href="#rendering-with-search-params">Rendering with search params<span class="ko">search params로 rendering하기</span></a></h2>
+<p>Server Component <strong>page</strong>에서는 <a href="app-api-reference-file-conventions-page.html#searchparams-optional"><code>searchParams</code></a> prop으로 search parameter에 접근할 수 있습니다:</p><div class="en-orig"><p>In a Server Component <strong>page</strong>, you can access search parameters using the <a href="app-api-reference-file-conventions-page.html#searchparams-optional"><code>searchParams</code></a> prop:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.jsx">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise&lt;{ [key: string]: string | string[] | undefined }&gt;
+}) {
+  const filters = (await searchParams).filters
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function Page({ searchParams }) {
+  const filters = (await searchParams).filters
+}</code></pre></div></div>
+<p><code>searchParams</code>를 사용하면 search parameter를 읽어 올 incoming request가 필요하기 때문에 page가 <a href="app-glossary.html#dynamic-rendering"><strong>dynamic rendering</strong></a> 방식으로 전환됩니다.</p><div class="en-orig"><p>Using <code>searchParams</code> opts your page into <a href="app-glossary.html#dynamic-rendering"><strong>dynamic rendering</strong></a> because it requires an incoming request to read the search parameters from.</p></div>
+<p>Client Component는 <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams</code></a> hook으로 search params를 읽을 수 있습니다.</p><div class="en-orig"><p>Client Components can read search params using the <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams</code></a> hook.</p></div>
+<p><a href="app-api-reference-functions-use-search-params.html#prerendering">prerender되는</a> route와 <a href="app-api-reference-functions-use-search-params.html#dynamic-rendering">dynamic하게 render되는</a> route에서의 <code>useSearchParams</code>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about <code>useSearchParams</code> in <a href="app-api-reference-functions-use-search-params.html#prerendering">prerendered</a> and <a href="app-api-reference-functions-use-search-params.html#dynamic-rendering">dynamically rendered</a> routes.</p></div>
+<h3 class="sec" id="what-to-use-and-when"><a class="anchor" href="#what-to-use-and-when">What to use and when<span class="ko">언제 무엇을 쓸까</span></a></h3>
+<ul>
+<li>search parameter로 <strong>page의 데이터를 load해야 할 때</strong>(예: pagination, database에서 filtering)는 <code>searchParams</code> prop을 사용하세요.</li>
+<li>search parameter를 <strong>client에서만</strong> 사용할 때(예: props로 이미 load된 목록을 filtering)는 <code>useSearchParams</code>를 사용하세요.</li>
+<li>작은 최적화로, <strong>callback이나 event handler 안에서</strong> <code>new URLSearchParams(window.location.search)</code>를 사용하면 re-render를 일으키지 않고 search params를 읽을 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Use the <code>searchParams</code> prop when you need search parameters to <strong>load data for the page</strong> (e.g. pagination, filtering from a database).</li>
+<li>Use <code>useSearchParams</code> when search parameters are used <strong>only on the client</strong> (e.g. filtering a list already loaded via props).</li>
+<li>As a small optimization, you can use <code>new URLSearchParams(window.location.search)</code> in <strong>callbacks or event handlers</strong> to read search params without triggering re-renders.</li>
+</ul></div>
+<h2 class="sec" id="linking-between-pages"><a class="anchor" href="#linking-between-pages">Linking between pages<span class="ko">page 사이 연결하기</span></a></h2>
+<p><a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code> component</a>를 사용해 route 사이를 navigation할 수 있습니다. <code>&lt;Link&gt;</code>는 HTML <code>&lt;a&gt;</code> tag를 확장해 <a href="app-getting-started-linking-and-navigating.html#prefetching">prefetching</a>과 <a href="app-getting-started-linking-and-navigating.html#client-side-transitions">client-side navigation</a>을 제공하는 Next.js 내장 component입니다.</p><div class="en-orig"><p>You can use the <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code> component</a> to navigate between routes. <code>&lt;Link&gt;</code> is a built-in Next.js component that extends the HTML <code>&lt;a&gt;</code> tag to provide <a href="app-getting-started-linking-and-navigating.html#prefetching">prefetching</a> and <a href="app-getting-started-linking-and-navigating.html#client-side-transitions">client-side navigation</a>.</p></div>
+<p>예를 들어 blog post 목록을 만들려면 <code>next/link</code>에서 <code>&lt;Link&gt;</code>를 import하고 component에 <code>href</code> prop을 전달하세요:</p><div class="en-orig"><p>For example, to generate a list of blog posts, import <code>&lt;Link&gt;</code> from <code>next/link</code> and pass a <code>href</code> prop to the component:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/ui/post.tsx" data-js="app/ui/post.js">app/ui/post.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+import { getPosts } from &#x27;@/lib/posts&#x27;
+
+export default async function Posts() {
+  const posts = await getPosts()
+
+  return (
+    &lt;ul&gt;
+      {posts.map((post) =&gt; (
+        &lt;li key={post.slug}&gt;
+          &lt;Link href={`/blog/${post.slug}`}&gt;{post.title}&lt;/Link&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+import { getPosts } from &#x27;@/lib/posts&#x27;
+
+export default async function Posts() {
+  const posts = await getPosts()
+
+  return (
+    &lt;ul&gt;
+      {posts.map((post) =&gt; (
+        &lt;li key={post.slug}&gt;
+          &lt;Link href={`/blog/${post.slug}`}&gt;{post.title}&lt;/Link&gt;
+        &lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>&lt;Link&gt;</code>는 Next.js에서 route 사이를 navigation하는 기본 방법입니다. 더 고급 navigation이 필요하면 <a href="app-api-reference-functions-use-router.html"><code>useRouter</code> hook</a>을 사용할 수도 있습니다.</p><div class="en-orig"><p><code>&lt;Link&gt;</code> is the primary way to navigate between routes in Next.js. You can also use the <a href="app-api-reference-functions-use-router.html"><code>useRouter</code> hook</a> for more advanced navigation.</p></div></div></div>
+<h2 class="sec" id="route-props-helpers"><a class="anchor" href="#route-props-helpers">Route Props Helpers<span class="ko">Route Props Helper</span></a></h2>
+<p>Next.js는 route 구조로부터 <code>params</code>와 이름 있는 slot을 추론하는 utility type을 제공합니다:</p><div class="en-orig"><p>Next.js exposes utility types that infer <code>params</code> and named slots from your route structure:</p></div>
+<ul>
+<li><a href="app-api-reference-file-conventions-page.html#page-props-helper"><strong>PageProps</strong></a>: <code>params</code>와 <code>searchParams</code>를 포함한 <code>page</code> component용 props입니다.</li>
+<li><a href="app-api-reference-file-conventions-layout.html#layout-props-helper"><strong>LayoutProps</strong></a>: <code>children</code>과 모든 이름 있는 slot(예: <code>@analytics</code> 같은 폴더)을 포함한 <code>layout</code> component용 props입니다.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-file-conventions-page.html#page-props-helper"><strong>PageProps</strong></a>: Props for <code>page</code> components, including <code>params</code> and <code>searchParams</code>.</li>
+<li><a href="app-api-reference-file-conventions-layout.html#layout-props-helper"><strong>LayoutProps</strong></a>: Props for <code>layout</code> components, including <code>children</code> and any named slots (e.g. folders like <code>@analytics</code>).</li>
+</ul></div>
+<p>이 helper들은 전역으로 사용할 수 있으며, <code>next dev</code>, <code>next build</code>, <a href="app-api-reference-cli-next.html#next-typegen-options"><code>next typegen</code></a> 중 하나를 실행할 때 생성됩니다.</p><div class="en-orig"><p>These are globally available helpers, generated when running either <code>next dev</code>, <code>next build</code> or <a href="app-api-reference-cli-next.html#next-typegen-options"><code>next typegen</code></a>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/blog/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export default async function Page(props: PageProps&lt;&#x27;/blog/[slug]&#x27;&gt;) {
+  const { slug } = await props.params
+  return &lt;h1&gt;Blog post: {slug}&lt;/h1&gt;
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/dashboard/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export default function Layout(props: LayoutProps&lt;&#x27;/dashboard&#x27;&gt;) {
+  return (
+    &lt;section&gt;
+      {props.children}
+      {/* If you have app/dashboard/@analytics, it appears as a typed slot: */}
+      {/* {props.analytics} */}
+    &lt;/section&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>Static route에서는 <code>params</code>가 <code>{}</code>로 resolve됩니다.</li>
+<li><code>PageProps</code>, <code>LayoutProps</code>는 전역 helper이므로 import할 필요가 없습니다.</li>
+<li>Type은 <code>next dev</code>, <code>next build</code>, <code>next typegen</code> 실행 중에 생성됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Static routes resolve <code>params</code> to <code>{}</code>.</li>
+<li><code>PageProps</code>, <code>LayoutProps</code> are global helpers — no imports required.</li>
+<li>Types are generated during <code>next dev</code>, <code>next build</code> or <code>next typegen</code>.</li>
+</ul></div></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">API Reference</h2><p>API Reference를 읽고 이 페이지에서 언급한 기능에 대해 더 알아보세요.</p><div class="rgrid"><a class="rcard" href="app-getting-started-linking-and-navigating.html"><div class="rt">Linking and Navigating</div><div class="rk">Link와 Navigation</div><div class="rd">prefetching, prerendering, client-side navigation 등 내장 navigation 최적화가 어떻게 동작하는지, 그리고 dynamic route와 느린 network 환경에서 navigation을 최적화하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-file-conventions-layout.html"><div class="rt">layout.js</div><div class="rk">layout.js</div><div class="rd">layout.js 파일에 대한 API reference입니다.</div></a><a class="rcard" href="app-api-reference-file-conventions-page.html"><div class="rt">page.js</div><div class="rk">page.js</div><div class="rd">page.js 파일에 대한 API reference입니다.</div></a><a class="rcard" href="app-api-reference-components-link.html"><div class="rt">Link Component</div><div class="rk">Link 컴포넌트</div><div class="rd">내장 <code>next/link</code> component로 빠른 client-side navigation을 활성화합니다.</div></a><a class="rcard" href="app-api-reference-file-conventions-dynamic-routes.html"><div class="rt">Dynamic Route Segments</div><div class="rk">Dynamic Route Segment</div><div class="rd">Dynamic Segment를 사용해 URL path param을 읽고 dynamic data로부터 route를 생성하는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/03-layouts-and-pages.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/getting-started/layouts-and-pages" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-getting-started-project-structure.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Project Structure</div><div class="ttl-ko">프로젝트 구조와 구성</div></a>
+      <a href="app-getting-started-linking-and-navigating.html" class="next"><div class="dir">다음 →</div><div class="ttl">Linking and Navigating</div><div class="ttl-ko">Link와 Navigation</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/getting-started/layouts-and-pages" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#creating-a-page">Creating a page</a></li><li class="l2"><a href="#creating-a-layout">Creating a layout</a></li><li class="l2"><a href="#creating-a-nested-route">Creating a nested route</a></li><li class="l2"><a href="#nesting-layouts">Nesting layouts</a></li><li class="l2"><a href="#creating-a-dynamic-segment">Creating a dynamic segment</a></li><li class="l2"><a href="#rendering-with-search-params">Rendering with search params</a></li><li class="l3"><a href="#what-to-use-and-when">What to use and when</a></li><li class="l2"><a href="#linking-between-pages">Linking between pages</a></li><li class="l2"><a href="#route-props-helpers">Route Props Helpers</a></li><li class="l2"><a href="#next-steps">API Reference</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js는 **file-system 기반 routing**을 사용합니다. 즉, 폴더와 파일로 route를 정의할 수 있습니다. 이 페이지에서는 layout과 page를 만들고 서로 연결하는 방법을 안내합니다.
+
+## Creating a page || page 만들기
+
+**page**는 특정 route에서 render되는 UI입니다. page를 만들려면 `app` directory 안에 [`page` 파일](/docs/app/api-reference/file-conventions/page)을 추가하고 React component를 default export하세요. 예를 들어 index page(`/`)를 만들려면 다음과 같이 합니다:
+
+&lt;Image
+  alt=&quot;page.js special 파일&quot;
+  srcLight=&quot;/docs/light/page-special-file.png&quot;
+  srcDark=&quot;/docs/dark/page-special-file.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;282&quot;
+/&gt;
+
+[[CODE 1]]
+
+## Creating a layout || layout 만들기
+
+layout은 여러 page 사이에서 **공유되는** UI입니다. navigation 시 layout은 state를 유지하고, interactive한 상태로 남으며, 다시 render되지 않습니다.
+
+[`layout` 파일](/docs/app/api-reference/file-conventions/layout)에서 React component를 default export하면 layout을 정의할 수 있습니다. 이 component는 page 또는 다른 [layout](#nesting-layouts)이 될 수 있는 `children` prop을 받아야 합니다.
+
+예를 들어 index page를 child로 받는 layout을 만들려면 `app` directory 안에 `layout` 파일을 추가하세요:
+
+&lt;Image
+  alt=&quot;layout.js special 파일&quot;
+  srcLight=&quot;/docs/light/layout-special-file.png&quot;
+  srcDark=&quot;/docs/dark/layout-special-file.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;363&quot;
+/&gt;
+
+[[CODE 2]]
+
+위 layout은 `app` directory의 root에 정의되어 있기 때문에 [root layout](/docs/app/api-reference/file-conventions/layout#root-layout)이라고 부릅니다. root layout은 **필수**이며 `html`과 `body` tag를 반드시 포함해야 합니다.
+
+## Creating a nested route || 중첩 route 만들기
+
+중첩 route는 여러 URL segment로 구성된 route입니다. 예를 들어 `/blog/[slug]` route는 세 개의 segment로 구성됩니다:
+
+- `/` (Root Segment)
+- `blog` (Segment)
+- `[slug]` (Leaf Segment)
+
+Next.js에서는:
+
+- **폴더**로 URL segment에 mapping되는 route segment를 정의합니다.
+- **파일**(`page`, `layout` 등)로 segment에 표시되는 UI를 만듭니다.
+
+중첩 route를 만들려면 폴더 안에 폴더를 중첩하면 됩니다. 예를 들어 `/blog` route를 추가하려면 `app` directory에 `blog`라는 폴더를 만드세요. 그다음 `/blog`를 공개적으로 접근 가능하게 하려면 `page.tsx` 파일을 추가합니다:
+
+&lt;Image
+  alt=&quot;blog 폴더와 page.js 파일을 보여주는 파일 계층 구조&quot;
+  srcLight=&quot;/docs/light/blog-nested-route.png&quot;
+  srcDark=&quot;/docs/dark/blog-nested-route.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;525&quot;
+/&gt;
+
+[[CODE 3]]
+
+폴더를 계속 중첩해서 중첩 route를 만들 수 있습니다. 예를 들어 특정 blog post를 위한 route를 만들려면 `blog` 안에 새 `[slug]` 폴더를 만들고 `page` 파일을 추가하세요:
+
+&lt;Image
+  alt=&quot;중첩된 slug 폴더와 page.js 파일이 있는 blog 폴더를 보여주는 파일 계층 구조&quot;
+  srcLight=&quot;/docs/light/blog-post-nested-route.png&quot;
+  srcDark=&quot;/docs/dark/blog-post-nested-route.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;687&quot;
+/&gt;
+
+[[CODE 4]]
+
+폴더 이름을 대괄호로 감싸면(예: `[slug]`) [dynamic route segment](/docs/app/api-reference/file-conventions/dynamic-routes)가 만들어지며, 이는 데이터로부터 여러 page를 생성하는 데 사용됩니다. 예: blog post, 상품 page 등.
+
+## Nesting layouts || layout 중첩하기
+
+기본적으로 폴더 계층 안의 layout도 중첩됩니다. 즉, layout은 `children` prop을 통해 child layout을 감쌉니다. 특정 route segment(폴더) 안에 `layout`을 추가하면 layout을 중첩할 수 있습니다.
+
+예를 들어 `/blog` route용 layout을 만들려면 `blog` 폴더 안에 새 `layout` 파일을 추가하세요.
+
+&lt;Image
+  alt=&quot;root layout이 blog layout을 감싸는 파일 계층 구조&quot;
+  srcLight=&quot;/docs/light/nested-layouts.png&quot;
+  srcDark=&quot;/docs/dark/nested-layouts.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;768&quot;
+/&gt;
+
+[[CODE 5]]
+
+위 두 layout을 합치면 root layout(`app/layout.js`)이 blog layout(`app/blog/layout.js`)을 감싸고, blog layout은 다시 blog page(`app/blog/page.js`)와 blog post page(`app/blog/[slug]/page.js`)를 감쌉니다.
+
+## Creating a dynamic segment || dynamic segment 만들기
+
+[Dynamic segment](/docs/app/api-reference/file-conventions/dynamic-routes)를 사용하면 데이터로부터 생성되는 route를 만들 수 있습니다. 예를 들어 blog post마다 route를 직접 만드는 대신, dynamic segment를 만들어 blog post 데이터를 바탕으로 route를 생성할 수 있습니다.
+
+dynamic segment를 만들려면 segment(폴더) 이름을 대괄호로 감싸세요: `[segmentName]`. 예를 들어 `app/blog/[slug]/page.tsx` route에서는 `[slug]`가 dynamic segment입니다.
+
+[[CODE 6]]
+
+[Dynamic Segment](/docs/app/api-reference/file-conventions/dynamic-routes)와 [`params`](/docs/app/api-reference/file-conventions/page#params-optional) props에 대해 더 알아보세요.
+
+[Dynamic Segment 안의 중첩 layout](/docs/app/api-reference/file-conventions/layout#params-optional)도 `params` props에 접근할 수 있습니다.
+
+## Rendering with search params || search params로 rendering하기
+
+Server Component **page**에서는 [`searchParams`](/docs/app/api-reference/file-conventions/page#searchparams-optional) prop으로 search parameter에 접근할 수 있습니다:
+
+[[CODE 7]]
+
+`searchParams`를 사용하면 search parameter를 읽어 올 incoming request가 필요하기 때문에 page가 [**dynamic rendering**](/docs/app/glossary#dynamic-rendering) 방식으로 전환됩니다.
+
+Client Component는 [`useSearchParams`](/docs/app/api-reference/functions/use-search-params) hook으로 search params를 읽을 수 있습니다.
+
+[prerender되는](/docs/app/api-reference/functions/use-search-params#prerendering) route와 [dynamic하게 render되는](/docs/app/api-reference/functions/use-search-params#dynamic-rendering) route에서의 `useSearchParams`에 대해 더 알아보세요.
+
+### What to use and when || 언제 무엇을 쓸까
+
+- search parameter로 **page의 데이터를 load해야 할 때**(예: pagination, database에서 filtering)는 `searchParams` prop을 사용하세요.
+- search parameter를 **client에서만** 사용할 때(예: props로 이미 load된 목록을 filtering)는 `useSearchParams`를 사용하세요.
+- 작은 최적화로, **callback이나 event handler 안에서** `new URLSearchParams(window.location.search)`를 사용하면 re-render를 일으키지 않고 search params를 읽을 수 있습니다.
+
+## Linking between pages || page 사이 연결하기
+
+[`&lt;Link&gt;` component](/docs/app/api-reference/components/link)를 사용해 route 사이를 navigation할 수 있습니다. `&lt;Link&gt;`는 HTML `&lt;a&gt;` tag를 확장해 [prefetching](/docs/app/getting-started/linking-and-navigating#prefetching)과 [client-side navigation](/docs/app/getting-started/linking-and-navigating#client-side-transitions)을 제공하는 Next.js 내장 component입니다.
+
+예를 들어 blog post 목록을 만들려면 `next/link`에서 `&lt;Link&gt;`를 import하고 component에 `href` prop을 전달하세요:
+
+[[CODE 8]]
+
+&gt; **Good to know**: `&lt;Link&gt;`는 Next.js에서 route 사이를 navigation하는 기본 방법입니다. 더 고급 navigation이 필요하면 [`useRouter` hook](/docs/app/api-reference/functions/use-router)을 사용할 수도 있습니다.
+
+## Route Props Helpers || Route Props Helper
+
+Next.js는 route 구조로부터 `params`와 이름 있는 slot을 추론하는 utility type을 제공합니다:
+
+- [**PageProps**](/docs/app/api-reference/file-conventions/page#page-props-helper): `params`와 `searchParams`를 포함한 `page` component용 props입니다.
+- [**LayoutProps**](/docs/app/api-reference/file-conventions/layout#layout-props-helper): `children`과 모든 이름 있는 slot(예: `@analytics` 같은 폴더)을 포함한 `layout` component용 props입니다.
+
+이 helper들은 전역으로 사용할 수 있으며, `next dev`, `next build`, [`next typegen`](/docs/app/api-reference/cli/next#next-typegen-options) 중 하나를 실행할 때 생성됩니다.
+
+[[CODE 9]]
+
+[[CODE 10]]
+
+&gt; **Good to know**
+&gt;
+&gt; - Static route에서는 `params`가 `{}`로 resolve됩니다.
+&gt; - `PageProps`, `LayoutProps`는 전역 helper이므로 import할 필요가 없습니다.
+&gt; - Type은 `next dev`, `next build`, `next typegen` 실행 중에 생성됩니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

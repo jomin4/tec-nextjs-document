@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to lazy load Client Components and libraries (Client Component와 library lazy loading하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/lazy-loading" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/lazy-loading" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/lazy-loading.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to lazy load Client Components and libraries<span class="sub">Client Component와 library lazy loading하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js의 <a href="https://developer.mozilla.org/docs/Web/Performance/Lazy_loading" target="_blank" rel="noopener">Lazy loading</a>은 route를 render하는 데 필요한 JavaScript 양을 줄여 애플리케이션의 초기 loading 성능을 개선하는 데 도움이 됩니다.</p><div class="en-orig"><p><a href="https://developer.mozilla.org/docs/Web/Performance/Lazy_loading" target="_blank" rel="noopener">Lazy loading</a> in Next.js helps improve the initial loading performance of an application by decreasing the amount of JavaScript needed to render a route.</p></div>
+<p>lazy loading을 사용하면 <strong>Client Component</strong>와 import한 library의 loading을 미루고, 필요할 때만 client bundle에 포함할 수 있습니다. 예를 들어 사용자가 click해서 열기 전까지 modal의 loading을 미루고 싶을 수 있습니다.</p><div class="en-orig"><p>It allows you to defer loading of <strong>Client Components</strong> and imported libraries, and only include them in the client bundle when they're needed. For example, you might want to defer loading a modal until a user clicks to open it.</p></div>
+<p>Next.js에서 lazy loading을 구현하는 방법은 두 가지입니다:</p><div class="en-orig"><p>There are two ways you can implement lazy loading in Next.js:</p></div>
+<ol>
+<li><code>next/dynamic</code>으로 <a href="#nextdynamic">Dynamic Import</a> 사용하기</li>
+<li><a href="https://react.dev/reference/react/lazy" target="_blank" rel="noopener"><code>React.lazy()</code></a>를 <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener">Suspense</a>와 함께 사용하기</li>
+</ol><div class="en-orig"><ol>
+<li>Using <a href="#nextdynamic">Dynamic Imports</a> with <code>next/dynamic</code></li>
+<li>Using <a href="https://react.dev/reference/react/lazy" target="_blank" rel="noopener"><code>React.lazy()</code></a> with <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener">Suspense</a></li>
+</ol></div>
+<p>기본적으로 Server Component는 자동으로 <a href="https://developer.mozilla.org/docs/Glossary/Code_splitting" target="_blank" rel="noopener">code split</a>되며, <a href="app-guides-streaming.html">streaming</a>을 사용해 UI 조각을 server에서 client로 점진적으로 보낼 수 있습니다. lazy loading은 Client Component에 적용됩니다.</p><div class="en-orig"><p>By default, Server Components are automatically <a href="https://developer.mozilla.org/docs/Glossary/Code_splitting" target="_blank" rel="noopener">code split</a>, and you can use <a href="app-guides-streaming.html">streaming</a> to progressively send pieces of UI from the server to the client. Lazy loading applies to Client Components.</p></div>
+<h2 class="sec" id="nextdynamic"><a class="anchor" href="#nextdynamic"><code>next/dynamic</code></a></h2>
+<p><code>next/dynamic</code>은 <a href="https://react.dev/reference/react/lazy" target="_blank" rel="noopener"><code>React.lazy()</code></a>와 <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener">Suspense</a>를 합친 것입니다. 점진적인 migration이 가능하도록 <code>app</code>과 <code>pages</code> directory에서 똑같이 동작합니다.</p><div class="en-orig"><p><code>next/dynamic</code> is a composite of <a href="https://react.dev/reference/react/lazy" target="_blank" rel="noopener"><code>React.lazy()</code></a> and <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener">Suspense</a>. It behaves the same way in the <code>app</code> and <code>pages</code> directories to allow for incremental migration.</p></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예제</span></a></h2>
+<h3 class="sec" id="importing-client-components"><a class="anchor" href="#importing-client-components">Importing Client Components<span class="ko">Client Component import하기</span></a></h3>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">&#x27;use client&#x27;
+
+import { useState } from &#x27;react&#x27;
+import dynamic from &#x27;next/dynamic&#x27;
+
+// Client Components:
+const ComponentA = dynamic(() =&gt; import(&#x27;../components/A&#x27;))
+const ComponentB = dynamic(() =&gt; import(&#x27;../components/B&#x27;))
+const ComponentC = dynamic(() =&gt; import(&#x27;../components/C&#x27;), { ssr: false })
+
+export default function ClientComponentExample() {
+  const [showMore, setShowMore] = useState(false)
+
+  return (
+    &lt;div&gt;
+      {/* Load immediately, but in a separate client bundle */}
+      &lt;ComponentA /&gt;
+
+      {/* Load on demand, only when/if the condition is met */}
+      {showMore &amp;&amp; &lt;ComponentB /&gt;}
+      &lt;button onClick={() =&gt; setShowMore(!showMore)}&gt;Toggle&lt;/button&gt;
+
+      {/* Load only on the client side */}
+      &lt;ComponentC /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p>Server Component가 Client Component를 dynamic import할 때, 자동 <a href="https://developer.mozilla.org/docs/Glossary/Code_splitting" target="_blank" rel="noopener">code splitting</a>은 현재 지원되지 <strong>않습니다</strong>.</p><div class="en-orig"><p>When a Server Component dynamically imports a Client Component, automatic <a href="https://developer.mozilla.org/docs/Glossary/Code_splitting" target="_blank" rel="noopener">code splitting</a> is currently <strong>not</strong> supported.</p></div></div></div>
+<h3 class="sec" id="skipping-ssr"><a class="anchor" href="#skipping-ssr">Skipping SSR<span class="ko">SSR 건너뛰기</span></a></h3>
+<p><code>React.lazy()</code>와 Suspense를 사용하면 Client Component는 기본적으로 <a href="https://github.com/reactwg/server-components/discussions/4" target="_blank" rel="noopener">prerender</a>(SSR)됩니다.</p><div class="en-orig"><p>When using <code>React.lazy()</code> and Suspense, Client Components will be <a href="https://github.com/reactwg/server-components/discussions/4" target="_blank" rel="noopener">prerendered</a> (SSR) by default.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p><code>ssr: false</code> option은 Client Component에서만 동작합니다. client code-splitting이 제대로 동작하도록 이 option을 Client Component 안으로 옮기세요.</p><div class="en-orig"><p><code>ssr: false</code> option will only work for Client Components, move it into Client Components ensure the client code-splitting working properly.</p></div></div></div>
+<p>Client Component의 prerendering을 비활성화하려면 <code>ssr</code> option을 <code>false</code>로 설정하면 됩니다:</p><div class="en-orig"><p>If you want to disable prerendering for a Client Component, you can use the <code>ssr</code> option set to <code>false</code>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">const ComponentC = dynamic(() =&gt; import(&#x27;../components/C&#x27;), { ssr: false })</code></pre></div></div>
+<h3 class="sec" id="importing-server-components"><a class="anchor" href="#importing-server-components">Importing Server Components<span class="ko">Server Component import하기</span></a></h3>
+<p>Server Component를 dynamic import하면 Server Component 자체가 아니라, 그 Server Component의 children인 Client Component만 lazy-load됩니다.
+또한 Server Component에서 사용할 때 CSS 같은 static asset을 미리 load(preload)하는 데에도 도움이 됩니다.</p><div class="en-orig"><p>If you dynamically import a Server Component, only the Client Components that are children of the Server Component will be lazy-loaded - not the Server Component itself.
+It will also help preload the static assets such as CSS when you're using it in Server Components.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import dynamic from &#x27;next/dynamic&#x27;
+
+// Server Component:
+const ServerComponent = dynamic(() =&gt; import(&#x27;../components/ServerComponent&#x27;))
+
+export default function ServerComponentExample() {
+  return (
+    &lt;div&gt;
+      &lt;ServerComponent /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p><code>ssr: false</code> option은 Server Component에서 지원되지 않습니다. Server Component에서 사용하려고 하면 error가 표시됩니다.
+Server Component에서는 <code>next/dynamic</code>에 <code>ssr: false</code>를 사용할 수 없습니다. Client Component 안으로 옮기세요.</p><div class="en-orig"><p><code>ssr: false</code> option is not supported in Server Components. You will see an error if you try to use it in Server Components.
+<code>ssr: false</code> is not allowed with <code>next/dynamic</code> in Server Components. Please move it into a Client Component.</p></div></div></div>
+<h3 class="sec" id="loading-external-libraries"><a class="anchor" href="#loading-external-libraries">Loading External Libraries<span class="ko">외부 library load하기</span></a></h3>
+<p>외부 library는 <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/import" target="_blank" rel="noopener"><code>import()</code></a> 함수를 사용해 필요할 때 load할 수 있습니다. 이 예제는 fuzzy search를 위해 외부 library <code>fuse.js</code>를 사용합니다. 이 module은 사용자가 search input에 입력한 뒤에야 client에서 load됩니다.</p><div class="en-orig"><p>External libraries can be loaded on demand using the <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/import" target="_blank" rel="noopener"><code>import()</code></a> function. This example uses the external library <code>fuse.js</code> for fuzzy search. The module is only loaded on the client after the user types in the search input.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">&#x27;use client&#x27;
+
+import { useState } from &#x27;react&#x27;
+
+const names = [&#x27;Tim&#x27;, &#x27;Joe&#x27;, &#x27;Bel&#x27;, &#x27;Lee&#x27;]
+
+export default function Page() {
+  const [results, setResults] = useState()
+
+  return (
+    &lt;div&gt;
+      &lt;input
+        type=&quot;text&quot;
+        placeholder=&quot;Search&quot;
+        onChange={async (e) =&gt; {
+          const { value } = e.currentTarget
+          // Dynamically load fuse.js
+          const Fuse = (await import(&#x27;fuse.js&#x27;)).default
+          const fuse = new Fuse(names)
+
+          setResults(fuse.search(value))
+        }}
+      /&gt;
+      &lt;pre&gt;Results: {JSON.stringify(results, null, 2)}&lt;/pre&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="adding-a-custom-loading-component"><a class="anchor" href="#adding-a-custom-loading-component">Adding a custom loading component<span class="ko">custom loading component 추가하기</span></a></h3>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">&#x27;use client&#x27;
+
+import dynamic from &#x27;next/dynamic&#x27;
+
+const WithCustomLoading = dynamic(
+  () =&gt; import(&#x27;../components/WithCustomLoading&#x27;),
+  {
+    loading: () =&gt; &lt;p&gt;Loading...&lt;/p&gt;,
+  }
+)
+
+export default function Page() {
+  return (
+    &lt;div&gt;
+      {/* The loading component will be rendered while  &lt;WithCustomLoading/&gt; is loading */}
+      &lt;WithCustomLoading /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="importing-named-exports"><a class="anchor" href="#importing-named-exports">Importing Named Exports<span class="ko">Named Export import하기</span></a></h3>
+<p>named export를 dynamic import하려면 <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/import" target="_blank" rel="noopener"><code>import()</code></a> 함수가 반환하는 Promise에서 그것을 반환하면 됩니다:</p><div class="en-orig"><p>To dynamically import a named export, you can return it from the Promise returned by <a href="https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/import" target="_blank" rel="noopener"><code>import()</code></a> function:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">components/hello.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">&#x27;use client&#x27;
+
+export function Hello() {
+  return &lt;p&gt;Hello!&lt;/p&gt;
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import dynamic from &#x27;next/dynamic&#x27;
+
+const ClientComponent = dynamic(() =&gt;
+  import(&#x27;../components/hello&#x27;).then((mod) =&gt; mod.Hello)
+)</code></pre></div></div>
+<h2 class="sec" id="magic-comments"><a class="anchor" href="#magic-comments">Magic Comments</a></h2>
+<p>Next.js는 bundler가 dynamic import를 처리하는 방식을 제어하는 magic comment를 지원합니다. 이 comment는 dynamic <code>import()</code>, <code>require()</code>, <code>require.resolve()</code>, <code>new Worker()</code> 표현식에서 동작합니다.</p><div class="en-orig"><p>Next.js supports magic comments to control how dynamic imports are handled by the bundler. These comments work with dynamic <code>import()</code>, <code>require()</code>, <code>require.resolve()</code>, and <code>new Worker()</code> expressions.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>magic comment는 static <code>import</code> 문(<code>import x from &#x27;y&#x27;</code>)에서는 동작하지 않습니다. dynamic 표현식에서만 동작합니다.</p><div class="en-orig"><p>Magic comments do not work with static <code>import</code> statements (<code>import x from &#x27;y&#x27;</code>). They only work with dynamic expressions.</p></div></div></div>
+<h3 class="sec" id="webpackignore--turbopackignore"><a class="anchor" href="#webpackignore--turbopackignore"><code>webpackIgnore</code> / <code>turbopackIgnore</code></a></h3>
+<p>dynamic import의 bundling을 건너뛰려면 이 comment를 사용하세요. import 표현식이 출력에 그대로 남으므로 runtime 전용 module에 유용합니다:</p><div class="en-orig"><p>Use these comments to skip bundling a dynamic import. The import expression will be left as-is in the output, useful for runtime-only modules:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// Skip bundling - import happens at runtime
+const runtime = await import(/* webpackIgnore: true */ &#x27;runtime-module&#x27;)
+
+// Turbopack-specific variant
+const plugin = await import(/* turbopackIgnore: true */ pluginPath)
+
+// Also works with require
+const mod = require(/* webpackIgnore: true */ &#x27;runtime-module&#x27;)</code></pre></div></div>
+<h3 class="sec" id="turbopackoptional-turbopack-only"><a class="anchor" href="#turbopackoptional-turbopack-only"><code>turbopackOptional</code> (Turbopack only)<span class="ko"><code>turbopackOptional</code> (Turbopack 전용)</span></a></h3>
+<p>module이 존재하지 않을 수도 있을 때 build error를 억제하려면 이 comment를 사용하세요. module이 없으면 import는 여전히 runtime에 throw합니다:</p><div class="en-orig"><p>Use this comment to suppress build errors when a module might not exist. The import will still throw at runtime if the module is missing:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// No build error if &#x27;./optional-feature&#x27; doesn&#x27;t exist
+// Runtime will throw MODULE_NOT_FOUND if executed
+const feature = await import(/* turbopackOptional: true */ &#x27;./optional-feature&#x27;)
+
+// Also works with require
+const mod = require(/* turbopackOptional: true */ &#x27;./optional-module&#x27;)</code></pre></div></div>
+<p>다음과 같은 경우에 유용합니다:</p><div class="en-orig"><p>This is useful for:</p></div>
+<ul>
+<li>설치되지 않았을 수도 있는 조건부 기능</li>
+<li>module이 선택 사항인 plugin 시스템</li>
+<li>일부 파일이 아직 존재하지 않을 수 있는 점진적 migration</li>
+</ul><div class="en-orig"><ul>
+<li>Conditional features that may not be installed</li>
+<li>Plugin systems where modules are optional</li>
+<li>Gradual migrations where some files may not exist yet</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>webpackOptional</code>은 지원되지 않습니다. Turbopack을 사용할 때는 대신 <code>turbopackOptional</code>을 사용하세요.</p><div class="en-orig"><p><code>webpackOptional</code> is not supported. Use <code>turbopackOptional</code> instead when using Turbopack.</p></div></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/lazy-loading.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/lazy-loading" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-keeping-pages-static.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Keeping pages static</div><div class="ttl-ko">페이지를 static으로 유지하기</div></a>
+      <a href="app-guides-local-development.html" class="next"><div class="dir">다음 →</div><div class="ttl">Development Environment</div><div class="ttl-ko">로컬 개발 환경 최적화하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/lazy-loading" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#nextdynamic"><code>next/dynamic</code></a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#importing-client-components">Importing Client Components</a></li><li class="l3"><a href="#skipping-ssr">Skipping SSR</a></li><li class="l3"><a href="#importing-server-components">Importing Server Components</a></li><li class="l3"><a href="#loading-external-libraries">Loading External Libraries</a></li><li class="l3"><a href="#adding-a-custom-loading-component">Adding a custom loading component</a></li><li class="l3"><a href="#importing-named-exports">Importing Named Exports</a></li><li class="l2"><a href="#magic-comments">Magic Comments</a></li><li class="l3"><a href="#webpackignore--turbopackignore"><code>webpackIgnore</code> / <code>turbopackIgnore</code></a></li><li class="l3"><a href="#turbopackoptional-turbopack-only"><code>turbopackOptional</code> (Turbopack only)</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js의 [Lazy loading](https://developer.mozilla.org/docs/Web/Performance/Lazy_loading)은 route를 render하는 데 필요한 JavaScript 양을 줄여 애플리케이션의 초기 loading 성능을 개선하는 데 도움이 됩니다.
+
+
+
+lazy loading을 사용하면 **Client Component**와 import한 library의 loading을 미루고, 필요할 때만 client bundle에 포함할 수 있습니다. 예를 들어 사용자가 click해서 열기 전까지 modal의 loading을 미루고 싶을 수 있습니다.
+
+Next.js에서 lazy loading을 구현하는 방법은 두 가지입니다:
+
+1. `next/dynamic`으로 [Dynamic Import](#nextdynamic) 사용하기
+2. [`React.lazy()`](https://react.dev/reference/react/lazy)를 [Suspense](https://react.dev/reference/react/Suspense)와 함께 사용하기
+
+기본적으로 Server Component는 자동으로 [code split](https://developer.mozilla.org/docs/Glossary/Code_splitting)되며, [streaming](/docs/app/guides/streaming)을 사용해 UI 조각을 server에서 client로 점진적으로 보낼 수 있습니다. lazy loading은 Client Component에 적용됩니다.
+
+## `next/dynamic`
+
+`next/dynamic`은 [`React.lazy()`](https://react.dev/reference/react/lazy)와 [Suspense](https://react.dev/reference/react/Suspense)를 합친 것입니다. 점진적인 migration이 가능하도록 `app`과 `pages` directory에서 똑같이 동작합니다.
+
+## Examples || 예제
+
+### Importing Client Components || Client Component import하기
+
+[[CODE 1]]
+
+&gt; **Note:** Server Component가 Client Component를 dynamic import할 때, 자동 [code splitting](https://developer.mozilla.org/docs/Glossary/Code_splitting)은 현재 지원되지 **않습니다**.
+
+### Skipping SSR || SSR 건너뛰기
+
+`React.lazy()`와 Suspense를 사용하면 Client Component는 기본적으로 [prerender](https://github.com/reactwg/server-components/discussions/4)(SSR)됩니다.
+
+&gt; **Note:** `ssr: false` option은 Client Component에서만 동작합니다. client code-splitting이 제대로 동작하도록 이 option을 Client Component 안으로 옮기세요.
+
+Client Component의 prerendering을 비활성화하려면 `ssr` option을 `false`로 설정하면 됩니다:
+
+[[CODE 2]]
+
+### Importing Server Components || Server Component import하기
+
+Server Component를 dynamic import하면 Server Component 자체가 아니라, 그 Server Component의 children인 Client Component만 lazy-load됩니다.
+또한 Server Component에서 사용할 때 CSS 같은 static asset을 미리 load(preload)하는 데에도 도움이 됩니다.
+
+[[CODE 3]]
+
+&gt; **Note:** `ssr: false` option은 Server Component에서 지원되지 않습니다. Server Component에서 사용하려고 하면 error가 표시됩니다.
+&gt; Server Component에서는 `next/dynamic`에 `ssr: false`를 사용할 수 없습니다. Client Component 안으로 옮기세요.
+
+### Loading External Libraries || 외부 library load하기
+
+외부 library는 [`import()`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/import) 함수를 사용해 필요할 때 load할 수 있습니다. 이 예제는 fuzzy search를 위해 외부 library `fuse.js`를 사용합니다. 이 module은 사용자가 search input에 입력한 뒤에야 client에서 load됩니다.
+
+[[CODE 4]]
+
+### Adding a custom loading component || custom loading component 추가하기
+
+[[CODE 5]]
+
+### Importing Named Exports || Named Export import하기
+
+named export를 dynamic import하려면 [`import()`](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Operators/import) 함수가 반환하는 Promise에서 그것을 반환하면 됩니다:
+
+[[CODE 6]]
+
+[[CODE 7]]
+
+## Magic Comments
+
+Next.js는 bundler가 dynamic import를 처리하는 방식을 제어하는 magic comment를 지원합니다. 이 comment는 dynamic `import()`, `require()`, `require.resolve()`, `new Worker()` 표현식에서 동작합니다.
+
+&gt; **Good to know:** magic comment는 static `import` 문(`import x from &#x27;y&#x27;`)에서는 동작하지 않습니다. dynamic 표현식에서만 동작합니다.
+
+### `webpackIgnore` / `turbopackIgnore`
+
+dynamic import의 bundling을 건너뛰려면 이 comment를 사용하세요. import 표현식이 출력에 그대로 남으므로 runtime 전용 module에 유용합니다:
+
+[[CODE 8]]
+
+### `turbopackOptional` (Turbopack only) || `turbopackOptional` (Turbopack 전용)
+
+module이 존재하지 않을 수도 있을 때 build error를 억제하려면 이 comment를 사용하세요. module이 없으면 import는 여전히 runtime에 throw합니다:
+
+[[CODE 9]]
+
+다음과 같은 경우에 유용합니다:
+
+- 설치되지 않았을 수도 있는 조건부 기능
+- module이 선택 사항인 plugin 시스템
+- 일부 파일이 아직 존재하지 않을 수 있는 점진적 migration
+
+&gt; **Good to know:** `webpackOptional`은 지원되지 않습니다. Turbopack을 사용할 때는 대신 `turbopackOptional`을 사용하세요.
+
+
+
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

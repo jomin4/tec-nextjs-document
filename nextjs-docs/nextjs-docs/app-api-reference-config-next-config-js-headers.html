@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>headers (headers) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/config/next-config-js/headers" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/config/next-config-js/headers" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/headers.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config.html">Configuration</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config-next-config-js.html">next.config.js</a></div>
+    <div class="title-row">
+      <h1 class="page-title">headers<span class="sub">headers</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>header를 사용하면 특정 path로 들어오는 request에 대한 response에 custom HTTP header를 설정할 수 있습니다.</p><div class="en-orig"><p>Headers allow you to set custom HTTP headers on the response to an incoming request on a given path.</p></div>
+<p>custom HTTP header를 설정하려면 <code>next.config.js</code>에서 <code>headers</code> key를 사용하면 됩니다:</p><div class="en-orig"><p>To set custom HTTP headers you can use the <code>headers</code> key in <code>next.config.js</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  headers() {
+    return [
+      {
+        source: &#x27;/about&#x27;,
+        headers: [
+          {
+            key: &#x27;x-custom-header&#x27;,
+            value: &#x27;my custom header value&#x27;,
+          },
+          {
+            key: &#x27;x-another-custom-header&#x27;,
+            value: &#x27;my other custom header value&#x27;,
+          },
+        ],
+      },
+    ]
+  },
+}</code></pre></div></div>
+<p><code>headers</code>는 동기 함수 또는 async 함수로 정의할 수 있습니다. 이 함수는 <code>source</code>와 <code>headers</code> property를 가진 object의 배열을 반환하거나, 그 배열로 resolve되어야 합니다:</p><div class="en-orig"><p><code>headers</code> can be defined as a synchronous or async function. It should return, or resolve to, an array of objects with <code>source</code> and <code>headers</code> properties:</p></div>
+<ul>
+<li><code>source</code>는 들어오는 request path pattern입니다.</li>
+<li><code>headers</code>는 <code>key</code>와 <code>value</code> property를 가진 response header object의 배열입니다.</li>
+<li><code>basePath</code>: <code>false</code> 또는 <code>undefined</code> - false이면 matching할 때 basePath가 포함되지 않습니다. external rewrite에만 사용할 수 있습니다.</li>
+<li><code>locale</code>: <code>false</code> 또는 <code>undefined</code> - matching할 때 locale을 포함하지 않을지 여부입니다.</li>
+<li><code>has</code>는 <code>type</code>, <code>key</code>, <code>value</code> property를 가진 <a href="#header-cookie-and-query-matching">has object</a>의 배열입니다.</li>
+<li><code>missing</code>은 <code>type</code>, <code>key</code>, <code>value</code> property를 가진 <a href="#header-cookie-and-query-matching">missing object</a>의 배열입니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>source</code> is the incoming request path pattern.</li>
+<li><code>headers</code> is an array of response header objects, with <code>key</code> and <code>value</code> properties.</li>
+<li><code>basePath</code>: <code>false</code> or <code>undefined</code> - if false the basePath won't be included when matching, can be used for external rewrites only.</li>
+<li><code>locale</code>: <code>false</code> or <code>undefined</code> - whether the locale should not be included when matching.</li>
+<li><code>has</code> is an array of <a href="#header-cookie-and-query-matching">has objects</a> with the <code>type</code>, <code>key</code> and <code>value</code> properties.</li>
+<li><code>missing</code> is an array of <a href="#header-cookie-and-query-matching">missing objects</a> with the <code>type</code>, <code>key</code> and <code>value</code> properties.</li>
+</ul></div>
+<p>header는 page와 <code>/public</code> 파일을 포함하는 filesystem보다 먼저 검사됩니다.</p><div class="en-orig"><p>Headers are checked before the filesystem which includes pages and <code>/public</code> files.</p></div>
+<h2 class="sec" id="header-overriding-behavior"><a class="anchor" href="#header-overriding-behavior">Header Overriding Behavior<span class="ko">header override 동작</span></a></h2>
+<p>두 header가 같은 path에 match되고 같은 header key를 설정하면, 마지막 header key가 첫 번째 것을 override합니다. 아래 header를 사용하면 마지막으로 설정된 header 값이 <code>world</code>이므로 path <code>/hello</code>의 header <code>x-hello</code>는 <code>world</code>가 됩니다.</p><div class="en-orig"><p>If two headers match the same path and set the same header key, the last header key will override the first. Using the below headers, the path <code>/hello</code> will result in the header <code>x-hello</code> being <code>world</code> due to the last header value set being <code>world</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  headers() {
+    return [
+      {
+        source: &#x27;/:path*&#x27;,
+        headers: [
+          {
+            key: &#x27;x-hello&#x27;,
+            value: &#x27;there&#x27;,
+          },
+        ],
+      },
+      {
+        source: &#x27;/hello&#x27;,
+        headers: [
+          {
+            key: &#x27;x-hello&#x27;,
+            value: &#x27;world&#x27;,
+          },
+        ],
+      },
+    ]
+  },
+}</code></pre></div></div>
+<h2 class="sec" id="path-matching"><a class="anchor" href="#path-matching">Path Matching</a></h2>
+<p>path match를 사용할 수 있습니다. 예를 들어 <code>/blog/:slug</code>는 <code>/blog/first-post</code>에 match됩니다(nested path는 제외):</p><div class="en-orig"><p>Path matches are allowed, for example <code>/blog/:slug</code> will match <code>/blog/first-post</code> (no nested paths):</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  headers() {
+    return [
+      {
+        source: &#x27;/blog/:slug&#x27;,
+        headers: [
+          {
+            key: &#x27;x-slug&#x27;,
+            value: &#x27;:slug&#x27;, // Matched parameters can be used in the value
+          },
+          {
+            key: &#x27;x-slug-:slug&#x27;, // Matched parameters can be used in the key
+            value: &#x27;my other custom header value&#x27;,
+          },
+        ],
+      },
+    ]
+  },
+}</code></pre></div></div>
+<p>pattern <code>/blog/:slug</code>는 <code>/blog/first-post</code>와 <code>/blog/post-1</code>에는 match되지만 <code>/blog/a/b</code> 같은 nested path에는 match되지 않습니다. pattern은 시작 부분에 고정(anchored)되므로 <code>/blog/:slug</code>는 <code>/archive/blog/first-post</code>에 match되지 않습니다.</p><div class="en-orig"><p>The pattern <code>/blog/:slug</code> matches <code>/blog/first-post</code> and <code>/blog/post-1</code> but not a nested path like <code>/blog/a/b</code>. Patterns are anchored to the start, <code>/blog/:slug</code> will not match <code>/archive/blog/first-post</code>.</p></div>
+<p>parameter에 modifier를 사용할 수 있습니다: <code>*</code>(0개 이상), <code>+</code>(1개 이상), <code>?</code>(0개 또는 1개). 예를 들어 <code>/blog/:slug*</code>는 <code>/blog</code>, <code>/blog/a</code>, <code>/blog/a/b/c</code>에 match됩니다.</p><div class="en-orig"><p>You can use modifiers on parameters: <code>*</code> (zero or more), <code>+</code> (one or more), <code>?</code> (zero or one). For example, <code>/blog/:slug*</code> matches <code>/blog</code>, <code>/blog/a</code>, and <code>/blog/a/b/c</code>.</p></div>
+<p>자세한 내용은 <a href="https://github.com/pillarjs/path-to-regexp" target="_blank" rel="noopener">path-to-regexp</a> 문서를 참고하세요.</p><div class="en-orig"><p>Read more details on <a href="https://github.com/pillarjs/path-to-regexp" target="_blank" rel="noopener">path-to-regexp</a> documentation.</p></div>
+<h3 class="sec" id="wildcard-path-matching"><a class="anchor" href="#wildcard-path-matching">Wildcard Path Matching</a></h3>
+<p>wildcard path를 match하려면 parameter 뒤에 <code>*</code>를 사용하면 됩니다. 예를 들어 <code>/blog/:slug*</code>는 <code>/blog/a/b/c/d/hello-world</code>에 match됩니다:</p><div class="en-orig"><p>To match a wildcard path you can use <code>*</code> after a parameter, for example <code>/blog/:slug*</code> will match <code>/blog/a/b/c/d/hello-world</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  headers() {
+    return [
+      {
+        source: &#x27;/blog/:slug*&#x27;,
+        headers: [
+          {
+            key: &#x27;x-slug&#x27;,
+            value: &#x27;:slug*&#x27;, // Matched parameters can be used in the value
+          },
+          {
+            key: &#x27;x-slug-:slug*&#x27;, // Matched parameters can be used in the key
+            value: &#x27;my other custom header value&#x27;,
+          },
+        ],
+      },
+    ]
+  },
+}</code></pre></div></div>
+<h3 class="sec" id="regex-path-matching"><a class="anchor" href="#regex-path-matching">Regex Path Matching</a></h3>
+<p>regex path를 match하려면 parameter 뒤에 regex를 괄호로 감싸면 됩니다. 예를 들어 <code>/blog/:slug(\\d{1,})</code>는 <code>/blog/123</code>에는 match되지만 <code>/blog/abc</code>에는 match되지 않습니다:</p><div class="en-orig"><p>To match a regex path you can wrap the regex in parenthesis after a parameter, for example <code>/blog/:slug(\\d{1,})</code> will match <code>/blog/123</code> but not <code>/blog/abc</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  headers() {
+    return [
+      {
+        source: &#x27;/blog/:post(\\d{1,})&#x27;,
+        headers: [
+          {
+            key: &#x27;x-post&#x27;,
+            value: &#x27;:post&#x27;,
+          },
+        ],
+      },
+    ]
+  },
+}</code></pre></div></div>
+<p>다음 문자 <code>(</code>, <code>)</code>, <code>{</code>, <code>}</code>, <code>:</code>, <code>*</code>, <code>+</code>, <code>?</code>는 regex path matching에 사용되므로, <code>source</code>에서 특수 의미가 아닌 값으로 쓸 때는 앞에 <code>\\</code>를 붙여 escape해야 합니다:</p><div class="en-orig"><p>The following characters <code>(</code>, <code>)</code>, <code>{</code>, <code>}</code>, <code>:</code>, <code>*</code>, <code>+</code>, <code>?</code> are used for regex path matching, so when used in the <code>source</code> as non-special values they must be escaped by adding <code>\\</code> before them:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  headers() {
+    return [
+      {
+        // this will match `/english(default)/something` being requested
+        source: &#x27;/english\\(default\\)/:slug&#x27;,
+        headers: [
+          {
+            key: &#x27;x-header&#x27;,
+            value: &#x27;value&#x27;,
+          },
+        ],
+      },
+    ]
+  },
+}</code></pre></div></div>
+<h2 class="sec" id="header-cookie-and-query-matching"><a class="anchor" href="#header-cookie-and-query-matching">Header, Cookie, and Query Matching<span class="ko">header, cookie, query matching</span></a></h2>
+<p>header, cookie, query 값이 <code>has</code> 필드와 match되거나 <code>missing</code> 필드와 match되지 않을 때만 header를 적용하려면 이 필드들을 사용할 수 있습니다. header가 적용되려면 <code>source</code>와 모든 <code>has</code> 항목이 match되어야 하고, 모든 <code>missing</code> 항목은 match되지 않아야 합니다.</p><div class="en-orig"><p>To only apply a header when header, cookie, or query values also match the <code>has</code> field or don't match the <code>missing</code> field can be used. Both the <code>source</code> and all <code>has</code> items must match and all <code>missing</code> items must not match for the header to be applied.</p></div>
+<p><code>has</code>와 <code>missing</code> 항목은 다음 필드를 가질 수 있습니다:</p><div class="en-orig"><p><code>has</code> and <code>missing</code> items can have the following fields:</p></div>
+<ul>
+<li><code>type</code>: <code>String</code> - <code>header</code>, <code>cookie</code>, <code>host</code>, <code>query</code> 중 하나여야 합니다.</li>
+<li><code>key</code>: <code>String</code> - 선택한 type에서 match할 key입니다.</li>
+<li><code>value</code>: <code>String</code> 또는 <code>undefined</code> - 확인할 값입니다. undefined이면 어떤 값이든 match됩니다. regex 형태의 문자열을 사용해 값의 특정 부분을 capture할 수 있습니다. 예를 들어 <code>first-second</code>에 대해 값 <code>first-(?&lt;paramName&gt;.*)</code>를 사용하면 destination에서 <code>:paramName</code>으로 <code>second</code>를 사용할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>type</code>: <code>String</code> - must be either <code>header</code>, <code>cookie</code>, <code>host</code>, or <code>query</code>.</li>
+<li><code>key</code>: <code>String</code> - the key from the selected type to match against.</li>
+<li><code>value</code>: <code>String</code> or <code>undefined</code> - the value to check for, if undefined any value will match. A regex like string can be used to capture a specific part of the value, e.g. if the value <code>first-(?&lt;paramName&gt;.*)</code> is used for <code>first-second</code> then <code>second</code> will be usable in the destination with <code>:paramName</code>.</li>
+</ul></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  headers() {
+    return [
+      // if the header `x-add-header` is present,
+      // the `x-another-header` header will be applied
+      {
+        source: &#x27;/:path*&#x27;,
+        has: [
+          {
+            type: &#x27;header&#x27;,
+            key: &#x27;x-add-header&#x27;,
+          },
+        ],
+        headers: [
+          {
+            key: &#x27;x-another-header&#x27;,
+            value: &#x27;hello&#x27;,
+          },
+        ],
+      },
+      // if the header `x-no-header` is not present,
+      // the `x-another-header` header will be applied
+      {
+        source: &#x27;/:path*&#x27;,
+        missing: [
+          {
+            type: &#x27;header&#x27;,
+            key: &#x27;x-no-header&#x27;,
+          },
+        ],
+        headers: [
+          {
+            key: &#x27;x-another-header&#x27;,
+            value: &#x27;hello&#x27;,
+          },
+        ],
+      },
+      // if the source, query, and cookie are matched,
+      // the `x-authorized` header will be applied
+      {
+        source: &#x27;/specific/:path*&#x27;,
+        has: [
+          {
+            type: &#x27;query&#x27;,
+            key: &#x27;page&#x27;,
+            // the page value will not be available in the
+            // header key/values since value is provided and
+            // doesn&#x27;t use a named capture group e.g. (?&lt;page&gt;home)
+            value: &#x27;home&#x27;,
+          },
+          {
+            type: &#x27;cookie&#x27;,
+            key: &#x27;authorized&#x27;,
+            value: &#x27;true&#x27;,
+          },
+        ],
+        headers: [
+          {
+            key: &#x27;x-authorized&#x27;,
+            value: &#x27;:authorized&#x27;,
+          },
+        ],
+      },
+      // if the header `x-authorized` is present and
+      // contains a matching value, the `x-another-header` will be applied
+      {
+        source: &#x27;/:path*&#x27;,
+        has: [
+          {
+            type: &#x27;header&#x27;,
+            key: &#x27;x-authorized&#x27;,
+            value: &#x27;(?&lt;authorized&gt;yes|true)&#x27;,
+          },
+        ],
+        headers: [
+          {
+            key: &#x27;x-another-header&#x27;,
+            value: &#x27;:authorized&#x27;,
+          },
+        ],
+      },
+      // if the host is `example.com`,
+      // this header will be applied
+      {
+        source: &#x27;/:path*&#x27;,
+        has: [
+          {
+            type: &#x27;host&#x27;,
+            value: &#x27;example.com&#x27;,
+          },
+        ],
+        headers: [
+          {
+            key: &#x27;x-another-header&#x27;,
+            value: &#x27;:authorized&#x27;,
+          },
+        ],
+      },
+    ]
+  },
+}</code></pre></div></div>
+<h2 class="sec" id="headers-with-basepath-support"><a class="anchor" href="#headers-with-basepath-support">Headers with basePath support<span class="ko">basePath 지원과 header</span></a></h2>
+<p>header와 함께 <a href="app-api-reference-config-next-config-js-basePath.html"><code>basePath</code> 지원</a>을 활용하면, header에 <code>basePath: false</code>를 추가하지 않는 한 각 <code>source</code> 앞에 <code>basePath</code>가 자동으로 붙습니다:</p><div class="en-orig"><p>When leveraging <a href="app-api-reference-config-next-config-js-basePath.html"><code>basePath</code> support</a> with headers each <code>source</code> is automatically prefixed with the <code>basePath</code> unless you add <code>basePath: false</code> to the header:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  basePath: &#x27;/docs&#x27;,
+
+  headers() {
+    return [
+      {
+        source: &#x27;/with-basePath&#x27;, // becomes /docs/with-basePath
+        headers: [
+          {
+            key: &#x27;x-hello&#x27;,
+            value: &#x27;world&#x27;,
+          },
+        ],
+      },
+      {
+        source: &#x27;/without-basePath&#x27;, // is not modified since basePath: false is set
+        headers: [
+          {
+            key: &#x27;x-hello&#x27;,
+            value: &#x27;world&#x27;,
+          },
+        ],
+        basePath: false,
+      },
+    ]
+  },
+}</code></pre></div></div>
+<h2 class="sec" id="headers-with-i18n-support"><a class="anchor" href="#headers-with-i18n-support">Headers with i18n support<span class="ko">i18n 지원과 header</span></a></h2>
+<p>header와 함께 <a href="app-guides-internationalization.html"><code>i18n</code> 지원</a>을 활용하면, header에 <code>locale: false</code>를 추가하지 않는 한 설정된 <code>locales</code>를 처리하도록 각 <code>source</code> 앞에 자동으로 prefix가 붙습니다. <code>locale: false</code>를 사용하면 올바르게 match되도록 <code>source</code> 앞에 locale을 직접 붙여야 합니다.</p><div class="en-orig"><p>When leveraging <a href="app-guides-internationalization.html"><code>i18n</code> support</a> with headers each <code>source</code> is automatically prefixed to handle the configured <code>locales</code> unless you add <code>locale: false</code> to the header. If <code>locale: false</code> is used you must prefix the <code>source</code> with a locale for it to be matched correctly.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  i18n: {
+    locales: [&#x27;en&#x27;, &#x27;fr&#x27;, &#x27;de&#x27;],
+    defaultLocale: &#x27;en&#x27;,
+  },
+
+  headers() {
+    return [
+      {
+        source: &#x27;/with-locale&#x27;, // automatically handles all locales
+        headers: [
+          {
+            key: &#x27;x-hello&#x27;,
+            value: &#x27;world&#x27;,
+          },
+        ],
+      },
+      {
+        // does not handle locales automatically since locale: false is set
+        source: &#x27;/nl/with-locale-manual&#x27;,
+        locale: false,
+        headers: [
+          {
+            key: &#x27;x-hello&#x27;,
+            value: &#x27;world&#x27;,
+          },
+        ],
+      },
+      {
+        // this matches &#x27;/&#x27; since `en` is the defaultLocale
+        source: &#x27;/en&#x27;,
+        locale: false,
+        headers: [
+          {
+            key: &#x27;x-hello&#x27;,
+            value: &#x27;world&#x27;,
+          },
+        ],
+      },
+      {
+        // this gets converted to /(en|fr|de)/(.*) so will not match the top-level
+        // `/` or `/fr` routes like /:path* would
+        source: &#x27;/(.*)&#x27;,
+        headers: [
+          {
+            key: &#x27;x-hello&#x27;,
+            value: &#x27;world&#x27;,
+          },
+        ],
+      },
+    ]
+  },
+}</code></pre></div></div>
+<h2 class="sec" id="cache-control"><a class="anchor" href="#cache-control">Cache-Control</a></h2>
+<p>Next.js는 진짜로 변하지 않는(immutable) asset에 <code>public, max-age=31536000, immutable</code> 값의 <code>Cache-Control</code> header를 설정합니다. 이 값은 override할 수 없습니다. 이런 immutable 파일은 파일 이름에 SHA-hash가 포함되어 있어 무기한 안전하게 cache될 수 있습니다. 예를 들어 <a href="app-getting-started-images.html#local-images">Static Image Import</a>가 있습니다. 이런 asset에 대해서는 <code>next.config.js</code>에서 <code>Cache-Control</code> header를 설정할 수 없습니다.</p><div class="en-orig"><p>Next.js sets the <code>Cache-Control</code> header of <code>public, max-age=31536000, immutable</code> for truly immutable assets. It cannot be overridden. These immutable files contain a SHA-hash in the file name, so they can be safely cached indefinitely. For example, <a href="app-getting-started-images.html#local-images">Static Image Imports</a>. You cannot set <code>Cache-Control</code> headers in <code>next.config.js</code> for these assets.</p></div>
+<p>하지만 다른 response나 data에 대해서는 <code>Cache-Control</code> header를 설정할 수 있습니다.</p><div class="en-orig"><p>However, you can set <code>Cache-Control</code> headers for other responses or data.</p></div>
+<p>App Router의 <a href="app-getting-started-caching.html">caching</a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about <a href="app-getting-started-caching.html">caching</a> with the App Router.</p></div>
+<h2 class="sec" id="options"><a class="anchor" href="#options">Options<span class="ko">옵션</span></a></h2>
+<h3 class="sec" id="cors"><a class="anchor" href="#cors">CORS</a></h3>
+<p><a href="https://developer.mozilla.org/docs/Web/HTTP/CORS" target="_blank" rel="noopener">Cross-Origin Resource Sharing (CORS)</a>는 어떤 사이트가 리소스에 접근할 수 있는지 제어하는 보안 기능입니다. <code>Access-Control-Allow-Origin</code> header를 설정해 특정 origin이 Route Handlers에 접근하도록 허용할 수 있습니다.</p><div class="en-orig"><p><a href="https://developer.mozilla.org/docs/Web/HTTP/CORS" target="_blank" rel="noopener">Cross-Origin Resource Sharing (CORS)</a> is a security feature that allows you to control which sites can access your resources. You can set the <code>Access-Control-Allow-Origin</code> header to allow a specific origin to access your Route Handlers.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">headers() {
+    return [
+      {
+        source: &quot;/api/:path*&quot;,
+        headers: [
+          {
+            key: &quot;Access-Control-Allow-Origin&quot;,
+            value: &quot;*&quot;, // Set your origin
+          },
+          {
+            key: &quot;Access-Control-Allow-Methods&quot;,
+            value: &quot;GET, POST, PUT, DELETE, OPTIONS&quot;,
+          },
+          {
+            key: &quot;Access-Control-Allow-Headers&quot;,
+            value: &quot;Content-Type, Authorization&quot;,
+          },
+        ],
+      },
+    ];
+  },</code></pre></div></div>
+<h3 class="sec" id="x-dns-prefetch-control"><a class="anchor" href="#x-dns-prefetch-control">X-DNS-Prefetch-Control</a></h3>
+<p><a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/X-DNS-Prefetch-Control" target="_blank" rel="noopener">이 header</a>는 DNS prefetching을 제어해, 브라우저가 외부 링크, 이미지, CSS, JavaScript 등에 대해 domain name resolution을 미리 수행할 수 있게 합니다. 이 prefetching은 background에서 수행되므로, 참조된 항목이 필요해질 즈음에는 <a href="https://developer.mozilla.org/docs/Glossary/DNS" target="_blank" rel="noopener">DNS</a>가 이미 resolve되어 있을 가능성이 높습니다. 이렇게 하면 사용자가 링크를 클릭할 때의 latency가 줄어듭니다.</p><div class="en-orig"><p><a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/X-DNS-Prefetch-Control" target="_blank" rel="noopener">This header</a> controls DNS prefetching, allowing browsers to proactively perform domain name resolution on external links, images, CSS, JavaScript, and more. This prefetching is performed in the background, so the <a href="https://developer.mozilla.org/docs/Glossary/DNS" target="_blank" rel="noopener">DNS</a> is more likely to be resolved by the time the referenced items are needed. This reduces latency when the user clicks a link.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">{
+  key: &#x27;X-DNS-Prefetch-Control&#x27;,
+  value: &#x27;on&#x27;
+}</code></pre></div></div>
+<h3 class="sec" id="strict-transport-security"><a class="anchor" href="#strict-transport-security">Strict-Transport-Security</a></h3>
+<p><a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/Strict-Transport-Security" target="_blank" rel="noopener">이 header</a>는 브라우저에게 HTTP 대신 HTTPS로만 접근해야 한다고 알립니다. 아래 configuration을 사용하면 현재와 미래의 모든 subdomain이 2년의 <code>max-age</code> 동안 HTTPS를 사용합니다. 이렇게 하면 HTTP로만 serve될 수 있는 page나 subdomain에 대한 접근이 차단됩니다.</p><div class="en-orig"><p><a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/Strict-Transport-Security" target="_blank" rel="noopener">This header</a> informs browsers it should only be accessed using HTTPS, instead of using HTTP. Using the configuration below, all present and future subdomains will use HTTPS for a <code>max-age</code> of 2 years. This blocks access to pages or subdomains that can only be served over HTTP.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">{
+  key: &#x27;Strict-Transport-Security&#x27;,
+  value: &#x27;max-age=63072000; includeSubDomains; preload&#x27;
+}</code></pre></div></div>
+<h3 class="sec" id="x-frame-options"><a class="anchor" href="#x-frame-options">X-Frame-Options</a></h3>
+<p><a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Frame-Options" target="_blank" rel="noopener">이 header</a>는 사이트가 <code>iframe</code> 안에 표시되는 것을 허용할지 여부를 나타냅니다. 이를 통해 clickjacking 공격을 방지할 수 있습니다.</p><div class="en-orig"><p><a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Frame-Options" target="_blank" rel="noopener">This header</a> indicates whether the site should be allowed to be displayed within an <code>iframe</code>. This can prevent against clickjacking attacks.</p></div>
+<p><strong>이 header는 CSP의 <code>frame-ancestors</code> option으로 대체되었습니다.</strong> 이 option은 최신 브라우저에서 더 잘 지원됩니다(설정 방법은 <a href="app-guides-content-security-policy.html">Content Security Policy</a>를 참고하세요).</p><div class="en-orig"><p><strong>This header has been superseded by CSP's <code>frame-ancestors</code> option</strong>, which has better support in modern browsers (see <a href="app-guides-content-security-policy.html">Content Security Policy</a> for configuration details).</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">{
+  key: &#x27;X-Frame-Options&#x27;,
+  value: &#x27;SAMEORIGIN&#x27;
+}</code></pre></div></div>
+<h3 class="sec" id="permissions-policy"><a class="anchor" href="#permissions-policy">Permissions-Policy</a></h3>
+<p><a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/Permissions-Policy" target="_blank" rel="noopener">이 header</a>를 사용하면 브라우저에서 어떤 기능과 API를 사용할 수 있는지 제어할 수 있습니다. 이전 이름은 <code>Feature-Policy</code>였습니다.</p><div class="en-orig"><p><a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/Permissions-Policy" target="_blank" rel="noopener">This header</a> allows you to control which features and APIs can be used in the browser. It was previously named <code>Feature-Policy</code>.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">{
+  key: &#x27;Permissions-Policy&#x27;,
+  value: &#x27;camera=(), microphone=(), geolocation=(), browsing-topics=()&#x27;
+}</code></pre></div></div>
+<h3 class="sec" id="x-content-type-options"><a class="anchor" href="#x-content-type-options">X-Content-Type-Options</a></h3>
+<p><a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Content-Type-Options" target="_blank" rel="noopener">이 header</a>는 <code>Content-Type</code> header가 명시적으로 설정되지 않았을 때 브라우저가 콘텐츠의 type을 추측하지 못하게 합니다. 이를 통해 사용자가 파일을 업로드하고 공유할 수 있는 웹사이트에서 XSS exploit을 방지할 수 있습니다.</p><div class="en-orig"><p><a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Content-Type-Options" target="_blank" rel="noopener">This header</a> prevents the browser from attempting to guess the type of content if the <code>Content-Type</code> header is not explicitly set. This can prevent XSS exploits for websites that allow users to upload and share files.</p></div>
+<p>예를 들어 사용자가 이미지를 다운로드하려 하는데, 그 이미지가 실행 파일처럼 다른 <code>Content-Type</code>으로 처리되면 악의적일 수 있습니다. 이 header는 브라우저 extension 다운로드에도 적용됩니다. 이 header의 유일한 유효 값은 <code>nosniff</code>입니다.</p><div class="en-orig"><p>For example, a user trying to download an image, but having it treated as a different <code>Content-Type</code> like an executable, which could be malicious. This header also applies to downloading browser extensions. The only valid value for this header is <code>nosniff</code>.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">{
+  key: &#x27;X-Content-Type-Options&#x27;,
+  value: &#x27;nosniff&#x27;
+}</code></pre></div></div>
+<h3 class="sec" id="referrer-policy"><a class="anchor" href="#referrer-policy">Referrer-Policy</a></h3>
+<p><a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/Referrer-Policy" target="_blank" rel="noopener">이 header</a>는 현재 웹사이트(origin)에서 다른 곳으로 이동할 때 브라우저가 얼마나 많은 정보를 포함할지 제어합니다.</p><div class="en-orig"><p><a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/Referrer-Policy" target="_blank" rel="noopener">This header</a> controls how much information the browser includes when navigating from the current website (origin) to another.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">{
+  key: &#x27;Referrer-Policy&#x27;,
+  value: &#x27;origin-when-cross-origin&#x27;
+}</code></pre></div></div>
+<h3 class="sec" id="content-security-policy"><a class="anchor" href="#content-security-policy">Content-Security-Policy</a></h3>
+<p>애플리케이션에 <a href="app-guides-content-security-policy.html">Content Security Policy</a>를 추가하는 방법을 더 알아보세요.</p><div class="en-orig"><p>Learn more about adding a <a href="app-guides-content-security-policy.html">Content Security Policy</a> to your application.</p></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>버전</th><th>변경 사항</th></tr></thead>
+<tbody>
+<tr><td><code>v13.3.0</code></td><td><code>missing</code> 추가.</td></tr>
+<tr><td><code>v10.2.0</code></td><td><code>has</code> 추가.</td></tr>
+<tr><td><code>v9.5.0</code></td><td>Headers 추가.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v13.3.0</code></td><td><code>missing</code> added.</td></tr>
+<tr><td><code>v10.2.0</code></td><td><code>has</code> added.</td></tr>
+<tr><td><code>v9.5.0</code></td><td>Headers added.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/headers.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/headers" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-config-next-config-js-generateEtags.html" class="prev"><div class="dir">← 이전</div><div class="ttl">generateEtags</div><div class="ttl-ko">generateEtags</div></a>
+      <a href="app-api-reference-config-next-config-js-htmlLimitedBots.html" class="next"><div class="dir">다음 →</div><div class="ttl">htmlLimitedBots</div><div class="ttl-ko">htmlLimitedBots</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/headers" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#header-overriding-behavior">Header Overriding Behavior</a></li><li class="l2"><a href="#path-matching">Path Matching</a></li><li class="l3"><a href="#wildcard-path-matching">Wildcard Path Matching</a></li><li class="l3"><a href="#regex-path-matching">Regex Path Matching</a></li><li class="l2"><a href="#header-cookie-and-query-matching">Header, Cookie, and Query Matching</a></li><li class="l2"><a href="#headers-with-basepath-support">Headers with basePath support</a></li><li class="l2"><a href="#headers-with-i18n-support">Headers with i18n support</a></li><li class="l2"><a href="#cache-control">Cache-Control</a></li><li class="l2"><a href="#options">Options</a></li><li class="l3"><a href="#cors">CORS</a></li><li class="l3"><a href="#x-dns-prefetch-control">X-DNS-Prefetch-Control</a></li><li class="l3"><a href="#strict-transport-security">Strict-Transport-Security</a></li><li class="l3"><a href="#x-frame-options">X-Frame-Options</a></li><li class="l3"><a href="#permissions-policy">Permissions-Policy</a></li><li class="l3"><a href="#x-content-type-options">X-Content-Type-Options</a></li><li class="l3"><a href="#referrer-policy">Referrer-Policy</a></li><li class="l3"><a href="#content-security-policy">Content-Security-Policy</a></li><li class="l2"><a href="#version-history">Version History</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+header를 사용하면 특정 path로 들어오는 request에 대한 response에 custom HTTP header를 설정할 수 있습니다.
+
+custom HTTP header를 설정하려면 `next.config.js`에서 `headers` key를 사용하면 됩니다:
+
+[[CODE 1]]
+
+`headers`는 동기 함수 또는 async 함수로 정의할 수 있습니다. 이 함수는 `source`와 `headers` property를 가진 object의 배열을 반환하거나, 그 배열로 resolve되어야 합니다:
+
+- `source`는 들어오는 request path pattern입니다.
+- `headers`는 `key`와 `value` property를 가진 response header object의 배열입니다.
+- `basePath`: `false` 또는 `undefined` - false이면 matching할 때 basePath가 포함되지 않습니다. external rewrite에만 사용할 수 있습니다.
+- `locale`: `false` 또는 `undefined` - matching할 때 locale을 포함하지 않을지 여부입니다.
+- `has`는 `type`, `key`, `value` property를 가진 [has object](#header-cookie-and-query-matching)의 배열입니다.
+- `missing`은 `type`, `key`, `value` property를 가진 [missing object](#header-cookie-and-query-matching)의 배열입니다.
+
+header는 page와 `/public` 파일을 포함하는 filesystem보다 먼저 검사됩니다.
+
+## Header Overriding Behavior || header override 동작
+
+두 header가 같은 path에 match되고 같은 header key를 설정하면, 마지막 header key가 첫 번째 것을 override합니다. 아래 header를 사용하면 마지막으로 설정된 header 값이 `world`이므로 path `/hello`의 header `x-hello`는 `world`가 됩니다.
+
+[[CODE 2]]
+
+## Path Matching || path matching
+
+path match를 사용할 수 있습니다. 예를 들어 `/blog/:slug`는 `/blog/first-post`에 match됩니다(nested path는 제외):
+
+[[CODE 3]]
+
+pattern `/blog/:slug`는 `/blog/first-post`와 `/blog/post-1`에는 match되지만 `/blog/a/b` 같은 nested path에는 match되지 않습니다. pattern은 시작 부분에 고정(anchored)되므로 `/blog/:slug`는 `/archive/blog/first-post`에 match되지 않습니다.
+
+parameter에 modifier를 사용할 수 있습니다: `*`(0개 이상), `+`(1개 이상), `?`(0개 또는 1개). 예를 들어 `/blog/:slug*`는 `/blog`, `/blog/a`, `/blog/a/b/c`에 match됩니다.
+
+자세한 내용은 [path-to-regexp](https://github.com/pillarjs/path-to-regexp) 문서를 참고하세요.
+
+### Wildcard Path Matching || wildcard path matching
+
+wildcard path를 match하려면 parameter 뒤에 `*`를 사용하면 됩니다. 예를 들어 `/blog/:slug*`는 `/blog/a/b/c/d/hello-world`에 match됩니다:
+
+[[CODE 4]]
+
+### Regex Path Matching || regex path matching
+
+regex path를 match하려면 parameter 뒤에 regex를 괄호로 감싸면 됩니다. 예를 들어 `/blog/:slug(\\d{1,})`는 `/blog/123`에는 match되지만 `/blog/abc`에는 match되지 않습니다:
+
+[[CODE 5]]
+
+다음 문자 `(`, `)`, `{`, `}`, `:`, `*`, `+`, `?`는 regex path matching에 사용되므로, `source`에서 특수 의미가 아닌 값으로 쓸 때는 앞에 `\\`를 붙여 escape해야 합니다:
+
+[[CODE 6]]
+
+## Header, Cookie, and Query Matching || header, cookie, query matching
+
+header, cookie, query 값이 `has` 필드와 match되거나 `missing` 필드와 match되지 않을 때만 header를 적용하려면 이 필드들을 사용할 수 있습니다. header가 적용되려면 `source`와 모든 `has` 항목이 match되어야 하고, 모든 `missing` 항목은 match되지 않아야 합니다.
+
+`has`와 `missing` 항목은 다음 필드를 가질 수 있습니다:
+
+- `type`: `String` - `header`, `cookie`, `host`, `query` 중 하나여야 합니다.
+- `key`: `String` - 선택한 type에서 match할 key입니다.
+- `value`: `String` 또는 `undefined` - 확인할 값입니다. undefined이면 어떤 값이든 match됩니다. regex 형태의 문자열을 사용해 값의 특정 부분을 capture할 수 있습니다. 예를 들어 `first-second`에 대해 값 `first-(?&lt;paramName&gt;.*)`를 사용하면 destination에서 `:paramName`으로 `second`를 사용할 수 있습니다.
+
+[[CODE 7]]
+
+## Headers with basePath support || basePath 지원과 header
+
+header와 함께 [`basePath` 지원](/docs/app/api-reference/config/next-config-js/basePath)을 활용하면, header에 `basePath: false`를 추가하지 않는 한 각 `source` 앞에 `basePath`가 자동으로 붙습니다:
+
+[[CODE 8]]
+
+## Headers with i18n support || i18n 지원과 header
+
+
+
+header와 함께 [`i18n` 지원](/docs/app/guides/internationalization)을 활용하면, header에 `locale: false`를 추가하지 않는 한 설정된 `locales`를 처리하도록 각 `source` 앞에 자동으로 prefix가 붙습니다. `locale: false`를 사용하면 올바르게 match되도록 `source` 앞에 locale을 직접 붙여야 합니다.
+
+
+
+
+
+[[CODE 9]]
+
+## Cache-Control
+
+Next.js는 진짜로 변하지 않는(immutable) asset에 `public, max-age=31536000, immutable` 값의 `Cache-Control` header를 설정합니다. 이 값은 override할 수 없습니다. 이런 immutable 파일은 파일 이름에 SHA-hash가 포함되어 있어 무기한 안전하게 cache될 수 있습니다. 예를 들어 [Static Image Import](/docs/app/getting-started/images#local-images)가 있습니다. 이런 asset에 대해서는 `next.config.js`에서 `Cache-Control` header를 설정할 수 없습니다.
+
+하지만 다른 response나 data에 대해서는 `Cache-Control` header를 설정할 수 있습니다.
+
+
+
+App Router의 [caching](/docs/app/getting-started/caching)에 대해 더 알아보세요.
+
+
+
+
+
+## Options || 옵션
+
+### CORS
+
+[Cross-Origin Resource Sharing (CORS)](https://developer.mozilla.org/docs/Web/HTTP/CORS)는 어떤 사이트가 리소스에 접근할 수 있는지 제어하는 보안 기능입니다. `Access-Control-Allow-Origin` header를 설정해 특정 origin이 Route Handlers에 접근하도록 허용할 수 있습니다.
+
+[[CODE 12]]
+
+### X-DNS-Prefetch-Control
+
+[이 header](https://developer.mozilla.org/docs/Web/HTTP/Headers/X-DNS-Prefetch-Control)는 DNS prefetching을 제어해, 브라우저가 외부 링크, 이미지, CSS, JavaScript 등에 대해 domain name resolution을 미리 수행할 수 있게 합니다. 이 prefetching은 background에서 수행되므로, 참조된 항목이 필요해질 즈음에는 [DNS](https://developer.mozilla.org/docs/Glossary/DNS)가 이미 resolve되어 있을 가능성이 높습니다. 이렇게 하면 사용자가 링크를 클릭할 때의 latency가 줄어듭니다.
+
+[[CODE 13]]
+
+### Strict-Transport-Security
+
+[이 header](https://developer.mozilla.org/docs/Web/HTTP/Headers/Strict-Transport-Security)는 브라우저에게 HTTP 대신 HTTPS로만 접근해야 한다고 알립니다. 아래 configuration을 사용하면 현재와 미래의 모든 subdomain이 2년의 `max-age` 동안 HTTPS를 사용합니다. 이렇게 하면 HTTP로만 serve될 수 있는 page나 subdomain에 대한 접근이 차단됩니다.
+
+[[CODE 14]]
+
+### X-Frame-Options
+
+[이 header](https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Frame-Options)는 사이트가 `iframe` 안에 표시되는 것을 허용할지 여부를 나타냅니다. 이를 통해 clickjacking 공격을 방지할 수 있습니다.
+
+**이 header는 CSP의 `frame-ancestors` option으로 대체되었습니다.** 이 option은 최신 브라우저에서 더 잘 지원됩니다(설정 방법은 [Content Security Policy](/docs/app/guides/content-security-policy)를 참고하세요).
+
+[[CODE 15]]
+
+### Permissions-Policy
+
+[이 header](https://developer.mozilla.org/docs/Web/HTTP/Headers/Permissions-Policy)를 사용하면 브라우저에서 어떤 기능과 API를 사용할 수 있는지 제어할 수 있습니다. 이전 이름은 `Feature-Policy`였습니다.
+
+[[CODE 16]]
+
+### X-Content-Type-Options
+
+[이 header](https://developer.mozilla.org/docs/Web/HTTP/Headers/X-Content-Type-Options)는 `Content-Type` header가 명시적으로 설정되지 않았을 때 브라우저가 콘텐츠의 type을 추측하지 못하게 합니다. 이를 통해 사용자가 파일을 업로드하고 공유할 수 있는 웹사이트에서 XSS exploit을 방지할 수 있습니다.
+
+예를 들어 사용자가 이미지를 다운로드하려 하는데, 그 이미지가 실행 파일처럼 다른 `Content-Type`으로 처리되면 악의적일 수 있습니다. 이 header는 브라우저 extension 다운로드에도 적용됩니다. 이 header의 유일한 유효 값은 `nosniff`입니다.
+
+[[CODE 17]]
+
+### Referrer-Policy
+
+[이 header](https://developer.mozilla.org/docs/Web/HTTP/Headers/Referrer-Policy)는 현재 웹사이트(origin)에서 다른 곳으로 이동할 때 브라우저가 얼마나 많은 정보를 포함할지 제어합니다.
+
+[[CODE 18]]
+
+### Content-Security-Policy
+
+애플리케이션에 [Content Security Policy](/docs/app/guides/content-security-policy)를 추가하는 방법을 더 알아보세요.
+
+## Version History || 버전 기록
+
+| 버전   | 변경 사항          |
+| --------- | ---------------- |
+| `v13.3.0` | `missing` 추가. |
+| `v10.2.0` | `has` 추가.     |
+| `v9.5.0`  | Headers 추가.   |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

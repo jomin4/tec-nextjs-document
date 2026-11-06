@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to preview content with Draft Mode in Next.js (Next.js에서 Draft Mode로 content 미리 보기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/draft-mode" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/draft-mode" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/draft-mode.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to preview content with Draft Mode in Next.js<span class="sub">Next.js에서 Draft Mode로 content 미리 보기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><strong>Draft Mode</strong>를 사용하면 편집자가 revalidation을 기다리지 않고도 초안이나 작업 중인 content가 사이트에서 어떻게 render될지 확인할 수 있습니다. 편집자가 Draft Mode에 있는 동안에는 cache되거나 pre-render된 content를 건너뛰고 upstream source에서 직접 fetch합니다. 다른 방문자는 계속해서 page의 cache되거나 pre-render된 버전을 보게 됩니다.</p><div class="en-orig"><p><strong>Draft Mode</strong> lets editors see how draft or in-progress content will render on your site, without waiting for revalidation. While an editor is in Draft Mode, cached or pre-rendered content is bypassed, and fetched from upstream sources directly. Other visitors continue to see the cached or pre-rendered version of the page.</p></div>
+<p>CMS가 초안과 게시된 content를 같은 URL에서 제공한다면 data-fetching 코드를 바꿀 필요가 없습니다. 그렇지 않다면 <a href="#when-your-cms-uses-a-separate-draft-endpoint">CMS가 별도의 draft endpoint를 사용하는 경우</a>를 참고하세요.</p><div class="en-orig"><p>Your data-fetching code does not need to change if your CMS serves draft and published content from the same URL. Otherwise, see <a href="#when-your-cms-uses-a-separate-draft-endpoint">When your CMS uses a separate draft endpoint</a>.</p></div>
+<h2 class="sec" id="what-draft-mode-does"><a class="anchor" href="#what-draft-mode-does">What Draft Mode does<span class="ko">Draft Mode가 하는 일</span></a></h2>
+<p>request에 Draft Mode가 활성화되면:</p><div class="en-orig"><p>When Draft Mode is enabled for a request:</p></div>
+<ul>
+<li><code>fetch()</code> 호출은 Next.js fetch cache를 건너뛰고 network에 직접 요청합니다.</li>
+<li><a href="app-api-reference-directives-use-cache.html"><code>&#x27;use cache&#x27;</code></a> 안의 component와 함수는 매 request마다 다시 실행되며, 그 결과는 cache에 저장되지 않습니다.</li>
+<li><a href="app-api-reference-functions-unstable_cache.html"><code>unstable_cache</code></a>의 읽기와 쓰기도 같은 방식으로 우회됩니다.</li>
+<li>page는 ISR response cache에서 제외되며 <code>Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate</code>와 함께 제공됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>fetch()</code> calls skip the Next.js fetch cache and hit the network directly.</li>
+<li>Components and functions inside <a href="app-api-reference-directives-use-cache.html"><code>&#x27;use cache&#x27;</code></a> re-execute on every request, and their results are not saved to the cache.</li>
+<li><a href="app-api-reference-functions-unstable_cache.html"><code>unstable_cache</code></a> reads and writes are bypassed in the same way.</li>
+<li>The page is excluded from the ISR response cache and is served with <code>Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate</code>.</li>
+</ul></div>
+<p>이 효과는 page가 statically 생성되었든, cache에서 제공되든, ISR로 revalidate되든 상관없이 적용됩니다.</p><div class="en-orig"><p>The effect applies whether the page is statically generated, served from cache, or revalidated through ISR.</p></div>
+<h2 class="sec" id="what-this-guide-covers"><a class="anchor" href="#what-this-guide-covers">What this guide covers<span class="ko">이 가이드에서 다루는 내용</span></a></h2>
+<p>이 가이드는 다음을 가정합니다:</p><div class="en-orig"><p>This guide assumes:</p></div>
+<ul>
+<li>headless CMS가 설정 가능한 preview URL을 지원합니다(대부분 지원합니다).</li>
+<li>편집자가 "Preview"를 클릭하면 CMS가 새 tab에서 <code>/api/draft?secret=XXX&amp;slug=/posts/foo</code> 같은 URL을 엽니다. secret은 공유 token이고, slug는 미리 볼 경로입니다.</li>
+<li>Next.js 앱은 secret을 검증하고, Draft Mode를 활성화한 뒤 slug로 redirect합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Your headless CMS supports configurable preview URLs (most do).</li>
+<li>The CMS opens a URL like <code>/api/draft?secret=XXX&amp;slug=/posts/foo</code> in a new tab when an editor clicks "Preview". The secret is a shared token; the slug is the path to preview.</li>
+<li>Your Next.js app validates the secret, enables Draft Mode, and redirects to the slug.</li>
+</ul></div>
+<p>이 계약을 염두에 두고, 이 가이드의 나머지 부분에서는 다음을 차례로 살펴봅니다:</p><div class="en-orig"><p>With that contract in mind, the rest of this guide walks through:</p></div>
+<ol>
+<li>cookie를 설정해 Draft Mode를 활성화하는 Route Handler 만들기.</li>
+<li>CMS에서 받은 공유 secret과 slug로 그 handler 보호하기.</li>
+<li>최신 초안을 읽는 page render하기.</li>
+<li>종료 form이 있는 preview banner 보여 주기.</li>
+</ol><div class="en-orig"><ol>
+<li>Creating a Route Handler that enables Draft Mode by setting a cookie.</li>
+<li>Securing that handler with the shared secret and slug from the CMS.</li>
+<li>Rendering pages that read the latest draft.</li>
+<li>Showing a preview banner with an exit form.</li>
+</ol></div>
+<p>그다음 설정에 따라:</p><div class="en-orig"><p>Then, depending on your setup:</p></div>
+<ul>
+<li><code>&#x27;use cache&#x27;</code> 경계에서 preview 상태를 드러내려면 <a href="#draft-mode-with-cache-components">Cache Components와 함께 쓰는 Draft Mode</a>.</li>
+<li><code>isEnabled</code>에 따라 fetch URL을 분기하려면 <a href="#when-your-cms-uses-a-separate-draft-endpoint">CMS가 별도의 draft endpoint를 사용하는 경우</a>.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="#draft-mode-with-cache-components">Draft Mode with Cache Components</a> for surfacing the preview state from a <code>&#x27;use cache&#x27;</code> boundary.</li>
+<li><a href="#when-your-cms-uses-a-separate-draft-endpoint">When your CMS uses a separate draft endpoint</a> for branching the fetch URL on <code>isEnabled</code>.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>GET</code>은 안전한 읽기 전용 method로 의도된 것입니다. cookie로 Draft Mode를 활성화하는 것처럼 이후 request에 영향을 주는 작업은 <code>POST</code>를 사용해야 합니다. 진입 handler가 <code>GET</code>을 사용하는 이유는 CMS preview integration을 가정하기 때문입니다: CMS는 새 브라우저 tab에서 URL을 여는데, 이것이 <code>GET</code> request입니다. Step 4의 종료 흐름은 (<a href="app-getting-started-mutating-data.html">Server Action</a> 또는 <code>POST</code> Route Handler를 통해) <code>POST</code>를 사용합니다.</p><div class="en-orig"><p><code>GET</code> is meant to be a safe, read-only method. Operations that affect future requests, like enabling Draft Mode via a cookie, should use <code>POST</code>. The entry handler uses <code>GET</code> because we're assuming a CMS preview integration: the CMS opens the URL in a new browser tab, which is a <code>GET</code> request. The exit flow in Step 4 uses <code>POST</code> (via <a href="app-getting-started-mutating-data.html">Server Action</a> or <code>POST</code> Route Handler).</p></div></div></div>
+<h2 class="sec" id="step-1-create-a-route-handler"><a class="anchor" href="#step-1-create-a-route-handler">Step 1: Create a Route Handler<span class="ko">Step 1: Route Handler 만들기</span></a></h2>
+<p>Draft Mode cookie를 설정하는 <a href="app-api-reference-file-conventions-route.html">Route Handler</a>를 만드세요. 이름은 무엇이든 될 수 있습니다. 예: <code>app/api/draft/route.ts</code>.</p><div class="en-orig"><p>Create a <a href="app-api-reference-file-conventions-route.html">Route Handler</a> that sets the Draft Mode cookie. It can have any name, for example, <code>app/api/draft/route.ts</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/api/draft/route.ts" data-js="app/api/draft/route.js">app/api/draft/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { draftMode } from &#x27;next/headers&#x27;
+
+export async function GET(request: Request) {
+  const draft = await draftMode()
+  draft.enable()
+  return new Response(&#x27;Draft mode is enabled&#x27;)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { draftMode } from &#x27;next/headers&#x27;
+
+export async function GET(request) {
+  const draft = await draftMode()
+  draft.enable()
+  return new Response(&#x27;Draft mode is enabled&#x27;)
+}</code></pre></div></div>
+<p><code>draft.enable()</code>은 <code>__prerender_bypass</code>라는 이름의 cookie를 설정합니다. 이후 이 cookie를 가진 request는 위에 나열한 모든 cache layer를 건너뜁니다.</p><div class="en-orig"><p><code>draft.enable()</code> sets a cookie named <code>__prerender_bypass</code>. Subsequent requests that carry this cookie skip every cache layer listed above.</p></div>
+<p><code>/api/draft</code>에 방문한 뒤 브라우저의 developer tools를 보면 직접 테스트해 볼 수 있습니다. <code>Set-Cookie</code> response header를 확인하세요.</p><div class="en-orig"><p>You can test this manually by visiting <code>/api/draft</code> and looking at your browser's developer tools. Notice the <code>Set-Cookie</code> response header.</p></div>
+<p>작성된 그대로라면 이 handler는 공개되어 있습니다: <code>/api/draft</code>에 접속한 누구나 자신에게 Draft Mode를 활성화할 수 있습니다. Step 2에서는 공유 secret으로 이를 막아 CMS만 호출할 수 있게 합니다.</p><div class="en-orig"><p>As written, the handler is public: anyone who hits <code>/api/draft</code> enables Draft Mode for themselves. Step 2 closes that with a shared secret so only your CMS can call it.</p></div>
+<h2 class="sec" id="step-2-access-the-route-handler-from-your-headless-cms"><a class="anchor" href="#step-2-access-the-route-handler-from-your-headless-cms">Step 2: Access the Route Handler from your headless CMS<span class="ko">Step 2: headless CMS에서 Route Handler에 접근하기</span></a></h2>
+<blockquote><p>이 단계는 사용 중인 headless CMS가 <strong>custom draft URL</strong> 설정을 지원한다고 가정합니다. 지원하지 않더라도 이 방법으로 draft URL을 보호할 수는 있지만, draft URL을 직접 구성하고 접근해야 합니다. 구체적인 단계는 사용하는 headless CMS에 따라 달라집니다.</p><div class="en-orig"><p>These steps assume that the headless CMS you're using supports setting <strong>custom draft URLs</strong>. If it doesn't, you can still use this method to secure your draft URLs, but you'll need to construct and access the draft URL manually. The specific steps will vary depending on which headless CMS you're using.</p></div></blockquote>
+<p>headless CMS에서 Route Handler에 안전하게 접근하려면:</p><div class="en-orig"><p>To securely access the Route Handler from your headless CMS:</p></div>
+<ol>
+<li>원하는 token 생성기로 <strong>secret token string</strong>을 만드세요. 이 secret은 Next.js 앱과 headless CMS만 알고 있습니다.</li>
+<li>headless CMS가 custom draft URL 설정을 지원한다면 draft URL을 지정하세요(Route Handler가 <code>app/api/draft/route.ts</code>에 있다고 가정합니다). 예를 들면 다음과 같습니다:</li>
+</ol><div class="en-orig"><ol>
+<li>Create a <strong>secret token string</strong> using a token generator of your choice. This secret is only known to your Next.js app and your headless CMS.</li>
+<li>If your headless CMS supports setting custom draft URLs, specify a draft URL (this assumes that your Route Handler is located at <code>app/api/draft/route.ts</code>). For example:</li>
+</ol></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">https://&lt;your-site&gt;/api/draft?secret=&lt;token&gt;&amp;slug=&lt;path&gt;</code></pre></div></div>
+<blockquote><ul>
+<li><code>&lt;your-site&gt;</code>는 deployment domain이어야 합니다.</li>
+<li><code>&lt;token&gt;</code>은 생성한 secret token으로 바꿔야 합니다.</li>
+<li><code>&lt;path&gt;</code>는 보고 싶은 page의 경로여야 합니다. <code>/posts/one</code>을 보고 싶다면 <code>&amp;slug=/posts/one</code>을 사용하세요.</li>
+</ul>
+<p>headless CMS에 따라 draft URL에 변수를 넣을 수 있어서, <code>&lt;path&gt;</code>를 CMS 데이터에 따라 다음과 같이 동적으로 설정할 수 있습니다: <code>&amp;slug=/posts/{entry.fields.slug}</code></p><div class="en-orig"><ul>
+<li><code>&lt;your-site&gt;</code> should be your deployment domain.</li>
+<li><code>&lt;token&gt;</code> should be replaced with the secret token you generated.</li>
+<li><code>&lt;path&gt;</code> should be the path for the page that you want to view. If you want to view <code>/posts/one</code>, then you should use <code>&amp;slug=/posts/one</code>.</li>
+</ul>
+<p>Your headless CMS might allow you to include a variable in the draft URL so that <code>&lt;path&gt;</code> can be set dynamically based on the CMS's data like so: <code>&amp;slug=/posts/{entry.fields.slug}</code></p></div></blockquote>
+<ol start="3">
+<li>Route Handler에서 secret이 일치하는지, <code>slug</code> parameter가 존재하는지 확인하고(그렇지 않으면 request가 실패해야 합니다), <code>draft.enable()</code>을 호출해 cookie를 설정한 다음, 브라우저를 <code>slug</code>로 지정된 경로로 redirect하세요:</li>
+</ol><div class="en-orig"><ol start="3">
+<li>In your Route Handler, check that the secret matches and that the <code>slug</code> parameter exists (if not, the request should fail), call <code>draft.enable()</code> to set the cookie, then redirect the browser to the path specified by <code>slug</code>:</li>
+</ol></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/api/draft/route.ts" data-js="app/api/draft/route.js">app/api/draft/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { draftMode } from &#x27;next/headers&#x27;
+import { redirect } from &#x27;next/navigation&#x27;
+
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const secret = searchParams.get(&#x27;secret&#x27;)
+  const slug = searchParams.get(&#x27;slug&#x27;)
+
+  // This secret should only be known to this Route Handler and the CMS
+  if (secret !== &#x27;MY_SECRET_TOKEN&#x27; || !slug) {
+    return new Response(&#x27;Invalid token&#x27;, { status: 401 })
+  }
+
+  // Verify the slug exists in the CMS before enabling Draft Mode
+  const post = await getPostBySlug(slug)
+  if (!post) {
+    return new Response(&#x27;Invalid slug&#x27;, { status: 401 })
+  }
+
+  const draft = await draftMode()
+  draft.enable()
+
+  // Redirect to the path from the fetched post, not from searchParams,
+  // to avoid open redirect vulnerabilities
+  redirect(post.slug)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { draftMode } from &#x27;next/headers&#x27;
+import { redirect } from &#x27;next/navigation&#x27;
+
+export async function GET(request) {
+  const { searchParams } = new URL(request.url)
+  const secret = searchParams.get(&#x27;secret&#x27;)
+  const slug = searchParams.get(&#x27;slug&#x27;)
+
+  if (secret !== &#x27;MY_SECRET_TOKEN&#x27; || !slug) {
+    return new Response(&#x27;Invalid token&#x27;, { status: 401 })
+  }
+
+  const post = await getPostBySlug(slug)
+  if (!post) {
+    return new Response(&#x27;Invalid slug&#x27;, { status: 401 })
+  }
+
+  const draft = await draftMode()
+  draft.enable()
+
+  redirect(post.slug)
+}</code></pre></div></div>
+<p>성공하면 Draft Mode cookie가 설정된 상태로 브라우저가 대상 경로로 redirect됩니다.</p><div class="en-orig"><p>If it succeeds, the browser is redirected to the target path with the Draft Mode cookie set.</p></div>
+<h2 class="sec" id="step-3-preview-the-draft-content"><a class="anchor" href="#step-3-preview-the-draft-content">Step 3: Preview the draft content<span class="ko">Step 3: 초안 content 미리 보기</span></a></h2>
+<p>Draft Mode는 cache를 자동으로 우회하므로, page는 최신 content를 받기 위해 Draft Mode가 켜져 있는지 알 필요가 없습니다. 평소처럼 fetch하세요:</p><div class="en-orig"><p>Because Draft Mode bypasses the cache automatically, your page does not need to know whether Draft Mode is on to receive fresh content. Fetch as you normally would:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/posts/[slug]/page.tsx" data-js="app/posts/[slug]/page.js">app/posts/[slug]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">async function getPost(slug: string) {
+  const res = await fetch(`https://cms.example.com/posts/${slug}`)
+  return res.json()
+}
+
+export default async function Page({ params }: PageProps&lt;&#x27;/posts/[slug]&#x27;&gt;) {
+  const { slug } = await params
+  const post = await getPost(slug)
+
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;{post.title}&lt;/h1&gt;
+      &lt;article&gt;{post.content}&lt;/article&gt;
+    &lt;/main&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">async function getPost(slug) {
+  const res = await fetch(`https://cms.example.com/posts/${slug}`)
+  return res.json()
+}
+
+export default async function Page({ params }) {
+  const { slug } = await params
+  const post = await getPost(slug)
+
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;{post.title}&lt;/h1&gt;
+      &lt;article&gt;{post.content}&lt;/article&gt;
+    &lt;/main&gt;
+  )
+}</code></pre></div></div>
+<p>Draft Mode cookie가 있으면 위의 <code>fetch</code>는 Next.js fetch cache를 건너뛰고 CMS에 현재 초안을 요청합니다. cookie가 없으면 같은 request가 평소처럼 cache에서 제공될 수 있습니다.</p><div class="en-orig"><p>When the Draft Mode cookie is present, the <code>fetch</code> above skips the Next.js fetch cache and hits your CMS for the current draft. When it is not, the same request can be served from cache as usual.</p></div>
+<p>CMS가 초안을 같은 endpoint에서 제공하지 않고 다른 URL을 사용한다면 <a href="#when-your-cms-uses-a-separate-draft-endpoint">CMS가 별도의 draft endpoint를 사용하는 경우</a>를 참고하세요.</p><div class="en-orig"><p>If your CMS uses a different URL for drafts rather than serving them from the same endpoint, see <a href="#when-your-cms-uses-a-separate-draft-endpoint">When your CMS uses a separate draft endpoint</a>.</p></div>
+<h2 class="sec" id="step-4-show-a-preview-indicator"><a class="anchor" href="#step-4-show-a-preview-indicator">Step 4: Show a preview indicator<span class="ko">Step 4: preview indicator 보여 주기</span></a></h2>
+<p><code>isEnabled</code>는 편집자에게 보내는 신호로 가장 유용합니다: 초안 content를 보고 있다는 것을 확인해 주는 banner와 종료 방법을 함께 제공하는 것이죠. 모든 preview page에 나타나도록 root layout에서 indicator를 render하세요.</p><div class="en-orig"><p><code>isEnabled</code> is most useful as a signal to the editor: a banner that confirms they are looking at draft content, plus a way to exit. Render an indicator from your root layout so it appears on every preview page.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/preview-banner.tsx" data-js="app/preview-banner.js">app/preview-banner.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { draftMode } from &#x27;next/headers&#x27;
+import { redirect } from &#x27;next/navigation&#x27;
+
+async function exitPreview() {
+  &#x27;use server&#x27;
+  const draft = await draftMode()
+  draft.disable()
+  redirect(&#x27;/&#x27;)
+}
+
+export async function PreviewBanner() {
+  const { isEnabled } = await draftMode()
+  if (!isEnabled) return null
+
+  return (
+    &lt;aside role=&quot;status&quot;&gt;
+      Preview mode is on.{&#x27; &#x27;}
+      &lt;form action={exitPreview}&gt;
+        &lt;button type=&quot;submit&quot;&gt;Exit preview&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/aside&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { draftMode } from &#x27;next/headers&#x27;
+import { redirect } from &#x27;next/navigation&#x27;
+
+async function exitPreview() {
+  &#x27;use server&#x27;
+  const draft = await draftMode()
+  draft.disable()
+  redirect(&#x27;/&#x27;)
+}
+
+export async function PreviewBanner() {
+  const { isEnabled } = await draftMode()
+  if (!isEnabled) return null
+
+  return (
+    &lt;aside role=&quot;status&quot;&gt;
+      Preview mode is on.{&#x27; &#x27;}
+      &lt;form action={exitPreview}&gt;
+        &lt;button type=&quot;submit&quot;&gt;Exit preview&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/aside&gt;
+  )
+}</code></pre></div></div>
+<p>Draft Mode 종료는 <code>GET</code> Route Handler로도 동작하지만, 의미상으로는 <code>POST</code>가 더 올바릅니다. 예를 들어 <a href="app-getting-started-mutating-data.html">Server Action</a>을 통해 제출되는 form이나 <code>POST</code> Route Handler로 보내는 방법이 있습니다.</p><div class="en-orig"><p>Exiting Draft Mode also works with a <code>GET</code> Route Handler, but a <code>POST</code> is semantically more correct, for example via a form submitted through a <a href="app-getting-started-mutating-data.html">Server Action</a> or to a <code>POST</code> Route Handler.</p></div>
+<p><code>GET</code> Route Handler를 사용한다면 <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code></a>가 아니라 <code>&lt;form method=&quot;GET&quot;&gt;</code>에서 트리거하세요. Next.js는 기본적으로 <code>&lt;Link&gt;</code> component를 prefetch하므로, 편집자가 클릭하기도 전에 cookie가 지워질 수 있습니다. form은 method와 상관없이 prefetch되지 않습니다.</p><div class="en-orig"><p>If you do use a <code>GET</code> Route Handler, trigger it from a <code>&lt;form method=&quot;GET&quot;&gt;</code> rather than a <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code></a>. Next.js prefetches <code>&lt;Link&gt;</code> components by default, which would clear the cookie before the editor clicks. Forms are not prefetched, regardless of method.</p></div>
+<h2 class="sec" id="draft-mode-with-cache-components"><a class="anchor" href="#draft-mode-with-cache-components">Draft Mode with Cache Components<span class="ko">Cache Components와 함께 쓰는 Draft Mode</span></a></h2>
+<p><a href="app-api-reference-directives-use-cache.html"><code>&#x27;use cache&#x27;</code></a> scope 안에서 <code>isEnabled</code>를 읽어 cache된 component에서 preview indicator를 render할 수 있습니다. cache 우회는 여전히 적용되므로, 해당 component는 모든 draft request마다 최신 데이터로 다시 실행됩니다.</p><div class="en-orig"><p>You can read <code>isEnabled</code> inside a <a href="app-api-reference-directives-use-cache.html"><code>&#x27;use cache&#x27;</code></a> scope to render a preview indicator from a cached component. The cache bypass still applies, so the component re-executes with fresh data on every draft request.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/posts/[slug]/page.tsx" data-js="app/posts/[slug]/page.js">app/posts/[slug]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { draftMode } from &#x27;next/headers&#x27;
+
+async function Post({ slug }: { slug: string }) {
+  &#x27;use cache&#x27;
+
+  const post = await fetch(`https://cms.example.com/posts/${slug}`).then((r) =&gt;
+    r.json()
+  )
+  const { isEnabled } = await draftMode()
+
+  return (
+    &lt;article&gt;
+      {isEnabled &amp;&amp; &lt;p role=&quot;status&quot;&gt;Draft preview&lt;/p&gt;}
+      &lt;h1&gt;{post.title}&lt;/h1&gt;
+      &lt;div&gt;{post.content}&lt;/div&gt;
+    &lt;/article&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { draftMode } from &#x27;next/headers&#x27;
+
+async function Post({ slug }) {
+  &#x27;use cache&#x27;
+
+  const post = await fetch(`https://cms.example.com/posts/${slug}`).then((r) =&gt;
+    r.json()
+  )
+  const { isEnabled } = await draftMode()
+
+  return (
+    &lt;article&gt;
+      {isEnabled &amp;&amp; &lt;p role=&quot;status&quot;&gt;Draft preview&lt;/p&gt;}
+      &lt;h1&gt;{post.title}&lt;/h1&gt;
+      &lt;div&gt;{post.content}&lt;/div&gt;
+    &lt;/article&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>draftMode().enable()</code>과 <code>draftMode().disable()</code>은 caching directive scope 안에서 호출할 수 없습니다. 대신 <a href="app-api-reference-file-conventions-route.html">Route Handler</a>나 <a href="app-getting-started-mutating-data.html">Server Action</a>에서 Draft Mode를 켜고 끄세요.</p><div class="en-orig"><p><code>draftMode().enable()</code> and <code>draftMode().disable()</code> cannot be called inside a caching directive scope; toggle Draft Mode from a <a href="app-api-reference-file-conventions-route.html">Route Handler</a> or <a href="app-getting-started-mutating-data.html">Server Action</a> instead.</p></div></div></div>
+<h2 class="sec" id="when-your-cms-uses-a-separate-draft-endpoint"><a class="anchor" href="#when-your-cms-uses-a-separate-draft-endpoint">When your CMS uses a separate draft endpoint<span class="ko">CMS가 별도의 draft endpoint를 사용하는 경우</span></a></h2>
+<p>CMS가 초안 content를 다른 URL에서 제공하거나 다른 credential을 요구한다면 <code>isEnabled</code>에 따라 fetch를 분기하세요:</p><div class="en-orig"><p>If your CMS exposes draft content at a different URL or requires different credentials, branch your fetch on <code>isEnabled</code>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/posts/[slug]/page.tsx" data-js="app/posts/[slug]/page.js">app/posts/[slug]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { draftMode } from &#x27;next/headers&#x27;
+
+async function getPost(slug: string) {
+  const { isEnabled } = await draftMode()
+  const baseUrl = isEnabled
+    ? &#x27;https://cms.example.com/preview&#x27;
+    : &#x27;https://cms.example.com/published&#x27;
+
+  const res = await fetch(`${baseUrl}/posts/${slug}`)
+  return res.json()
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { draftMode } from &#x27;next/headers&#x27;
+
+async function getPost(slug) {
+  const { isEnabled } = await draftMode()
+  const baseUrl = isEnabled
+    ? &#x27;https://cms.example.com/preview&#x27;
+    : &#x27;https://cms.example.com/published&#x27;
+
+  const res = await fetch(`${baseUrl}/posts/${slug}`)
+  return res.json()
+}</code></pre></div></div>
+<p>cache 우회는 두 분기 모두에 여전히 적용됩니다. 분기는 어디에서 읽을지만 선택합니다.</p><div class="en-orig"><p>The cache bypass still applies to both branches; the fork only chooses where to read from.</p></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">다음 단계</h2><p>Draft Mode 사용법에 대한 자세한 내용은 API reference를 참고하세요.</p><div class="rgrid"><a class="rcard" href="app-api-reference-functions-draft-mode.html"><div class="rt">draftMode</div><div class="rk">draftMode</div><div class="rd">draftMode 함수에 대한 API Reference입니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/draft-mode.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/draft-mode" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-deploying-to-platforms.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Deploying to Platforms</div><div class="ttl-ko">다양한 플랫폼에 Next.js deploy하기</div></a>
+      <a href="app-guides-environment-variables.html" class="next"><div class="dir">다음 →</div><div class="ttl">Environment Variables</div><div class="ttl-ko">Next.js에서 environment variable 사용하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/draft-mode" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#what-draft-mode-does">What Draft Mode does</a></li><li class="l2"><a href="#what-this-guide-covers">What this guide covers</a></li><li class="l2"><a href="#step-1-create-a-route-handler">Step 1: Create a Route Handler</a></li><li class="l2"><a href="#step-2-access-the-route-handler-from-your-headless-cms">Step 2: Access the Route Handler from your headless CMS</a></li><li class="l2"><a href="#step-3-preview-the-draft-content">Step 3: Preview the draft content</a></li><li class="l2"><a href="#step-4-show-a-preview-indicator">Step 4: Show a preview indicator</a></li><li class="l2"><a href="#draft-mode-with-cache-components">Draft Mode with Cache Components</a></li><li class="l2"><a href="#when-your-cms-uses-a-separate-draft-endpoint">When your CMS uses a separate draft endpoint</a></li><li class="l2"><a href="#next-steps">다음 단계</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+**Draft Mode**를 사용하면 편집자가 revalidation을 기다리지 않고도 초안이나 작업 중인 content가 사이트에서 어떻게 render될지 확인할 수 있습니다. 편집자가 Draft Mode에 있는 동안에는 cache되거나 pre-render된 content를 건너뛰고 upstream source에서 직접 fetch합니다. 다른 방문자는 계속해서 page의 cache되거나 pre-render된 버전을 보게 됩니다.
+
+CMS가 초안과 게시된 content를 같은 URL에서 제공한다면 data-fetching 코드를 바꿀 필요가 없습니다. 그렇지 않다면 [CMS가 별도의 draft endpoint를 사용하는 경우](#when-your-cms-uses-a-separate-draft-endpoint)를 참고하세요.
+
+## What Draft Mode does || Draft Mode가 하는 일
+
+request에 Draft Mode가 활성화되면:
+
+- `fetch()` 호출은 Next.js fetch cache를 건너뛰고 network에 직접 요청합니다.
+- [`&#x27;use cache&#x27;`](/docs/app/api-reference/directives/use-cache) 안의 component와 함수는 매 request마다 다시 실행되며, 그 결과는 cache에 저장되지 않습니다.
+- [`unstable_cache`](/docs/app/api-reference/functions/unstable_cache)의 읽기와 쓰기도 같은 방식으로 우회됩니다.
+- page는 ISR response cache에서 제외되며 `Cache-Control: private, no-cache, no-store, max-age=0, must-revalidate`와 함께 제공됩니다.
+
+이 효과는 page가 statically 생성되었든, cache에서 제공되든, ISR로 revalidate되든 상관없이 적용됩니다.
+
+## What this guide covers || 이 가이드에서 다루는 내용
+
+이 가이드는 다음을 가정합니다:
+
+- headless CMS가 설정 가능한 preview URL을 지원합니다(대부분 지원합니다).
+- 편집자가 &quot;Preview&quot;를 클릭하면 CMS가 새 tab에서 `/api/draft?secret=XXX&amp;slug=/posts/foo` 같은 URL을 엽니다. secret은 공유 token이고, slug는 미리 볼 경로입니다.
+- Next.js 앱은 secret을 검증하고, Draft Mode를 활성화한 뒤 slug로 redirect합니다.
+
+이 계약을 염두에 두고, 이 가이드의 나머지 부분에서는 다음을 차례로 살펴봅니다:
+
+1. cookie를 설정해 Draft Mode를 활성화하는 Route Handler 만들기.
+2. CMS에서 받은 공유 secret과 slug로 그 handler 보호하기.
+3. 최신 초안을 읽는 page render하기.
+4. 종료 form이 있는 preview banner 보여 주기.
+
+그다음 설정에 따라:
+
+- `&#x27;use cache&#x27;` 경계에서 preview 상태를 드러내려면 [Cache Components와 함께 쓰는 Draft Mode](#draft-mode-with-cache-components).
+- `isEnabled`에 따라 fetch URL을 분기하려면 [CMS가 별도의 draft endpoint를 사용하는 경우](#when-your-cms-uses-a-separate-draft-endpoint).
+
+&gt; **Good to know:** `GET`은 안전한 읽기 전용 method로 의도된 것입니다. cookie로 Draft Mode를 활성화하는 것처럼 이후 request에 영향을 주는 작업은 `POST`를 사용해야 합니다. 진입 handler가 `GET`을 사용하는 이유는 CMS preview integration을 가정하기 때문입니다: CMS는 새 브라우저 tab에서 URL을 여는데, 이것이 `GET` request입니다. Step 4의 종료 흐름은 ([Server Action](/docs/app/getting-started/mutating-data) 또는 `POST` Route Handler를 통해) `POST`를 사용합니다.
+
+## Step 1: Create a Route Handler || Step 1: Route Handler 만들기
+
+Draft Mode cookie를 설정하는 [Route Handler](/docs/app/api-reference/file-conventions/route)를 만드세요. 이름은 무엇이든 될 수 있습니다. 예: `app/api/draft/route.ts`.
+
+[[CODE 1]]
+
+`draft.enable()`은 `__prerender_bypass`라는 이름의 cookie를 설정합니다. 이후 이 cookie를 가진 request는 위에 나열한 모든 cache layer를 건너뜁니다.
+
+`/api/draft`에 방문한 뒤 브라우저의 developer tools를 보면 직접 테스트해 볼 수 있습니다. `Set-Cookie` response header를 확인하세요.
+
+작성된 그대로라면 이 handler는 공개되어 있습니다: `/api/draft`에 접속한 누구나 자신에게 Draft Mode를 활성화할 수 있습니다. Step 2에서는 공유 secret으로 이를 막아 CMS만 호출할 수 있게 합니다.
+
+## Step 2: Access the Route Handler from your headless CMS || Step 2: headless CMS에서 Route Handler에 접근하기
+
+&gt; 이 단계는 사용 중인 headless CMS가 **custom draft URL** 설정을 지원한다고 가정합니다. 지원하지 않더라도 이 방법으로 draft URL을 보호할 수는 있지만, draft URL을 직접 구성하고 접근해야 합니다. 구체적인 단계는 사용하는 headless CMS에 따라 달라집니다.
+
+headless CMS에서 Route Handler에 안전하게 접근하려면:
+
+1. 원하는 token 생성기로 **secret token string**을 만드세요. 이 secret은 Next.js 앱과 headless CMS만 알고 있습니다.
+2. headless CMS가 custom draft URL 설정을 지원한다면 draft URL을 지정하세요(Route Handler가 `app/api/draft/route.ts`에 있다고 가정합니다). 예를 들면 다음과 같습니다:
+
+[[CODE 2]]
+
+&gt; - `&lt;your-site&gt;`는 deployment domain이어야 합니다.
+&gt; - `&lt;token&gt;`은 생성한 secret token으로 바꿔야 합니다.
+&gt; - `&lt;path&gt;`는 보고 싶은 page의 경로여야 합니다. `/posts/one`을 보고 싶다면 `&amp;slug=/posts/one`을 사용하세요.
+&gt;
+&gt; headless CMS에 따라 draft URL에 변수를 넣을 수 있어서, `&lt;path&gt;`를 CMS 데이터에 따라 다음과 같이 동적으로 설정할 수 있습니다: `&amp;slug=/posts/{entry.fields.slug}`
+
+3. Route Handler에서 secret이 일치하는지, `slug` parameter가 존재하는지 확인하고(그렇지 않으면 request가 실패해야 합니다), `draft.enable()`을 호출해 cookie를 설정한 다음, 브라우저를 `slug`로 지정된 경로로 redirect하세요:
+
+[[CODE 3]]
+
+성공하면 Draft Mode cookie가 설정된 상태로 브라우저가 대상 경로로 redirect됩니다.
+
+## Step 3: Preview the draft content || Step 3: 초안 content 미리 보기
+
+Draft Mode는 cache를 자동으로 우회하므로, page는 최신 content를 받기 위해 Draft Mode가 켜져 있는지 알 필요가 없습니다. 평소처럼 fetch하세요:
+
+[[CODE 4]]
+
+Draft Mode cookie가 있으면 위의 `fetch`는 Next.js fetch cache를 건너뛰고 CMS에 현재 초안을 요청합니다. cookie가 없으면 같은 request가 평소처럼 cache에서 제공될 수 있습니다.
+
+CMS가 초안을 같은 endpoint에서 제공하지 않고 다른 URL을 사용한다면 [CMS가 별도의 draft endpoint를 사용하는 경우](#when-your-cms-uses-a-separate-draft-endpoint)를 참고하세요.
+
+## Step 4: Show a preview indicator || Step 4: preview indicator 보여 주기
+
+`isEnabled`는 편집자에게 보내는 신호로 가장 유용합니다: 초안 content를 보고 있다는 것을 확인해 주는 banner와 종료 방법을 함께 제공하는 것이죠. 모든 preview page에 나타나도록 root layout에서 indicator를 render하세요.
+
+[[CODE 5]]
+
+Draft Mode 종료는 `GET` Route Handler로도 동작하지만, 의미상으로는 `POST`가 더 올바릅니다. 예를 들어 [Server Action](/docs/app/getting-started/mutating-data)을 통해 제출되는 form이나 `POST` Route Handler로 보내는 방법이 있습니다.
+
+`GET` Route Handler를 사용한다면 [`&lt;Link&gt;`](/docs/app/api-reference/components/link)가 아니라 `&lt;form method=&quot;GET&quot;&gt;`에서 트리거하세요. Next.js는 기본적으로 `&lt;Link&gt;` component를 prefetch하므로, 편집자가 클릭하기도 전에 cookie가 지워질 수 있습니다. form은 method와 상관없이 prefetch되지 않습니다.
+
+## Draft Mode with Cache Components || Cache Components와 함께 쓰는 Draft Mode
+
+[`&#x27;use cache&#x27;`](/docs/app/api-reference/directives/use-cache) scope 안에서 `isEnabled`를 읽어 cache된 component에서 preview indicator를 render할 수 있습니다. cache 우회는 여전히 적용되므로, 해당 component는 모든 draft request마다 최신 데이터로 다시 실행됩니다.
+
+[[CODE 6]]
+
+&gt; **Good to know:** `draftMode().enable()`과 `draftMode().disable()`은 caching directive scope 안에서 호출할 수 없습니다. 대신 [Route Handler](/docs/app/api-reference/file-conventions/route)나 [Server Action](/docs/app/getting-started/mutating-data)에서 Draft Mode를 켜고 끄세요.
+
+## When your CMS uses a separate draft endpoint || CMS가 별도의 draft endpoint를 사용하는 경우
+
+CMS가 초안 content를 다른 URL에서 제공하거나 다른 credential을 요구한다면 `isEnabled`에 따라 fetch를 분기하세요:
+
+[[CODE 7]]
+
+cache 우회는 두 분기 모두에 여전히 적용됩니다. 분기는 어디에서 읽을지만 선택합니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

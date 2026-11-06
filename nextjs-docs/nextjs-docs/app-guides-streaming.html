@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Streaming (스트리밍) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/streaming" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/streaming" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/streaming.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Streaming<span class="sub">스트리밍</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<h2 class="sec" id="what-is-streaming"><a class="anchor" href="#what-is-streaming">What is streaming?<span class="ko">streaming이란?</span></a></h2>
+<p>전통적인 server-side rendering에서는 server가 아무것도 보내기 전에 전체 HTML 문서를 만들어 냅니다. 느린 database query나 API 호출 하나가 페이지 전체를 막을 수 있습니다. Streaming은 <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Transfer-Encoding" target="_blank" rel="noopener">chunked transfer encoding</a>을 사용해 response의 각 부분을 준비되는 대로 보내는 방식으로 이를 바꿉니다. server가 나머지를 아직 생성하는 동안에도 브라우저는 HTML rendering을 시작합니다.</p><div class="en-orig"><p>In traditional server-side rendering, the server produces the full HTML document before sending anything. A single slow database query or API call can block the entire page. Streaming changes this by using <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Transfer-Encoding" target="_blank" rel="noopener">chunked transfer encoding</a> to send parts of the response as they become ready. The browser starts rendering HTML while the server is still generating the rest.</p></div>
+<p>이는 빠른 static 콘텐츠(header, navigation, layout)와 느린 dynamic 콘텐츠(개인화된 데이터, analytics, 추천)를 함께 담은 페이지에서 특히 효과가 큽니다. static 부분은 prerender되어 CDN에서 제공되므로 즉시 화면에 그려지고, dynamic 부분은 준비되는 대로 server에서 stream되어 들어옵니다.</p><div class="en-orig"><p>This is especially impactful for pages that combine fast static content (headers, navigation, layout) with slower dynamic content (personalized data, analytics, recommendations). The static parts can be prerendered and served from a CDN, painting instantly, while the dynamic parts stream in from the server as they become ready.</p></div>
+<p>React의 server renderer는 <code>&lt;Suspense&gt;</code> boundary에 맞춰 HTML을 chunk 단위로 만들어 냅니다. Next.js는 이를 App Router에 통합해 두었기 때문에 추가 설정 없이 streaming이 동작합니다.</p><div class="en-orig"><p>React's server renderer produces HTML in chunks aligned with <code>&lt;Suspense&gt;</code> boundaries. Next.js integrates this into the App Router so streaming works without additional configuration.</p></div>
+<h2 class="sec" id="example"><a class="anchor" href="#example">Example<span class="ko">예제</span></a></h2>
+<p>함께 제공되는 <a href="https://streaming-demo.labs.vercel.dev/" target="_blank" rel="noopener">streaming demo</a>(<a href="https://github.com/nextjs/streaming-demo" target="_blank" rel="noopener">source</a>)에서 이 가이드의 각 개념이 실제로 동작하는 모습을 볼 수 있습니다:</p><div class="en-orig"><p>The companion <a href="https://streaming-demo.labs.vercel.dev/" target="_blank" rel="noopener">streaming demo</a> (<a href="https://github.com/nextjs/streaming-demo" target="_blank" rel="noopener">source</a>) lets you see each concept from this guide in action:</p></div>
+<ul>
+<li><code>loading.tsx</code>를 이용한 page 단위 streaming(skeleton이 즉시 나타나고, 약 2초 뒤 콘텐츠가 stream되어 들어옴)</li>
+<li>서로 독립적으로 resolve되는 형제 <code>&lt;Suspense&gt;</code> boundary를 이용한 세분화된 streaming</li>
+<li>Hydration 비교: 한 번에 막히는(blocking) hydration과 Suspense boundary로 나눈 split hydration</li>
+<li>Route Handler에서의 raw HTML streaming과 이른 CSS 발견(early CSS discovery)</li>
+<li>chunk 크기와 브라우저 buffering을 실험해 볼 수 있는, 설정 가능한 <code>ReadableStream</code> API endpoint</li>
+</ul><div class="en-orig"><ul>
+<li>Page-level streaming with <code>loading.tsx</code> (skeleton appears instantly, content streams in after ~2s)</li>
+<li>Granular streaming with sibling <code>&lt;Suspense&gt;</code> boundaries that resolve independently</li>
+<li>Hydration comparison: a single blocking pass vs split hydration with Suspense boundaries</li>
+<li>Raw HTML streaming in a Route Handler, with early CSS discovery</li>
+<li>A configurable <code>ReadableStream</code> API endpoint for experimenting with chunk sizes and browser buffering</li>
+</ul></div>
+<h2 class="sec" id="how-the-app-router-delivers-a-page"><a class="anchor" href="#how-the-app-router-delivers-a-page">How the App Router delivers a page<span class="ko">App Router가 페이지를 전달하는 방식</span></a></h2>
+<p>브라우저가 페이지를 request하면, 초기 페이지 로드 중에 두 개의 stream이 함께 동작합니다:</p><div class="en-orig"><p>When a browser requests a page, two streams work together during the initial page load:</p></div>
+<h3 class="sec" id="the-html-stream"><a class="anchor" href="#the-html-stream">The HTML stream<span class="ko">HTML stream</span></a></h3>
+<p>React의 server renderer는 점진적인 HTML chunk를 만들어 냅니다. 페이지의 static 부분(layout, navigation, Suspense fallback)이 먼저 render되어 즉시 전송됩니다. <code>&lt;Suspense&gt;</code> boundary의 콘텐츠가 준비되면, 예를 들어 async <a href="app-glossary.html#server-component">Server Component</a>가 resolve되면, React는 완성된 HTML을 inline <code>&lt;script&gt;</code> tag와 함께 stream합니다. 하나는 fallback DOM node를 새 콘텐츠로 교체하는 script이고, 다른 하나는 React가 나중에 hydrate할 수 있도록 <a href="#the-component-payload">component payload</a>를 담은 script입니다. 브라우저는 페이지의 JavaScript bundle이 로드되거나 hydration이 끝나기를 기다리지 않고 교체를 즉시 실행합니다. 이것이 사용자가 <em>보는</em> 것, 즉 섹션별로 점진적으로 그려지는 페이지입니다.</p><div class="en-orig"><p>React's server renderer produces progressive HTML chunks. The static parts of your page (layouts, navigation, Suspense fallbacks) render first and are sent immediately. When a <code>&lt;Suspense&gt;</code> boundary's content is ready, for example when an async <a href="app-glossary.html#server-component">Server Component</a> resolves, React streams its completed HTML along with inline <code>&lt;script&gt;</code> tags: one that swaps the fallback DOM node with the new content, and another carrying the <a href="#the-component-payload">component payload</a> so React can later hydrate it. The browser executes the swap instantly, without waiting for the page's JavaScript bundle to load or hydration to complete. This is what the user <em>sees</em>: the page painting progressively, section by section.</p></div>
+<h3 class="sec" id="the-component-payload"><a class="anchor" href="#the-component-payload">The component payload<span class="ko">component payload</span></a></h3>
+<p>component payload는 React가 페이지를 <a href="app-glossary.html#hydration">hydrate</a>하고 client-side 업데이트를 처리하는 데 사용하는, component tree의 직렬화된 표현입니다. 초기 로드 때는 (위에서 설명한 것처럼) HTML stream 안에 포함되어 도착합니다. <strong>client-side navigation</strong> 때는 component payload만 (<code>rsc: 1</code> request header와 함께) fetch되고 HTML은 전혀 전송되지 않습니다. React는 이를 사용해 component tree를 그 자리에서 업데이트합니다.</p><div class="en-orig"><p>The component payload is a serialized representation of the component tree that React uses to <a href="app-glossary.html#hydration">hydrate</a> the page and handle client-side updates. On initial load, it arrives embedded in the HTML stream (as described above). On <strong>client-side navigation</strong>, only the component payload is fetched (with an <code>rsc: 1</code> request header) and no HTML is transferred at all. React uses it to update the component tree in place.</p></div>
+<h3 class="sec" id="the-static-shell"><a class="anchor" href="#the-static-shell">The static shell<span class="ko">static shell</span></a></h3>
+<p>async 작업이 resolve되기 전에 render되는 모든 것을 <strong>static shell</strong>이라고 합니다. layout, navigation, 그리고 <code>&lt;Suspense&gt;</code> boundary에 정의한 fallback UI가 여기에 해당합니다. static shell은 즉시 전송되어, dynamic 콘텐츠가 stream되는 동안 사용자가 보고 상호작용할 수 있는 것을 제공합니다. <a href="app-getting-started-caching.html">Cache Components</a>를 사용하면 static shell은 build time에 prerender되어 edge에서 즉시 제공됩니다.</p><div class="en-orig"><p>Everything that renders before any async work resolves is called the <strong>static shell</strong>: your layouts, navigation, and the fallback UI defined by your <code>&lt;Suspense&gt;</code> boundaries. It is sent immediately, giving the user something to see and interact with while dynamic content streams in. With <a href="app-getting-started-caching.html">Cache Components</a>, the static shell is prerendered at build time and served instantly from the edge.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/server-rendering-with-streaming.png" alt="Streaming을 사용한 Server Rendering 동작 방식" width="1600" height="785" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/server-rendering-with-streaming.png" alt="Streaming을 사용한 Server Rendering 동작 방식" width="1600" height="785" loading="lazy" /></figure>
+<p>각 <code>&lt;Suspense&gt;</code> boundary는 독립적인 streaming 지점입니다. 서로 다른 boundary 안의 component는 각자 독립적으로 resolve되고 stream됩니다. 서로를 막지 않습니다.</p><div class="en-orig"><p>Each <code>&lt;Suspense&gt;</code> boundary is an independent streaming point. Components inside different boundaries resolve and stream in independently. They don't block each other.</p></div>
+<h2 class="sec" id="page-level-streaming-with-loadingjs"><a class="anchor" href="#page-level-streaming-with-loadingjs">Page-level streaming with <code>loading.js</code><span class="ko"><code>loading.js</code>로 page 단위 streaming</span></a></h2>
+<p>streaming을 추가하는 가장 간단한 방법은 <code>loading.js</code> 파일을 사용하는 것입니다. 이 파일을 <code>page.js</code> 옆에 두면 Next.js가 자동으로 page 콘텐츠를 <code>&lt;Suspense&gt;</code> boundary로 감싸고, loading component를 fallback으로 사용합니다.</p><div class="en-orig"><p>The simplest way to add streaming is with a <code>loading.js</code> file. Place it alongside your <code>page.js</code> and Next.js automatically wraps the page content in a <code>&lt;Suspense&gt;</code> boundary, using your loading component as the fallback.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/loading-special-file.png" alt="loading.js special file" width="1600" height="606" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/loading-special-file.png" alt="loading.js special file" width="1600" height="606" loading="lazy" /></figure>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/loading.tsx" data-js="app/dashboard/loading.js">app/dashboard/loading.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function Loading() {
+  return (
+    &lt;div className=&quot;animate-pulse&quot;&gt;
+      &lt;div className=&quot;h-8 w-48 bg-gray-200 rounded mb-4&quot; /&gt;
+      &lt;div className=&quot;h-4 w-full bg-gray-200 rounded mb-2&quot; /&gt;
+      &lt;div className=&quot;h-4 w-full bg-gray-200 rounded mb-2&quot; /&gt;
+      &lt;div className=&quot;h-4 w-2/3 bg-gray-200 rounded&quot; /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function Loading() {
+  return (
+    &lt;div className=&quot;animate-pulse&quot;&gt;
+      &lt;div className=&quot;h-8 w-48 bg-gray-200 rounded mb-4&quot; /&gt;
+      &lt;div className=&quot;h-4 w-full bg-gray-200 rounded mb-2&quot; /&gt;
+      &lt;div className=&quot;h-4 w-full bg-gray-200 rounded mb-2&quot; /&gt;
+      &lt;div className=&quot;h-4 w-2/3 bg-gray-200 rounded&quot; /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>내부적으로 <code>loading.js</code>는 <code>layout.js</code> 안에 중첩되고, <code>page.js</code>를 <code>&lt;Suspense&gt;</code> boundary로 감쌉니다:</p><div class="en-orig"><p>Behind the scenes, <code>loading.js</code> is nested inside <code>layout.js</code> and wraps <code>page.js</code> in a <code>&lt;Suspense&gt;</code> boundary:</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/loading-overview.png" alt="loading.js 개요" width="1600" height="768" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/loading-overview.png" alt="loading.js 개요" width="1600" height="768" loading="lazy" /></figure>
+<p>이는 다음을 의미합니다:</p><div class="en-orig"><p>This means:</p></div>
+<ul>
+<li>layout은 static shell의 일부로 즉시 render됩니다.</li>
+<li>loading skeleton은 Suspense fallback으로 즉시 표시됩니다.</li>
+<li>page component가 로딩을 마치면 그 HTML이 skeleton을 대체합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The layout renders immediately as part of the static shell.</li>
+<li>The loading skeleton is shown instantly as the Suspense fallback.</li>
+<li>When the page component finishes loading, its HTML replaces the skeleton.</li>
+</ul></div>
+<p><code>loading.js</code>는 page의 데이터가 resolve되기 전까지 의미 있게 보여 줄 것이 없을 때 유용합니다. page가 무언가를 render하기 전에 데이터를 await해야 한다면, 전체 페이지 skeleton은 합리적인 fallback입니다.</p><div class="en-orig"><p><code>loading.js</code> is useful when there's nothing meaningful to show until the page's data resolves. If the page needs to await data before it can render anything, a full-page skeleton is a reasonable fallback.</p></div>
+<p>자세한 내용은 <a href="app-api-reference-file-conventions-loading.html"><code>loading.js</code> API reference</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-api-reference-file-conventions-loading.html"><code>loading.js</code> API reference</a> for more details.</p></div>
+<h2 class="sec" id="granular-streaming-with-suspense"><a class="anchor" href="#granular-streaming-with-suspense">Granular streaming with <code>&lt;Suspense&gt;</code><span class="ko"><code>&lt;Suspense&gt;</code>로 세분화된 streaming</span></a></h2>
+<p><code>&lt;Suspense&gt;</code>를 사용하면 페이지의 어떤 부분을 독립적으로 stream할지 정확히 제어할 수 있습니다. 전체 페이지 skeleton 대신 fallback을 특정 섹션으로 내려보내서, static shell에 실제 콘텐츠가 더 많이 포함되게 할 수 있습니다.</p><div class="en-orig"><p><code>&lt;Suspense&gt;</code> lets you control exactly which parts of the page stream independently. Instead of a full-page skeleton, you can push fallbacks down into specific sections so the static shell includes more real content.</p></div>
+<h3 class="sec" id="parallel-streaming-with-sibling-boundaries"><a class="anchor" href="#parallel-streaming-with-sibling-boundaries">Parallel streaming with sibling boundaries<span class="ko">형제 boundary로 병렬 streaming</span></a></h3>
+<p>여러 component가 async 작업(데이터 fetch, database 읽기)을 수행한다면 각각을 별도의 <code>&lt;Suspense&gt;</code> boundary로 감싸세요. 각 boundary는 async 작업이 끝나는 대로, 어떤 순서로 끝나든, 서로를 막지 않고 독립적으로 stream됩니다:</p><div class="en-orig"><p>When multiple components perform async work (fetching data, reading from a database), wrap each one in its own <code>&lt;Suspense&gt;</code> boundary. Each boundary streams independently as its async work completes, in whatever order that happens, without blocking each other:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/page.tsx" data-js="app/dashboard/page.js">app/dashboard/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { Revenue } from &#x27;./revenue&#x27;
+import { RecentOrders } from &#x27;./recent-orders&#x27;
+import { Recommendations } from &#x27;./recommendations&#x27;
+
+export default function Dashboard() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Dashboard&lt;/h1&gt;
+      &lt;div className=&quot;grid grid-cols-2 gap-4&quot;&gt;
+        &lt;Suspense fallback={&lt;p&gt;Loading revenue...&lt;/p&gt;}&gt;
+          &lt;Revenue /&gt;
+        &lt;/Suspense&gt;
+        &lt;Suspense fallback={&lt;p&gt;Loading orders...&lt;/p&gt;}&gt;
+          &lt;RecentOrders /&gt;
+        &lt;/Suspense&gt;
+      &lt;/div&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading recommendations...&lt;/p&gt;}&gt;
+        &lt;Recommendations /&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { Suspense } from &#x27;react&#x27;
+import { Revenue } from &#x27;./revenue&#x27;
+import { RecentOrders } from &#x27;./recent-orders&#x27;
+import { Recommendations } from &#x27;./recommendations&#x27;
+
+export default function Dashboard() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Dashboard&lt;/h1&gt;
+      &lt;div className=&quot;grid grid-cols-2 gap-4&quot;&gt;
+        &lt;Suspense fallback={&lt;p&gt;Loading revenue...&lt;/p&gt;}&gt;
+          &lt;Revenue /&gt;
+        &lt;/Suspense&gt;
+        &lt;Suspense fallback={&lt;p&gt;Loading orders...&lt;/p&gt;}&gt;
+          &lt;RecentOrders /&gt;
+        &lt;/Suspense&gt;
+      &lt;/div&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading recommendations...&lt;/p&gt;}&gt;
+        &lt;Recommendations /&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>이 예제에서 <code>Revenue</code>가 200ms, <code>RecentOrders</code>가 1s, <code>Recommendations</code>가 3s에 resolve된다면, 사용자는 각 섹션의 데이터가 준비되는 즉시 그 섹션이 나타나는 것을 보게 됩니다.</p><div class="en-orig"><p>In this example, if <code>Revenue</code> resolves in 200ms, <code>RecentOrders</code> in 1s, and <code>Recommendations</code> in 3s, the user sees each section appear as soon as its data is ready.</p></div>
+<h3 class="sec" id="nested-boundaries-for-progressive-detail"><a class="anchor" href="#nested-boundaries-for-progressive-detail">Nested boundaries for progressive detail<span class="ko">점진적 디테일을 위한 중첩 boundary</span></a></h3>
+<p><code>&lt;Suspense&gt;</code> boundary를 중첩해 단계적인 로딩 경험을 만들 수 있습니다. 예를 들어 상품 페이지는 header를 즉시, 그다음 상품 상세 정보를, 마지막으로 리뷰를 stream할 수 있습니다:</p><div class="en-orig"><p>You can nest <code>&lt;Suspense&gt;</code> boundaries to create a layered loading experience. For example, a product page might stream the header immediately, the product details next, and the reviews last:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/product/[id]/page.tsx" data-js="app/product/[id]/page.js">app/product/[id]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { ProductDetails } from &#x27;./product-details&#x27;
+import { Reviews } from &#x27;./reviews&#x27;
+
+export async function generateStaticParams() {
+  const products = await getTopProducts()
+  return products.map((product) =&gt; ({ id: product.id }))
+}
+
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise&lt;{ id: string }&gt;
+}) {
+  const { id } = await params
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Product&lt;/h1&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading product details...&lt;/p&gt;}&gt;
+        &lt;ProductDetails id={id} /&gt;
+        &lt;Suspense fallback={&lt;p&gt;Loading reviews...&lt;/p&gt;}&gt;
+          &lt;Reviews productId={id} /&gt;
+        &lt;/Suspense&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { Suspense } from &#x27;react&#x27;
+import { ProductDetails } from &#x27;./product-details&#x27;
+import { Reviews } from &#x27;./reviews&#x27;
+
+export async function generateStaticParams() {
+  const products = await getTopProducts()
+  return products.map((product) =&gt; ({ id: product.id }))
+}
+
+export default async function ProductPage({ params }) {
+  const { id } = await params
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Product&lt;/h1&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading product details...&lt;/p&gt;}&gt;
+        &lt;ProductDetails id={id} /&gt;
+        &lt;Suspense fallback={&lt;p&gt;Loading reviews...&lt;/p&gt;}&gt;
+          &lt;Reviews productId={id} /&gt;
+        &lt;/Suspense&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>바깥 boundary는 <code>ProductDetails</code>가 resolve될 때까지 "Loading product details..."를 보여 줍니다. resolve되면 안쪽 boundary가 보이게 되어, <code>Reviews</code>가 resolve될 때까지 "Loading reviews..."를 보여 줍니다. 이렇게 점진적으로 드러나는 화면이 만들어집니다.</p><div class="en-orig"><p>The outer boundary shows "Loading product details..." until <code>ProductDetails</code> resolves. Once it does, the inner boundary becomes visible, showing "Loading reviews..." until <code>Reviews</code> resolves. This creates a progressive reveal.</p></div>
+<h3 class="sec" id="push-dynamic-access-down"><a class="anchor" href="#push-dynamic-access-down">Push dynamic access down<span class="ko">dynamic 접근을 아래로 내리기</span></a></h3>
+<p>즉시 stream되는 부분을 최대화하는 핵심은 dynamic 데이터 접근을 실제로 그것이 필요한 component까지 미루는 것입니다. 이는 <code>params</code>, <code>searchParams</code>, <code>cookies()</code>, <code>headers()</code>, 그리고 데이터 fetch에 적용됩니다. layout이나 page 맨 위에서 이들 중 하나라도 <code>await</code>하면, 그 지점 아래의 모든 것이 dynamic이 되어 static shell의 일부로 prerender될 수 없습니다.</p><div class="en-orig"><p>The key to maximizing what streams instantly is to defer dynamic data access to the component that actually needs it. This applies to <code>params</code>, <code>searchParams</code>, <code>cookies()</code>, <code>headers()</code>, and data fetches. If you <code>await</code> any of these at the top of a layout or page, everything below that point becomes dynamic and cannot be prerendered as part of the static shell.</p></div>
+<p>대신 promise를 아래로 전달하고, 이를 사용하는 component가 <code>&lt;Suspense&gt;</code> boundary 안에서 resolve하도록 하세요:</p><div class="en-orig"><p>Instead, pass the promise down and let the consuming component resolve it inside a <code>&lt;Suspense&gt;</code> boundary:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/layout.tsx" data-js="app/dashboard/layout.js">app/dashboard/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { Nav } from &#x27;./nav&#x27;
+import { UserMenu } from &#x27;./user-menu&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  const cookieStore = cookies() // Start the work, but don&#x27;t await
+
+  return (
+    &lt;div&gt;
+      &lt;Nav&gt;
+        &lt;Suspense fallback={&lt;p&gt;Loading user...&lt;/p&gt;}&gt;
+          &lt;UserMenu cookiePromise={cookieStore} /&gt;
+        &lt;/Suspense&gt;
+      &lt;/Nav&gt;
+      {children}
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { Suspense } from &#x27;react&#x27;
+import { Nav } from &#x27;./nav&#x27;
+import { UserMenu } from &#x27;./user-menu&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+
+export default function DashboardLayout({ children }) {
+  const cookieStore = cookies() // Start the work, but don&#x27;t await
+
+  return (
+    &lt;div&gt;
+      &lt;Nav&gt;
+        &lt;Suspense fallback={&lt;p&gt;Loading user...&lt;/p&gt;}&gt;
+          &lt;UserMenu cookiePromise={cookieStore} /&gt;
+        &lt;/Suspense&gt;
+      &lt;/Nav&gt;
+      {children}
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>이 예제에서 <code>&lt;Nav&gt;</code>와 <code>{children}</code>은 layout에서 아무것도 await하지 않으므로 static shell의 일부로 render됩니다. cookie promise를 resolve할 때 <code>&lt;UserMenu&gt;</code>만 suspend됩니다. 만약 layout 맨 위에서 <code>await cookies()</code>를 호출했다면, layout 전체와 그 모든 children이 prerender되지 못하고 막혔을 것입니다.</p><div class="en-orig"><p>In this example, <code>&lt;Nav&gt;</code> and <code>{children}</code> render as part of the static shell because nothing in the layout awaits. Only <code>&lt;UserMenu&gt;</code> suspends when it resolves the cookie promise. If the layout had called <code>await cookies()</code> at the top instead, the entire layout and all its children would be blocked from prerendering.</p></div>
+<p>같은 원칙이 <code>params</code>와 <code>searchParams</code>에도 적용됩니다. page 수준에서 destructuring하는 대신, 값이 필요한 component에 promise를 전달하세요:</p><div class="en-orig"><p>The same principle applies to <code>params</code> and <code>searchParams</code>. Rather than destructuring them at the page level, pass the promise to the component that needs the value:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/shop/[category]/page.tsx" data-js="app/shop/[category]/page.js">app/shop/[category]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { Hero } from &#x27;./hero&#x27;
+import { ProductGrid } from &#x27;./product-grid&#x27;
+
+export async function generateStaticParams() {
+  const categories = await getCategories()
+  return categories.map((c) =&gt; ({ category: c.slug }))
+}
+
+export default function ShopPage({
+  params,
+}: {
+  params: Promise&lt;{ category: string }&gt;
+}) {
+  return (
+    &lt;div&gt;
+      &lt;Hero /&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading products...&lt;/p&gt;}&gt;
+        &lt;ProductGrid paramsPromise={params} /&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { Suspense } from &#x27;react&#x27;
+import { Hero } from &#x27;./hero&#x27;
+import { ProductGrid } from &#x27;./product-grid&#x27;
+
+export async function generateStaticParams() {
+  const categories = await getCategories()
+  return categories.map((c) =&gt; ({ category: c.slug }))
+}
+
+export default function ShopPage({ params }) {
+  return (
+    &lt;div&gt;
+      &lt;Hero /&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading products...&lt;/p&gt;}&gt;
+        &lt;ProductGrid paramsPromise={params} /&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p><code>&lt;Hero /&gt;</code>는 static shell의 일부로 그려집니다. <code>&lt;ProductGrid&gt;</code>는 category가 필요할 때 <code>params</code>를 resolve하며, 자신의 boundary 안에서만 suspend됩니다.</p><div class="en-orig"><p><code>&lt;Hero /&gt;</code> paints as part of the static shell. <code>&lt;ProductGrid&gt;</code> resolves <code>params</code> when it needs the category, suspending only within its boundary.</p></div>
+<p><code>.then()</code>으로 promise를 inline으로 풀어서, child component가 promise 대신 일반 값을 받게 할 수도 있습니다:</p><div class="en-orig"><p>You can also unwrap the promise inline with <code>.then()</code>, so the child component receives a plain value instead of a promise:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/shop/[category]/page.tsx" data-js="app/shop/[category]/page.js">app/shop/[category]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&lt;Suspense fallback={&lt;p&gt;Loading products...&lt;/p&gt;}&gt;
+  {params.then(({ category }) =&gt; (
+    &lt;ProductGrid category={category} /&gt;
+  ))}
+&lt;/Suspense&gt;</code></pre><pre class="v-js" hidden><code class="language-javascript">&lt;Suspense fallback={&lt;p&gt;Loading products...&lt;/p&gt;}&gt;
+  {params.then(({ category }) =&gt; (
+    &lt;ProductGrid category={category} /&gt;
+  ))}
+&lt;/Suspense&gt;</code></pre></div></div>
+<p>이렇게 하면 <code>ProductGrid</code>를 단순하게 유지하면서(<code>Promise</code>가 아니라 <code>string</code>을 받음) <code>params</code> 접근은 여전히 Suspense boundary 안으로 미룰 수 있습니다.</p><div class="en-orig"><p>This keeps <code>ProductGrid</code> simple (it takes a <code>string</code>, not a <code>Promise</code>) while still deferring the <code>params</code> access to inside the Suspense boundary.</p></div>
+<h3 class="sec" id="when-to-use-loadingjs-vs-suspense"><a class="anchor" href="#when-to-use-loadingjs-vs-suspense">When to use <code>loading.js</code> vs <code>&lt;Suspense&gt;</code><span class="ko"><code>loading.js</code>와 <code>&lt;Suspense&gt;</code> 중 언제 무엇을 쓸까</span></a></h3>
+<div class="table-wrap"><table>
+<thead><tr><th></th><th><code>loading.js</code></th><th><code>&lt;Suspense&gt;</code></th></tr></thead>
+<tbody>
+<tr><td><strong>Scope</strong></td><td>페이지 전체</td><td>모든 component</td></tr>
+<tr><td><strong>Setup</strong></td><td>파일 하나 추가</td><td>component를 명시적으로 감싸기</td></tr>
+<tr><td><strong>Navigation</strong></td><td>즉시 표시되는 fallback으로 prefetch됨</td><td>기본적으로 prefetch되지 않음</td></tr>
+<tr><td><strong>Best for</strong></td><td>데이터 없이는 아무것도 render되지 않는 페이지</td><td>대부분의 페이지, 세밀한 제어용</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th></th><th><code>loading.js</code></th><th><code>&lt;Suspense&gt;</code></th></tr></thead>
+<tbody>
+<tr><td><strong>Scope</strong></td><td>Entire page</td><td>Any component</td></tr>
+<tr><td><strong>Setup</strong></td><td>Drop in a file</td><td>Wrap components explicitly</td></tr>
+<tr><td><strong>Navigation</strong></td><td>Prefetched as instant fallback</td><td>Not prefetched by default</td></tr>
+<tr><td><strong>Best for</strong></td><td>Pages where nothing renders without data</td><td>Most pages, for granular control</td></tr>
+</tbody></table></div></div>
+<p>dynamic 접근 가까이에 명시적인 <code>&lt;Suspense&gt;</code> boundary를 두는 것을 선호하세요. prerenderer는 dynamic 작업을 만나면 tree를 거슬러 올라가며 가장 가까운 Suspense boundary를 찾습니다. 아무것도 찾지 못하면 build가 <a href="https://nextjs.org/docs/messages/blocking-prerender-dynamic" target="_blank" rel="noopener">blocking route error</a>로 실패합니다. tree 위쪽에 있는 <code>loading.js</code>도 유효한 boundary이므로 framework는 그것을 찾고 멈추지만, 그러면 페이지 전체가 세분화된 streaming 대신 전체 페이지 skeleton으로 fallback됩니다.</p><div class="en-orig"><p>Prefer explicit <code>&lt;Suspense&gt;</code> boundaries close to the dynamic access. When the prerenderer encounters dynamic work, it walks up the tree looking for the nearest Suspense boundary. If none is found, the build fails with a <a href="https://nextjs.org/docs/messages/blocking-prerender-dynamic" target="_blank" rel="noopener">blocking route error</a>. A <code>loading.js</code> high in the tree is a valid boundary, so the framework finds it and stops, but now the entire page falls back to a full-page skeleton instead of streaming granularly.</p></div>
+<h3 class="sec" id="error-handling-mid-stream"><a class="anchor" href="#error-handling-mid-stream">Error handling mid-stream<span class="ko">stream 도중 error 처리</span></a></h3>
+<p>streaming이 시작된 뒤 component가 error를 throw하면, 가장 가까운 <a href="app-api-reference-file-conventions-error.html"><code>error.js</code></a> boundary가 이를 잡아서 실패한 component 자리에 error UI를 render합니다. 페이지의 나머지는 그대로 유지되고, error가 난 섹션만 교체됩니다.</p><div class="en-orig"><p>If a component throws an error after streaming has started, the nearest <a href="app-api-reference-file-conventions-error.html"><code>error.js</code></a> boundary catches it and renders the error UI in place of the failed component. The rest of the page remains intact, only the section that errored is replaced.</p></div>
+<p>HTTP status code(<code>200 OK</code>)는 첫 chunk와 함께 이미 전송되었으므로 <code>4xx</code>나 <code>5xx</code>로 바꿀 수 없습니다. error는 전적으로 stream된 HTML 안에서 처리됩니다. 이 제약에 대한 자세한 내용은 <a href="#the-http-contract">The HTTP contract</a>를 참고하세요.</p><div class="en-orig"><p>Because the HTTP status code (<code>200 OK</code>) has already been sent with the first chunk, it cannot be changed to a <code>4xx</code> or <code>5xx</code>. The error is handled entirely within the streamed HTML. See <a href="#the-http-contract">The HTTP contract</a> for more on this constraint.</p></div>
+<h2 class="sec" id="streaming-data-to-the-client"><a class="anchor" href="#streaming-data-to-the-client">Streaming data to the client<span class="ko">client로 데이터 streaming하기</span></a></h2>
+<p><a href="app-glossary.html#server-component">Server Component</a>에서 fetch를 시작하고, 아직 resolve되지 않은 promise를 <a href="app-glossary.html#client-component">Client Component</a>에 prop으로 전달할 수 있습니다. promise는 필요한 만큼 여러 계층을 거쳐 전달할 수 있습니다. React의 <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use</code></a> API를 호출해 값을 읽는 component만 <code>&lt;Suspense&gt;</code> boundary로 감싸면 됩니다:</p><div class="en-orig"><p>You can start a fetch in a <a href="app-glossary.html#server-component">Server Component</a> and pass the unresolved promise as a prop to a <a href="app-glossary.html#client-component">Client Component</a>. The promise can be passed through as many layers as needed. Only the component that calls React's <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use</code></a> API to read the value needs a <code>&lt;Suspense&gt;</code> boundary around it:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/page.tsx" data-js="app/dashboard/page.js">app/dashboard/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { StatsChart } from &#x27;./stats-chart&#x27;
+
+type Stats = { revenue: number; orders: number }
+
+async function getStats(): Promise&lt;Stats&gt; {
+  const res = await fetch(&#x27;https://api.example.com/stats&#x27;)
+  return res.json()
+}
+
+export default function Dashboard() {
+  // Start the fetch during server render, don&#x27;t await it
+  const statsPromise = getStats()
+
+  return (
+    &lt;Suspense fallback={&lt;p&gt;Loading chart...&lt;/p&gt;}&gt;
+      &lt;StatsChart dataPromise={statsPromise} /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { Suspense } from &#x27;react&#x27;
+import { StatsChart } from &#x27;./stats-chart&#x27;
+
+async function getStats() {
+  const res = await fetch(&#x27;https://api.example.com/stats&#x27;)
+  return res.json()
+}
+
+export default function Dashboard() {
+  // Start the fetch during server render, don&#x27;t await it
+  const statsPromise = getStats()
+
+  return (
+    &lt;Suspense fallback={&lt;p&gt;Loading chart...&lt;/p&gt;}&gt;
+      &lt;StatsChart dataPromise={statsPromise} /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/stats-chart.tsx" data-js="app/dashboard/stats-chart.js">app/dashboard/stats-chart.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { use } from &#x27;react&#x27;
+
+type Stats = { revenue: number; orders: number }
+
+export function StatsChart({ dataPromise }: { dataPromise: Promise&lt;Stats&gt; }) {
+  const stats = use(dataPromise)
+
+  return &lt;div&gt;{/* render chart with stats */}&lt;/div&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { use } from &#x27;react&#x27;
+
+export function StatsChart({ dataPromise }) {
+  const stats = use(dataPromise)
+
+  return &lt;div&gt;{/* render chart with stats */}&lt;/div&gt;
+}</code></pre></div></div>
+<p>fallback은 static shell과 함께 즉시 전송됩니다. promise가 resolve되면 React가 완성된 HTML을 페이지에 stream합니다.</p><div class="en-orig"><p>The fallback is sent immediately with the static shell. When the promise resolves, React streams the completed HTML into the page.</p></div>
+<h3 class="sec" id="sharing-a-promise-across-the-tree"><a class="anchor" href="#sharing-a-promise-across-the-tree">Sharing a promise across the tree<span class="ko">tree 전체에서 promise 공유하기</span></a></h3>
+<p>여러 component가 같은 데이터를 필요로 한다면, fetch를 한 번만 시작하고 promise를 context provider를 통해 전달해서 subtree의 어떤 component든 <code>use()</code>로 resolve할 수 있게 하세요:</p><div class="en-orig"><p>When multiple components need the same data, start the fetch once and pass the promise through a context provider so any component in the subtree can resolve it with <code>use()</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { getUser } from &#x27;@/lib/data&#x27;
+// Stores the promise in React context for the subtree
+import { UserProvider } from &#x27;./user-provider&#x27;
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  const userPromise = getUser()
+
+  return &lt;UserProvider userPromise={userPromise}&gt;{children}&lt;/UserProvider&gt;
+}</code></pre></div></div>
+<p>전체 pattern은 <a href="app-guides-single-page-applications.html#using-reacts-use-within-a-context-provider">Context Provider 안에서 React의 <code>use</code> 사용하기</a>를 참고하세요.</p><div class="en-orig"><p>See <a href="app-guides-single-page-applications.html#using-reacts-use-within-a-context-provider">Using React's <code>use</code> within a Context Provider</a> for the full pattern.</p></div>
+<h2 class="sec" id="streaming-in-route-handlers"><a class="anchor" href="#streaming-in-route-handlers">Streaming in Route Handlers<span class="ko">Route Handler에서 streaming</span></a></h2>
+<p>위의 pattern들은 UI를 stream하기 위해 React와 Suspense에 의존합니다. React rendering 밖에서는 <a href="app-api-reference-file-conventions-route.html">Route Handler</a>가 Web Streams API를 사용해 raw response를 stream할 수 있습니다. 이는 Server-Sent Events, 대용량 파일 생성, 또는 데이터가 점진적으로 도착하길 원하는 모든 response에 유용합니다:</p><div class="en-orig"><p>The patterns above rely on React and Suspense to stream UI. Outside of React rendering, <a href="app-api-reference-file-conventions-route.html">Route Handlers</a> can stream raw responses using the Web Streams API. This is useful for Server-Sent Events, large file generation, or any response where you want data to arrive progressively:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/api/stream/route.ts" data-js="app/api/stream/route.js">app/api/stream/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function GET() {
+  const encoder = new TextEncoder()
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      for (let i = 0; i &lt; 10; i++) {
+        controller.enqueue(encoder.encode(`Chunk ${i + 1}\n`))
+        await new Promise((resolve) =&gt; setTimeout(resolve, 200))
+      }
+      controller.close()
+    },
+  })
+
+  return new Response(stream, {
+    headers: {
+      &#x27;Content-Type&#x27;: &#x27;text/plain; charset=utf-8&#x27;,
+      &#x27;X-Content-Type-Options&#x27;: &#x27;nosniff&#x27;,
+    },
+  })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function GET() {
+  const encoder = new TextEncoder()
+
+  const stream = new ReadableStream({
+    async start(controller) {
+      for (let i = 0; i &lt; 10; i++) {
+        controller.enqueue(encoder.encode(`Chunk ${i + 1}\n`))
+        await new Promise((resolve) =&gt; setTimeout(resolve, 200))
+      }
+      controller.close()
+    },
+  })
+
+  return new Response(stream, {
+    headers: {
+      &#x27;Content-Type&#x27;: &#x27;text/plain; charset=utf-8&#x27;,
+      &#x27;X-Content-Type-Options&#x27;: &#x27;nosniff&#x27;,
+    },
+  })
+}</code></pre></div></div>
+<p>브라우저에서 이 route에 직접 접속하거나 <code>curl</code>로 요청하면 chunk가 하나씩 도착하는 것을 볼 수 있습니다:</p><div class="en-orig"><p>Visit this route directly in the browser or with <code>curl</code> to see chunks arrive one at a time:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-bash">curl http://localhost:3000/api/stream</code></pre></div></div>
+<p>파일 전체를 메모리에 로드하지 않고 stream할 수도 있습니다. <code>FileHandle.readableWebStream()</code>을 사용하면 파일에서 바로 Web <code>ReadableStream</code>을 얻을 수 있습니다:</p><div class="en-orig"><p>You can also stream files without loading them entirely into memory. Use <code>FileHandle.readableWebStream()</code> to get a Web <code>ReadableStream</code> directly from a file:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/api/download/route.ts" data-js="app/api/download/route.js">app/api/download/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { open } from &#x27;node:fs/promises&#x27;
+
+export async function GET() {
+  const file = await open(&#x27;/path/to/large-file.csv&#x27;)
+
+  return new Response(file.readableWebStream(), {
+    headers: {
+      &#x27;Content-Type&#x27;: &#x27;text/csv&#x27;,
+      &#x27;Content-Disposition&#x27;: &#x27;attachment; filename=&quot;data.csv&quot;&#x27;,
+    },
+  })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { open } from &#x27;node:fs/promises&#x27;
+
+export async function GET() {
+  const file = await open(&#x27;/path/to/large-file.csv&#x27;)
+
+  return new Response(file.readableWebStream(), {
+    headers: {
+      &#x27;Content-Type&#x27;: &#x27;text/csv&#x27;,
+      &#x27;Content-Disposition&#x27;: &#x27;attachment; filename=&quot;data.csv&quot;&#x27;,
+    },
+  })
+}</code></pre></div></div>
+<p>streaming endpoint를 만드는 방법에 대한 자세한 내용은 <a href="app-api-reference-file-conventions-route.html">Route Handler API reference</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-api-reference-file-conventions-route.html">Route Handler API reference</a> for more details on building streaming endpoints.</p></div>
+<h2 class="sec" id="streaming-and-web-vitals"><a class="anchor" href="#streaming-and-web-vitals">Streaming and Web Vitals<span class="ko">Streaming과 Web Vitals</span></a></h2>
+<p><a href="https://web.dev/articles/vitals" target="_blank" rel="noopener">Web Vitals</a>는 Google이 사용자 경험을 측정하는 데 사용하는 지표입니다. Streaming은 그중 여러 지표에 직접적인 영향을 줍니다.</p><div class="en-orig"><p><a href="https://web.dev/articles/vitals" target="_blank" rel="noopener">Web Vitals</a> are the metrics Google uses to measure user experience. Streaming directly affects several of them.</p></div>
+<h3 class="sec" id="ttfb-and-fcp"><a class="anchor" href="#ttfb-and-fcp">TTFB and FCP<span class="ko">TTFB와 FCP</span></a></h3>
+<p>streaming이 없으면 server는 HTML을 보내기 전에 모든 데이터를 기다리므로, TTFB는 가장 느린 query와 같아집니다. streaming을 사용하면 server는 static shell이 준비되자마자 보냅니다. TTFB는 layout과 fallback을 render하는 데 걸리는 시간으로 줄어듭니다. 브라우저는 static shell을 즉시 그리므로, FCP는 데이터 fetching 시간과 분리됩니다.</p><div class="en-orig"><p>Without streaming, the server waits for all data before sending any HTML, so TTFB equals the slowest query. With streaming, the server sends the static shell as soon as it's ready. TTFB drops to the time it takes to render your layouts and fallbacks. The browser paints the static shell immediately, so FCP is decoupled from your data fetching time.</p></div>
+<h3 class="sec" id="lcp-largest-contentful-paint"><a class="anchor" href="#lcp-largest-contentful-paint">LCP (Largest Contentful Paint)</a></h3>
+<p>LCP element(hero 이미지, 메인 제목, 상품 사진)가 Suspense boundary 안에 있다면, 그 boundary의 콘텐츠가 교체되어 들어오기 전까지는 그려질 수 없습니다. 그러면 그 element는 초기 server response 시간이 아니라 server가 그것을 render하기 위해 하는 작업에 의존하게 됩니다. 이를 드러내는 데에는 client 쪽 비용도 듭니다. React가 boundary의 HTML과 함께 작은 inline script를 stream하고, 콘텐츠는 그 script가 실행된 뒤에야 나타나기 때문입니다.</p><div class="en-orig"><p>If your LCP element (a hero image, a main heading, a product photo) is inside a Suspense boundary, it can't paint until that boundary's content is swapped in. The element then depends on the work the server does to render it, not on your initial server response time. Revealing it costs something on the client too, because React streams a small inline script alongside the boundary's HTML and the content only appears once that script runs.</p></div>
+<p>boundary가 LCP element를 지연시키는 이유는 데이터 fetching만이 아닙니다. React는 큰 boundary도 잠시 보류하는데, 그 HTML을 보내는 데 시간이 걸리기 때문입니다. <a href="https://react.dev/reference/react/Suspense#what-activates-a-suspense-boundary" target="_blank" rel="noopener">Suspense boundary를 활성화하는 요인</a>을 참고하세요.</p><div class="en-orig"><p>Data fetching is not the only reason a boundary delays your LCP element. React also holds back a large boundary, because sending its HTML takes time. See <a href="https://react.dev/reference/react/Suspense#what-activates-a-suspense-boundary" target="_blank" rel="noopener">what activates a Suspense boundary</a>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>경험상, Suspense boundary가 있다면 React는 그것을 사용할 수 있습니다. 네트워크가 느리거나 CPU가 바쁘면 concurrent rendering이 예상하지 못한 상황에서도 그 boundary로 fallback할 수 있습니다. boundary를 추가한다는 것은 이를 받아들인다는 뜻이므로, 필요하지 않은 boundary는 추가하지 마세요.</p><div class="en-orig"><p>As a rule of thumb, if there's a Suspense boundary, React might use it. Under a slow network or a busy CPU, concurrent rendering can fall back to it even when you didn't expect it. Adding a boundary means accepting that, so don't add one you don't need.</p></div></div></div>
+<p>LCP를 빠르게 유지하려면:</p><div class="en-orig"><p>To keep LCP fast:</p></div>
+<ul>
+<li>LCP element를 Suspense boundary <strong>바깥</strong> 또는 <strong>위쪽</strong>에 두어 static shell의 일부로 render되게 하세요.</li>
+<li>LCP 이미지에는 <code>next/image</code>의 <a href="app-api-reference-components-image.html#preload"><code>preload</code></a> prop을 사용하세요. 이 prop은 <code>&lt;head&gt;</code>에 <code>&lt;link rel=&quot;preload&quot;&gt;</code>를 넣어 주므로, <code>&lt;img&gt;</code> tag가 HTML에 나타나기도 전에 브라우저가 맨 첫 chunk부터 이미지를 가져오기 시작합니다. 이는 이미지를 언제 가져오는지를 제어할 뿐, 언제 그려지는지를 제어하지는 않습니다. boundary 안의 이미지는 여전히 교체를 기다립니다.</li>
+<li>이미지가 아닌 LCP element(텍스트, 제목)는 Suspense boundary 바깥에서 render하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>Keep LCP elements <strong>outside</strong> or <strong>above</strong> Suspense boundaries so they render as part of the static shell.</li>
+<li>Use the <a href="app-api-reference-components-image.html#preload"><code>preload</code></a> prop on <code>next/image</code> for LCP images. This injects a <code>&lt;link rel=&quot;preload&quot;&gt;</code> into the <code>&lt;head&gt;</code>, so the browser starts fetching the image from the very first chunk, before the <code>&lt;img&gt;</code> tag even appears in the HTML. It controls when the image is fetched, not when it paints. An image inside a boundary still waits for the swap.</li>
+<li>For non-image LCP elements (text, headings), render them outside Suspense boundaries.</li>
+</ul></div>
+<h3 class="sec" id="cls-cumulative-layout-shift"><a class="anchor" href="#cls-cumulative-layout-shift">CLS (Cumulative Layout Shift)</a></h3>
+<p>Suspense fallback이 resolve된 콘텐츠로 교체되면 브라우저는 페이지를 reflow합니다. fallback과 resolve된 콘텐츠의 크기가 다르면 주변 layout이 밀려납니다. CLS를 최소화하려면:</p><div class="en-orig"><p>When a Suspense fallback is replaced by the resolved content, the browser reflows the page. If the fallback and the resolved content are different sizes, the surrounding layout shifts. To minimize CLS:</p></div>
+<ul>
+<li>표현하려는 콘텐츠의 <strong>크기와 일치하는</strong> skeleton fallback을 디자인하세요. 최종 card grid와 같은 높이와 너비를 가진 skeleton은 layout shift를 막아 줍니다.</li>
+<li>Suspense boundary 주변에 고정 높이나 min-height container를 사용해, 콘텐츠가 도착하기 전에 공간을 확보해 두세요.</li>
+</ul><div class="en-orig"><ul>
+<li>Design skeleton fallbacks that <strong>match the dimensions</strong> of the content they represent. A skeleton with the same height and width as the final card grid prevents shifts.</li>
+<li>Use fixed or min-height containers around Suspense boundaries so the space is reserved before content arrives.</li>
+</ul></div>
+<h3 class="sec" id="inp-interaction-to-next-paint"><a class="anchor" href="#inp-interaction-to-next-paint">INP (Interaction to Next Paint)</a></h3>
+<p>Streaming은 <a href="https://react.dev/reference/react-dom/client/hydrateRoot" target="_blank" rel="noopener">selective hydration</a>을 가능하게 합니다. React는 component가 stream되어 들어오는 대로 각각 독립적으로 hydrate하고, 사용자가 상호작용하고 있는 부분을 우선적으로 hydrate합니다. 각 <code>&lt;Suspense&gt;</code> boundary는 하나의 hydration 단위입니다. boundary가 없으면 React는 페이지 전체를 한 번의 blocking pass로 hydrate합니다. boundary가 있으면 hydration이 브라우저에 제어권을 양보하는 작은 task들로 나뉘어 main thread가 반응성을 유지합니다. <a href="https://streaming-demo.labs.vercel.dev/hydration-single" target="_blank" rel="noopener">함께 제공되는 demo</a>에서 한 번의 blocking hydration pass와 Suspense boundary를 사용한 <a href="https://streaming-demo.labs.vercel.dev/hydration-split" target="_blank" rel="noopener">split hydration</a>을 비교해 볼 수 있습니다.</p><div class="en-orig"><p>Streaming enables <a href="https://react.dev/reference/react-dom/client/hydrateRoot" target="_blank" rel="noopener">selective hydration</a>: React hydrates components independently as they stream in, and prioritizes hydrating whatever the user is interacting with. Each <code>&lt;Suspense&gt;</code> boundary is a hydration unit. Without them, React hydrates the entire page in one blocking pass. With them, hydration is broken into smaller tasks that yield to the browser, keeping the main thread responsive. The <a href="https://streaming-demo.labs.vercel.dev/hydration-single" target="_blank" rel="noopener">companion demo</a> lets you compare a single blocking hydration pass with <a href="https://streaming-demo.labs.vercel.dev/hydration-split" target="_blank" rel="noopener">split hydration</a> using Suspense boundaries.</p></div>
+<h3 class="sec" id="early-resource-discovery"><a class="anchor" href="#early-resource-discovery">Early resource discovery<span class="ko">이른 resource 발견</span></a></h3>
+<p>static shell은 맨 첫 HTML chunk에 <code>&lt;link&gt;</code>와 <code>&lt;script&gt;</code> tag를 포함합니다. 브라우저는 server가 아직 콘텐츠를 생성하는 동안 CSS, JavaScript, font를 즉시 발견하고 가져오기 시작합니다. resource는 server가 작업하는 시간(think time) 이후가 아니라 그 동안에 fetch됩니다.</p><div class="en-orig"><p>The static shell includes <code>&lt;link&gt;</code> and <code>&lt;script&gt;</code> tags in the very first HTML chunk. The browser discovers and starts fetching CSS, JavaScript, and fonts immediately, while the server is still generating content. Resources are fetched during server think time rather than after it.</p></div>
+<p>위의 <a href="#parallel-streaming-with-sibling-boundaries">dashboard 예제</a>에서 <code>&lt;h1&gt;</code>은 shell 안에서 render되고(LCP에 좋음), 각 데이터 섹션은 자신의 Suspense boundary 뒤에서 독립적으로 stream되며(hydration이 나뉘므로 INP에 좋음), skeleton fallback이 공간을 확보합니다(CLS에 좋음).</p><div class="en-orig"><p>In the <a href="#parallel-streaming-with-sibling-boundaries">dashboard example</a> above, the <code>&lt;h1&gt;</code> renders in the shell (good for LCP), each data section streams independently behind its own Suspense boundary (good for INP since hydration is split), and the skeleton fallbacks reserve space (good for CLS).</p></div>
+<h2 class="sec" id="the-http-contract"><a class="anchor" href="#the-http-contract">The HTTP contract<span class="ko">HTTP 계약</span></a></h2>
+<p>streaming이 시작되면 HTTP response header(status code 포함)는 이미 client로 전송된 상태입니다. <strong>streaming이 시작된 뒤에는 status code나 header를 변경할 수 없습니다.</strong> 이 섹션의 모든 내용은 이 근본적인 제약에서 비롯됩니다.</p><div class="en-orig"><p>Once streaming begins, the HTTP response headers (including the status code) have already been sent to the client. <strong>You cannot change the status code or headers after streaming starts.</strong> Everything in this section flows from this fundamental constraint.</p></div>
+<h3 class="sec" id="status-codes"><a class="anchor" href="#status-codes">Status codes<span class="ko">Status code</span></a></h3>
+<p><code>&lt;Suspense&gt;</code> fallback이 render되거나 component가 suspend되면, server는 HTML stream 전송을 시작하기 위해 <code>200 OK</code>로 확정해야 합니다. stream 도중에 <a href="app-api-reference-functions-not-found.html"><code>notFound()</code></a>가 호출되면 Next.js는 되돌아가서 status를 404로 바꿀 수 없습니다. 대신 stream되는 HTML에 <code>&lt;meta name=&quot;robots&quot; content=&quot;noindex&quot;&gt;</code>를 넣어 검색 엔진이 페이지를 index하지 않도록 합니다. 마찬가지로 stream 도중의 <a href="app-api-reference-functions-redirect.html"><code>redirect()</code></a>는 HTTP redirect header가 아니라 client-side redirect가 됩니다.</p><div class="en-orig"><p>When a <code>&lt;Suspense&gt;</code> fallback renders or a component suspends, the server must commit to <code>200 OK</code> in order to start sending the HTML stream. If a <a href="app-api-reference-functions-not-found.html"><code>notFound()</code></a> fires mid-stream, Next.js cannot go back and change the status to 404. Instead, it injects <code>&lt;meta name=&quot;robots&quot; content=&quot;noindex&quot;&gt;</code> into the streamed HTML so that search engines don't index the page. Similarly, a <a href="app-api-reference-functions-redirect.html"><code>redirect()</code></a> mid-stream becomes a client-side redirect rather than an HTTP redirect header.</p></div>
+<h3 class="sec" id="when-does-streaming-start"><a class="anchor" href="#when-does-streaming-start">When does streaming start?<span class="ko">streaming은 언제 시작될까?</span></a></h3>
+<p>response body는 Suspense fallback이 render될 때(예: <code>loading.tsx</code>) 또는 component가 <code>&lt;Suspense&gt;</code> boundary 아래에서 suspend될 때 streaming을 시작합니다. error에 대해 실제 HTTP status code를 얻으려면 <code>notFound()</code>를 어떤 <code>await</code>나 <code>&lt;Suspense&gt;</code> boundary보다도 <strong>앞에</strong> 두세요:</p><div class="en-orig"><p>The response body begins streaming when a Suspense fallback renders (for example, a <code>loading.tsx</code>) or when a component suspends under a <code>&lt;Suspense&gt;</code> boundary. To get a real HTTP status code for errors, place <code>notFound()</code> <strong>before</strong> any <code>await</code> or <code>&lt;Suspense&gt;</code> boundary:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/post/[slug]/page.tsx" data-js="app/post/[slug]/page.js">app/post/[slug]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { notFound } from &#x27;next/navigation&#x27;
+import { PostContent } from &#x27;./post-content&#x27;
+
+export async function generateStaticParams() {
+  const posts = await getPublishedPosts()
+  return posts.map((post) =&gt; ({ slug: post.slug }))
+}
+
+export default async function PostPage({
+  params,
+}: {
+  params: Promise&lt;{ slug: string }&gt;
+}) {
+  const { slug } = await params
+  const exists = await checkSlugExists(slug) // Fast existence check
+  if (!exists) notFound() // Real 404, before any Suspense boundary
+
+  return (
+    &lt;Suspense fallback={&lt;p&gt;Loading post...&lt;/p&gt;}&gt;
+      &lt;PostContent slug={slug} /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { Suspense } from &#x27;react&#x27;
+import { notFound } from &#x27;next/navigation&#x27;
+import { PostContent } from &#x27;./post-content&#x27;
+
+export async function generateStaticParams() {
+  const posts = await getPublishedPosts()
+  return posts.map((post) =&gt; ({ slug: post.slug }))
+}
+
+export default async function PostPage({ params }) {
+  const { slug } = await params
+  const exists = await checkSlugExists(slug) // Fast existence check
+  if (!exists) notFound() // Real 404, before any Suspense boundary
+
+  return (
+    &lt;Suspense fallback={&lt;p&gt;Loading post...&lt;/p&gt;}&gt;
+      &lt;PostContent slug={slug} /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="app-api-reference-file-conventions-proxy.html"><code>proxy</code></a>(redirect, rewrite, 또는 response 반환용)나 <a href="app-api-reference-config-next-config-js-redirects.html"><code>next.config.js</code> redirects</a>를 사용해 request를 일찍 거부할 수도 있습니다. 둘 다 페이지가 render되기 전에 실행되므로 HTTP status code를 여전히 사용할 수 있습니다.</p><div class="en-orig"><p>You can also reject requests early using <a href="app-api-reference-file-conventions-proxy.html"><code>proxy</code></a> (for redirects, rewrites, or returning a response) or <a href="app-api-reference-config-next-config-js-redirects.html"><code>next.config.js</code> redirects</a>. Both run before the page renders, so HTTP status codes are still available.</p></div></div></div>
+<h3 class="sec" id="bots-and-crawlers"><a class="anchor" href="#bots-and-crawlers">Bots and crawlers<span class="ko">Bot과 crawler</span></a></h3>
+<p>HTML만 처리할 수 있는(HTML-limited) bot과 crawler는 초기 HTML의 <code>&lt;head&gt;</code>에 metadata가 있어야 합니다. Next.js는 user agent로 이들을 감지하고, 페이지 콘텐츠를 stream하기 전에 <a href="app-api-reference-functions-generate-metadata.html"><code>generateMetadata</code></a>가 resolve되기를 기다립니다. 완전한 브라우저와 DOM을 처리할 수 있는 crawler는 대신 페이지 콘텐츠와 함께 <a href="app-api-reference-functions-generate-metadata.html#streaming-metadata">streaming metadata</a>를 받을 수 있습니다.</p><div class="en-orig"><p>HTML-limited bots and crawlers need metadata to be available in the <code>&lt;head&gt;</code> of the initial HTML. Next.js detects them by their user agent and waits for <a href="app-api-reference-functions-generate-metadata.html"><code>generateMetadata</code></a> to resolve before streaming the page content. Full browsers and DOM-capable crawlers can instead receive <a href="app-api-reference-functions-generate-metadata.html#streaming-metadata">streaming metadata</a> alongside the page content.</p></div>
+<p>어떤 bot이 blocking metadata를 받을지는 <a href="app-api-reference-config-next-config-js-htmlLimitedBots.html"><code>htmlLimitedBots</code></a> configuration option으로 customize할 수 있습니다. 자세한 내용은 <a href="app-api-reference-file-conventions-loading.html#seo"><code>loading.js</code> SEO 섹션</a>을 참고하세요.</p><div class="en-orig"><p>You can customize which bots receive blocking metadata with the <a href="app-api-reference-config-next-config-js-htmlLimitedBots.html"><code>htmlLimitedBots</code></a> configuration option. See the <a href="app-api-reference-file-conventions-loading.html#seo"><code>loading.js</code> SEO section</a> for more details.</p></div>
+<h4 class="sec" id="cache-components"><a class="anchor" href="#cache-components">Cache Components</a></h4>
+<p><a href="app-getting-started-caching.html">Cache Components</a>를 사용하면 방문자와 DOM을 처리할 수 있는 crawler는 prerender된 shell을 즉시 받고, dynamic 콘텐츠는 resolve되는 대로 stream되어 들어옵니다. HTML-limited bot은 prerender된 shell을 건너뛰고 페이지를 dynamic하게 render하므로 metadata를 <code>&lt;head&gt;</code>에 넣을 수 있습니다. metadata가 resolve되면 나머지 페이지 콘텐츠는 여전히 stream될 수 있습니다.</p><div class="en-orig"><p>With <a href="app-getting-started-caching.html">Cache Components</a>, visitors and DOM-capable crawlers receive the prerendered shell immediately, and dynamic content streams in as it resolves. HTML-limited bots skip the prerendered shell and render the page dynamically so metadata can be placed in the <code>&lt;head&gt;</code>. Once the metadata resolves, the remaining page content can still stream.</p></div>
+<p>prerender된 shell이 build-time 데이터나 request-time 환경에서 접근할 수 없는 값처럼 prerender 중에만 존재하는 입력에 의존한다면 이 점을 염두에 두세요. 방문자와 DOM을 처리할 수 있는 crawler는 그 코드를 다시 실행하지 않고 shell을 받지만, HTML-limited bot은 이를 dynamic하게 다시 render합니다. 그래서 사람에게는 잘 로드되는 페이지가 crawler에게는 render에 실패할 수 있습니다. shell이 의존하는 모든 데이터가 request time에도 사용 가능한지 확인하세요.</p><div class="en-orig"><p>Keep this in mind when your prerendered shell depends on inputs that only exist while prerendering, such as build-time data or values that are not reachable in the request-time environment. Visitors and DOM-capable crawlers receive the shell without re-running that code, but an HTML-limited bot re-renders it dynamically, so a page that loads for a person can fail to render for a crawler. Make sure any data the shell relies on is also available at request time.</p></div>
+<h2 class="sec" id="what-can-affect-streaming"><a class="anchor" href="#what-can-affect-streaming">What can affect streaming<span class="ko">streaming에 영향을 줄 수 있는 것</span></a></h2>
+<p>server와 client 사이에서 response를 buffering하는 계층이 있다면 어떤 것이든 streaming의 이점을 줄일 수 있습니다. server에서는 HTML이 점진적으로 모두 생성되더라도, proxy, CDN, 또는 client 자신이 render하기 전에 모든 chunk를 모아 버리면, 사용자는 점진적인 rendering 대신 지연된 response 하나를 보게 됩니다.</p><div class="en-orig"><p>Any layer between your server and the client that buffers the response can diminish the benefits of streaming. The HTML may be fully generated progressively on the server, but if a proxy, CDN, or even the client itself collects all the chunks before rendering them, the user sees a single delayed response instead of progressive rendering.</p></div>
+<h3 class="sec" id="reverse-proxies"><a class="anchor" href="#reverse-proxies">Reverse proxies<span class="ko">Reverse proxy</span></a></h3>
+<p>Nginx와 같은 reverse proxy는 기본적으로 response를 buffering합니다. <code>X-Accel-Buffering</code> header를 <code>no</code>로 설정해 buffering을 비활성화하세요:</p><div class="en-orig"><p>Nginx and similar reverse proxies buffer responses by default. Disable buffering by setting the <code>X-Accel-Buffering</code> header to <code>no</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  async headers() {
+    return [
+      {
+        source: &#x27;/:path*{/}?&#x27;,
+        headers: [
+          {
+            key: &#x27;X-Accel-Buffering&#x27;,
+            value: &#x27;no&#x27;,
+          },
+        ],
+      },
+    ]
+  },
+}</code></pre></div></div>
+<h3 class="sec" id="cdns"><a class="anchor" href="#cdns">CDNs<span class="ko">CDN</span></a></h3>
+<p>Content Delivery Network는 response 전체를 buffering한 뒤 client로 전달할 수 있습니다. 사용하는 CDN 제공자의 문서에서 streaming 지원 여부를 확인하세요. 일부는 chunked response를 그대로 통과시키려면 특정 설정이나 요금제(plan tier)가 필요합니다.</p><div class="en-orig"><p>Content Delivery Networks may buffer entire responses before forwarding them to the client. Check your CDN provider's documentation for streaming support. Some require specific configuration or plan tiers to pass through chunked responses.</p></div>
+<h3 class="sec" id="serverless-platforms"><a class="anchor" href="#serverless-platforms">Serverless platforms<span class="ko">Serverless 플랫폼</span></a></h3>
+<p>모든 serverless 환경이 streaming을 지원하는 것은 아닙니다. 예를 들어 AWS Lambda는 <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html" target="_blank" rel="noopener">response streaming mode</a>를 명시적으로 활성화해야 합니다(기본값이 아님). Vercel은 streaming을 기본적으로 지원합니다.</p><div class="en-orig"><p>Not all serverless environments support streaming. AWS Lambda, for example, requires <a href="https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html" target="_blank" rel="noopener">response streaming mode</a> to be explicitly enabled (it is not the default). Vercel supports streaming natively.</p></div>
+<h3 class="sec" id="compression"><a class="anchor" href="#compression">Compression<span class="ko">압축</span></a></h3>
+<p>Gzip과 Brotli 압축은 효율적으로 압축하려면 충분한 데이터가 필요하기 때문에, flush하기 전에 내부적으로 chunk를 buffering할 수 있습니다. 이로 인해 처음 보이는 chunk에 지연이 생길 수 있습니다. streaming 지연이 보인다면 압축 계층이 충분히 적극적으로 flush하고 있는지 확인하세요.</p><div class="en-orig"><p>Gzip and Brotli compression can buffer chunks internally before flushing, as the compression algorithm needs enough data to compress efficiently. This can add latency to the first visible chunk. If you notice streaming delays, check whether your compression layer is flushing aggressively enough.</p></div>
+<h3 class="sec" id="clients"><a class="anchor" href="#clients">Clients<span class="ko">Client</span></a></h3>
+<p>buffering은 client에서도 일어납니다. <a href="https://bugs.webkit.org/show_bug.cgi?id=252413" target="_blank" rel="noopener">Safari/WebKit</a>은 1024 bytes를 받을 때까지 streaming response를 buffering하므로, 아주 작은 response는 점진적으로가 아니라 한 번에 그려집니다. 실제 애플리케이션은 이 기준을 쉽게 넘기 때문에(layout, style, script) 최소한의 demo나 아주 작은 Route Handler response에만 영향을 줍니다.</p><div class="en-orig"><p>Buffering also happens at the client. <a href="https://bugs.webkit.org/show_bug.cgi?id=252413" target="_blank" rel="noopener">Safari/WebKit</a> buffers streaming responses until 1024 bytes have been received, so very small responses paint all at once instead of progressively. Real applications easily exceed this threshold (layouts, styles, scripts), so it only affects minimal demos or tiny Route Handler responses.</p></div>
+<p><code>curl</code> 같은 command-line 도구도 기본적으로 buffering합니다. <code>-N</code> flag는 출력 buffering을 비활성화하지만, <code>curl</code>은 여전히 줄바꿈 문자에 의존해 terminal에 줄을 flush합니다. 줄바꿈 없이 chunk를 보내는 stream은 <code>-N</code>을 써도 멈춘 것처럼 보일 수 있습니다.</p><div class="en-orig"><p>Command-line tools like <code>curl</code> also buffer by default. The <code>-N</code> flag disables output buffering, but <code>curl</code> still relies on newline characters to flush lines to the terminal. A stream that sends chunks without newlines may appear to stall even with <code>-N</code>.</p></div>
+<h3 class="sec" id="verifying-that-streaming-works"><a class="anchor" href="#verifying-that-streaming-works">Verifying that streaming works<span class="ko">streaming 동작 확인하기</span></a></h3>
+<p>이 섹션은 HTTP response가 인프라를 거쳐 실제로 chunk 단위로 도착하는지 확인하는 방법에 관한 것입니다. 의미 있는 loading state를 설계하고 Suspense boundary를 효과적으로 배치하는 방법은 <a href="#granular-streaming-with-suspense">Granular streaming with <code>&lt;Suspense&gt;</code></a>와 <a href="app-getting-started-caching.html">Cache Components</a> 가이드를 참고하세요.</p><div class="en-orig"><p>This section is about confirming the HTTP response is actually arriving in chunks through your infrastructure. For guidance on designing meaningful loading states and placing Suspense boundaries effectively, see <a href="#granular-streaming-with-suspense">Granular streaming with <code>&lt;Suspense&gt;</code></a> and the <a href="app-getting-started-caching.html">Cache Components</a> guide.</p></div>
+<p><strong>Network tab을 확인하세요.</strong> Chrome DevTools에서 document request를 선택하고 "Timing" 세부 항목을 보세요. "Time to First Byte"가 빠르고 "Content Download" 단계가 길다면 response가 한 번에 도착하는 것이 아니라 stream되고 있다는 뜻입니다.</p><div class="en-orig"><p><strong>Check the Network tab.</strong> In Chrome DevTools, select the document request and look at the "Timing" breakdown. A long "Content Download" phase with an early "Time to First Byte" confirms the response is streaming rather than arriving all at once.</p></div>
+<p><strong>raw chunk를 관찰하세요.</strong> server가 정확히 무엇을 언제 보내는지 보려면 response를 stream으로 읽는 작은 script를 사용하세요. <code>curl</code>은 자체 buffering 동작이 있으므로, 시간별 chunk를 관찰하는 데에는 이 방법이 더 신뢰할 만합니다:</p><div class="en-orig"><p><strong>Observe raw chunks.</strong> To see exactly what the server sends and when, use a small script that reads the response as a stream. This is more reliable than <code>curl</code> for observing timed chunks, since <code>curl</code> has its own buffering behavior:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">stream-observer.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">const res = await fetch(
+  &#x27;https://streaming-demo.labs.vercel.dev/suspense-demo&#x27;,
+  {
+    headers: { &#x27;Accept-Encoding&#x27;: &#x27;identity&#x27; },
+  }
+)
+
+const reader = res.body.getReader()
+const decoder = new TextDecoder()
+let i = 0
+const start = Date.now()
+
+while (true) {
+  const { done, value } = await reader.read()
+  if (done) break
+  console.log(`\nchunk ${i++} (+${Date.now() - start}ms)\n`)
+  console.log(decoder.decode(value))
+}</code></pre></div></div>
+<p><code>node stream-observer.mjs</code>로 실행하세요. 형제 Suspense boundary가 두 개 있는 페이지(<a href="https://streaming-demo.labs.vercel.dev/suspense-demo" target="_blank" rel="noopener">함께 제공되는 demo의 Suspense 페이지</a>처럼)라면 다음과 비슷한 출력을 보게 됩니다:</p><div class="en-orig"><p>Run with <code>node stream-observer.mjs</code>. For a page with two sibling Suspense boundaries (like the <a href="https://streaming-demo.labs.vercel.dev/suspense-demo" target="_blank" rel="noopener">companion demo's Suspense page</a>), you will see output similar to:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-plaintext">chunk 0 (+0ms)    # Static shell: &lt;head&gt;, CSS, nav, fallback skeletons,
+                  # &lt;template id=&quot;B:0&quot;&gt; and &lt;template id=&quot;B:1&quot;&gt; placeholders,
+                  # bootstrap scripts
+chunk 1 (+170ms)  # Component payload (self.__next_f.push) for hydration
+chunk 2 (+1000ms) # Weather widget: payload + &lt;div hidden id=&quot;S:0&quot;&gt; (swaps B:0)
+chunk 3 (+3000ms) # Analytics dashboard: payload + &lt;div hidden id=&quot;S:1&quot;&gt; (swaps B:1)</code></pre></div></div>
+<p><code>&lt;template id=&quot;B:0&quot;&gt;</code> marker는 Suspense fallback placeholder입니다. boundary가 resolve되면 React는 완성된 HTML을 담은 <code>&lt;div hidden id=&quot;S:0&quot;&gt;</code>와 이를 페이지에 교체해 넣는 script를 stream합니다. timestamp를 보면 각 boundary가 독립적으로 resolve되는 것을 알 수 있습니다.</p><div class="en-orig"><p>The <code>&lt;template id=&quot;B:0&quot;&gt;</code> markers are the Suspense fallback placeholders. When a boundary resolves, React streams a <code>&lt;div hidden id=&quot;S:0&quot;&gt;</code> containing the completed HTML and a script that swaps it into the page. The timestamps show each boundary resolving independently.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>Accept-Encoding: identity</code> header는 압축을 비활성화하므로 chunk가 압축 계층에서 buffering되지 않습니다.</p><div class="en-orig"><p>The <code>Accept-Encoding: identity</code> header disables compression so chunks are not buffered by the compression layer.</p></div></div></div>
+<p><strong>bot request와 비교해 보세요.</strong> 같은 script에 <code>headers: { &#x27;User-Agent&#x27;: &#x27;Twitterbot/1.0&#x27;, &#x27;Accept-Encoding&#x27;: &#x27;identity&#x27; }</code>로 bot user agent를 추가하세요. 이제 <code>await fetch()</code> 자체가 전체 render가 끝날 때까지(이 페이지에서는 약 3초) 막힙니다. server가 완성된 문서를 얻을 때까지 response를 붙잡고 있기 때문입니다. 그런 다음 body가 한 번에 도착하며, <code>+1000ms</code> / <code>+3000ms</code>처럼 시차를 둔 timestamp는 전혀 없습니다:</p><div class="en-orig"><p><strong>Compare a bot request.</strong> Add a bot user agent to the same script with <code>headers: { &#x27;User-Agent&#x27;: &#x27;Twitterbot/1.0&#x27;, &#x27;Accept-Encoding&#x27;: &#x27;identity&#x27; }</code>. Now <code>await fetch()</code> itself blocks until the full render completes (around 3 seconds for this page), because the server holds the response until it has the finished document. The body then arrives all at once, with none of the staggered <code>+1000ms</code> / <code>+3000ms</code> timestamps:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-plaintext">chunk 0 (+0ms) # Entire document in a single burst, after fetch() already waited</code></pre></div></div>
+<p>이것이 <a href="#bots-and-crawlers">bots and crawlers</a> 동작입니다. server는 전체 render를 기다렸다가 streaming 대신 완전히 구성된 HTML 문서 하나를 보냅니다.</p><div class="en-orig"><p>This is the <a href="#bots-and-crawlers">bots and crawlers</a> behavior: the server waits for the full render and sends one fully formed HTML document instead of streaming.</p></div>
+<h3 class="sec" id="platform-support"><a class="anchor" href="#platform-support">Platform support<span class="ko">플랫폼 지원</span></a></h3>
+<div class="table-wrap"><table>
+<thead><tr><th>Deployment Option</th><th>Supported</th></tr></thead>
+<tbody>
+<tr><td><a href="app-getting-started-deploying.html#nodejs-server">Node.js server</a></td><td>Yes</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#docker">Docker container</a></td><td>Yes</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#static-export">Static export</a></td><td>No</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#adapters">Adapters</a></td><td>플랫폼별로 다름</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Deployment Option</th><th>Supported</th></tr></thead>
+<tbody>
+<tr><td><a href="app-getting-started-deploying.html#nodejs-server">Node.js server</a></td><td>Yes</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#docker">Docker container</a></td><td>Yes</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#static-export">Static export</a></td><td>No</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#adapters">Adapters</a></td><td>Platform-specific</td></tr>
+</tbody></table></div></div>
+<p>자세한 설정 방법은 <a href="app-guides-self-hosting.html#streaming-and-suspense">Self-Hosting 가이드</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-guides-self-hosting.html#streaming-and-suspense">Self-Hosting guide</a> for detailed configuration instructions.</p></div>
+<h2 class="sec" id="summary"><a class="anchor" href="#summary">Summary<span class="ko">요약</span></a></h2>
+<p>trigger는 <strong>여러분의 코드</strong>입니다. async 작업, 비결정적(non-deterministic) 출력, 또는 runtime 데이터가 그렇습니다. framework는 이들을 만나면 tree를 거슬러 올라가며 fallback으로 사용할 <code>&lt;Suspense&gt;</code> boundary를 찾습니다. 그 boundary들 위의 모든 것이 <a href="#the-static-shell">static shell</a>을 이루며, 이는 즉시 전송됩니다. 각 boundary가 resolve될 때마다 React가 그 결과를 페이지에 stream합니다.</p><div class="en-orig"><p>The trigger is <strong>your code</strong>: async work, non-deterministic output, or runtime data. When the framework encounters these, it walks up the tree looking for a <code>&lt;Suspense&gt;</code> boundary to use as a fallback. Everything above those boundaries forms the <a href="#the-static-shell">static shell</a>, which is sent immediately. As each boundary resolves, React streams the result into the page.</p></div>
+<p>핵심 결정은 <strong>무엇을 cache할지</strong>와 <strong>Suspense boundary를 어디에 둘지</strong>입니다. <a href="app-api-reference-directives-use-cache.html"><code>&quot;use cache&quot;</code></a>로 cache할 수 있는 것은 cache해서 static shell을 키우세요. dynamic 접근은 그것이 필요한 component로 내리고, 그 component를 <code>&lt;Suspense&gt;</code>로 감싸세요. 나머지는 모두 shell의 일부가 됩니다.</p><div class="en-orig"><p>The key decisions are <strong>what to cache</strong> and <strong>where to place Suspense boundaries</strong>. Cache what you can with <a href="app-api-reference-directives-use-cache.html"><code>&quot;use cache&quot;</code></a> to grow the static shell. Push dynamic access down to the components that need it, and wrap those in <code>&lt;Suspense&gt;</code>. Everything else becomes part of the shell.</p></div>
+<p>이 pattern들을 기존 route에 적용하는 단계별 workflow는 <a href="app-guides-optimizing-the-static-shell.html">Optimizing the static shell</a>을 참고하세요.</p><div class="en-orig"><p>For a step-by-step workflow that applies these patterns to an existing route, see <a href="app-guides-optimizing-the-static-shell.html">Optimizing the static shell</a>.</p></div>
+<h2 class="sec" id="further-reading"><a class="anchor" href="#further-reading">Further reading<span class="ko">더 읽을거리</span></a></h2>
+<ul>
+<li><a href="https://rscexplorer.dev/" target="_blank" rel="noopener">RSC Explorer</a> - component payload 형식을 살펴보고, React가 stream된 chunk로부터 tree를 어떻게 재구성하는지 볼 수 있는 interactive 도구</li>
+<li><a href="https://web.dev/articles/streams" target="_blank" rel="noopener">web.dev의 Streams API</a> - Route Handler streaming의 기반이 되는 Web Streams API 소개</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Transfer-Encoding" target="_blank" rel="noopener">Chunked transfer encoding (MDN)</a> - streaming response를 가능하게 하는 HTTP/1.1 메커니즘</li>
+<li><a href="https://browser.engineering/" target="_blank" rel="noopener">browser.engineering</a> - 브라우저가 network response, rendering, 점진적 표시를 어떻게 처리하는지 깊이 다루는 자료</li>
+<li><a href="app-guides-preventing-flash-before-hydration.html">Preventing flash before hydration</a> - 브라우저가 그리기 전에 server-rendered HTML을 client별 값(locale, theme, 저장된 state)으로 업데이트하는 방법</li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://rscexplorer.dev/" target="_blank" rel="noopener">RSC Explorer</a> - interactive tool to explore the component payload format and see how React reconstructs the tree from streamed chunks</li>
+<li><a href="https://web.dev/articles/streams" target="_blank" rel="noopener">Streams API on web.dev</a> - introduction to the Web Streams API that underpins streaming in Route Handlers</li>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Transfer-Encoding" target="_blank" rel="noopener">Chunked transfer encoding (MDN)</a> - the HTTP/1.1 mechanism that enables streaming responses</li>
+<li><a href="https://browser.engineering/" target="_blank" rel="noopener">browser.engineering</a> - deep dive into how browsers handle network responses, rendering, and progressive display</li>
+<li><a href="app-guides-preventing-flash-before-hydration.html">Preventing flash before hydration</a> - how to update server-rendered HTML with client-specific values (locale, theme, persisted state) before the browser paints</li>
+</ul></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><p>관련 API reference와 가이드입니다.</p><div class="rgrid"><a class="rcard" href="app-api-reference-file-conventions-loading.html"><div class="rt">loading.js</div><div class="rk">loading.js</div><div class="rd">loading.js 파일에 대한 API reference입니다.</div></a><a class="rcard" href="app-getting-started-fetching-data.html"><div class="rt">Fetching Data</div><div class="rk">데이터 가져오기</div><div class="rd">데이터를 fetch하고, 데이터에 의존하는 콘텐츠를 stream하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-getting-started-linking-and-navigating.html"><div class="rt">Linking and Navigating</div><div class="rk">Link와 Navigation</div><div class="rd">prefetching, prerendering, client-side navigation 등 내장 navigation 최적화가 어떻게 동작하는지, 그리고 dynamic route와 느린 network 환경에서 navigation을 최적화하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-self-hosting.html"><div class="rt">How to self-host your Next.js application</div><div class="rk">Next.js 애플리케이션 self-hosting하기</div><div class="rd">Next.js 애플리케이션을 Node.js server, Docker image, 또는 static HTML 파일(static export)로 self-host하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-rendering-philosophy.html"><div class="rt">Next.js Rendering Philosophy</div><div class="rk">Next.js Rendering 철학</div><div class="rd">Next.js가 static rendering과 dynamic rendering을 component 수준의 스펙트럼으로 다루는 방식과, 이것이 deploy에 어떤 의미를 갖는지 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/streaming.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/streaming" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-static-exports.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Static Exports</div><div class="ttl-ko">Next.js 애플리케이션을 static export하는 방법</div></a>
+      <a href="app-guides-tailwind-v3-css.html" class="next"><div class="dir">다음 →</div><div class="ttl">Tailwind CSS v3</div><div class="ttl-ko">Next.js 애플리케이션에 Tailwind CSS v3 설치하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/streaming" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#what-is-streaming">What is streaming?</a></li><li class="l2"><a href="#example">Example</a></li><li class="l2"><a href="#how-the-app-router-delivers-a-page">How the App Router delivers a page</a></li><li class="l3"><a href="#the-html-stream">The HTML stream</a></li><li class="l3"><a href="#the-component-payload">The component payload</a></li><li class="l3"><a href="#the-static-shell">The static shell</a></li><li class="l2"><a href="#page-level-streaming-with-loadingjs">Page-level streaming with <code>loading.js</code></a></li><li class="l2"><a href="#granular-streaming-with-suspense">Granular streaming with <code>&lt;Suspense&gt;</code></a></li><li class="l3"><a href="#parallel-streaming-with-sibling-boundaries">Parallel streaming with sibling boundaries</a></li><li class="l3"><a href="#nested-boundaries-for-progressive-detail">Nested boundaries for progressive detail</a></li><li class="l3"><a href="#push-dynamic-access-down">Push dynamic access down</a></li><li class="l3"><a href="#when-to-use-loadingjs-vs-suspense">When to use <code>loading.js</code> vs <code>&lt;Suspense&gt;</code></a></li><li class="l3"><a href="#error-handling-mid-stream">Error handling mid-stream</a></li><li class="l2"><a href="#streaming-data-to-the-client">Streaming data to the client</a></li><li class="l3"><a href="#sharing-a-promise-across-the-tree">Sharing a promise across the tree</a></li><li class="l2"><a href="#streaming-in-route-handlers">Streaming in Route Handlers</a></li><li class="l2"><a href="#streaming-and-web-vitals">Streaming and Web Vitals</a></li><li class="l3"><a href="#ttfb-and-fcp">TTFB and FCP</a></li><li class="l3"><a href="#lcp-largest-contentful-paint">LCP (Largest Contentful Paint)</a></li><li class="l3"><a href="#cls-cumulative-layout-shift">CLS (Cumulative Layout Shift)</a></li><li class="l3"><a href="#inp-interaction-to-next-paint">INP (Interaction to Next Paint)</a></li><li class="l3"><a href="#early-resource-discovery">Early resource discovery</a></li><li class="l2"><a href="#the-http-contract">The HTTP contract</a></li><li class="l3"><a href="#status-codes">Status codes</a></li><li class="l3"><a href="#when-does-streaming-start">When does streaming start?</a></li><li class="l3"><a href="#bots-and-crawlers">Bots and crawlers</a></li><li class="l2"><a href="#what-can-affect-streaming">What can affect streaming</a></li><li class="l3"><a href="#reverse-proxies">Reverse proxies</a></li><li class="l3"><a href="#cdns">CDNs</a></li><li class="l3"><a href="#serverless-platforms">Serverless platforms</a></li><li class="l3"><a href="#compression">Compression</a></li><li class="l3"><a href="#clients">Clients</a></li><li class="l3"><a href="#verifying-that-streaming-works">Verifying that streaming works</a></li><li class="l3"><a href="#platform-support">Platform support</a></li><li class="l2"><a href="#summary">Summary</a></li><li class="l2"><a href="#further-reading">Further reading</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+## What is streaming? || streaming이란?
+
+전통적인 server-side rendering에서는 server가 아무것도 보내기 전에 전체 HTML 문서를 만들어 냅니다. 느린 database query나 API 호출 하나가 페이지 전체를 막을 수 있습니다. Streaming은 [chunked transfer encoding](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Transfer-Encoding)을 사용해 response의 각 부분을 준비되는 대로 보내는 방식으로 이를 바꿉니다. server가 나머지를 아직 생성하는 동안에도 브라우저는 HTML rendering을 시작합니다.
+
+이는 빠른 static 콘텐츠(header, navigation, layout)와 느린 dynamic 콘텐츠(개인화된 데이터, analytics, 추천)를 함께 담은 페이지에서 특히 효과가 큽니다. static 부분은 prerender되어 CDN에서 제공되므로 즉시 화면에 그려지고, dynamic 부분은 준비되는 대로 server에서 stream되어 들어옵니다.
+
+React의 server renderer는 `&lt;Suspense&gt;` boundary에 맞춰 HTML을 chunk 단위로 만들어 냅니다. Next.js는 이를 App Router에 통합해 두었기 때문에 추가 설정 없이 streaming이 동작합니다.
+
+## Example || 예제
+
+함께 제공되는 [streaming demo](https://streaming-demo.labs.vercel.dev/)([source](https://github.com/nextjs/streaming-demo))에서 이 가이드의 각 개념이 실제로 동작하는 모습을 볼 수 있습니다:
+
+- `loading.tsx`를 이용한 page 단위 streaming(skeleton이 즉시 나타나고, 약 2초 뒤 콘텐츠가 stream되어 들어옴)
+- 서로 독립적으로 resolve되는 형제 `&lt;Suspense&gt;` boundary를 이용한 세분화된 streaming
+- Hydration 비교: 한 번에 막히는(blocking) hydration과 Suspense boundary로 나눈 split hydration
+- Route Handler에서의 raw HTML streaming과 이른 CSS 발견(early CSS discovery)
+- chunk 크기와 브라우저 buffering을 실험해 볼 수 있는, 설정 가능한 `ReadableStream` API endpoint
+
+## How the App Router delivers a page || App Router가 페이지를 전달하는 방식
+
+브라우저가 페이지를 request하면, 초기 페이지 로드 중에 두 개의 stream이 함께 동작합니다:
+
+### The HTML stream || HTML stream
+
+React의 server renderer는 점진적인 HTML chunk를 만들어 냅니다. 페이지의 static 부분(layout, navigation, Suspense fallback)이 먼저 render되어 즉시 전송됩니다. `&lt;Suspense&gt;` boundary의 콘텐츠가 준비되면, 예를 들어 async [Server Component](/docs/app/glossary#server-component)가 resolve되면, React는 완성된 HTML을 inline `&lt;script&gt;` tag와 함께 stream합니다. 하나는 fallback DOM node를 새 콘텐츠로 교체하는 script이고, 다른 하나는 React가 나중에 hydrate할 수 있도록 [component payload](#the-component-payload)를 담은 script입니다. 브라우저는 페이지의 JavaScript bundle이 로드되거나 hydration이 끝나기를 기다리지 않고 교체를 즉시 실행합니다. 이것이 사용자가 _보는_ 것, 즉 섹션별로 점진적으로 그려지는 페이지입니다.
+
+### The component payload || component payload
+
+component payload는 React가 페이지를 [hydrate](/docs/app/glossary#hydration)하고 client-side 업데이트를 처리하는 데 사용하는, component tree의 직렬화된 표현입니다. 초기 로드 때는 (위에서 설명한 것처럼) HTML stream 안에 포함되어 도착합니다. **client-side navigation** 때는 component payload만 (`rsc: 1` request header와 함께) fetch되고 HTML은 전혀 전송되지 않습니다. React는 이를 사용해 component tree를 그 자리에서 업데이트합니다.
+
+### The static shell || static shell
+
+async 작업이 resolve되기 전에 render되는 모든 것을 **static shell**이라고 합니다. layout, navigation, 그리고 `&lt;Suspense&gt;` boundary에 정의한 fallback UI가 여기에 해당합니다. static shell은 즉시 전송되어, dynamic 콘텐츠가 stream되는 동안 사용자가 보고 상호작용할 수 있는 것을 제공합니다. [Cache Components](/docs/app/getting-started/caching)를 사용하면 static shell은 build time에 prerender되어 edge에서 즉시 제공됩니다.
+
+&lt;Image
+  alt=&quot;Streaming을 사용한 Server Rendering 동작 방식&quot;
+  srcLight=&quot;/docs/light/server-rendering-with-streaming.png&quot;
+  srcDark=&quot;/docs/dark/server-rendering-with-streaming.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;785&quot;
+/&gt;
+
+각 `&lt;Suspense&gt;` boundary는 독립적인 streaming 지점입니다. 서로 다른 boundary 안의 component는 각자 독립적으로 resolve되고 stream됩니다. 서로를 막지 않습니다.
+
+## Page-level streaming with `loading.js` || `loading.js`로 page 단위 streaming
+
+streaming을 추가하는 가장 간단한 방법은 `loading.js` 파일을 사용하는 것입니다. 이 파일을 `page.js` 옆에 두면 Next.js가 자동으로 page 콘텐츠를 `&lt;Suspense&gt;` boundary로 감싸고, loading component를 fallback으로 사용합니다.
+
+&lt;Image
+  alt=&quot;loading.js special file&quot;
+  srcLight=&quot;/docs/light/loading-special-file.png&quot;
+  srcDark=&quot;/docs/dark/loading-special-file.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;606&quot;
+/&gt;
+
+[[CODE 1]]
+
+내부적으로 `loading.js`는 `layout.js` 안에 중첩되고, `page.js`를 `&lt;Suspense&gt;` boundary로 감쌉니다:
+
+&lt;Image
+  alt=&quot;loading.js 개요&quot;
+  srcLight=&quot;/docs/light/loading-overview.png&quot;
+  srcDark=&quot;/docs/dark/loading-overview.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;768&quot;
+/&gt;
+
+이는 다음을 의미합니다:
+
+- layout은 static shell의 일부로 즉시 render됩니다.
+- loading skeleton은 Suspense fallback으로 즉시 표시됩니다.
+- page component가 로딩을 마치면 그 HTML이 skeleton을 대체합니다.
+
+`loading.js`는 page의 데이터가 resolve되기 전까지 의미 있게 보여 줄 것이 없을 때 유용합니다. page가 무언가를 render하기 전에 데이터를 await해야 한다면, 전체 페이지 skeleton은 합리적인 fallback입니다.
+
+자세한 내용은 [`loading.js` API reference](/docs/app/api-reference/file-conventions/loading)를 참고하세요.
+
+## Granular streaming with `&lt;Suspense&gt;` || `&lt;Suspense&gt;`로 세분화된 streaming
+
+`&lt;Suspense&gt;`를 사용하면 페이지의 어떤 부분을 독립적으로 stream할지 정확히 제어할 수 있습니다. 전체 페이지 skeleton 대신 fallback을 특정 섹션으로 내려보내서, static shell에 실제 콘텐츠가 더 많이 포함되게 할 수 있습니다.
+
+### Parallel streaming with sibling boundaries || 형제 boundary로 병렬 streaming
+
+여러 component가 async 작업(데이터 fetch, database 읽기)을 수행한다면 각각을 별도의 `&lt;Suspense&gt;` boundary로 감싸세요. 각 boundary는 async 작업이 끝나는 대로, 어떤 순서로 끝나든, 서로를 막지 않고 독립적으로 stream됩니다:
+
+[[CODE 2]]
+
+이 예제에서 `Revenue`가 200ms, `RecentOrders`가 1s, `Recommendations`가 3s에 resolve된다면, 사용자는 각 섹션의 데이터가 준비되는 즉시 그 섹션이 나타나는 것을 보게 됩니다.
+
+### Nested boundaries for progressive detail || 점진적 디테일을 위한 중첩 boundary
+
+`&lt;Suspense&gt;` boundary를 중첩해 단계적인 로딩 경험을 만들 수 있습니다. 예를 들어 상품 페이지는 header를 즉시, 그다음 상품 상세 정보를, 마지막으로 리뷰를 stream할 수 있습니다:
+
+[[CODE 3]]
+
+바깥 boundary는 `ProductDetails`가 resolve될 때까지 &quot;Loading product details...&quot;를 보여 줍니다. resolve되면 안쪽 boundary가 보이게 되어, `Reviews`가 resolve될 때까지 &quot;Loading reviews...&quot;를 보여 줍니다. 이렇게 점진적으로 드러나는 화면이 만들어집니다.
+
+### Push dynamic access down || dynamic 접근을 아래로 내리기
+
+즉시 stream되는 부분을 최대화하는 핵심은 dynamic 데이터 접근을 실제로 그것이 필요한 component까지 미루는 것입니다. 이는 `params`, `searchParams`, `cookies()`, `headers()`, 그리고 데이터 fetch에 적용됩니다. layout이나 page 맨 위에서 이들 중 하나라도 `await`하면, 그 지점 아래의 모든 것이 dynamic이 되어 static shell의 일부로 prerender될 수 없습니다.
+
+대신 promise를 아래로 전달하고, 이를 사용하는 component가 `&lt;Suspense&gt;` boundary 안에서 resolve하도록 하세요:
+
+[[CODE 4]]
+
+이 예제에서 `&lt;Nav&gt;`와 `{children}`은 layout에서 아무것도 await하지 않으므로 static shell의 일부로 render됩니다. cookie promise를 resolve할 때 `&lt;UserMenu&gt;`만 suspend됩니다. 만약 layout 맨 위에서 `await cookies()`를 호출했다면, layout 전체와 그 모든 children이 prerender되지 못하고 막혔을 것입니다.
+
+같은 원칙이 `params`와 `searchParams`에도 적용됩니다. page 수준에서 destructuring하는 대신, 값이 필요한 component에 promise를 전달하세요:
+
+[[CODE 5]]
+
+`&lt;Hero /&gt;`는 static shell의 일부로 그려집니다. `&lt;ProductGrid&gt;`는 category가 필요할 때 `params`를 resolve하며, 자신의 boundary 안에서만 suspend됩니다.
+
+`.then()`으로 promise를 inline으로 풀어서, child component가 promise 대신 일반 값을 받게 할 수도 있습니다:
+
+[[CODE 6]]
+
+이렇게 하면 `ProductGrid`를 단순하게 유지하면서(`Promise`가 아니라 `string`을 받음) `params` 접근은 여전히 Suspense boundary 안으로 미룰 수 있습니다.
+
+### When to use `loading.js` vs `&lt;Suspense&gt;` || `loading.js`와 `&lt;Suspense&gt;` 중 언제 무엇을 쓸까
+
+|                | `loading.js`                             | `&lt;Suspense&gt;`                     |
+| -------------- | ---------------------------------------- | -------------------------------- |
+| **Scope**      | 페이지 전체                              | 모든 component                    |
+| **Setup**      | 파일 하나 추가                           | component를 명시적으로 감싸기       |
+| **Navigation** | 즉시 표시되는 fallback으로 prefetch됨           | 기본적으로 prefetch되지 않음        |
+| **Best for**   | 데이터 없이는 아무것도 render되지 않는 페이지 | 대부분의 페이지, 세밀한 제어용 |
+
+dynamic 접근 가까이에 명시적인 `&lt;Suspense&gt;` boundary를 두는 것을 선호하세요. prerenderer는 dynamic 작업을 만나면 tree를 거슬러 올라가며 가장 가까운 Suspense boundary를 찾습니다. 아무것도 찾지 못하면 build가 [blocking route error](/docs/messages/blocking-prerender-dynamic)로 실패합니다. tree 위쪽에 있는 `loading.js`도 유효한 boundary이므로 framework는 그것을 찾고 멈추지만, 그러면 페이지 전체가 세분화된 streaming 대신 전체 페이지 skeleton으로 fallback됩니다.
+
+### Error handling mid-stream || stream 도중 error 처리
+
+streaming이 시작된 뒤 component가 error를 throw하면, 가장 가까운 [`error.js`](/docs/app/api-reference/file-conventions/error) boundary가 이를 잡아서 실패한 component 자리에 error UI를 render합니다. 페이지의 나머지는 그대로 유지되고, error가 난 섹션만 교체됩니다.
+
+HTTP status code(`200 OK`)는 첫 chunk와 함께 이미 전송되었으므로 `4xx`나 `5xx`로 바꿀 수 없습니다. error는 전적으로 stream된 HTML 안에서 처리됩니다. 이 제약에 대한 자세한 내용은 [The HTTP contract](#the-http-contract)를 참고하세요.
+
+## Streaming data to the client || client로 데이터 streaming하기
+
+[Server Component](/docs/app/glossary#server-component)에서 fetch를 시작하고, 아직 resolve되지 않은 promise를 [Client Component](/docs/app/glossary#client-component)에 prop으로 전달할 수 있습니다. promise는 필요한 만큼 여러 계층을 거쳐 전달할 수 있습니다. React의 [`use`](https://react.dev/reference/react/use) API를 호출해 값을 읽는 component만 `&lt;Suspense&gt;` boundary로 감싸면 됩니다:
+
+[[CODE 7]]
+
+[[CODE 8]]
+
+fallback은 static shell과 함께 즉시 전송됩니다. promise가 resolve되면 React가 완성된 HTML을 페이지에 stream합니다.
+
+### Sharing a promise across the tree || tree 전체에서 promise 공유하기
+
+여러 component가 같은 데이터를 필요로 한다면, fetch를 한 번만 시작하고 promise를 context provider를 통해 전달해서 subtree의 어떤 component든 `use()`로 resolve할 수 있게 하세요:
+
+[[CODE 9]]
+
+전체 pattern은 [Context Provider 안에서 React의 `use` 사용하기](/docs/app/guides/single-page-applications#using-reacts-use-within-a-context-provider)를 참고하세요.
+
+## Streaming in Route Handlers || Route Handler에서 streaming
+
+위의 pattern들은 UI를 stream하기 위해 React와 Suspense에 의존합니다. React rendering 밖에서는 [Route Handler](/docs/app/api-reference/file-conventions/route)가 Web Streams API를 사용해 raw response를 stream할 수 있습니다. 이는 Server-Sent Events, 대용량 파일 생성, 또는 데이터가 점진적으로 도착하길 원하는 모든 response에 유용합니다:
+
+[[CODE 10]]
+
+브라우저에서 이 route에 직접 접속하거나 `curl`로 요청하면 chunk가 하나씩 도착하는 것을 볼 수 있습니다:
+
+[[CODE 11]]
+
+파일 전체를 메모리에 로드하지 않고 stream할 수도 있습니다. `FileHandle.readableWebStream()`을 사용하면 파일에서 바로 Web `ReadableStream`을 얻을 수 있습니다:
+
+[[CODE 12]]
+
+streaming endpoint를 만드는 방법에 대한 자세한 내용은 [Route Handler API reference](/docs/app/api-reference/file-conventions/route)를 참고하세요.
+
+## Streaming and Web Vitals || Streaming과 Web Vitals
+
+[Web Vitals](https://web.dev/articles/vitals)는 Google이 사용자 경험을 측정하는 데 사용하는 지표입니다. Streaming은 그중 여러 지표에 직접적인 영향을 줍니다.
+
+### TTFB and FCP || TTFB와 FCP
+
+streaming이 없으면 server는 HTML을 보내기 전에 모든 데이터를 기다리므로, TTFB는 가장 느린 query와 같아집니다. streaming을 사용하면 server는 static shell이 준비되자마자 보냅니다. TTFB는 layout과 fallback을 render하는 데 걸리는 시간으로 줄어듭니다. 브라우저는 static shell을 즉시 그리므로, FCP는 데이터 fetching 시간과 분리됩니다.
+
+### LCP (Largest Contentful Paint)
+
+LCP element(hero 이미지, 메인 제목, 상품 사진)가 Suspense boundary 안에 있다면, 그 boundary의 콘텐츠가 교체되어 들어오기 전까지는 그려질 수 없습니다. 그러면 그 element는 초기 server response 시간이 아니라 server가 그것을 render하기 위해 하는 작업에 의존하게 됩니다. 이를 드러내는 데에는 client 쪽 비용도 듭니다. React가 boundary의 HTML과 함께 작은 inline script를 stream하고, 콘텐츠는 그 script가 실행된 뒤에야 나타나기 때문입니다.
+
+boundary가 LCP element를 지연시키는 이유는 데이터 fetching만이 아닙니다. React는 큰 boundary도 잠시 보류하는데, 그 HTML을 보내는 데 시간이 걸리기 때문입니다. [Suspense boundary를 활성화하는 요인](https://react.dev/reference/react/Suspense#what-activates-a-suspense-boundary)을 참고하세요.
+
+&gt; **Good to know:** 경험상, Suspense boundary가 있다면 React는 그것을 사용할 수 있습니다. 네트워크가 느리거나 CPU가 바쁘면 concurrent rendering이 예상하지 못한 상황에서도 그 boundary로 fallback할 수 있습니다. boundary를 추가한다는 것은 이를 받아들인다는 뜻이므로, 필요하지 않은 boundary는 추가하지 마세요.
+
+LCP를 빠르게 유지하려면:
+
+- LCP element를 Suspense boundary **바깥** 또는 **위쪽**에 두어 static shell의 일부로 render되게 하세요.
+- LCP 이미지에는 `next/image`의 [`preload`](/docs/app/api-reference/components/image#preload) prop을 사용하세요. 이 prop은 `&lt;head&gt;`에 `&lt;link rel=&quot;preload&quot;&gt;`를 넣어 주므로, `&lt;img&gt;` tag가 HTML에 나타나기도 전에 브라우저가 맨 첫 chunk부터 이미지를 가져오기 시작합니다. 이는 이미지를 언제 가져오는지를 제어할 뿐, 언제 그려지는지를 제어하지는 않습니다. boundary 안의 이미지는 여전히 교체를 기다립니다.
+- 이미지가 아닌 LCP element(텍스트, 제목)는 Suspense boundary 바깥에서 render하세요.
+
+### CLS (Cumulative Layout Shift)
+
+Suspense fallback이 resolve된 콘텐츠로 교체되면 브라우저는 페이지를 reflow합니다. fallback과 resolve된 콘텐츠의 크기가 다르면 주변 layout이 밀려납니다. CLS를 최소화하려면:
+
+- 표현하려는 콘텐츠의 **크기와 일치하는** skeleton fallback을 디자인하세요. 최종 card grid와 같은 높이와 너비를 가진 skeleton은 layout shift를 막아 줍니다.
+- Suspense boundary 주변에 고정 높이나 min-height container를 사용해, 콘텐츠가 도착하기 전에 공간을 확보해 두세요.
+
+### INP (Interaction to Next Paint)
+
+Streaming은 [selective hydration](https://react.dev/reference/react-dom/client/hydrateRoot)을 가능하게 합니다. React는 component가 stream되어 들어오는 대로 각각 독립적으로 hydrate하고, 사용자가 상호작용하고 있는 부분을 우선적으로 hydrate합니다. 각 `&lt;Suspense&gt;` boundary는 하나의 hydration 단위입니다. boundary가 없으면 React는 페이지 전체를 한 번의 blocking pass로 hydrate합니다. boundary가 있으면 hydration이 브라우저에 제어권을 양보하는 작은 task들로 나뉘어 main thread가 반응성을 유지합니다. [함께 제공되는 demo](https://streaming-demo.labs.vercel.dev/hydration-single)에서 한 번의 blocking hydration pass와 Suspense boundary를 사용한 [split hydration](https://streaming-demo.labs.vercel.dev/hydration-split)을 비교해 볼 수 있습니다.
+
+### Early resource discovery || 이른 resource 발견
+
+static shell은 맨 첫 HTML chunk에 `&lt;link&gt;`와 `&lt;script&gt;` tag를 포함합니다. 브라우저는 server가 아직 콘텐츠를 생성하는 동안 CSS, JavaScript, font를 즉시 발견하고 가져오기 시작합니다. resource는 server가 작업하는 시간(think time) 이후가 아니라 그 동안에 fetch됩니다.
+
+위의 [dashboard 예제](#parallel-streaming-with-sibling-boundaries)에서 `&lt;h1&gt;`은 shell 안에서 render되고(LCP에 좋음), 각 데이터 섹션은 자신의 Suspense boundary 뒤에서 독립적으로 stream되며(hydration이 나뉘므로 INP에 좋음), skeleton fallback이 공간을 확보합니다(CLS에 좋음).
+
+## The HTTP contract || HTTP 계약
+
+streaming이 시작되면 HTTP response header(status code 포함)는 이미 client로 전송된 상태입니다. **streaming이 시작된 뒤에는 status code나 header를 변경할 수 없습니다.** 이 섹션의 모든 내용은 이 근본적인 제약에서 비롯됩니다.
+
+### Status codes || Status code
+
+`&lt;Suspense&gt;` fallback이 render되거나 component가 suspend되면, server는 HTML stream 전송을 시작하기 위해 `200 OK`로 확정해야 합니다. stream 도중에 [`notFound()`](/docs/app/api-reference/functions/not-found)가 호출되면 Next.js는 되돌아가서 status를 404로 바꿀 수 없습니다. 대신 stream되는 HTML에 `&lt;meta name=&quot;robots&quot; content=&quot;noindex&quot;&gt;`를 넣어 검색 엔진이 페이지를 index하지 않도록 합니다. 마찬가지로 stream 도중의 [`redirect()`](/docs/app/api-reference/functions/redirect)는 HTTP redirect header가 아니라 client-side redirect가 됩니다.
+
+### When does streaming start? || streaming은 언제 시작될까?
+
+response body는 Suspense fallback이 render될 때(예: `loading.tsx`) 또는 component가 `&lt;Suspense&gt;` boundary 아래에서 suspend될 때 streaming을 시작합니다. error에 대해 실제 HTTP status code를 얻으려면 `notFound()`를 어떤 `await`나 `&lt;Suspense&gt;` boundary보다도 **앞에** 두세요:
+
+[[CODE 13]]
+
+&gt; **Good to know:** [`proxy`](/docs/app/api-reference/file-conventions/proxy)(redirect, rewrite, 또는 response 반환용)나 [`next.config.js` redirects](/docs/app/api-reference/config/next-config-js/redirects)를 사용해 request를 일찍 거부할 수도 있습니다. 둘 다 페이지가 render되기 전에 실행되므로 HTTP status code를 여전히 사용할 수 있습니다.
+
+### Bots and crawlers || Bot과 crawler
+
+HTML만 처리할 수 있는(HTML-limited) bot과 crawler는 초기 HTML의 `&lt;head&gt;`에 metadata가 있어야 합니다. Next.js는 user agent로 이들을 감지하고, 페이지 콘텐츠를 stream하기 전에 [`generateMetadata`](/docs/app/api-reference/functions/generate-metadata)가 resolve되기를 기다립니다. 완전한 브라우저와 DOM을 처리할 수 있는 crawler는 대신 페이지 콘텐츠와 함께 [streaming metadata](/docs/app/api-reference/functions/generate-metadata#streaming-metadata)를 받을 수 있습니다.
+
+어떤 bot이 blocking metadata를 받을지는 [`htmlLimitedBots`](/docs/app/api-reference/config/next-config-js/htmlLimitedBots) configuration option으로 customize할 수 있습니다. 자세한 내용은 [`loading.js` SEO 섹션](/docs/app/api-reference/file-conventions/loading#seo)을 참고하세요.
+
+#### Cache Components
+
+[Cache Components](/docs/app/getting-started/caching)를 사용하면 방문자와 DOM을 처리할 수 있는 crawler는 prerender된 shell을 즉시 받고, dynamic 콘텐츠는 resolve되는 대로 stream되어 들어옵니다. HTML-limited bot은 prerender된 shell을 건너뛰고 페이지를 dynamic하게 render하므로 metadata를 `&lt;head&gt;`에 넣을 수 있습니다. metadata가 resolve되면 나머지 페이지 콘텐츠는 여전히 stream될 수 있습니다.
+
+prerender된 shell이 build-time 데이터나 request-time 환경에서 접근할 수 없는 값처럼 prerender 중에만 존재하는 입력에 의존한다면 이 점을 염두에 두세요. 방문자와 DOM을 처리할 수 있는 crawler는 그 코드를 다시 실행하지 않고 shell을 받지만, HTML-limited bot은 이를 dynamic하게 다시 render합니다. 그래서 사람에게는 잘 로드되는 페이지가 crawler에게는 render에 실패할 수 있습니다. shell이 의존하는 모든 데이터가 request time에도 사용 가능한지 확인하세요.
+
+## What can affect streaming || streaming에 영향을 줄 수 있는 것
+
+server와 client 사이에서 response를 buffering하는 계층이 있다면 어떤 것이든 streaming의 이점을 줄일 수 있습니다. server에서는 HTML이 점진적으로 모두 생성되더라도, proxy, CDN, 또는 client 자신이 render하기 전에 모든 chunk를 모아 버리면, 사용자는 점진적인 rendering 대신 지연된 response 하나를 보게 됩니다.
+
+### Reverse proxies || Reverse proxy
+
+Nginx와 같은 reverse proxy는 기본적으로 response를 buffering합니다. `X-Accel-Buffering` header를 `no`로 설정해 buffering을 비활성화하세요:
+
+[[CODE 14]]
+
+### CDNs || CDN
+
+Content Delivery Network는 response 전체를 buffering한 뒤 client로 전달할 수 있습니다. 사용하는 CDN 제공자의 문서에서 streaming 지원 여부를 확인하세요. 일부는 chunked response를 그대로 통과시키려면 특정 설정이나 요금제(plan tier)가 필요합니다.
+
+### Serverless platforms || Serverless 플랫폼
+
+모든 serverless 환경이 streaming을 지원하는 것은 아닙니다. 예를 들어 AWS Lambda는 [response streaming mode](https://docs.aws.amazon.com/lambda/latest/dg/configuration-response-streaming.html)를 명시적으로 활성화해야 합니다(기본값이 아님). Vercel은 streaming을 기본적으로 지원합니다.
+
+### Compression || 압축
+
+Gzip과 Brotli 압축은 효율적으로 압축하려면 충분한 데이터가 필요하기 때문에, flush하기 전에 내부적으로 chunk를 buffering할 수 있습니다. 이로 인해 처음 보이는 chunk에 지연이 생길 수 있습니다. streaming 지연이 보인다면 압축 계층이 충분히 적극적으로 flush하고 있는지 확인하세요.
+
+### Clients || Client
+
+buffering은 client에서도 일어납니다. [Safari/WebKit](https://bugs.webkit.org/show_bug.cgi?id=252413)은 1024 bytes를 받을 때까지 streaming response를 buffering하므로, 아주 작은 response는 점진적으로가 아니라 한 번에 그려집니다. 실제 애플리케이션은 이 기준을 쉽게 넘기 때문에(layout, style, script) 최소한의 demo나 아주 작은 Route Handler response에만 영향을 줍니다.
+
+`curl` 같은 command-line 도구도 기본적으로 buffering합니다. `-N` flag는 출력 buffering을 비활성화하지만, `curl`은 여전히 줄바꿈 문자에 의존해 terminal에 줄을 flush합니다. 줄바꿈 없이 chunk를 보내는 stream은 `-N`을 써도 멈춘 것처럼 보일 수 있습니다.
+
+### Verifying that streaming works || streaming 동작 확인하기
+
+이 섹션은 HTTP response가 인프라를 거쳐 실제로 chunk 단위로 도착하는지 확인하는 방법에 관한 것입니다. 의미 있는 loading state를 설계하고 Suspense boundary를 효과적으로 배치하는 방법은 [Granular streaming with `&lt;Suspense&gt;`](#granular-streaming-with-suspense)와 [Cache Components](/docs/app/getting-started/caching) 가이드를 참고하세요.
+
+**Network tab을 확인하세요.** Chrome DevTools에서 document request를 선택하고 &quot;Timing&quot; 세부 항목을 보세요. &quot;Time to First Byte&quot;가 빠르고 &quot;Content Download&quot; 단계가 길다면 response가 한 번에 도착하는 것이 아니라 stream되고 있다는 뜻입니다.
+
+**raw chunk를 관찰하세요.** server가 정확히 무엇을 언제 보내는지 보려면 response를 stream으로 읽는 작은 script를 사용하세요. `curl`은 자체 buffering 동작이 있으므로, 시간별 chunk를 관찰하는 데에는 이 방법이 더 신뢰할 만합니다:
+
+[[CODE 15]]
+
+`node stream-observer.mjs`로 실행하세요. 형제 Suspense boundary가 두 개 있는 페이지([함께 제공되는 demo의 Suspense 페이지](https://streaming-demo.labs.vercel.dev/suspense-demo)처럼)라면 다음과 비슷한 출력을 보게 됩니다:
+
+[[CODE 16]]
+
+`&lt;template id=&quot;B:0&quot;&gt;` marker는 Suspense fallback placeholder입니다. boundary가 resolve되면 React는 완성된 HTML을 담은 `&lt;div hidden id=&quot;S:0&quot;&gt;`와 이를 페이지에 교체해 넣는 script를 stream합니다. timestamp를 보면 각 boundary가 독립적으로 resolve되는 것을 알 수 있습니다.
+
+&gt; **Good to know:** `Accept-Encoding: identity` header는 압축을 비활성화하므로 chunk가 압축 계층에서 buffering되지 않습니다.
+
+**bot request와 비교해 보세요.** 같은 script에 `headers: { &#x27;User-Agent&#x27;: &#x27;Twitterbot/1.0&#x27;, &#x27;Accept-Encoding&#x27;: &#x27;identity&#x27; }`로 bot user agent를 추가하세요. 이제 `await fetch()` 자체가 전체 render가 끝날 때까지(이 페이지에서는 약 3초) 막힙니다. server가 완성된 문서를 얻을 때까지 response를 붙잡고 있기 때문입니다. 그런 다음 body가 한 번에 도착하며, `+1000ms` / `+3000ms`처럼 시차를 둔 timestamp는 전혀 없습니다:
+
+[[CODE 17]]
+
+이것이 [bots and crawlers](#bots-and-crawlers) 동작입니다. server는 전체 render를 기다렸다가 streaming 대신 완전히 구성된 HTML 문서 하나를 보냅니다.
+
+### Platform support || 플랫폼 지원
+
+| Deployment Option                                                   | Supported         |
+| ------------------------------------------------------------------- | ----------------- |
+| [Node.js server](/docs/app/getting-started/deploying#nodejs-server) | Yes               |
+| [Docker container](/docs/app/getting-started/deploying#docker)      | Yes               |
+| [Static export](/docs/app/getting-started/deploying#static-export)  | No                |
+| [Adapters](/docs/app/getting-started/deploying#adapters)            | 플랫폼별로 다름 |
+
+자세한 설정 방법은 [Self-Hosting 가이드](/docs/app/guides/self-hosting#streaming-and-suspense)를 참고하세요.
+
+## Summary || 요약
+
+trigger는 **여러분의 코드**입니다. async 작업, 비결정적(non-deterministic) 출력, 또는 runtime 데이터가 그렇습니다. framework는 이들을 만나면 tree를 거슬러 올라가며 fallback으로 사용할 `&lt;Suspense&gt;` boundary를 찾습니다. 그 boundary들 위의 모든 것이 [static shell](#the-static-shell)을 이루며, 이는 즉시 전송됩니다. 각 boundary가 resolve될 때마다 React가 그 결과를 페이지에 stream합니다.
+
+핵심 결정은 **무엇을 cache할지**와 **Suspense boundary를 어디에 둘지**입니다. [`&quot;use cache&quot;`](/docs/app/api-reference/directives/use-cache)로 cache할 수 있는 것은 cache해서 static shell을 키우세요. dynamic 접근은 그것이 필요한 component로 내리고, 그 component를 `&lt;Suspense&gt;`로 감싸세요. 나머지는 모두 shell의 일부가 됩니다.
+
+이 pattern들을 기존 route에 적용하는 단계별 workflow는 [Optimizing the static shell](/docs/app/guides/optimizing-the-static-shell)을 참고하세요.
+
+## Further reading || 더 읽을거리
+
+- [RSC Explorer](https://rscexplorer.dev/) - component payload 형식을 살펴보고, React가 stream된 chunk로부터 tree를 어떻게 재구성하는지 볼 수 있는 interactive 도구
+- [web.dev의 Streams API](https://web.dev/articles/streams) - Route Handler streaming의 기반이 되는 Web Streams API 소개
+- [Chunked transfer encoding (MDN)](https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Transfer-Encoding) - streaming response를 가능하게 하는 HTTP/1.1 메커니즘
+- [browser.engineering](https://browser.engineering/) - 브라우저가 network response, rendering, 점진적 표시를 어떻게 처리하는지 깊이 다루는 자료
+- [Preventing flash before hydration](/docs/app/guides/preventing-flash-before-hydration) - 브라우저가 그리기 전에 server-rendered HTML을 client별 값(locale, theme, 저장된 state)으로 업데이트하는 방법
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

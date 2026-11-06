@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>favicon, icon, and apple-icon (favicon, icon, apple-icon) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/file-conventions/metadata/app-icons" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/03-file-conventions/01-metadata/app-icons.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-file-conventions.html">File-system conventions</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-file-conventions-metadata.html">Metadata Files</a></div>
+    <div class="title-row">
+      <h1 class="page-title">favicon, icon, and apple-icon<span class="sub">favicon, icon, apple-icon</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>favicon</code>, <code>icon</code>, <code>apple-icon</code> file convention을 사용하면 애플리케이션의 아이콘을 설정할 수 있습니다.</p><div class="en-orig"><p>The <code>favicon</code>, <code>icon</code>, or <code>apple-icon</code> file conventions allow you to set icons for your application.</p></div>
+<p>웹 브라우저 tab, 휴대폰 홈 화면, 검색 엔진 결과 같은 곳에 표시되는 앱 아이콘을 추가할 때 유용합니다.</p><div class="en-orig"><p>They are useful for adding app icons that appear in places like web browser tabs, phone home screens, and search engine results.</p></div>
+<p>앱 아이콘을 설정하는 방법은 두 가지입니다:</p><div class="en-orig"><p>There are two ways to set app icons:</p></div>
+<ul>
+<li><a href="#image-files-ico-jpg-png">이미지 파일 사용 (.ico, .jpg, .png)</a></li>
+<li><a href="#generate-icons-using-code-js-ts-tsx">코드로 아이콘 생성 (.js, .ts, .tsx)</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="#image-files-ico-jpg-png">Using image files (.ico, .jpg, .png)</a></li>
+<li><a href="#generate-icons-using-code-js-ts-tsx">Using code to generate an icon (.js, .ts, .tsx)</a></li>
+</ul></div>
+<h2 class="sec" id="image-files-ico-jpg-png"><a class="anchor" href="#image-files-ico-jpg-png">Image files (.ico, .jpg, .png)<span class="ko">이미지 파일 (.ico, .jpg, .png)</span></a></h2>
+<p><code>/app</code> directory 안에 <code>favicon</code>, <code>icon</code>, <code>apple-icon</code> 이미지 파일을 두어 이미지 파일로 앱 아이콘을 설정합니다.
+<code>favicon</code> 이미지는 <code>app/</code>의 최상위에만 둘 수 있습니다.</p><div class="en-orig"><p>Use an image file to set an app icon by placing a <code>favicon</code>, <code>icon</code>, or <code>apple-icon</code> image file within your <code>/app</code> directory.
+The <code>favicon</code> image can only be located in the top level of <code>app/</code>.</p></div>
+<p>Next.js는 파일을 평가해 앱의 <code>&lt;head&gt;</code> element에 적절한 tag를 자동으로 추가합니다.</p><div class="en-orig"><p>Next.js will evaluate the file and automatically add the appropriate tags to your app's <code>&lt;head&gt;</code> element.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>File convention</th><th>지원 파일 형식</th><th>유효한 위치</th></tr></thead>
+<tbody>
+<tr><td><a href="#favicon"><code>favicon</code></a></td><td><code>.ico</code></td><td><code>app/</code></td></tr>
+<tr><td><a href="#icon"><code>icon</code></a></td><td><code>.ico</code>, <code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>, <code>.svg</code></td><td><code>app/**/*</code></td></tr>
+<tr><td><a href="#apple-icon"><code>apple-icon</code></a></td><td><code>.jpg</code>, <code>.jpeg</code>, <code>.png</code></td><td><code>app/**/*</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>File convention</th><th>Supported file types</th><th>Valid locations</th></tr></thead>
+<tbody>
+<tr><td><a href="#favicon"><code>favicon</code></a></td><td><code>.ico</code></td><td><code>app/</code></td></tr>
+<tr><td><a href="#icon"><code>icon</code></a></td><td><code>.ico</code>, <code>.jpg</code>, <code>.jpeg</code>, <code>.png</code>, <code>.svg</code></td><td><code>app/**/*</code></td></tr>
+<tr><td><a href="#apple-icon"><code>apple-icon</code></a></td><td><code>.jpg</code>, <code>.jpeg</code>, <code>.png</code></td><td><code>app/**/*</code></td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="favicon"><a class="anchor" href="#favicon"><code>favicon</code></a></h3>
+<p>root <code>/app</code> route segment에 <code>favicon.ico</code> 이미지 파일을 추가하세요.</p><div class="en-orig"><p>Add a <code>favicon.ico</code> image file to the root <code>/app</code> route segment.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;icon&quot; href=&quot;/favicon.ico&quot; sizes=&quot;any&quot; /&gt;</code></pre></div></div>
+<h3 class="sec" id="icon"><a class="anchor" href="#icon"><code>icon</code></a></h3>
+<p><code>icon.(ico|jpg|jpeg|png|svg)</code> 이미지 파일을 추가하세요.</p><div class="en-orig"><p>Add an <code>icon.(ico|jpg|jpeg|png|svg)</code> image file.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link
+  rel=&quot;icon&quot;
+  href=&quot;/icon?&lt;generated&gt;&quot;
+  type=&quot;image/&lt;generated&gt;&quot;
+  sizes=&quot;&lt;generated&gt;&quot;
+/&gt;</code></pre></div></div>
+<h3 class="sec" id="apple-icon"><a class="anchor" href="#apple-icon"><code>apple-icon</code></a></h3>
+<p><code>apple-icon.(jpg|jpeg|png)</code> 이미지 파일을 추가하세요.</p><div class="en-orig"><p>Add an <code>apple-icon.(jpg|jpeg|png)</code> image file.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link
+  rel=&quot;apple-touch-icon&quot;
+  href=&quot;/apple-icon?&lt;generated&gt;&quot;
+  type=&quot;image/&lt;generated&gt;&quot;
+  sizes=&quot;&lt;generated&gt;&quot;
+/&gt;</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>파일 이름에 숫자 suffix를 붙여 여러 아이콘을 설정할 수 있습니다. 예를 들어 <code>icon1.png</code>, <code>icon2.png</code> 등입니다. 번호가 붙은 파일은 사전순(lexical)으로 정렬됩니다.</li>
+<li>Favicon은 root <code>/app</code> segment에서만 설정할 수 있습니다. 더 세밀하게 설정해야 한다면 <a href="#icon"><code>icon</code></a>을 사용하세요.</li>
+<li>적절한 <code>&lt;link&gt;</code> tag와 <code>rel</code>, <code>href</code>, <code>type</code>, <code>sizes</code> 같은 attribute는 평가된 파일의 아이콘 type과 metadata에 따라 결정됩니다.</li>
+<li>예를 들어 32x32px <code>.png</code> 파일에는 <code>type=&quot;image/png&quot;</code>와 <code>sizes=&quot;32x32&quot;</code> attribute가 붙습니다.</li>
+<li>확장자가 <code>.svg</code>이거나 파일의 이미지 크기를 알 수 없으면 아이콘에 <code>sizes=&quot;any&quot;</code>가 추가됩니다. 자세한 내용은 이 <a href="https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs" target="_blank" rel="noopener">favicon handbook</a>을 참고하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>You can set multiple icons by adding a number suffix to the file name. For example, <code>icon1.png</code>, <code>icon2.png</code>, etc. Numbered files will sort lexically.</li>
+<li>Favicons can only be set in the root <code>/app</code> segment. If you need more granularity, you can use <a href="#icon"><code>icon</code></a>.</li>
+<li>The appropriate <code>&lt;link&gt;</code> tags and attributes such as <code>rel</code>, <code>href</code>, <code>type</code>, and <code>sizes</code> are determined by the icon type and metadata of the evaluated file.</li>
+<li>For example, a 32 by 32px <code>.png</code> file will have <code>type=&quot;image/png&quot;</code> and <code>sizes=&quot;32x32&quot;</code> attributes.</li>
+<li><code>sizes=&quot;any&quot;</code> is added to icons when the extension is <code>.svg</code> or the image size of the file is not determined. More details in this <a href="https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs" target="_blank" rel="noopener">favicon handbook</a>.</li>
+</ul></div></div></div>
+<h2 class="sec" id="generate-icons-using-code-js-ts-tsx"><a class="anchor" href="#generate-icons-using-code-js-ts-tsx">Generate icons using code (.js, .ts, .tsx)<span class="ko">코드로 아이콘 생성하기 (.js, .ts, .tsx)</span></a></h2>
+<p><a href="#image-files-ico-jpg-png">실제 이미지 파일</a>을 사용하는 것 외에도, 코드로 아이콘을 프로그래밍 방식으로 <strong>생성</strong>할 수 있습니다.</p><div class="en-orig"><p>In addition to using <a href="#image-files-ico-jpg-png">literal image files</a>, you can programmatically <strong>generate</strong> icons using code.</p></div>
+<p>함수를 default export하는 <code>icon</code> 또는 <code>apple-icon</code> route를 만들어 앱 아이콘을 생성합니다.</p><div class="en-orig"><p>Generate an app icon by creating an <code>icon</code> or <code>apple-icon</code> route that default exports a function.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>File convention</th><th>지원 파일 형식</th></tr></thead>
+<tbody>
+<tr><td><code>icon</code></td><td><code>.js</code>, <code>.ts</code>, <code>.tsx</code></td></tr>
+<tr><td><code>apple-icon</code></td><td><code>.js</code>, <code>.ts</code>, <code>.tsx</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>File convention</th><th>Supported file types</th></tr></thead>
+<tbody>
+<tr><td><code>icon</code></td><td><code>.js</code>, <code>.ts</code>, <code>.tsx</code></td></tr>
+<tr><td><code>apple-icon</code></td><td><code>.js</code>, <code>.ts</code>, <code>.tsx</code></td></tr>
+</tbody></table></div></div>
+<p>아이콘을 생성하는 가장 쉬운 방법은 <code>next/og</code>의 <a href="app-api-reference-functions-image-response.html"><code>ImageResponse</code></a> API를 사용하는 것입니다.</p><div class="en-orig"><p>The easiest way to generate an icon is to use the <a href="app-api-reference-functions-image-response.html"><code>ImageResponse</code></a> API from <code>next/og</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/icon.tsx" data-js="app/icon.js">app/icon.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { ImageResponse } from &#x27;next/og&#x27;
+
+// Image metadata
+export const size = {
+  width: 32,
+  height: 32,
+}
+export const contentType = &#x27;image/png&#x27;
+
+// Image generation
+export default function Icon() {
+  return new ImageResponse(
+    (
+      // ImageResponse JSX element
+      &lt;div
+        style={{
+          fontSize: 24,
+          background: &#x27;black&#x27;,
+          width: &#x27;100%&#x27;,
+          height: &#x27;100%&#x27;,
+          display: &#x27;flex&#x27;,
+          alignItems: &#x27;center&#x27;,
+          justifyContent: &#x27;center&#x27;,
+          color: &#x27;white&#x27;,
+        }}
+      &gt;
+        A
+      &lt;/div&gt;
+    ),
+    // ImageResponse options
+    {
+      // For convenience, we can re-use the exported icons size metadata
+      // config to also set the ImageResponse&#x27;s width and height.
+      ...size,
+    }
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { ImageResponse } from &#x27;next/og&#x27;
+
+// Image metadata
+export const size = {
+  width: 32,
+  height: 32,
+}
+export const contentType = &#x27;image/png&#x27;
+
+// Image generation
+export default function Icon() {
+  return new ImageResponse(
+    (
+      // ImageResponse JSX element
+      &lt;div
+        style={{
+          fontSize: 24,
+          background: &#x27;black&#x27;,
+          width: &#x27;100%&#x27;,
+          height: &#x27;100%&#x27;,
+          display: &#x27;flex&#x27;,
+          alignItems: &#x27;center&#x27;,
+          justifyContent: &#x27;center&#x27;,
+          color: &#x27;white&#x27;,
+        }}
+      &gt;
+        A
+      &lt;/div&gt;
+    ),
+    // ImageResponse options
+    {
+      // For convenience, we can re-use the exported icons size metadata
+      // config to also set the ImageResponse&#x27;s width and height.
+      ...size,
+    }
+  )
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;icon&quot; href=&quot;/icon?&lt;generated&gt;&quot; type=&quot;image/png&quot; sizes=&quot;32x32&quot; /&gt;</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>기본적으로 생성된 아이콘은 <a href="app-glossary.html#request-time-apis">Request-time API</a>나 cache되지 않은 데이터를 사용하지 않는 한 <a href="app-glossary.html#prerendering"><strong>statically optimized</strong></a> 됩니다(build 시점에 생성되고 cache됨).</li>
+<li><a href="app-api-reference-functions-generate-image-metadata.html"><code>generateImageMetadata</code></a>를 사용하면 같은 파일에서 여러 아이콘을 생성할 수 있습니다.</li>
+<li><code>favicon</code> 아이콘은 생성할 수 없습니다. 대신 <a href="#icon"><code>icon</code></a>이나 <a href="#favicon">favicon.ico</a> 파일을 사용하세요.</li>
+<li>앱 아이콘은 특수한 Route Handler로, <a href="app-glossary.html#request-time-apis">Request-time API</a>나 <a href="app-guides-caching-without-cache-components.html#dynamic">dynamic config</a> option을 사용하지 않는 한 기본적으로 cache됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>By default, generated icons are <a href="app-glossary.html#prerendering"><strong>statically optimized</strong></a> (generated at build time and cached) unless they use <a href="app-glossary.html#request-time-apis">Request-time APIs</a> or uncached data.</li>
+<li>You can generate multiple icons in the same file using <a href="app-api-reference-functions-generate-image-metadata.html"><code>generateImageMetadata</code></a>.</li>
+<li>You cannot generate a <code>favicon</code> icon. Use <a href="#icon"><code>icon</code></a> or a <a href="#favicon">favicon.ico</a> file instead.</li>
+<li>App icons are special Route Handlers that are cached by default unless they use a <a href="app-glossary.html#request-time-apis">Request-time API</a> or <a href="app-guides-caching-without-cache-components.html#dynamic">dynamic config</a> option.</li>
+</ul></div></div></div>
+<h3 class="sec" id="props"><a class="anchor" href="#props">Props</a></h3>
+<p>default export 함수는 다음 props를 받습니다:</p><div class="en-orig"><p>The default export function receives the following props:</p></div>
+<h4 class="sec" id="params-optional"><a class="anchor" href="#params-optional"><code>params</code> (optional)</a></h4>
+<p>root segment부터 <code>icon</code> 또는 <code>apple-icon</code>이 함께 위치한(colocated) segment까지의 <a href="app-api-reference-file-conventions-dynamic-routes.html">dynamic route parameter</a> 객체를 담은 객체로 resolve되는 promise입니다.</p><div class="en-orig"><p>A promise that resolves to an object containing the <a href="app-api-reference-file-conventions-dynamic-routes.html">dynamic route parameters</a> object from the root segment down to the segment <code>icon</code> or <code>apple-icon</code> is colocated in.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="app-api-reference-functions-generate-image-metadata.html"><code>generateImageMetadata</code></a>를 사용하면 함수는 <code>id</code> prop도 받습니다. 이 prop은 <code>generateImageMetadata</code>가 반환한 항목 중 하나의 <code>id</code> 값으로 resolve되는 promise입니다.</p><div class="en-orig"><p>If you use <a href="app-api-reference-functions-generate-image-metadata.html"><code>generateImageMetadata</code></a>, the function will also receive an <code>id</code> prop that is a promise resolving to the <code>id</code> value from one of the items returned by <code>generateImageMetadata</code>.</p></div></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/shop/[slug]/icon.tsx" data-js="app/shop/[slug]/icon.js">app/shop/[slug]/icon.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default async function Icon({
+  params,
+}: {
+  params: Promise&lt;{ slug: string }&gt;
+}) {
+  const { slug } = await params
+  // ...
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function Icon({ params }) {
+  const { slug } = await params
+  // ...
+}</code></pre></div></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Route</th><th>URL</th><th><code>params</code></th></tr></thead>
+<tbody>
+<tr><td><code>app/shop/icon.js</code></td><td><code>/shop</code></td><td><code>undefined</code></td></tr>
+<tr><td><code>app/shop/[slug]/icon.js</code></td><td><code>/shop/1</code></td><td><code>Promise&lt;{ slug: &#x27;1&#x27; }&gt;</code></td></tr>
+<tr><td><code>app/shop/[tag]/[item]/icon.js</code></td><td><code>/shop/1/2</code></td><td><code>Promise&lt;{ tag: &#x27;1&#x27;, item: &#x27;2&#x27; }&gt;</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Route</th><th>URL</th><th><code>params</code></th></tr></thead>
+<tbody>
+<tr><td><code>app/shop/icon.js</code></td><td><code>/shop</code></td><td><code>undefined</code></td></tr>
+<tr><td><code>app/shop/[slug]/icon.js</code></td><td><code>/shop/1</code></td><td><code>Promise&lt;{ slug: &#x27;1&#x27; }&gt;</code></td></tr>
+<tr><td><code>app/shop/[tag]/[item]/icon.js</code></td><td><code>/shop/1/2</code></td><td><code>Promise&lt;{ tag: &#x27;1&#x27;, item: &#x27;2&#x27; }&gt;</code></td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="returns"><a class="anchor" href="#returns">Returns</a></h3>
+<p>default export 함수는 <code>Blob</code> | <code>ArrayBuffer</code> | <code>TypedArray</code> | <code>DataView</code> | <code>ReadableStream</code> | <code>Response</code>를 반환해야 합니다.</p><div class="en-orig"><p>The default export function should return a <code>Blob</code> | <code>ArrayBuffer</code> | <code>TypedArray</code> | <code>DataView</code> | <code>ReadableStream</code> | <code>Response</code>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>ImageResponse</code>는 이 return type을 만족합니다.</p><div class="en-orig"><p><code>ImageResponse</code> satisfies this return type.</p></div></div></div>
+<h3 class="sec" id="config-exports"><a class="anchor" href="#config-exports">Config exports</a></h3>
+<p>선택적으로 <code>icon</code> 또는 <code>apple-icon</code> route에서 <code>size</code>와 <code>contentType</code> 변수를 export해 아이콘의 metadata를 설정할 수 있습니다.</p><div class="en-orig"><p>You can optionally configure the icon's metadata by exporting <code>size</code> and <code>contentType</code> variables from the <code>icon</code> or <code>apple-icon</code> route.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Type</th></tr></thead>
+<tbody>
+<tr><td><a href="#size"><code>size</code></a></td><td><code>{ width: number; height: number }</code></td></tr>
+<tr><td><a href="#contenttype"><code>contentType</code></a></td><td><code>string</code> - <a href="https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/MIME_types#image_types" target="_blank" rel="noopener">image MIME type</a></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Type</th></tr></thead>
+<tbody>
+<tr><td><a href="#size"><code>size</code></a></td><td><code>{ width: number; height: number }</code></td></tr>
+<tr><td><a href="#contenttype"><code>contentType</code></a></td><td><code>string</code> - <a href="https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/MIME_types#image_types" target="_blank" rel="noopener">image MIME type</a></td></tr>
+</tbody></table></div></div>
+<h4 class="sec" id="size"><a class="anchor" href="#size"><code>size</code></a></h4>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="icon.tsx | apple-icon.tsx" data-js="icon.js | apple-icon.js">icon.tsx | apple-icon.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export const size = { width: 32, height: 32 }
+
+export default function Icon() {}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const size = { width: 32, height: 32 }
+
+export default function Icon() {}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;icon&quot; sizes=&quot;32x32&quot; /&gt;</code></pre></div></div>
+<h4 class="sec" id="contenttype"><a class="anchor" href="#contenttype"><code>contentType</code></a></h4>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="icon.tsx | apple-icon.tsx" data-js="icon.js | apple-icon.js">icon.tsx | apple-icon.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export const contentType = &#x27;image/png&#x27;
+
+export default function Icon() {}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const contentType = &#x27;image/png&#x27;
+
+export default function Icon() {}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">&lt;head&gt; output</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-xml">&lt;link rel=&quot;icon&quot; type=&quot;image/png&quot; /&gt;</code></pre></div></div>
+<h4 class="sec" id="route-segment-config"><a class="anchor" href="#route-segment-config">Route Segment Config</a></h4>
+<p><code>icon</code>과 <code>apple-icon</code>은 특수한 <a href="app-api-reference-file-conventions-route.html">Route Handler</a>로, Page 및 Layout과 같은 <a href="app-api-reference-file-conventions-route-segment-config.html">route segment configuration</a> option을 사용할 수 있습니다.</p><div class="en-orig"><p><code>icon</code> and <code>apple-icon</code> are specialized <a href="app-api-reference-file-conventions-route.html">Route Handlers</a> that can use the same <a href="app-api-reference-file-conventions-route-segment-config.html">route segment configuration</a> options as Pages and Layouts.</p></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.0.0</code></td><td>이제 <code>params</code>는 객체로 resolve되는 promise입니다</td></tr>
+<tr><td><code>v13.3.0</code></td><td><code>favicon</code>, <code>icon</code>, <code>apple-icon</code>이 도입되었습니다</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.0.0</code></td><td><code>params</code> is now a promise that resolves to an object</td></tr>
+<tr><td><code>v13.3.0</code></td><td><code>favicon</code> <code>icon</code> and <code>apple-icon</code> introduced</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/03-file-conventions/01-metadata/app-icons.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-file-conventions-metadata.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Metadata Files</div><div class="ttl-ko">Metadata 파일 API Reference</div></a>
+      <a href="app-api-reference-file-conventions-metadata-manifest.html" class="next"><div class="dir">다음 →</div><div class="ttl">manifest.json</div><div class="ttl-ko">manifest.json</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#image-files-ico-jpg-png">Image files (.ico, .jpg, .png)</a></li><li class="l3"><a href="#favicon"><code>favicon</code></a></li><li class="l3"><a href="#icon"><code>icon</code></a></li><li class="l3"><a href="#apple-icon"><code>apple-icon</code></a></li><li class="l2"><a href="#generate-icons-using-code-js-ts-tsx">Generate icons using code (.js, .ts, .tsx)</a></li><li class="l3"><a href="#props">Props</a></li><li class="l3"><a href="#returns">Returns</a></li><li class="l3"><a href="#config-exports">Config exports</a></li><li class="l2"><a href="#version-history">Version History</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`favicon`, `icon`, `apple-icon` file convention을 사용하면 애플리케이션의 아이콘을 설정할 수 있습니다.
+
+웹 브라우저 tab, 휴대폰 홈 화면, 검색 엔진 결과 같은 곳에 표시되는 앱 아이콘을 추가할 때 유용합니다.
+
+앱 아이콘을 설정하는 방법은 두 가지입니다:
+
+- [이미지 파일 사용 (.ico, .jpg, .png)](#image-files-ico-jpg-png)
+- [코드로 아이콘 생성 (.js, .ts, .tsx)](#generate-icons-using-code-js-ts-tsx)
+
+## Image files (.ico, .jpg, .png) || 이미지 파일 (.ico, .jpg, .png)
+
+`/app` directory 안에 `favicon`, `icon`, `apple-icon` 이미지 파일을 두어 이미지 파일로 앱 아이콘을 설정합니다.
+`favicon` 이미지는 `app/`의 최상위에만 둘 수 있습니다.
+
+Next.js는 파일을 평가해 앱의 `&lt;head&gt;` element에 적절한 tag를 자동으로 추가합니다.
+
+| File convention             | 지원 파일 형식                    | 유효한 위치 |
+| --------------------------- | --------------------------------------- | --------------- |
+| [`favicon`](#favicon)       | `.ico`                                  | `app/`          |
+| [`icon`](#icon)             | `.ico`, `.jpg`, `.jpeg`, `.png`, `.svg` | `app/**/*`      |
+| [`apple-icon`](#apple-icon) | `.jpg`, `.jpeg`, `.png`                 | `app/**/*`      |
+
+### `favicon`
+
+root `/app` route segment에 `favicon.ico` 이미지 파일을 추가하세요.
+
+[[CODE 1]]
+
+### `icon`
+
+`icon.(ico|jpg|jpeg|png|svg)` 이미지 파일을 추가하세요.
+
+[[CODE 2]]
+
+### `apple-icon`
+
+`apple-icon.(jpg|jpeg|png)` 이미지 파일을 추가하세요.
+
+[[CODE 3]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - 파일 이름에 숫자 suffix를 붙여 여러 아이콘을 설정할 수 있습니다. 예를 들어 `icon1.png`, `icon2.png` 등입니다. 번호가 붙은 파일은 사전순(lexical)으로 정렬됩니다.
+&gt; - Favicon은 root `/app` segment에서만 설정할 수 있습니다. 더 세밀하게 설정해야 한다면 [`icon`](#icon)을 사용하세요.
+&gt; - 적절한 `&lt;link&gt;` tag와 `rel`, `href`, `type`, `sizes` 같은 attribute는 평가된 파일의 아이콘 type과 metadata에 따라 결정됩니다.
+&gt; - 예를 들어 32x32px `.png` 파일에는 `type=&quot;image/png&quot;`와 `sizes=&quot;32x32&quot;` attribute가 붙습니다.
+&gt; - 확장자가 `.svg`이거나 파일의 이미지 크기를 알 수 없으면 아이콘에 `sizes=&quot;any&quot;`가 추가됩니다. 자세한 내용은 이 [favicon handbook](https://evilmartians.com/chronicles/how-to-favicon-in-2021-six-files-that-fit-most-needs)을 참고하세요.
+
+## Generate icons using code (.js, .ts, .tsx) || 코드로 아이콘 생성하기 (.js, .ts, .tsx)
+
+[실제 이미지 파일](#image-files-ico-jpg-png)을 사용하는 것 외에도, 코드로 아이콘을 프로그래밍 방식으로 **생성**할 수 있습니다.
+
+함수를 default export하는 `icon` 또는 `apple-icon` route를 만들어 앱 아이콘을 생성합니다.
+
+| File convention | 지원 파일 형식 |
+| --------------- | -------------------- |
+| `icon`          | `.js`, `.ts`, `.tsx` |
+| `apple-icon`    | `.js`, `.ts`, `.tsx` |
+
+아이콘을 생성하는 가장 쉬운 방법은 `next/og`의 [`ImageResponse`](/docs/app/api-reference/functions/image-response) API를 사용하는 것입니다.
+
+[[CODE 4]]
+
+[[CODE 5]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - 기본적으로 생성된 아이콘은 [Request-time API](/docs/app/glossary#request-time-apis)나 cache되지 않은 데이터를 사용하지 않는 한 [**statically optimized**](/docs/app/glossary#prerendering) 됩니다(build 시점에 생성되고 cache됨).
+&gt; - [`generateImageMetadata`](/docs/app/api-reference/functions/generate-image-metadata)를 사용하면 같은 파일에서 여러 아이콘을 생성할 수 있습니다.
+&gt; - `favicon` 아이콘은 생성할 수 없습니다. 대신 [`icon`](#icon)이나 [favicon.ico](#favicon) 파일을 사용하세요.
+&gt; - 앱 아이콘은 특수한 Route Handler로, [Request-time API](/docs/app/glossary#request-time-apis)나 [dynamic config](/docs/app/guides/caching-without-cache-components#dynamic) option을 사용하지 않는 한 기본적으로 cache됩니다.
+
+### Props
+
+default export 함수는 다음 props를 받습니다:
+
+#### `params` (optional)
+
+root segment부터 `icon` 또는 `apple-icon`이 함께 위치한(colocated) segment까지의 [dynamic route parameter](/docs/app/api-reference/file-conventions/dynamic-routes) 객체를 담은 객체로 resolve되는 promise입니다.
+
+&gt; **Good to know**: [`generateImageMetadata`](/docs/app/api-reference/functions/generate-image-metadata)를 사용하면 함수는 `id` prop도 받습니다. 이 prop은 `generateImageMetadata`가 반환한 항목 중 하나의 `id` 값으로 resolve되는 promise입니다.
+
+[[CODE 6]]
+
+| Route                           | URL         | `params`                           |
+| ------------------------------- | ----------- | ---------------------------------- |
+| `app/shop/icon.js`              | `/shop`     | `undefined`                        |
+| `app/shop/[slug]/icon.js`       | `/shop/1`   | `Promise&lt;{ slug: &#x27;1&#x27; }&gt;`           |
+| `app/shop/[tag]/[item]/icon.js` | `/shop/1/2` | `Promise&lt;{ tag: &#x27;1&#x27;, item: &#x27;2&#x27; }&gt;` |
+
+### Returns
+
+default export 함수는 `Blob` | `ArrayBuffer` | `TypedArray` | `DataView` | `ReadableStream` | `Response`를 반환해야 합니다.
+
+&gt; **Good to know**: `ImageResponse`는 이 return type을 만족합니다.
+
+### Config exports
+
+선택적으로 `icon` 또는 `apple-icon` route에서 `size`와 `contentType` 변수를 export해 아이콘의 metadata를 설정할 수 있습니다.
+
+| Option                        | Type                                                                                                            |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| [`size`](#size)               | `{ width: number; height: number }`                                                                             |
+| [`contentType`](#contenttype) | `string` - [image MIME type](https://developer.mozilla.org/docs/Web/HTTP/Basics_of_HTTP/MIME_types#image_types) |
+
+#### `size`
+
+[[CODE 7]]
+
+[[CODE 8]]
+
+#### `contentType`
+
+[[CODE 9]]
+
+[[CODE 10]]
+
+#### Route Segment Config
+
+`icon`과 `apple-icon`은 특수한 [Route Handler](/docs/app/api-reference/file-conventions/route)로, Page 및 Layout과 같은 [route segment configuration](/docs/app/api-reference/file-conventions/route-segment-config) option을 사용할 수 있습니다.
+
+## Version History || 버전 기록
+
+| Version   | Changes                                              |
+| --------- | ---------------------------------------------------- |
+| `v16.0.0` | 이제 `params`는 객체로 resolve되는 promise입니다 |
+| `v13.3.0` | `favicon`, `icon`, `apple-icon`이 도입되었습니다         |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

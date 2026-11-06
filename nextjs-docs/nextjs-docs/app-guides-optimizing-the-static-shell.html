@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Optimizing the static shell (static shell 최적화) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/optimizing-the-static-shell" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/optimizing-the-static-shell" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/optimizing-the-static-shell.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Optimizing the static shell<span class="sub">static shell 최적화</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><a href="app-getting-started-caching.html">Cache Components</a>는 request-time 콘텐츠가 stream되어 들어오는 동안 static shell을 prerender할 수 있습니다. shell은 page를 하나의 넓은 fallback으로 대체하는 대신, route의 layout, navigation, heading, 그리고 범위가 좁은 loading state를 계속 보이게 할 수 있습니다.</p><div class="en-orig"><p><a href="app-getting-started-caching.html">Cache Components</a> can prerender a static shell while request-time content streams in. The shell can keep the route's layout, navigation, headings, and focused loading states visible instead of replacing the page with one broad fallback.</p></div>
+<p>Cache Components 이전에 작성된 앱은 layout이나 page의 상단 근처에서 request data를 await하는 경우가 많습니다. Cache Components를 활성화하면 이런 route는 이미 작은 static shell을 가지고 있을 수 있는데, 때로는 넓은 loading state 하나로만 이루어져 있기도 합니다.</p><div class="en-orig"><p>Apps written before Cache Components often await request data near the top of a layout or page. With Cache Components enabled, those routes may already have a small static shell, sometimes made up of one broad loading state.</p></div>
+<p>이 가이드에서는 각 data read를 그것이 필요한 UI까지 추적하고, 재사용 가능한 작업을 cache하고, request-time 작업을 범위가 좁은 <code>&lt;Suspense&gt;</code> boundary 뒤로 옮겨서 shell을 확장하는 방법을 배웁니다. 이런 패턴을 사용하면 중요한 콘텐츠를 일찍 보여 주고, page의 나머지가 stream되어 들어오는 동안 공간을 확보해 둘 수 있습니다.</p><div class="en-orig"><p>In this guide, you'll learn how to expand the shell by tracing each data read to the UI that needs it, caching reusable work, and moving request-time work behind focused <code>&lt;Suspense&gt;</code> boundaries. These patterns keep important content available early and reserve space as the rest of the page streams in.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 가이드는 아래에서 설명하는 static shell과 instant navigation 검증을 가능하게 하는 Cache Components에 초점을 맞춥니다. data 접근을 그것이 필요한 UI 가까이로 옮기기, 범위가 좁은 <code>&lt;Suspense&gt;</code> boundary로 streaming하기, waterfall 피하기, 안정적인 loading state 설계하기 같은 기본 패턴 중 상당수는 다른 App Router 애플리케이션에서도 유용합니다. cache directive와 검증 workflow는 Cache Components가 필요합니다.</p><div class="en-orig"><p>This guide focuses on Cache Components, which enable the static shell and instant navigation validation described below. Many of the underlying patterns, such as moving data access closer to the UI that needs it, streaming with focused <code>&lt;Suspense&gt;</code> boundaries, avoiding waterfalls, and designing stable loading states, are also useful in other App Router applications. The cache directives and validation workflow require Cache Components.</p></div></div></div>
+<h2 class="sec" id="use-the-optimizer-skill-recommended"><a class="anchor" href="#use-the-optimizer-skill-recommended">Use the optimizer skill (recommended)<span class="ko">optimizer skill 사용하기 (권장)</span></a></h2>
+<p><a href="app-guides-ai-agents.html#next-cache-components-optimizer"><code>next-cache-components-optimizer</code></a> skill은 coding agent와 함께 이 가이드를 적용합니다. 아래의 <a href="#step-4-verify-the-instant-ui"><code>instant()</code> 검증 loop</a>를 사용해 의도한 static shell을 포착하고, 현재 동작을 검증하고, 통과한 test를 regression coverage로 유지합니다.</p><div class="en-orig"><p>The <a href="app-guides-ai-agents.html#next-cache-components-optimizer"><code>next-cache-components-optimizer</code></a> skill applies this guide with a coding agent. It uses the <a href="#step-4-verify-the-instant-ui"><code>instant()</code> verification loop</a> below to capture the intended static shell, prove the current behavior, and keep the passing test as regression coverage.</p></div>
+<p>이 skill은 목적지 UI가 즉시 commit되지 않는 client navigation도 대상으로 할 수 있습니다. 바뀌는 목적지 segment에 같은 패턴을 적용한 다음, 실제 link를 통해 지정한 navigation을 검증합니다. 목적지에 이미 instant UI가 있고 클릭 전에 URL별 콘텐츠를 추가로 포함하고 싶다면, 대신 <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching</a>을 사용하세요.</p><div class="en-orig"><p>The skill can also target a client navigation whose destination UI does not commit immediately. It applies the same patterns to the destination segments that change, then verifies the named navigation through its real link. If the destination already has instant UI and you want to include additional URL-specific content before the click, use <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching</a> instead.</p></div>
+<p>skill을 설치하세요:</p><div class="en-orig"><p>Install the skill:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx skills add vercel/next.js --skill next-cache-components-optimizer</code></pre></div></div>
+<p>그다음 agent에게 route와 그 static shell에 들어가야 할 UI를 알려 주세요:</p><div class="en-orig"><p>Then give the agent the route and the UI that should be in its static shell:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-plaintext">Optimize the static shell for /[team]/settings using the next-cache-components-optimizer Skill. On an initial load, the settings frame and heading should be available immediately.</code></pre></div></div>
+<h2 class="sec" id="prerequisites"><a class="anchor" href="#prerequisites">Prerequisites<span class="ko">사전 준비</span></a></h2>
+<p><a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a>를 활성화하고 먼저 route의 blocking validation error를 해결하세요. migration workflow는 <a href="app-guides-migrating-to-cache-components.html">Migrating to Cache Components</a>를 참고하세요.</p><div class="en-orig"><p>Enable <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a> and resolve the route's blocking validation errors first. For the migration workflow, see <a href="app-guides-migrating-to-cache-components.html">Migrating to Cache Components</a>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+}
+
+export default nextConfig</code></pre></div></div>
+<p>client navigation을 위해 <a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching</a>도 함께 활성화하는 것을 고려해 보세요. Partial Prefetching을 활성화하면 <code>&lt;Link prefetch={true}&gt;</code>가 클릭 전에 cache된 URL별 콘텐츠를 포함할 수 있어서, navigation 시 더 많은 UI를 즉시 보여 줄 수 있습니다. 어떤 콘텐츠를 prefetch할지 고르려면 <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching</a>을 참고하세요.</p><div class="en-orig"><p>For client navigations, consider enabling <a href="app-guides-adopting-partial-prefetching.html">Partial Prefetching</a> as well. With Partial Prefetching enabled, <code>&lt;Link prefetch={true}&gt;</code> can include cached URL-specific content before the click, making more UI available immediately on navigation. See <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching</a> to choose which content to prefetch.</p></div>
+<h2 class="sec" id="patterns"><a class="anchor" href="#patterns">Patterns<span class="ko">패턴</span></a></h2>
+<p>다음 패턴을 사용하면 static shell에서 더 유용한 UI를 보여 줄 수 있습니다:</p><div class="en-orig"><p>The following patterns can make more useful UI available in the static shell:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>패턴</th><th>사용 시점</th><th>결과</th></tr></thead>
+<tbody>
+<tr><td><a href="#keep-static-ui-in-the-shell">Keep static UI in the shell</a></td><td>UI에 data가 필요하지 않을 때</td><td>UI가 static shell에서 render될 수 있음</td></tr>
+<tr><td><a href="#stream-request-time-work">Stream request-time work</a></td><td>어떤 영역이 request 시점에만 알 수 있는 data를 필요로 할 때</td><td>가장 가까운 <code>&lt;Suspense&gt;</code> fallback이 먼저 render될 수 있음</td></tr>
+<tr><td><a href="#cache-reusable-work">Cache reusable work</a></td><td>결과를 여러 request에 걸쳐 재사용할 수 있을 때</td><td>완성된 결과가 static shell에서 render될 수 있음</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Pattern</th><th>Use it when</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td><a href="#keep-static-ui-in-the-shell">Keep static UI in the shell</a></td><td>UI does not need data</td><td>The UI can render in the static shell</td></tr>
+<tr><td><a href="#stream-request-time-work">Stream request-time work</a></td><td>A region needs data that is only known at request time</td><td>Its nearest <code>&lt;Suspense&gt;</code> fallback can render first</td></tr>
+<tr><td><a href="#cache-reusable-work">Cache reusable work</a></td><td>A result can be reused across requests</td><td>The completed result can render in the static shell</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="keep-static-ui-in-the-shell"><a class="anchor" href="#keep-static-ui-in-the-shell">Keep static UI in the shell<span class="ko">static UI를 shell에 유지하기</span></a></h3>
+<p><code>&lt;Suspense&gt;</code> boundary는 자식이 suspend될 때 그 fallback이 UI의 어느 부분을 대체할지 결정합니다. static UI가 boundary 안에 있어도 문제는 없습니다. 하지만 같은 boundary에 느리거나 request-time인 작업도 들어 있다면, 그 fallback이 static UI까지 일시적으로 대체합니다.</p><div class="en-orig"><p>A <code>&lt;Suspense&gt;</code> boundary controls which part of the UI its fallback replaces when a child suspends. Static UI can sit inside a boundary without a problem. However, if the same boundary also contains slow or request-time work, that fallback temporarily replaces the static UI too.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/products/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// Before: one loading state replaces the whole page
+&lt;Suspense fallback={&lt;ProductsSkeleton /&gt;}&gt;
+  &lt;h1&gt;Products&lt;/h1&gt;
+  &lt;p&gt;Browse the latest products.&lt;/p&gt;
+  &lt;LiveInventory /&gt;
+&lt;/Suspense&gt;</code></pre></div></div>
+<p>heading, navigation, cache된 콘텐츠 및 기타 안정적인 UI를 계속 보이게 하려면, 굳이 포함될 필요가 없는 loading state 바깥으로 이들을 꺼내세요. 그다음 boundary를 suspend될 수 있는 더 작은 영역으로 내리세요:</p><div class="en-orig"><p>To keep headings, navigation, cached content, and other stable UI visible, take them out of any loading state they do not need to be part of. Then move the boundary down to the smaller region that can suspend:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/products/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// After: only inventory uses the loading state
+&lt;main&gt;
+  &lt;h1&gt;Products&lt;/h1&gt;
+  &lt;p&gt;Browse the latest products.&lt;/p&gt;
+  &lt;Suspense fallback={&lt;InventorySkeleton /&gt;}&gt;
+    &lt;LiveInventory /&gt;
+  &lt;/Suspense&gt;
+&lt;/main&gt;</code></pre></div></div>
+<p>주요 heading이나 다른 <a href="app-guides-streaming.html#lcp-largest-contentful-paint">Largest Contentful Paint 후보</a>가 재사용 가능한 data에 의존한다면, <a href="#cache-reusable-work">그 data를 cache해서</a> 완성된 콘텐츠가 shell에서 render될 수 있게 하세요. data가 request를 기다려야 한다면, loading state의 범위를 좁게 유지해서 page의 나머지를 붙잡지 않게 하세요.</p><div class="en-orig"><p>When the primary heading or other <a href="app-guides-streaming.html#lcp-largest-contentful-paint">Largest Contentful Paint candidate</a> depends on reusable data, <a href="#cache-reusable-work">cache that data</a> so the completed content can render in the shell. If the data must wait for the request, keep its loading state focused so it does not hold back the rest of the page.</p></div>
+<h3 class="sec" id="stream-request-time-work"><a class="anchor" href="#stream-request-time-work">Stream request-time work<span class="ko">request-time 작업 stream하기</span></a></h3>
+<p>어떤 data는 request가 도착하기 전까지 알 수 없거나, request마다 다시 계산해야 하거나, prerendering하기에는 cache lifetime이 너무 짧습니다. layout이나 page가 상단 근처에서 이런 작업을 await하면 page 전체의 rendering을 막을 수 있습니다. 결과가 필요한 영역을 분리하고 그 영역만 suspend되도록 해서 page의 나머지가 먼저 render될 수 있게 하세요.</p><div class="en-orig"><p>Some data cannot be known until a request arrives, must be recomputed for every request, or has a cache lifetime too short for prerendering. If a layout or page awaits that work near the top, it can block the whole page from rendering. Split out the region that needs the result and let only that region suspend so the rest of the page can render first.</p></div>
+<h4 class="sec" id="push-data-access-down"><a class="anchor" href="#push-data-access-down">Push data access down<span class="ko">data 접근을 아래로 내리기</span></a></h4>
+<p>request-time data는 그것을 사용하는 논리적인 UI 영역에서 resolve하세요. 이는 data를 await하는 Server Component일 수도 있고, server에서 전달된 promise를 unwrap하는 Client Component일 수도 있습니다.</p><div class="en-orig"><p>Resolve request-time data in the logical UI region that uses it. This can be a Server Component that awaits the data or a Client Component that unwraps a promise passed from the server.</p></div>
+<p><strong>data 접근을 Server Component로 옮기세요.</strong> page가 request-time data를 직접 resolve하면, 그 작업이 끝날 때까지 heading과 다른 독립적인 UI를 render할 수 없습니다:</p><div class="en-orig"><p><strong>Move data access into a Server Component.</strong> When the page resolves request-time data itself, its heading and other independent UI cannot render until that work finishes:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/products/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// Before: request-time work blocks the page
+export default async function ProductPage({
+  params,
+}: PageProps&lt;&#x27;/products/[slug]&#x27;&gt;) {
+  const { slug } = await params
+  const product = await db.products.findBySlug(slug)
+
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Product&lt;/h1&gt;
+      &lt;ProductDetails product={product} /&gt;
+    &lt;/main&gt;
+  )
+}</code></pre></div></div>
+<p><code>params</code>, <code>searchParams</code> 또는 다른 request-time data read를 관련 UI 영역을 나타내는 Server Component로 옮기세요. 그 component를 <code>&lt;Suspense&gt;</code> 뒤에 두어 작업이 resolve되는 동안 형제 요소들이 render될 수 있게 하세요:</p><div class="en-orig"><p>Move <code>params</code>, <code>searchParams</code>, or another request-time data read into the Server Component that represents the relevant UI region. Place that component behind <code>&lt;Suspense&gt;</code> so its siblings can render while the work resolves:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/products/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// After: only the product region waits
+import { Suspense } from &#x27;react&#x27;
+
+export default function ProductPage({ params }: PageProps&lt;&#x27;/products/[slug]&#x27;&gt;) {
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Product&lt;/h1&gt;
+      &lt;Suspense fallback={&lt;ProductSkeleton /&gt;}&gt;
+        &lt;Product params={params} /&gt;
+      &lt;/Suspense&gt;
+    &lt;/main&gt;
+  )
+}
+
+async function Product({
+  params,
+}: Pick&lt;PageProps&lt;&#x27;/products/[slug]&#x27;&gt;, &#x27;params&#x27;&gt;) {
+  const { slug } = await params
+  const product = await db.products.findBySlug(slug)
+  return &lt;ProductDetails product={product} /&gt;
+}</code></pre></div></div>
+<p>heading과 product fallback은 request-time product query가 끝나기 전에 render될 수 있습니다. <code>cookies()</code>와 <code>headers()</code> 같은 Request API도 범위가 좁은 component로 옮길 수 있습니다:</p><div class="en-orig"><p>The heading and product fallback can render before the request-time product query finishes. Request APIs such as <code>cookies()</code> and <code>headers()</code> can also be moved into a focused component:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/dashboard/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+
+export default function DashboardLayout({ children }) {
+  return (
+    &lt;DashboardShell&gt;
+      &lt;Suspense fallback={&lt;UserMenuSkeleton /&gt;}&gt;
+        &lt;UserMenu /&gt;
+      &lt;/Suspense&gt;
+      {children}
+    &lt;/DashboardShell&gt;
+  )
+}
+
+async function UserMenu() {
+  const cookieStore = await cookies()
+  const menuStyle = cookieStore.get(&#x27;menu-style&#x27;)?.value ?? &#x27;compact&#x27;
+
+  return &lt;DashboardMenu menuStyle={menuStyle} /&gt;
+}</code></pre></div></div>
+<p>layout은 <code>UserMenu</code>가 들어오는 request를 읽기 전에 <code>DashboardShell</code>을 반환할 수 있습니다.</p><div class="en-orig"><p>The layout can return <code>DashboardShell</code> before <code>UserMenu</code> reads the incoming request.</p></div>
+<p><strong>promise를 inline으로 resolve하세요.</strong> 작은 영역이라면 promise를 await하기 위해서만 component를 하나 더 만들 필요는 없습니다. boundary 안에서 <code>.then()</code>으로 <code>params</code>, <code>searchParams</code> 또는 다른 promise를 inline으로 resolve하세요:</p><div class="en-orig"><p><strong>Resolve a promise inline.</strong> For a small region, you do not need to create another component only to await a promise. Resolve <code>params</code>, <code>searchParams</code>, or another promise inline with <code>.then()</code> inside the boundary:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/products/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&lt;Suspense fallback={&lt;ProductTabsSkeleton /&gt;}&gt;
+  {searchParams.then(({ tab = &#x27;details&#x27; }) =&gt; (
+    &lt;ProductTabs activeTab={tab} /&gt;
+  ))}
+&lt;/Suspense&gt;</code></pre></div></div>
+<p><strong>promise를 Client Component에 전달하세요.</strong> interactive한 Client Component가 server에서 가져온 data를 필요로 할 수 있습니다. 그 data를 부모에서 await하면 부모의 안정적인 UI도 붙잡히게 됩니다:</p><div class="en-orig"><p><strong>Pass a promise to a Client Component.</strong> An interactive Client Component may need data fetched on the server. Awaiting that data in its parent would also hold back the parent's stable UI:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/dashboard/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// Before: the page waits for the chart data
+export default async function DashboardPage() {
+  const activity = await getActivity()
+
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Dashboard&lt;/h1&gt;
+      &lt;ActivityChart data={activity} /&gt;
+    &lt;/main&gt;
+  )
+}</code></pre></div></div>
+<p>request를 await하지 않고 시작한 다음, <code>&lt;Suspense&gt;</code> 뒤에 있는 Client Component에 promise를 전달하세요:</p><div class="en-orig"><p>Start the request without awaiting it, then pass the promise to the Client Component behind <code>&lt;Suspense&gt;</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/dashboard/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// After: the heading can render while the chart waits
+import { Suspense } from &#x27;react&#x27;
+import { getActivity } from &#x27;@/app/lib/data&#x27;
+import { ActivityChart } from &#x27;./activity-chart&#x27;
+
+export default function DashboardPage() {
+  const activityPromise = getActivity()
+
+  return (
+    &lt;Suspense fallback={&lt;ActivityChartSkeleton /&gt;}&gt;
+      &lt;ActivityChart dataPromise={activityPromise} /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre></div></div>
+<p>Client Component는 React의 <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use()</code></a>로 promise를 unwrap합니다:</p><div class="en-orig"><p>The Client Component unwraps the promise with React's <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use()</code></a>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/dashboard/activity-chart.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { use } from &#x27;react&#x27;
+
+type Activity = { date: string; value: number }
+
+export function ActivityChart({
+  dataPromise,
+}: {
+  dataPromise: Promise&lt;Activity[]&gt;
+}) {
+  const activity = use(dataPromise)
+
+  return &lt;Chart data={activity} /&gt;
+}</code></pre></div></div>
+<p>URL data의 경우, Client Component는 promise를 전달받는 대신 <a href="app-api-reference-functions-use-params.html"><code>useParams()</code></a>나 <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams()</code></a>를 호출할 수 있는 경우가 많습니다. router가 이미 URL을 알고 있기 때문에, 두 hook 모두 client navigation 중에 synchronous하게 resolve됩니다.</p><div class="en-orig"><p>For URL data, a Client Component can often call <a href="app-api-reference-functions-use-params.html"><code>useParams()</code></a> or <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams()</code></a> instead of receiving a promise. Both hooks resolve synchronously during a client navigation because the router already has the URL.</p></div>
+<p>request-time 작업을 그것을 사용하는 UI 가까이에서 resolve하는 더 많은 예제는 <a href="app-guides-streaming.html#push-dynamic-access-down">Push dynamic access down</a>을 참고하세요.</p><div class="en-orig"><p>See <a href="app-guides-streaming.html#push-dynamic-access-down">Push dynamic access down</a> for more examples of resolving request-time work closer to the UI that uses it.</p></div>
+<h4 class="sec" id="design-loading-states"><a class="anchor" href="#design-loading-states">Design loading states<span class="ko">loading state 설계하기</span></a></h4>
+<p>이 refactor 이전에는 route가 segment 전체에 대해 하나의 <a href="app-api-reference-file-conventions-loading.html"><code>loading.tsx</code> 파일</a>에 의존했을 수 있습니다. page가 하나의 단위로 load되는 동안에는 그것으로 충분한 경우가 많습니다. data 접근을 아래로 내려서 완성된 UI를 더 많이 드러낼수록, 범위가 좁은 <a href="app-guides-streaming.html#granular-streaming-with-suspense"><code>&lt;Suspense&gt;</code> boundary</a>를 사용하고 그 loading state를 더 신중하게 선택하세요. <code>loading.tsx</code> 파일은 바깥쪽 fallback으로 남겨 두거나, route에 더 이상 필요하지 않으면 제거할 수 있습니다.</p><div class="en-orig"><p>Before this refactor, a route might rely on one <a href="app-api-reference-file-conventions-loading.html"><code>loading.tsx</code> file</a> for the whole segment. That is often enough while the page loads as one unit. As you push data access down to reveal more completed UI, use focused <a href="app-guides-streaming.html#granular-streaming-with-suspense"><code>&lt;Suspense&gt;</code> boundaries</a> and choose their loading states more deliberately. The <code>loading.tsx</code> file can remain as an outer fallback, or be removed when the route no longer needs it.</p></div>
+<p><strong>독립적인 영역은 따로 드러내세요.</strong> 완성된 각 영역의 크기를 예측할 수 있고 각자 따로 나타날 수 있다면 형제 boundary를 사용하세요. 각 fallback은 완성된 영역에 필요한 공간을 확보해야 합니다:</p><div class="en-orig"><p><strong>Reveal independent regions separately.</strong> Use sibling boundaries when each completed region has predictable dimensions and can appear on its own. Each fallback should reserve the space its completed region needs:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/account/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&lt;Suspense fallback={&lt;AccountHeaderSkeleton /&gt;}&gt;
+  &lt;AccountHeader /&gt;
+&lt;/Suspense&gt;
+&lt;Suspense fallback={&lt;ActivitySkeleton /&gt;}&gt;
+  &lt;Activity /&gt;
+&lt;/Suspense&gt;</code></pre></div></div>
+<p><strong>관련된 영역은 단계적으로 드러내세요.</strong> 그룹이 먼저 함께 나타난 다음 더 자세한 내용을 드러내야 할 때, 또는 높이가 가변적인 영역을 단독으로 드러내면 그 아래 콘텐츠가 밀려날 수 있을 때는 boundary를 중첩하세요:</p><div class="en-orig"><p><strong>Reveal related regions in stages.</strong> Nest boundaries when the group should first appear together and then reveal more detail, or when revealing a variable-height region by itself could shift the content below it:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/account/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&lt;Suspense fallback={&lt;AccountSkeleton /&gt;}&gt;
+  &lt;AccountHeader /&gt;
+  &lt;Suspense fallback={&lt;ActivitySkeleton /&gt;}&gt;
+    &lt;Activity /&gt;
+  &lt;/Suspense&gt;
+&lt;/Suspense&gt;</code></pre></div></div>
+<p>React는 같은 render 중에 독립적으로 도달 가능한 작업을 여전히 시작할 수 있습니다. 중첩은 드러나는 순서를 바꿀 뿐, 독립적인 request를 순차적으로 만들지는 않습니다.</p><div class="en-orig"><p>React can still start independently reachable work during the same render. Nesting changes the reveal order. It does not make independent requests sequential.</p></div>
+<p>길이가 가변적인 콘텐츠라면, 예측 가능한 접힌 상태를 Show more나 Load more control과 함께 render해서 아래 콘텐츠가 나중에 밀려나지 않고 나타나게 하는 방법도 있습니다.</p><div class="en-orig"><p>For variable-length content, another option is to render a predictable collapsed state with a Show more or Load more control so content below can appear without shifting later.</p></div>
+<p>route가 parallel slot을 사용한다면, 각 slot은 자체 loading state로 stream될 수 있습니다. <a href="app-api-reference-file-conventions-parallel-routes.html#loading-and-error-ui">Loading and Error UI with Parallel Routes</a>를 참고하세요.</p><div class="en-orig"><p>When a route uses parallel slots, each slot can stream with its own loading state. See <a href="app-api-reference-file-conventions-parallel-routes.html#loading-and-error-ui">Loading and Error UI with Parallel Routes</a>.</p></div>
+<p><strong>loading UI와 완성된 UI에 같은 layout을 사용하세요.</strong> component와 responsive layout이 바뀌면서 fallback이 완성된 UI와 점점 어긋날 수 있습니다. layout을 담당하는 container는 boundary 바깥에 두세요. 이 예제에서는 skeleton card와 완성된 product card가 모두 같은 responsive grid를 사용합니다:</p><div class="en-orig"><p><strong>Use the same layout for loading and completed UI.</strong> Fallbacks can drift away from the completed UI as components and responsive layouts change. Keep the container that owns the layout outside the boundary. In this example, the skeleton cards and completed product cards both use the same responsive grid:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/products/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&lt;ProductGrid&gt;
+  &lt;Suspense fallback={&lt;ProductCardSkeletons /&gt;}&gt;
+    &lt;ProductCards /&gt;
+  &lt;/Suspense&gt;
+&lt;/ProductGrid&gt;</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>UI를 refactor하거나 업데이트하다 보면 skeleton이 더 이상 완성된 component의 크기나 responsive layout과 맞지 않을 수 있습니다. skeleton을 component 옆에 두거나 같은 파일에서 export하면, 그 component를 <code>&lt;Suspense&gt;</code>로 감싸야 할 때마다 업데이트하고 재사용하기가 더 쉽습니다.</p><div class="en-orig"><p>As you refactor or update the UI, a skeleton might no longer match the completed component's size or responsive layout. Keeping the skeleton next to the component, or exporting it from the same file, makes it easier to update and reuse whenever that component needs to be wrapped in <code>&lt;Suspense&gt;</code>.</p></div></div></div>
+<p>빈 fallback은 <code>null</code>을 반환하는 authorization gate처럼 resolve된 component도 시각적으로 차지하는 공간이 없을 때만 사용하세요. 그렇지 않다면 완성된 UI를 위한 공간을 확보하는 fallback을 제공하세요.</p><div class="en-orig"><p>Use an empty fallback only when the resolved component also has no visual footprint, such as an authorization gate that returns <code>null</code>. Otherwise, provide a fallback that reserves space for the completed UI.</p></div>
+<p><strong>관련 data-fetching 패턴.</strong> 작업을 stream되는 영역들로 나눈 후에는, 다음 패턴으로 request 자체가 필요 이상으로 늦게 시작되는 것을 막을 수 있습니다:</p><div class="en-orig"><p><strong>Related data-fetching patterns.</strong> After splitting work into streamed regions, these patterns can prevent the requests themselves from starting later than necessary:</p></div>
+<ul>
+<li>여러 독립적인 request가 한 영역에 있어야 한다면, <a href="app-getting-started-fetching-data.html#parallel-data-fetching">parallel data fetching</a>으로 함께 시작하세요.</li>
+<li>React가 render 후반에 data dependency에 도달한다면, <a href="app-getting-started-fetching-data.html#preloading-data">preloading</a>으로 더 일찍 시작하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>When multiple independent requests must stay in one region, use <a href="app-getting-started-fetching-data.html#parallel-data-fetching">parallel data fetching</a> to start them together.</li>
+<li>When React reaches a data dependency later in the render, use <a href="app-getting-started-fetching-data.html#preloading-data">preloading</a> to start it sooner.</li>
+</ul></div>
+<h3 class="sec" id="cache-reusable-work"><a class="anchor" href="#cache-reusable-work">Cache reusable work<span class="ko">재사용 가능한 작업 cache하기</span></a></h3>
+<p>page를 막을 수 있는 작업을 분리한 다음에는, 그 결과를 정말로 request마다 다시 계산해야 하는지 생각해 보세요. 재사용할 수 있다면 함수나 component를 cache해서 완성된 UI가 static shell에서 render될 수 있게 하세요. data가 얼마나 fresh해야 하는지에 따라 결과에 lifetime을 지정하세요:</p><div class="en-orig"><p>After isolating work that would block the page, consider whether the result actually needs to be recomputed for every request. When it can be reused, cache the function or component so its completed UI can render in the static shell. Give the result a lifetime based on how fresh the data needs to be:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/products/product-list.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// Before: the query runs for every request
+export async function ProductList() {
+  const products = await db.products.findMany()
+  return &lt;List products={products} /&gt;
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/products/product-list.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// After: the reusable result can render in the shell
+import { cacheLife } from &#x27;next/cache&#x27;
+
+export async function ProductList() {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;hours&#x27;)
+
+  const products = await db.products.findMany()
+  return &lt;List products={products} /&gt;
+}</code></pre></div></div>
+<p>애플리케이션이 cache된 결과를 변경할 수 있다면, <a href="app-getting-started-revalidating.html">on-demand revalidation</a>으로 cache된 read를 그 write와 연결하세요.</p><div class="en-orig"><p>If the application can change a cached result, connect the cached read to its writes with <a href="app-getting-started-revalidating.html">on-demand revalidation</a>.</p></div>
+<p><strong>관련 caching 패턴.</strong> 다음 패턴은 request에서 파생된 값, 한 request 안에서의 재사용, dynamic route를 다룹니다:</p><div class="en-orig"><p><strong>Related caching patterns.</strong> These patterns cover values derived from a request, reuse within one request, and dynamic routes:</p></div>
+<ul>
+<li><code>cookies()</code>, <code>headers()</code> 또는 다른 runtime API의 값을 사용해 결과를 cache하려면, <a href="app-getting-started-caching.html#passing-runtime-values-to-cached-functions">cache scope 바깥에서 값을 읽고 argument로 전달하세요</a>.</li>
+<li>결과를 request 간에 유지하지 않고 하나의 server request 동안 일치하는 호출을 중복 제거하려면 <a href="app-getting-started-fetching-data.html#reusing-data-with-reactcache">React <code>cache()</code></a>를 사용하세요.</li>
+<li>알려진 dynamic route를 prerender하고 나머지는 on demand로 생성하려면 <a href="app-guides-incremental-static-regeneration-cache-components.html">ISR with Cache Components</a>를 참고하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>To cache a result using a value from <code>cookies()</code>, <code>headers()</code>, or another runtime API, <a href="app-getting-started-caching.html#passing-runtime-values-to-cached-functions">read the value outside the cached scope and pass it as an argument</a>.</li>
+<li>To deduplicate matching calls during one server request without persisting the result across requests, use <a href="app-getting-started-fetching-data.html#reusing-data-with-reactcache">React <code>cache()</code></a>.</li>
+<li>To prerender known dynamic routes and generate others on demand, see <a href="app-guides-incremental-static-regeneration-cache-components.html">ISR with Cache Components</a>.</li>
+</ul></div>
+<p>cache scope와 lifetime에 대해서는 <a href="app-getting-started-caching.html#usage">Caching</a>에서 더 알아보세요.</p><div class="en-orig"><p>Learn more about cache scopes and lifetimes in <a href="app-getting-started-caching.html#usage">Caching</a>.</p></div>
+<h2 class="sec" id="follow-validation-as-you-refactor"><a class="anchor" href="#follow-validation-as-you-refactor">Follow validation as you refactor<span class="ko">refactor하면서 validation 따라가기</span></a></h2>
+<p>Cache Components를 활성화하면, <a href="app-guides-instant-navigation.html#validate-instant-navigation"><code>next dev</code>가 각 page load나 client navigation에 instant UI가 있는지 검증합니다</a>. route가 한 진입점에서는 이미 instant UI를 가지고 있지만 다른 진입점에서는 insight를 표시할 수도 있습니다. 예를 들어 공유 layout의 fallback이 page load는 커버하지만 그 layout 안에서의 client navigation은 커버하지 못할 수 있습니다.</p><div class="en-orig"><p>With Cache Components enabled, <a href="app-guides-instant-navigation.html#validate-instant-navigation"><code>next dev</code> validates whether each page load or client navigation has instant UI</a>. A route may already have instant UI for one entry point but show an insight for another. For example, a fallback in a shared layout may cover a page load without covering a client navigation within that layout.</p></div>
+<p>refactor 중에 insight가 나타나면, 해당 page load나 client navigation에 즉각적인 결과나 fallback이 필요하다는 뜻입니다. 같은 route의 다른 진입점이 이미 instant하더라도, 이는 위의 패턴이나 optimizer skill을 적용하기에 좋은 대상입니다. 제안되는 수정 방법은 위의 패턴과 대응됩니다:</p><div class="en-orig"><p>If an insight appears while you refactor, that specific page load or client navigation needs an immediate result or fallback. It is a useful target for the patterns above or the optimizer skill, even when another entry point to the same route is already instant. The suggested fixes map to the patterns above:</p></div>
+<div class="fixgrid"><a class="fixcard" href="https://nextjs.org/docs/messages/blocking-prerender-dynamic#cache-the-component-or-data" target="_blank" rel="noopener"><div class="fc-t">Cache the component or data</div><div class="fc-c"><div class="fl">async function Posts() {</div><div class="fl hl">  &quot;use cache&quot;</div></div></a><a class="fixcard" href="https://nextjs.org/docs/messages/blocking-prerender-dynamic#wrap-in-or-move-into-suspense" target="_blank" rel="noopener"><div class="fc-t">Wrap in or move into Suspense</div><div class="fc-c"><div class="fl hl">&lt;Suspense fallback={…}&gt;</div></div></a></div>
+<p>insight를 해결하면 해당 진입점이 instant해집니다. 하지만 어떤 UI를 즉시 보여 줘야 하는지까지 결정해 주지는 않습니다. <a href="app-guides-instant-navigation.html#visualize-loading-states-with-the-nextjs-devtools">Navigation Inspector</a>로 무엇이 나타나는지 확인하고 위의 패턴을 적용해 더 유용한 UI를 포함하거나, route와 의도한 instant UI를 <a href="#use-the-optimizer-skill-recommended">optimizer skill</a>에 넘기세요.</p><div class="en-orig"><p>Resolving the insight makes that entry point instant. It does not decide which UI should be available immediately. Use the <a href="app-guides-instant-navigation.html#visualize-loading-states-with-the-nextjs-devtools">Navigation Inspector</a> to inspect what appears and apply the patterns above to include more useful UI, or give the route and the intended instant UI to the <a href="#use-the-optimizer-skill-recommended">optimizer skill</a>.</p></div>
+<h2 class="sec" id="example"><a class="anchor" href="#example">Example<span class="ko">예제</span></a></h2>
+<p>layout과 page 양쪽의 상단 근처에서 request data를 await하는 team settings route를 생각해 보세요. 이 구조는 Cache Components 이전에 작성된 App Router 애플리케이션에서는 자연스럽게 느껴질 수 있습니다. 또한 <code>getServerSideProps</code> 같은 route 수준 함수가 page를 render하기 전에 data를 load하는 <a href="app-guides-migrating-app-router-migration.html#step-6-migrating-data-fetching-methods">Pages Router</a>에서 그대로 넘어온 구조일 수도 있습니다. App Router에서는 같은 구조라면 settings UI가 static shell에 하나도 남지 않습니다.</p><div class="en-orig"><p>Consider a team settings route that awaits request data near the top of both its layout and page. This structure may feel natural in an App Router application written before Cache Components. It can also carry over from the <a href="app-guides-migrating-app-router-migration.html#step-6-migrating-data-fetching-methods">Pages Router</a>, where a route-level function such as <code>getServerSideProps</code> loads data before rendering the page. In the App Router, the same structure leaves none of the settings UI in the static shell.</p></div>
+<p>예제는 하나의 layout과 하나의 page로 시작합니다:</p><div class="en-orig"><p>The example starts with one layout and one page:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Folder structure</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-plaintext">app/[team]/settings/
+├── layout.tsx
+└── page.tsx</code></pre></div></div>
+<p>layout은 settings frame을 render하기 전에 authentication을 resolve합니다:</p><div class="en-orig"><p>The layout resolves authentication before rendering the settings frame:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[team]/settings/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cookies, headers } from &#x27;next/headers&#x27;
+import { redirect } from &#x27;next/navigation&#x27;
+
+export default async function SettingsLayout({ children }) {
+  const cookieStore = await cookies()
+  const requestHeaders = await headers()
+  const user = await getCurrentUser({ cookieStore, requestHeaders })
+
+  if (!user) redirect(&#x27;/login&#x27;)
+
+  return &lt;SettingsShell&gt;{children}&lt;/SettingsShell&gt;
+}</code></pre></div></div>
+<p>그다음 page는 heading을 render하기 전에 URL data, team settings, 재사용 가능한 plan 설명을 기다립니다:</p><div class="en-orig"><p>The page then waits for its URL data, team settings, and reusable plan descriptions before rendering the heading:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[team]/settings/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export default async function SettingsPage({
+  params,
+  searchParams,
+}: PageProps&lt;&#x27;/[team]/settings&#x27;&gt;) {
+  const { team } = await params
+  const { section = &#x27;profile&#x27; } = await searchParams
+  const [settings, plans] = await Promise.all([
+    getTeamSettings(team, section),
+    db.plan.findMany(),
+  ])
+
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Settings&lt;/h1&gt;
+      &lt;SettingsTabs activeSection={section} /&gt;
+      &lt;PlanList plans={plans} /&gt;
+      &lt;SettingsForm settings={settings} /&gt;
+    &lt;/main&gt;
+  )
+}</code></pre></div></div>
+<p>다음 단계들은 완성된 page와 그 authorization 동작을 유지하면서 더 많은 부분을 static shell에서 보여 줄 수 있게 합니다.</p><div class="en-orig"><p>The following steps keep the completed page and its authorization behavior while making more of it available in the static shell.</p></div>
+<h3 class="sec" id="step-1-move-url-dependent-work-behind-suspense"><a class="anchor" href="#step-1-move-url-dependent-work-behind-suspense">Step 1: Move URL-dependent work behind Suspense<span class="ko">1단계: URL에 의존하는 작업을 Suspense 뒤로 옮기기</span></a></h3>
+<p>현재 page는 UI를 render하기 전에 두 URL promise를 모두 resolve합니다:</p><div class="en-orig"><p>The current page resolves both URL promises before rendering any UI:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[team]/settings/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// Before: URL data blocks the page
+export default async function SettingsPage({
+  params,
+  searchParams,
+}: PageProps&lt;&#x27;/[team]/settings&#x27;&gt;) {
+  const { team } = await params
+  const { section = &#x27;profile&#x27; } = await searchParams
+  const settings = await getTeamSettings(team, section)
+
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Settings&lt;/h1&gt;
+      &lt;SettingsTabs activeSection={section} /&gt;
+      &lt;SettingsForm settings={settings} /&gt;
+    &lt;/main&gt;
+  )
+}</code></pre></div></div>
+<p>settings tab은 interactive하므로 <code>useSearchParams()</code>로 URL을 직접 읽을 수 있습니다. server-rendered form은 <code>params</code>와 <code>searchParams</code> promise를 전달받아 값이 필요한 곳에서 resolve합니다.</p><div class="en-orig"><p>The settings tabs are interactive, so they can read the URL directly with <code>useSearchParams()</code>. The server-rendered form receives the <code>params</code> and <code>searchParams</code> promises and resolves them where their values are needed.</p></div>
+<p>prerendering 중에는 두 영역 모두 URL에 의존하므로, 바깥쪽 boundary가 그룹 전체에 하나의 fallback을 제공합니다. URL을 사용할 수 있게 되면 tab이 render될 수 있습니다. form은 settings query도 기다리므로, 중첩된 boundary가 server 작업이 끝날 때까지 form 자체의 loading state를 계속 보여 줍니다:</p><div class="en-orig"><p>During prerendering, both regions depend on the URL, so an outer boundary provides one fallback for the group. Once the URL is available, the tabs can render. The form also waits for the settings query, so a nested boundary keeps its own loading state visible until the server work finishes:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[team]/settings/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// After: the heading renders before URL-dependent content
+import { Suspense } from &#x27;react&#x27;
+
+export default function SettingsPage({
+  params,
+  searchParams,
+}: PageProps&lt;&#x27;/[team]/settings&#x27;&gt;) {
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Settings&lt;/h1&gt;
+      &lt;Suspense fallback={&lt;SettingsContentSkeleton /&gt;}&gt;
+        &lt;SettingsTabs /&gt;
+        &lt;Suspense fallback={&lt;SettingsFormSkeleton /&gt;}&gt;
+          &lt;TeamSettings params={params} searchParams={searchParams} /&gt;
+        &lt;/Suspense&gt;
+      &lt;/Suspense&gt;
+    &lt;/main&gt;
+  )
+}</code></pre></div></div>
+<p>tab은 URL에서 활성 section을 읽습니다:</p><div class="en-orig"><p>The tabs read the active section from the URL:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[team]/settings/settings-tabs.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useSearchParams } from &#x27;next/navigation&#x27;
+
+export function SettingsTabs() {
+  const section = useSearchParams().get(&#x27;section&#x27;) ?? &#x27;profile&#x27;
+
+  return &lt;Tabs activeSection={section} /&gt;
+}</code></pre></div></div>
+<p>form은 두 URL promise를 모두 await한 다음 그 값에 의존하는 query를 시작합니다:</p><div class="en-orig"><p>The form awaits both URL promises before starting the query that depends on their values:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[team]/settings/team-settings.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export async function TeamSettings({
+  params,
+  searchParams,
+}: PageProps&lt;&#x27;/[team]/settings&#x27;&gt;) {
+  const [{ team }, { section = &#x27;profile&#x27; }] = await Promise.all([
+    params,
+    searchParams,
+  ])
+  const settings = await getTeamSettings(team, section)
+
+  return &lt;SettingsForm settings={settings} /&gt;
+}</code></pre></div></div>
+<p>prerender된 shell은 <code>SettingsContentSkeleton</code>을 보여 줍니다. URL을 사용할 수 있게 되면 tab이 그 fallback을 대체하고, 중첩된 form boundary는 settings query가 끝날 때까지 loading state를 유지합니다.</p><div class="en-orig"><p>The prerendered shell shows <code>SettingsContentSkeleton</code>. Once the URL is available, the tabs replace that fallback while the nested form boundary stays in its loading state until the settings query finishes.</p></div>
+<p>plan query는 어느 URL 값에도 의존하지 않습니다. 이를 형제 component로 옮겨서 URL에 의존하는 branch가 pending인 동안 React가 시작할 수 있게 하세요. 이 시점에서는 여전히 request마다 실행되므로, 임시 boundary를 유지하세요:</p><div class="en-orig"><p>The plan query does not depend on either URL value. Move it into a sibling component so React can start it while the URL-dependent branch is pending. It still runs for each request at this point, so keep a temporary boundary:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[team]/settings/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// After: the independent plan query starts with the page
+import { Suspense } from &#x27;react&#x27;
+
+export default function SettingsPage({
+  params,
+  searchParams,
+}: PageProps&lt;&#x27;/[team]/settings&#x27;&gt;) {
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Settings&lt;/h1&gt;
+      &lt;Suspense fallback={&lt;PlanOptionsSkeleton /&gt;}&gt;
+        &lt;PlanOptions /&gt;
+      &lt;/Suspense&gt;
+      &lt;Suspense fallback={&lt;SettingsContentSkeleton /&gt;}&gt;
+        &lt;SettingsTabs /&gt;
+        &lt;Suspense fallback={&lt;SettingsFormSkeleton /&gt;}&gt;
+          &lt;TeamSettings params={params} searchParams={searchParams} /&gt;
+        &lt;/Suspense&gt;
+      &lt;/Suspense&gt;
+    &lt;/main&gt;
+  )
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[team]/settings/plan-options.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export async function PlanOptions() {
+  const plans = await db.plan.findMany()
+  return &lt;PlanList plans={plans} /&gt;
+}</code></pre></div></div>
+<p>heading은 바로 render됩니다. <code>PlanOptions</code>와 URL에 의존하는 settings branch는 독립적으로 시작될 수 있습니다.</p><div class="en-orig"><p>The heading renders directly. <code>PlanOptions</code> and the URL-dependent settings branch can begin independently.</p></div>
+<h3 class="sec" id="step-2-move-authentication-behind-suspense"><a class="anchor" href="#step-2-move-authentication-behind-suspense">Step 2: Move authentication behind Suspense<span class="ko">2단계: authentication을 Suspense 뒤로 옮기기</span></a></h3>
+<p>현재 layout은 settings frame을 render하기 전에 Request API를 resolve합니다:</p><div class="en-orig"><p>The current layout resolves the request APIs before rendering the settings frame:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[team]/settings/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// Before: authentication blocks the layout
+import { cookies, headers } from &#x27;next/headers&#x27;
+import { redirect } from &#x27;next/navigation&#x27;
+
+export default async function SettingsLayout({ children }) {
+  const cookieStore = await cookies()
+  const requestHeaders = await headers()
+  const user = await getCurrentUser({ cookieStore, requestHeaders })
+
+  if (!user) redirect(&#x27;/login&#x27;)
+
+  return &lt;SettingsShell&gt;{children}&lt;/SettingsShell&gt;
+}</code></pre></div></div>
+<p>대신 <code>cookies()</code>와 <code>headers()</code> read를 <code>&lt;Suspense&gt;</code> 뒤에 있는 authentication gate로 옮기세요. 그러면 layout은 authentication을 기다리지 않고 settings frame을 render할 수 있습니다:</p><div class="en-orig"><p>Instead, move the <code>cookies()</code> and <code>headers()</code> reads into an authentication gate behind <code>&lt;Suspense&gt;</code>. The layout can then render the settings frame without waiting for authentication:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[team]/settings/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// After: only the authorization gate waits for the request
+import { Suspense } from &#x27;react&#x27;
+import { cookies, headers } from &#x27;next/headers&#x27;
+import { redirect } from &#x27;next/navigation&#x27;
+
+export default function SettingsLayout({ children }) {
+  return (
+    &lt;SettingsShell&gt;
+      &lt;Suspense fallback={null}&gt;
+        &lt;AuthGate /&gt;
+      &lt;/Suspense&gt;
+      {children}
+    &lt;/SettingsShell&gt;
+  )
+}
+
+async function AuthGate() {
+  const [cookieStore, requestHeaders] = await Promise.all([
+    cookies(),
+    headers(),
+  ])
+  const user = await getCurrentUser({ cookieStore, requestHeaders })
+
+  if (!user) redirect(&#x27;/login&#x27;)
+
+  return null
+}</code></pre></div></div>
+<p>request 값이 필요한 component는 <code>AuthGate</code>뿐이므로, 그 read는 <code>AuthGate</code>가 담당합니다. 이 boundary 덕분에 settings frame과 page가 shell에 남을 수 있습니다. 승인된 gate도 <code>null</code>을 반환하므로, 이 boundary에는 빈 fallback이 적합합니다.</p><div class="en-orig"><p><code>AuthGate</code> is the only component that needs the request values, so it owns those reads. Its boundary lets the settings frame and page stay in the shell. An empty fallback fits this boundary because an authorized gate also returns <code>null</code>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="app-api-reference-functions-unauthorized.html"><code>unauthorized()</code></a>나 <a href="app-api-reference-functions-forbidden.html"><code>forbidden()</code></a> 같은 authorization interrupt가 streaming이 시작된 후에 실행되면, 해당 UI는 render할 수 있지만 response status는 <code>200</code>으로 남습니다. HTTP <code>401</code> 또는 <code>403</code> status가 중요하다면, streaming이 시작되기 전에 접근 권한을 확인하세요. <a href="app-api-reference-file-conventions-loading.html#status-codes">Status codes</a>를 참고하세요.</p><div class="en-orig"><p>If an authorization interrupt such as <a href="app-api-reference-functions-unauthorized.html"><code>unauthorized()</code></a> or <a href="app-api-reference-functions-forbidden.html"><code>forbidden()</code></a> runs after streaming starts, it can render its UI, but the response status remains <code>200</code>. If the HTTP <code>401</code> or <code>403</code> status matters, check access before streaming begins. See <a href="app-api-reference-file-conventions-loading.html#status-codes">Status codes</a>.</p></div></div></div>
+<p>layout redirect만으로는 database query나 Server Action이 보호되지 않습니다. authorization 검사는 page에서 사용하는 data access 함수 안에 두고, authentication이 완료되기 전의 shell에는 안전한 UI만 포함하세요. 전체 패턴은 <a href="app-guides-authentication-with-cache-components.html">Authentication with Cache Components</a>를 참고하세요.</p><div class="en-orig"><p>A layout redirect does not protect a database query or Server Action by itself. Keep authorization checks in the data access functions used by the page, and include only safe UI in the shell before authentication completes. See <a href="app-guides-authentication-with-cache-components.html">Authentication with Cache Components</a> for the complete pattern.</p></div>
+<h3 class="sec" id="step-3-cache-the-reusable-plan-data"><a class="anchor" href="#step-3-cache-the-reusable-plan-data">Step 3: Cache the reusable plan data<span class="ko">3단계: 재사용 가능한 plan data cache하기</span></a></h3>
+<p>team settings는 request마다 최신 상태이면서 권한이 확인되어야 하므로, 계속 <code>&lt;Suspense&gt;</code> 뒤의 request-time 작업으로 남습니다. plan 설명은 여러 team이 공유하고 정해진 일정에 따라 바뀌므로, <code>PlanOptions</code>가 이를 cache할 수 있습니다:</p><div class="en-orig"><p>The team settings must stay current and authorized for each request, so they continue as request-time work behind <code>&lt;Suspense&gt;</code>. Plan descriptions are shared across teams and change on a known schedule, so <code>PlanOptions</code> can cache them:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[team]/settings/plan-options.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// Before: the query runs for every request
+export async function PlanOptions() {
+  const plans = await db.plan.findMany()
+  return &lt;PlanList plans={plans} /&gt;
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[team]/settings/plan-options.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// After: the reusable plans can render in the shell
+import { cacheLife } from &#x27;next/cache&#x27;
+
+export async function PlanOptions() {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;hours&#x27;)
+
+  const plans = await db.plan.findMany()
+  return &lt;PlanList plans={plans} /&gt;
+}</code></pre></div></div>
+<p><code>PlanOptions</code>에는 request-time dependency가 없으므로, Next.js는 static shell을 생성하는 동안 이를 resolve할 수 있습니다. 기존 <code>&lt;Suspense&gt;</code> boundary가 있어도 이를 막지 않습니다. 이 route에서는 fallback이 필요하지 않으므로 boundary를 제거해도 됩니다. cache된 component가 request-time data 이후에 처음 도달되는 경우에는 cold cache를 커버할 수 있도록 boundary를 유지하세요.</p><div class="en-orig"><p><code>PlanOptions</code> has no request-time dependency, so Next.js can resolve it while generating the static shell. Its existing <code>&lt;Suspense&gt;</code> boundary does not prevent that. The fallback is not needed for this route, so the boundary may be removed. Keep a boundary when a cached component is first reached after request-time data so it can cover a cold cache.</p></div>
+<p>어떤 write가 plan 설명을 바꾼다면, 해당 mutation에서 <a href="app-getting-started-revalidating.html">on-demand revalidation</a>을 사용하세요.</p><div class="en-orig"><p>If a write changes the plan descriptions, use <a href="app-getting-started-revalidating.html">on-demand revalidation</a> from the corresponding mutation.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[team]/settings/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&lt;main&gt;
+  &lt;h1&gt;Settings&lt;/h1&gt;
+  &lt;PlanOptions /&gt;
+  &lt;Suspense fallback={&lt;SettingsContentSkeleton /&gt;}&gt;
+    &lt;SettingsTabs /&gt;
+    &lt;Suspense fallback={&lt;SettingsFormSkeleton /&gt;}&gt;
+      &lt;TeamSettings params={params} searchParams={searchParams} /&gt;
+    &lt;/Suspense&gt;
+  &lt;/Suspense&gt;
+&lt;/main&gt;</code></pre></div></div>
+<p>refactor를 마치면 route는 세 단계로 드러납니다:</p><div class="en-orig"><p>With the refactor complete, the route reveals in three stages:</p></div>
+<ol>
+<li><p><strong>static shell 단계.</strong> URL에 의존하는 영역이 fallback을 보여 주는 동안 heading과 cache된 plan option이 render됩니다.</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&lt;h1&gt;Settings&lt;/h1&gt;
+&lt;PlanOptions /&gt;
+&lt;SettingsContentSkeleton /&gt;</code></pre></div></div></li>
+<li><p><strong>URL을 사용할 수 있게 된 후.</strong> settings query가 중첩된 fallback 뒤에서 계속되는 동안 tab이 content skeleton을 대체합니다.</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&lt;h1&gt;Settings&lt;/h1&gt;
+&lt;PlanOptions /&gt;
+&lt;SettingsTabs /&gt;
+&lt;SettingsFormSkeleton /&gt;</code></pre></div></div></li>
+<li><p><strong>settings가 load된 후.</strong> 완성된 form이 skeleton을 대체합니다.</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&lt;h1&gt;Settings&lt;/h1&gt;
+&lt;PlanOptions /&gt;
+&lt;SettingsTabs /&gt;
+&lt;TeamSettings /&gt;</code></pre></div></div></li>
+</ol><div class="en-orig"><ol>
+<li><p><strong>In the static shell.</strong> The heading and cached plan options render while the URL-dependent region shows its fallback.</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&lt;h1&gt;Settings&lt;/h1&gt;
+&lt;PlanOptions /&gt;
+&lt;SettingsContentSkeleton /&gt;</code></pre></div></div></li>
+<li><p><strong>Once the URL is available.</strong> The tabs replace the content skeleton while the settings query continues behind its nested fallback.</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&lt;h1&gt;Settings&lt;/h1&gt;
+&lt;PlanOptions /&gt;
+&lt;SettingsTabs /&gt;
+&lt;SettingsFormSkeleton /&gt;</code></pre></div></div></li>
+<li><p><strong>After the settings load.</strong> The completed form replaces its skeleton.</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&lt;h1&gt;Settings&lt;/h1&gt;
+&lt;PlanOptions /&gt;
+&lt;SettingsTabs /&gt;
+&lt;TeamSettings /&gt;</code></pre></div></div></li>
+</ol></div>
+<p>이제 page는 유용한 UI를 즉시 render하고, request별 콘텐츠는 범위가 좁은 fallback 안으로 stream되어 들어옵니다. 다음 단계는 이 계약(contract)을 고정하는 것입니다.</p><div class="en-orig"><p>The page now renders useful UI immediately while request-specific content streams into focused fallbacks. The next step is to lock this contract in.</p></div>
+<h3 class="sec" id="step-4-verify-the-instant-ui"><a class="anchor" href="#step-4-verify-the-instant-ui">Step 4: Verify the instant UI<span class="ko">4단계: instant UI 검증하기</span></a></h3>
+<p><a href="app-guides-instant-navigation.html#prevent-regressions-with-e2e-tests"><code>instant()</code></a>를 사용해 request-time server 콘텐츠를 보류하고, page의 어떤 부분을 즉시 사용할 수 있는지 assert하세요. Playwright는 hydration 이후에 이 assertion을 수행하므로, server 콘텐츠 없이 resolve될 수 있는 Client Component는 callback 안에서 이미 보일 수 있습니다.</p><div class="en-orig"><p>Use <a href="app-guides-instant-navigation.html#prevent-regressions-with-e2e-tests"><code>instant()</code></a> to hold back request-time server content and assert which parts of the page are available immediately. Playwright makes these assertions after hydration, so Client Components that can resolve without server content may already be visible inside the callback.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">e2e/settings-navigation.test.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { expect, test, type Page } from &#x27;@playwright/test&#x27;
+import { instant } from &#x27;@next/playwright&#x27;
+
+async function expectInstantSettingsUI(page: Page) {
+  await expect(page.getByRole(&#x27;heading&#x27;, { name: &#x27;Settings&#x27; })).toBeVisible()
+  await expect(page.getByTestId(&#x27;plan-options&#x27;)).toBeVisible()
+  await expect(page.getByTestId(&#x27;settings-tabs&#x27;)).toBeVisible()
+  await expect(page.getByTestId(&#x27;settings-form-skeleton&#x27;)).toBeVisible()
+  await expect(page.getByTestId(&#x27;settings-content-skeleton&#x27;)).toHaveCount(0)
+  await expect(page.getByTestId(&#x27;team-settings-form&#x27;)).toHaveCount(0)
+}
+
+test(&#x27;shows settings UI before request-time work completes&#x27;, async ({
+  page,
+  baseURL,
+}) =&gt; {
+  await instant(
+    page,
+    async () =&gt; {
+      await page.goto(&#x27;/acme/settings&#x27;)
+      await expectInstantSettingsUI(page)
+    },
+    { baseURL }
+  )
+
+  await expect(page.getByTestId(&#x27;team-settings-form&#x27;)).toBeVisible()
+  await expect(page.getByTestId(&#x27;settings-form-skeleton&#x27;)).toHaveCount(0)
+})</code></pre></div></div>
+<p>callback 안에서는 heading과 cache된 plan option이 계속 보입니다. hydration이 이미 브라우저 URL로부터 tab을 render했고, <code>instant()</code>는 request-time form을 <code>SettingsFormSkeleton</code> 뒤에 붙잡아 둡니다. 마지막 assertion은 일시 정지가 해제된 후 완성된 form이 loading state를 대체하는지 확인합니다.</p><div class="en-orig"><p>Inside the callback, the heading and cached plan options stay visible. Hydration has already rendered the tabs from the browser URL, while <code>instant()</code> keeps the request-time form behind <code>SettingsFormSkeleton</code>. The final assertions confirm that the completed form replaces its loading state after the pause is released.</p></div>
+<p>testing API는 <code>next dev</code>에서 자동으로 사용할 수 있습니다. <code>next start</code>로 production build를 대상으로 test를 실행할 때는, test build에서 <a href="app-api-reference-config-next-config-js-exposeTestingApiInProductionBuild.html"><code>experimental.exposeTestingApiInProductionBuild</code></a>를 활성화하세요.</p><div class="en-orig"><p>The testing API is available automatically in <code>next dev</code>. When running the test against a production build with <code>next start</code>, enable <a href="app-api-reference-config-next-config-js-exposeTestingApiInProductionBuild.html"><code>experimental.exposeTestingApiInProductionBuild</code></a> for the test build.</p></div>
+<p>완성된 route는 원래 route와 같은 settings data, redirect, error state, interaction을 가져야 합니다.</p><div class="en-orig"><p>The completed route should have the same settings data, redirects, error states, and interactions as the original route.</p></div>
+<h3 class="sec" id="step-5-include-url-specific-content-in-the-instant-ui"><a class="anchor" href="#step-5-include-url-specific-content-in-the-instant-ui">Step 5: Include URL-specific content in the instant UI<span class="ko">5단계: instant UI에 URL별 콘텐츠 포함하기</span></a></h3>
+<p>route가 prerendering 중에 <code>searchParams</code>를 알지 못하기 때문에, 직접 방문은 공유 static shell과 <code>SettingsContentSkeleton</code>으로 시작합니다. URL을 사용할 수 있게 되면 tab이 그 fallback을 대체합니다.</p><div class="en-orig"><p>The direct visit starts with the shared static shell and <code>SettingsContentSkeleton</code> because the route does not know <code>searchParams</code> during prerendering. Once the URL is available, the tabs replace that fallback.</p></div>
+<p>client navigation 중에는 <code>SettingsTabs</code>가 URL을 synchronous하게 읽을 수 있습니다. 목적지의 <code>params</code>나 <code>searchParams</code>에 의존하는 다른 server 콘텐츠는 공유 shell에 포함되지 않습니다. 그 작업이 cache 가능하다면, 클릭 후에 stream하는 대신 link별 prefetch가 클릭 전에 이를 resolve할 수 있습니다.</p><div class="en-orig"><p>During a client navigation, <code>SettingsTabs</code> can read the URL synchronously. Other server content that depends on the destination's <code>params</code> or <code>searchParams</code> is not part of the shared shell. If that work is cacheable, a per-link prefetch can resolve it before the click instead of streaming it afterward.</p></div>
+<p>선택한 link가 클릭되기 전에 URL별 콘텐츠가 준비되어 있어야 한다면 <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching</a>을 사용하세요. 이 가이드는 작업 비용에 따라 prefetch 정책을 고르는 방법도 다룹니다.</p><div class="en-orig"><p>Use <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching</a> when URL-specific content should be ready before a selected link is clicked. The guide also covers how to choose a prefetch policy based on the cost of the work.</p></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">더 알아보기</h2><p>이 가이드에서 사용한 API에 대해 더 알아보세요.</p><div class="rgrid"><a class="rcard" href="app-api-reference-directives-use-cache.html"><div class="rt">use cache</div><div class="rk">use cache</div><div class="rd">\"use cache\" directive로 Next.js 애플리케이션의 데이터를 cache하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-directives-use-cache-remote.html"><div class="rt">use cache: remote</div><div class="rk">use cache: remote</div><div class="rd">remote cache handler를 사용한 지속적이고 공유되는 caching을 위해 \"use cache: remote\" directive를 사용하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-functions-cacheLife.html"><div class="rt">cacheLife</div><div class="rk">cacheLife</div><div class="rd">cacheLife 함수를 사용해 cache된 함수나 component의 cache 만료 시간을 설정하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-file-conventions-loading.html"><div class="rt">loading.js</div><div class="rk">loading.js</div><div class="rd">loading.js 파일에 대한 API reference입니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/optimizing-the-static-shell.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/optimizing-the-static-shell" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-optimizing-prefetching.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Optimizing prefetching</div><div class="ttl-ko">prefetching 최적화</div></a>
+      <a href="app-guides-package-bundling.html" class="next"><div class="dir">다음 →</div><div class="ttl">Package Bundling</div><div class="ttl-ko">package bundling 최적화</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/optimizing-the-static-shell" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#use-the-optimizer-skill-recommended">Use the optimizer skill (recommended)</a></li><li class="l2"><a href="#prerequisites">Prerequisites</a></li><li class="l2"><a href="#patterns">Patterns</a></li><li class="l3"><a href="#keep-static-ui-in-the-shell">Keep static UI in the shell</a></li><li class="l3"><a href="#stream-request-time-work">Stream request-time work</a></li><li class="l3"><a href="#cache-reusable-work">Cache reusable work</a></li><li class="l2"><a href="#follow-validation-as-you-refactor">Follow validation as you refactor</a></li><li class="l2"><a href="#example">Example</a></li><li class="l3"><a href="#step-1-move-url-dependent-work-behind-suspense">Step 1: Move URL-dependent work behind Suspense</a></li><li class="l3"><a href="#step-2-move-authentication-behind-suspense">Step 2: Move authentication behind Suspense</a></li><li class="l3"><a href="#step-3-cache-the-reusable-plan-data">Step 3: Cache the reusable plan data</a></li><li class="l3"><a href="#step-4-verify-the-instant-ui">Step 4: Verify the instant UI</a></li><li class="l3"><a href="#step-5-include-url-specific-content-in-the-instant-ui">Step 5: Include URL-specific content in the instant UI</a></li><li class="l2"><a href="#next-steps">더 알아보기</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+[Cache Components](/docs/app/getting-started/caching)는 request-time 콘텐츠가 stream되어 들어오는 동안 static shell을 prerender할 수 있습니다. shell은 page를 하나의 넓은 fallback으로 대체하는 대신, route의 layout, navigation, heading, 그리고 범위가 좁은 loading state를 계속 보이게 할 수 있습니다.
+
+Cache Components 이전에 작성된 앱은 layout이나 page의 상단 근처에서 request data를 await하는 경우가 많습니다. Cache Components를 활성화하면 이런 route는 이미 작은 static shell을 가지고 있을 수 있는데, 때로는 넓은 loading state 하나로만 이루어져 있기도 합니다.
+
+이 가이드에서는 각 data read를 그것이 필요한 UI까지 추적하고, 재사용 가능한 작업을 cache하고, request-time 작업을 범위가 좁은 `&lt;Suspense&gt;` boundary 뒤로 옮겨서 shell을 확장하는 방법을 배웁니다. 이런 패턴을 사용하면 중요한 콘텐츠를 일찍 보여 주고, page의 나머지가 stream되어 들어오는 동안 공간을 확보해 둘 수 있습니다.
+
+&gt; **Good to know:** 이 가이드는 아래에서 설명하는 static shell과 instant navigation 검증을 가능하게 하는 Cache Components에 초점을 맞춥니다. data 접근을 그것이 필요한 UI 가까이로 옮기기, 범위가 좁은 `&lt;Suspense&gt;` boundary로 streaming하기, waterfall 피하기, 안정적인 loading state 설계하기 같은 기본 패턴 중 상당수는 다른 App Router 애플리케이션에서도 유용합니다. cache directive와 검증 workflow는 Cache Components가 필요합니다.
+
+## Use the optimizer skill (recommended) || optimizer skill 사용하기 (권장)
+
+[`next-cache-components-optimizer`](/docs/app/guides/ai-agents#next-cache-components-optimizer) skill은 coding agent와 함께 이 가이드를 적용합니다. 아래의 [`instant()` 검증 loop](#step-4-verify-the-instant-ui)를 사용해 의도한 static shell을 포착하고, 현재 동작을 검증하고, 통과한 test를 regression coverage로 유지합니다.
+
+이 skill은 목적지 UI가 즉시 commit되지 않는 client navigation도 대상으로 할 수 있습니다. 바뀌는 목적지 segment에 같은 패턴을 적용한 다음, 실제 link를 통해 지정한 navigation을 검증합니다. 목적지에 이미 instant UI가 있고 클릭 전에 URL별 콘텐츠를 추가로 포함하고 싶다면, 대신 [Optimizing prefetching](/docs/app/guides/optimizing-prefetching)을 사용하세요.
+
+skill을 설치하세요:
+
+[[CODE 1]]
+
+그다음 agent에게 route와 그 static shell에 들어가야 할 UI를 알려 주세요:
+
+[[CODE 2]]
+
+## Prerequisites || 사전 준비
+
+[`cacheComponents`](/docs/app/api-reference/config/next-config-js/cacheComponents)를 활성화하고 먼저 route의 blocking validation error를 해결하세요. migration workflow는 [Migrating to Cache Components](/docs/app/guides/migrating-to-cache-components)를 참고하세요.
+
+[[CODE 3]]
+
+client navigation을 위해 [Partial Prefetching](/docs/app/guides/adopting-partial-prefetching)도 함께 활성화하는 것을 고려해 보세요. Partial Prefetching을 활성화하면 `&lt;Link prefetch={true}&gt;`가 클릭 전에 cache된 URL별 콘텐츠를 포함할 수 있어서, navigation 시 더 많은 UI를 즉시 보여 줄 수 있습니다. 어떤 콘텐츠를 prefetch할지 고르려면 [Optimizing prefetching](/docs/app/guides/optimizing-prefetching)을 참고하세요.
+
+## Patterns || 패턴
+
+다음 패턴을 사용하면 static shell에서 더 유용한 UI를 보여 줄 수 있습니다:
+
+| 패턴                                                     | 사용 시점                                            | 결과                                              |
+| ----------------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------------- |
+| [Keep static UI in the shell](#keep-static-ui-in-the-shell) | UI에 data가 필요하지 않을 때                                  | UI가 static shell에서 render될 수 있음               |
+| [Stream request-time work](#stream-request-time-work)       | 어떤 영역이 request 시점에만 알 수 있는 data를 필요로 할 때 | 가장 가까운 `&lt;Suspense&gt;` fallback이 먼저 render될 수 있음  |
+| [Cache reusable work](#cache-reusable-work)                 | 결과를 여러 request에 걸쳐 재사용할 수 있을 때                 | 완성된 결과가 static shell에서 render될 수 있음 |
+
+### Keep static UI in the shell || static UI를 shell에 유지하기
+
+`&lt;Suspense&gt;` boundary는 자식이 suspend될 때 그 fallback이 UI의 어느 부분을 대체할지 결정합니다. static UI가 boundary 안에 있어도 문제는 없습니다. 하지만 같은 boundary에 느리거나 request-time인 작업도 들어 있다면, 그 fallback이 static UI까지 일시적으로 대체합니다.
+
+[[CODE 4]]
+
+heading, navigation, cache된 콘텐츠 및 기타 안정적인 UI를 계속 보이게 하려면, 굳이 포함될 필요가 없는 loading state 바깥으로 이들을 꺼내세요. 그다음 boundary를 suspend될 수 있는 더 작은 영역으로 내리세요:
+
+[[CODE 5]]
+
+주요 heading이나 다른 [Largest Contentful Paint 후보](/docs/app/guides/streaming#lcp-largest-contentful-paint)가 재사용 가능한 data에 의존한다면, [그 data를 cache해서](#cache-reusable-work) 완성된 콘텐츠가 shell에서 render될 수 있게 하세요. data가 request를 기다려야 한다면, loading state의 범위를 좁게 유지해서 page의 나머지를 붙잡지 않게 하세요.
+
+### Stream request-time work || request-time 작업 stream하기
+
+어떤 data는 request가 도착하기 전까지 알 수 없거나, request마다 다시 계산해야 하거나, prerendering하기에는 cache lifetime이 너무 짧습니다. layout이나 page가 상단 근처에서 이런 작업을 await하면 page 전체의 rendering을 막을 수 있습니다. 결과가 필요한 영역을 분리하고 그 영역만 suspend되도록 해서 page의 나머지가 먼저 render될 수 있게 하세요.
+
+#### Push data access down || data 접근을 아래로 내리기
+
+request-time data는 그것을 사용하는 논리적인 UI 영역에서 resolve하세요. 이는 data를 await하는 Server Component일 수도 있고, server에서 전달된 promise를 unwrap하는 Client Component일 수도 있습니다.
+
+**data 접근을 Server Component로 옮기세요.** page가 request-time data를 직접 resolve하면, 그 작업이 끝날 때까지 heading과 다른 독립적인 UI를 render할 수 없습니다:
+
+[[CODE 6]]
+
+`params`, `searchParams` 또는 다른 request-time data read를 관련 UI 영역을 나타내는 Server Component로 옮기세요. 그 component를 `&lt;Suspense&gt;` 뒤에 두어 작업이 resolve되는 동안 형제 요소들이 render될 수 있게 하세요:
+
+[[CODE 7]]
+
+heading과 product fallback은 request-time product query가 끝나기 전에 render될 수 있습니다. `cookies()`와 `headers()` 같은 Request API도 범위가 좁은 component로 옮길 수 있습니다:
+
+[[CODE 8]]
+
+layout은 `UserMenu`가 들어오는 request를 읽기 전에 `DashboardShell`을 반환할 수 있습니다.
+
+**promise를 inline으로 resolve하세요.** 작은 영역이라면 promise를 await하기 위해서만 component를 하나 더 만들 필요는 없습니다. boundary 안에서 `.then()`으로 `params`, `searchParams` 또는 다른 promise를 inline으로 resolve하세요:
+
+[[CODE 9]]
+
+**promise를 Client Component에 전달하세요.** interactive한 Client Component가 server에서 가져온 data를 필요로 할 수 있습니다. 그 data를 부모에서 await하면 부모의 안정적인 UI도 붙잡히게 됩니다:
+
+[[CODE 10]]
+
+request를 await하지 않고 시작한 다음, `&lt;Suspense&gt;` 뒤에 있는 Client Component에 promise를 전달하세요:
+
+[[CODE 11]]
+
+Client Component는 React의 [`use()`](https://react.dev/reference/react/use)로 promise를 unwrap합니다:
+
+[[CODE 12]]
+
+URL data의 경우, Client Component는 promise를 전달받는 대신 [`useParams()`](/docs/app/api-reference/functions/use-params)나 [`useSearchParams()`](/docs/app/api-reference/functions/use-search-params)를 호출할 수 있는 경우가 많습니다. router가 이미 URL을 알고 있기 때문에, 두 hook 모두 client navigation 중에 synchronous하게 resolve됩니다.
+
+request-time 작업을 그것을 사용하는 UI 가까이에서 resolve하는 더 많은 예제는 [Push dynamic access down](/docs/app/guides/streaming#push-dynamic-access-down)을 참고하세요.
+
+#### Design loading states || loading state 설계하기
+
+이 refactor 이전에는 route가 segment 전체에 대해 하나의 [`loading.tsx` 파일](/docs/app/api-reference/file-conventions/loading)에 의존했을 수 있습니다. page가 하나의 단위로 load되는 동안에는 그것으로 충분한 경우가 많습니다. data 접근을 아래로 내려서 완성된 UI를 더 많이 드러낼수록, 범위가 좁은 [`&lt;Suspense&gt;` boundary](/docs/app/guides/streaming#granular-streaming-with-suspense)를 사용하고 그 loading state를 더 신중하게 선택하세요. `loading.tsx` 파일은 바깥쪽 fallback으로 남겨 두거나, route에 더 이상 필요하지 않으면 제거할 수 있습니다.
+
+**독립적인 영역은 따로 드러내세요.** 완성된 각 영역의 크기를 예측할 수 있고 각자 따로 나타날 수 있다면 형제 boundary를 사용하세요. 각 fallback은 완성된 영역에 필요한 공간을 확보해야 합니다:
+
+[[CODE 13]]
+
+**관련된 영역은 단계적으로 드러내세요.** 그룹이 먼저 함께 나타난 다음 더 자세한 내용을 드러내야 할 때, 또는 높이가 가변적인 영역을 단독으로 드러내면 그 아래 콘텐츠가 밀려날 수 있을 때는 boundary를 중첩하세요:
+
+[[CODE 14]]
+
+React는 같은 render 중에 독립적으로 도달 가능한 작업을 여전히 시작할 수 있습니다. 중첩은 드러나는 순서를 바꿀 뿐, 독립적인 request를 순차적으로 만들지는 않습니다.
+
+길이가 가변적인 콘텐츠라면, 예측 가능한 접힌 상태를 Show more나 Load more control과 함께 render해서 아래 콘텐츠가 나중에 밀려나지 않고 나타나게 하는 방법도 있습니다.
+
+route가 parallel slot을 사용한다면, 각 slot은 자체 loading state로 stream될 수 있습니다. [Loading and Error UI with Parallel Routes](/docs/app/api-reference/file-conventions/parallel-routes#loading-and-error-ui)를 참고하세요.
+
+**loading UI와 완성된 UI에 같은 layout을 사용하세요.** component와 responsive layout이 바뀌면서 fallback이 완성된 UI와 점점 어긋날 수 있습니다. layout을 담당하는 container는 boundary 바깥에 두세요. 이 예제에서는 skeleton card와 완성된 product card가 모두 같은 responsive grid를 사용합니다:
+
+[[CODE 15]]
+
+&gt; **Good to know:** UI를 refactor하거나 업데이트하다 보면 skeleton이 더 이상 완성된 component의 크기나 responsive layout과 맞지 않을 수 있습니다. skeleton을 component 옆에 두거나 같은 파일에서 export하면, 그 component를 `&lt;Suspense&gt;`로 감싸야 할 때마다 업데이트하고 재사용하기가 더 쉽습니다.
+
+빈 fallback은 `null`을 반환하는 authorization gate처럼 resolve된 component도 시각적으로 차지하는 공간이 없을 때만 사용하세요. 그렇지 않다면 완성된 UI를 위한 공간을 확보하는 fallback을 제공하세요.
+
+**관련 data-fetching 패턴.** 작업을 stream되는 영역들로 나눈 후에는, 다음 패턴으로 request 자체가 필요 이상으로 늦게 시작되는 것을 막을 수 있습니다:
+
+- 여러 독립적인 request가 한 영역에 있어야 한다면, [parallel data fetching](/docs/app/getting-started/fetching-data#parallel-data-fetching)으로 함께 시작하세요.
+- React가 render 후반에 data dependency에 도달한다면, [preloading](/docs/app/getting-started/fetching-data#preloading-data)으로 더 일찍 시작하세요.
+
+### Cache reusable work || 재사용 가능한 작업 cache하기
+
+page를 막을 수 있는 작업을 분리한 다음에는, 그 결과를 정말로 request마다 다시 계산해야 하는지 생각해 보세요. 재사용할 수 있다면 함수나 component를 cache해서 완성된 UI가 static shell에서 render될 수 있게 하세요. data가 얼마나 fresh해야 하는지에 따라 결과에 lifetime을 지정하세요:
+
+[[CODE 16]]
+
+[[CODE 17]]
+
+애플리케이션이 cache된 결과를 변경할 수 있다면, [on-demand revalidation](/docs/app/getting-started/revalidating)으로 cache된 read를 그 write와 연결하세요.
+
+**관련 caching 패턴.** 다음 패턴은 request에서 파생된 값, 한 request 안에서의 재사용, dynamic route를 다룹니다:
+
+- `cookies()`, `headers()` 또는 다른 runtime API의 값을 사용해 결과를 cache하려면, [cache scope 바깥에서 값을 읽고 argument로 전달하세요](/docs/app/getting-started/caching#passing-runtime-values-to-cached-functions).
+- 결과를 request 간에 유지하지 않고 하나의 server request 동안 일치하는 호출을 중복 제거하려면 [React `cache()`](/docs/app/getting-started/fetching-data#reusing-data-with-reactcache)를 사용하세요.
+- 알려진 dynamic route를 prerender하고 나머지는 on demand로 생성하려면 [ISR with Cache Components](/docs/app/guides/incremental-static-regeneration-cache-components)를 참고하세요.
+
+cache scope와 lifetime에 대해서는 [Caching](/docs/app/getting-started/caching#usage)에서 더 알아보세요.
+
+## Follow validation as you refactor || refactor하면서 validation 따라가기
+
+Cache Components를 활성화하면, [`next dev`가 각 page load나 client navigation에 instant UI가 있는지 검증합니다](/docs/app/guides/instant-navigation#validate-instant-navigation). route가 한 진입점에서는 이미 instant UI를 가지고 있지만 다른 진입점에서는 insight를 표시할 수도 있습니다. 예를 들어 공유 layout의 fallback이 page load는 커버하지만 그 layout 안에서의 client navigation은 커버하지 못할 수 있습니다.
+
+refactor 중에 insight가 나타나면, 해당 page load나 client navigation에 즉각적인 결과나 fallback이 필요하다는 뜻입니다. 같은 route의 다른 진입점이 이미 instant하더라도, 이는 위의 패턴이나 optimizer skill을 적용하기에 좋은 대상입니다. 제안되는 수정 방법은 위의 패턴과 대응됩니다:
+
+&lt;FixCardGrid&gt;
+  &lt;FixCard
+    group=&quot;cache&quot;
+    title=&quot;Cache the component or data&quot;
+    href=&quot;/docs/messages/blocking-prerender-dynamic#cache-the-component-or-data&quot;
+    snippets={[
+      { text: &#x27;async function Posts() {&#x27; },
+      { text: &#x27;  &quot;use cache&quot;&#x27;, highlight: true },
+      { text: &#x27;  return &lt;List items={…} /&gt;&#x27; },
+    ]}
+  /&gt;
+  &lt;FixCard
+    group=&quot;stream&quot;
+    title=&quot;Wrap in or move into Suspense&quot;
+    href=&quot;/docs/messages/blocking-prerender-dynamic#wrap-in-or-move-into-suspense&quot;
+    snippets={[
+      { text: &#x27;&lt;Suspense fallback={…}&gt;&#x27;, highlight: true },
+      { text: &#x27;  &lt;DataChild /&gt;&#x27; },
+      { text: &#x27;&lt;/Suspense&gt;&#x27;, highlight: true },
+    ]}
+  /&gt;
+&lt;/FixCardGrid&gt;
+
+insight를 해결하면 해당 진입점이 instant해집니다. 하지만 어떤 UI를 즉시 보여 줘야 하는지까지 결정해 주지는 않습니다. [Navigation Inspector](/docs/app/guides/instant-navigation#visualize-loading-states-with-the-nextjs-devtools)로 무엇이 나타나는지 확인하고 위의 패턴을 적용해 더 유용한 UI를 포함하거나, route와 의도한 instant UI를 [optimizer skill](#use-the-optimizer-skill-recommended)에 넘기세요.
+
+## Example || 예제
+
+layout과 page 양쪽의 상단 근처에서 request data를 await하는 team settings route를 생각해 보세요. 이 구조는 Cache Components 이전에 작성된 App Router 애플리케이션에서는 자연스럽게 느껴질 수 있습니다. 또한 `getServerSideProps` 같은 route 수준 함수가 page를 render하기 전에 data를 load하는 [Pages Router](/docs/app/guides/migrating/app-router-migration#step-6-migrating-data-fetching-methods)에서 그대로 넘어온 구조일 수도 있습니다. App Router에서는 같은 구조라면 settings UI가 static shell에 하나도 남지 않습니다.
+
+예제는 하나의 layout과 하나의 page로 시작합니다:
+
+[[CODE 18]]
+
+layout은 settings frame을 render하기 전에 authentication을 resolve합니다:
+
+[[CODE 19]]
+
+그다음 page는 heading을 render하기 전에 URL data, team settings, 재사용 가능한 plan 설명을 기다립니다:
+
+[[CODE 20]]
+
+다음 단계들은 완성된 page와 그 authorization 동작을 유지하면서 더 많은 부분을 static shell에서 보여 줄 수 있게 합니다.
+
+### Step 1: Move URL-dependent work behind Suspense || 1단계: URL에 의존하는 작업을 Suspense 뒤로 옮기기
+
+현재 page는 UI를 render하기 전에 두 URL promise를 모두 resolve합니다:
+
+[[CODE 21]]
+
+settings tab은 interactive하므로 `useSearchParams()`로 URL을 직접 읽을 수 있습니다. server-rendered form은 `params`와 `searchParams` promise를 전달받아 값이 필요한 곳에서 resolve합니다.
+
+prerendering 중에는 두 영역 모두 URL에 의존하므로, 바깥쪽 boundary가 그룹 전체에 하나의 fallback을 제공합니다. URL을 사용할 수 있게 되면 tab이 render될 수 있습니다. form은 settings query도 기다리므로, 중첩된 boundary가 server 작업이 끝날 때까지 form 자체의 loading state를 계속 보여 줍니다:
+
+[[CODE 22]]
+
+tab은 URL에서 활성 section을 읽습니다:
+
+[[CODE 23]]
+
+form은 두 URL promise를 모두 await한 다음 그 값에 의존하는 query를 시작합니다:
+
+[[CODE 24]]
+
+prerender된 shell은 `SettingsContentSkeleton`을 보여 줍니다. URL을 사용할 수 있게 되면 tab이 그 fallback을 대체하고, 중첩된 form boundary는 settings query가 끝날 때까지 loading state를 유지합니다.
+
+plan query는 어느 URL 값에도 의존하지 않습니다. 이를 형제 component로 옮겨서 URL에 의존하는 branch가 pending인 동안 React가 시작할 수 있게 하세요. 이 시점에서는 여전히 request마다 실행되므로, 임시 boundary를 유지하세요:
+
+[[CODE 25]]
+
+[[CODE 26]]
+
+heading은 바로 render됩니다. `PlanOptions`와 URL에 의존하는 settings branch는 독립적으로 시작될 수 있습니다.
+
+### Step 2: Move authentication behind Suspense || 2단계: authentication을 Suspense 뒤로 옮기기
+
+현재 layout은 settings frame을 render하기 전에 Request API를 resolve합니다:
+
+[[CODE 27]]
+
+대신 `cookies()`와 `headers()` read를 `&lt;Suspense&gt;` 뒤에 있는 authentication gate로 옮기세요. 그러면 layout은 authentication을 기다리지 않고 settings frame을 render할 수 있습니다:
+
+[[CODE 28]]
+
+request 값이 필요한 component는 `AuthGate`뿐이므로, 그 read는 `AuthGate`가 담당합니다. 이 boundary 덕분에 settings frame과 page가 shell에 남을 수 있습니다. 승인된 gate도 `null`을 반환하므로, 이 boundary에는 빈 fallback이 적합합니다.
+
+&gt; **Good to know:** [`unauthorized()`](/docs/app/api-reference/functions/unauthorized)나 [`forbidden()`](/docs/app/api-reference/functions/forbidden) 같은 authorization interrupt가 streaming이 시작된 후에 실행되면, 해당 UI는 render할 수 있지만 response status는 `200`으로 남습니다. HTTP `401` 또는 `403` status가 중요하다면, streaming이 시작되기 전에 접근 권한을 확인하세요. [Status codes](/docs/app/api-reference/file-conventions/loading#status-codes)를 참고하세요.
+
+layout redirect만으로는 database query나 Server Action이 보호되지 않습니다. authorization 검사는 page에서 사용하는 data access 함수 안에 두고, authentication이 완료되기 전의 shell에는 안전한 UI만 포함하세요. 전체 패턴은 [Authentication with Cache Components](/docs/app/guides/authentication-with-cache-components)를 참고하세요.
+
+### Step 3: Cache the reusable plan data || 3단계: 재사용 가능한 plan data cache하기
+
+team settings는 request마다 최신 상태이면서 권한이 확인되어야 하므로, 계속 `&lt;Suspense&gt;` 뒤의 request-time 작업으로 남습니다. plan 설명은 여러 team이 공유하고 정해진 일정에 따라 바뀌므로, `PlanOptions`가 이를 cache할 수 있습니다:
+
+[[CODE 29]]
+
+[[CODE 30]]
+
+`PlanOptions`에는 request-time dependency가 없으므로, Next.js는 static shell을 생성하는 동안 이를 resolve할 수 있습니다. 기존 `&lt;Suspense&gt;` boundary가 있어도 이를 막지 않습니다. 이 route에서는 fallback이 필요하지 않으므로 boundary를 제거해도 됩니다. cache된 component가 request-time data 이후에 처음 도달되는 경우에는 cold cache를 커버할 수 있도록 boundary를 유지하세요.
+
+어떤 write가 plan 설명을 바꾼다면, 해당 mutation에서 [on-demand revalidation](/docs/app/getting-started/revalidating)을 사용하세요.
+
+[[CODE 31]]
+
+refactor를 마치면 route는 세 단계로 드러납니다:
+
+1. **static shell 단계.** URL에 의존하는 영역이 fallback을 보여 주는 동안 heading과 cache된 plan option이 render됩니다.
+
+   [[CODE 32]]
+
+2. **URL을 사용할 수 있게 된 후.** settings query가 중첩된 fallback 뒤에서 계속되는 동안 tab이 content skeleton을 대체합니다.
+
+   [[CODE 33]]
+
+3. **settings가 load된 후.** 완성된 form이 skeleton을 대체합니다.
+
+   [[CODE 34]]
+
+이제 page는 유용한 UI를 즉시 render하고, request별 콘텐츠는 범위가 좁은 fallback 안으로 stream되어 들어옵니다. 다음 단계는 이 계약(contract)을 고정하는 것입니다.
+
+### Step 4: Verify the instant UI || 4단계: instant UI 검증하기
+
+[`instant()`](/docs/app/guides/instant-navigation#prevent-regressions-with-e2e-tests)를 사용해 request-time server 콘텐츠를 보류하고, page의 어떤 부분을 즉시 사용할 수 있는지 assert하세요. Playwright는 hydration 이후에 이 assertion을 수행하므로, server 콘텐츠 없이 resolve될 수 있는 Client Component는 callback 안에서 이미 보일 수 있습니다.
+
+[[CODE 35]]
+
+callback 안에서는 heading과 cache된 plan option이 계속 보입니다. hydration이 이미 브라우저 URL로부터 tab을 render했고, `instant()`는 request-time form을 `SettingsFormSkeleton` 뒤에 붙잡아 둡니다. 마지막 assertion은 일시 정지가 해제된 후 완성된 form이 loading state를 대체하는지 확인합니다.
+
+testing API는 `next dev`에서 자동으로 사용할 수 있습니다. `next start`로 production build를 대상으로 test를 실행할 때는, test build에서 [`experimental.exposeTestingApiInProductionBuild`](/docs/app/api-reference/config/next-config-js/exposeTestingApiInProductionBuild)를 활성화하세요.
+
+완성된 route는 원래 route와 같은 settings data, redirect, error state, interaction을 가져야 합니다.
+
+### Step 5: Include URL-specific content in the instant UI || 5단계: instant UI에 URL별 콘텐츠 포함하기
+
+route가 prerendering 중에 `searchParams`를 알지 못하기 때문에, 직접 방문은 공유 static shell과 `SettingsContentSkeleton`으로 시작합니다. URL을 사용할 수 있게 되면 tab이 그 fallback을 대체합니다.
+
+client navigation 중에는 `SettingsTabs`가 URL을 synchronous하게 읽을 수 있습니다. 목적지의 `params`나 `searchParams`에 의존하는 다른 server 콘텐츠는 공유 shell에 포함되지 않습니다. 그 작업이 cache 가능하다면, 클릭 후에 stream하는 대신 link별 prefetch가 클릭 전에 이를 resolve할 수 있습니다.
+
+선택한 link가 클릭되기 전에 URL별 콘텐츠가 준비되어 있어야 한다면 [Optimizing prefetching](/docs/app/guides/optimizing-prefetching)을 사용하세요. 이 가이드는 작업 비용에 따라 prefetch 정책을 고르는 방법도 다룹니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

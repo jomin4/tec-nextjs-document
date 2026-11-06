@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>turbopackLazyDynamicImports (turbopackLazyDynamicImports) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/config/next-config-js/turbopackLazyDynamicImports" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopackLazyDynamicImports" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/turbopackLazyDynamicImports.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config.html">Configuration</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config-next-config-js.html">next.config.js</a></div>
+    <div class="title-row">
+      <h1 class="page-title">turbopackLazyDynamicImports<span class="vbadge">experimental</span><span class="sub">turbopackLazyDynamicImports</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>experimental.turbopackLazyDynamicImports</code> option은 <code>next dev</code> 중에 client-side dynamic <code>import()</code> target의 compile을 브라우저가 처음 요청할 때까지 미룹니다.</p><div class="en-orig"><p>The <code>experimental.turbopackLazyDynamicImports</code> option defers compiling client-side dynamic <code>import()</code> targets until the browser first requests them during <code>next dev</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  experimental: {
+    turbopackLazyDynamicImports: true,
+  },
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  experimental: {
+    turbopackLazyDynamicImports: true,
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<h2 class="sec" id="how-it-works"><a class="anchor" href="#how-it-works">How it works<span class="ko">동작 방식</span></a></h2>
+<p><code>turbopackLazyDynamicImports</code>를 활성화하면 Turbopack은 브라우저가 해당 chunk를 요청할 때까지 client-side dynamic <code>import()</code> target의 compile을 기다립니다. 애플리케이션이 한 번도 import하지 않는 코드는 development session 동안 compile되지 않은 상태로 남습니다.</p><div class="en-orig"><p>With <code>turbopackLazyDynamicImports</code> enabled, Turbopack waits to compile the target of a client-side dynamic <code>import()</code> until the browser requests its chunk. Code that the application never imports remains uncompiled during the development session.</p></div>
+<p>예를 들어 이 Client Component의 module은 방문자가 버튼을 선택할 때 compile됩니다:</p><div class="en-orig"><p>For example, the module in this Client Component is compiled when the visitor selects the button:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/greeting-button.tsx" data-js="app/greeting-button.js">app/greeting-button.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useState } from &#x27;react&#x27;
+
+export function GreetingButton() {
+  const [message, setMessage] = useState(&#x27;&#x27;)
+
+  async function showGreeting() {
+    const { getGreeting } = await import(&#x27;./get-greeting&#x27;)
+    setMessage(getGreeting(&#x27;Ada&#x27;))
+  }
+
+  return (
+    &lt;&gt;
+      &lt;button onClick={showGreeting}&gt;Show greeting&lt;/button&gt;
+      &lt;p&gt;{message}&lt;/p&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useState } from &#x27;react&#x27;
+
+export function GreetingButton() {
+  const [message, setMessage] = useState(&#x27;&#x27;)
+
+  async function showGreeting() {
+    const { getGreeting } = await import(&#x27;./get-greeting&#x27;)
+    setMessage(getGreeting(&#x27;Ada&#x27;))
+  }
+
+  return (
+    &lt;&gt;
+      &lt;button onClick={showGreeting}&gt;Show greeting&lt;/button&gt;
+      &lt;p&gt;{message}&lt;/p&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>이 option의 기본값은 <code>false</code>이며 <code>next dev</code> 중의 Turbopack에만 영향을 줍니다. production build는 바뀌지 않습니다.</li>
+<li>지연된 module의 error는 Turbopack이 그 module을 처음 compile할 때 나타납니다.</li>
+<li>일부 <a href="app-guides-lazy-loading.html#nextdynamic"><code>next/dynamic</code></a> target은 여전히 즉시(eagerly) compile됩니다.</li>
+<li>server에서 Client Component를 rendering하는 중에 도달하는 dynamic import를 지연하려면 <a href="app-api-reference-config-next-config-js-turbopackLazyDynamicImportsSSR.html"><code>turbopackLazyDynamicImportsSSR</code></a>을 사용하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>The option defaults to <code>false</code> and only affects Turbopack during <code>next dev</code>. It does not change production builds.</li>
+<li>Errors in a deferred module appear when Turbopack first compiles that module.</li>
+<li>Some <a href="app-guides-lazy-loading.html#nextdynamic"><code>next/dynamic</code></a> targets are still compiled eagerly.</li>
+<li>To defer dynamic imports reached while rendering Client Components on the server, use <a href="app-api-reference-config-next-config-js-turbopackLazyDynamicImportsSSR.html"><code>turbopackLazyDynamicImportsSSR</code></a>.</li>
+</ul></div></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.4.0</code></td><td><code>experimental.turbopackLazyDynamicImports</code> configuration option 추가.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.4.0</code></td><td><code>experimental.turbopackLazyDynamicImports</code> configuration option added.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><div class="rgrid"><a class="rcard" href="app-api-reference-config-next-config-js-turbopackLazyDynamicImportsSSR.html"><div class="rt">turbopackLazyDynamicImportsSSR</div><div class="rk">turbopackLazyDynamicImportsSSR</div><div class="rd">development 중 server rendering이 dynamic import에 처음 도달할 때 이를 compile합니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/turbopackLazyDynamicImports.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopackLazyDynamicImports" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-config-next-config-js-turbopackIgnoreIssue.html" class="prev"><div class="dir">← 이전</div><div class="ttl">turbopack.ignoreIssue</div><div class="ttl-ko">turbopack.ignoreIssue</div></a>
+      <a href="app-api-reference-config-next-config-js-turbopackLazyDynamicImportsSSR.html" class="next"><div class="dir">다음 →</div><div class="ttl">turbopackLazyDynamicImportsSSR</div><div class="ttl-ko">turbopackLazyDynamicImportsSSR</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/turbopackLazyDynamicImports" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#how-it-works">How it works</a></li><li class="l2"><a href="#version-history">Version History</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`experimental.turbopackLazyDynamicImports` option은 `next dev` 중에 client-side dynamic `import()` target의 compile을 브라우저가 처음 요청할 때까지 미룹니다.
+
+[[CODE 1]]
+
+## How it works || 동작 방식
+
+`turbopackLazyDynamicImports`를 활성화하면 Turbopack은 브라우저가 해당 chunk를 요청할 때까지 client-side dynamic `import()` target의 compile을 기다립니다. 애플리케이션이 한 번도 import하지 않는 코드는 development session 동안 compile되지 않은 상태로 남습니다.
+
+예를 들어 이 Client Component의 module은 방문자가 버튼을 선택할 때 compile됩니다:
+
+[[CODE 2]]
+
+&gt; **Good to know:**
+&gt;
+&gt; - 이 option의 기본값은 `false`이며 `next dev` 중의 Turbopack에만 영향을 줍니다. production build는 바뀌지 않습니다.
+&gt; - 지연된 module의 error는 Turbopack이 그 module을 처음 compile할 때 나타납니다.
+&gt; - 일부 [`next/dynamic`](/docs/app/guides/lazy-loading#nextdynamic) target은 여전히 즉시(eagerly) compile됩니다.
+&gt; - server에서 Client Component를 rendering하는 중에 도달하는 dynamic import를 지연하려면 [`turbopackLazyDynamicImportsSSR`](/docs/app/api-reference/config/next-config-js/turbopackLazyDynamicImportsSSR)을 사용하세요.
+
+## Version History || 버전 기록
+
+| Version   | Changes                                                                |
+| --------- | ---------------------------------------------------------------------- |
+| `v16.4.0` | `experimental.turbopackLazyDynamicImports` configuration option 추가. |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

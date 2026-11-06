@@ -1,0 +1,1563 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to upgrade to version 16 (버전 16으로 업그레이드하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/upgrading/version-16" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/upgrading/version-16" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/upgrading/version-16.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides-upgrading.html">Upgrading</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to upgrade to version 16<span class="sub">버전 16으로 업그레이드하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<h2 class="sec" id="use-a-coding-agent-recommended"><a class="anchor" href="#use-a-coding-agent-recommended">Use a coding agent (recommended)<span class="ko">coding agent 사용하기 (권장)</span></a></h2>
+<p>앱 directory에서 최신 upgrade CLI를 실행하세요:</p><div class="en-orig"><p>Run the latest upgrade CLI from your app's directory:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx next@canary upgrade --agent=latest</code></pre></div></div>
+<p>CLI는 agent를 위해 Next.js 16 migration guide와 codemod command를 준비한 다음, agent에게 변경 사항을 적용하고 앱을 검증하도록 요청합니다. 자세한 내용은 <a href="app-guides-upgrading-agent-upgrade.html">Upgrade with a coding agent</a>를 참고하세요.</p><div class="en-orig"><p>The CLI prepares the Next.js 16 migration guides and codemod command for the agent, then asks it to apply the changes and verify the app. See <a href="app-guides-upgrading-agent-upgrade.html">Upgrade with a coding agent</a> for details.</p></div>
+<h2 class="sec" id="or-upgrade-manually"><a class="anchor" href="#or-upgrade-manually">Or upgrade manually<span class="ko">또는 수동으로 업그레이드하기</span></a></h2>
+<p>수동 upgrade는 몇 가지 단계를 순서대로 따릅니다:</p><div class="en-orig"><p>Upgrading manually follows a few steps, in order:</p></div>
+<ol>
+<li>지금 coding agent를 사용하고 있거나, 앞으로의 agent 작업이 버전에 맞는 문서를 기반으로 하길 원한다면 <a href="#set-up-ai-agent-docs">AI agent 문서를 설정</a>하세요.</li>
+<li><a href="#using-the-codemod">upgrade codemod를 실행</a>하세요.</li>
+<li>codemod를 실행하고 싶지 않다면 <a href="#install-packages-manually">package를 수동으로 설치</a>하세요.</li>
+<li>아래의 breaking change를 차례로 살펴보고, 관련 check를 실행하고, 남은 문제를 고치세요.</li>
+</ol><div class="en-orig"><ol>
+<li><a href="#set-up-ai-agent-docs">Set up AI agent docs</a> if you use a coding agent now or want future agent work grounded in version-matched docs.</li>
+<li><a href="#using-the-codemod">Run the upgrade codemod</a>.</li>
+<li>If you prefer not to run the codemod, <a href="#install-packages-manually">install packages manually</a>.</li>
+<li>Continue through the breaking changes below, run the relevant checks, and fix any remaining issues.</li>
+</ol></div>
+<h2 class="sec" id="set-up-ai-agent-docs"><a class="anchor" href="#set-up-ai-agent-docs">Set up AI agent docs<span class="ko">AI agent 문서 설정하기</span></a></h2>
+<p>upgrade하기 전에 <code>AGENTS.md</code>가 버전에 맞는 Next.js 문서를 가리키도록 해서 coding agent가 나머지 단계를 도울 수 있게 하세요:</p><div class="en-orig"><p>Before upgrading, point <code>AGENTS.md</code> at version-matched Next.js docs so a coding agent can help with the remaining steps:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@canary agents-md</code></pre></div></div>
+<p>upgrade한 뒤에는 <code>AGENTS.md</code>가 <code>node_modules/next/dist/docs/</code>에 있는, 설치된 버전에 포함된 문서를 가리키는지 확인하세요. Next.js 16.2 이상에서는 <code>next dev</code>가 coding agent를 감지하면 이 block을 최신 상태로 유지합니다. setup이 문서를 <code>.next-docs/</code>에 다운로드했다면, 더 이상 그 directory를 참조하는 곳이 없을 때 제거하세요. 관리되는 block과 setup에 대한 자세한 내용은 <a href="app-guides-ai-agents.html#version-matched-documentation">Version-matched documentation</a>을 참고하세요.</p><div class="en-orig"><p>After upgrading, check that <code>AGENTS.md</code> points at the docs bundled with the installed version in <code>node_modules/next/dist/docs/</code>. On Next.js 16.2 and later, <code>next dev</code> keeps this block up to date when it detects a coding agent. If the setup downloaded docs into <code>.next-docs/</code>, remove that directory once nothing references it. See <a href="app-guides-ai-agents.html#version-matched-documentation">Version-matched documentation</a> for the managed block and setup details.</p></div>
+<h2 class="sec" id="using-the-codemod"><a class="anchor" href="#using-the-codemod">Using the codemod<span class="ko">codemod 사용하기</span></a></h2>
+<p>Next.js 버전 16으로 업데이트하려면 <code>upgrade</code> <a href="app-guides-upgrading-codemods.html#160">codemod</a>를 사용할 수 있습니다:</p><div class="en-orig"><p>To update to Next.js version 16, you can use the <code>upgrade</code> <a href="app-guides-upgrading-codemods.html#160">codemod</a>:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm dlx @next/codemod@canary upgrade latest</code></pre><pre class="pm-npm" hidden><code class="language-bash">npx @next/codemod@canary upgrade latest</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn dlx @next/codemod@canary upgrade latest</code></pre><pre class="pm-bun" hidden><code class="language-bash">bunx @next/codemod@canary upgrade latest</code></pre></div></div>
+<p><a href="app-guides-upgrading-codemods.html#160">codemod</a>는 다음을 할 수 있습니다:</p><div class="en-orig"><p>The <a href="app-guides-upgrading-codemods.html#160">codemod</a> is able to:</p></div>
+<ul>
+<li>새 <code>turbopack</code> configuration을 사용하도록 <code>next.config.js</code> 업데이트</li>
+<li><code>next lint</code>에서 ESLint CLI로 migrate</li>
+<li>deprecated된 <code>middleware</code> convention에서 <code>proxy</code>로 migrate</li>
+<li>안정화된 API에서 <code>unstable_</code> prefix 제거</li>
+<li>page와 layout에서 <code>experimental_ppr</code> Route Segment Config 제거</li>
+</ul><div class="en-orig"><ul>
+<li>Update <code>next.config.js</code> to use the new <code>turbopack</code> configuration</li>
+<li>Migrate from <code>next lint</code> to the ESLint CLI</li>
+<li>Migrate from deprecated <code>middleware</code> convention to <code>proxy</code></li>
+<li>Remove <code>unstable_</code> prefix from stabilized APIs</li>
+<li>Remove <code>experimental_ppr</code> Route Segment Config from pages and layouts</li>
+</ul></div>
+<p><code>upgrade</code> codemod가 모든 migration codemod를 실행하지는 않습니다. 앱이 Next.js 15 호환 기간의 동기 <code>params</code>, <code>searchParams</code>, <code>cookies()</code>, <code>headers()</code>, <code>draftMode()</code> 접근을 아직 사용하고 있다면 async Request API codemod도 실행하세요:</p><div class="en-orig"><p>The <code>upgrade</code> codemod does not run every migration codemod. If your app still uses synchronous <code>params</code>, <code>searchParams</code>, <code>cookies()</code>, <code>headers()</code>, or <code>draftMode()</code> access from the Next.js 15 compatibility period, also run the async Request APIs codemod:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@canary next-async-request-api .</code></pre></div></div>
+<h2 class="sec" id="install-packages-manually"><a class="anchor" href="#install-packages-manually">Install packages manually<span class="ko">package 수동 설치하기</span></a></h2>
+<p>직접 하고 싶다면 최신 Next.js와 React 버전을 설치하세요:</p><div class="en-orig"><p>If you prefer to do it manually, install the latest Next.js and React versions:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add next@latest react@latest react-dom@latest</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install next@latest react@latest react-dom@latest</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add next@latest react@latest react-dom@latest</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add next@latest react@latest react-dom@latest</code></pre></div></div>
+<p>TypeScript를 사용한다면 <code>@types/react</code>와 <code>@types/react-dom</code>도 최신 버전으로 upgrade하세요.</p><div class="en-orig"><p>If you are using TypeScript, ensure you also upgrade <code>@types/react</code> and <code>@types/react-dom</code> to their latest versions.</p></div>
+<h2 class="sec" id="nodejs-runtime-and-browser-support"><a class="anchor" href="#nodejs-runtime-and-browser-support">Node.js runtime and browser support<span class="ko">Node.js runtime과 브라우저 지원</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>요구 사항</th><th>변경 / 세부 내용</th></tr></thead>
+<tbody>
+<tr><td>Node.js 20.9+</td><td>최소 버전이 이제 <code>20.9.0</code>(LTS)이며, Node.js 18은 더 이상 지원되지 않음</td></tr>
+<tr><td>TypeScript 5+</td><td>최소 버전이 이제 <code>5.1.0</code></td></tr>
+<tr><td>브라우저</td><td>Chrome 111+, Edge 111+, Firefox 111+, Safari 16.4+</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Requirement</th><th>Change / Details</th></tr></thead>
+<tbody>
+<tr><td>Node.js 20.9+</td><td>Minimum version now <code>20.9.0</code> (LTS); Node.js 18 no longer supported</td></tr>
+<tr><td>TypeScript 5+</td><td>Minimum version now <code>5.1.0</code></td></tr>
+<tr><td>Browsers</td><td>Chrome 111+, Edge 111+, Firefox 111+, Safari 16.4+</td></tr>
+</tbody></table></div></div>
+<h2 class="sec" id="turbopack-by-default"><a class="anchor" href="#turbopack-by-default">Turbopack by default<span class="ko">기본 Turbopack</span></a></h2>
+<p><strong>Next.js 16</strong>부터 Turbopack은 stable이 되었고 <code>next dev</code>와 <code>next build</code>에서 기본으로 사용됩니다</p><div class="en-orig"><p>Starting with <strong>Next.js 16</strong>, Turbopack is stable and used by default with <code>next dev</code> and <code>next build</code></p></div>
+<p>이전에는 <code>--turbopack</code> 또는 <code>--turbo</code>로 Turbopack을 활성화해야 했습니다.</p><div class="en-orig"><p>Previously you had to enable Turbopack using <code>--turbopack</code>, or <code>--turbo</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">package.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;next dev --turbopack&quot;,
+    &quot;build&quot;: &quot;next build --turbopack&quot;,
+    &quot;start&quot;: &quot;next start&quot;
+  }
+}</code></pre></div></div>
+<p>이제는 그럴 필요가 없습니다. <code>package.json</code> script를 업데이트할 수 있습니다:</p><div class="en-orig"><p>This is no longer necessary. You can update your <code>package.json</code> scripts:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">package.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;next dev&quot;,
+    &quot;build&quot;: &quot;next build&quot;,
+    &quot;start&quot;: &quot;next start&quot;
+  }
+}</code></pre></div></div>
+<p>프로젝트에 <a href="app-api-reference-config-next-config-js-webpack.html">custom <code>webpack</code></a> configuration이 있는데 <code>next build</code>(이제 기본으로 Turbopack 사용)를 실행하면, 잘못된 설정 문제를 막기 위해 build가 <strong>실패</strong>합니다.</p><div class="en-orig"><p>If your project has a <a href="app-api-reference-config-next-config-js-webpack.html">custom <code>webpack</code></a> configuration and you run <code>next build</code> (which now uses Turbopack by default), the build will <strong>fail</strong> to prevent misconfiguration issues.</p></div>
+<p>이 문제는 몇 가지 방법으로 해결할 수 있습니다:</p><div class="en-orig"><p>You have a few different ways to address this:</p></div>
+<ul>
+<li><strong>그래도 Turbopack 사용:</strong> <code>next build --turbopack</code>으로 실행해 Turbopack으로 build하고 <code>webpack</code> config는 무시합니다.</li>
+<li><strong>Turbopack으로 완전히 전환:</strong> <code>webpack</code> config를 Turbopack 호환 option으로 migrate합니다.</li>
+<li><strong>Webpack 계속 사용:</strong> <code>--webpack</code> flag로 Turbopack을 opt out하고 Webpack으로 build합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Use Turbopack anyway:</strong> Run with <code>next build --turbopack</code> to build using Turbopack and ignore your <code>webpack</code> config.</li>
+<li><strong>Switch to Turbopack fully:</strong> Migrate your <code>webpack</code> config to Turbopack-compatible options.</li>
+<li><strong>Keep using Webpack:</strong> Use the <code>--webpack</code> flag to opt out of Turbopack and build with Webpack.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>webpack</code> configuration이 발견되어 build가 실패하는데 직접 정의한 적이 없다면, plugin이 <code>webpack</code> option을 추가하고 있을 가능성이 높습니다</p><div class="en-orig"><p>If you see failing builds because a <code>webpack</code> configuration was found, but you don't define one yourself, it is likely that a plugin is adding a <code>webpack</code> option</p></div></div></div>
+<h3 class="sec" id="opting-out-of-turbopack"><a class="anchor" href="#opting-out-of-turbopack">Opting out of Turbopack<span class="ko">Turbopack opt out하기</span></a></h3>
+<p>Webpack을 계속 사용해야 한다면 <code>--webpack</code> flag로 opt out할 수 있습니다. 예를 들어 development에서는 Turbopack을, production build에서는 Webpack을 사용하려면 다음과 같이 합니다:</p><div class="en-orig"><p>If you need to continue using Webpack, you can opt out with the <code>--webpack</code> flag. For example, to use Turbopack in development but Webpack for production builds:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">package.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;next dev&quot;,
+    &quot;build&quot;: &quot;next build --webpack&quot;,
+    &quot;start&quot;: &quot;next start&quot;
+  }
+}</code></pre></div></div>
+<p>development와 production 모두에 Turbopack 사용을 권장합니다. Turbopack으로 전환할 수 없다면 이 <a href="https://github.com/vercel/next.js/discussions/77721" target="_blank" rel="noopener">thread</a>에 comment를 남겨 주세요.</p><div class="en-orig"><p>We recommend using Turbopack for development and production. Submit a comment to this <a href="https://github.com/vercel/next.js/discussions/77721" target="_blank" rel="noopener">thread</a>, if you are unable to switch to Turbopack.</p></div>
+<h3 class="sec" id="turbopack-configuration-location"><a class="anchor" href="#turbopack-configuration-location">Turbopack configuration location<span class="ko">Turbopack configuration 위치</span></a></h3>
+<p><code>experimental.turbopack</code> configuration이 experimental에서 벗어났습니다.</p><div class="en-orig"><p>The <code>experimental.turbopack</code> configuration is out of experimental.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+// Next.js 15 - experimental.turbopack
+const nextConfig: NextConfig = {
+  experimental: {
+    turbopack: {
+      // options
+    },
+  },
+}
+
+export default nextConfig</code></pre></div></div>
+<p>top-level <code>turbopack</code> option으로 사용할 수 있습니다:</p><div class="en-orig"><p>You can use it as a top-level <code>turbopack</code> option:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+// Next.js 16 - turbopack at the top level of nextConfig
+const nextConfig: NextConfig = {
+  turbopack: {
+    // options
+  },
+}
+
+export default nextConfig</code></pre></div></div>
+<p><code>Turbopack</code> configuration <a href="app-api-reference-config-next-config-js-turbopack.html">option</a>을 꼭 검토하세요. <strong>Next.js 16</strong>에는 다양한 개선 사항과 새 option이 도입되었습니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>Make sure to review the <code>Turbopack</code> configuration <a href="app-api-reference-config-next-config-js-turbopack.html">options</a>. <strong>Next.js 16</strong> introduces various improvements and new options, for example:</p></div>
+<ul>
+<li><a href="app-api-reference-config-next-config-js-turbopack.html#advanced-webpack-loader-conditions">Advanced Webpack loader conditions</a></li>
+<li><a href="app-api-reference-config-next-config-js-turbopack.html#debug-ids">debugIds</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-config-next-config-js-turbopack.html#advanced-webpack-loader-conditions">Advanced Webpack loader conditions</a></li>
+<li><a href="app-api-reference-config-next-config-js-turbopack.html#debug-ids">debugIds</a></li>
+</ul></div>
+<h3 class="sec" id="resolve-alias-fallback"><a class="anchor" href="#resolve-alias-fallback">Resolve alias fallback</a></h3>
+<p>일부 프로젝트에서는 client-side 코드가 Node.js native module을 포함한 파일을 import할 수 있습니다. 이 경우 <code>Module not found: Can&#x27;t resolve &#x27;fs&#x27;</code> 유형의 error가 발생합니다.</p><div class="en-orig"><p>In some projects, client-side code may import files containing Node.js native modules. This will cause <code>Module not found: Can&#x27;t resolve &#x27;fs&#x27;</code> type of errors.</p></div>
+<p>이런 일이 생기면 client-side bundle이 이 Node.js native module을 참조하지 않도록 코드를 refactor해야 합니다.</p><div class="en-orig"><p>When this happens, you should refactor your code so that your client-side bundles do not reference these Node.js native modules.</p></div>
+<p>하지만 경우에 따라서는 이것이 불가능할 수도 있습니다. Webpack에서는 보통 <code>resolve.fallback</code> option을 사용해 error를 <strong>숨겼습니다</strong>. Turbopack은 <code>turbopack.resolveAlias</code>를 사용하는 비슷한 option을 제공합니다. 이 경우 브라우저용으로 <code>fs</code>가 요청되면 빈 module을 load하도록 Turbopack에 알려 주세요.</p><div class="en-orig"><p>However, in some cases, this might not be possible. In Webpack the <code>resolve.fallback</code> option was typically used to <strong>silence</strong> the error. Turbopack offers a similar option, using <code>turbopack.resolveAlias</code>. In this case, tell Turbopack to load an empty module when <code>fs</code> is requested for the browser.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  turbopack: {
+    resolveAlias: {
+      fs: {
+        browser: &#x27;./empty.ts&#x27;, // We recommend to fix code imports before using this method
+      },
+    },
+  },
+}
+
+export default nextConfig</code></pre></div></div>
+<p>client 코드가 Node.js native module을 사용하는 module에서 절대 import하지 않도록 module을 refactor하는 것이 더 바람직합니다.</p><div class="en-orig"><p>It is preferable to refactor your modules so that client code doesn't ever import from modules using Node.js native modules.</p></div>
+<h3 class="sec" id="sass-node_modules-imports"><a class="anchor" href="#sass-node_modules-imports">Sass node_modules imports<span class="ko">Sass node_modules import</span></a></h3>
+<p>Turbopack은 <code>node_modules</code>에서 Sass 파일을 import하는 것을 완전히 지원합니다. 단, Webpack은 legacy tilde(<code>~</code>) prefix를 허용했지만 Turbopack은 이 문법을 지원하지 않는다는 점에 유의하세요.</p><div class="en-orig"><p>Turbopack fully supports importing Sass files from <code>node_modules</code>. Note that while Webpack allowed the legacy tilde (<code>~</code>) prefix, Turbopack does not support this syntax.</p></div>
+<p>Webpack에서는:</p><div class="en-orig"><p>In Webpack:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">styles/globals.scss</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-scss">@import &#x27;~bootstrap/dist/css/bootstrap.min.css&#x27;;</code></pre></div></div>
+<p>Turbopack에서는:</p><div class="en-orig"><p>In Turbopack:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">styles/globals.scss</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-scss">@import &#x27;bootstrap/dist/css/bootstrap.min.css&#x27;;</code></pre></div></div>
+<p>import를 바꿀 수 없다면 <code>turbopack.resolveAlias</code>를 사용할 수 있습니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>If changing the imports is not possible, you can use <code>turbopack.resolveAlias</code>. For example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  turbopack: {
+    resolveAlias: {
+      &#x27;~*&#x27;: &#x27;*&#x27;,
+    },
+  },
+}
+
+export default nextConfig</code></pre></div></div>
+<h3 class="sec" id="turbopack-file-system-caching"><a class="anchor" href="#turbopack-file-system-caching">Turbopack File System Caching</a></h3>
+<p>Turbopack은 실행 사이에 compiler artifact를 disk에 저장해서, 재시작 시 compile 시간을 크게 줄여 줍니다. Filesystem caching은 <code>experimental.turbopackFileSystemCacheForDev</code>와 <code>experimental.turbopackFileSystemCacheForBuild</code>를 통해 <code>next dev</code>와 <code>next build</code> 모두에서 기본으로 활성화되어 있습니다. 둘 중 하나를 설정하거나 끄려면 <a href="app-api-reference-config-next-config-js-turbopackFileSystemCache.html">Turbopack FileSystem Caching</a>을 참고하세요.</p><div class="en-orig"><p>Turbopack stores compiler artifacts on disk between runs, for significantly faster compile times across restarts. Filesystem caching is enabled by default for both <code>next dev</code> and <code>next build</code>, through <code>experimental.turbopackFileSystemCacheForDev</code> and <code>experimental.turbopackFileSystemCacheForBuild</code>. See <a href="app-api-reference-config-next-config-js-turbopackFileSystemCache.html">Turbopack FileSystem Caching</a> to configure or disable either one.</p></div>
+<h2 class="sec" id="async-request-apis-breaking-change"><a class="anchor" href="#async-request-apis-breaking-change">Async Request APIs (Breaking change)<span class="ko">Async Request API (Breaking change)</span></a></h2>
+<p>버전 15에서는 <a href="app-guides-upgrading-version-15.html#async-request-apis-breaking-change">Async Request API</a>를 breaking change로 도입하면서 <strong>임시로</strong> 동기 방식의 호환성을 제공했습니다.</p><div class="en-orig"><p>Version 15 introduced <a href="app-guides-upgrading-version-15.html#async-request-apis-breaking-change">Async Request APIs</a> as a breaking change, with <strong>temporary</strong> synchronous compatibility.</p></div>
+<p><strong>Next.js 16</strong>부터는 동기 접근이 완전히 제거되었습니다. 이 API들은 비동기 방식으로만 접근할 수 있습니다.</p><div class="en-orig"><p>Starting with <strong>Next.js 16</strong>, synchronous access is fully removed. These APIs can only be accessed asynchronously.</p></div>
+<ul>
+<li><a href="app-api-reference-functions-cookies.html"><code>cookies</code></a></li>
+<li><a href="app-api-reference-functions-headers.html"><code>headers</code></a></li>
+<li><a href="app-api-reference-functions-draft-mode.html"><code>draftMode</code></a></li>
+<li><a href="app-api-reference-file-conventions-layout.html"><code>layout.js</code></a>, <a href="app-api-reference-file-conventions-page.html"><code>page.js</code></a>, <a href="app-api-reference-file-conventions-route.html"><code>route.js</code></a>, <a href="app-api-reference-file-conventions-default.html"><code>default.js</code></a>, <a href="app-api-reference-file-conventions-metadata-opengraph-image.html#opengraph-image"><code>opengraph-image</code></a>, <a href="app-api-reference-file-conventions-metadata-opengraph-image.html#twitter-image"><code>twitter-image</code></a>, <a href="app-api-reference-file-conventions-metadata-app-icons.html#icon"><code>icon</code></a>, <a href="app-api-reference-file-conventions-metadata-app-icons.html#apple-icon"><code>apple-icon</code></a>의 <code>params</code></li>
+<li><a href="app-api-reference-file-conventions-page.html"><code>page.js</code></a>의 <code>searchParams</code></li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-functions-cookies.html"><code>cookies</code></a></li>
+<li><a href="app-api-reference-functions-headers.html"><code>headers</code></a></li>
+<li><a href="app-api-reference-functions-draft-mode.html"><code>draftMode</code></a></li>
+<li><code>params</code> in <a href="app-api-reference-file-conventions-layout.html"><code>layout.js</code></a>, <a href="app-api-reference-file-conventions-page.html"><code>page.js</code></a>, <a href="app-api-reference-file-conventions-route.html"><code>route.js</code></a>, <a href="app-api-reference-file-conventions-default.html"><code>default.js</code></a>, <a href="app-api-reference-file-conventions-metadata-opengraph-image.html#opengraph-image"><code>opengraph-image</code></a>, <a href="app-api-reference-file-conventions-metadata-opengraph-image.html#twitter-image"><code>twitter-image</code></a>, <a href="app-api-reference-file-conventions-metadata-app-icons.html#icon"><code>icon</code></a>, and <a href="app-api-reference-file-conventions-metadata-app-icons.html#apple-icon"><code>apple-icon</code></a>.</li>
+<li><code>searchParams</code> in <a href="app-api-reference-file-conventions-page.html"><code>page.js</code></a></li>
+</ul></div>
+<p>async Request-time API로 migrate하려면 <a href="app-guides-upgrading-codemods.html#migrate-to-async-dynamic-apis">codemod</a>를 사용하세요.</p><div class="en-orig"><p>Use the <a href="app-guides-upgrading-codemods.html#migrate-to-async-dynamic-apis">codemod</a> to migrate to async Request-time APIs.</p></div>
+<h3 class="sec" id="migrating-types-for-async-request-time-apis"><a class="anchor" href="#migrating-types-for-async-request-time-apis">Migrating types for async Request-time APIs<span class="ko">async Request-time API의 type migrate하기</span></a></h3>
+<p>async <code>params</code>와 <code>searchParams</code>로의 migration을 돕기 위해 <a href="app-api-reference-cli-next.html#next-typegen-options"><code>npx next typegen</code></a>을 실행하면 전역에서 사용할 수 있는 다음 type helper들을 자동으로 생성할 수 있습니다:</p><div class="en-orig"><p>To help migrate to async <code>params</code> and <code>searchParams</code>, you can run <a href="app-api-reference-cli-next.html#next-typegen-options"><code>npx next typegen</code></a> to automatically generate these globally available types helpers:</p></div>
+<ul>
+<li><a href="app-api-reference-file-conventions-page.html#page-props-helper"><code>PageProps</code></a></li>
+<li><a href="app-api-reference-file-conventions-layout.html#layout-props-helper"><code>LayoutProps</code></a></li>
+<li><a href="app-api-reference-file-conventions-route.html#route-context-helper"><code>RouteContext</code></a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-file-conventions-page.html#page-props-helper"><code>PageProps</code></a></li>
+<li><a href="app-api-reference-file-conventions-layout.html#layout-props-helper"><code>LayoutProps</code></a></li>
+<li><a href="app-api-reference-file-conventions-route.html#route-context-helper"><code>RouteContext</code></a></li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>typegen</code>은 Next.js 15.5에서 도입되었습니다</p><div class="en-orig"><p><code>typegen</code> was introduced in Next.js 15.5</p></div></div></div>
+<p>이를 통해 새 async API pattern으로의 type-safe migration이 간단해지고, 완전한 type safety를 유지한 채 component를 업데이트할 수 있습니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>This simplifies type-safe migration to the new async API pattern, and enables you to update your components with full type safety, for example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">/app/blog/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export default async function Page(props: PageProps&lt;&#x27;/blog/[slug]&#x27;&gt;) {
+  const { slug } = await props.params
+  const query = await props.searchParams
+  return &lt;h1&gt;Blog Post: {slug}&lt;/h1&gt;
+}</code></pre></div></div>
+<p>이 방식을 사용하면 page 안에서 <code>slug</code>를 포함한 <code>props.params</code>와 <code>searchParams</code>에 완전히 type-safe하게 직접 접근할 수 있습니다.</p><div class="en-orig"><p>This approach gives you fully type-safe access to <code>props.params</code>, including the <code>slug</code>, and to <code>searchParams</code>, directly within your page.</p></div>
+<h2 class="sec" id="async-parameters-for-icon-and-open-graph-image-breaking-change"><a class="anchor" href="#async-parameters-for-icon-and-open-graph-image-breaking-change">Async parameters for icon, and open-graph Image (Breaking change)<span class="ko">icon과 open-graph Image의 async parameter (Breaking change)</span></a></h2>
+<blockquote><p>이제 <code>opengraph-image</code>, <code>twitter-image</code>, <code>icon</code>, <code>apple-icon</code>의 image 생성 함수에 전달되는 props는 Promise입니다.</p><div class="en-orig"><p>The props passed to the image generating functions in <code>opengraph-image</code>, <code>twitter-image</code>, <code>icon</code>, and <code>apple-icon</code>, are now Promises.</p></div></blockquote>
+<p>이전 버전에서는 <code>Image</code>(image 생성 함수)와 <code>generateImageMetadata</code> 모두 <code>params</code> object를 받았습니다. <code>generateImageMetadata</code>가 반환한 <code>id</code>는 image 생성 함수에 string으로 전달되었습니다.</p><div class="en-orig"><p>In previous versions, both the <code>Image</code> (image generation function), and the <code>generateImageMetadata</code> received a <code>params</code> object. The <code>id</code> returned by <code>generateImageMetadata</code> was passed as a string to the image generation function.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/shop/[slug]/opengraph-image.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// Next.js 15 - synchronous params access
+export function generateImageMetadata({ params }) {
+  const { slug } = params
+  return [{ id: &#x27;1&#x27; }, { id: &#x27;2&#x27; }]
+}
+
+// Next.js 15 - synchronous params and id access
+export default function Image({ params, id }) {
+  const slug = params.slug
+  const imageId = id // string
+  // ...
+}</code></pre></div></div>
+<p><strong>Next.js 16</strong>부터는 <a href="#async-request-apis-breaking-change">Async Request API</a> 변경에 맞춰 image 생성 함수가 <code>params</code>와 <code>id</code>를 promise로 받습니다. <code>generateImageMetadata</code> 함수는 계속 동기 <code>params</code>를 받습니다.</p><div class="en-orig"><p>Starting with <strong>Next.js 16</strong>, to align with the <a href="#async-request-apis-breaking-change">Async Request APIs</a> change, the image generating function now receives <code>params</code> and <code>id</code> as promises. The <code>generateImageMetadata</code> function continues to receive synchronous <code>params</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/shop/[slug]/opengraph-image.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export async function generateImageMetadata({ params }) {
+  const { slug } = params
+  return [{ id: &#x27;1&#x27; }, { id: &#x27;2&#x27; }]
+}
+
+// Next.js 16 - asynchronous params and id access
+export default async function Image({ params, id }) {
+  const { slug } = await params // params now async
+  const imageId = await id // id is now Promise&lt;string&gt; when using generateImageMetadata
+  // ...
+}</code></pre></div></div>
+<h2 class="sec" id="async-id-parameter-for-sitemap-breaking-change"><a class="anchor" href="#async-id-parameter-for-sitemap-breaking-change">Async <code>id</code> parameter for <code>sitemap</code> (Breaking change)<span class="ko"><code>sitemap</code>의 async <code>id</code> parameter (Breaking change)</span></a></h2>
+<p>이전에는 <a href="app-api-reference-functions-generate-sitemaps.html"><code>generateSitemaps</code></a>가 반환한 <code>id</code> 값이 <code>sitemap</code> 생성 함수에 직접 전달되었습니다.</p><div class="en-orig"><p>Previously, the <code>id</code> values returned from <a href="app-api-reference-functions-generate-sitemaps.html"><code>generateSitemaps</code></a> were passed directly to the <code>sitemap</code> generating function.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/product/sitemap.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export async function generateSitemaps() {
+  return [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }]
+}
+
+// Next.js 15 - synchronous id access
+export default async function sitemap({ id }) {
+  const start = id * 50000 // id is a number
+  // ...
+}</code></pre></div></div>
+<p><strong>Next.js 16</strong>부터는 <code>sitemap</code> 생성 함수가 <code>id</code>를 promise로 받습니다.</p><div class="en-orig"><p>Starting with <strong>Next.js 16</strong>, the <code>sitemap</code> generating function now receives <code>id</code> as a promise.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/product/sitemap.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export async function generateSitemaps() {
+  return [{ id: 0 }, { id: 1 }, { id: 2 }, { id: 3 }]
+}
+
+// Next.js 16 - asynchronous id access
+export default async function sitemap({ id }) {
+  const resolvedId = await id // id is now Promise&lt;string&gt;
+  const start = Number(resolvedId) * 50000
+  // ...
+}</code></pre></div></div>
+<h2 class="sec" id="react-192"><a class="anchor" href="#react-192">React 19.2</a></h2>
+<p><strong>Next.js 16</strong>의 App Router는 최신 React <a href="https://react.dev/blog/2023/05/03/react-canaries" target="_blank" rel="noopener">Canary release</a>를 사용합니다. 여기에는 새로 release된 React 19.2 기능과 점진적으로 안정화되고 있는 다른 기능들이 포함되어 있습니다. 주요 내용은 다음과 같습니다:</p><div class="en-orig"><p>The App Router in <strong>Next.js 16</strong> uses the latest React <a href="https://react.dev/blog/2023/05/03/react-canaries" target="_blank" rel="noopener">Canary release</a>, which includes the newly released React 19.2 features and other features being incrementally stabilized. Highlights include:</p></div>
+<ul>
+<li><strong><a href="https://react.dev/reference/react/ViewTransition" target="_blank" rel="noopener">View Transitions</a></strong>: Transition이나 navigation 안에서 업데이트되는 element에 animation을 적용합니다</li>
+<li><strong><a href="https://react.dev/reference/react/useEffectEvent" target="_blank" rel="noopener"><code>useEffectEvent</code></a></strong>: Effect에서 non-reactive logic을 재사용 가능한 Effect Event 함수로 추출합니다</li>
+<li><strong><a href="https://react.dev/reference/react/Activity" target="_blank" rel="noopener">Activity</a></strong>: state를 유지하고 Effect를 정리하면서 <code>display: none</code>으로 UI를 숨겨 "background activity"를 render합니다</li>
+</ul><div class="en-orig"><ul>
+<li><strong><a href="https://react.dev/reference/react/ViewTransition" target="_blank" rel="noopener">View Transitions</a></strong>: Animate elements that update inside a Transition or navigation</li>
+<li><strong><a href="https://react.dev/reference/react/useEffectEvent" target="_blank" rel="noopener"><code>useEffectEvent</code></a></strong>: Extract non-reactive logic from Effects into reusable Effect Event functions</li>
+<li><strong><a href="https://react.dev/reference/react/Activity" target="_blank" rel="noopener">Activity</a></strong>: Render "background activity" by hiding UI with <code>display: none</code> while maintaining state and cleaning up Effects</li>
+</ul></div>
+<p>자세한 내용은 <a href="https://react.dev/blog/2025/10/01/react-19-2" target="_blank" rel="noopener">React 19.2 announcement</a>에서 알아보세요.</p><div class="en-orig"><p>Learn more in the <a href="https://react.dev/blog/2025/10/01/react-19-2" target="_blank" rel="noopener">React 19.2 announcement</a>.</p></div>
+<h2 class="sec" id="react-compiler-support"><a class="anchor" href="#react-compiler-support">React Compiler Support<span class="ko">React Compiler 지원</span></a></h2>
+<p>React Compiler의 1.0 release에 이어 <strong>Next.js 16</strong>에서 React Compiler built-in 지원이 stable이 되었습니다. React Compiler는 component를 자동으로 memoize해서, 코드를 직접 하나도 바꾸지 않고도 불필요한 re-render를 줄여 줍니다.</p><div class="en-orig"><p>Built-in support for the React Compiler is now stable in <strong>Next.js 16</strong> following the React Compiler's 1.0 release. The React Compiler automatically memoizes components, reducing unnecessary re-renders with zero manual code changes.</p></div>
+<p><code>reactCompiler</code> configuration option이 <code>experimental</code>에서 stable로 승격되었습니다. 다양한 애플리케이션 유형에 걸친 build 성능 데이터를 계속 수집하고 있기 때문에 기본으로 활성화되어 있지는 않습니다.</p><div class="en-orig"><p>The <code>reactCompiler</code> configuration option has been promoted from <code>experimental</code> to stable. It is not enabled by default as we continue gathering build performance data across different application types.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  reactCompiler: true,
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  reactCompiler: true,
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p>최신 버전의 React Compiler plugin을 설치하세요:</p><div class="en-orig"><p>Install the latest version of the React Compiler plugin:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add -D babel-plugin-react-compiler</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install -D babel-plugin-react-compiler</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add -D babel-plugin-react-compiler</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add -D babel-plugin-react-compiler</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>React Compiler는 Babel에 의존하기 때문에, 이 option을 활성화하면 development와 build 중 compile 시간이 늘어날 수 있습니다.</p><div class="en-orig"><p>Expect compile times in development and during builds to be higher when enabling this option as the React Compiler relies on Babel.</p></div></div></div>
+<h2 class="sec" id="caching-apis"><a class="anchor" href="#caching-apis">Caching APIs<span class="ko">Caching API</span></a></h2>
+<h3 class="sec" id="revalidatetag"><a class="anchor" href="#revalidatetag">revalidateTag</a></h3>
+<p><a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>는 이제 <a href="app-api-reference-functions-cacheLife.html#reference"><code>cacheLife</code></a> profile을 지정하는 두 번째 argument가 필요합니다. argument 하나만 넘기는 형태는 deprecated되었으며 TypeScript error가 발생합니다.</p><div class="en-orig"><p><a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a> now requires a second argument specifying a <a href="app-api-reference-functions-cacheLife.html#reference"><code>cacheLife</code></a> profile. The single-argument form is deprecated and will produce a TypeScript error.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">// Before
+revalidateTag(&#x27;posts&#x27;)
+
+// After
+revalidateTag(&#x27;posts&#x27;, &#x27;max&#x27;)</code></pre></div></div>
+<p>stale-while-revalidate가 아니라 즉시 만료가 필요하다면, Server Action에서 대신 <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>를 사용하세요.</p><div class="en-orig"><p>If you need immediate expiration rather than stale-while-revalidate, use <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a> in Server Actions instead.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { revalidateTag } from &#x27;next/cache&#x27;
+
+export async function updateArticle(articleId: string) {
+  // Mark article data as stale - article readers see stale data while it revalidates
+  revalidateTag(`article-${articleId}`, &#x27;max&#x27;)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { revalidateTag } from &#x27;next/cache&#x27;
+
+export async function updateArticle(articleId) {
+  // Mark article data as stale - article readers see stale data while it revalidates
+  revalidateTag(`article-${articleId}`, &#x27;max&#x27;)
+}</code></pre></div></div>
+<p><code>revalidateTag</code>는 blog post, 상품 catalog, 문서처럼 업데이트가 약간 늦어도 괜찮은 콘텐츠에 사용하세요. 사용자는 새 데이터가 background에서 load되는 동안 stale 콘텐츠를 받습니다.</p><div class="en-orig"><p>Use <code>revalidateTag</code> for content where a slight delay in updates is acceptable, such as blog posts, product catalogs, or documentation. Users receive stale content while fresh data loads in the background.</p></div>
+<h3 class="sec" id="updatetag"><a class="anchor" href="#updatetag">updateTag</a></h3>
+<p><a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>는 <a href="app-getting-started-mutating-data.html#what-are-server-functions">Server Action</a> 전용의 새 API로, <strong>read-your-writes</strong> semantics를 제공합니다. 즉, 사용자가 변경을 하면 UI에 stale 데이터가 아니라 그 변경이 즉시 표시됩니다.</p><div class="en-orig"><p><a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a> is a new <a href="app-getting-started-mutating-data.html#what-are-server-functions">Server Actions</a>-only API that provides <strong>read-your-writes</strong> semantics, where a user makes a change and the UI immediately shows the change, rather than stale data.</p></div>
+<p>이는 같은 request 안에서 데이터를 만료시키고 즉시 refresh하는 방식으로 이루어집니다.</p><div class="en-orig"><p>It does this by expiring and immediately refreshing data within the same request.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { updateTag } from &#x27;next/cache&#x27;
+
+export async function updateUserProfile(userId: string, profile: Profile) {
+  await db.users.update(userId, profile)
+
+  // Expire cache and refresh immediately - user sees their changes right away
+  updateTag(`user-${userId}`)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { updateTag } from &#x27;next/cache&#x27;
+
+export async function updateUserProfile(userId, profile) {
+  await db.users.update(userId, profile)
+
+  // Expire cache and refresh immediately - user sees their changes right away
+  updateTag(`user-${userId}`)
+}</code></pre></div></div>
+<p>이렇게 하면 interactive 기능이 변경 사항을 즉시 반영합니다. form, 사용자 설정, 그리고 사용자가 자신의 업데이트를 바로 보기를 기대하는 모든 workflow에 적합합니다.</p><div class="en-orig"><p>This ensures interactive features reflect changes immediately. Perfect for forms, user settings, and any workflow where users expect to see their updates instantly.</p></div>
+<p><code>updateTag</code>와 <code>revalidateTag</code>를 각각 언제 사용하는지는 <a href="app-api-reference-functions-updateTag.html#when-to-use-updatetag">여기</a>에서 자세히 알아보세요.</p><div class="en-orig"><p>Learn more about when to use <code>updateTag</code> or <code>revalidateTag</code> <a href="app-api-reference-functions-updateTag.html#when-to-use-updatetag">here</a>.</p></div>
+<h3 class="sec" id="refresh"><a class="anchor" href="#refresh">refresh</a></h3>
+<p><a href="app-api-reference-functions-refresh.html"><code>refresh</code></a>를 사용하면 Server Action 안에서 client router를 refresh할 수 있습니다.</p><div class="en-orig"><p><a href="app-api-reference-functions-refresh.html"><code>refresh</code></a> allows you to refresh the client router from within a Server Action.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { refresh } from &#x27;next/cache&#x27;
+
+export async function markNotificationAsRead(notificationId: string) {
+  // Update the notification in the database
+  await db.notifications.markAsRead(notificationId)
+
+  // Refresh the notification count displayed in the header
+  refresh()
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { refresh } from &#x27;next/cache&#x27;
+
+export async function markNotificationAsRead(notificationId) {
+  // Update the notification in the database
+  await db.notifications.markAsRead(notificationId)
+
+  // Refresh the notification count displayed in the header
+  refresh()
+}</code></pre></div></div>
+<p>action을 수행한 뒤 client router를 refresh해야 할 때 사용하세요.</p><div class="en-orig"><p>Use it when you need to refresh the client router after performing an action.</p></div>
+<h3 class="sec" id="cachelife-and-cachetag"><a class="anchor" href="#cachelife-and-cachetag">cacheLife and cacheTag<span class="ko">cacheLife와 cacheTag</span></a></h3>
+<p><a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a>와 <a href="app-api-reference-functions-cacheTag.html"><code>cacheTag</code></a>가 이제 stable이 되었습니다. 더 이상 <code>unstable_</code> prefix가 필요 없습니다.</p><div class="en-orig"><p><a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a> and <a href="app-api-reference-functions-cacheTag.html"><code>cacheTag</code></a> are now stable. The <code>unstable_</code> prefix is no longer needed.</p></div>
+<p>다음과 같이 alias import를 사용하던 곳은 모두:</p><div class="en-orig"><p>Wherever you had aliased imports like:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import {
+  unstable_cacheLife as cacheLife,
+  unstable_cacheTag as cacheTag,
+} from &#x27;next/cache&#x27;</code></pre></div></div>
+<p>다음과 같이 import를 업데이트할 수 있습니다:</p><div class="en-orig"><p>You can update your imports to:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { cacheLife, cacheTag } from &#x27;next/cache&#x27;</code></pre></div></div>
+<h2 class="sec" id="enhanced-routing-and-navigation"><a class="anchor" href="#enhanced-routing-and-navigation">Enhanced Routing and Navigation<span class="ko">향상된 Routing과 Navigation</span></a></h2>
+<p><strong>Next.js 16</strong>에는 routing과 navigation 시스템의 전면 개편이 포함되어 있어 page 전환이 더 가볍고 빨라졌습니다. 이는 Next.js가 navigation 데이터를 prefetch하고 cache하는 방식을 최적화합니다:</p><div class="en-orig"><p><strong>Next.js 16</strong> includes a complete overhaul of the routing and navigation system, making page transitions leaner and faster. This optimizes how Next.js prefetches and caches navigation data:</p></div>
+<ul>
+<li><strong>Layout deduplication</strong>: 공유 layout을 가진 여러 URL을 prefetch할 때 layout은 한 번만 다운로드됩니다.</li>
+<li><strong>Incremental prefetching</strong>: Next.js는 page 전체가 아니라 아직 cache에 없는 부분만 prefetch합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Layout deduplication</strong>: When prefetching multiple URLs with a shared layout, the layout is downloaded once.</li>
+<li><strong>Incremental prefetching</strong>: Next.js only prefetches parts not already in cache, rather than entire pages.</li>
+</ul></div>
+<p>이 변경에는 <strong>코드 수정이 전혀 필요 없으며</strong>, 모든 앱의 성능을 개선하도록 설계되었습니다.</p><div class="en-orig"><p>These changes require <strong>no code modifications</strong> and are designed to improve performance across all apps.</p></div>
+<p>다만 개별 prefetch request가 더 많아지는 대신 전체 전송 크기는 훨씬 작아지는 것을 보게 될 수 있습니다. 저희는 이것이 거의 모든 애플리케이션에 맞는 올바른 trade-off라고 생각합니다.</p><div class="en-orig"><p>However, you may see more individual prefetch requests with much lower total transfer sizes. We believe this is the right trade-off for nearly all applications.</p></div>
+<p>늘어난 request 수가 문제를 일으킨다면 <a href="https://github.com/vercel/next.js/issues" target="_blank" rel="noopener">issue</a>나 <a href="https://github.com/vercel/next.js/discussions" target="_blank" rel="noopener">discussion</a> 항목을 만들어 알려 주세요.</p><div class="en-orig"><p>If the increased request count causes issues, please let us know by creating an <a href="https://github.com/vercel/next.js/issues" target="_blank" rel="noopener">issue</a> or <a href="https://github.com/vercel/next.js/discussions" target="_blank" rel="noopener">discussion</a> item.</p></div>
+<h2 class="sec" id="partial-prerendering-ppr"><a class="anchor" href="#partial-prerendering-ppr">Partial Prerendering (PPR)</a></h2>
+<p><strong>Next.js 16</strong>은 route level segment <code>experimental_ppr</code>를 포함해 experimental <strong>Partial Prerendering (PPR)</strong> flag와 configuration option을 제거합니다.</p><div class="en-orig"><p><strong>Next.js 16</strong> removes the experimental <strong>Partial Prerendering (PPR)</strong> flag and configuration options, including the route level segment <code>experimental_ppr</code>.</p></div>
+<p><strong>Next.js 16</strong>부터는 <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a> configuration으로 PPR을 opt in할 수 있습니다.</p><div class="en-orig"><p>Starting with <strong>Next.js 16</strong>, you can opt into PPR using the <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a> configuration.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  cacheComponents: true,
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p><strong>Next.js 16</strong>의 PPR은 <strong>Next.js 15</strong> canary에서와 다르게 동작합니다. 지금 PPR을 사용하고 있다면 현재 사용 중인 Next.js 15 canary에 머무르세요. migration pattern은 <a href="app-guides-migrating-to-cache-components.html">Migrating to Cache Components</a>를 참고하세요.</p><div class="en-orig"><p>PPR in <strong>Next.js 16</strong> works differently than in <strong>Next.js 15</strong> canaries. If you are using PPR today, stay in the current Next.js 15 canary you are using. See <a href="app-guides-migrating-to-cache-components.html">Migrating to Cache Components</a> for migration patterns.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  // If you are using PPR today
+  // stay in the current Next.js 15 canary
+  experimental: {
+    ppr: true,
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<h2 class="sec" id="middleware-to-proxy"><a class="anchor" href="#middleware-to-proxy"><code>middleware</code> to <code>proxy</code><span class="ko"><code>middleware</code>에서 <code>proxy</code>로</span></a></h2>
+<p><code>middleware</code> 파일 이름은 deprecated되었고, network boundary와 routing 중심이라는 점을 명확히 하기 위해 <code>proxy</code>로 이름이 바뀌었습니다.</p><div class="en-orig"><p>The <code>middleware</code> filename is deprecated, and has been renamed to <code>proxy</code> to clarify network boundary and routing focus.</p></div>
+<p><code>proxy</code>에서는 <code>edge</code> runtime이 <strong>지원되지 않습니다</strong>. <code>proxy</code>의 runtime은 <code>nodejs</code>이며 설정으로 바꿀 수 없습니다. <code>edge</code> runtime을 계속 사용하려면 <code>middleware</code>를 계속 사용하세요. <code>edge</code> runtime에 대한 추가 안내는 이후 minor release에서 제공할 예정입니다.</p><div class="en-orig"><p>The <code>edge</code> runtime is <strong>NOT</strong> supported in <code>proxy</code>. The <code>proxy</code> runtime is <code>nodejs</code>, and it cannot be configured. If you want to continue using the <code>edge</code> runtime, keep using <code>middleware</code>. We will follow up on a minor release with further <code>edge</code> runtime instructions.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash"># Rename your middleware file
+mv middleware.ts proxy.ts
+# or
+mv middleware.js proxy.js</code></pre></div></div>
+<p>named export <code>middleware</code>도 deprecated되었습니다. 함수 이름을 <code>proxy</code>로 바꾸세요.</p><div class="en-orig"><p>The named export <code>middleware</code> is also deprecated. Rename your function to <code>proxy</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export function proxy(request: Request) {}</code></pre><pre class="v-js" hidden><code class="language-javascript">export function proxy(request) {}</code></pre></div></div>
+<p>default export를 사용하더라도 함수 이름을 <code>proxy</code>로 바꾸는 것을 권장합니다.</p><div class="en-orig"><p>We recommend changing the function name to <code>proxy</code>, even if you are using a default export.</p></div>
+<p><code>middleware</code>라는 이름이 들어간 configuration flag도 이름이 바뀌었습니다. 예를 들어 <code>skipMiddlewareUrlNormalize</code>는 이제 <code>skipProxyUrlNormalize</code>입니다</p><div class="en-orig"><p>Configuration flags that contained the <code>middleware</code> name are also renamed. For example, <code>skipMiddlewareUrlNormalize</code> is now <code>skipProxyUrlNormalize</code></p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  skipProxyUrlNormalize: true,
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  skipProxyUrlNormalize: true,
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p>버전 16 <a href="app-guides-upgrading-codemods.html#160">codemod</a>로 이 flag들도 업데이트할 수 있습니다.</p><div class="en-orig"><p>The version 16 <a href="app-guides-upgrading-codemods.html#160">codemod</a> is able to update these flags too.</p></div>
+<h2 class="sec" id="nextimage-changes"><a class="anchor" href="#nextimage-changes"><code>next/image</code> changes<span class="ko"><code>next/image</code> 변경 사항</span></a></h2>
+<h3 class="sec" id="local-images-with-query-strings-breaking-change"><a class="anchor" href="#local-images-with-query-strings-breaking-change">Local Images with Query Strings (Breaking change)<span class="ko">query string이 있는 local image (Breaking change)</span></a></h3>
+<p>query string이 있는 local image source는 이제 enumeration attack을 막기 위해 <code>images.localPatterns.search</code> configuration이 필요합니다.</p><div class="en-orig"><p>Local image sources with query strings now require <code>images.localPatterns.search</code> configuration to prevent enumeration attacks.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import Image from &#x27;next/image&#x27;
+
+export default function Page() {
+  return &lt;Image src=&quot;/assets/photo?v=1&quot; alt=&quot;Photo&quot; width=&quot;100&quot; height=&quot;100&quot; /&gt;
+}</code></pre></div></div>
+<p>local image에 query string을 사용해야 한다면 configuration에 pattern을 추가하세요:</p><div class="en-orig"><p>If you need to use query strings with local images, add the pattern to your configuration:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  images: {
+    localPatterns: [
+      {
+        pathname: &#x27;/assets/**&#x27;,
+        search: &#x27;?v=1&#x27;,
+      },
+    ],
+  },
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  images: {
+    localPatterns: [
+      {
+        pathname: &#x27;/assets/**&#x27;,
+        search: &#x27;?v=1&#x27;,
+      },
+    ],
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<h3 class="sec" id="minimumcachettl-default-breaking-change"><a class="anchor" href="#minimumcachettl-default-breaking-change"><code>minimumCacheTTL</code> Default (Breaking change)<span class="ko"><code>minimumCacheTTL</code> 기본값 (Breaking change)</span></a></h3>
+<p><code>images.minimumCacheTTL</code>의 기본값이 <code>60 seconds</code>에서 <code>4 hours</code>(14400초)로 바뀌었습니다. 이를 통해 cache-control header가 없는 image의 revalidation 비용이 줄어듭니다.</p><div class="en-orig"><p>The default value for <code>images.minimumCacheTTL</code> has changed from <code>60 seconds</code> to <code>4 hours</code> (14400 seconds). This reduces revalidation cost for images without cache-control headers.</p></div>
+<p>일부 Next.js 사용자의 경우 image revalidation이 자주 발생했는데, 대개 upstream source image에 <code>cache-control</code> header가 빠져 있었기 때문입니다. 이로 인해 <code>60</code>초마다 revalidation이 일어나 CPU 사용량과 비용이 늘어났습니다.</p><div class="en-orig"><p>For some Next.js users, image revalidation was happening frequently, often because the upstream source images missed a <code>cache-control</code> header. This caused revalidation to happen every <code>60</code> seconds, which increased CPU usage and cost.</p></div>
+<p>대부분의 image는 자주 바뀌지 않기 때문에 이렇게 짧은 간격은 바람직하지 않습니다. 기본값을 4시간으로 설정하면 기본적으로 더 오래 유지되는 cache를 제공하면서도, 필요하면 image가 하루에 몇 번은 업데이트될 수 있습니다.</p><div class="en-orig"><p>Since most images do not change often, this short interval is not ideal. Setting the default to 4 hours offers a more durable cache by default, while still allowing images to update a few times per day if needed.</p></div>
+<p>이전 동작이 필요하다면 <code>minimumCacheTTL</code>을 더 낮은 값으로, 예를 들어 다시 <code>60</code>초로 바꾸세요:</p><div class="en-orig"><p>If you need the previous behavior, change <code>minimumCacheTTL</code> to a lower value, for example back to <code>60</code> seconds:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  images: {
+    minimumCacheTTL: 60,
+  },
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  images: {
+    minimumCacheTTL: 60,
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<h3 class="sec" id="imagesizes-default-breaking-change"><a class="anchor" href="#imagesizes-default-breaking-change"><code>imageSizes</code> Default (Breaking change)<span class="ko"><code>imageSizes</code> 기본값 (Breaking change)</span></a></h3>
+<p>기본 <code>images.imageSizes</code> array에서 <code>16</code> 값이 제거되었습니다.</p><div class="en-orig"><p>The value <code>16</code> has been removed from the default <code>images.imageSizes</code> array.</p></div>
+<p>request analytics를 살펴본 결과, 16 pixel 너비의 image를 제공하는 프로젝트는 극히 드물었습니다. 이 설정을 제거하면 <code>next/image</code>가 브라우저에 보내는 <code>srcset</code> attribute의 크기가 줄어듭니다.</p><div class="en-orig"><p>We have looked at request analytics and found out that very few projects ever serve 16 pixels width images. Removing this setting reduces the size of the <code>srcset</code> attribute shipped to the browser by <code>next/image</code>.</p></div>
+<p>16px image를 지원해야 한다면:</p><div class="en-orig"><p>If you need to support 16px images:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  images: {
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+  },
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  images: {
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p>개발자들이 잘 사용하지 않아서라기보다는, <code>devicePixelRatio: 2</code>가 retina display에서 흐릿함을 막기 위해 실제로는 32px image를 가져오기 때문에 16 pixel 너비의 image가 덜 흔해졌다고 판단합니다.</p><div class="en-orig"><p>Rather than lack of developer usage, we believe 16 pixels width images have become less common, because <code>devicePixelRatio: 2</code> actually fetches a 32px image to prevent blurriness in retina displays.</p></div>
+<h3 class="sec" id="qualities-default-breaking-change"><a class="anchor" href="#qualities-default-breaking-change"><code>qualities</code> Default (Breaking change)<span class="ko"><code>qualities</code> 기본값 (Breaking change)</span></a></h3>
+<p><code>images.qualities</code>의 기본값이 모든 quality를 허용하던 것에서 <code>[75]</code>만 허용하도록 바뀌었습니다.</p><div class="en-orig"><p>The default value for <code>images.qualities</code> has changed from allowing all qualities to only <code>[75]</code>.</p></div>
+<p>여러 quality level을 지원해야 한다면:</p><div class="en-orig"><p>If you need to support multiple quality levels:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  images: {
+    qualities: [50, 75, 100],
+  },
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  images: {
+    qualities: [50, 75, 100],
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p><code>images.qualities</code> array에 포함되지 않은 <code>quality</code> prop을 지정하면, quality는 <code>images.qualities</code>에서 가장 가까운 값으로 강제 변환됩니다. 예를 들어 위 configuration에서 <code>quality</code> prop이 80이면 75로 변환됩니다.</p><div class="en-orig"><p>If you specify a <code>quality</code> prop not included in the <code>images.qualities</code> array, the quality will be coerced to the closest value in <code>images.qualities</code>. For example, given the configuration above, a <code>quality</code> prop of 80, is coerced to 75.</p></div>
+<p>custom image quality를 검토하세요. 필요한 값을 <code>images.qualities</code>에 추가하고, 지원되지 않는 <code>q</code> 값은 <code>400</code>을 반환하므로 직접적인 <code>/_next/image</code> request도 테스트하세요.</p><div class="en-orig"><p>Review custom image qualities. Add required values to <code>images.qualities</code>, and test direct <code>/_next/image</code> requests because unsupported <code>q</code> values return <code>400</code>.</p></div>
+<h3 class="sec" id="local-ip-restriction-breaking-change"><a class="anchor" href="#local-ip-restriction-breaking-change">Local IP Restriction (Breaking change)<span class="ko">Local IP 제한 (Breaking change)</span></a></h3>
+<p>새 security 제한이 기본적으로 local IP optimization을 차단합니다. <code>images.dangerouslyAllowLocalIP</code>는 private network에서만 <code>true</code>로 설정하세요.</p><div class="en-orig"><p>A new security restriction blocks local IP optimization by default. Set <code>images.dangerouslyAllowLocalIP</code> to <code>true</code> only for private networks.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  images: {
+    dangerouslyAllowLocalIP: true, // Only for private networks
+  },
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  images: {
+    dangerouslyAllowLocalIP: true, // Only for private networks
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p>split-horizon DNS를 사용하는 VPC에서 Next.js를 hosting하면서 status 400 Bad Request를 받는 경우 이 설정이 필요할 수 있습니다. SSRF 위험을 이해한 뒤에만 활성화하세요.</p><div class="en-orig"><p>This might be necessary when hosting Next.js in a VPC with split-horizon DNS and you receive status 400 Bad Request. Only enable once you understand the SSRF risk.</p></div>
+<h3 class="sec" id="maximum-redirects-breaking-change"><a class="anchor" href="#maximum-redirects-breaking-change">Maximum Redirects (Breaking change)<span class="ko">최대 redirect 수 (Breaking change)</span></a></h3>
+<p><code>images.maximumRedirects</code>의 기본값이 무제한에서 최대 3번의 redirect로 바뀌었습니다.</p><div class="en-orig"><p>The default for <code>images.maximumRedirects</code> has changed from unlimited to 3 redirects maximum.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  images: {
+    maximumRedirects: 0, // Disable redirects
+    // or
+    maximumRedirects: 5, // Increase for edge cases
+  },
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  images: {
+    maximumRedirects: 0, // Disable redirects
+    // or
+    maximumRedirects: 5, // Increase for edge cases
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<h3 class="sec" id="nextlegacyimage-component-deprecated"><a class="anchor" href="#nextlegacyimage-component-deprecated"><code>next/legacy/image</code> Component (deprecated)</a></h3>
+<p><code>next/legacy/image</code> component는 deprecated되었습니다. 대신 <code>next/image</code>를 사용하세요:</p><div class="en-orig"><p>The <code>next/legacy/image</code> component is deprecated. Use <code>next/image</code> instead:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">// Before
+import Image from &#x27;next/legacy/image&#x27;
+
+// After
+import Image from &#x27;next/image&#x27;</code></pre></div></div>
+<h3 class="sec" id="imagesdomains-configuration-deprecated"><a class="anchor" href="#imagesdomains-configuration-deprecated"><code>images.domains</code> Configuration (deprecated)</a></h3>
+<p><code>images.domains</code> config는 deprecated되었습니다.</p><div class="en-orig"><p>The <code>images.domains</code> config is deprecated.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// image.domains is deprecated
+module.exports = {
+  images: {
+    domains: [&#x27;example.com&#x27;],
+  },
+}</code></pre></div></div>
+<p>보안을 강화하려면 대신 <code>images.remotePatterns</code>를 사용하세요:</p><div class="en-orig"><p>Use <code>images.remotePatterns</code> instead for improved security:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// Use image.remotePatterns instead
+module.exports = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: &#x27;https&#x27;,
+        hostname: &#x27;example.com&#x27;,
+      },
+    ],
+  },
+}</code></pre></div></div>
+<h2 class="sec" id="concurrent-dev-and-build"><a class="anchor" href="#concurrent-dev-and-build">Concurrent <code>dev</code> and <code>build</code><span class="ko"><code>dev</code>와 <code>build</code> 동시 실행</span></a></h2>
+<p><code>next dev</code>와 <code>next build</code>가 이제 별도의 output directory를 사용하므로 동시에 실행할 수 있습니다. <code>next dev</code> command는 <code>.next/dev</code>로 output을 냅니다.</p><div class="en-orig"><p><code>next dev</code> and <code>next build</code> now use separate output directories, enabling concurrent execution. The <code>next dev</code> command outputs to <code>.next/dev</code>.</p></div>
+<p>또한 lockfile 메커니즘이 같은 프로젝트에서 여러 <code>next dev</code> 또는 <code>next build</code> instance가 실행되는 것을 막습니다.</p><div class="en-orig"><p>Additionally, a lockfile mechanism prevents multiple <code>next dev</code> or <code>next build</code> instances on the same project.</p></div>
+<p><a href="app-guides-local-development.html#turbopack-tracing">Turbopack tracing command</a>는 다음과 같아야 합니다:</p><div class="en-orig"><p>The <a href="app-guides-local-development.html#turbopack-tracing">Turbopack tracing command</a> should be:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm next internal trace .next-profiles/trace-turbopack.bin</code></pre><pre class="pm-npm" hidden><code class="language-bash">npx next internal trace .next-profiles/trace-turbopack.bin</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn next internal trace .next-profiles/trace-turbopack.bin</code></pre><pre class="pm-bun" hidden><code class="language-bash">bunx next internal trace .next-profiles/trace-turbopack.bin</code></pre></div></div>
+<h2 class="sec" id="parallel-routes-defaultjs-requirement"><a class="anchor" href="#parallel-routes-defaultjs-requirement">Parallel Routes <code>default.js</code> requirement<span class="ko">Parallel Routes의 <code>default.js</code> 요구 사항</span></a></h2>
+<p>이제 모든 <a href="app-api-reference-file-conventions-parallel-routes.html">parallel route</a> slot에는 명시적인 <code>default.js</code> 파일이 필요합니다. 이 파일이 없으면 build가 실패합니다.</p><div class="en-orig"><p>All <a href="app-api-reference-file-conventions-parallel-routes.html">parallel route</a> slots now require explicit <code>default.js</code> files. Builds will fail without them.</p></div>
+<p>이전 동작을 유지하려면 <code>notFound()</code>를 호출하거나 <code>null</code>을 반환하는 <a href="app-api-reference-file-conventions-default.html"><code>default.js</code></a> 파일을 만드세요.</p><div class="en-orig"><p>To maintain previous behavior, create a <a href="app-api-reference-file-conventions-default.html"><code>default.js</code></a> file that calls <code>notFound()</code> or returns <code>null</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/@modal/default.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { notFound } from &#x27;next/navigation&#x27;
+
+export default function Default() {
+  notFound()
+}</code></pre></div></div>
+<p>또는 <code>null</code>을 반환하세요:</p><div class="en-orig"><p>Or return <code>null</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/@modal/default.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export default function Default() {
+  return null
+}</code></pre></div></div>
+<h2 class="sec" id="eslint-flat-config"><a class="anchor" href="#eslint-flat-config">ESLint Flat Config</a></h2>
+<p><code>@next/eslint-plugin-next</code>는 이제 기본으로 ESLint Flat Config 형식을 사용합니다. 이는 legacy config 지원을 중단할 ESLint v10에 맞춘 것입니다.</p><div class="en-orig"><p><code>@next/eslint-plugin-next</code> now defaults to ESLint Flat Config format, aligning with ESLint v10 which will drop legacy config support.</p></div>
+<p><a href="app-api-reference-config-eslint.html#setup-eslint"><code>@next/eslint-plugin-next</code></a> plugin의 API reference를 꼭 검토하세요.</p><div class="en-orig"><p>Make sure to review our API reference for the <a href="app-api-reference-config-eslint.html#setup-eslint"><code>@next/eslint-plugin-next</code></a> plugin.</p></div>
+<p>legacy <code>.eslintrc</code> 형식을 사용하고 있다면 flat config 형식으로 migrate하는 것을 고려하세요. 자세한 내용은 <a href="https://eslint.org/docs/latest/use/configure/migration-guide" target="_blank" rel="noopener">ESLint migration guide</a>를 참고하세요.</p><div class="en-orig"><p>If you're using the legacy <code>.eslintrc</code> format, consider migrating to the flat config format. See the <a href="https://eslint.org/docs/latest/use/configure/migration-guide" target="_blank" rel="noopener">ESLint migration guide</a> for details.</p></div>
+<h2 class="sec" id="scroll-behavior-override"><a class="anchor" href="#scroll-behavior-override">Scroll Behavior Override</a></h2>
+<p><strong>이전 버전의 Next.js</strong>에서는 CSS로 <code>&lt;html&gt;</code> element에 전역으로 <code>scroll-behavior: smooth</code>를 설정해 두었다면, SPA route 전환 중에 Next.js가 다음과 같이 이 설정을 override했습니다:</p><div class="en-orig"><p>In <strong>previous versions of Next.js</strong>, if you had set <code>scroll-behavior: smooth</code> globally on your <code>&lt;html&gt;</code> element via CSS, Next.js would override this during SPA route transitions, as follows:</p></div>
+<ol>
+<li>일시적으로 <code>scroll-behavior</code>를 <code>auto</code>로 설정</li>
+<li>navigation 수행(즉시 맨 위로 scroll됨)</li>
+<li>원래 <code>scroll-behavior</code> 값 복원</li>
+</ol><div class="en-orig"><ol>
+<li>Temporarily set <code>scroll-behavior</code> to <code>auto</code></li>
+<li>Perform the navigation (causing instant scroll to top)</li>
+<li>Restore your original <code>scroll-behavior</code> value</li>
+</ol></div>
+<p>이렇게 하면 page 안의 navigation에 smooth scrolling을 활성화해 두었더라도 page navigation은 항상 빠르고 즉각적으로 느껴졌습니다. 하지만 이 조작은 특히 매 navigation이 시작될 때 비용이 클 수 있었습니다.</p><div class="en-orig"><p>This ensured that page navigation always felt snappy and instant, even when you had smooth scrolling enabled for in-page navigation. However, this manipulation could be expensive, especially at the start of every navigation.</p></div>
+<p><strong>Next.js 16</strong>에서는 이 동작이 바뀌었습니다. 기본적으로 Next.js는 navigation 중에 <code>scroll-behavior</code> 설정을 <strong>더 이상 override하지 않습니다</strong>.</p><div class="en-orig"><p>In <strong>Next.js 16</strong>, this behavior has changed. By default, Next.js will <strong>no longer override</strong> your <code>scroll-behavior</code> setting during navigation.</p></div>
+<p><strong>Next.js가 이 override를 수행하길 원한다면</strong> (이전 기본 동작) <code>&lt;html&gt;</code> element에 <code>data-scroll-behavior=&quot;smooth&quot;</code> attribute를 추가하세요:</p><div class="en-orig"><p><strong>If you want Next.js to perform this override</strong> (the previous default behavior), add the <code>data-scroll-behavior=&quot;smooth&quot;</code> attribute to your <code>&lt;html&gt;</code> element:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export default function RootLayout({ children }) {
+  return (
+    &lt;html lang=&quot;en&quot; data-scroll-behavior=&quot;smooth&quot;&gt;
+      &lt;body&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="performance-improvements"><a class="anchor" href="#performance-improvements">Performance Improvements<span class="ko">성능 개선</span></a></h2>
+<p><code>next dev</code>와 <code>next start</code> command의 성능이 크게 최적화되었고, 더 명확한 형식, 더 나은 error message, 개선된 performance metric으로 terminal output도 좋아졌습니다.</p><div class="en-orig"><p>Significant performance optimizations for <code>next dev</code> and <code>next start</code> commands, along with improved terminal output with clearer formatting, better error messages, and improved performance metrics.</p></div>
+<p><strong>Next.js 16</strong>은 <code>next build</code> output에서 <code>size</code>와 <code>First Load JS</code> metric을 제거합니다. React Server Components를 사용하는 server-driven architecture에서는 이 값들이 부정확하다는 것을 확인했습니다. Turbopack과 Webpack 구현 모두 문제가 있었고, Client Component payload를 계산하는 방식도 서로 달랐습니다.</p><div class="en-orig"><p><strong>Next.js 16</strong> removes the <code>size</code> and <code>First Load JS</code> metrics from the <code>next build</code> output. We found these to be inaccurate in server-driven architectures using React Server Components. Both our Turbopack and Webpack implementations had issues, and disagreed on how to account for Client Components payload.</p></div>
+<p>실제 route 성능을 측정하는 가장 효과적인 방법은 Core Web Vitals와 다운로드된 resource 크기에 초점을 맞춘 <a href="https://developer.chrome.com/docs/lighthouse/overview" target="_blank" rel="noopener">Chrome Lighthouse</a>나 Vercel Analytics 같은 도구를 사용하는 것입니다.</p><div class="en-orig"><p>The most effective way to measure actual route performance is through tools such as <a href="https://developer.chrome.com/docs/lighthouse/overview" target="_blank" rel="noopener">Chrome Lighthouse</a> or Vercel Analytics, which focus on Core Web Vitals and downloaded resource sizes.</p></div>
+<h3 class="sec" id="next-dev-config-load"><a class="anchor" href="#next-dev-config-load"><code>next dev</code> config load<span class="ko"><code>next dev</code> config 로드</span></a></h3>
+<p>이전 버전에서는 development 중에 Next config 파일이 두 번 load되었습니다:</p><div class="en-orig"><p>In previous versions the Next config file was loaded twice during development:</p></div>
+<ul>
+<li><code>next dev</code> command를 실행할 때</li>
+<li><code>next dev</code> command가 Next.js server를 시작할 때</li>
+</ul><div class="en-orig"><ul>
+<li>When running the <code>next dev</code> command</li>
+<li>When the <code>next dev</code> command started the Next.js server</li>
+</ul></div>
+<p><code>next dev</code> command는 Next.js server를 시작하는 데 config 파일이 필요하지 않으므로 이는 비효율적이었습니다.</p><div class="en-orig"><p>This was inefficient because the <code>next dev</code> command doesn't need the config file to start the Next.js server.</p></div>
+<p>이 변경의 결과로, <code>next dev</code>를 실행할 때 Next.js config 파일에서 <code>process.argv</code>에 <code>&#x27;dev&#x27;</code>가 포함되어 있는지 확인하면 <code>false</code>가 반환됩니다.</p><div class="en-orig"><p>A consequence of this change is that, when running <code>next dev</code> checking if <code>process.argv</code> includes <code>&#x27;dev&#x27;</code>, in your Next.js config file, will return <code>false</code>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>typegen</code>과 <code>build</code> command는 여전히 <code>process.argv</code>에 보입니다.</p><div class="en-orig"><p>The <code>typegen</code>, and <code>build</code> commands, are still visible in <code>process.argv</code>.</p></div></div></div>
+<p>이는 <code>next dev</code>에서 side-effect를 일으키는 plugin에 특히 중요합니다. 그런 경우라면 <code>NODE_ENV</code>가 <code>development</code>로 설정되어 있는지 확인하는 것으로 충분할 수 있습니다.</p><div class="en-orig"><p>This is specially important for plugins that trigger side-effects on <code>next dev</code>. If that's the case, it might be enough to check if <code>NODE_ENV</code> is set to <code>development</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { startServer } from &#x27;docs-lib/dev-server&#x27;
+
+const isDev = process.env.NODE_ENV === &#x27;development&#x27;
+
+if (isDev) {
+  startServer()
+}
+
+const nextConfig = {
+  /* Your config options */
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p>또는 configuration이 load되는 <a href="app-api-reference-config-next-config-js.html#phase"><code>phase</code></a>를 사용하세요.</p><div class="en-orig"><p>Alternatively, use the <a href="app-api-reference-config-next-config-js.html#phase"><code>phase</code></a> in which the configuration is loaded.</p></div>
+<h2 class="sec" id="build-adapters-api-alpha"><a class="anchor" href="#build-adapters-api-alpha">Build Adapters API (alpha)</a></h2>
+<p><a href="https://github.com/vercel/next.js/discussions/77740" target="_blank" rel="noopener">Build Adapters RFC</a>에 이어 Build Adapters API의 첫 alpha 버전을 이제 사용할 수 있습니다.</p><div class="en-orig"><p>Following the <a href="https://github.com/vercel/next.js/discussions/77740" target="_blank" rel="noopener">Build Adapters RFC</a>, the first alpha version of the Build Adapters API is now available.</p></div>
+<p>Build Adapter를 사용하면 build process에 hook하는 custom adapter를 만들 수 있어서, deployment platform과 custom build integration이 Next.js configuration을 수정하거나 build output을 처리할 수 있습니다.</p><div class="en-orig"><p>Build Adapters allow you to create custom adapters that hook into the build process, enabling deployment platforms and custom build integrations to modify Next.js configuration or process build output.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">const nextConfig = {
+  experimental: {
+    adapterPath: require.resolve(&#x27;./my-adapter.js&#x27;),
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p><code>adapterPath</code>는 16.2.0에서 stable한 top-level option으로 승격되었습니다. 현재 API reference는 <a href="app-api-reference-config-next-config-js-adapterPath.html"><code>adapterPath</code></a>를 참고하세요.</p><div class="en-orig"><p><code>adapterPath</code> was promoted to a stable, top-level option in 16.2.0. See <a href="app-api-reference-config-next-config-js-adapterPath.html"><code>adapterPath</code></a> for the current API reference.</p></div>
+<h2 class="sec" id="modern-sass-api"><a class="anchor" href="#modern-sass-api">Modern Sass API</a></h2>
+<p><code>sass-loader</code>가 v16으로 올라갔으며, <a href="https://sass-lang.com/documentation/js-api/#md:usage" target="_blank" rel="noopener">modern Sass syntax</a>와 새 기능을 지원합니다.</p><div class="en-orig"><p><code>sass-loader</code> has been bumped to v16, which supports <a href="https://sass-lang.com/documentation/js-api/#md:usage" target="_blank" rel="noopener">modern Sass syntax</a> and new features.</p></div>
+<h2 class="sec" id="removals"><a class="anchor" href="#removals">Removals<span class="ko">제거된 기능</span></a></h2>
+<p>다음 기능들은 이전에 deprecated되었으며 이제 제거되었습니다:</p><div class="en-orig"><p>These features were previously deprecated and are now removed:</p></div>
+<h3 class="sec" id="amp-support"><a class="anchor" href="#amp-support">AMP Support<span class="ko">AMP 지원</span></a></h3>
+<p>AMP 도입이 크게 줄었고, 이 기능을 유지하는 것은 framework의 복잡성을 높입니다. 모든 AMP API와 configuration이 제거되었습니다:</p><div class="en-orig"><p>AMP adoption has declined significantly, and maintaining this feature adds complexity to the framework. All AMP APIs and configurations have been removed:</p></div>
+<ul>
+<li>Next config 파일의 <code>amp</code> configuration</li>
+<li><code>next/amp</code> hook import와 사용(<code>useAmp</code>)</li>
+</ul><div class="en-orig"><ul>
+<li><code>amp</code> configuration from your Next config file</li>
+<li><code>next/amp</code> hook imports and usage (<code>useAmp</code>)</li>
+</ul></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">// Removed
+import { useAmp } from &#x27;next/amp&#x27;
+
+// Removed
+export const config = { amp: true }</code></pre></div></div>
+<ul>
+<li>page의 <code>export const config = { amp: true }</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>export const config = { amp: true }</code> from pages</li>
+</ul></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">const nextConfig = {
+  // Removed
+  amp: {
+    canonicalBase: &#x27;https://example.com&#x27;,
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p>여러분의 use case에 AMP가 여전히 필요한지 검토하세요. 대부분의 성능 이점은 이제 Next.js의 built-in 최적화와 최신 web standard로 얻을 수 있습니다.</p><div class="en-orig"><p>Evaluate if AMP is still necessary for your use case. Most performance benefits can now be achieved through Next.js's built-in optimizations and modern web standards.</p></div>
+<h3 class="sec" id="next-lint-command"><a class="anchor" href="#next-lint-command"><code>next lint</code> Command</a></h3>
+<p><code>next lint</code> command가 제거되었습니다. Biome이나 ESLint를 직접 사용하세요. <code>next build</code>는 더 이상 linting을 실행하지 않습니다.</p><div class="en-orig"><p>The <code>next lint</code> command has been removed. Use Biome or ESLint directly. <code>next build</code> no longer runs linting.</p></div>
+<p>migration을 자동화하는 codemod가 제공됩니다:</p><div class="en-orig"><p>A codemod is available to automate migration:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm dlx @next/codemod@canary next-lint-to-eslint-cli .</code></pre><pre class="pm-npm" hidden><code class="language-bash">npx @next/codemod@canary next-lint-to-eslint-cli .</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn dlx @next/codemod@canary next-lint-to-eslint-cli .</code></pre><pre class="pm-bun" hidden><code class="language-bash">bunx @next/codemod@canary next-lint-to-eslint-cli .</code></pre></div></div>
+<p>Next.js config 파일의 <code>eslint</code> option도 제거되었습니다.</p><div class="en-orig"><p>The <code>eslint</code> option in the Next.js config file is also removed.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  // No longer supported
+  // eslint: {},
+}
+
+export default nextConfig</code></pre></div></div>
+<h3 class="sec" id="runtime-configuration"><a class="anchor" href="#runtime-configuration">Runtime Configuration</a></h3>
+<p><code>serverRuntimeConfig</code>와 <code>publicRuntimeConfig</code>가 제거되었습니다. 대신 environment variable을 사용하세요.</p><div class="en-orig"><p><code>serverRuntimeConfig</code> and <code>publicRuntimeConfig</code> have been removed. Use environment variables instead.</p></div>
+<p><strong>이전 (Next.js 15):</strong></p><div class="en-orig"><p><strong>Before (Next.js 15):</strong></p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  serverRuntimeConfig: {
+    dbUrl: process.env.DATABASE_URL,
+  },
+  publicRuntimeConfig: {
+    apiUrl: &#x27;/api&#x27;,
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">pages/index.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import getConfig from &#x27;next/config&#x27;
+
+export default function Page() {
+  const { publicRuntimeConfig } = getConfig()
+  return &lt;p&gt;API URL: {publicRuntimeConfig.apiUrl}&lt;/p&gt;
+}</code></pre></div></div>
+<p><strong>이후 (Next.js 16):</strong></p><div class="en-orig"><p><strong>After (Next.js 16):</strong></p></div>
+<p>server 전용 값은 Server Component에서 environment variable에 직접 접근하세요:</p><div class="en-orig"><p>For server-only values, access environment variables directly in Server Components:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">async function fetchData() {
+  const dbUrl = process.env.DATABASE_URL
+  // Use for server-side operations only
+  return await db.query(dbUrl, &#x27;SELECT * FROM users&#x27;)
+}
+
+export default async function Page() {
+  const data = await fetchData()
+  return &lt;div&gt;{/* render data */}&lt;/div&gt;
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>민감한 server 값이 실수로 Client Component에 전달되는 것을 막으려면 <a href="app-api-reference-config-next-config-js-taint.html">taint API</a>를 사용하세요.</p><div class="en-orig"><p>Use the <a href="app-api-reference-config-next-config-js-taint.html">taint API</a> to prevent accidentally passing sensitive server values to Client Components.</p></div></div></div>
+<p>client에서 접근 가능한 값에는 <code>NEXT_PUBLIC_</code> prefix를 사용하세요:</p><div class="en-orig"><p>For client-accessible values, use the <code>NEXT_PUBLIC_</code> prefix:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">.env.local</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">NEXT_PUBLIC_API_URL=&quot;/api&quot;</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/components/client-component.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+export default function ClientComponent() {
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL
+  return &lt;p&gt;API URL: {apiUrl}&lt;/p&gt;
+}</code></pre></div></div>
+<p>environment variable이 (build 시점에 bundle되지 않고) runtime에 읽히도록 하려면, <code>process.env</code>에서 읽기 전에 <a href="app-api-reference-functions-connection.html"><code>connection()</code></a> 함수를 사용하세요:</p><div class="en-orig"><p>To ensure environment variables are read at runtime (not bundled at build time), use the <a href="app-api-reference-functions-connection.html"><code>connection()</code></a> function before reading from <code>process.env</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { connection } from &#x27;next/server&#x27;
+
+export default async function Page() {
+  await connection()
+  const config = process.env.RUNTIME_CONFIG
+  return &lt;p&gt;{config}&lt;/p&gt;
+}</code></pre></div></div>
+<p><a href="app-guides-environment-variables.html">environment variable</a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about <a href="app-guides-environment-variables.html">environment variables</a>.</p></div>
+<h3 class="sec" id="devindicators-options"><a class="anchor" href="#devindicators-options"><code>devIndicators</code> Options<span class="ko"><code>devIndicators</code> option</span></a></h3>
+<p><a href="app-api-reference-config-next-config-js-devIndicators.html"><code>devIndicators</code></a>에서 다음 option들이 제거되었습니다:</p><div class="en-orig"><p>The following options have been removed from <a href="app-api-reference-config-next-config-js-devIndicators.html"><code>devIndicators</code></a>:</p></div>
+<ul>
+<li><code>appIsrStatus</code></li>
+<li><code>buildActivity</code></li>
+<li><code>buildActivityPosition</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>appIsrStatus</code></li>
+<li><code>buildActivity</code></li>
+<li><code>buildActivityPosition</code></li>
+</ul></div>
+<p>indicator 자체는 계속 사용할 수 있습니다.</p><div class="en-orig"><p>The indicator itself remains available.</p></div>
+<h3 class="sec" id="experimentaldynamicio-and-experimentalusecache"><a class="anchor" href="#experimentaldynamicio-and-experimentalusecache"><code>experimental.dynamicIO</code> and <code>experimental.useCache</code><span class="ko"><code>experimental.dynamicIO</code>와 <code>experimental.useCache</code></span></a></h3>
+<p><code>experimental.dynamicIO</code>와 <code>experimental.useCache</code> flag가 제거되었습니다.</p><div class="en-orig"><p>The <code>experimental.dynamicIO</code> and <code>experimental.useCache</code> flags have been removed.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// Before: experimental.useCache
+module.exports = {
+  experimental: {
+    useCache: true,
+  },
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// Before: experimental.dynamicIO
+module.exports = {
+  experimental: {
+    dynamicIO: true,
+  },
+}</code></pre></div></div>
+<p>이 flag들을 실제로 사용하고 있었다면 top-level <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a>로 migrate하세요:</p><div class="en-orig"><p>If you were actively using these flags, migrate to top-level <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+// After
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">// After
+module.exports = {
+  cacheComponents: true,
+}</code></pre></div></div>
+<p>Cache Components를 실제로 도입하고 있지 않았다면 대신 flag를 제거하세요. <code>cacheComponents</code>를 활성화하는 것은 단순히 이름만 바꾸는 변경이 아닙니다. <code>&lt;Suspense&gt;</code> 밖에서 cache되지 않은 데이터에 대해 build error가 드러날 수 있고, Cache Components model을 도입해야 합니다.</p><div class="en-orig"><p>If you were not actively adopting Cache Components, remove the flags instead. Enabling <code>cacheComponents</code> is not a rename-only change: it can surface build errors for uncached data outside of <code>&lt;Suspense&gt;</code> and requires adopting the Cache Components model.</p></div>
+<p>전체 migration 과정은 <a href="app-guides-migrating-to-cache-components.html">Migrating to Cache Components</a>를 참고하세요.</p><div class="en-orig"><p>For the full migration path, see <a href="app-guides-migrating-to-cache-components.html">Migrating to Cache Components</a>.</p></div>
+<h3 class="sec" id="unstable_rootparams"><a class="anchor" href="#unstable_rootparams"><code>unstable_rootParams</code></a></h3>
+<p><code>unstable_rootParams</code> 함수가 제거되었습니다. 대신 <a href="app-api-reference-functions-next-root-params.html"><code>next/root-params</code></a>를 사용하세요.</p><div class="en-orig"><p>The <code>unstable_rootParams</code> function has been removed. Use <a href="app-api-reference-functions-next-root-params.html"><code>next/root-params</code></a> instead.</p></div>
+<h2 class="sec" id="troubleshooting"><a class="anchor" href="#troubleshooting">Troubleshooting<span class="ko">문제 해결</span></a></h2>
+<h3 class="sec" id="installation-fails-after-upgrading-to-react-19"><a class="anchor" href="#installation-fails-after-upgrading-to-react-19">Installation fails after upgrading to React 19<span class="ko">React 19로 upgrade한 뒤 설치가 실패하는 경우</span></a></h3>
+<ul>
+<li>[ ] <a href="app-guides-upgrading-version-15.html#installation-fails-after-upgrading-to-react-19">React recovery checklist</a>를 따르세요.</li>
+</ul><div class="en-orig"><ul>
+<li>[ ] Follow the <a href="app-guides-upgrading-version-15.html#installation-fails-after-upgrading-to-react-19">React recovery checklist</a>.</li>
+</ul></div>
+<h3 class="sec" id="installation-fails-after-upgrading-eslint"><a class="anchor" href="#installation-fails-after-upgrading-eslint">Installation fails after upgrading ESLint<span class="ko">ESLint upgrade 후 설치가 실패하는 경우</span></a></h3>
+<p>Next.js 16은 <code>next lint</code>를 제거하지만, ESLint CLI로 migrate하는 데 ESLint upgrade가 필요한 것은 아닙니다. <code>eslint-config-next@16</code>은 ESLint 9 이상이 필요하고, <code>eslint-config-next@16.4.0</code> 이상은 ESLint 10을 지원합니다. 기존 lint configuration이 <code>eslint-config-next@16</code>을 사용하지 않는다면 호환되는 기존 ESLint 버전을 그대로 유지할 수 있습니다.</p><div class="en-orig"><p>Next.js 16 removes <code>next lint</code>, but migrating to the ESLint CLI does not require upgrading ESLint. <code>eslint-config-next@16</code> requires ESLint 9 or later, and <code>eslint-config-next@16.4.0</code> or later supports ESLint 10. If your existing lint configuration does not use <code>eslint-config-next@16</code>, you can keep its compatible ESLint version.</p></div>
+<ul>
+<li>[ ] ESLint upgrade로 peer dependency 충돌이 생긴다면, <code>eslint</code>, <code>eslint-config-next</code>, (있다면) <code>@next/eslint-plugin-next</code>의 이전 호환 버전과 이전 lint configuration을 복원하세요.</li>
+<li>[ ] 설치 때문에 upgrade가 중단되었다면, 고친 lint stack을 유지하고 lint codemod를 건너뛰도록 <code>--skip-eslint-upgrade</code>와 함께 똑같은 target으로 다시 시도하세요. Next.js가 이미 target과 일치한다면 dependency를 설치하고 중단된 migration을 개별적으로 완료하세요. <code>next lint</code> script를 유지된 configuration과 호환되는 ESLint CLI command로 교체하세요. 설치와 lint가 통과하는지 확인하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>[ ] If an ESLint upgrade causes peer dependency conflicts, restore the previous compatible versions of <code>eslint</code>, <code>eslint-config-next</code>, and <code>@next/eslint-plugin-next</code> (if present), along with the previous lint configuration.</li>
+<li>[ ] If installation interrupted the upgrade, retry the same exact target with <code>--skip-eslint-upgrade</code> to preserve the repaired lint stack and skip the lint codemod. If Next.js already matches the target, install dependencies and complete interrupted migrations individually. Replace <code>next lint</code> scripts with ESLint CLI commands compatible with the preserved configuration. Confirm installation and lint pass.</li>
+</ul></div>
+<h2 class="sec" id="review-migration-checklist"><a class="anchor" href="#review-migration-checklist">Review migration checklist<span class="ko">migration checklist 검토하기</span></a></h2>
+<p>앱에 해당하는 변경을 적용한 뒤, migration이 완료되었다고 판단하기 전에
+다음 action item들을 검토하세요:</p><div class="en-orig"><p>After applying the changes relevant to your app, review these action items before
+you consider the migration complete:</p></div>
+<ul>
+<li>[ ] 앱이 이 guide의 Node.js, TypeScript, React 요구 사항을 충족합니다.</li>
+<li>[ ] development와 build script가 plugin, loader, alias, 영향을 받는 Sass import를 포함해 실제 적용되는 bundler configuration과 일치합니다.</li>
+<li>[ ] middleware와 proxy 변경이 필요한 runtime과 routing 동작을 유지합니다. Edge middleware를 무작정 proxy로 이름만 바꾸지 않았습니다.</li>
+<li>[ ] 영향을 받는 image request가 의도한 quality를 유지하면서 문서화된 제한과 기본값 아래에서 성공합니다.</li>
+<li>[ ] 기존 cache API 호출이 문서화된 signature와 semantics를 따릅니다. upgrade를 완료하기 위한 목적만으로 React Compiler와 Cache Components를 활성화하지 않았습니다.</li>
+<li>[ ] 제거된 API와 configuration을 사용하는 곳이 남아 있지 않습니다. Runtime configuration 대체 방식이 server와 client에서의 노출 범위와 필요한 평가 시점을 유지합니다.</li>
+<li>[ ] script와 CI가 더 이상 <code>next lint</code>를 호출하지 않으며, 앱에 필요한 곳에서는 linting이 별도로 실행됩니다.</li>
+<li>[ ] 앱이 지원하는 check와 영향을 받는 runtime 동작이 모두 통과합니다. build가 성공했다는 것만으로 runtime에서 발견된 문제가 해결된 것은 아닙니다.</li>
+<li>[ ] Async Request API 접근과 영향을 받는 caller가 migrate되었습니다. codemod error comment와 <code>UnsafeUnwrapped</code> cast를 해결하고, 적절한 경우 동기 Client Component에는 React <code>use</code>를 사용하세요.</li>
+<li>[ ] dynamic metadata image 함수와 sitemap 함수가 비동기 parameter를 처리하며, 영향을 받는 생성 URL이 동작합니다.</li>
+<li>[ ] parallel route slot에 적절한 default가 있고, 직접 navigation과 reload 시에도 의도한 fallback 동작이 유지됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>[ ] The app meets the Node.js, TypeScript, and React requirements in this guide.</li>
+<li>[ ] Development and build scripts agree with the effective bundler configuration, including plugins, loaders, aliases, and affected Sass imports.</li>
+<li>[ ] Middleware and proxy changes preserve the required runtime and routing behavior. Edge middleware is not blindly renamed to proxy.</li>
+<li>[ ] Affected image requests succeed under the documented restrictions and defaults while preserving the intended quality.</li>
+<li>[ ] Existing cache API calls follow the documented signatures and semantics. React Compiler and Cache Components are not enabled merely to complete the upgrade.</li>
+<li>[ ] Removed APIs and configuration have no remaining consumers. Runtime configuration replacements preserve server and client visibility and the required evaluation time.</li>
+<li>[ ] Scripts and CI no longer invoke <code>next lint</code>; linting runs separately where the app requires it.</li>
+<li>[ ] The app's supported checks and affected runtime behavior pass. A green build alone does not close runtime findings.</li>
+<li>[ ] Async Request API access and affected callers are migrated. Resolve codemod error comments and <code>UnsafeUnwrapped</code> casts; use React <code>use</code> for synchronous Client Components where appropriate.</li>
+<li>[ ] Dynamic metadata image functions and sitemap functions handle their asynchronous parameters, and affected generated URLs work.</li>
+<li>[ ] Parallel route slots have appropriate defaults, and direct navigation and reloads retain the intended fallback behavior.</li>
+</ul></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/upgrading/version-16.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/upgrading/version-16" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-upgrading-version-15.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Version 15</div><div class="ttl-ko">버전 15로 업그레이드하기</div></a>
+      <a href="app-guides-videos.html" class="next"><div class="dir">다음 →</div><div class="ttl">Videos</div><div class="ttl-ko">동영상 사용 및 최적화</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/upgrading/version-16" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#use-a-coding-agent-recommended">Use a coding agent (recommended)</a></li><li class="l2"><a href="#or-upgrade-manually">Or upgrade manually</a></li><li class="l2"><a href="#set-up-ai-agent-docs">Set up AI agent docs</a></li><li class="l2"><a href="#using-the-codemod">Using the codemod</a></li><li class="l2"><a href="#install-packages-manually">Install packages manually</a></li><li class="l2"><a href="#nodejs-runtime-and-browser-support">Node.js runtime and browser support</a></li><li class="l2"><a href="#turbopack-by-default">Turbopack by default</a></li><li class="l3"><a href="#opting-out-of-turbopack">Opting out of Turbopack</a></li><li class="l3"><a href="#turbopack-configuration-location">Turbopack configuration location</a></li><li class="l3"><a href="#resolve-alias-fallback">Resolve alias fallback</a></li><li class="l3"><a href="#sass-node_modules-imports">Sass node_modules imports</a></li><li class="l3"><a href="#turbopack-file-system-caching">Turbopack File System Caching</a></li><li class="l2"><a href="#async-request-apis-breaking-change">Async Request APIs (Breaking change)</a></li><li class="l3"><a href="#migrating-types-for-async-request-time-apis">Migrating types for async Request-time APIs</a></li><li class="l2"><a href="#async-parameters-for-icon-and-open-graph-image-breaking-change">Async parameters for icon, and open-graph Image (Breaking change)</a></li><li class="l2"><a href="#async-id-parameter-for-sitemap-breaking-change">Async <code>id</code> parameter for <code>sitemap</code> (Breaking change)</a></li><li class="l2"><a href="#react-192">React 19.2</a></li><li class="l2"><a href="#react-compiler-support">React Compiler Support</a></li><li class="l2"><a href="#caching-apis">Caching APIs</a></li><li class="l3"><a href="#revalidatetag">revalidateTag</a></li><li class="l3"><a href="#updatetag">updateTag</a></li><li class="l3"><a href="#refresh">refresh</a></li><li class="l3"><a href="#cachelife-and-cachetag">cacheLife and cacheTag</a></li><li class="l2"><a href="#enhanced-routing-and-navigation">Enhanced Routing and Navigation</a></li><li class="l2"><a href="#partial-prerendering-ppr">Partial Prerendering (PPR)</a></li><li class="l2"><a href="#middleware-to-proxy"><code>middleware</code> to <code>proxy</code></a></li><li class="l2"><a href="#nextimage-changes"><code>next/image</code> changes</a></li><li class="l3"><a href="#local-images-with-query-strings-breaking-change">Local Images with Query Strings (Breaking change)</a></li><li class="l3"><a href="#minimumcachettl-default-breaking-change"><code>minimumCacheTTL</code> Default (Breaking change)</a></li><li class="l3"><a href="#imagesizes-default-breaking-change"><code>imageSizes</code> Default (Breaking change)</a></li><li class="l3"><a href="#qualities-default-breaking-change"><code>qualities</code> Default (Breaking change)</a></li><li class="l3"><a href="#local-ip-restriction-breaking-change">Local IP Restriction (Breaking change)</a></li><li class="l3"><a href="#maximum-redirects-breaking-change">Maximum Redirects (Breaking change)</a></li><li class="l3"><a href="#nextlegacyimage-component-deprecated"><code>next/legacy/image</code> Component (deprecated)</a></li><li class="l3"><a href="#imagesdomains-configuration-deprecated"><code>images.domains</code> Configuration (deprecated)</a></li><li class="l2"><a href="#concurrent-dev-and-build">Concurrent <code>dev</code> and <code>build</code></a></li><li class="l2"><a href="#parallel-routes-defaultjs-requirement">Parallel Routes <code>default.js</code> requirement</a></li><li class="l2"><a href="#eslint-flat-config">ESLint Flat Config</a></li><li class="l2"><a href="#scroll-behavior-override">Scroll Behavior Override</a></li><li class="l2"><a href="#performance-improvements">Performance Improvements</a></li><li class="l3"><a href="#next-dev-config-load"><code>next dev</code> config load</a></li><li class="l2"><a href="#build-adapters-api-alpha">Build Adapters API (alpha)</a></li><li class="l2"><a href="#modern-sass-api">Modern Sass API</a></li><li class="l2"><a href="#removals">Removals</a></li><li class="l3"><a href="#amp-support">AMP Support</a></li><li class="l3"><a href="#next-lint-command"><code>next lint</code> Command</a></li><li class="l3"><a href="#runtime-configuration">Runtime Configuration</a></li><li class="l3"><a href="#devindicators-options"><code>devIndicators</code> Options</a></li><li class="l3"><a href="#experimentaldynamicio-and-experimentalusecache"><code>experimental.dynamicIO</code> and <code>experimental.useCache</code></a></li><li class="l3"><a href="#unstable_rootparams"><code>unstable_rootParams</code></a></li><li class="l2"><a href="#troubleshooting">Troubleshooting</a></li><li class="l3"><a href="#installation-fails-after-upgrading-to-react-19">Installation fails after upgrading to React 19</a></li><li class="l3"><a href="#installation-fails-after-upgrading-eslint">Installation fails after upgrading ESLint</a></li><li class="l2"><a href="#review-migration-checklist">Review migration checklist</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+## Use a coding agent (recommended) || coding agent 사용하기 (권장)
+
+앱 directory에서 최신 upgrade CLI를 실행하세요:
+
+[[CODE 1]]
+
+CLI는 agent를 위해 Next.js 16 migration guide와 codemod command를 준비한 다음, agent에게 변경 사항을 적용하고 앱을 검증하도록 요청합니다. 자세한 내용은 [Upgrade with a coding agent](/docs/app/guides/upgrading/agent-upgrade)를 참고하세요.
+
+## Or upgrade manually || 또는 수동으로 업그레이드하기
+
+수동 upgrade는 몇 가지 단계를 순서대로 따릅니다:
+
+1. 지금 coding agent를 사용하고 있거나, 앞으로의 agent 작업이 버전에 맞는 문서를 기반으로 하길 원한다면 [AI agent 문서를 설정](#set-up-ai-agent-docs)하세요.
+2. [upgrade codemod를 실행](#using-the-codemod)하세요.
+3. codemod를 실행하고 싶지 않다면 [package를 수동으로 설치](#install-packages-manually)하세요.
+4. 아래의 breaking change를 차례로 살펴보고, 관련 check를 실행하고, 남은 문제를 고치세요.
+
+## Set up AI agent docs || AI agent 문서 설정하기
+
+upgrade하기 전에 `AGENTS.md`가 버전에 맞는 Next.js 문서를 가리키도록 해서 coding agent가 나머지 단계를 도울 수 있게 하세요:
+
+[[CODE 2]]
+
+upgrade한 뒤에는 `AGENTS.md`가 `node_modules/next/dist/docs/`에 있는, 설치된 버전에 포함된 문서를 가리키는지 확인하세요. Next.js 16.2 이상에서는 `next dev`가 coding agent를 감지하면 이 block을 최신 상태로 유지합니다. setup이 문서를 `.next-docs/`에 다운로드했다면, 더 이상 그 directory를 참조하는 곳이 없을 때 제거하세요. 관리되는 block과 setup에 대한 자세한 내용은 [Version-matched documentation](/docs/app/guides/ai-agents#version-matched-documentation)을 참고하세요.
+
+## Using the codemod || codemod 사용하기
+
+Next.js 버전 16으로 업데이트하려면 `upgrade` [codemod](/docs/app/guides/upgrading/codemods#160)를 사용할 수 있습니다:
+
+[[CODE 3]]
+
+[codemod](/docs/app/guides/upgrading/codemods#160)는 다음을 할 수 있습니다:
+
+- 새 `turbopack` configuration을 사용하도록 `next.config.js` 업데이트
+- `next lint`에서 ESLint CLI로 migrate
+- deprecated된 `middleware` convention에서 `proxy`로 migrate
+- 안정화된 API에서 `unstable_` prefix 제거
+- page와 layout에서 `experimental_ppr` Route Segment Config 제거
+
+`upgrade` codemod가 모든 migration codemod를 실행하지는 않습니다. 앱이 Next.js 15 호환 기간의 동기 `params`, `searchParams`, `cookies()`, `headers()`, `draftMode()` 접근을 아직 사용하고 있다면 async Request API codemod도 실행하세요:
+
+[[CODE 4]]
+
+## Install packages manually || package 수동 설치하기
+
+직접 하고 싶다면 최신 Next.js와 React 버전을 설치하세요:
+
+[[CODE 5]]
+
+TypeScript를 사용한다면 `@types/react`와 `@types/react-dom`도 최신 버전으로 upgrade하세요.
+
+## Node.js runtime and browser support || Node.js runtime과 브라우저 지원
+
+| 요구 사항   | 변경 / 세부 내용                                                   |
+| ------------- | ------------------------------------------------------------------ |
+| Node.js 20.9+ | 최소 버전이 이제 `20.9.0`(LTS)이며, Node.js 18은 더 이상 지원되지 않음 |
+| TypeScript 5+ | 최소 버전이 이제 `5.1.0`                                        |
+| 브라우저      | Chrome 111+, Edge 111+, Firefox 111+, Safari 16.4+                 |
+
+## Turbopack by default || 기본 Turbopack
+
+**Next.js 16**부터 Turbopack은 stable이 되었고 `next dev`와 `next build`에서 기본으로 사용됩니다
+
+이전에는 `--turbopack` 또는 `--turbo`로 Turbopack을 활성화해야 했습니다.
+
+[[CODE 6]]
+
+이제는 그럴 필요가 없습니다. `package.json` script를 업데이트할 수 있습니다:
+
+[[CODE 7]]
+
+프로젝트에 [custom `webpack`](/docs/app/api-reference/config/next-config-js/webpack) configuration이 있는데 `next build`(이제 기본으로 Turbopack 사용)를 실행하면, 잘못된 설정 문제를 막기 위해 build가 **실패**합니다.
+
+이 문제는 몇 가지 방법으로 해결할 수 있습니다:
+
+- **그래도 Turbopack 사용:** `next build --turbopack`으로 실행해 Turbopack으로 build하고 `webpack` config는 무시합니다.
+- **Turbopack으로 완전히 전환:** `webpack` config를 Turbopack 호환 option으로 migrate합니다.
+- **Webpack 계속 사용:** `--webpack` flag로 Turbopack을 opt out하고 Webpack으로 build합니다.
+
+&gt; **Good to know**: `webpack` configuration이 발견되어 build가 실패하는데 직접 정의한 적이 없다면, plugin이 `webpack` option을 추가하고 있을 가능성이 높습니다
+
+### Opting out of Turbopack || Turbopack opt out하기
+
+Webpack을 계속 사용해야 한다면 `--webpack` flag로 opt out할 수 있습니다. 예를 들어 development에서는 Turbopack을, production build에서는 Webpack을 사용하려면 다음과 같이 합니다:
+
+[[CODE 8]]
+
+development와 production 모두에 Turbopack 사용을 권장합니다. Turbopack으로 전환할 수 없다면 이 [thread](https://github.com/vercel/next.js/discussions/77721)에 comment를 남겨 주세요.
+
+### Turbopack configuration location || Turbopack configuration 위치
+
+`experimental.turbopack` configuration이 experimental에서 벗어났습니다.
+
+[[CODE 9]]
+
+top-level `turbopack` option으로 사용할 수 있습니다:
+
+[[CODE 10]]
+
+`Turbopack` configuration [option](/docs/app/api-reference/config/next-config-js/turbopack)을 꼭 검토하세요. **Next.js 16**에는 다양한 개선 사항과 새 option이 도입되었습니다. 예를 들면 다음과 같습니다:
+
+- [Advanced Webpack loader conditions](/docs/app/api-reference/config/next-config-js/turbopack#advanced-webpack-loader-conditions)
+- [debugIds](/docs/app/api-reference/config/next-config-js/turbopack#debug-ids)
+
+### Resolve alias fallback || resolve alias fallback
+
+일부 프로젝트에서는 client-side 코드가 Node.js native module을 포함한 파일을 import할 수 있습니다. 이 경우 `Module not found: Can&#x27;t resolve &#x27;fs&#x27;` 유형의 error가 발생합니다.
+
+이런 일이 생기면 client-side bundle이 이 Node.js native module을 참조하지 않도록 코드를 refactor해야 합니다.
+
+하지만 경우에 따라서는 이것이 불가능할 수도 있습니다. Webpack에서는 보통 `resolve.fallback` option을 사용해 error를 **숨겼습니다**. Turbopack은 `turbopack.resolveAlias`를 사용하는 비슷한 option을 제공합니다. 이 경우 브라우저용으로 `fs`가 요청되면 빈 module을 load하도록 Turbopack에 알려 주세요.
+
+[[CODE 11]]
+
+client 코드가 Node.js native module을 사용하는 module에서 절대 import하지 않도록 module을 refactor하는 것이 더 바람직합니다.
+
+### Sass node_modules imports || Sass node_modules import
+
+Turbopack은 `node_modules`에서 Sass 파일을 import하는 것을 완전히 지원합니다. 단, Webpack은 legacy tilde(`~`) prefix를 허용했지만 Turbopack은 이 문법을 지원하지 않는다는 점에 유의하세요.
+
+Webpack에서는:
+
+[[CODE 12]]
+
+Turbopack에서는:
+
+[[CODE 13]]
+
+import를 바꿀 수 없다면 `turbopack.resolveAlias`를 사용할 수 있습니다. 예를 들면 다음과 같습니다:
+
+[[CODE 14]]
+
+### Turbopack File System Caching || Turbopack File System Caching
+
+Turbopack은 실행 사이에 compiler artifact를 disk에 저장해서, 재시작 시 compile 시간을 크게 줄여 줍니다. Filesystem caching은 `experimental.turbopackFileSystemCacheForDev`와 `experimental.turbopackFileSystemCacheForBuild`를 통해 `next dev`와 `next build` 모두에서 기본으로 활성화되어 있습니다. 둘 중 하나를 설정하거나 끄려면 [Turbopack FileSystem Caching](/docs/app/api-reference/config/next-config-js/turbopackFileSystemCache)을 참고하세요.
+
+
+
+## Async Request APIs (Breaking change) || Async Request API (Breaking change)
+
+버전 15에서는 [Async Request API](https://nextjs.org/docs/app/guides/upgrading/version-15#async-request-apis-breaking-change)를 breaking change로 도입하면서 **임시로** 동기 방식의 호환성을 제공했습니다.
+
+**Next.js 16**부터는 동기 접근이 완전히 제거되었습니다. 이 API들은 비동기 방식으로만 접근할 수 있습니다.
+
+- [`cookies`](/docs/app/api-reference/functions/cookies)
+- [`headers`](/docs/app/api-reference/functions/headers)
+- [`draftMode`](/docs/app/api-reference/functions/draft-mode)
+- [`layout.js`](/docs/app/api-reference/file-conventions/layout), [`page.js`](/docs/app/api-reference/file-conventions/page), [`route.js`](/docs/app/api-reference/file-conventions/route), [`default.js`](/docs/app/api-reference/file-conventions/default), [`opengraph-image`](/docs/app/api-reference/file-conventions/metadata/opengraph-image#opengraph-image), [`twitter-image`](/docs/app/api-reference/file-conventions/metadata/opengraph-image#twitter-image), [`icon`](/docs/app/api-reference/file-conventions/metadata/app-icons#icon), [`apple-icon`](/docs/app/api-reference/file-conventions/metadata/app-icons#apple-icon)의 `params`
+- [`page.js`](/docs/app/api-reference/file-conventions/page)의 `searchParams`
+
+async Request-time API로 migrate하려면 [codemod](/docs/app/guides/upgrading/codemods#migrate-to-async-dynamic-apis)를 사용하세요.
+
+### Migrating types for async Request-time APIs || async Request-time API의 type migrate하기
+
+async `params`와 `searchParams`로의 migration을 돕기 위해 [`npx next typegen`](/docs/app/api-reference/cli/next#next-typegen-options)을 실행하면 전역에서 사용할 수 있는 다음 type helper들을 자동으로 생성할 수 있습니다:
+
+- [`PageProps`](/docs/app/api-reference/file-conventions/page#page-props-helper)
+- [`LayoutProps`](/docs/app/api-reference/file-conventions/layout#layout-props-helper)
+- [`RouteContext`](/docs/app/api-reference/file-conventions/route#route-context-helper)
+
+&gt; **Good to know**: `typegen`은 Next.js 15.5에서 도입되었습니다
+
+이를 통해 새 async API pattern으로의 type-safe migration이 간단해지고, 완전한 type safety를 유지한 채 component를 업데이트할 수 있습니다. 예를 들면 다음과 같습니다:
+
+[[CODE 15]]
+
+이 방식을 사용하면 page 안에서 `slug`를 포함한 `props.params`와 `searchParams`에 완전히 type-safe하게 직접 접근할 수 있습니다.
+
+## Async parameters for icon, and open-graph Image (Breaking change) || icon과 open-graph Image의 async parameter (Breaking change)
+
+&gt; 이제 `opengraph-image`, `twitter-image`, `icon`, `apple-icon`의 image 생성 함수에 전달되는 props는 Promise입니다.
+
+이전 버전에서는 `Image`(image 생성 함수)와 `generateImageMetadata` 모두 `params` object를 받았습니다. `generateImageMetadata`가 반환한 `id`는 image 생성 함수에 string으로 전달되었습니다.
+
+[[CODE 16]]
+
+**Next.js 16**부터는 [Async Request API](#async-request-apis-breaking-change) 변경에 맞춰 image 생성 함수가 `params`와 `id`를 promise로 받습니다. `generateImageMetadata` 함수는 계속 동기 `params`를 받습니다.
+
+[[CODE 17]]
+
+## Async `id` parameter for `sitemap` (Breaking change) || `sitemap`의 async `id` parameter (Breaking change)
+
+이전에는 [`generateSitemaps`](/docs/app/api-reference/functions/generate-sitemaps)가 반환한 `id` 값이 `sitemap` 생성 함수에 직접 전달되었습니다.
+
+[[CODE 18]]
+
+**Next.js 16**부터는 `sitemap` 생성 함수가 `id`를 promise로 받습니다.
+
+[[CODE 19]]
+
+## React 19.2
+
+**Next.js 16**의 App Router는 최신 React [Canary release](https://react.dev/blog/2023/05/03/react-canaries)를 사용합니다. 여기에는 새로 release된 React 19.2 기능과 점진적으로 안정화되고 있는 다른 기능들이 포함되어 있습니다. 주요 내용은 다음과 같습니다:
+
+- **[View Transitions](https://react.dev/reference/react/ViewTransition)**: Transition이나 navigation 안에서 업데이트되는 element에 animation을 적용합니다
+- **[`useEffectEvent`](https://react.dev/reference/react/useEffectEvent)**: Effect에서 non-reactive logic을 재사용 가능한 Effect Event 함수로 추출합니다
+- **[Activity](https://react.dev/reference/react/Activity)**: state를 유지하고 Effect를 정리하면서 `display: none`으로 UI를 숨겨 &quot;background activity&quot;를 render합니다
+
+자세한 내용은 [React 19.2 announcement](https://react.dev/blog/2025/10/01/react-19-2)에서 알아보세요.
+
+
+
+## React Compiler Support || React Compiler 지원
+
+React Compiler의 1.0 release에 이어 **Next.js 16**에서 React Compiler built-in 지원이 stable이 되었습니다. React Compiler는 component를 자동으로 memoize해서, 코드를 직접 하나도 바꾸지 않고도 불필요한 re-render를 줄여 줍니다.
+
+`reactCompiler` configuration option이 `experimental`에서 stable로 승격되었습니다. 다양한 애플리케이션 유형에 걸친 build 성능 데이터를 계속 수집하고 있기 때문에 기본으로 활성화되어 있지는 않습니다.
+
+[[CODE 20]]
+
+최신 버전의 React Compiler plugin을 설치하세요:
+
+[[CODE 21]]
+
+&gt; **Good to know:** React Compiler는 Babel에 의존하기 때문에, 이 option을 활성화하면 development와 build 중 compile 시간이 늘어날 수 있습니다.
+
+
+
+## Caching APIs || Caching API
+
+### revalidateTag
+
+[`revalidateTag`](/docs/app/api-reference/functions/revalidateTag)는 이제 [`cacheLife`](/docs/app/api-reference/functions/cacheLife#reference) profile을 지정하는 두 번째 argument가 필요합니다. argument 하나만 넘기는 형태는 deprecated되었으며 TypeScript error가 발생합니다.
+
+[[CODE 22]]
+
+stale-while-revalidate가 아니라 즉시 만료가 필요하다면, Server Action에서 대신 [`updateTag`](/docs/app/api-reference/functions/updateTag)를 사용하세요.
+
+[[CODE 23]]
+
+`revalidateTag`는 blog post, 상품 catalog, 문서처럼 업데이트가 약간 늦어도 괜찮은 콘텐츠에 사용하세요. 사용자는 새 데이터가 background에서 load되는 동안 stale 콘텐츠를 받습니다.
+
+### updateTag
+
+[`updateTag`](/docs/app/api-reference/functions/updateTag)는 [Server Action](/docs/app/getting-started/mutating-data#what-are-server-functions) 전용의 새 API로, **read-your-writes** semantics를 제공합니다. 즉, 사용자가 변경을 하면 UI에 stale 데이터가 아니라 그 변경이 즉시 표시됩니다.
+
+이는 같은 request 안에서 데이터를 만료시키고 즉시 refresh하는 방식으로 이루어집니다.
+
+[[CODE 24]]
+
+이렇게 하면 interactive 기능이 변경 사항을 즉시 반영합니다. form, 사용자 설정, 그리고 사용자가 자신의 업데이트를 바로 보기를 기대하는 모든 workflow에 적합합니다.
+
+`updateTag`와 `revalidateTag`를 각각 언제 사용하는지는 [여기](/docs/app/api-reference/functions/updateTag#when-to-use-updatetag)에서 자세히 알아보세요.
+
+### refresh
+
+[`refresh`](/docs/app/api-reference/functions/refresh)를 사용하면 Server Action 안에서 client router를 refresh할 수 있습니다.
+
+[[CODE 25]]
+
+action을 수행한 뒤 client router를 refresh해야 할 때 사용하세요.
+
+### cacheLife and cacheTag || cacheLife와 cacheTag
+
+[`cacheLife`](/docs/app/api-reference/functions/cacheLife)와 [`cacheTag`](/docs/app/api-reference/functions/cacheTag)가 이제 stable이 되었습니다. 더 이상 `unstable_` prefix가 필요 없습니다.
+
+다음과 같이 alias import를 사용하던 곳은 모두:
+
+[[CODE 26]]
+
+다음과 같이 import를 업데이트할 수 있습니다:
+
+[[CODE 27]]
+
+## Enhanced Routing and Navigation || 향상된 Routing과 Navigation
+
+**Next.js 16**에는 routing과 navigation 시스템의 전면 개편이 포함되어 있어 page 전환이 더 가볍고 빨라졌습니다. 이는 Next.js가 navigation 데이터를 prefetch하고 cache하는 방식을 최적화합니다:
+
+- **Layout deduplication**: 공유 layout을 가진 여러 URL을 prefetch할 때 layout은 한 번만 다운로드됩니다.
+- **Incremental prefetching**: Next.js는 page 전체가 아니라 아직 cache에 없는 부분만 prefetch합니다.
+
+이 변경에는 **코드 수정이 전혀 필요 없으며**, 모든 앱의 성능을 개선하도록 설계되었습니다.
+
+다만 개별 prefetch request가 더 많아지는 대신 전체 전송 크기는 훨씬 작아지는 것을 보게 될 수 있습니다. 저희는 이것이 거의 모든 애플리케이션에 맞는 올바른 trade-off라고 생각합니다.
+
+늘어난 request 수가 문제를 일으킨다면 [issue](https://github.com/vercel/next.js/issues)나 [discussion](https://github.com/vercel/next.js/discussions) 항목을 만들어 알려 주세요.
+
+## Partial Prerendering (PPR)
+
+**Next.js 16**은 route level segment `experimental_ppr`를 포함해 experimental **Partial Prerendering (PPR)** flag와 configuration option을 제거합니다.
+
+**Next.js 16**부터는 [`cacheComponents`](/docs/app/api-reference/config/next-config-js/cacheComponents) configuration으로 PPR을 opt in할 수 있습니다.
+
+[[CODE 28]]
+
+**Next.js 16**의 PPR은 **Next.js 15** canary에서와 다르게 동작합니다. 지금 PPR을 사용하고 있다면 현재 사용 중인 Next.js 15 canary에 머무르세요. migration pattern은 [Migrating to Cache Components](/docs/app/guides/migrating-to-cache-components)를 참고하세요.
+
+[[CODE 29]]
+
+
+
+## `middleware` to `proxy` || `middleware`에서 `proxy`로
+
+`middleware` 파일 이름은 deprecated되었고, network boundary와 routing 중심이라는 점을 명확히 하기 위해 `proxy`로 이름이 바뀌었습니다.
+
+`proxy`에서는 `edge` runtime이 **지원되지 않습니다**. `proxy`의 runtime은 `nodejs`이며 설정으로 바꿀 수 없습니다. `edge` runtime을 계속 사용하려면 `middleware`를 계속 사용하세요. `edge` runtime에 대한 추가 안내는 이후 minor release에서 제공할 예정입니다.
+
+[[CODE 30]]
+
+named export `middleware`도 deprecated되었습니다. 함수 이름을 `proxy`로 바꾸세요.
+
+[[CODE 31]]
+
+default export를 사용하더라도 함수 이름을 `proxy`로 바꾸는 것을 권장합니다.
+
+`middleware`라는 이름이 들어간 configuration flag도 이름이 바뀌었습니다. 예를 들어 `skipMiddlewareUrlNormalize`는 이제 `skipProxyUrlNormalize`입니다
+
+[[CODE 32]]
+
+버전 16 [codemod](/docs/app/guides/upgrading/codemods#160)로 이 flag들도 업데이트할 수 있습니다.
+
+## `next/image` changes || `next/image` 변경 사항
+
+### Local Images with Query Strings (Breaking change) || query string이 있는 local image (Breaking change)
+
+query string이 있는 local image source는 이제 enumeration attack을 막기 위해 `images.localPatterns.search` configuration이 필요합니다.
+
+[[CODE 33]]
+
+local image에 query string을 사용해야 한다면 configuration에 pattern을 추가하세요:
+
+[[CODE 34]]
+
+### `minimumCacheTTL` Default (Breaking change) || `minimumCacheTTL` 기본값 (Breaking change)
+
+`images.minimumCacheTTL`의 기본값이 `60 seconds`에서 `4 hours`(14400초)로 바뀌었습니다. 이를 통해 cache-control header가 없는 image의 revalidation 비용이 줄어듭니다.
+
+일부 Next.js 사용자의 경우 image revalidation이 자주 발생했는데, 대개 upstream source image에 `cache-control` header가 빠져 있었기 때문입니다. 이로 인해 `60`초마다 revalidation이 일어나 CPU 사용량과 비용이 늘어났습니다.
+
+대부분의 image는 자주 바뀌지 않기 때문에 이렇게 짧은 간격은 바람직하지 않습니다. 기본값을 4시간으로 설정하면 기본적으로 더 오래 유지되는 cache를 제공하면서도, 필요하면 image가 하루에 몇 번은 업데이트될 수 있습니다.
+
+이전 동작이 필요하다면 `minimumCacheTTL`을 더 낮은 값으로, 예를 들어 다시 `60`초로 바꾸세요:
+
+[[CODE 35]]
+
+### `imageSizes` Default (Breaking change) || `imageSizes` 기본값 (Breaking change)
+
+기본 `images.imageSizes` array에서 `16` 값이 제거되었습니다.
+
+request analytics를 살펴본 결과, 16 pixel 너비의 image를 제공하는 프로젝트는 극히 드물었습니다. 이 설정을 제거하면 `next/image`가 브라우저에 보내는 `srcset` attribute의 크기가 줄어듭니다.
+
+16px image를 지원해야 한다면:
+
+[[CODE 36]]
+
+개발자들이 잘 사용하지 않아서라기보다는, `devicePixelRatio: 2`가 retina display에서 흐릿함을 막기 위해 실제로는 32px image를 가져오기 때문에 16 pixel 너비의 image가 덜 흔해졌다고 판단합니다.
+
+### `qualities` Default (Breaking change) || `qualities` 기본값 (Breaking change)
+
+`images.qualities`의 기본값이 모든 quality를 허용하던 것에서 `[75]`만 허용하도록 바뀌었습니다.
+
+여러 quality level을 지원해야 한다면:
+
+[[CODE 37]]
+
+`images.qualities` array에 포함되지 않은 `quality` prop을 지정하면, quality는 `images.qualities`에서 가장 가까운 값으로 강제 변환됩니다. 예를 들어 위 configuration에서 `quality` prop이 80이면 75로 변환됩니다.
+
+custom image quality를 검토하세요. 필요한 값을 `images.qualities`에 추가하고, 지원되지 않는 `q` 값은 `400`을 반환하므로 직접적인 `/_next/image` request도 테스트하세요.
+
+### Local IP Restriction (Breaking change) || Local IP 제한 (Breaking change)
+
+새 security 제한이 기본적으로 local IP optimization을 차단합니다. `images.dangerouslyAllowLocalIP`는 private network에서만 `true`로 설정하세요.
+
+[[CODE 38]]
+
+split-horizon DNS를 사용하는 VPC에서 Next.js를 hosting하면서 status 400 Bad Request를 받는 경우 이 설정이 필요할 수 있습니다. SSRF 위험을 이해한 뒤에만 활성화하세요.
+
+### Maximum Redirects (Breaking change) || 최대 redirect 수 (Breaking change)
+
+`images.maximumRedirects`의 기본값이 무제한에서 최대 3번의 redirect로 바뀌었습니다.
+
+[[CODE 39]]
+
+### `next/legacy/image` Component (deprecated) || `next/legacy/image` Component (deprecated)
+
+`next/legacy/image` component는 deprecated되었습니다. 대신 `next/image`를 사용하세요:
+
+[[CODE 40]]
+
+### `images.domains` Configuration (deprecated) || `images.domains` Configuration (deprecated)
+
+`images.domains` config는 deprecated되었습니다.
+
+[[CODE 41]]
+
+보안을 강화하려면 대신 `images.remotePatterns`를 사용하세요:
+
+[[CODE 42]]
+
+## Concurrent `dev` and `build` || `dev`와 `build` 동시 실행
+
+`next dev`와 `next build`가 이제 별도의 output directory를 사용하므로 동시에 실행할 수 있습니다. `next dev` command는 `.next/dev`로 output을 냅니다.
+
+또한 lockfile 메커니즘이 같은 프로젝트에서 여러 `next dev` 또는 `next build` instance가 실행되는 것을 막습니다.
+
+[Turbopack tracing command](/docs/app/guides/local-development#turbopack-tracing)는 다음과 같아야 합니다:
+
+[[CODE 43]]
+
+
+
+## Parallel Routes `default.js` requirement || Parallel Routes의 `default.js` 요구 사항
+
+이제 모든 [parallel route](/docs/app/api-reference/file-conventions/parallel-routes) slot에는 명시적인 `default.js` 파일이 필요합니다. 이 파일이 없으면 build가 실패합니다.
+
+이전 동작을 유지하려면 `notFound()`를 호출하거나 `null`을 반환하는 [`default.js`](/docs/app/api-reference/file-conventions/default) 파일을 만드세요.
+
+[[CODE 44]]
+
+또는 `null`을 반환하세요:
+
+[[CODE 45]]
+
+
+
+## ESLint Flat Config
+
+`@next/eslint-plugin-next`는 이제 기본으로 ESLint Flat Config 형식을 사용합니다. 이는 legacy config 지원을 중단할 ESLint v10에 맞춘 것입니다.
+
+[`@next/eslint-plugin-next`](/docs/app/api-reference/config/eslint#setup-eslint) plugin의 API reference를 꼭 검토하세요.
+
+legacy `.eslintrc` 형식을 사용하고 있다면 flat config 형식으로 migrate하는 것을 고려하세요. 자세한 내용은 [ESLint migration guide](https://eslint.org/docs/latest/use/configure/migration-guide)를 참고하세요.
+
+## Scroll Behavior Override || Scroll Behavior override
+
+**이전 버전의 Next.js**에서는 CSS로 `&lt;html&gt;` element에 전역으로 `scroll-behavior: smooth`를 설정해 두었다면, SPA route 전환 중에 Next.js가 다음과 같이 이 설정을 override했습니다:
+
+1. 일시적으로 `scroll-behavior`를 `auto`로 설정
+2. navigation 수행(즉시 맨 위로 scroll됨)
+3. 원래 `scroll-behavior` 값 복원
+
+이렇게 하면 page 안의 navigation에 smooth scrolling을 활성화해 두었더라도 page navigation은 항상 빠르고 즉각적으로 느껴졌습니다. 하지만 이 조작은 특히 매 navigation이 시작될 때 비용이 클 수 있었습니다.
+
+**Next.js 16**에서는 이 동작이 바뀌었습니다. 기본적으로 Next.js는 navigation 중에 `scroll-behavior` 설정을 **더 이상 override하지 않습니다**.
+
+**Next.js가 이 override를 수행하길 원한다면** (이전 기본 동작) `&lt;html&gt;` element에 `data-scroll-behavior=&quot;smooth&quot;` attribute를 추가하세요:
+
+
+
+[[CODE 46]]
+
+
+
+
+
+## Performance Improvements || 성능 개선
+
+`next dev`와 `next start` command의 성능이 크게 최적화되었고, 더 명확한 형식, 더 나은 error message, 개선된 performance metric으로 terminal output도 좋아졌습니다.
+
+**Next.js 16**은 `next build` output에서 `size`와 `First Load JS` metric을 제거합니다. React Server Components를 사용하는 server-driven architecture에서는 이 값들이 부정확하다는 것을 확인했습니다. Turbopack과 Webpack 구현 모두 문제가 있었고, Client Component payload를 계산하는 방식도 서로 달랐습니다.
+
+실제 route 성능을 측정하는 가장 효과적인 방법은 Core Web Vitals와 다운로드된 resource 크기에 초점을 맞춘 [Chrome Lighthouse](https://developer.chrome.com/docs/lighthouse/overview)나 Vercel Analytics 같은 도구를 사용하는 것입니다.
+
+### `next dev` config load || `next dev` config 로드
+
+이전 버전에서는 development 중에 Next config 파일이 두 번 load되었습니다:
+
+- `next dev` command를 실행할 때
+- `next dev` command가 Next.js server를 시작할 때
+
+`next dev` command는 Next.js server를 시작하는 데 config 파일이 필요하지 않으므로 이는 비효율적이었습니다.
+
+이 변경의 결과로, `next dev`를 실행할 때 Next.js config 파일에서 `process.argv`에 `&#x27;dev&#x27;`가 포함되어 있는지 확인하면 `false`가 반환됩니다.
+
+&gt; **Good to know**: `typegen`과 `build` command는 여전히 `process.argv`에 보입니다.
+
+이는 `next dev`에서 side-effect를 일으키는 plugin에 특히 중요합니다. 그런 경우라면 `NODE_ENV`가 `development`로 설정되어 있는지 확인하는 것으로 충분할 수 있습니다.
+
+[[CODE 48]]
+
+또는 configuration이 load되는 [`phase`](/docs/app/api-reference/config/next-config-js#phase)를 사용하세요.
+
+## Build Adapters API (alpha)
+
+[Build Adapters RFC](https://github.com/vercel/next.js/discussions/77740)에 이어 Build Adapters API의 첫 alpha 버전을 이제 사용할 수 있습니다.
+
+Build Adapter를 사용하면 build process에 hook하는 custom adapter를 만들 수 있어서, deployment platform과 custom build integration이 Next.js configuration을 수정하거나 build output을 처리할 수 있습니다.
+
+[[CODE 49]]
+
+`adapterPath`는 16.2.0에서 stable한 top-level option으로 승격되었습니다. 현재 API reference는 [`adapterPath`](/docs/app/api-reference/config/next-config-js/adapterPath)를 참고하세요.
+
+## Modern Sass API
+
+`sass-loader`가 v16으로 올라갔으며, [modern Sass syntax](https://sass-lang.com/documentation/js-api/#md:usage)와 새 기능을 지원합니다.
+
+## Removals || 제거된 기능
+
+다음 기능들은 이전에 deprecated되었으며 이제 제거되었습니다:
+
+### AMP Support || AMP 지원
+
+AMP 도입이 크게 줄었고, 이 기능을 유지하는 것은 framework의 복잡성을 높입니다. 모든 AMP API와 configuration이 제거되었습니다:
+
+- Next config 파일의 `amp` configuration
+- `next/amp` hook import와 사용(`useAmp`)
+
+[[CODE 50]]
+
+- page의 `export const config = { amp: true }`
+
+[[CODE 51]]
+
+여러분의 use case에 AMP가 여전히 필요한지 검토하세요. 대부분의 성능 이점은 이제 Next.js의 built-in 최적화와 최신 web standard로 얻을 수 있습니다.
+
+### `next lint` Command || `next lint` command
+
+`next lint` command가 제거되었습니다. Biome이나 ESLint를 직접 사용하세요. `next build`는 더 이상 linting을 실행하지 않습니다.
+
+migration을 자동화하는 codemod가 제공됩니다:
+
+[[CODE 52]]
+
+Next.js config 파일의 `eslint` option도 제거되었습니다.
+
+[[CODE 53]]
+
+### Runtime Configuration || Runtime Configuration
+
+`serverRuntimeConfig`와 `publicRuntimeConfig`가 제거되었습니다. 대신 environment variable을 사용하세요.
+
+**이전 (Next.js 15):**
+
+[[CODE 54]]
+
+[[CODE 55]]
+
+**이후 (Next.js 16):**
+
+server 전용 값은 Server Component에서 environment variable에 직접 접근하세요:
+
+[[CODE 56]]
+
+&gt; **Good to know**: 민감한 server 값이 실수로 Client Component에 전달되는 것을 막으려면 [taint API](/docs/app/api-reference/config/next-config-js/taint)를 사용하세요.
+
+client에서 접근 가능한 값에는 `NEXT_PUBLIC_` prefix를 사용하세요:
+
+[[CODE 57]]
+
+[[CODE 58]]
+
+environment variable이 (build 시점에 bundle되지 않고) runtime에 읽히도록 하려면, `process.env`에서 읽기 전에 [`connection()`](/docs/app/api-reference/functions/connection) 함수를 사용하세요:
+
+[[CODE 59]]
+
+[environment variable](/docs/app/guides/environment-variables)에 대해 더 알아보세요.
+
+### `devIndicators` Options || `devIndicators` option
+
+[`devIndicators`](/docs/app/api-reference/config/next-config-js/devIndicators)에서 다음 option들이 제거되었습니다:
+
+- `appIsrStatus`
+- `buildActivity`
+- `buildActivityPosition`
+
+indicator 자체는 계속 사용할 수 있습니다.
+
+
+
+### `experimental.dynamicIO` and `experimental.useCache` || `experimental.dynamicIO`와 `experimental.useCache`
+
+`experimental.dynamicIO`와 `experimental.useCache` flag가 제거되었습니다.
+
+[[CODE 60]]
+
+[[CODE 61]]
+
+이 flag들을 실제로 사용하고 있었다면 top-level [`cacheComponents`](/docs/app/api-reference/config/next-config-js/cacheComponents)로 migrate하세요:
+
+[[CODE 62]]
+
+Cache Components를 실제로 도입하고 있지 않았다면 대신 flag를 제거하세요. `cacheComponents`를 활성화하는 것은 단순히 이름만 바꾸는 변경이 아닙니다. `&lt;Suspense&gt;` 밖에서 cache되지 않은 데이터에 대해 build error가 드러날 수 있고, Cache Components model을 도입해야 합니다.
+
+전체 migration 과정은 [Migrating to Cache Components](/docs/app/guides/migrating-to-cache-components)를 참고하세요.
+
+### `unstable_rootParams`
+
+`unstable_rootParams` 함수가 제거되었습니다. 대신 [`next/root-params`](/docs/app/api-reference/functions/next-root-params)를 사용하세요.
+
+
+
+## Troubleshooting || 문제 해결
+
+### Installation fails after upgrading to React 19 || React 19로 upgrade한 뒤 설치가 실패하는 경우
+
+- [ ] [React recovery checklist](/docs/app/guides/upgrading/version-15#installation-fails-after-upgrading-to-react-19)를 따르세요.
+
+### Installation fails after upgrading ESLint || ESLint upgrade 후 설치가 실패하는 경우
+
+Next.js 16은 `next lint`를 제거하지만, ESLint CLI로 migrate하는 데 ESLint upgrade가 필요한 것은 아닙니다. `eslint-config-next@16`은 ESLint 9 이상이 필요하고, `eslint-config-next@16.4.0` 이상은 ESLint 10을 지원합니다. 기존 lint configuration이 `eslint-config-next@16`을 사용하지 않는다면 호환되는 기존 ESLint 버전을 그대로 유지할 수 있습니다.
+
+- [ ] ESLint upgrade로 peer dependency 충돌이 생긴다면, `eslint`, `eslint-config-next`, (있다면) `@next/eslint-plugin-next`의 이전 호환 버전과 이전 lint configuration을 복원하세요.
+- [ ] 설치 때문에 upgrade가 중단되었다면, 고친 lint stack을 유지하고 lint codemod를 건너뛰도록 `--skip-eslint-upgrade`와 함께 똑같은 target으로 다시 시도하세요. Next.js가 이미 target과 일치한다면 dependency를 설치하고 중단된 migration을 개별적으로 완료하세요. `next lint` script를 유지된 configuration과 호환되는 ESLint CLI command로 교체하세요. 설치와 lint가 통과하는지 확인하세요.
+
+## Review migration checklist || migration checklist 검토하기
+
+앱에 해당하는 변경을 적용한 뒤, migration이 완료되었다고 판단하기 전에
+다음 action item들을 검토하세요:
+
+- [ ] 앱이 이 guide의 Node.js, TypeScript, React 요구 사항을 충족합니다.
+- [ ] development와 build script가 plugin, loader, alias, 영향을 받는 Sass import를 포함해 실제 적용되는 bundler configuration과 일치합니다.
+- [ ] middleware와 proxy 변경이 필요한 runtime과 routing 동작을 유지합니다. Edge middleware를 무작정 proxy로 이름만 바꾸지 않았습니다.
+- [ ] 영향을 받는 image request가 의도한 quality를 유지하면서 문서화된 제한과 기본값 아래에서 성공합니다.
+- [ ] 기존 cache API 호출이 문서화된 signature와 semantics를 따릅니다. upgrade를 완료하기 위한 목적만으로 React Compiler와 Cache Components를 활성화하지 않았습니다.
+- [ ] 제거된 API와 configuration을 사용하는 곳이 남아 있지 않습니다. Runtime configuration 대체 방식이 server와 client에서의 노출 범위와 필요한 평가 시점을 유지합니다.
+- [ ] script와 CI가 더 이상 `next lint`를 호출하지 않으며, 앱에 필요한 곳에서는 linting이 별도로 실행됩니다.
+- [ ] 앱이 지원하는 check와 영향을 받는 runtime 동작이 모두 통과합니다. build가 성공했다는 것만으로 runtime에서 발견된 문제가 해결된 것은 아닙니다.
+
+
+
+- [ ] Async Request API 접근과 영향을 받는 caller가 migrate되었습니다. codemod error comment와 `UnsafeUnwrapped` cast를 해결하고, 적절한 경우 동기 Client Component에는 React `use`를 사용하세요.
+- [ ] dynamic metadata image 함수와 sitemap 함수가 비동기 parameter를 처리하며, 영향을 받는 생성 URL이 동작합니다.
+- [ ] parallel route slot에 적절한 default가 있고, 직접 navigation과 reload 시에도 의도한 fallback 동작이 유지됩니다.
+
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

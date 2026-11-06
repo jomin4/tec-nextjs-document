@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to create forms with Server Actions (Server Actions로 form 만들기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/forms" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/forms" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/forms.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to create forms with Server Actions<span class="sub">Server Actions로 form 만들기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>React Server Actions는 server에서 실행되는 <a href="https://react.dev/reference/rsc/server-functions" target="_blank" rel="noopener">Server Functions</a>입니다. Server Component와 Client Component에서 호출해 form 제출을 처리할 수 있습니다. 이 가이드에서는 Server Actions로 Next.js에서 form을 만드는 방법을 단계별로 안내합니다. form 이외의 Server Action 동작(single-roundtrip response, 순차적 dispatch, 보안, deployment)은 <a href="app-guides-server-actions.html">Server Actions and Mutations</a>를 참고하세요.</p><div class="en-orig"><p>React Server Actions are <a href="https://react.dev/reference/rsc/server-functions" target="_blank" rel="noopener">Server Functions</a> that execute on the server. They can be called in Server and Client Components to handle form submissions. This guide will walk you through how to create forms in Next.js with Server Actions. For Server Action behaviors beyond forms (single-roundtrip response, sequential dispatch, security, deployment), see <a href="app-guides-server-actions.html">Server Actions and Mutations</a>.</p></div>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Warning</div><p>form이 인증된 page에서만 render되더라도, 각 Server Action 안에서 항상 <a href="app-guides-authentication.html">authentication과 authorization</a>을 검증하세요. 자세한 내용은 <a href="app-guides-data-security.html">Data Security 가이드</a>를 참고하세요.</p><div class="en-orig"><p>Always verify <a href="app-guides-authentication.html">authentication and authorization</a> inside each Server Action, even if the form is only rendered on an authenticated page. See the <a href="app-guides-data-security.html">Data Security guide</a> for more details.</p></div></div></div>
+<h2 class="sec" id="how-it-works"><a class="anchor" href="#how-it-works">How it works<span class="ko">동작 방식</span></a></h2>
+<p>React는 HTML <a href="https://developer.mozilla.org/docs/Web/HTML/Element/form" target="_blank" rel="noopener"><code>&lt;form&gt;</code></a> element를 확장해 <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#action" target="_blank" rel="noopener"><code>action</code></a> attribute로 Server Action을 호출할 수 있게 합니다.</p><div class="en-orig"><p>React extends the HTML <a href="https://developer.mozilla.org/docs/Web/HTML/Element/form" target="_blank" rel="noopener"><code>&lt;form&gt;</code></a> element to allow Server Actions to be invoked with the <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#action" target="_blank" rel="noopener"><code>action</code></a> attribute.</p></div>
+<p>form에서 사용하면 함수는 자동으로 <a href="https://developer.mozilla.org/docs/Web/API/FormData/FormData" target="_blank" rel="noopener"><code>FormData</code></a> 객체를 받습니다. 그런 다음 native <a href="https://developer.mozilla.org/en-US/docs/Web/API/FormData#instance_methods" target="_blank" rel="noopener"><code>FormData</code> method</a>로 데이터를 추출할 수 있습니다:</p><div class="en-orig"><p>When used in a form, the function automatically receives the <a href="https://developer.mozilla.org/docs/Web/API/FormData/FormData" target="_blank" rel="noopener"><code>FormData</code></a> object. You can then extract the data using the native <a href="https://developer.mozilla.org/en-US/docs/Web/API/FormData#instance_methods" target="_blank" rel="noopener"><code>FormData</code> methods</a>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/invoices/page.tsx" data-js="app/invoices/page.js">app/invoices/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { auth } from &#x27;@/lib/auth&#x27;
+
+export default function Page() {
+  async function createInvoice(formData: FormData) {
+    &#x27;use server&#x27;
+
+    const session = await auth()
+    if (!session?.user) {
+      throw new Error(&#x27;Unauthorized&#x27;)
+    }
+
+    const rawFormData = {
+      customerId: formData.get(&#x27;customerId&#x27;),
+      amount: formData.get(&#x27;amount&#x27;),
+      status: formData.get(&#x27;status&#x27;),
+    }
+
+    // mutate data
+    // revalidate the cache
+  }
+
+  return &lt;form action={createInvoice}&gt;...&lt;/form&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { auth } from &#x27;@/lib/auth&#x27;
+
+export default function Page() {
+  async function createInvoice(formData) {
+    &#x27;use server&#x27;
+
+    const session = await auth()
+    if (!session?.user) {
+      throw new Error(&#x27;Unauthorized&#x27;)
+    }
+
+    const rawFormData = {
+      customerId: formData.get(&#x27;customerId&#x27;),
+      amount: formData.get(&#x27;amount&#x27;),
+      status: formData.get(&#x27;status&#x27;),
+    }
+
+    // mutate data
+    // revalidate the cache
+  }
+
+  return &lt;form action={createInvoice}&gt;...&lt;/form&gt;
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>field가 여러 개인 form을 다룰 때는 JavaScript의 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries" target="_blank" rel="noopener"><code>Object.fromEntries()</code></a>를 사용하세요. 예: <code>const rawFormData = Object.fromEntries(formData)</code>. 이 객체에는 <code>$ACTION_</code> 접두사가 붙은 추가 property가 포함된다는 점에 유의하세요.</p><div class="en-orig"><p>When working with forms that have multiple fields, use JavaScript's <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries" target="_blank" rel="noopener"><code>Object.fromEntries()</code></a>. For example: <code>const rawFormData = Object.fromEntries(formData)</code>. Note that this object will contain extra properties prefixed with <code>$ACTION_</code>.</p></div></div></div>
+<h2 class="sec" id="passing-additional-arguments"><a class="anchor" href="#passing-additional-arguments">Passing additional arguments<span class="ko">추가 인수 전달하기</span></a></h2>
+<p>form field 외에도 JavaScript <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind" target="_blank" rel="noopener"><code>bind</code></a> method를 사용해 Server Function에 추가 인수를 전달할 수 있습니다. 예를 들어 <code>updateUser</code> Server Function에 <code>userId</code> 인수를 전달하려면:</p><div class="en-orig"><p>Outside of form fields, you can pass additional arguments to a Server Function using the JavaScript <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind" target="_blank" rel="noopener"><code>bind</code></a> method. For example, to pass the <code>userId</code> argument to the <code>updateUser</code> Server Function:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/client-component.tsx" data-js="app/client-component.js">app/client-component.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { updateUser } from &#x27;./actions&#x27;
+
+export function UserProfile({ userId }: { userId: string }) {
+  const updateUserWithId = updateUser.bind(null, userId)
+
+  return (
+    &lt;form action={updateUserWithId}&gt;
+      &lt;input type=&quot;text&quot; name=&quot;name&quot; /&gt;
+      &lt;button type=&quot;submit&quot;&gt;Update User Name&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { updateUser } from &#x27;./actions&#x27;
+
+export function UserProfile({ userId }) {
+  const updateUserWithId = updateUser.bind(null, userId)
+
+  return (
+    &lt;form action={updateUserWithId}&gt;
+      &lt;input type=&quot;text&quot; name=&quot;name&quot; /&gt;
+      &lt;button type=&quot;submit&quot;&gt;Update User Name&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</code></pre></div></div>
+<p>Server Function은 <code>userId</code>를 추가 인수로 받습니다:</p><div class="en-orig"><p>The Server Function will receive the <code>userId</code> as an additional argument:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+export async function updateUser(userId: string, formData: FormData) {}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+export async function updateUser(userId, formData) {}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>다른 방법으로, 인수를 form의 hidden input field로 전달할 수도 있습니다(예: <code>&lt;input type=&quot;hidden&quot; name=&quot;userId&quot; value={userId} /&gt;</code>). 하지만 이 값은 render된 HTML의 일부가 되며 encode되지 않습니다.</li>
+<li><code>bind</code>는 Server Component와 Client Component 모두에서 동작하며 progressive enhancement를 지원합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>An alternative is to pass arguments as hidden input fields in the form (e.g. <code>&lt;input type=&quot;hidden&quot; name=&quot;userId&quot; value={userId} /&gt;</code>). However, the value will be part of the rendered HTML and will not be encoded.</li>
+<li><code>bind</code> works in both Server and Client Components and supports progressive enhancement.</li>
+</ul></div></div></div>
+<h2 class="sec" id="form-validation"><a class="anchor" href="#form-validation">Form validation<span class="ko">Form 검증</span></a></h2>
+<p>form은 client나 server에서 검증할 수 있습니다.</p><div class="en-orig"><p>Forms can be validated on the client or server.</p></div>
+<ul>
+<li><strong>client-side validation</strong>에는 <code>required</code>나 <code>type=&quot;email&quot;</code> 같은 HTML attribute를 사용해 기본적인 검증을 할 수 있습니다.</li>
+<li><strong>server-side validation</strong>에는 <a href="https://zod.dev/" target="_blank" rel="noopener">Zod</a>나 <a href="https://valibot.dev/" target="_blank" rel="noopener">Valibot</a> 같은 schema validation library를 사용해 form field를 검증할 수 있습니다. 예를 들면 다음과 같습니다:</li>
+</ul><div class="en-orig"><ul>
+<li>For <strong>client-side validation</strong>, you can use the HTML attributes like <code>required</code> and <code>type=&quot;email&quot;</code> for basic validation.</li>
+<li>For <strong>server-side validation</strong>, you can use a schema validation library like <a href="https://zod.dev/" target="_blank" rel="noopener">Zod</a> or <a href="https://valibot.dev/" target="_blank" rel="noopener">Valibot</a> to validate the form fields. For example:</li>
+</ul></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { z } from &#x27;zod&#x27;
+
+const schema = z.object({
+  email: z.string({
+    invalid_type_error: &#x27;Invalid Email&#x27;,
+  }),
+})
+
+export default async function createUser(formData: FormData) {
+  const validatedFields = schema.safeParse({
+    email: formData.get(&#x27;email&#x27;),
+  })
+
+  // Return early if the form data is invalid
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  // Mutate data
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { z } from &#x27;zod&#x27;
+
+const schema = z.object({
+  email: z.string({
+    invalid_type_error: &#x27;Invalid Email&#x27;,
+  }),
+})
+
+export default async function createUser(formData) {
+  const validatedFields = schema.safeParse({
+    email: formData.get(&#x27;email&#x27;),
+  })
+
+  // Return early if the form data is invalid
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  // Mutate data
+}</code></pre></div></div>
+<h2 class="sec" id="validation-errors"><a class="anchor" href="#validation-errors">Validation errors<span class="ko">검증 error</span></a></h2>
+<p>검증 error나 메시지를 표시하려면 <code>&lt;form&gt;</code>을 정의하는 component를 Client Component로 바꾸고 React <a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener"><code>useActionState</code></a>를 사용하세요.</p><div class="en-orig"><p>To display validation errors or messages, turn the component that defines the <code>&lt;form&gt;</code> into a Client Component and use React <a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener"><code>useActionState</code></a>.</p></div>
+<p><code>useActionState</code>를 사용하면 Server function의 signature가 바뀌어, 첫 번째 인수로 새로운 <code>prevState</code> 또는 <code>initialState</code> parameter를 받게 됩니다.</p><div class="en-orig"><p>When using <code>useActionState</code>, the Server function signature will change to receive a new <code>prevState</code> or <code>initialState</code> parameter as its first argument.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.ts">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { z } from &#x27;zod&#x27;
+
+export async function createUser(initialState: any, formData: FormData) {
+  const validatedFields = schema.safeParse({
+    email: formData.get(&#x27;email&#x27;),
+  })
+  // ...
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { z } from &#x27;zod&#x27;
+
+// ...
+
+export async function createUser(initialState, formData) {
+  const validatedFields = schema.safeParse({
+    email: formData.get(&#x27;email&#x27;),
+  })
+  // ...
+}</code></pre></div></div>
+<p>그런 다음 <code>state</code> 객체를 기반으로 error 메시지를 조건부로 render할 수 있습니다.</p><div class="en-orig"><p>You can then conditionally render the error message based on the <code>state</code> object.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/ui/signup.tsx" data-js="app/ui/signup.js">app/ui/signup.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useActionState } from &#x27;react&#x27;
+import { createUser } from &#x27;@/app/actions&#x27;
+
+const initialState = {
+  message: &#x27;&#x27;,
+}
+
+export function Signup() {
+  const [state, formAction, pending] = useActionState(createUser, initialState)
+
+  return (
+    &lt;form action={formAction}&gt;
+      &lt;label htmlFor=&quot;email&quot;&gt;Email&lt;/label&gt;
+      &lt;input type=&quot;text&quot; id=&quot;email&quot; name=&quot;email&quot; required /&gt;
+      {/* ... */}
+      &lt;p aria-live=&quot;polite&quot;&gt;{state?.message}&lt;/p&gt;
+      &lt;button disabled={pending}&gt;Sign up&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useActionState } from &#x27;react&#x27;
+import { createUser } from &#x27;@/app/actions&#x27;
+
+const initialState = {
+  message: &#x27;&#x27;,
+}
+
+export function Signup() {
+  const [state, formAction, pending] = useActionState(createUser, initialState)
+
+  return (
+    &lt;form action={formAction}&gt;
+      &lt;label htmlFor=&quot;email&quot;&gt;Email&lt;/label&gt;
+      &lt;input type=&quot;text&quot; id=&quot;email&quot; name=&quot;email&quot; required /&gt;
+      {/* ... */}
+      &lt;p aria-live=&quot;polite&quot;&gt;{state?.message}&lt;/p&gt;
+      &lt;button disabled={pending}&gt;Sign up&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="pending-states"><a class="anchor" href="#pending-states">Pending states<span class="ko">Pending 상태</span></a></h2>
+<p><a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener"><code>useActionState</code></a> hook은 action이 실행되는 동안 loading indicator를 보여 주거나 submit 버튼을 비활성화하는 데 사용할 수 있는 <code>pending</code> boolean을 노출합니다.</p><div class="en-orig"><p>The <a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener"><code>useActionState</code></a> hook exposes a <code>pending</code> boolean that can be used to show a loading indicator or disable the submit button while the action is being executed.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/ui/signup.tsx" data-js="app/ui/signup.js">app/ui/signup.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useActionState } from &#x27;react&#x27;
+import { createUser } from &#x27;@/app/actions&#x27;
+
+export function Signup() {
+  const [state, formAction, pending] = useActionState(createUser, initialState)
+
+  return (
+    &lt;form action={formAction}&gt;
+      {/* Other form elements */}
+      &lt;button disabled={pending}&gt;Sign up&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useActionState } from &#x27;react&#x27;
+import { createUser } from &#x27;@/app/actions&#x27;
+
+export function Signup() {
+  const [state, formAction, pending] = useActionState(createUser, initialState)
+
+  return (
+    &lt;form action={formAction}&gt;
+      {/* Other form elements */}
+      &lt;button disabled={pending}&gt;Sign up&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</code></pre></div></div>
+<p>또는 <a href="https://react.dev/reference/react-dom/hooks/useFormStatus" target="_blank" rel="noopener"><code>useFormStatus</code></a> hook을 사용해 action이 실행되는 동안 loading indicator를 보여 줄 수도 있습니다. 이 hook을 사용할 때는 loading indicator를 render할 별도의 component를 만들어야 합니다. 예를 들어 action이 pending 상태일 때 버튼을 비활성화하려면:</p><div class="en-orig"><p>Alternatively, you can use the <a href="https://react.dev/reference/react-dom/hooks/useFormStatus" target="_blank" rel="noopener"><code>useFormStatus</code></a> hook to show a loading indicator while the action is being executed. When using this hook, you'll need to create a separate component to render the loading indicator. For example, to disable the button when the action is pending:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/ui/button.tsx" data-js="app/ui/button.js">app/ui/button.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useFormStatus } from &#x27;react-dom&#x27;
+
+export function SubmitButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    &lt;button disabled={pending} type=&quot;submit&quot;&gt;
+      Sign Up
+    &lt;/button&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useFormStatus } from &#x27;react-dom&#x27;
+
+export function SubmitButton() {
+  const { pending } = useFormStatus()
+
+  return (
+    &lt;button disabled={pending} type=&quot;submit&quot;&gt;
+      Sign Up
+    &lt;/button&gt;
+  )
+}</code></pre></div></div>
+<p>그런 다음 <code>SubmitButton</code> component를 form 안에 중첩할 수 있습니다:</p><div class="en-orig"><p>You can then nest the <code>SubmitButton</code> component inside the form:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/ui/signup.tsx" data-js="app/ui/signup.js">app/ui/signup.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { SubmitButton } from &#x27;./button&#x27;
+import { createUser } from &#x27;@/app/actions&#x27;
+
+export function Signup() {
+  return (
+    &lt;form action={createUser}&gt;
+      {/* Other form elements */}
+      &lt;SubmitButton /&gt;
+    &lt;/form&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { SubmitButton } from &#x27;./button&#x27;
+import { createUser } from &#x27;@/app/actions&#x27;
+
+export function Signup() {
+  return (
+    &lt;form action={createUser}&gt;
+      {/* Other form elements */}
+      &lt;SubmitButton /&gt;
+    &lt;/form&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>React 19에서 <code>useFormStatus</code>가 반환하는 객체에는 data, method, action 같은 추가 key가 포함됩니다. React 19를 사용하지 않는다면 <code>pending</code> key만 사용할 수 있습니다.</p><div class="en-orig"><p>In React 19, <code>useFormStatus</code> includes additional keys on the returned object, like data, method, and action. If you are not using React 19, only the <code>pending</code> key is available.</p></div></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><strong>experimental</strong> <a href="app-guides-offline-support.html"><code>useOffline</code></a> config를 활성화하면, 연결이 끊겨 중단된 Server Action은 pending 상태로 남아 있다가 network가 돌아오면 완료되므로 사용자가 제출한 내용을 잃지 않습니다.</p><div class="en-orig"><p>With the <strong>experimental</strong> <a href="app-guides-offline-support.html"><code>useOffline</code></a> config enabled, a Server Action interrupted by a connectivity drop stays pending and completes when the network returns, so a user does not lose their submission.</p></div></div></div>
+<h2 class="sec" id="optimistic-updates"><a class="anchor" href="#optimistic-updates">Optimistic updates<span class="ko">Optimistic 업데이트</span></a></h2>
+<p>React <a href="https://react.dev/reference/react/useOptimistic" target="_blank" rel="noopener"><code>useOptimistic</code></a> hook을 사용하면 response를 기다리지 않고 Server Function 실행이 끝나기 전에 UI를 낙관적으로(optimistically) 업데이트할 수 있습니다:</p><div class="en-orig"><p>You can use the React <a href="https://react.dev/reference/react/useOptimistic" target="_blank" rel="noopener"><code>useOptimistic</code></a> hook to optimistically update the UI before the Server Function finishes executing, rather than waiting for the response:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useOptimistic } from &#x27;react&#x27;
+import { send } from &#x27;./actions&#x27;
+
+type Message = {
+  message: string
+}
+
+export function Thread({ messages }: { messages: Message[] }) {
+  const [optimisticMessages, addOptimisticMessage] = useOptimistic&lt;
+    Message[],
+    string
+  &gt;(messages, (state, newMessage) =&gt; [...state, { message: newMessage }])
+
+  const formAction = async (formData: FormData) =&gt; {
+    const message = formData.get(&#x27;message&#x27;) as string
+    addOptimisticMessage(message)
+    await send(message)
+  }
+
+  return (
+    &lt;div&gt;
+      {optimisticMessages.map((m, i) =&gt; (
+        &lt;div key={i}&gt;{m.message}&lt;/div&gt;
+      ))}
+      &lt;form action={formAction}&gt;
+        &lt;input type=&quot;text&quot; name=&quot;message&quot; /&gt;
+        &lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useOptimistic } from &#x27;react&#x27;
+import { send } from &#x27;./actions&#x27;
+
+export function Thread({ messages }) {
+  const [optimisticMessages, addOptimisticMessage] = useOptimistic(
+    messages,
+    (state, newMessage) =&gt; [...state, { message: newMessage }]
+  )
+
+  const formAction = async (formData) =&gt; {
+    const message = formData.get(&#x27;message&#x27;)
+    addOptimisticMessage(message)
+    await send(message)
+  }
+
+  return (
+    &lt;div&gt;
+      {optimisticMessages.map((m) =&gt; (
+        &lt;div&gt;{m.message}&lt;/div&gt;
+      ))}
+      &lt;form action={formAction}&gt;
+        &lt;input type=&quot;text&quot; name=&quot;message&quot; /&gt;
+        &lt;button type=&quot;submit&quot;&gt;Send&lt;/button&gt;
+      &lt;/form&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="nested-form-elements"><a class="anchor" href="#nested-form-elements">Nested form elements<span class="ko">중첩된 form element</span></a></h2>
+<p><code>&lt;button&gt;</code>, <code>&lt;input type=&quot;submit&quot;&gt;</code>, <code>&lt;input type=&quot;image&quot;&gt;</code>처럼 <code>&lt;form&gt;</code> 안에 중첩된 element에서 Server Action을 호출할 수 있습니다. 이 element들은 <code>formAction</code> prop이나 event handler를 받습니다.</p><div class="en-orig"><p>You can call Server Actions in elements nested inside <code>&lt;form&gt;</code> such as <code>&lt;button&gt;</code>, <code>&lt;input type=&quot;submit&quot;&gt;</code>, and <code>&lt;input type=&quot;image&quot;&gt;</code>. These elements accept the <code>formAction</code> prop or event handlers.</p></div>
+<p>이는 하나의 form 안에서 여러 Server Action을 호출하고 싶을 때 유용합니다. 예를 들어 게시물을 publish하는 것 외에 초안을 저장하기 위한 별도의 <code>&lt;button&gt;</code> element를 만들 수 있습니다. 자세한 내용은 <a href="https://react.dev/reference/react-dom/components/form#handling-multiple-submission-types" target="_blank" rel="noopener">React <code>&lt;form&gt;</code> 문서</a>를 참고하세요.</p><div class="en-orig"><p>This is useful in cases where you want to call multiple Server Actions within a form. For example, you can create a specific <code>&lt;button&gt;</code> element for saving a post draft in addition to publishing it. See the <a href="https://react.dev/reference/react-dom/components/form#handling-multiple-submission-types" target="_blank" rel="noopener">React <code>&lt;form&gt;</code> docs</a> for more information.</p></div>
+<h2 class="sec" id="programmatic-form-submission"><a class="anchor" href="#programmatic-form-submission">Programmatic form submission<span class="ko">프로그래밍 방식의 form 제출</span></a></h2>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/requestSubmit" target="_blank" rel="noopener"><code>requestSubmit()</code></a> method를 사용하면 form 제출을 프로그래밍 방식으로 트리거할 수 있습니다. 예를 들어 사용자가 <code>⌘</code> + <code>Enter</code> keyboard shortcut으로 form을 제출할 때 <code>onKeyDown</code> event를 listen할 수 있습니다:</p><div class="en-orig"><p>You can trigger a form submission programmatically using the <a href="https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/requestSubmit" target="_blank" rel="noopener"><code>requestSubmit()</code></a> method. For example, when the user submits a form using the <code>⌘</code> + <code>Enter</code> keyboard shortcut, you can listen for the <code>onKeyDown</code> event:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/entry.tsx" data-js="app/entry.js">app/entry.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+export function Entry() {
+  const handleKeyDown = (e: React.KeyboardEvent&lt;HTMLTextAreaElement&gt;) =&gt; {
+    if (
+      (e.ctrlKey || e.metaKey) &amp;&amp;
+      (e.key === &#x27;Enter&#x27; || e.key === &#x27;NumpadEnter&#x27;)
+    ) {
+      e.preventDefault()
+      e.currentTarget.form?.requestSubmit()
+    }
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;textarea name=&quot;entry&quot; rows={20} required onKeyDown={handleKeyDown} /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+export function Entry() {
+  const handleKeyDown = (e) =&gt; {
+    if (
+      (e.ctrlKey || e.metaKey) &amp;&amp;
+      (e.key === &#x27;Enter&#x27; || e.key === &#x27;NumpadEnter&#x27;)
+    ) {
+      e.preventDefault()
+      e.currentTarget.form?.requestSubmit()
+    }
+  }
+
+  return (
+    &lt;div&gt;
+      &lt;textarea name=&quot;entry&quot; rows={20} required onKeyDown={handleKeyDown} /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>이렇게 하면 가장 가까운 상위 <code>&lt;form&gt;</code>의 제출이 트리거되고, 그에 따라 Server Function이 호출됩니다.</p><div class="en-orig"><p>This will trigger the submission of the nearest <code>&lt;form&gt;</code> ancestor, which will invoke the Server Function.</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/forms.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/forms" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-environment-variables.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Environment Variables</div><div class="ttl-ko">Next.js에서 environment variable 사용하기</div></a>
+      <a href="app-guides-how-revalidation-works.html" class="next"><div class="dir">다음 →</div><div class="ttl">How Revalidation Works</div><div class="ttl-ko">Next.js에서 revalidation이 동작하는 방식</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/forms" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#how-it-works">How it works</a></li><li class="l2"><a href="#passing-additional-arguments">Passing additional arguments</a></li><li class="l2"><a href="#form-validation">Form validation</a></li><li class="l2"><a href="#validation-errors">Validation errors</a></li><li class="l2"><a href="#pending-states">Pending states</a></li><li class="l2"><a href="#optimistic-updates">Optimistic updates</a></li><li class="l2"><a href="#nested-form-elements">Nested form elements</a></li><li class="l2"><a href="#programmatic-form-submission">Programmatic form submission</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+React Server Actions는 server에서 실행되는 [Server Functions](https://react.dev/reference/rsc/server-functions)입니다. Server Component와 Client Component에서 호출해 form 제출을 처리할 수 있습니다. 이 가이드에서는 Server Actions로 Next.js에서 form을 만드는 방법을 단계별로 안내합니다. form 이외의 Server Action 동작(single-roundtrip response, 순차적 dispatch, 보안, deployment)은 [Server Actions and Mutations](/docs/app/guides/server-actions)를 참고하세요.
+
+&gt; [!WARNING]
+&gt; form이 인증된 page에서만 render되더라도, 각 Server Action 안에서 항상 [authentication과 authorization](/docs/app/guides/authentication)을 검증하세요. 자세한 내용은 [Data Security 가이드](/docs/app/guides/data-security)를 참고하세요.
+
+## How it works || 동작 방식
+
+React는 HTML [`&lt;form&gt;`](https://developer.mozilla.org/docs/Web/HTML/Element/form) element를 확장해 [`action`](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/form#action) attribute로 Server Action을 호출할 수 있게 합니다.
+
+form에서 사용하면 함수는 자동으로 [`FormData`](https://developer.mozilla.org/docs/Web/API/FormData/FormData) 객체를 받습니다. 그런 다음 native [`FormData` method](https://developer.mozilla.org/en-US/docs/Web/API/FormData#instance_methods)로 데이터를 추출할 수 있습니다:
+
+[[CODE 1]]
+
+&gt; **Good to know:** field가 여러 개인 form을 다룰 때는 JavaScript의 [`Object.fromEntries()`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/fromEntries)를 사용하세요. 예: `const rawFormData = Object.fromEntries(formData)`. 이 객체에는 `$ACTION_` 접두사가 붙은 추가 property가 포함된다는 점에 유의하세요.
+
+## Passing additional arguments || 추가 인수 전달하기
+
+form field 외에도 JavaScript [`bind`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind) method를 사용해 Server Function에 추가 인수를 전달할 수 있습니다. 예를 들어 `updateUser` Server Function에 `userId` 인수를 전달하려면:
+
+[[CODE 2]]
+
+Server Function은 `userId`를 추가 인수로 받습니다:
+
+[[CODE 3]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - 다른 방법으로, 인수를 form의 hidden input field로 전달할 수도 있습니다(예: `&lt;input type=&quot;hidden&quot; name=&quot;userId&quot; value={userId} /&gt;`). 하지만 이 값은 render된 HTML의 일부가 되며 encode되지 않습니다.
+&gt; - `bind`는 Server Component와 Client Component 모두에서 동작하며 progressive enhancement를 지원합니다.
+
+## Form validation || Form 검증
+
+form은 client나 server에서 검증할 수 있습니다.
+
+- **client-side validation**에는 `required`나 `type=&quot;email&quot;` 같은 HTML attribute를 사용해 기본적인 검증을 할 수 있습니다.
+- **server-side validation**에는 [Zod](https://zod.dev/)나 [Valibot](https://valibot.dev/) 같은 schema validation library를 사용해 form field를 검증할 수 있습니다. 예를 들면 다음과 같습니다:
+
+[[CODE 4]]
+
+## Validation errors || 검증 error
+
+검증 error나 메시지를 표시하려면 `&lt;form&gt;`을 정의하는 component를 Client Component로 바꾸고 React [`useActionState`](https://react.dev/reference/react/useActionState)를 사용하세요.
+
+`useActionState`를 사용하면 Server function의 signature가 바뀌어, 첫 번째 인수로 새로운 `prevState` 또는 `initialState` parameter를 받게 됩니다.
+
+[[CODE 5]]
+
+그런 다음 `state` 객체를 기반으로 error 메시지를 조건부로 render할 수 있습니다.
+
+[[CODE 6]]
+
+## Pending states || Pending 상태
+
+[`useActionState`](https://react.dev/reference/react/useActionState) hook은 action이 실행되는 동안 loading indicator를 보여 주거나 submit 버튼을 비활성화하는 데 사용할 수 있는 `pending` boolean을 노출합니다.
+
+[[CODE 7]]
+
+또는 [`useFormStatus`](https://react.dev/reference/react-dom/hooks/useFormStatus) hook을 사용해 action이 실행되는 동안 loading indicator를 보여 줄 수도 있습니다. 이 hook을 사용할 때는 loading indicator를 render할 별도의 component를 만들어야 합니다. 예를 들어 action이 pending 상태일 때 버튼을 비활성화하려면:
+
+[[CODE 8]]
+
+그런 다음 `SubmitButton` component를 form 안에 중첩할 수 있습니다:
+
+[[CODE 9]]
+
+&gt; **Good to know:** React 19에서 `useFormStatus`가 반환하는 객체에는 data, method, action 같은 추가 key가 포함됩니다. React 19를 사용하지 않는다면 `pending` key만 사용할 수 있습니다.
+
+&gt; **Good to know**: **experimental** [`useOffline`](/docs/app/guides/offline-support) config를 활성화하면, 연결이 끊겨 중단된 Server Action은 pending 상태로 남아 있다가 network가 돌아오면 완료되므로 사용자가 제출한 내용을 잃지 않습니다.
+
+## Optimistic updates || Optimistic 업데이트
+
+React [`useOptimistic`](https://react.dev/reference/react/useOptimistic) hook을 사용하면 response를 기다리지 않고 Server Function 실행이 끝나기 전에 UI를 낙관적으로(optimistically) 업데이트할 수 있습니다:
+
+[[CODE 10]]
+
+## Nested form elements || 중첩된 form element
+
+`&lt;button&gt;`, `&lt;input type=&quot;submit&quot;&gt;`, `&lt;input type=&quot;image&quot;&gt;`처럼 `&lt;form&gt;` 안에 중첩된 element에서 Server Action을 호출할 수 있습니다. 이 element들은 `formAction` prop이나 event handler를 받습니다.
+
+이는 하나의 form 안에서 여러 Server Action을 호출하고 싶을 때 유용합니다. 예를 들어 게시물을 publish하는 것 외에 초안을 저장하기 위한 별도의 `&lt;button&gt;` element를 만들 수 있습니다. 자세한 내용은 [React `&lt;form&gt;` 문서](https://react.dev/reference/react-dom/components/form#handling-multiple-submission-types)를 참고하세요.
+
+## Programmatic form submission || 프로그래밍 방식의 form 제출
+
+[`requestSubmit()`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLFormElement/requestSubmit) method를 사용하면 form 제출을 프로그래밍 방식으로 트리거할 수 있습니다. 예를 들어 사용자가 `⌘` + `Enter` keyboard shortcut으로 form을 제출할 때 `onKeyDown` event를 listen할 수 있습니다:
+
+[[CODE 11]]
+
+이렇게 하면 가장 가까운 상위 `&lt;form&gt;`의 제출이 트리거되고, 그에 따라 Server Function이 호출됩니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testing (테스트) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/testing" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/testing" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/testing/index.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Testing<span class="sub">테스트</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>React와 Next.js에서는 몇 가지 다른 유형의 test를 작성할 수 있으며, 각각 고유한 목적과 사용 사례가 있습니다. 이 페이지는 애플리케이션을 test하는 데 사용할 수 있는 test 유형과 자주 쓰이는 도구를 개괄합니다.</p><div class="en-orig"><p>In React and Next.js, there are a few different types of tests you can write, each with its own purpose and use cases. This page provides an overview of types and commonly used tools you can use to test your application.</p></div>
+<h2 class="sec" id="types-of-tests"><a class="anchor" href="#types-of-tests">Types of tests<span class="ko">test 유형</span></a></h2>
+<ul>
+<li><strong>Unit Testing</strong>은 개별 unit(또는 코드 블록)을 고립된 상태로 test하는 것입니다. React에서 unit은 하나의 function, hook, 또는 component일 수 있습니다.</li>
+<li><strong>Component Testing</strong>은 unit testing을 더 좁힌 형태로, test의 주된 대상이 React component입니다. component가 어떻게 render되는지, props와 어떻게 상호작용하는지, 사용자 event에 어떻게 반응하는지 등을 test할 수 있습니다.</li>
+<li><strong>Integration Testing</strong>은 여러 unit이 함께 어떻게 동작하는지 test하는 것입니다. component, hook, function의 조합일 수 있습니다.</li>
+<li><strong>End-to-End (E2E) Testing</strong>은 브라우저처럼 실제 사용자 시나리오를 시뮬레이션하는 환경에서 사용자 흐름을 test하는 것입니다. 즉 production과 비슷한 환경에서 특정 작업(예: 회원가입 흐름)을 test합니다.</li>
+<li><strong>Snapshot Testing</strong>은 component의 render 결과를 캡처해 snapshot 파일로 저장하는 것입니다. test가 실행되면 component의 현재 render 결과를 저장된 snapshot과 비교합니다. snapshot의 변경은 동작이 예상치 않게 바뀌었음을 나타내는 데 사용됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Unit Testing</strong> involves testing individual units (or blocks of code) in isolation. In React, a unit can be a single function, hook, or component.</li>
+<li><strong>Component Testing</strong> is a more focused version of unit testing where the primary subject of the tests is React components. This may involve testing how components are rendered, their interaction with props, and their behavior in response to user events.</li>
+<li><strong>Integration Testing</strong> involves testing how multiple units work together. This can be a combination of components, hooks, and functions.</li>
+<li><strong>End-to-End (E2E) Testing</strong> involves testing user flows in an environment that simulates real user scenarios, like the browser. This means testing specific tasks (e.g. signup flow) in a production-like environment.</li>
+<li><strong>Snapshot Testing</strong> involves capturing the rendered output of a component and saving it to a snapshot file. When tests run, the current rendered output of the component is compared against the saved snapshot. Changes in the snapshot are used to indicate unexpected changes in behavior.</li>
+</ul></div>
+<h2 class="sec" id="async-server-components"><a class="anchor" href="#async-server-components">Async Server Components</a></h2>
+<p><code>async</code> Server Component는 React ecosystem에서 새로운 개념이라 일부 도구는 이를 완전히 지원하지 않습니다. 당분간은 <code>async</code> component에 대해 <strong>Unit Testing</strong>보다 <strong>End-to-End Testing</strong>을 사용하는 것을 권장합니다.</p><div class="en-orig"><p>Since <code>async</code> Server Components are new to the React ecosystem, some tools do not fully support them. In the meantime, we recommend using <strong>End-to-End Testing</strong> over <strong>Unit Testing</strong> for <code>async</code> components.</p></div>
+<h2 class="sec" id="guides"><a class="anchor" href="#guides">Guides<span class="ko">가이드</span></a></h2>
+<p>아래 가이드에서 자주 쓰이는 testing 도구로 Next.js를 설정하는 방법을 알아보세요:</p><div class="en-orig"><p>See the guides below to learn how to set up Next.js with these commonly used testing tools:</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/testing/index.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/testing" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-tailwind-v3-css.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Tailwind CSS v3</div><div class="ttl-ko">Next.js 애플리케이션에 Tailwind CSS v3 설치하기</div></a>
+      <a href="app-guides-testing-cypress.html" class="next"><div class="dir">다음 →</div><div class="ttl">Cypress</div><div class="ttl-ko">Next.js에 Cypress 설정하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/testing" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#types-of-tests">Types of tests</a></li><li class="l2"><a href="#async-server-components">Async Server Components</a></li><li class="l2"><a href="#guides">Guides</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+React와 Next.js에서는 몇 가지 다른 유형의 test를 작성할 수 있으며, 각각 고유한 목적과 사용 사례가 있습니다. 이 페이지는 애플리케이션을 test하는 데 사용할 수 있는 test 유형과 자주 쓰이는 도구를 개괄합니다.
+
+## Types of tests || test 유형
+
+- **Unit Testing**은 개별 unit(또는 코드 블록)을 고립된 상태로 test하는 것입니다. React에서 unit은 하나의 function, hook, 또는 component일 수 있습니다.
+- **Component Testing**은 unit testing을 더 좁힌 형태로, test의 주된 대상이 React component입니다. component가 어떻게 render되는지, props와 어떻게 상호작용하는지, 사용자 event에 어떻게 반응하는지 등을 test할 수 있습니다.
+- **Integration Testing**은 여러 unit이 함께 어떻게 동작하는지 test하는 것입니다. component, hook, function의 조합일 수 있습니다.
+- **End-to-End (E2E) Testing**은 브라우저처럼 실제 사용자 시나리오를 시뮬레이션하는 환경에서 사용자 흐름을 test하는 것입니다. 즉 production과 비슷한 환경에서 특정 작업(예: 회원가입 흐름)을 test합니다.
+- **Snapshot Testing**은 component의 render 결과를 캡처해 snapshot 파일로 저장하는 것입니다. test가 실행되면 component의 현재 render 결과를 저장된 snapshot과 비교합니다. snapshot의 변경은 동작이 예상치 않게 바뀌었음을 나타내는 데 사용됩니다.
+
+
+
+## Async Server Components
+
+`async` Server Component는 React ecosystem에서 새로운 개념이라 일부 도구는 이를 완전히 지원하지 않습니다. 당분간은 `async` component에 대해 **Unit Testing**보다 **End-to-End Testing**을 사용하는 것을 권장합니다.
+
+
+
+## Guides || 가이드
+
+아래 가이드에서 자주 쓰이는 testing 도구로 Next.js를 설정하는 방법을 알아보세요:
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

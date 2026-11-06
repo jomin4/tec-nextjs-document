@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>turbopack (turbopack) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/api-reference/config/next-config-js/turbopack" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/api-reference/config/next-config-js/turbopack" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/turbopack.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference-config.html">Configuration</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference-config-next-config-js.html">next.config.js Options</a></div>
+    <div class="title-row">
+      <h1 class="page-title">turbopack<span class="sub">turbopack</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>turbopack</code> option을 사용하면 <a href="app-api-reference-turbopack.html">Turbopack</a>을 customize해서 다양한 파일을 transform하고 module이 resolve되는 방식을 바꿀 수 있습니다.</p><div class="en-orig"><p>The <code>turbopack</code> option lets you customize <a href="app-api-reference-turbopack.html">Turbopack</a> to transform different files and change how modules are resolved.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>turbopack</code> option은 Next.js 13.0.0부터 15.2.x 버전까지 <code>experimental.turbo</code>라는 이름이었습니다. 이 option은 여전히 alias로 동작하지만, 새 configuration에서는 top-level <code>turbopack</code> option을 사용해야 합니다.</p>
+<p>이전 버전의 Next.js를 사용하고 있다면 <code>npx @next/codemod@latest next-experimental-turbo-to-turbopack .</code>를 실행해 configuration을 자동으로 migrate하세요.</p><div class="en-orig"><p>The <code>turbopack</code> option was previously named <code>experimental.turbo</code> in Next.js versions 13.0.0 to 15.2.x, an option which still works as an alias, but new configuration should use the top-level <code>turbopack</code> option.</p>
+<p>If you are using an older version of Next.js, run <code>npx @next/codemod@latest next-experimental-turbo-to-turbopack .</code> to automatically migrate your configuration.</p></div></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  turbopack: {
+    // ...
+  },
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  turbopack: {
+    // ...
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>Next.js용 Turbopack은 built-in 기능에 loader나 loader configuration이 필요하지 않습니다. Turbopack은 CSS와 최신 JavaScript compile을 기본으로 지원하므로, <code>@babel/preset-env</code>를 사용하고 있다면 <code>css-loader</code>, <code>postcss-loader</code>, <code>babel-loader</code>가 필요 없습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Turbopack for Next.js does not require loaders or loader configuration for built-in functionality. Turbopack has built-in support for CSS and compiling modern JavaScript, so there's no need for <code>css-loader</code>, <code>postcss-loader</code>, or <code>babel-loader</code> if you're using <code>@babel/preset-env</code>.</li>
+</ul></div></div></div>
+<h2 class="sec" id="reference"><a class="anchor" href="#reference">Reference<span class="ko">레퍼런스</span></a></h2>
+<h3 class="sec" id="options"><a class="anchor" href="#options">Options</a></h3>
+<p><code>turbopack</code> configuration에서는 다음 option을 사용할 수 있습니다:</p><div class="en-orig"><p>The following options are available for the <code>turbopack</code> configuration:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>root</code></td><td>애플리케이션 root directory를 설정합니다. 절대 경로여야 합니다.</td></tr>
+<tr><td><code>rules</code></td><td>Turbopack으로 실행할 때 적용할, 지원되는 webpack loader 목록입니다.</td></tr>
+<tr><td><code>resolveAlias</code></td><td>alias된 import를 그 자리에 대신 load할 module로 mapping합니다.</td></tr>
+<tr><td><code>resolveExtensions</code></td><td>파일을 import할 때 resolve할 확장자 목록입니다.</td></tr>
+<tr><td><code>debugIds</code></td><td>JavaScript bundle과 source map에서 <a href="https://github.com/tc39/ecma426/blob/main/proposals/debug-id.md" target="_blank" rel="noopener">debug ID</a> 생성을 활성화합니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>root</code></td><td>Sets the application root directory. Should be an absolute path.</td></tr>
+<tr><td><code>rules</code></td><td>List of supported webpack loaders to apply when running with Turbopack.</td></tr>
+<tr><td><code>resolveAlias</code></td><td>Map aliased imports to modules to load in their place.</td></tr>
+<tr><td><code>resolveExtensions</code></td><td>List of extensions to resolve when importing files.</td></tr>
+<tr><td><code>debugIds</code></td><td>Enable generation of <a href="https://github.com/tc39/ecma426/blob/main/proposals/debug-id.md" target="_blank" rel="noopener">debug IDs</a> in JavaScript bundles and source maps.</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="supported-loaders"><a class="anchor" href="#supported-loaders">Supported loaders<span class="ko">지원되는 loader</span></a></h3>
+<p>다음 loader들은 Turbopack의 webpack loader 구현에서 동작하는 것이 테스트되었습니다. 여기에 나열되지 않은 다른 많은 webpack loader도 동작할 것입니다:</p><div class="en-orig"><p>The following loaders have been tested to work with Turbopack's webpack loader implementation, but many other webpack loaders should work as well even if not listed here:</p></div>
+<ul>
+<li><a href="https://www.npmjs.com/package/babel-loader" target="_blank" rel="noopener"><code>babel-loader</code></a> <a href="app-api-reference-turbopack.html#language-features"><em>(Babel configuration 파일이 발견되면 자동으로 설정됨)</em></a></li>
+<li><a href="https://www.npmjs.com/package/@svgr/webpack" target="_blank" rel="noopener"><code>@svgr/webpack</code></a></li>
+<li><a href="https://www.npmjs.com/package/svg-inline-loader" target="_blank" rel="noopener"><code>svg-inline-loader</code></a></li>
+<li><a href="https://www.npmjs.com/package/yaml-loader" target="_blank" rel="noopener"><code>yaml-loader</code></a></li>
+<li><a href="https://www.npmjs.com/package/string-replace-loader" target="_blank" rel="noopener"><code>string-replace-loader</code></a></li>
+<li><a href="https://www.npmjs.com/package/raw-loader" target="_blank" rel="noopener"><code>raw-loader</code></a></li>
+<li><a href="https://www.npmjs.com/package/sass-loader" target="_blank" rel="noopener"><code>sass-loader</code></a> <a href="app-api-reference-turbopack.html#css-and-styling"><em>(자동으로 설정됨)</em></a></li>
+<li><a href="https://www.npmjs.com/package/graphql-tag" target="_blank" rel="noopener"><code>graphql-tag/loader</code></a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://www.npmjs.com/package/babel-loader" target="_blank" rel="noopener"><code>babel-loader</code></a> <a href="app-api-reference-turbopack.html#language-features"><em>(Configured automatically if a Babel configuration file is found)</em></a></li>
+<li><a href="https://www.npmjs.com/package/@svgr/webpack" target="_blank" rel="noopener"><code>@svgr/webpack</code></a></li>
+<li><a href="https://www.npmjs.com/package/svg-inline-loader" target="_blank" rel="noopener"><code>svg-inline-loader</code></a></li>
+<li><a href="https://www.npmjs.com/package/yaml-loader" target="_blank" rel="noopener"><code>yaml-loader</code></a></li>
+<li><a href="https://www.npmjs.com/package/string-replace-loader" target="_blank" rel="noopener"><code>string-replace-loader</code></a></li>
+<li><a href="https://www.npmjs.com/package/raw-loader" target="_blank" rel="noopener"><code>raw-loader</code></a></li>
+<li><a href="https://www.npmjs.com/package/sass-loader" target="_blank" rel="noopener"><code>sass-loader</code></a> <a href="app-api-reference-turbopack.html#css-and-styling"><em>(Configured automatically)</em></a></li>
+<li><a href="https://www.npmjs.com/package/graphql-tag" target="_blank" rel="noopener"><code>graphql-tag/loader</code></a></li>
+</ul></div>
+<h4 class="sec" id="missing-webpack-loader-features"><a class="anchor" href="#missing-webpack-loader-features">Missing Webpack loader features<span class="ko">지원되지 않는 Webpack loader 기능</span></a></h4>
+<p>Turbopack은 webpack loader를 실행하기 위해 <a href="https://github.com/webpack/loader-runner" target="_blank" rel="noopener"><code>loader-runner</code></a> library를 사용하며, 이 library는 표준 loader API의 대부분을 제공합니다. 하지만 일부 기능은 지원되지 않습니다:</p><div class="en-orig"><p>Turbopack uses the <a href="https://github.com/webpack/loader-runner" target="_blank" rel="noopener"><code>loader-runner</code></a> library to execute webpack loaders, which provides most of the standard loader API. However, some features are not supported:</p></div>
+<p><strong>Module loading:</strong></p><div class="en-orig"><p><strong>Module loading:</strong></p></div>
+<ul>
+<li><a href="https://webpack.js.org/api/loaders/#thisimportmodule" target="_blank" rel="noopener"><code>importModule</code></a> - 지원 안 함</li>
+<li><a href="https://webpack.js.org/api/loaders/#thisloadmodule" target="_blank" rel="noopener"><code>loadModule</code></a> - 지원 안 함</li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://webpack.js.org/api/loaders/#thisimportmodule" target="_blank" rel="noopener"><code>importModule</code></a> - No support</li>
+<li><a href="https://webpack.js.org/api/loaders/#thisloadmodule" target="_blank" rel="noopener"><code>loadModule</code></a> - No support</li>
+</ul></div>
+<p><strong>File system and output:</strong></p><div class="en-orig"><p><strong>File system and output:</strong></p></div>
+<ul>
+<li><a href="https://webpack.js.org/api/loaders/#thisfs" target="_blank" rel="noopener"><code>fs</code></a> - 부분 지원: 현재 <code>fs.readFile</code>만 구현되어 있습니다.</li>
+<li><a href="https://webpack.js.org/api/loaders/#thisemitfile" target="_blank" rel="noopener"><code>emitFile</code></a> - 지원 안 함</li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://webpack.js.org/api/loaders/#thisfs" target="_blank" rel="noopener"><code>fs</code></a> - Partial support: only <code>fs.readFile</code> is currently implemented.</li>
+<li><a href="https://webpack.js.org/api/loaders/#thisemitfile" target="_blank" rel="noopener"><code>emitFile</code></a> - No support</li>
+</ul></div>
+<p><strong>Utilities:</strong></p><div class="en-orig"><p><strong>Utilities:</strong></p></div>
+<ul>
+<li><a href="https://webpack.js.org/api/loaders/#thisutils" target="_blank" rel="noopener"><code>utils</code></a> - 지원 안 함</li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://webpack.js.org/api/loaders/#thisutils" target="_blank" rel="noopener"><code>utils</code></a> - No support</li>
+</ul></div>
+<p>이 기능들 중 하나에 결정적으로 의존하는 loader가 있다면 issue를 등록해 주세요.</p><div class="en-orig"><p>If you have a loader that is critically dependent upon one of these features please file an issue.</p></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<h3 class="sec" id="root-directory"><a class="anchor" href="#root-directory">Root directory</a></h3>
+<p>Turbopack은 module을 resolve할 때 root directory를 사용합니다. 프로젝트 root 밖에 있는 파일은 resolve되지 않습니다.</p><div class="en-orig"><p>Turbopack uses the root directory to resolve modules. Files outside of the project root are not resolved.</p></div>
+<p>프로젝트 root 밖의 파일을 resolve하지 않는 이유는 cache validation을 개선하고, filesystem watching overhead를 줄이고, 필요한 <a href="https://nodejs.org/api/esm.html#resolution-algorithm" target="_blank" rel="noopener">resolving 단계</a> 수를 줄이기 위해서입니다.</p><div class="en-orig"><p>Files are not resolved outside of the project root is to improve cache validation, reduce filesystem watching overhead, and reduce the number of <a href="https://nodejs.org/api/esm.html#resolution-algorithm" target="_blank" rel="noopener">resolving steps</a> needed.</p></div>
+<p>Next.js는 프로젝트의 root directory를 자동으로 감지합니다. 다음 파일 중 하나를 찾는 방식으로 감지합니다:</p><div class="en-orig"><p>Next.js automatically detects the root directory of your project. It does so by looking for one of these files:</p></div>
+<ul>
+<li><code>pnpm-lock.yaml</code></li>
+<li><code>package-lock.json</code></li>
+<li><code>yarn.lock</code></li>
+<li><code>bun.lock</code></li>
+<li><code>bun.lockb</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>pnpm-lock.yaml</code></li>
+<li><code>package-lock.json</code></li>
+<li><code>yarn.lock</code></li>
+<li><code>bun.lock</code></li>
+<li><code>bun.lockb</code></li>
+</ul></div>
+<p>프로젝트 구조가 다르다면, 예를 들어 workspace를 사용하지 않는다면 <code>root</code> option을 직접 설정할 수 있습니다:</p><div class="en-orig"><p>If you have a different project structure, for example if you don't use workspaces, you can manually set the <code>root</code> option:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">const path = require(&#x27;path&#x27;)
+module.exports = {
+  turbopack: {
+    root: path.join(__dirname, &#x27;..&#x27;),
+  },
+}</code></pre></div></div>
+<p>프로젝트 root 밖에 있는 linked dependency(예: <a href="https://docs.npmjs.com/cli/commands/npm-link" target="_blank" rel="noopener"><code>npm link</code></a>)의 파일을 resolve하려면, <code>turbopack.root</code>를 프로젝트와 linked dependency 모두의 상위 directory로 설정하거나 additional root를 설정해야 합니다.</p><div class="en-orig"><p>To resolve files from linked dependencies outside the project root (e.g. <a href="https://docs.npmjs.com/cli/commands/npm-link" target="_blank" rel="noopener"><code>npm link</code></a>), you must either configure the <code>turbopack.root</code> to the parent directory of both the project and the linked dependencies or configure an additional root.</p></div>
+<p>monorepo에서 작업할 때 이 option으로 root를 설정하세요. root directory를 너무 넓게(예: home directory까지) 확장하지 마세요. Turbopack은 root 안의 모든 파일을 watch할 수 있으므로, root directory를 너무 넓게 설정하면 심각한 performance 문제가 생길 수 있습니다.</p><div class="en-orig"><p>Use this option to configure the root when working in a monorepo. Do not extend the root directory too broadly (e.g. to your home directory). Turbopack may watch all files inside of roots, and configuring too broad of a root directory can cause significant performance problems.</p></div>
+<h3 class="sec" id="additional-roots-experimental"><a class="anchor" href="#additional-roots-experimental">Additional roots (experimental)<span class="ko">Additional root (experimental)</span></a></h3>
+<p><code>experimental.turbopackAdditionalRoots</code>를 사용하면 Turbopack이 target이 <code>turbopack.root</code> 밖에 있는 symbolic link를 따라갈 수 있습니다.</p><div class="en-orig"><p><code>experimental.turbopackAdditionalRoots</code> allows Turbopack to follow symbolic links whose targets are outside <code>turbopack.root</code>.</p></div>
+<p>이는 프로젝트 밖에 있는 linked package(예: <a href="https://docs.npmjs.com/cli/commands/npm-link" target="_blank" rel="noopener"><code>npm link</code></a>나 <a href="https://pnpm.io/global-virtual-store" target="_blank" rel="noopener">global virtual store</a>)에 유용합니다.</p><div class="en-orig"><p>It is useful for linked packages that live outside the project (e.g. <a href="https://docs.npmjs.com/cli/commands/npm-link" target="_blank" rel="noopener"><code>npm link</code></a> or a <a href="https://pnpm.io/global-virtual-store" target="_blank" rel="noopener">global virtual store</a>).</p></div>
+<p>additional root는 symlink 경계에서만 넘어갈 수 있습니다. root를 벗어나는 직접적인 relative import는 지원되지 않습니다.</p><div class="en-orig"><p>Additional roots can only be crossed at symlink boundaries. Direct relative imports that escape a root are unsupported.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">const path = require(&#x27;path&#x27;)
+
+module.exports = {
+  experimental: {
+    turbopackAdditionalRoots: {
+      linkedPackages: { path: path.join(__dirname, &#x27;../packages&#x27;) },
+    },
+  },
+}</code></pre></div></div>
+<p>각 key는 하나의 root를 식별합니다. <code>path</code>는 절대 경로이거나 Next.js를 실행하는 directory 기준의 상대 경로일 수 있습니다.</p><div class="en-orig"><p>Each key identifies one root. <code>path</code> can be absolute or relative to the directory where you run Next.js.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>next dev</code> 또는 <code>next build</code>가 시작되기 전에 symbolic link와 그 target이 모두 build 머신에 존재해야 합니다.</li>
+<li>deployment 도구와 CI 시스템은 repository를 별도의 build 머신으로 복사할 수 있습니다. 이런 도구는 additional root를 모를 수 있고, 필요한 파일을 복사하지 못할 수 있습니다.</li>
+<li>Windows에서는 build 시 <a href="https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/" target="_blank" rel="noopener">symbolic link를 만들려면 Developer Mode나 상승된 권한이 필요합니다</a>. output artifact를 만들 때 symbolic link 생성이 필요할 수 있습니다. symlink 생성이 허용되지 않는 경우 Turbopack이 <a href="https://learn.microsoft.com/en-us/windows/win32/fileio/hard-links-and-junctions#junctions" target="_blank" rel="noopener">directory junction</a>으로 fallback할 수 있는 경우도 있지만, junction은 절대 경로를 사용하므로 결과 output을 다른 위치로 옮기지 못할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The symbolic link and its target must both be available on the build machine before <code>next dev</code> or <code>next build</code> starts.</li>
+<li>Deployment tools and CI systems may copy your repository to a separate build machine. These tools may be unaware of the additional roots, and they may fail to copy required files.</li>
+<li>On Windows, builds <a href="https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/" target="_blank" rel="noopener">require Developer Mode or elevated permissions to create symbolic links</a>. Creating output artifacts may require creating symbolic links. In some cases, Turbopack can fall back to <a href="https://learn.microsoft.com/en-us/windows/win32/fileio/hard-links-and-junctions#junctions" target="_blank" rel="noopener">directory junctions</a> when symlink creation is not permitted, but these junctions use absolute paths, so the resulting output may not be relocatable.</li>
+</ul></div></div></div>
+<p><code>next build</code>나 <code>next dev</code>가 시작될 때 root path를 찾지 못하면 warning이 표시됩니다. 단, <code>ignoreIfMissing</code>이 <code>true</code>로 설정되어 있으면 표시되지 않습니다(기본값은 <code>false</code>).</p><div class="en-orig"><p>If a root path is not found when <code>next build</code> or <code>next dev</code> starts, a warning will be issued, unless <code>ignoreIfMissing</code> is set to <code>true</code> (defaults to <code>false</code>).</p></div>
+<p>Windows를 포함한 다양한 platform에서 configuration의 이식성을 보장하려면 root 이름이 다음 요구 사항을 모두 충족해야 합니다:</p><div class="en-orig"><p>To ensure portability of your configuration across a variety of platforms, including Windows, a root name must meet all of these requirements:</p></div>
+<ul>
+<li>1~40자로 이루어집니다.</li>
+<li>각 문자는 ASCII 문자(<code>a-z</code> 또는 <code>A-Z</code>), 숫자(<code>0-9</code>), underscore(<code>_</code>), hyphen(<code>-</code>) 중 하나여야 합니다.</li>
+<li>Windows device 이름이 아닙니다.</li>
+<li>ASCII 대소문자를 구분하지 않고 비교했을 때 앞선 이름과 중복되지 않습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>It contains 1 to 40 characters.</li>
+<li>Each character must be an ASCII letter (<code>a-z</code> or <code>A-Z</code>), a digit (<code>0-9</code>), an underscore (<code>_</code>), or a hyphen (<code>-</code>).</li>
+<li>It is not a Windows device name.</li>
+<li>It does not duplicate an earlier name under ASCII case-insensitive comparison.</li>
+</ul></div>
+<p>파일 참조가 모호해지지 않도록 additional root는 <code>turbopack.root</code>나 서로 겹칠 수 없습니다. 즉, additional root는 <code>turbopack.root</code> 안에 있거나 그것을 포함할 수 없습니다. 예를 들어 <code>foo/</code>와 <code>foo/bar/</code>를 모두 additional root로 설정하면 warning이 발생하고, 겹치는 additional root는 무시됩니다.</p><div class="en-orig"><p>To avoid ambiguous references to files, additional roots may not overlap <code>turbopack.root</code> or one another. This means an additional root cannot be inside <code>turbopack.root</code> or contain it. For example, configuring both <code>foo/</code> and <code>foo/bar/</code> as additional roots would produce a warning, and the overlapping additional root will be ignored.</p></div>
+<p>additional root는 Next.js의 <a href="app-api-reference-config-next-config-js-output.html#turbopack-nft-extensions"><code>trace format</code></a>을 바꿉니다.</p><div class="en-orig"><p>Additional roots change Next.js's <a href="app-api-reference-config-next-config-js-output.html#turbopack-nft-extensions"><code>trace format</code></a>.</p></div>
+<p><a href="app-api-reference-config-next-config-js-output.html#automatically-copying-traced-files"><code>output: &quot;standalone&quot;</code></a>을 사용하면 이 additional root에 저장된 bundle되지 않은 파일은 output directory 안의, root에 설정한 이름을 가진 하위 directory로 복사됩니다.</p><div class="en-orig"><p>When using <a href="app-api-reference-config-next-config-js-output.html#automatically-copying-traced-files"><code>output: &quot;standalone&quot;</code></a>, unbundled files stored in these additional roots will be copied to a subdirectory of the output directory containing the configured name of the root.</p></div>
+<h3 class="sec" id="configuring-webpack-loaders"><a class="anchor" href="#configuring-webpack-loaders">Configuring webpack loaders<span class="ko">webpack loader 설정하기</span></a></h3>
+<p>built-in 기능을 넘어서는 loader 지원이 필요하다면, 많은 webpack loader가 이미 Turbopack에서 동작합니다. 현재는 몇 가지 제한이 있습니다:</p><div class="en-orig"><p>If you need loader support beyond what's built in, many webpack loaders already work with Turbopack. There are currently some limitations:</p></div>
+<ul>
+<li>webpack loader API의 핵심 일부만 구현되어 있습니다. 현재 일부 인기 loader를 지원하기에 충분한 수준이며, 앞으로 API 지원을 확대할 예정입니다.</li>
+<li>JavaScript 코드를 반환하는 loader만 지원됩니다. stylesheet나 이미지 같은 파일을 transform하는 loader는 현재 지원되지 않습니다.</li>
+<li>webpack loader에 전달하는 option은 일반 JavaScript primitive, 객체, 배열이어야 합니다. 예를 들어 <code>require()</code>로 가져온 plugin module을 option 값으로 전달할 수는 없습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Only a core subset of the webpack loader API is implemented. Currently, there is enough coverage for some popular loaders, and we'll expand our API support in the future.</li>
+<li>Only loaders that return JavaScript code are supported. Loaders that transform files like stylesheets or images are not currently supported.</li>
+<li>Options passed to webpack loaders must be plain JavaScript primitives, objects, and arrays. For example, it's not possible to pass <code>require()</code> plugin modules as option values.</li>
+</ul></div>
+<p>loader를 설정하려면 <code>next.config.js</code>에 설치한 loader 이름과 option을 추가하고, 파일 확장자를 loader 목록에 mapping하세요. rule은 순서대로 평가됩니다.</p><div class="en-orig"><p>To configure loaders, add the names of the loaders you've installed and any options in <code>next.config.js</code>, mapping file extensions to a list of loaders. Rules are evaluated in order.</p></div>
+<p>아래는 <a href="https://www.npmjs.com/package/@svgr/webpack" target="_blank" rel="noopener"><code>@svgr/webpack</code></a> loader를 사용하는 예시입니다. 이 loader를 사용하면 <code>.svg</code> 파일을 import해서 React component로 rendering할 수 있습니다.</p><div class="en-orig"><p>Here is an example below using the <a href="https://www.npmjs.com/package/@svgr/webpack" target="_blank" rel="noopener"><code>@svgr/webpack</code></a> loader, which enables importing <code>.svg</code> files and rendering them as React components.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  turbopack: {
+    rules: {
+      &#x27;*.svg&#x27;: {
+        loaders: [&#x27;@svgr/webpack&#x27;],
+        as: &#x27;*.js&#x27;,
+      },
+    },
+  },
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>rules</code> 객체에 사용하는 glob은 파일 이름을 기준으로 match됩니다. 단, glob에 <code>/</code> 문자가 들어 있으면 프로젝트 기준 전체 파일 경로를 기준으로 match됩니다. Windows 파일 경로는 unix 스타일 <code>/</code> 경로 구분자를 사용하도록 normalize됩니다.</p>
+<p>Turbopack은 <a href="https://docs.rs/globset/latest/globset/" target="_blank" rel="noopener">Rust <code>globset</code> library</a>를 수정한 버전을 사용합니다.</p><div class="en-orig"><p>Globs used in the <code>rules</code> object match based on file name, unless the glob contains a <code>/</code> character, which will cause it to match based on the full project-relative file path. Windows file paths are normalized to use unix-style <code>/</code> path separators.</p>
+<p>Turbopack uses a modified version of the <a href="https://docs.rs/globset/latest/globset/" target="_blank" rel="noopener">Rust <code>globset</code> library</a>.</p></div></div></div>
+<p>configuration option이 필요한 loader라면 문자열 대신 객체 형식을 사용할 수 있습니다:</p><div class="en-orig"><p>For loaders that require configuration options, you can use an object format instead of a string:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  turbopack: {
+    rules: {
+      &#x27;*.svg&#x27;: {
+        loaders: [
+          {
+            loader: &#x27;@svgr/webpack&#x27;,
+            options: {
+              icon: true,
+            },
+          },
+        ],
+        as: &#x27;*.js&#x27;,
+      },
+    },
+  },
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Next.js 13.4.4 이전에는 <code>turbopack.rules</code>의 이름이 <code>turbo.loaders</code>였고, <code>*.mdx</code> 대신 <code>.mdx</code> 같은 파일 확장자만 받았습니다.</p><div class="en-orig"><p>Prior to Next.js version 13.4.4, <code>turbopack.rules</code> was named <code>turbo.loaders</code> and only accepted file extensions like <code>.mdx</code> instead of <code>*.mdx</code>.</p></div></div></div>
+<h3 class="sec" id="advanced-webpack-loader-conditions"><a class="anchor" href="#advanced-webpack-loader-conditions">Advanced webpack loader conditions<span class="ko">고급 webpack loader condition</span></a></h3>
+<p>고급 <code>condition</code> 문법을 사용해 loader가 실행되는 위치를 더 제한할 수 있습니다:</p><div class="en-orig"><p>You can further restrict where a loader runs using the advanced <code>condition</code> syntax:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  turbopack: {
+    rules: {
+      // &#x27;*&#x27; will match all file paths, but we restrict where our
+      // rule runs with a condition.
+      &#x27;*&#x27;: {
+        condition: {
+          all: [
+            // &#x27;foreign&#x27; is a built-in condition.
+            { not: &#x27;foreign&#x27; },
+            // &#x27;path&#x27; can be a RegExp or a glob string. A RegExp matches
+            // anywhere in the full project-relative file path.
+            { path: /^img\/[0-9]{3}\// },
+            {
+              any: [
+                { path: &#x27;*.svg&#x27; },
+                // &#x27;query&#x27; matches anywhere in the full query string,
+                // which can be empty, or start with `?`.
+                { query: /[?&amp;]svgr(?=&amp;|$)/ },
+                // &#x27;content&#x27; is always a RegExp, and can match
+                // anywhere in the file.
+                { content: /\&lt;svg\W/ },
+              ],
+            },
+          ],
+        },
+        loaders: [&#x27;@svgr/webpack&#x27;],
+        as: &#x27;*.js&#x27;,
+      },
+    },
+  },
+}</code></pre></div></div>
+<ul>
+<li>지원되는 boolean operator는 <code>{all: [...]}</code>, <code>{any: [...]}</code>, <code>{not: ...}</code>입니다.</li>
+<li>지원되는 customizable operator는 <code>{path: string | RegExp}</code>, <code>{content: RegExp}</code>, <code>{query: string | RegExp}</code>, <code>{contentType: string | RegExp}</code>입니다. 같은 객체에 여러 operator를 지정하면 암묵적인 <code>and</code>로 동작합니다.<ul>
+<li><code>path</code>는 프로젝트 기준 파일 경로와 match됩니다. 문자열은 glob pattern으로 취급되며, RegExp를 사용하면 경로의 일부와 match할 수 있습니다.</li>
+<li><code>content</code>는 파일 내용의 어느 부분과든 match됩니다.</li>
+<li><code>query</code>는 import의 query string(예: <code>import &#x27;./file?foo&#x27;</code>의 <code>?foo</code>)과 match됩니다. 문자열은 정확히 일치해야 하며, RegExp를 사용하면 query string의 일부와 match할 수 있습니다.</li>
+<li><code>contentType</code>은 resource의 MIME content type(예: <code>data:text/plain,...</code> 같은 data URL에서 온 값)과 match됩니다. 문자열은 glob pattern(예: <code>text/*</code>, <code>image/*</code>)으로 취급되며, RegExp를 사용하면 content type의 일부와 match할 수 있습니다.</li>
+</ul></li>
+</ul><div class="en-orig"><ul>
+<li>Supported boolean operators are <code>{all: [...]}</code>, <code>{any: [...]}</code> and <code>{not: ...}</code>.</li>
+<li>Supported customizable operators are <code>{path: string | RegExp}</code>, <code>{content: RegExp}</code>, <code>{query: string | RegExp}</code>, and <code>{contentType: string | RegExp}</code>. If multiple operators are specified in the same object, it acts as an implicit <code>and</code>.<ul>
+<li><code>path</code> matches against the project-relative file path. A string is treated as a glob pattern, while a RegExp can be used to match the path partially.</li>
+<li><code>content</code> matches anywhere in the file content.</li>
+<li><code>query</code> matches the import's query string (e.g., <code>?foo</code> in <code>import &#x27;./file?foo&#x27;</code>). A string must match exactly, while a RegExp can be used to match the query string partially.</li>
+<li><code>contentType</code> matches the MIME content type of the resource (e.g., from data URLs like <code>data:text/plain,...</code>). A string is treated as a glob pattern (e.g., <code>text/*</code>, <code>image/*</code>), while a RegExp can be used to match the content type partially.</li>
+</ul></li>
+</ul></div>
+<p>또한 여러 built-in condition이 지원됩니다:</p><div class="en-orig"><p>In addition, a number of built-in conditions are supported:</p></div>
+<ul>
+<li><code>browser</code>: client에서 실행될 코드와 match됩니다. server 코드는 <code>{not: &#x27;browser&#x27;}</code>로 match할 수 있습니다.</li>
+<li><code>foreign</code>: <code>node_modules</code>에 있는 코드와 일부 Next.js 내부 코드와 match됩니다. 보통 loader를 <code>{not: &#x27;foreign&#x27;}</code>으로 제한하는 것이 좋습니다. 이렇게 하면 loader가 호출되는 파일 수가 줄어 performance가 개선될 수 있습니다.</li>
+<li><code>development</code>: <code>next dev</code>를 사용할 때 match됩니다.</li>
+<li><code>production</code>: <code>next build</code>를 사용할 때 match됩니다.</li>
+<li><code>node</code>: 기본 Node.js runtime에서 실행될 코드와 match됩니다.</li>
+<li><code>edge-light</code>: <a href="app-api-reference-edge.html">Edge runtime</a>(deprecated)에서 실행될 코드와 match됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>browser</code>: Matches code that will execute on the client. Server code can be matched using <code>{not: &#x27;browser&#x27;}</code>.</li>
+<li><code>foreign</code>: Matches code in <code>node_modules</code>, as well as some Next.js internals. Usually you'll want to restrict loaders to <code>{not: &#x27;foreign&#x27;}</code>. This can improve performance by reducing the number of files the loader is invoked on.</li>
+<li><code>development</code>: Matches when using <code>next dev</code>.</li>
+<li><code>production</code>: Matches when using <code>next build</code>.</li>
+<li><code>node</code>: Matches code that will run on the default Node.js runtime.</li>
+<li><code>edge-light</code>: Matches code that will run on the <a href="app-api-reference-edge.html">Edge runtime</a> (deprecated).</li>
+</ul></div>
+<p>rule은 객체이거나 객체의 배열일 수 있습니다. 배열은 서로 겹치지 않는 condition을 표현할 때 유용한 경우가 많습니다:</p><div class="en-orig"><p>Rules can be an object or an array of objects. An array is often useful for modeling disjoint conditions:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  turbopack: {
+    rules: {
+      &#x27;*.svg&#x27;: [
+        {
+          condition: &#x27;browser&#x27;,
+          loaders: [&#x27;@svgr/webpack&#x27;],
+          as: &#x27;*.js&#x27;,
+        },
+        {
+          condition: { not: &#x27;browser&#x27; },
+          loaders: [require.resolve(&#x27;./custom-svg-loader.js&#x27;)],
+          as: &#x27;*.js&#x27;,
+        },
+      ],
+    },
+  },
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>match되는 모든 rule이 순서대로 실행됩니다.</p><div class="en-orig"><p>All matching rules are executed in order.</p></div></div></div>
+<h3 class="sec" id="module-types"><a class="anchor" href="#module-types">Module types<span class="ko">Module type</span></a></h3>
+<p>loader를 사용하지 않고 module type을 직접 설정할 수 있습니다. webpack의 <a href="https://webpack.js.org/configuration/module/#ruletype" target="_blank" rel="noopener"><code>type</code></a> option과 비슷하게, 파일이 처리되는 방식을 바꿀 때 유용합니다.</p><div class="en-orig"><p>You can set the module type directly without using a loader. This is useful for changing how files are processed, similar to webpack's <a href="https://webpack.js.org/configuration/module/#ruletype" target="_blank" rel="noopener"><code>type</code></a> option.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  turbopack: {
+    rules: {
+      &#x27;*.svg&#x27;: {
+        type: &#x27;asset&#x27;,
+      },
+    },
+  },
+}</code></pre></div></div>
+<p><code>type: &#x27;asset&#x27;</code>을 사용하면 파일을 import했을 때 그 URL이 반환됩니다:</p><div class="en-orig"><p>When using <code>type: &#x27;asset&#x27;</code>, importing the file returns its URL:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import svgUrl from &#x27;./icon.svg&#x27;
+
+export default function Page() {
+  return &lt;img src={svgUrl} alt=&quot;Icon&quot; /&gt;
+}</code></pre></div></div>
+<p><code>type</code> option은 <code>loaders</code>와 함께 사용할 수 있습니다. loader가 먼저 실행되고, 그 결과가 지정한 type에 따라 처리됩니다.</p><div class="en-orig"><p>The <code>type</code> option can be combined with <code>loaders</code> - loaders run first, then the result is processed according to the specified type.</p></div>
+<p>사용 가능한 module type:</p><div class="en-orig"><p>Available module types:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>asset</code></td><td>파일을 emit하고 URL을 반환합니다(webpack <code>asset/resource</code>와 유사)</td></tr>
+<tr><td><code>ecmascript</code></td><td>JavaScript로 처리합니다</td></tr>
+<tr><td><code>typescript</code></td><td>TypeScript로 처리합니다</td></tr>
+<tr><td><code>css</code></td><td>CSS로 처리합니다</td></tr>
+<tr><td><code>css-module</code></td><td>CSS module로 처리합니다</td></tr>
+<tr><td><code>json</code></td><td>JSON으로 parse해서 export합니다</td></tr>
+<tr><td><code>wasm</code></td><td>WebAssembly로 처리합니다</td></tr>
+<tr><td><code>node</code></td><td>native Node.js addon으로 처리합니다</td></tr>
+<tr><td><code>raw</code></td><td>내용을 문자열로 export합니다(<code>text</code>의 alias)</td></tr>
+<tr><td><code>text</code></td><td>내용을 문자열로 export합니다</td></tr>
+<tr><td><code>bytes</code></td><td>내용을 <code>Uint8Array</code>로 export합니다</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>asset</code></td><td>Emit file and return URL (like webpack <code>asset/resource</code>)</td></tr>
+<tr><td><code>ecmascript</code></td><td>Process as JavaScript</td></tr>
+<tr><td><code>typescript</code></td><td>Process as TypeScript</td></tr>
+<tr><td><code>css</code></td><td>Process as CSS</td></tr>
+<tr><td><code>css-module</code></td><td>Process as CSS module</td></tr>
+<tr><td><code>json</code></td><td>Parse as JSON and export it</td></tr>
+<tr><td><code>wasm</code></td><td>Process as WebAssembly</td></tr>
+<tr><td><code>node</code></td><td>Process as a native Node.js addon</td></tr>
+<tr><td><code>raw</code></td><td>Export the contents as a string (an alias of <code>text</code>)</td></tr>
+<tr><td><code>text</code></td><td>Export the contents as a string</td></tr>
+<tr><td><code>bytes</code></td><td>Export the contents as a <code>Uint8Array</code></td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="inline-loader-configuration-with-import-attributes"><a class="anchor" href="#inline-loader-configuration-with-import-attributes">Inline loader configuration with import attributes<span class="ko">import attribute를 이용한 inline loader 설정</span></a></h3>
+<p><code>with</code> 절(import attribute)을 사용해 개별 import에 Turbopack loader를 적용할 수 있습니다. 이 설정은 <code>turbopack.rules</code>로 전역 지정하는 대신 import마다 지정합니다.</p><div class="en-orig"><p>You can apply a Turbopack loader to an individual import using the <code>with</code> clause (import attributes). This is specified per-import rather than globally via <code>turbopack.rules</code>.</p></div>
+<p>해당 type의 모든 파일에 영향을 주지 않고 특정 import에만 loader를 적용하고 싶을 때 유용합니다.</p><div class="en-orig"><p>This is useful when you want to apply a loader to a specific import without affecting all files of that type.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// Apply a raw loader to import a .txt file as a JavaScript module
+import rawText from &#x27;../data.txt&#x27; with { turbopackLoader: &#x27;raw-loader&#x27;, turbopackAs: &#x27;*.js&#x27; }
+
+export default function Page() {
+  return &lt;p&gt;{rawText}&lt;/p&gt;
+}</code></pre></div></div>
+<p>다음 import attribute가 지원됩니다:</p><div class="en-orig"><p>The following import attributes are supported:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>turbopackLoader</code></td><td>적용할 loader입니다(예: <code>&#x27;raw-loader&#x27;</code>).</td></tr>
+<tr><td><code>turbopackLoaderOptions</code></td><td>loader option의 JSON 문자열입니다(예: <code>&#x27;{&quot;search&quot;:&quot;X&quot;,&quot;replace&quot;:&quot;Y&quot;}&#x27;</code>).</td></tr>
+<tr><td><code>turbopackAs</code></td><td>output의 rename pattern입니다(<code>turbopack.rules[].as</code>와 동일). 예를 들어 <code>&#x27;*.js&#x27;</code>는 loader output을 JavaScript로 취급합니다.</td></tr>
+<tr><td><code>turbopackModuleType</code></td><td>output의 module type을 설정합니다(<code>turbopack.rules[].type</code>과 동일).</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Attribute</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>turbopackLoader</code></td><td>The loader to apply (e.g. <code>&#x27;raw-loader&#x27;</code>).</td></tr>
+<tr><td><code>turbopackLoaderOptions</code></td><td>JSON string of loader options (e.g. <code>&#x27;{&quot;search&quot;:&quot;X&quot;,&quot;replace&quot;:&quot;Y&quot;}&#x27;</code>).</td></tr>
+<tr><td><code>turbopackAs</code></td><td>Rename pattern for the output (same as <code>turbopack.rules[].as</code>). For example, <code>&#x27;*.js&#x27;</code> treats the loader output as JavaScript.</td></tr>
+<tr><td><code>turbopackModuleType</code></td><td>Set the module type for the output (same as <code>turbopack.rules[].type</code>).</td></tr>
+</tbody></table></div></div>
+<p>option이 있는 loader는 <code>turbopackLoaderOptions</code>로 JSON-encode된 문자열을 전달합니다:</p><div class="en-orig"><p>Loaders with options pass a JSON-encoded string via <code>turbopackLoaderOptions</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import value from &#x27;../data.js&#x27; with { turbopackLoader: &#x27;string-replace-loader&#x27;, turbopackLoaderOptions: &#x27;{&quot;search&quot;:&quot;PLACEHOLDER&quot;,&quot;replace&quot;:&quot;replaced value&quot;}&#x27; }</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>turbopackLoader</code>를 사용하는 import attribute는 Turbopack 전용이며 webpack에서는 지원되지 않습니다. 이 기능을 사용하려면 import 문에서 (<code>assert</code>가 아니라) <code>with</code> keyword를 사용해야 합니다.</p><div class="en-orig"><p>Import attributes with <code>turbopackLoader</code> are Turbopack-specific and are not supported by webpack. This feature requires the <code>with</code> keyword (not <code>assert</code>) in your import statements.</p></div></div></div>
+<h3 class="sec" id="resolving-aliases"><a class="anchor" href="#resolving-aliases">Resolving aliases<span class="ko">Alias resolve하기</span></a></h3>
+<p>webpack의 <a href="https://webpack.js.org/configuration/resolve/#resolvealias" target="_blank" rel="noopener"><code>resolve.alias</code></a> configuration과 비슷하게, alias를 통해 module resolution을 수정하도록 Turbopack을 설정할 수 있습니다.</p><div class="en-orig"><p>Turbopack can be configured to modify module resolution through aliases, similar to webpack's <a href="https://webpack.js.org/configuration/resolve/#resolvealias" target="_blank" rel="noopener"><code>resolve.alias</code></a> configuration.</p></div>
+<p>resolve alias를 설정하려면 <code>next.config.js</code>에서 import pattern을 새 destination에 mapping하세요:</p><div class="en-orig"><p>To configure resolve aliases, map imported patterns to their new destination in <code>next.config.js</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  turbopack: {
+    resolveAlias: {
+      underscore: &#x27;lodash&#x27;,
+      mocha: { browser: &#x27;mocha/browser-entry.js&#x27; },
+    },
+  },
+}</code></pre></div></div>
+<p>이 설정은 <code>underscore</code> package의 import를 <code>lodash</code> package로 alias합니다. 즉, <code>import underscore from &#x27;underscore&#x27;</code>는 <code>underscore</code> 대신 <code>lodash</code> module을 load합니다.</p><div class="en-orig"><p>This aliases imports of the <code>underscore</code> package to the <code>lodash</code> package. In other words, <code>import underscore from &#x27;underscore&#x27;</code> will load the <code>lodash</code> module instead of <code>underscore</code>.</p></div>
+<p>Turbopack은 Node.js의 <a href="https://nodejs.org/docs/latest-v18.x/api/packages.html#conditional-exports" target="_blank" rel="noopener">conditional exports</a>와 비슷하게, 이 field를 통한 conditional aliasing도 지원합니다. 현재는 <code>browser</code> condition만 지원됩니다. 위 예시에서는 Turbopack이 브라우저 환경을 target으로 할 때 <code>mocha</code> module의 import가 <code>mocha/browser-entry.js</code>로 alias됩니다.</p><div class="en-orig"><p>Turbopack also supports conditional aliasing through this field, similar to Node.js' <a href="https://nodejs.org/docs/latest-v18.x/api/packages.html#conditional-exports" target="_blank" rel="noopener">conditional exports</a>. At the moment only the <code>browser</code> condition is supported. In the case above, imports of the <code>mocha</code> module will be aliased to <code>mocha/browser-entry.js</code> when Turbopack targets browser environments.</p></div>
+<h3 class="sec" id="resolving-custom-extensions"><a class="anchor" href="#resolving-custom-extensions">Resolving custom extensions<span class="ko">Custom 확장자 resolve하기</span></a></h3>
+<p>webpack의 <a href="https://webpack.js.org/configuration/resolve/#resolveextensions" target="_blank" rel="noopener"><code>resolve.extensions</code></a> configuration과 비슷하게, custom 확장자를 가진 module을 resolve하도록 Turbopack을 설정할 수 있습니다.</p><div class="en-orig"><p>Turbopack can be configured to resolve modules with custom extensions, similar to webpack's <a href="https://webpack.js.org/configuration/resolve/#resolveextensions" target="_blank" rel="noopener"><code>resolve.extensions</code></a> configuration.</p></div>
+<p>resolve 확장자를 설정하려면 <code>next.config.js</code>에서 <code>resolveExtensions</code> field를 사용하세요:</p><div class="en-orig"><p>To configure resolve extensions, use the <code>resolveExtensions</code> field in <code>next.config.js</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  turbopack: {
+    resolveExtensions: [
+      &#x27;.mdx&#x27;,
+      &#x27;.tsx&#x27;,
+      &#x27;.ts&#x27;,
+      &#x27;.jsx&#x27;,
+      &#x27;.js&#x27;,
+      &#x27;.mjs&#x27;,
+      &#x27;.node&#x27;,
+      &#x27;.json&#x27;,
+    ],
+  },
+}</code></pre></div></div>
+<p>이 설정은 기본 resolve 확장자를 지정한 목록으로 덮어쓰므로, 여전히 필요한 확장자를 모두 포함하세요. 기본값은 <code>.tsx</code>, <code>.ts</code>, <code>.jsx</code>, <code>.js</code>, <code>.mjs</code>, <code>.json</code>이며, server-side resolution에서는 native module을 위해 <code>.node</code>가 추가됩니다. client에서 <code>.node</code>를 나열해도 문제가 없으므로 하나의 목록으로 양쪽을 모두 처리할 수 있습니다.</p><div class="en-orig"><p>This overwrites the default resolve extensions with the provided list, so include every extension you still need. The defaults are <code>.tsx</code>, <code>.ts</code>, <code>.jsx</code>, <code>.js</code>, <code>.mjs</code>, and <code>.json</code>, and server-side resolution adds <code>.node</code> for native modules. Listing <code>.node</code> on the client is harmless, so a single list can cover both.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 설정은 직접 작성한 source 파일에 적용됩니다. <code>node_modules</code> 안에서 resolve되는 import는 자체 확장자 목록을 유지하며 이 option의 영향을 받지 않습니다.</p><div class="en-orig"><p>This applies to your own source files. Imports resolved inside <code>node_modules</code> keep their own extension list and are not affected by this option.</p></div></div></div>
+<p>앱을 webpack에서 Turbopack으로 migrate하는 방법에 대한 자세한 정보와 가이드는 <a href="https://turbo.build/pack/docs/migrating-from-webpack" target="_blank" rel="noopener">webpack 호환성에 관한 Turbopack 문서</a>를 참고하세요.</p><div class="en-orig"><p>For more information and guidance for how to migrate your app to Turbopack from webpack, see <a href="https://turbo.build/pack/docs/migrating-from-webpack" target="_blank" rel="noopener">Turbopack's documentation on webpack compatibility</a>.</p></div>
+<h3 class="sec" id="debug-ids"><a class="anchor" href="#debug-ids">Debug IDs<span class="ko">Debug ID</span></a></h3>
+<p>JavaScript bundle과 source map에서 <a href="https://github.com/tc39/ecma426/blob/main/proposals/debug-id.md" target="_blank" rel="noopener">debug ID</a>를 생성하도록 Turbopack을 설정할 수 있습니다.</p><div class="en-orig"><p>Turbopack can be configured to generate <a href="https://github.com/tc39/ecma426/blob/main/proposals/debug-id.md" target="_blank" rel="noopener">debug IDs</a> in JavaScript bundles and source maps.</p></div>
+<p>debug ID를 설정하려면 <code>next.config.js</code>에서 <code>debugIds</code> field를 사용하세요:</p><div class="en-orig"><p>To configure debug IDs, use the <code>debugIds</code> field in <code>next.config.js</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  turbopack: {
+    debugIds: true,
+  },
+}</code></pre></div></div>
+<p>이 option은 호환성을 보장하기 위해 JavaScript bundle에 debug ID용 polyfill을 자동으로 추가합니다. debug ID는 <code>globalThis._debugIds</code> global 변수에서 사용할 수 있습니다.</p><div class="en-orig"><p>The option automatically adds a polyfill for debug IDs to the JavaScript bundle to ensure compatibility. The debug IDs are available in the <code>globalThis._debugIds</code> global variable.</p></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>16.4.0</code></td><td><code>experimental.turbopackAdditionalRoots</code> 추가</td></tr>
+<tr><td><code>16.2.0</code></td><td><code>turbopackLoader</code> import attribute 추가.</td></tr>
+<tr><td><code>16.2.0</code></td><td><code>turbopack.rules.*.type</code> 추가.</td></tr>
+<tr><td><code>16.2.0</code></td><td><code>turbopack.rules.*.condition.contentType</code> 추가.</td></tr>
+<tr><td><code>16.2.0</code></td><td><code>turbopack.rules.*.condition.query</code> 추가.</td></tr>
+<tr><td><code>16.0.0</code></td><td><code>turbopack.debugIds</code> 추가.</td></tr>
+<tr><td><code>16.0.0</code></td><td><code>turbopack.rules.*.condition</code> 추가.</td></tr>
+<tr><td><code>15.3.0</code></td><td><code>experimental.turbo</code>가 <code>turbopack</code>으로 변경됨.</td></tr>
+<tr><td><code>13.0.0</code></td><td><code>experimental.turbo</code> 도입.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>16.4.0</code></td><td><code>experimental.turbopackAdditionalRoots</code> was added</td></tr>
+<tr><td><code>16.2.0</code></td><td><code>turbopackLoader</code> import attributes were added.</td></tr>
+<tr><td><code>16.2.0</code></td><td><code>turbopack.rules.*.type</code> was added.</td></tr>
+<tr><td><code>16.2.0</code></td><td><code>turbopack.rules.*.condition.contentType</code> was added.</td></tr>
+<tr><td><code>16.2.0</code></td><td><code>turbopack.rules.*.condition.query</code> was added.</td></tr>
+<tr><td><code>16.0.0</code></td><td><code>turbopack.debugIds</code> was added.</td></tr>
+<tr><td><code>16.0.0</code></td><td><code>turbopack.rules.*.condition</code> was added.</td></tr>
+<tr><td><code>15.3.0</code></td><td><code>experimental.turbo</code> is changed to <code>turbopack</code>.</td></tr>
+<tr><td><code>13.0.0</code></td><td><code>experimental.turbo</code> introduced.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/turbopack.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/api-reference/config/next-config-js/turbopack" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-api-reference-config-next-config-js-transpilePackages.html" class="prev"><div class="dir">← 이전</div><div class="ttl">transpilePackages</div><div class="ttl-ko">transpilePackages</div></a>
+      <a href="pages-api-reference-config-next-config-js-turbopackChunking.html" class="next"><div class="dir">다음 →</div><div class="ttl">turbopackChunking</div><div class="ttl-ko">turbopackChunking</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/api-reference/config/next-config-js/turbopack" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#reference">Reference</a></li><li class="l3"><a href="#options">Options</a></li><li class="l3"><a href="#supported-loaders">Supported loaders</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#root-directory">Root directory</a></li><li class="l3"><a href="#additional-roots-experimental">Additional roots (experimental)</a></li><li class="l3"><a href="#configuring-webpack-loaders">Configuring webpack loaders</a></li><li class="l3"><a href="#advanced-webpack-loader-conditions">Advanced webpack loader conditions</a></li><li class="l3"><a href="#module-types">Module types</a></li><li class="l3"><a href="#inline-loader-configuration-with-import-attributes">Inline loader configuration with import attributes</a></li><li class="l3"><a href="#resolving-aliases">Resolving aliases</a></li><li class="l3"><a href="#resolving-custom-extensions">Resolving custom extensions</a></li><li class="l3"><a href="#debug-ids">Debug IDs</a></li><li class="l2"><a href="#version-history">Version History</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`turbopack` option을 사용하면 [Turbopack](/docs/app/api-reference/turbopack)을 customize해서 다양한 파일을 transform하고 module이 resolve되는 방식을 바꿀 수 있습니다.
+
+&gt; **Good to know**: `turbopack` option은 Next.js 13.0.0부터 15.2.x 버전까지 `experimental.turbo`라는 이름이었습니다. 이 option은 여전히 alias로 동작하지만, 새 configuration에서는 top-level `turbopack` option을 사용해야 합니다.
+&gt;
+&gt; 이전 버전의 Next.js를 사용하고 있다면 `npx @next/codemod@latest next-experimental-turbo-to-turbopack .`를 실행해 configuration을 자동으로 migrate하세요.
+
+[[CODE 1]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - Next.js용 Turbopack은 built-in 기능에 loader나 loader configuration이 필요하지 않습니다. Turbopack은 CSS와 최신 JavaScript compile을 기본으로 지원하므로, `@babel/preset-env`를 사용하고 있다면 `css-loader`, `postcss-loader`, `babel-loader`가 필요 없습니다.
+
+## Reference || 레퍼런스
+
+### Options
+
+`turbopack` configuration에서는 다음 option을 사용할 수 있습니다:
+
+| Option              | Description                                                                                                                              |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `root`              | 애플리케이션 root directory를 설정합니다. 절대 경로여야 합니다.                                                                         |
+| `rules`             | Turbopack으로 실행할 때 적용할, 지원되는 webpack loader 목록입니다.                                                                  |
+| `resolveAlias`      | alias된 import를 그 자리에 대신 load할 module로 mapping합니다.                                                                                   |
+| `resolveExtensions` | 파일을 import할 때 resolve할 확장자 목록입니다.                                                                                      |
+| `debugIds`          | JavaScript bundle과 source map에서 [debug ID](https://github.com/tc39/ecma426/blob/main/proposals/debug-id.md) 생성을 활성화합니다. |
+
+### Supported loaders || 지원되는 loader
+
+다음 loader들은 Turbopack의 webpack loader 구현에서 동작하는 것이 테스트되었습니다. 여기에 나열되지 않은 다른 많은 webpack loader도 동작할 것입니다:
+
+- [`babel-loader`](https://www.npmjs.com/package/babel-loader) [_(Babel configuration 파일이 발견되면 자동으로 설정됨)_](/docs/app/api-reference/turbopack#language-features)
+- [`@svgr/webpack`](https://www.npmjs.com/package/@svgr/webpack)
+- [`svg-inline-loader`](https://www.npmjs.com/package/svg-inline-loader)
+- [`yaml-loader`](https://www.npmjs.com/package/yaml-loader)
+- [`string-replace-loader`](https://www.npmjs.com/package/string-replace-loader)
+- [`raw-loader`](https://www.npmjs.com/package/raw-loader)
+- [`sass-loader`](https://www.npmjs.com/package/sass-loader) [_(자동으로 설정됨)_](/docs/app/api-reference/turbopack#css-and-styling)
+- [`graphql-tag/loader`](https://www.npmjs.com/package/graphql-tag)
+
+#### Missing Webpack loader features || 지원되지 않는 Webpack loader 기능
+
+Turbopack은 webpack loader를 실행하기 위해 [`loader-runner`](https://github.com/webpack/loader-runner) library를 사용하며, 이 library는 표준 loader API의 대부분을 제공합니다. 하지만 일부 기능은 지원되지 않습니다:
+
+**Module loading:**
+
+- [`importModule`](https://webpack.js.org/api/loaders/#thisimportmodule) - 지원 안 함
+- [`loadModule`](https://webpack.js.org/api/loaders/#thisloadmodule) - 지원 안 함
+
+**File system and output:**
+
+- [`fs`](https://webpack.js.org/api/loaders/#thisfs) - 부분 지원: 현재 `fs.readFile`만 구현되어 있습니다.
+- [`emitFile`](https://webpack.js.org/api/loaders/#thisemitfile) - 지원 안 함
+
+**Utilities:**
+
+- [`utils`](https://webpack.js.org/api/loaders/#thisutils) - 지원 안 함
+
+이 기능들 중 하나에 결정적으로 의존하는 loader가 있다면 issue를 등록해 주세요.
+
+## Examples || 예시
+
+### Root directory
+
+Turbopack은 module을 resolve할 때 root directory를 사용합니다. 프로젝트 root 밖에 있는 파일은 resolve되지 않습니다.
+
+프로젝트 root 밖의 파일을 resolve하지 않는 이유는 cache validation을 개선하고, filesystem watching overhead를 줄이고, 필요한 [resolving 단계](https://nodejs.org/api/esm.html#resolution-algorithm) 수를 줄이기 위해서입니다.
+
+Next.js는 프로젝트의 root directory를 자동으로 감지합니다. 다음 파일 중 하나를 찾는 방식으로 감지합니다:
+
+- `pnpm-lock.yaml`
+- `package-lock.json`
+- `yarn.lock`
+- `bun.lock`
+- `bun.lockb`
+
+프로젝트 구조가 다르다면, 예를 들어 workspace를 사용하지 않는다면 `root` option을 직접 설정할 수 있습니다:
+
+[[CODE 2]]
+
+프로젝트 root 밖에 있는 linked dependency(예: [`npm link`](https://docs.npmjs.com/cli/commands/npm-link))의 파일을 resolve하려면, `turbopack.root`를 프로젝트와 linked dependency 모두의 상위 directory로 설정하거나 additional root를 설정해야 합니다.
+
+monorepo에서 작업할 때 이 option으로 root를 설정하세요. root directory를 너무 넓게(예: home directory까지) 확장하지 마세요. Turbopack은 root 안의 모든 파일을 watch할 수 있으므로, root directory를 너무 넓게 설정하면 심각한 performance 문제가 생길 수 있습니다.
+
+
+
+### Additional roots (experimental) || Additional root (experimental)
+
+`experimental.turbopackAdditionalRoots`를 사용하면 Turbopack이 target이 `turbopack.root` 밖에 있는 symbolic link를 따라갈 수 있습니다.
+
+이는 프로젝트 밖에 있는 linked package(예: [`npm link`](https://docs.npmjs.com/cli/commands/npm-link)나 [global virtual store](https://pnpm.io/global-virtual-store))에 유용합니다.
+
+additional root는 symlink 경계에서만 넘어갈 수 있습니다. root를 벗어나는 직접적인 relative import는 지원되지 않습니다.
+
+[[CODE 3]]
+
+각 key는 하나의 root를 식별합니다. `path`는 절대 경로이거나 Next.js를 실행하는 directory 기준의 상대 경로일 수 있습니다.
+
+&gt; **Good to know**:
+&gt;
+&gt; - `next dev` 또는 `next build`가 시작되기 전에 symbolic link와 그 target이 모두 build 머신에 존재해야 합니다.
+&gt; - deployment 도구와 CI 시스템은 repository를 별도의 build 머신으로 복사할 수 있습니다. 이런 도구는 additional root를 모를 수 있고, 필요한 파일을 복사하지 못할 수 있습니다.
+&gt; - Windows에서는 build 시 [symbolic link를 만들려면 Developer Mode나 상승된 권한이 필요합니다](https://blogs.windows.com/windowsdeveloper/2016/12/02/symlinks-windows-10/). output artifact를 만들 때 symbolic link 생성이 필요할 수 있습니다. symlink 생성이 허용되지 않는 경우 Turbopack이 [directory junction](https://learn.microsoft.com/en-us/windows/win32/fileio/hard-links-and-junctions#junctions)으로 fallback할 수 있는 경우도 있지만, junction은 절대 경로를 사용하므로 결과 output을 다른 위치로 옮기지 못할 수 있습니다.
+
+`next build`나 `next dev`가 시작될 때 root path를 찾지 못하면 warning이 표시됩니다. 단, `ignoreIfMissing`이 `true`로 설정되어 있으면 표시되지 않습니다(기본값은 `false`).
+
+Windows를 포함한 다양한 platform에서 configuration의 이식성을 보장하려면 root 이름이 다음 요구 사항을 모두 충족해야 합니다:
+
+- 1~40자로 이루어집니다.
+- 각 문자는 ASCII 문자(`a-z` 또는 `A-Z`), 숫자(`0-9`), underscore(`_`), hyphen(`-`) 중 하나여야 합니다.
+- Windows device 이름이 아닙니다.
+- ASCII 대소문자를 구분하지 않고 비교했을 때 앞선 이름과 중복되지 않습니다.
+
+파일 참조가 모호해지지 않도록 additional root는 `turbopack.root`나 서로 겹칠 수 없습니다. 즉, additional root는 `turbopack.root` 안에 있거나 그것을 포함할 수 없습니다. 예를 들어 `foo/`와 `foo/bar/`를 모두 additional root로 설정하면 warning이 발생하고, 겹치는 additional root는 무시됩니다.
+
+additional root는 Next.js의 [`trace format`](/docs/app/api-reference/config/next-config-js/output#turbopack-nft-extensions)을 바꿉니다.
+
+[`output: &quot;standalone&quot;`](/docs/app/api-reference/config/next-config-js/output#automatically-copying-traced-files)을 사용하면 이 additional root에 저장된 bundle되지 않은 파일은 output directory 안의, root에 설정한 이름을 가진 하위 directory로 복사됩니다.
+
+### Configuring webpack loaders || webpack loader 설정하기
+
+built-in 기능을 넘어서는 loader 지원이 필요하다면, 많은 webpack loader가 이미 Turbopack에서 동작합니다. 현재는 몇 가지 제한이 있습니다:
+
+- webpack loader API의 핵심 일부만 구현되어 있습니다. 현재 일부 인기 loader를 지원하기에 충분한 수준이며, 앞으로 API 지원을 확대할 예정입니다.
+- JavaScript 코드를 반환하는 loader만 지원됩니다. stylesheet나 이미지 같은 파일을 transform하는 loader는 현재 지원되지 않습니다.
+- webpack loader에 전달하는 option은 일반 JavaScript primitive, 객체, 배열이어야 합니다. 예를 들어 `require()`로 가져온 plugin module을 option 값으로 전달할 수는 없습니다.
+
+loader를 설정하려면 `next.config.js`에 설치한 loader 이름과 option을 추가하고, 파일 확장자를 loader 목록에 mapping하세요. rule은 순서대로 평가됩니다.
+
+아래는 [`@svgr/webpack`](https://www.npmjs.com/package/@svgr/webpack) loader를 사용하는 예시입니다. 이 loader를 사용하면 `.svg` 파일을 import해서 React component로 rendering할 수 있습니다.
+
+[[CODE 4]]
+
+&gt; **Good to know**: `rules` 객체에 사용하는 glob은 파일 이름을 기준으로 match됩니다. 단, glob에 `/` 문자가 들어 있으면 프로젝트 기준 전체 파일 경로를 기준으로 match됩니다. Windows 파일 경로는 unix 스타일 `/` 경로 구분자를 사용하도록 normalize됩니다.
+&gt;
+&gt; Turbopack은 [Rust `globset` library](https://docs.rs/globset/latest/globset/)를 수정한 버전을 사용합니다.
+
+configuration option이 필요한 loader라면 문자열 대신 객체 형식을 사용할 수 있습니다:
+
+[[CODE 5]]
+
+&gt; **Good to know**: Next.js 13.4.4 이전에는 `turbopack.rules`의 이름이 `turbo.loaders`였고, `*.mdx` 대신 `.mdx` 같은 파일 확장자만 받았습니다.
+
+### Advanced webpack loader conditions || 고급 webpack loader condition
+
+고급 `condition` 문법을 사용해 loader가 실행되는 위치를 더 제한할 수 있습니다:
+
+[[CODE 6]]
+
+- 지원되는 boolean operator는 `{all: [...]}`, `{any: [...]}`, `{not: ...}`입니다.
+- 지원되는 customizable operator는 `{path: string | RegExp}`, `{content: RegExp}`, `{query: string | RegExp}`, `{contentType: string | RegExp}`입니다. 같은 객체에 여러 operator를 지정하면 암묵적인 `and`로 동작합니다.
+  - `path`는 프로젝트 기준 파일 경로와 match됩니다. 문자열은 glob pattern으로 취급되며, RegExp를 사용하면 경로의 일부와 match할 수 있습니다.
+  - `content`는 파일 내용의 어느 부분과든 match됩니다.
+  - `query`는 import의 query string(예: `import &#x27;./file?foo&#x27;`의 `?foo`)과 match됩니다. 문자열은 정확히 일치해야 하며, RegExp를 사용하면 query string의 일부와 match할 수 있습니다.
+  - `contentType`은 resource의 MIME content type(예: `data:text/plain,...` 같은 data URL에서 온 값)과 match됩니다. 문자열은 glob pattern(예: `text/*`, `image/*`)으로 취급되며, RegExp를 사용하면 content type의 일부와 match할 수 있습니다.
+
+또한 여러 built-in condition이 지원됩니다:
+
+- `browser`: client에서 실행될 코드와 match됩니다. server 코드는 `{not: &#x27;browser&#x27;}`로 match할 수 있습니다.
+- `foreign`: `node_modules`에 있는 코드와 일부 Next.js 내부 코드와 match됩니다. 보통 loader를 `{not: &#x27;foreign&#x27;}`으로 제한하는 것이 좋습니다. 이렇게 하면 loader가 호출되는 파일 수가 줄어 performance가 개선될 수 있습니다.
+- `development`: `next dev`를 사용할 때 match됩니다.
+- `production`: `next build`를 사용할 때 match됩니다.
+- `node`: 기본 Node.js runtime에서 실행될 코드와 match됩니다.
+- `edge-light`: [Edge runtime](/docs/app/api-reference/edge)(deprecated)에서 실행될 코드와 match됩니다.
+
+rule은 객체이거나 객체의 배열일 수 있습니다. 배열은 서로 겹치지 않는 condition을 표현할 때 유용한 경우가 많습니다:
+
+[[CODE 7]]
+
+&gt; **Good to know**: match되는 모든 rule이 순서대로 실행됩니다.
+
+### Module types || Module type
+
+loader를 사용하지 않고 module type을 직접 설정할 수 있습니다. webpack의 [`type`](https://webpack.js.org/configuration/module/#ruletype) option과 비슷하게, 파일이 처리되는 방식을 바꿀 때 유용합니다.
+
+[[CODE 8]]
+
+`type: &#x27;asset&#x27;`을 사용하면 파일을 import했을 때 그 URL이 반환됩니다:
+
+[[CODE 9]]
+
+`type` option은 `loaders`와 함께 사용할 수 있습니다. loader가 먼저 실행되고, 그 결과가 지정한 type에 따라 처리됩니다.
+
+사용 가능한 module type:
+
+| Type         | Description                                              |
+| ------------ | -------------------------------------------------------- |
+| `asset`      | 파일을 emit하고 URL을 반환합니다(webpack `asset/resource`와 유사) |
+| `ecmascript` | JavaScript로 처리합니다                                    |
+| `typescript` | TypeScript로 처리합니다                                    |
+| `css`        | CSS로 처리합니다                                           |
+| `css-module` | CSS module로 처리합니다                                    |
+| `json`       | JSON으로 parse해서 export합니다                              |
+| `wasm`       | WebAssembly로 처리합니다                                   |
+| `node`       | native Node.js addon으로 처리합니다                        |
+| `raw`        | 내용을 문자열로 export합니다(`text`의 alias)     |
+| `text`       | 내용을 문자열로 export합니다                          |
+| `bytes`      | 내용을 `Uint8Array`로 export합니다                    |
+
+### Inline loader configuration with import attributes || import attribute를 이용한 inline loader 설정
+
+`with` 절(import attribute)을 사용해 개별 import에 Turbopack loader를 적용할 수 있습니다. 이 설정은 `turbopack.rules`로 전역 지정하는 대신 import마다 지정합니다.
+
+해당 type의 모든 파일에 영향을 주지 않고 특정 import에만 loader를 적용하고 싶을 때 유용합니다.
+
+[[CODE 10]]
+
+다음 import attribute가 지원됩니다:
+
+| Attribute                | Description                                                                                                                   |
+| ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `turbopackLoader`        | 적용할 loader입니다(예: `&#x27;raw-loader&#x27;`).                                                                                    |
+| `turbopackLoaderOptions` | loader option의 JSON 문자열입니다(예: `&#x27;{&quot;search&quot;:&quot;X&quot;,&quot;replace&quot;:&quot;Y&quot;}&#x27;`).                                                        |
+| `turbopackAs`            | output의 rename pattern입니다(`turbopack.rules[].as`와 동일). 예를 들어 `&#x27;*.js&#x27;`는 loader output을 JavaScript로 취급합니다. |
+| `turbopackModuleType`    | output의 module type을 설정합니다(`turbopack.rules[].type`과 동일).                                                        |
+
+option이 있는 loader는 `turbopackLoaderOptions`로 JSON-encode된 문자열을 전달합니다:
+
+[[CODE 11]]
+
+&gt; **Good to know**: `turbopackLoader`를 사용하는 import attribute는 Turbopack 전용이며 webpack에서는 지원되지 않습니다. 이 기능을 사용하려면 import 문에서 (`assert`가 아니라) `with` keyword를 사용해야 합니다.
+
+### Resolving aliases || Alias resolve하기
+
+webpack의 [`resolve.alias`](https://webpack.js.org/configuration/resolve/#resolvealias) configuration과 비슷하게, alias를 통해 module resolution을 수정하도록 Turbopack을 설정할 수 있습니다.
+
+resolve alias를 설정하려면 `next.config.js`에서 import pattern을 새 destination에 mapping하세요:
+
+[[CODE 12]]
+
+이 설정은 `underscore` package의 import를 `lodash` package로 alias합니다. 즉, `import underscore from &#x27;underscore&#x27;`는 `underscore` 대신 `lodash` module을 load합니다.
+
+Turbopack은 Node.js의 [conditional exports](https://nodejs.org/docs/latest-v18.x/api/packages.html#conditional-exports)와 비슷하게, 이 field를 통한 conditional aliasing도 지원합니다. 현재는 `browser` condition만 지원됩니다. 위 예시에서는 Turbopack이 브라우저 환경을 target으로 할 때 `mocha` module의 import가 `mocha/browser-entry.js`로 alias됩니다.
+
+### Resolving custom extensions || Custom 확장자 resolve하기
+
+webpack의 [`resolve.extensions`](https://webpack.js.org/configuration/resolve/#resolveextensions) configuration과 비슷하게, custom 확장자를 가진 module을 resolve하도록 Turbopack을 설정할 수 있습니다.
+
+resolve 확장자를 설정하려면 `next.config.js`에서 `resolveExtensions` field를 사용하세요:
+
+[[CODE 13]]
+
+이 설정은 기본 resolve 확장자를 지정한 목록으로 덮어쓰므로, 여전히 필요한 확장자를 모두 포함하세요. 기본값은 `.tsx`, `.ts`, `.jsx`, `.js`, `.mjs`, `.json`이며, server-side resolution에서는 native module을 위해 `.node`가 추가됩니다. client에서 `.node`를 나열해도 문제가 없으므로 하나의 목록으로 양쪽을 모두 처리할 수 있습니다.
+
+&gt; **Good to know**: 이 설정은 직접 작성한 source 파일에 적용됩니다. `node_modules` 안에서 resolve되는 import는 자체 확장자 목록을 유지하며 이 option의 영향을 받지 않습니다.
+
+앱을 webpack에서 Turbopack으로 migrate하는 방법에 대한 자세한 정보와 가이드는 [webpack 호환성에 관한 Turbopack 문서](https://turbo.build/pack/docs/migrating-from-webpack)를 참고하세요.
+
+### Debug IDs || Debug ID
+
+JavaScript bundle과 source map에서 [debug ID](https://github.com/tc39/ecma426/blob/main/proposals/debug-id.md)를 생성하도록 Turbopack을 설정할 수 있습니다.
+
+debug ID를 설정하려면 `next.config.js`에서 `debugIds` field를 사용하세요:
+
+[[CODE 14]]
+
+이 option은 호환성을 보장하기 위해 JavaScript bundle에 debug ID용 polyfill을 자동으로 추가합니다. debug ID는 `globalThis._debugIds` global 변수에서 사용할 수 있습니다.
+
+## Version History || 버전 기록
+
+| Version  | Changes                                              |
+| -------- | ---------------------------------------------------- |
+| `16.4.0` | `experimental.turbopackAdditionalRoots` 추가    |
+| `16.2.0` | `turbopackLoader` import attribute 추가.      |
+| `16.2.0` | `turbopack.rules.*.type` 추가.                  |
+| `16.2.0` | `turbopack.rules.*.condition.contentType` 추가. |
+| `16.2.0` | `turbopack.rules.*.condition.query` 추가.       |
+| `16.0.0` | `turbopack.debugIds` 추가.                      |
+| `16.0.0` | `turbopack.rules.*.condition` 추가.             |
+| `15.3.0` | `experimental.turbo`가 `turbopack`으로 변경됨.      |
+| `13.0.0` | `experimental.turbo` 도입.                     |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

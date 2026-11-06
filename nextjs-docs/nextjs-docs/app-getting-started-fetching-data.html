@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fetching Data (데이터 가져오기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/getting-started/fetching-data" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/getting-started/fetching-data" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/06-fetching-data.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-getting-started.html">Getting Started</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Fetching Data<span class="sub">데이터 가져오기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>이 페이지에서는 <a href="#server-components">Server</a> Component와 <a href="#client-components">Client</a> Component에서 데이터를 fetch하는 방법, 그리고 cache되지 않은 데이터에 의존하는 component를 <a href="#streaming">stream</a>하는 방법을 안내합니다.</p><div class="en-orig"><p>This page will walk you through how you can fetch data in <a href="#server-components">Server</a> and <a href="#client-components">Client</a> Components, and how to <a href="#streaming">stream</a> components that depend on uncached data.</p></div>
+<h2 class="sec" id="fetching-data"><a class="anchor" href="#fetching-data">Fetching data<span class="ko">데이터 가져오기</span></a></h2>
+<h3 class="sec" id="server-components"><a class="anchor" href="#server-components">Server Components</a></h3>
+<p>Server Component에서는 다음과 같은 모든 비동기 I/O로 데이터를 fetch할 수 있습니다:</p><div class="en-orig"><p>You can fetch data in Server Components using any asynchronous I/O, such as:</p></div>
+<ol>
+<li><a href="#with-the-fetch-api"><code>fetch</code> API</a></li>
+<li><a href="#with-an-orm-or-database">ORM 또는 database</a></li>
+</ol><div class="en-orig"><ol>
+<li>The <a href="#with-the-fetch-api"><code>fetch</code> API</a></li>
+<li>An <a href="#with-an-orm-or-database">ORM or database</a></li>
+</ol></div>
+<h4 class="sec" id="with-the-fetch-api"><a class="anchor" href="#with-the-fetch-api">With the <code>fetch</code> API<span class="ko"><code>fetch</code> API 사용하기</span></a></h4>
+<p><code>fetch</code> API로 데이터를 가져오려면 component를 비동기 함수로 바꾸고 <code>fetch</code> 호출을 await하세요. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>To fetch data with the <code>fetch</code> API, turn your component into an asynchronous function, and await the <code>fetch</code> call. For example:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/page.tsx" data-js="app/blog/page.js">app/blog/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default async function Page() {
+  const data = await fetch(&#x27;https://api.vercel.app/blog&#x27;)
+  const posts = await data.json()
+  return (
+    &lt;ul&gt;
+      {posts.map((post) =&gt; (
+        &lt;li key={post.id}&gt;{post.title}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function Page() {
+  const data = await fetch(&#x27;https://api.vercel.app/blog&#x27;)
+  const posts = await data.json()
+  return (
+    &lt;ul&gt;
+      {posts.map((post) =&gt; (
+        &lt;li key={post.id}&gt;{post.title}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>React component tree 안에서 동일한 <code>fetch</code> request는 기본적으로 <a href="app-glossary.html#memoization">memoize</a>되므로, props를 여러 단계로 내려보내는(drilling) 대신 데이터가 필요한 component에서 직접 fetch할 수 있습니다.</li>
+<li><code>fetch</code> request는 기본적으로 cache되지 않으며, request가 완료될 때까지 page rendering을 막습니다(block). 결과를 cache하려면 <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a> directive를 사용하고, request 시점에 최신 데이터를 stream하려면 fetch하는 component를 <a href="app-getting-started-caching.html#streaming-uncached-data"><code>&lt;Suspense&gt;</code></a>로 감싸세요. 자세한 내용은 <a href="app-getting-started-caching.html">caching</a>을 참고하세요.</li>
+<li>개발 중에는 <code>fetch</code> 호출을 log로 남겨 가시성을 높이고 디버깅에 활용할 수 있습니다. <a href="app-api-reference-config-next-config-js-logging.html"><code>logging</code> API reference</a>를 참고하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>Identical <code>fetch</code> requests in a React component tree are <a href="app-glossary.html#memoization">memoized</a> by default, so you can fetch data in the component that needs it instead of drilling props.</li>
+<li><code>fetch</code> requests are not cached by default and will block the page from rendering until the request is complete. Use the <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a> directive to cache results, or wrap the fetching component in <a href="app-getting-started-caching.html#streaming-uncached-data"><code>&lt;Suspense&gt;</code></a> to stream fresh data at request time. See <a href="app-getting-started-caching.html">caching</a> for details.</li>
+<li>During development, you can log <code>fetch</code> calls for better visibility and debugging. See the <a href="app-api-reference-config-next-config-js-logging.html"><code>logging</code> API reference</a>.</li>
+</ul></div></div></div>
+<h4 class="sec" id="with-an-orm-or-database"><a class="anchor" href="#with-an-orm-or-database">With an ORM or database<span class="ko">ORM 또는 database 사용하기</span></a></h4>
+<p>Server Component는 server에서 render되므로 credential과 query 로직이 client bundle에 포함되지 않습니다. 따라서 ORM이나 database client를 사용해 안전하게 database query를 실행할 수 있습니다.</p><div class="en-orig"><p>Since Server Components are rendered on the server, credentials and query logic will not be included in the client bundle so you can safely make database queries using an ORM or database client.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/page.tsx" data-js="app/blog/page.js">app/blog/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { db, posts } from &#x27;@/lib/db&#x27;
+
+export default async function Page() {
+  const allPosts = await db.select().from(posts)
+  return (
+    &lt;ul&gt;
+      {allPosts.map((post) =&gt; (
+        &lt;li key={post.id}&gt;{post.title}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { db, posts } from &#x27;@/lib/db&#x27;
+
+export default async function Page() {
+  const allPosts = await db.select().from(posts)
+  return (
+    &lt;ul&gt;
+      {allPosts.map((post) =&gt; (
+        &lt;li key={post.id}&gt;{post.title}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div></div>
+<p>그래도 request가 제대로 authentication 및 authorization되었는지는 반드시 확인해야 합니다. server-side 데이터 접근을 안전하게 하는 best practice는 <a href="app-guides-data-security.html">data security 가이드</a>를 참고하세요.</p><div class="en-orig"><p>You should still ensure requests are properly authenticated and authorized. For best practices on securing server-side data access, see the <a href="app-guides-data-security.html">data security guide</a>.</p></div>
+<h3 class="sec" id="streaming"><a class="anchor" href="#streaming">Streaming</a></h3>
+<p>Server Component에서 데이터를 fetch하면, 데이터는 request마다 server에서 fetch되고 render됩니다. 느린 data request가 하나라도 있으면 모든 데이터를 가져올 때까지 route 전체의 rendering이 막힙니다.</p><div class="en-orig"><p>When you fetch data in Server Components, the data is fetched and rendered on the server for each request. If you have any slow data requests, the whole route will be blocked from rendering until all the data is fetched.</p></div>
+<p>초기 로딩 시간과 사용자 경험을 개선하려면 page를 더 작은 <em>chunk</em> 로 나누고, 그 chunk들을 server에서 client로 점진적으로 보낼 수 있습니다. 이것을 streaming이라고 합니다. HTTP contract, 인프라 고려 사항, performance trade-off 등 streaming이 동작하는 방식을 더 깊이 알아보려면 <a href="app-guides-streaming.html">Streaming 가이드</a>를 참고하세요.</p><div class="en-orig"><p>To improve the initial load time and user experience, you can break the page into smaller <em>chunks</em> and progressively send those chunks from the server to the client. This is called streaming. See the <a href="app-guides-streaming.html">Streaming guide</a> for a deeper look at how streaming works, including the HTTP contract, infrastructure considerations, and performance trade-offs.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/server-rendering-with-streaming.png" alt="Streaming을 사용한 Server Rendering의 동작 방식" width="1600" height="785" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/server-rendering-with-streaming.png" alt="Streaming을 사용한 Server Rendering의 동작 방식" width="1600" height="785" loading="lazy" /></figure>
+<p>애플리케이션에서 streaming을 사용하는 방법은 두 가지입니다:</p><div class="en-orig"><p>There are two ways you can use streaming in your application:</p></div>
+<ol>
+<li>page를 <a href="#with-loadingjs"><code>loading.js</code> 파일</a>로 감싸기</li>
+<li>component를 <a href="#with-suspense"><code>&lt;Suspense&gt;</code></a>로 감싸기</li>
+</ol><div class="en-orig"><ol>
+<li>Wrapping a page with a <a href="#with-loadingjs"><code>loading.js</code> file</a></li>
+<li>Wrapping a component with <a href="#with-suspense"><code>&lt;Suspense&gt;</code></a></li>
+</ol></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>bot과 crawler에는 브라우저와 다른 방식으로 응답합니다. Next.js는 점진적으로 stream하는 대신 data fetching이 끝날 때까지 기다렸다가 완전히 render된 page를 보냅니다. <a href="app-guides-streaming.html#bots-and-crawlers">Bots and crawlers</a>를 참고하세요.</p><div class="en-orig"><p>Bots and crawlers are served differently from browsers. Next.js waits for data fetching to finish and sends the fully rendered page instead of streaming it progressively. See <a href="app-guides-streaming.html#bots-and-crawlers">Bots and crawlers</a>.</p></div></div></div>
+<h4 class="sec" id="with-loadingjs"><a class="anchor" href="#with-loadingjs">With <code>loading.js</code><span class="ko"><code>loading.js</code> 사용하기</span></a></h4>
+<p>page와 같은 폴더에 <code>loading.js</code> 파일을 만들면, 데이터를 가져오는 동안 <strong>entire page</strong> 단위로 stream할 수 있습니다. 예를 들어 <code>app/blog/page.js</code>를 stream하려면 <code>app/blog</code> 폴더 안에 이 파일을 추가하세요.</p><div class="en-orig"><p>You can create a <code>loading.js</code> file in the same folder as your page to stream the <strong>entire page</strong> while the data is being fetched. For example, to stream <code>app/blog/page.js</code>, add the file inside the <code>app/blog</code> folder.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/loading-file.png" alt="loading.js 파일이 있는 blog 폴더 구조" width="1600" height="525" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/loading-file.png" alt="loading.js 파일이 있는 blog 폴더 구조" width="1600" height="525" loading="lazy" /></figure>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/loading.tsx" data-js="app/blog/loading.js">app/blog/loading.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function Loading() {
+  // Define the Loading UI here
+  return &lt;div&gt;Loading...&lt;/div&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function Loading() {
+  // Define the Loading UI here
+  return &lt;div&gt;Loading...&lt;/div&gt;
+}</code></pre></div></div>
+<p>navigation 시 page가 render되는 동안 사용자는 layout과 <a href="#creating-meaningful-loading-states">loading state</a>를 즉시 보게 됩니다. rendering이 끝나면 새 콘텐츠로 자동으로 교체됩니다.</p><div class="en-orig"><p>On navigation, the user will immediately see the layout and a <a href="#creating-meaningful-loading-states">loading state</a> while the page is being rendered. The new content will then be automatically swapped in once rendering is complete.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/loading-ui.png" alt="Loading UI" width="1600" height="691" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/loading-ui.png" alt="Loading UI" width="1600" height="691" loading="lazy" /></figure>
+<p>내부적으로 <code>loading.js</code>는 <a href="app-getting-started-project-structure.html#component-hierarchy"><code>layout.js</code> 안에 중첩</a>되며, <code>page.js</code> 파일과 그 아래의 모든 children을 <code>&lt;Suspense&gt;</code> boundary로 자동으로 감쌉니다.</p><div class="en-orig"><p>Behind the scenes, <code>loading.js</code> will be <a href="app-getting-started-project-structure.html#component-hierarchy">nested inside <code>layout.js</code></a>, and will automatically wrap the <code>page.js</code> file and any children below in a <code>&lt;Suspense&gt;</code> boundary.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/loading-overview.png" alt="loading.js 개요" width="1600" height="768" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/loading-overview.png" alt="loading.js 개요" width="1600" height="768" loading="lazy" /></figure>
+<p>이 때문에 cache되지 않은 데이터나 runtime 데이터(예: <code>cookies()</code>, <code>headers()</code>, cache되지 않은 fetch)에 접근하는 layout은 같은 route segment의 <code>loading.js</code>로 fallback되지 않습니다. 대신 layout rendering이 끝날 때까지 navigation을 막습니다. <a href="app-getting-started-caching.html">Cache Components</a>는 build 시점 error로 이를 안내해 이런 상황을 방지합니다.</p><div class="en-orig"><p>Because of this, a layout that accesses uncached or runtime data (e.g. <code>cookies()</code>, <code>headers()</code>, or uncached fetches) does not fall back to a same route segment <code>loading.js</code>. Instead, it blocks navigation until the layout finishes rendering. <a href="app-getting-started-caching.html">Cache Components</a> prevents this by guiding you with a build-time error.</p></div>
+<p>이를 해결하려면 cache되지 않은 접근을 fallback이 있는 별도의 <a href="#with-suspense"><code>&lt;Suspense&gt;</code></a> boundary로 감싸거나, data fetching을 <code>loading.js</code>가 감쌀 수 있는 <code>page.js</code>로 옮기세요. 자세한 내용은 <a href="app-api-reference-file-conventions-loading.html"><code>loading.js</code></a>를 참고하세요.</p><div class="en-orig"><p>To fix this, wrap the uncached access in its own <a href="#with-suspense"><code>&lt;Suspense&gt;</code></a> boundary with a fallback, or move the data fetching into <code>page.js</code> where <code>loading.js</code> can cover it. See <a href="app-api-reference-file-conventions-loading.html"><code>loading.js</code></a> for more details.</p></div>
+<p>그래서 <code>loading.js</code>가 route segment를 stream하는 데는 잘 동작하지만, runtime 데이터나 cache되지 않은 데이터에 접근하는 곳에 더 가깝게 <code>&lt;Suspense&gt;</code>를 사용하는 것을 권장합니다.</p><div class="en-orig"><p>This is why, while <code>loading.js</code> works well for streaming route segments, using <code>&lt;Suspense&gt;</code> closer to the runtime or uncached data access is recommended.</p></div>
+<h4 class="sec" id="with-suspense"><a class="anchor" href="#with-suspense">With <code>&lt;Suspense&gt;</code><span class="ko"><code>&lt;Suspense&gt;</code> 사용하기</span></a></h4>
+<p><code>&lt;Suspense&gt;</code>를 사용하면 page의 어느 부분을 stream할지 더 세밀하게 정할 수 있습니다. 예를 들어 <code>&lt;Suspense&gt;</code> boundary 밖에 있는 page 콘텐츠는 즉시 보여 주고, boundary 안의 blog post 목록은 stream으로 받아올 수 있습니다.</p><div class="en-orig"><p><code>&lt;Suspense&gt;</code> allows you to be more granular about what parts of the page to stream. For example, you can immediately show any page content that falls outside of the <code>&lt;Suspense&gt;</code> boundary, and stream in the list of blog posts inside the boundary.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/page.tsx" data-js="app/blog/page.js">app/blog/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import BlogList from &#x27;@/components/BlogList&#x27;
+import BlogListSkeleton from &#x27;@/components/BlogListSkeleton&#x27;
+
+export default function BlogPage() {
+  return (
+    &lt;div&gt;
+      {/* This content will be sent to the client immediately */}
+      &lt;header&gt;
+        &lt;h1&gt;Welcome to the Blog&lt;/h1&gt;
+        &lt;p&gt;Read the latest posts below.&lt;/p&gt;
+      &lt;/header&gt;
+      &lt;main&gt;
+        {/* If there&#x27;s any dynamic content inside this boundary, it will be streamed in */}
+        &lt;Suspense fallback={&lt;BlogListSkeleton /&gt;}&gt;
+          &lt;BlogList /&gt;
+        &lt;/Suspense&gt;
+      &lt;/main&gt;
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { Suspense } from &#x27;react&#x27;
+import BlogList from &#x27;@/components/BlogList&#x27;
+import BlogListSkeleton from &#x27;@/components/BlogListSkeleton&#x27;
+
+export default function BlogPage() {
+  return (
+    &lt;div&gt;
+      {/* This content will be sent to the client immediately */}
+      &lt;header&gt;
+        &lt;h1&gt;Welcome to the Blog&lt;/h1&gt;
+        &lt;p&gt;Read the latest posts below.&lt;/p&gt;
+      &lt;/header&gt;
+      &lt;main&gt;
+        {/* If there&#x27;s any dynamic content inside this boundary, it will be streamed in */}
+        &lt;Suspense fallback={&lt;BlogListSkeleton /&gt;}&gt;
+          &lt;BlogList /&gt;
+        &lt;/Suspense&gt;
+      &lt;/main&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<h4 class="sec" id="creating-meaningful-loading-states"><a class="anchor" href="#creating-meaningful-loading-states">Creating meaningful loading states<span class="ko">의미 있는 loading state 만들기</span></a></h4>
+<p>instant loading state는 navigation 직후 사용자에게 즉시 보여 주는 fallback UI입니다. 최상의 사용자 경험을 위해, 앱이 응답하고 있다는 것을 사용자가 이해할 수 있도록 의미 있는 loading state를 디자인하는 것을 권장합니다. 예를 들어 skeleton과 spinner를 사용하거나, cover 사진, 제목처럼 앞으로 나올 화면의 작지만 의미 있는 일부를 보여 줄 수 있습니다.</p><div class="en-orig"><p>An instant loading state is fallback UI that is shown immediately to the user after navigation. For the best user experience, we recommend designing loading states that are meaningful and help users understand the app is responding. For example, you can use skeletons and spinners, or a small but meaningful part of future screens such as a cover photo, title, etc.</p></div>
+<p>개발 중에는 <a href="https://react.dev/learn/react-developer-tools" target="_blank" rel="noopener">React Devtools</a>를 사용해 component의 loading state를 미리 보고 검사할 수 있습니다.</p><div class="en-orig"><p>In development, you can preview and inspect the loading state of your components using the <a href="https://react.dev/learn/react-developer-tools" target="_blank" rel="noopener">React Devtools</a>.</p></div>
+<h3 class="sec" id="client-components"><a class="anchor" href="#client-components">Client Components</a></h3>
+<p>Client Component에서 데이터를 fetch하는 방법은 두 가지입니다:</p><div class="en-orig"><p>There are two ways to fetch data in Client Components, using:</p></div>
+<ol>
+<li>React의 <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use</code> API</a></li>
+<li><a href="https://swr.vercel.app/" target="_blank" rel="noopener">SWR</a>이나 <a href="https://tanstack.com/query/latest" target="_blank" rel="noopener">React Query</a> 같은 community library</li>
+</ol><div class="en-orig"><ol>
+<li>React's <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use</code> API</a></li>
+<li>A community library like <a href="https://swr.vercel.app/" target="_blank" rel="noopener">SWR</a> or <a href="https://tanstack.com/query/latest" target="_blank" rel="noopener">React Query</a></li>
+</ol></div>
+<h4 class="sec" id="streaming-data-with-the-use-api"><a class="anchor" href="#streaming-data-with-the-use-api">Streaming data with the <code>use</code> API<span class="ko"><code>use</code> API로 데이터 streaming하기</span></a></h4>
+<p>React의 <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use</code> API</a>를 사용해 server에서 client로 데이터를 <a href="#streaming">stream</a>할 수 있습니다. 먼저 Server component에서 데이터를 fetch하고, 그 promise를 Client Component에 prop으로 전달하세요:</p><div class="en-orig"><p>You can use React's <a href="https://react.dev/reference/react/use" target="_blank" rel="noopener"><code>use</code> API</a> to <a href="#streaming">stream</a> data from the server to client. Start by fetching data in your Server component, and pass the promise to your Client Component as prop:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/page.tsx" data-js="app/blog/page.js">app/blog/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Posts from &#x27;@/app/ui/posts&#x27;
+import { Suspense } from &#x27;react&#x27;
+
+export default function Page() {
+  // Don&#x27;t await the data fetching function
+  const posts = getPosts()
+
+  return (
+    &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+      &lt;Posts posts={posts} /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Posts from &#x27;@/app/ui/posts&#x27;
+import { Suspense } from &#x27;react&#x27;
+
+export default function Page() {
+  // Don&#x27;t await the data fetching function
+  const posts = getPosts()
+
+  return (
+    &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+      &lt;Posts posts={posts} /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre></div></div>
+<p>그런 다음 Client Component에서 <code>use</code> API로 promise를 읽습니다:</p><div class="en-orig"><p>Then, in your Client Component, use the <code>use</code> API to read the promise:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/ui/posts.tsx" data-js="app/ui/posts.js">app/ui/posts.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+import { use } from &#x27;react&#x27;
+
+export default function Posts({
+  posts,
+}: {
+  posts: Promise&lt;{ id: string; title: string }[]&gt;
+}) {
+  const allPosts = use(posts)
+
+  return (
+    &lt;ul&gt;
+      {allPosts.map((post) =&gt; (
+        &lt;li key={post.id}&gt;{post.title}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+import { use } from &#x27;react&#x27;
+
+export default function Posts({ posts }) {
+  const allPosts = use(posts)
+
+  return (
+    &lt;ul&gt;
+      {allPosts.map((post) =&gt; (
+        &lt;li key={post.id}&gt;{post.title}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div></div>
+<p>위 예제에서 <code>&lt;Posts&gt;</code> component는 <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code> boundary</a>로 감싸져 있습니다. 즉, promise가 resolve되는 동안 fallback이 표시됩니다. <a href="#streaming">streaming</a>에 대해 더 알아보세요.</p><div class="en-orig"><p>In the example above, the <code>&lt;Posts&gt;</code> component is wrapped in a <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code> boundary</a>. This means the fallback will be shown while the promise is being resolved. Learn more about <a href="#streaming">streaming</a>.</p></div>
+<p>promise는 server에서 <code>await</code>로 resolve하거나, Client Component에서 <code>use()</code>로 resolve할 수 있습니다. <a href="https://react.dev/reference/react/use#resolve-promise-in-server-or-client-component" target="_blank" rel="noopener">Server Component와 Client Component 중 어디에서 Promise를 resolve할지</a>는 React 문서에서 다룹니다. 하나의 promise를 prop으로 전달하는 대신 여러 Client Component와 공유하려면 context를 통해 제공하세요. <a href="app-guides-single-page-applications.html#using-reacts-use-within-a-context-provider">Using React's <code>use</code> within a Context Provider</a>를 참고하세요.</p><div class="en-orig"><p>You can resolve a promise on the server with <code>await</code> or in a Client Component with <code>use()</code>. React covers <a href="https://react.dev/reference/react/use#resolve-promise-in-server-or-client-component" target="_blank" rel="noopener">when to resolve a Promise in a Server or Client Component</a>. To share one promise with many Client Components instead of passing it as a prop, provide it through context. See <a href="app-guides-single-page-applications.html#using-reacts-use-within-a-context-provider">Using React's <code>use</code> within a Context Provider</a>.</p></div>
+<h4 class="sec" id="community-libraries"><a class="anchor" href="#community-libraries">Community libraries<span class="ko">Community library</span></a></h4>
+<p><a href="https://swr.vercel.app/" target="_blank" rel="noopener">SWR</a>이나 <a href="https://tanstack.com/query/latest" target="_blank" rel="noopener">React Query</a> 같은 community library를 사용해 Client Component에서 데이터를 fetch할 수 있습니다. 이 library들은 caching, streaming 및 기타 기능에 대해 자체적인 semantics를 가지고 있습니다. 예를 들어 SWR을 사용하면 다음과 같습니다:</p><div class="en-orig"><p>You can use a community library like <a href="https://swr.vercel.app/" target="_blank" rel="noopener">SWR</a> or <a href="https://tanstack.com/query/latest" target="_blank" rel="noopener">React Query</a> to fetch data in Client Components. These libraries have their own semantics for caching, streaming, and other features. For example, with SWR:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/blog/page.tsx" data-js="app/blog/page.js">app/blog/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+import useSWR from &#x27;swr&#x27;
+
+const fetcher = (url) =&gt; fetch(url).then((r) =&gt; r.json())
+
+export default function BlogPage() {
+  const { data, error, isLoading } = useSWR(
+    &#x27;https://api.vercel.app/blog&#x27;,
+    fetcher
+  )
+
+  if (isLoading) return &lt;div&gt;Loading...&lt;/div&gt;
+  if (error) return &lt;div&gt;Error: {error.message}&lt;/div&gt;
+
+  return (
+    &lt;ul&gt;
+      {data.map((post: { id: string; title: string }) =&gt; (
+        &lt;li key={post.id}&gt;{post.title}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import useSWR from &#x27;swr&#x27;
+
+const fetcher = (url) =&gt; fetch(url).then((r) =&gt; r.json())
+
+export default function BlogPage() {
+  const { data, error, isLoading } = useSWR(
+    &#x27;https://api.vercel.app/blog&#x27;,
+    fetcher
+  )
+
+  if (isLoading) return &lt;div&gt;Loading...&lt;/div&gt;
+  if (error) return &lt;div&gt;Error: {error.message}&lt;/div&gt;
+
+  return (
+    &lt;ul&gt;
+      {data.map((post) =&gt; (
+        &lt;li key={post.id}&gt;{post.title}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div></div>
+<p>브라우저에서 직접 fetch하는 방법, Server Component에서 initial data를 제공하는 방법, library cache를 Next.js의 server 및 client cache와 맞추는 방법은 <a href="app-guides-client-side-data-fetching.html">Client-side data fetching</a>을 참고하세요.</p><div class="en-orig"><p>See <a href="app-guides-client-side-data-fetching.html">Client-side data fetching</a> for direct browser fetching, providing initial data from a Server Component, and coordinating a library cache with the Next.js server and client caches.</p></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예제</span></a></h2>
+<h3 class="sec" id="sequential-data-fetching"><a class="anchor" href="#sequential-data-fetching">Sequential data fetching<span class="ko">순차적 data fetching</span></a></h3>
+<p>순차적(sequential) data fetching은 한 request가 다른 request의 데이터에 의존할 때 발생합니다.</p><div class="en-orig"><p>Sequential data fetching happens when one request depends on data from another.</p></div>
+<p>예를 들어 <code>&lt;Playlists&gt;</code>는 <code>artistID</code>가 필요하기 때문에 <code>getArtist()</code>가 resolve된 후에야 데이터를 fetch할 수 있습니다:</p><div class="en-orig"><p>For example, <code>&lt;Playlists&gt;</code> can only fetch data after <code>getArtist()</code> resolves because it needs the <code>artistID</code>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/artist/[username]/page.tsx" data-js="app/artist/[username]/page.js">app/artist/[username]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default async function Page({
+  params,
+}: {
+  params: Promise&lt;{ username: string }&gt;
+}) {
+  const { username } = await params
+  // Get artist information
+  const artist = await getArtist(username)
+
+  return (
+    &lt;&gt;
+      &lt;h1&gt;{artist.name}&lt;/h1&gt;
+      {/* Show fallback UI while the Playlists component is loading */}
+      &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+        {/* Pass the artist ID to the Playlists component */}
+        &lt;Playlists artistID={artist.id} /&gt;
+      &lt;/Suspense&gt;
+    &lt;/&gt;
+  )
+}
+
+async function Playlists({ artistID }: { artistID: string }) {
+  // Use the artist ID to fetch playlists
+  const playlists = await getArtistPlaylists(artistID)
+
+  return (
+    &lt;ul&gt;
+      {playlists.map((playlist) =&gt; (
+        &lt;li key={playlist.id}&gt;{playlist.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function Page({ params }) {
+  const { username } = await params
+  // Get artist information
+  const artist = await getArtist(username)
+
+  return (
+    &lt;&gt;
+      &lt;h1&gt;{artist.name}&lt;/h1&gt;
+      {/* Show fallback UI while the Playlists component is loading */}
+      &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+        {/* Pass the artist ID to the Playlists component */}
+        &lt;Playlists artistID={artist.id} /&gt;
+      &lt;/Suspense&gt;
+    &lt;/&gt;
+  )
+}
+
+async function Playlists({ artistID }) {
+  // Use the artist ID to fetch playlists
+  const playlists = await getArtistPlaylists(artistID)
+
+  return (
+    &lt;ul&gt;
+      {playlists.map((playlist) =&gt; (
+        &lt;li key={playlist.id}&gt;{playlist.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div></div>
+<p>이 예제에서 <code>&lt;Suspense&gt;</code>는 artist 데이터가 로드된 후 playlist가 stream되어 들어오게 해 줍니다. 하지만 page는 여전히 artist 데이터를 기다린 후에야 무언가를 표시합니다. 이를 방지하려면 page component 전체를 <code>&lt;Suspense&gt;</code> boundary로 감싸서(예: <a href="#with-loadingjs"><code>loading.js</code> 파일</a> 사용) loading state를 즉시 보여 줄 수 있습니다.</p><div class="en-orig"><p>In this example, <code>&lt;Suspense&gt;</code> allows the playlists to stream in after the artist data loads. However, the page still waits for the artist data before displaying anything. To prevent this, you can wrap the entire page component in a <code>&lt;Suspense&gt;</code> boundary (for example, using a <a href="#with-loadingjs"><code>loading.js</code> file</a>) to show a loading state immediately.</p></div>
+<p>첫 번째 request는 나머지 모든 것을 막으므로, data source가 이 request를 빠르게 resolve할 수 있도록 하세요. request를 더 이상 최적화할 수 없다면, 데이터가 자주 바뀌지 않는 경우 결과를 <a href="app-getting-started-caching.html">caching</a>하는 것을 고려하세요.</p><div class="en-orig"><p>Ensure your data source can resolve the first request quickly, as it blocks everything else. If you can't optimize the request further, consider <a href="app-getting-started-caching.html">caching</a> the result if the data changes infrequently.</p></div>
+<h3 class="sec" id="parallel-data-fetching"><a class="anchor" href="#parallel-data-fetching">Parallel data fetching<span class="ko">병렬 data fetching</span></a></h3>
+<p>병렬(parallel) data fetching은 route 안의 data request들이 미리(eagerly) 시작되어 동시에 진행될 때 발생합니다.</p><div class="en-orig"><p>Parallel data fetching happens when data requests in a route are eagerly initiated and start at the same time.</p></div>
+<p>기본적으로 <a href="app-getting-started-layouts-and-pages.html">layout과 page</a>는 병렬로 render됩니다. 따라서 각 segment는 가능한 한 빨리 데이터를 fetch하기 시작합니다.</p><div class="en-orig"><p>By default, <a href="app-getting-started-layouts-and-pages.html">layouts and pages</a> are rendered in parallel. So each segment starts fetching data as soon as possible.</p></div>
+<p>하지만 <em>어떤</em> component 안에서든, 여러 <code>async</code>/<code>await</code> request를 차례로 배치하면 여전히 순차적으로 실행될 수 있습니다. 예를 들어 <code>getAlbums</code>는 <code>getArtist</code>가 resolve될 때까지 막힙니다:</p><div class="en-orig"><p>However, within <em>any</em> component, multiple <code>async</code>/<code>await</code> requests can still be sequential if placed after the other. For example, <code>getAlbums</code> will be blocked until <code>getArtist</code> is resolved:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/artist/[username]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { getArtist, getAlbums } from &#x27;@/app/lib/data&#x27;
+
+export default async function Page({ params }) {
+  // These requests will be sequential
+  const { username } = await params
+  const artist = await getArtist(username)
+  const albums = await getAlbums(username)
+  return &lt;div&gt;{artist.name}&lt;/div&gt;
+}</code></pre></div></div>
+<p><code>fetch</code>를 호출해 여러 request를 시작한 다음, <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all" target="_blank" rel="noopener"><code>Promise.all</code></a>로 await하세요. request는 <code>fetch</code>가 호출되는 즉시 시작됩니다.</p><div class="en-orig"><p>Start multiple requests by calling <code>fetch</code>, then await them with <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all" target="_blank" rel="noopener"><code>Promise.all</code></a>. Requests begin as soon as <code>fetch</code> is called.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/artist/[username]/page.tsx" data-js="app/artist/[username]/page.js">app/artist/[username]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Albums from &#x27;./albums&#x27;
+
+async function getArtist(username: string) {
+  const res = await fetch(`https://api.example.com/artist/${username}`)
+  return res.json()
+}
+
+async function getAlbums(username: string) {
+  const res = await fetch(`https://api.example.com/artist/${username}/albums`)
+  return res.json()
+}
+
+export default async function Page({
+  params,
+}: {
+  params: Promise&lt;{ username: string }&gt;
+}) {
+  const { username } = await params
+
+  // Initiate requests
+  const artistData = getArtist(username)
+  const albumsData = getAlbums(username)
+
+  const [artist, albums] = await Promise.all([artistData, albumsData])
+
+  return (
+    &lt;&gt;
+      &lt;h1&gt;{artist.name}&lt;/h1&gt;
+      &lt;Albums list={albums} /&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Albums from &#x27;./albums&#x27;
+
+async function getArtist(username) {
+  const res = await fetch(`https://api.example.com/artist/${username}`)
+  return res.json()
+}
+
+async function getAlbums(username) {
+  const res = await fetch(`https://api.example.com/artist/${username}/albums`)
+  return res.json()
+}
+
+export default async function Page({ params }) {
+  const { username } = await params
+
+  // Initiate requests
+  const artistData = getArtist(username)
+  const albumsData = getAlbums(username)
+
+  const [artist, albums] = await Promise.all([artistData, albumsData])
+
+  return (
+    &lt;&gt;
+      &lt;h1&gt;{artist.name}&lt;/h1&gt;
+      &lt;Albums list={albums} /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>Promise.all</code>을 사용할 때 request 하나가 실패하면 전체 작업이 실패합니다. 이를 처리하려면 대신 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled" target="_blank" rel="noopener"><code>Promise.allSettled</code></a> method를 사용할 수 있습니다.</p><div class="en-orig"><p>If one request fails when using <code>Promise.all</code>, the entire operation will fail. To handle this, you can use the <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled" target="_blank" rel="noopener"><code>Promise.allSettled</code></a> method instead.</p></div></div></div>
+<h3 class="sec" id="reusing-data-with-reactcache"><a class="anchor" href="#reusing-data-with-reactcache">Reusing data with <code>React.cache</code><span class="ko"><code>React.cache</code>로 데이터 재사용하기</span></a></h3>
+<p>ORM이나 database query처럼 <code>fetch</code>를 사용하지 않는 데이터 접근은 함수를 <a href="https://react.dev/reference/react/cache" target="_blank" rel="noopener"><code>React.cache</code></a>로 감싸세요. 그러면 여러 component가 같은 request 안에서 이 함수를 호출하면서 하나의 결과를 공유할 수 있습니다:</p><div class="en-orig"><p>For data access that does not use <code>fetch</code>, such as an ORM or database query, wrap the function in <a href="https://react.dev/reference/react/cache" target="_blank" rel="noopener"><code>React.cache</code></a>. Multiple components can then call the function within the same request while sharing one result:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/lib/user.ts" data-js="app/lib/user.js">app/lib/user.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { cache } from &#x27;react&#x27;
+import { db, eq, users } from &#x27;@/lib/db&#x27;
+
+export const getUser = cache(async (id: string) =&gt; {
+  return db.query.users.findFirst({
+    where: eq(users.id, id),
+  })
+})</code></pre><pre class="v-js" hidden><code class="language-javascript">import { cache } from &#x27;react&#x27;
+import { db, eq, users } from &#x27;@/lib/db&#x27;
+
+export const getUser = cache(async (id) =&gt; {
+  return db.query.users.findFirst({
+    where: eq(users.id, id),
+  })
+})</code></pre></div></div>
+<p>Server Component는 <code>getUser()</code>를 직접 호출할 수 있습니다:</p><div class="en-orig"><p>Server Components can call <code>getUser()</code> directly:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/page.tsx" data-js="app/dashboard/page.js">app/dashboard/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { getUser } from &#x27;../lib/user&#x27;
+
+export default async function DashboardPage() {
+  const user = await getUser(&#x27;1&#x27;)
+
+  if (!user) {
+    return null
+  }
+
+  return &lt;h1&gt;Dashboard for {user.name}&lt;/h1&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { getUser } from &#x27;../lib/user&#x27;
+
+export default async function DashboardPage() {
+  const user = await getUser(&#x27;1&#x27;)
+
+  if (!user) {
+    return null
+  }
+
+  return &lt;h1&gt;Dashboard for {user.name}&lt;/h1&gt;
+}</code></pre></div></div>
+<p><code>getUser</code>가 <code>React.cache</code>로 감싸져 있으므로, 한 request 안에서 같은 <code>id</code>로 호출하면 memoize된 같은 결과가 반환됩니다.</p><div class="en-orig"><p>Since <code>getUser</code> is wrapped with <code>React.cache</code>, calls with the same <code>id</code> within one request return the same memoized result.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="https://react.dev/reference/react/cache#caveats" target="_blank" rel="noopener"><code>React.cache</code></a>는 현재 request 범위로만 한정됩니다. 각 request는 자체 memoization 범위를 가지며, request 사이에서는 공유되지 않습니다.</p><div class="en-orig"><p><a href="https://react.dev/reference/react/cache#caveats" target="_blank" rel="noopener"><code>React.cache</code></a> is scoped to the current request only. Each request gets its own memoization scope with no sharing between requests.</p></div></div></div>
+<h3 class="sec" id="preloading-data"><a class="anchor" href="#preloading-data">Preloading data<span class="ko">데이터 preload하기</span></a></h3>
+<p>component가 다른 blocking 작업 이후에 render되면, request 입력값이 이미 준비되어 있더라도 data request가 늦게 시작됩니다. preload는 request를 더 일찍 시작해 그 작업과 병렬로 실행되게 하여 request waterfall을 피합니다.</p><div class="en-orig"><p>When a component renders after other blocking work, its data request starts late even if the request inputs are already available. Preloading starts the request earlier so it can run in parallel with that work and avoid a request waterfall.</p></div>
+<p>데이터를 preload하려면 blocking 작업 전에 data-fetching 함수를 <code>await</code> 없이 호출하고, 결과를 사용하는 component에서 같은 함수를 다시 호출하세요.</p><div class="en-orig"><p>To preload data, call the data-fetching function without <code>await</code> before blocking work, then call the same function in the component that consumes the result.</p></div>
+<p>component가 preload 중에 시작된 request를 재사용할 수 있도록, data-fetching 함수는 일치하는 호출을 deduplicate해야 합니다. 다음 방법 중 하나를 사용하세요:</p><div class="en-orig"><p>The data-fetching function must deduplicate matching calls so the component can reuse the request started during preloading. Use one of the following approaches:</p></div>
+<ul>
+<li><code>fetch</code>는 <a href="app-api-reference-functions-fetch.html#memoization">동일한 request가 자동으로 memoize</a>됩니다.</li>
+<li>ORM이나 database는 data-fetching 함수를 <a href="#reusing-data-with-reactcache"><code>React.cache</code></a>로 감싸세요.</li>
+<li>Cache Components를 사용한다면 data-fetching 함수에 <a href="app-api-reference-directives-use-cache.html"><code>&#x27;use cache&#x27;</code></a>를 추가하세요. 함수가 <code>cookies()</code>나 <code>headers()</code> 같은 request API를 읽는다면 <a href="app-api-reference-directives-use-cache-private.html"><code>&#x27;use cache: private&#x27;</code></a>를 사용하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>For <code>fetch</code>, <a href="app-api-reference-functions-fetch.html#memoization">identical requests are memoized automatically</a>.</li>
+<li>For an ORM or database, wrap the data-fetching function in <a href="#reusing-data-with-reactcache"><code>React.cache</code></a>.</li>
+<li>With Cache Components, add <a href="app-api-reference-directives-use-cache.html"><code>&#x27;use cache&#x27;</code></a> to the data-fetching function. If the function reads request APIs such as <code>cookies()</code> or <code>headers()</code>, use <a href="app-api-reference-directives-use-cache-private.html"><code>&#x27;use cache: private&#x27;</code></a>.</li>
+</ul></div>
+<p>production에서는 private Cache Function에 대한 일치하는 호출들이 한 request 안에서 같은 결과를 재사용할 수 있습니다. 덕분에 component는 결과를 request 간 server cache에 저장하지 않고도 preload 중에 시작된 request를 재사용할 수 있습니다.</p><div class="en-orig"><p>In production, matching calls to a private Cache Function can reuse the same result within one request. This lets a component reuse a request started during preloading without storing the result in a server cache across requests.</p></div>
+<p>preload 함수는 데이터를 사용하는 component 옆에 두세요. 그러면 component를 옮기거나 제거할 때 dependency를 더 쉽게 찾을 수 있습니다:</p><div class="en-orig"><p>Keep the preload function next to the component that consumes the data. This makes the dependency easier to find if you move or remove the component:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/item/[id]/item.tsx" data-js="app/item/[id]/item.js">app/item/[id]/item.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">async function getItem(id: string) {
+  const res = await fetch(`https://api.example.com/items/${id}`)
+  return res.json()
+}
+
+export const preload = (id: string) =&gt; {
+  void getItem(id)
+}
+
+export default async function Item({ id }: { id: string }) {
+  const item = await getItem(id)
+  return &lt;div&gt;{item.name}&lt;/div&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">async function getItem(id) {
+  const res = await fetch(`https://api.example.com/items/${id}`)
+  return res.json()
+}
+
+export const preload = (id) =&gt; {
+  void getItem(id)
+}
+
+export default async function Item({ id }) {
+  const item = await getItem(id)
+  return &lt;div&gt;{item.name}&lt;/div&gt;
+}</code></pre></div></div>
+<p>다른 blocking request 전에 <code>preload()</code>를 호출해 item 로딩을 더 일찍 시작하세요:</p><div class="en-orig"><p>Call <code>preload()</code> before another blocking request to start loading the item earlier:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/item/[id]/page.tsx" data-js="app/item/[id]/page.js">app/item/[id]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Item, { preload } from &#x27;./item&#x27;
+import { checkIsAvailable } from &#x27;@/app/lib/data&#x27;
+
+export default async function Page({
+  params,
+}: {
+  params: Promise&lt;{ id: string }&gt;
+}) {
+  const { id } = await params
+
+  preload(id)
+  const isAvailable = await checkIsAvailable(id)
+
+  return isAvailable ? &lt;Item id={id} /&gt; : null
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Item, { preload } from &#x27;./item&#x27;
+import { checkIsAvailable } from &#x27;@/app/lib/data&#x27;
+
+export default async function Page({ params }) {
+  const { id } = await params
+
+  preload(id)
+  const isAvailable = await checkIsAvailable(id)
+
+  return isAvailable ? &lt;Item id={id} /&gt; : null
+}</code></pre></div></div>
+<p><code>checkIsAvailable()</code>이 실행되는 동안 item request는 계속 진행됩니다. page가 <code>&lt;Item&gt;</code>을 render하면, 동일한 <code>fetch</code> 호출이 <code>preload()</code>가 시작한 request를 재사용합니다.</p><div class="en-orig"><p>The item request continues while <code>checkIsAvailable()</code> runs. If the page renders <code>&lt;Item&gt;</code>, the identical <code>fetch</code> call reuses the request that <code>preload()</code> started.</p></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">다음 단계</h2><p>고급 data-fetching 패턴과 이 페이지에서 언급한 기능에 대해 더 알아보세요.</p><div class="rgrid"><a class="rcard" href="app-guides-single-page-applications.html"><div class="rt">How to build single-page applications with Next.js</div><div class="rk">Next.js로 Single-Page Application 만들기</div><div class="rd">Next.js는 Single-Page Application(SPA) 개발을 완전히 지원합니다.</div></a><a class="rcard" href="app-guides-data-security.html"><div class="rt">How to think about data security in Next.js</div><div class="rk">Next.js의 데이터 보안을 생각하는 방법</div><div class="rd">Next.js에 내장된 데이터 보안 기능과 애플리케이션 데이터를 보호하기 위한 best practice를 알아봅니다.</div></a><a class="rcard" href="app-api-reference-functions-fetch.html"><div class="rt">fetch</div><div class="rk">fetch</div><div class="rd">확장된 fetch 함수에 대한 API reference입니다.</div></a><a class="rcard" href="app-api-reference-file-conventions-loading.html"><div class="rt">loading.js</div><div class="rk">loading.js</div><div class="rd">loading.js 파일에 대한 API reference입니다.</div></a><a class="rcard" href="app-api-reference-config-next-config-js-logging.html"><div class="rt">logging</div><div class="rk">logging</div><div class="rd">Next.js를 development mode로 실행할 때 terminal의 logging 동작을 설정합니다. fetch logging, 들어오는 request, 브라우저 console log를 terminal로 전달하는 기능을 포함합니다.</div></a><a class="rcard" href="app-api-reference-config-next-config-js-taint.html"><div class="rt">taint</div><div class="rk">taint</div><div class="rd">객체와 값의 tainting을 활성화합니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/06-fetching-data.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/getting-started/fetching-data" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-getting-started-server-and-client-components.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Server and Client Components</div><div class="ttl-ko">Server Component와 Client Component</div></a>
+      <a href="app-getting-started-mutating-data.html" class="next"><div class="dir">다음 →</div><div class="ttl">Mutating Data</div><div class="ttl-ko">데이터 변경하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/getting-started/fetching-data" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#fetching-data">Fetching data</a></li><li class="l3"><a href="#server-components">Server Components</a></li><li class="l3"><a href="#streaming">Streaming</a></li><li class="l3"><a href="#client-components">Client Components</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#sequential-data-fetching">Sequential data fetching</a></li><li class="l3"><a href="#parallel-data-fetching">Parallel data fetching</a></li><li class="l3"><a href="#reusing-data-with-reactcache">Reusing data with <code>React.cache</code></a></li><li class="l3"><a href="#preloading-data">Preloading data</a></li><li class="l2"><a href="#next-steps">다음 단계</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+이 페이지에서는 [Server](#server-components) Component와 [Client](#client-components) Component에서 데이터를 fetch하는 방법, 그리고 cache되지 않은 데이터에 의존하는 component를 [stream](#streaming)하는 방법을 안내합니다.
+
+## Fetching data || 데이터 가져오기
+
+### Server Components
+
+Server Component에서는 다음과 같은 모든 비동기 I/O로 데이터를 fetch할 수 있습니다:
+
+1. [`fetch` API](#with-the-fetch-api)
+2. [ORM 또는 database](#with-an-orm-or-database)
+
+#### With the `fetch` API || `fetch` API 사용하기
+
+`fetch` API로 데이터를 가져오려면 component를 비동기 함수로 바꾸고 `fetch` 호출을 await하세요. 예를 들면 다음과 같습니다:
+
+[[CODE 1]]
+
+&gt; **Good to know:**
+&gt;
+&gt; - React component tree 안에서 동일한 `fetch` request는 기본적으로 [memoize](/docs/app/glossary#memoization)되므로, props를 여러 단계로 내려보내는(drilling) 대신 데이터가 필요한 component에서 직접 fetch할 수 있습니다.
+&gt; - `fetch` request는 기본적으로 cache되지 않으며, request가 완료될 때까지 page rendering을 막습니다(block). 결과를 cache하려면 [`use cache`](/docs/app/api-reference/directives/use-cache) directive를 사용하고, request 시점에 최신 데이터를 stream하려면 fetch하는 component를 [`&lt;Suspense&gt;`](/docs/app/getting-started/caching#streaming-uncached-data)로 감싸세요. 자세한 내용은 [caching](/docs/app/getting-started/caching)을 참고하세요.
+&gt; - 개발 중에는 `fetch` 호출을 log로 남겨 가시성을 높이고 디버깅에 활용할 수 있습니다. [`logging` API reference](/docs/app/api-reference/config/next-config-js/logging)를 참고하세요.
+
+#### With an ORM or database || ORM 또는 database 사용하기
+
+Server Component는 server에서 render되므로 credential과 query 로직이 client bundle에 포함되지 않습니다. 따라서 ORM이나 database client를 사용해 안전하게 database query를 실행할 수 있습니다.
+
+[[CODE 2]]
+
+그래도 request가 제대로 authentication 및 authorization되었는지는 반드시 확인해야 합니다. server-side 데이터 접근을 안전하게 하는 best practice는 [data security 가이드](/docs/app/guides/data-security)를 참고하세요.
+
+### Streaming
+
+Server Component에서 데이터를 fetch하면, 데이터는 request마다 server에서 fetch되고 render됩니다. 느린 data request가 하나라도 있으면 모든 데이터를 가져올 때까지 route 전체의 rendering이 막힙니다.
+
+초기 로딩 시간과 사용자 경험을 개선하려면 page를 더 작은 _chunk_ 로 나누고, 그 chunk들을 server에서 client로 점진적으로 보낼 수 있습니다. 이것을 streaming이라고 합니다. HTTP contract, 인프라 고려 사항, performance trade-off 등 streaming이 동작하는 방식을 더 깊이 알아보려면 [Streaming 가이드](/docs/app/guides/streaming)를 참고하세요.
+
+&lt;Image
+  alt=&quot;Streaming을 사용한 Server Rendering의 동작 방식&quot;
+  srcLight=&quot;/docs/light/server-rendering-with-streaming.png&quot;
+  srcDark=&quot;/docs/dark/server-rendering-with-streaming.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;785&quot;
+/&gt;
+
+애플리케이션에서 streaming을 사용하는 방법은 두 가지입니다:
+
+1. page를 [`loading.js` 파일](#with-loadingjs)로 감싸기
+2. component를 [`&lt;Suspense&gt;`](#with-suspense)로 감싸기
+
+&gt; **Good to know:** bot과 crawler에는 브라우저와 다른 방식으로 응답합니다. Next.js는 점진적으로 stream하는 대신 data fetching이 끝날 때까지 기다렸다가 완전히 render된 page를 보냅니다. [Bots and crawlers](/docs/app/guides/streaming#bots-and-crawlers)를 참고하세요.
+
+#### With `loading.js` || `loading.js` 사용하기
+
+page와 같은 폴더에 `loading.js` 파일을 만들면, 데이터를 가져오는 동안 **entire page** 단위로 stream할 수 있습니다. 예를 들어 `app/blog/page.js`를 stream하려면 `app/blog` 폴더 안에 이 파일을 추가하세요.
+
+&lt;Image
+  alt=&quot;loading.js 파일이 있는 blog 폴더 구조&quot;
+  srcLight=&quot;/docs/light/loading-file.png&quot;
+  srcDark=&quot;/docs/dark/loading-file.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;525&quot;
+/&gt;
+
+[[CODE 3]]
+
+navigation 시 page가 render되는 동안 사용자는 layout과 [loading state](#creating-meaningful-loading-states)를 즉시 보게 됩니다. rendering이 끝나면 새 콘텐츠로 자동으로 교체됩니다.
+
+&lt;Image
+  alt=&quot;Loading UI&quot;
+  srcLight=&quot;/docs/light/loading-ui.png&quot;
+  srcDark=&quot;/docs/dark/loading-ui.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;691&quot;
+/&gt;
+
+내부적으로 `loading.js`는 [`layout.js` 안에 중첩](/docs/app/getting-started/project-structure#component-hierarchy)되며, `page.js` 파일과 그 아래의 모든 children을 `&lt;Suspense&gt;` boundary로 자동으로 감쌉니다.
+
+&lt;Image
+  alt=&quot;loading.js 개요&quot;
+  srcLight=&quot;/docs/light/loading-overview.png&quot;
+  srcDark=&quot;/docs/dark/loading-overview.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;768&quot;
+/&gt;
+
+이 때문에 cache되지 않은 데이터나 runtime 데이터(예: `cookies()`, `headers()`, cache되지 않은 fetch)에 접근하는 layout은 같은 route segment의 `loading.js`로 fallback되지 않습니다. 대신 layout rendering이 끝날 때까지 navigation을 막습니다. [Cache Components](/docs/app/getting-started/caching)는 build 시점 error로 이를 안내해 이런 상황을 방지합니다.
+
+이를 해결하려면 cache되지 않은 접근을 fallback이 있는 별도의 [`&lt;Suspense&gt;`](#with-suspense) boundary로 감싸거나, data fetching을 `loading.js`가 감쌀 수 있는 `page.js`로 옮기세요. 자세한 내용은 [`loading.js`](/docs/app/api-reference/file-conventions/loading)를 참고하세요.
+
+그래서 `loading.js`가 route segment를 stream하는 데는 잘 동작하지만, runtime 데이터나 cache되지 않은 데이터에 접근하는 곳에 더 가깝게 `&lt;Suspense&gt;`를 사용하는 것을 권장합니다.
+
+#### With `&lt;Suspense&gt;` || `&lt;Suspense&gt;` 사용하기
+
+`&lt;Suspense&gt;`를 사용하면 page의 어느 부분을 stream할지 더 세밀하게 정할 수 있습니다. 예를 들어 `&lt;Suspense&gt;` boundary 밖에 있는 page 콘텐츠는 즉시 보여 주고, boundary 안의 blog post 목록은 stream으로 받아올 수 있습니다.
+
+[[CODE 4]]
+
+#### Creating meaningful loading states || 의미 있는 loading state 만들기
+
+instant loading state는 navigation 직후 사용자에게 즉시 보여 주는 fallback UI입니다. 최상의 사용자 경험을 위해, 앱이 응답하고 있다는 것을 사용자가 이해할 수 있도록 의미 있는 loading state를 디자인하는 것을 권장합니다. 예를 들어 skeleton과 spinner를 사용하거나, cover 사진, 제목처럼 앞으로 나올 화면의 작지만 의미 있는 일부를 보여 줄 수 있습니다.
+
+개발 중에는 [React Devtools](https://react.dev/learn/react-developer-tools)를 사용해 component의 loading state를 미리 보고 검사할 수 있습니다.
+
+### Client Components
+
+Client Component에서 데이터를 fetch하는 방법은 두 가지입니다:
+
+1. React의 [`use` API](https://react.dev/reference/react/use)
+2. [SWR](https://swr.vercel.app/)이나 [React Query](https://tanstack.com/query/latest) 같은 community library
+
+#### Streaming data with the `use` API || `use` API로 데이터 streaming하기
+
+React의 [`use` API](https://react.dev/reference/react/use)를 사용해 server에서 client로 데이터를 [stream](#streaming)할 수 있습니다. 먼저 Server component에서 데이터를 fetch하고, 그 promise를 Client Component에 prop으로 전달하세요:
+
+[[CODE 5]]
+
+그런 다음 Client Component에서 `use` API로 promise를 읽습니다:
+
+[[CODE 6]]
+
+위 예제에서 `&lt;Posts&gt;` component는 [`&lt;Suspense&gt;` boundary](https://react.dev/reference/react/Suspense)로 감싸져 있습니다. 즉, promise가 resolve되는 동안 fallback이 표시됩니다. [streaming](#streaming)에 대해 더 알아보세요.
+
+promise는 server에서 `await`로 resolve하거나, Client Component에서 `use()`로 resolve할 수 있습니다. [Server Component와 Client Component 중 어디에서 Promise를 resolve할지](https://react.dev/reference/react/use#resolve-promise-in-server-or-client-component)는 React 문서에서 다룹니다. 하나의 promise를 prop으로 전달하는 대신 여러 Client Component와 공유하려면 context를 통해 제공하세요. [Using React&#x27;s `use` within a Context Provider](/docs/app/guides/single-page-applications#using-reacts-use-within-a-context-provider)를 참고하세요.
+
+#### Community libraries || Community library
+
+[SWR](https://swr.vercel.app/)이나 [React Query](https://tanstack.com/query/latest) 같은 community library를 사용해 Client Component에서 데이터를 fetch할 수 있습니다. 이 library들은 caching, streaming 및 기타 기능에 대해 자체적인 semantics를 가지고 있습니다. 예를 들어 SWR을 사용하면 다음과 같습니다:
+
+[[CODE 7]]
+
+브라우저에서 직접 fetch하는 방법, Server Component에서 initial data를 제공하는 방법, library cache를 Next.js의 server 및 client cache와 맞추는 방법은 [Client-side data fetching](/docs/app/guides/client-side-data-fetching)을 참고하세요.
+
+## Examples || 예제
+
+### Sequential data fetching || 순차적 data fetching
+
+순차적(sequential) data fetching은 한 request가 다른 request의 데이터에 의존할 때 발생합니다.
+
+예를 들어 `&lt;Playlists&gt;`는 `artistID`가 필요하기 때문에 `getArtist()`가 resolve된 후에야 데이터를 fetch할 수 있습니다:
+
+[[CODE 8]]
+
+이 예제에서 `&lt;Suspense&gt;`는 artist 데이터가 로드된 후 playlist가 stream되어 들어오게 해 줍니다. 하지만 page는 여전히 artist 데이터를 기다린 후에야 무언가를 표시합니다. 이를 방지하려면 page component 전체를 `&lt;Suspense&gt;` boundary로 감싸서(예: [`loading.js` 파일](#with-loadingjs) 사용) loading state를 즉시 보여 줄 수 있습니다.
+
+첫 번째 request는 나머지 모든 것을 막으므로, data source가 이 request를 빠르게 resolve할 수 있도록 하세요. request를 더 이상 최적화할 수 없다면, 데이터가 자주 바뀌지 않는 경우 결과를 [caching](/docs/app/getting-started/caching)하는 것을 고려하세요.
+
+### Parallel data fetching || 병렬 data fetching
+
+병렬(parallel) data fetching은 route 안의 data request들이 미리(eagerly) 시작되어 동시에 진행될 때 발생합니다.
+
+기본적으로 [layout과 page](/docs/app/getting-started/layouts-and-pages)는 병렬로 render됩니다. 따라서 각 segment는 가능한 한 빨리 데이터를 fetch하기 시작합니다.
+
+하지만 _어떤_ component 안에서든, 여러 `async`/`await` request를 차례로 배치하면 여전히 순차적으로 실행될 수 있습니다. 예를 들어 `getAlbums`는 `getArtist`가 resolve될 때까지 막힙니다:
+
+[[CODE 9]]
+
+`fetch`를 호출해 여러 request를 시작한 다음, [`Promise.all`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)로 await하세요. request는 `fetch`가 호출되는 즉시 시작됩니다.
+
+[[CODE 10]]
+
+&gt; **Good to know:** `Promise.all`을 사용할 때 request 하나가 실패하면 전체 작업이 실패합니다. 이를 처리하려면 대신 [`Promise.allSettled`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise/allSettled) method를 사용할 수 있습니다.
+
+### Reusing data with `React.cache` || `React.cache`로 데이터 재사용하기
+
+ORM이나 database query처럼 `fetch`를 사용하지 않는 데이터 접근은 함수를 [`React.cache`](https://react.dev/reference/react/cache)로 감싸세요. 그러면 여러 component가 같은 request 안에서 이 함수를 호출하면서 하나의 결과를 공유할 수 있습니다:
+
+[[CODE 11]]
+
+Server Component는 `getUser()`를 직접 호출할 수 있습니다:
+
+[[CODE 12]]
+
+`getUser`가 `React.cache`로 감싸져 있으므로, 한 request 안에서 같은 `id`로 호출하면 memoize된 같은 결과가 반환됩니다.
+
+&gt; **Good to know:** [`React.cache`](https://react.dev/reference/react/cache#caveats)는 현재 request 범위로만 한정됩니다. 각 request는 자체 memoization 범위를 가지며, request 사이에서는 공유되지 않습니다.
+
+### Preloading data || 데이터 preload하기
+
+component가 다른 blocking 작업 이후에 render되면, request 입력값이 이미 준비되어 있더라도 data request가 늦게 시작됩니다. preload는 request를 더 일찍 시작해 그 작업과 병렬로 실행되게 하여 request waterfall을 피합니다.
+
+데이터를 preload하려면 blocking 작업 전에 data-fetching 함수를 `await` 없이 호출하고, 결과를 사용하는 component에서 같은 함수를 다시 호출하세요.
+
+component가 preload 중에 시작된 request를 재사용할 수 있도록, data-fetching 함수는 일치하는 호출을 deduplicate해야 합니다. 다음 방법 중 하나를 사용하세요:
+
+- `fetch`는 [동일한 request가 자동으로 memoize](/docs/app/api-reference/functions/fetch#memoization)됩니다.
+- ORM이나 database는 data-fetching 함수를 [`React.cache`](#reusing-data-with-reactcache)로 감싸세요.
+- Cache Components를 사용한다면 data-fetching 함수에 [`&#x27;use cache&#x27;`](/docs/app/api-reference/directives/use-cache)를 추가하세요. 함수가 `cookies()`나 `headers()` 같은 request API를 읽는다면 [`&#x27;use cache: private&#x27;`](/docs/app/api-reference/directives/use-cache-private)를 사용하세요.
+
+production에서는 private Cache Function에 대한 일치하는 호출들이 한 request 안에서 같은 결과를 재사용할 수 있습니다. 덕분에 component는 결과를 request 간 server cache에 저장하지 않고도 preload 중에 시작된 request를 재사용할 수 있습니다.
+
+preload 함수는 데이터를 사용하는 component 옆에 두세요. 그러면 component를 옮기거나 제거할 때 dependency를 더 쉽게 찾을 수 있습니다:
+
+[[CODE 13]]
+
+다른 blocking request 전에 `preload()`를 호출해 item 로딩을 더 일찍 시작하세요:
+
+[[CODE 14]]
+
+`checkIsAvailable()`이 실행되는 동안 item request는 계속 진행됩니다. page가 `&lt;Item&gt;`을 render하면, 동일한 `fetch` 호출이 `preload()`가 시작한 request를 재사용합니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

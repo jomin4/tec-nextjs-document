@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to implement internationalization in Next.js (Next.js에서 국제화(i18n) 구현하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/guides/internationalization" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/guides/internationalization" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/02-guides/internationalization.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to implement internationalization in Next.js<span class="sub">Next.js에서 국제화(i18n) 구현하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<details><summary>예제</summary><div class="details-body"><ul>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/i18n-routing-pages" target="_blank" rel="noopener">i18n routing</a></li>
+</ul></div></details>
+<p>Next.js는 <code>v10.0.0</code>부터 internationalized(<a href="https://en.wikipedia.org/wiki/Internationalization_and_localization#Naming" target="_blank" rel="noopener">i18n</a>) routing을 기본으로 지원합니다. locale 목록, default locale, domain별 locale을 제공하면 Next.js가 routing을 자동으로 처리합니다.</p><div class="en-orig"><p>Next.js has built-in support for internationalized (<a href="https://en.wikipedia.org/wiki/Internationalization_and_localization#Naming" target="_blank" rel="noopener">i18n</a>) routing since <code>v10.0.0</code>. You can provide a list of locales, the default locale, and domain-specific locales and Next.js will automatically handle the routing.</p></div>
+<p>i18n routing 지원은 현재 route와 locale parsing을 간소화하여 <a href="https://formatjs.io/docs/getting-started/installation" target="_blank" rel="noopener"><code>react-intl</code></a>, <a href="https://react.i18next.com/" target="_blank" rel="noopener"><code>react-i18next</code></a>, <a href="https://lingui.dev/" target="_blank" rel="noopener"><code>lingui</code></a>, <a href="https://github.com/lukeed/rosetta" target="_blank" rel="noopener"><code>rosetta</code></a>, <a href="https://github.com/amannn/next-intl" target="_blank" rel="noopener"><code>next-intl</code></a>, <a href="https://github.com/aralroca/next-translate" target="_blank" rel="noopener"><code>next-translate</code></a>, <a href="https://github.com/Avansai/next-multilingual" target="_blank" rel="noopener"><code>next-multilingual</code></a>, <a href="https://tolgee.io/integrations/next" target="_blank" rel="noopener"><code>tolgee</code></a>, <a href="https://inlang.com/m/osslbuzt/paraglide-next-i18n" target="_blank" rel="noopener"><code>paraglide-next</code></a>, <a href="https://intlayer.org/doc/environment/nextjs/next-with-page-router" target="_blank" rel="noopener"><code>next-intlayer</code></a>, <a href="https://generaltranslation.com/en/docs/react" target="_blank" rel="noopener"><code>gt-react</code></a> 등 기존 i18n library solution을 보완하기 위한 것입니다.</p><div class="en-orig"><p>The i18n routing support is currently meant to complement existing i18n library solutions like <a href="https://formatjs.io/docs/getting-started/installation" target="_blank" rel="noopener"><code>react-intl</code></a>, <a href="https://react.i18next.com/" target="_blank" rel="noopener"><code>react-i18next</code></a>, <a href="https://lingui.dev/" target="_blank" rel="noopener"><code>lingui</code></a>, <a href="https://github.com/lukeed/rosetta" target="_blank" rel="noopener"><code>rosetta</code></a>, <a href="https://github.com/amannn/next-intl" target="_blank" rel="noopener"><code>next-intl</code></a>, <a href="https://github.com/aralroca/next-translate" target="_blank" rel="noopener"><code>next-translate</code></a>, <a href="https://github.com/Avansai/next-multilingual" target="_blank" rel="noopener"><code>next-multilingual</code></a>, <a href="https://tolgee.io/integrations/next" target="_blank" rel="noopener"><code>tolgee</code></a>, <a href="https://inlang.com/m/osslbuzt/paraglide-next-i18n" target="_blank" rel="noopener"><code>paraglide-next</code></a>, <a href="https://intlayer.org/doc/environment/nextjs/next-with-page-router" target="_blank" rel="noopener"><code>next-intlayer</code></a>, <a href="https://generaltranslation.com/en/docs/react" target="_blank" rel="noopener"><code>gt-react</code></a> and others by streamlining the routes and locale parsing.</p></div>
+<h2 class="sec" id="getting-started"><a class="anchor" href="#getting-started">Getting started<span class="ko">시작하기</span></a></h2>
+<p>시작하려면 <code>next.config.js</code> 파일에 <code>i18n</code> config를 추가하세요.</p><div class="en-orig"><p>To get started, add the <code>i18n</code> config to your <code>next.config.js</code> file.</p></div>
+<p>locale은 locale을 정의하는 표준화된 형식인 <a href="https://www.unicode.org/reports/tr35/tr35-59/tr35.html#Identifiers" target="_blank" rel="noopener">UTS Locale Identifiers</a>를 따릅니다.</p><div class="en-orig"><p>Locales are <a href="https://www.unicode.org/reports/tr35/tr35-59/tr35.html#Identifiers" target="_blank" rel="noopener">UTS Locale Identifiers</a>, a standardized format for defining locales.</p></div>
+<p>일반적으로 Locale Identifier는 language, region, script를 dash로 구분해 구성합니다: <code>language-region-script</code>. region과 script는 선택 사항입니다. 예시:</p><div class="en-orig"><p>Generally a Locale Identifier is made up of a language, region, and script separated by a dash: <code>language-region-script</code>. The region and script are optional. An example:</p></div>
+<ul>
+<li><code>en-US</code> - 미국에서 쓰는 영어</li>
+<li><code>nl-NL</code> - 네덜란드에서 쓰는 네덜란드어</li>
+<li><code>nl</code> - 특정 region이 없는 네덜란드어</li>
+</ul><div class="en-orig"><ul>
+<li><code>en-US</code> - English as spoken in the United States</li>
+<li><code>nl-NL</code> - Dutch as spoken in the Netherlands</li>
+<li><code>nl</code> - Dutch, no specific region</li>
+</ul></div>
+<p>사용자 locale이 <code>nl-BE</code>이고 이것이 configuration에 없다면, <code>nl</code>이 있으면 <code>nl</code>로, 없으면 default locale로 redirect됩니다.
+따라서 한 국가의 모든 region을 지원할 계획이 없다면 fallback 역할을 할 국가 locale을 포함해 두는 것이 좋은 practice입니다.</p><div class="en-orig"><p>If user locale is <code>nl-BE</code> and it is not listed in your configuration, they will be redirected to <code>nl</code> if available, or to the default locale otherwise.
+If you don't plan to support all regions of a country, it is therefore a good practice to include country locales that will act as fallbacks.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  i18n: {
+    // These are all the locales you want to support in
+    // your application
+    locales: [&#x27;en-US&#x27;, &#x27;fr&#x27;, &#x27;nl-NL&#x27;],
+    // This is the default locale you want to be used when visiting
+    // a non-locale prefixed path e.g. `/hello`
+    defaultLocale: &#x27;en-US&#x27;,
+    // This is a list of locale domains and the default locale they
+    // should handle (these are only required when setting up domain routing)
+    // Note: subdomains must be included in the domain value to be matched e.g. &quot;fr.example.com&quot;.
+    domains: [
+      {
+        domain: &#x27;example.com&#x27;,
+        defaultLocale: &#x27;en-US&#x27;,
+      },
+      {
+        domain: &#x27;example.nl&#x27;,
+        defaultLocale: &#x27;nl-NL&#x27;,
+      },
+      {
+        domain: &#x27;example.fr&#x27;,
+        defaultLocale: &#x27;fr&#x27;,
+        // an optional http field can also be used to test
+        // locale domains locally with http instead of https
+        http: true,
+      },
+    ],
+  },
+}</code></pre></div></div>
+<h2 class="sec" id="locale-strategies"><a class="anchor" href="#locale-strategies">Locale Strategies<span class="ko">Locale 전략</span></a></h2>
+<p>locale 처리 전략에는 Sub-path Routing과 Domain Routing 두 가지가 있습니다.</p><div class="en-orig"><p>There are two locale handling strategies: Sub-path Routing and Domain Routing.</p></div>
+<h3 class="sec" id="sub-path-routing"><a class="anchor" href="#sub-path-routing">Sub-path Routing</a></h3>
+<p>Sub-path Routing은 locale을 url path에 넣습니다.</p><div class="en-orig"><p>Sub-path Routing puts the locale in the url path.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  i18n: {
+    locales: [&#x27;en-US&#x27;, &#x27;fr&#x27;, &#x27;nl-NL&#x27;],
+    defaultLocale: &#x27;en-US&#x27;,
+  },
+}</code></pre></div></div>
+<p>위 configuration에서는 <code>en-US</code>, <code>fr</code>, <code>nl-NL</code>로 route할 수 있고, <code>en-US</code>가 default locale입니다. <code>pages/blog.js</code>가 있다면 다음 url을 사용할 수 있습니다:</p><div class="en-orig"><p>With the above configuration <code>en-US</code>, <code>fr</code>, and <code>nl-NL</code> will be available to be routed to, and <code>en-US</code> is the default locale. If you have a <code>pages/blog.js</code> the following urls would be available:</p></div>
+<ul>
+<li><code>/blog</code></li>
+<li><code>/fr/blog</code></li>
+<li><code>/nl-nl/blog</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>/blog</code></li>
+<li><code>/fr/blog</code></li>
+<li><code>/nl-nl/blog</code></li>
+</ul></div>
+<p>default locale에는 prefix가 붙지 않습니다.</p><div class="en-orig"><p>The default locale does not have a prefix.</p></div>
+<h3 class="sec" id="domain-routing"><a class="anchor" href="#domain-routing">Domain Routing</a></h3>
+<p>domain routing을 사용하면 locale별로 서로 다른 domain에서 제공되도록 설정할 수 있습니다:</p><div class="en-orig"><p>By using domain routing you can configure locales to be served from different domains:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  i18n: {
+    locales: [&#x27;en-US&#x27;, &#x27;fr&#x27;, &#x27;nl-NL&#x27;, &#x27;nl-BE&#x27;],
+    defaultLocale: &#x27;en-US&#x27;,
+
+    domains: [
+      {
+        // Note: subdomains must be included in the domain value to be matched
+        // e.g. www.example.com should be used if that is the expected hostname
+        domain: &#x27;example.com&#x27;,
+        defaultLocale: &#x27;en-US&#x27;,
+      },
+      {
+        domain: &#x27;example.fr&#x27;,
+        defaultLocale: &#x27;fr&#x27;,
+      },
+      {
+        domain: &#x27;example.nl&#x27;,
+        defaultLocale: &#x27;nl-NL&#x27;,
+        // specify other locales that should be redirected
+        // to this domain
+        locales: [&#x27;nl-BE&#x27;],
+      },
+    ],
+  },
+}</code></pre></div></div>
+<p>예를 들어 <code>pages/blog.js</code>가 있다면 다음 url을 사용할 수 있습니다:</p><div class="en-orig"><p>For example if you have <code>pages/blog.js</code> the following urls will be available:</p></div>
+<ul>
+<li><code>example.com/blog</code></li>
+<li><code>www.example.com/blog</code></li>
+<li><code>example.fr/blog</code></li>
+<li><code>example.nl/blog</code></li>
+<li><code>example.nl/nl-BE/blog</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>example.com/blog</code></li>
+<li><code>www.example.com/blog</code></li>
+<li><code>example.fr/blog</code></li>
+<li><code>example.nl/blog</code></li>
+<li><code>example.nl/nl-BE/blog</code></li>
+</ul></div>
+<h2 class="sec" id="automatic-locale-detection"><a class="anchor" href="#automatic-locale-detection">Automatic Locale Detection<span class="ko">자동 Locale 감지</span></a></h2>
+<p>사용자가 애플리케이션 root(일반적으로 <code>/</code>)에 방문하면, Next.js는 <a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/Accept-Language" target="_blank" rel="noopener"><code>Accept-Language</code></a> header와 현재 domain을 기반으로 사용자가 선호하는 locale을 자동으로 감지하려고 합니다.</p><div class="en-orig"><p>When a user visits the application root (generally <code>/</code>), Next.js will try to automatically detect which locale the user prefers based on the <a href="https://developer.mozilla.org/docs/Web/HTTP/Headers/Accept-Language" target="_blank" rel="noopener"><code>Accept-Language</code></a> header and the current domain.</p></div>
+<p>default locale이 아닌 locale이 감지되면 사용자는 다음 중 하나로 redirect됩니다:</p><div class="en-orig"><p>If a locale other than the default locale is detected, the user will be redirected to either:</p></div>
+<ul>
+<li><strong>Sub-path Routing을 사용할 때:</strong> locale prefix가 붙은 path</li>
+<li><strong>Domain Routing을 사용할 때:</strong> 해당 locale이 default로 지정된 domain</li>
+</ul><div class="en-orig"><ul>
+<li><strong>When using Sub-path Routing:</strong> The locale prefixed path</li>
+<li><strong>When using Domain Routing:</strong> The domain with that locale specified as the default</li>
+</ul></div>
+<p>Domain Routing을 사용할 때 <code>Accept-Language</code> header가 <code>fr;q=0.9</code>인 사용자가 <code>example.com</code>에 방문하면, <code>example.fr</code> domain이 기본적으로 <code>fr</code> locale을 처리하므로 그쪽으로 redirect됩니다.</p><div class="en-orig"><p>When using Domain Routing, if a user with the <code>Accept-Language</code> header <code>fr;q=0.9</code> visits <code>example.com</code>, they will be redirected to <code>example.fr</code> since that domain handles the <code>fr</code> locale by default.</p></div>
+<p>Sub-path Routing을 사용할 때는 사용자가 <code>/fr</code>로 redirect됩니다.</p><div class="en-orig"><p>When using Sub-path Routing, the user would be redirected to <code>/fr</code>.</p></div>
+<h3 class="sec" id="prefixing-the-default-locale"><a class="anchor" href="#prefixing-the-default-locale">Prefixing the Default Locale<span class="ko">Default Locale에 prefix 붙이기</span></a></h3>
+<p>Next.js 12와 <a href="pages-api-reference-file-conventions-proxy.html">Proxy</a>를 사용하면 <a href="https://github.com/vercel/next.js/discussions/18419" target="_blank" rel="noopener">workaround</a>로 default locale에 prefix를 붙일 수 있습니다.</p><div class="en-orig"><p>With Next.js 12 and <a href="pages-api-reference-file-conventions-proxy.html">Proxy</a>, we can add a prefix to the default locale with a <a href="https://github.com/vercel/next.js/discussions/18419" target="_blank" rel="noopener">workaround</a>.</p></div>
+<p>예를 들어 다음은 몇 가지 언어를 지원하는 <code>next.config.js</code> 파일입니다. <code>&quot;default&quot;</code> locale이 의도적으로 추가되어 있다는 점에 주목하세요.</p><div class="en-orig"><p>For example, here's a <code>next.config.js</code> file with support for a few languages. Note the <code>&quot;default&quot;</code> locale has been added intentionally.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  i18n: {
+    locales: [&#x27;default&#x27;, &#x27;en&#x27;, &#x27;de&#x27;, &#x27;fr&#x27;],
+    defaultLocale: &#x27;default&#x27;,
+    localeDetection: false,
+  },
+  trailingSlash: true,
+}</code></pre></div></div>
+<p>다음으로 <a href="pages-api-reference-file-conventions-proxy.html">Proxy</a>를 사용해 custom routing rule을 추가할 수 있습니다:</p><div class="en-orig"><p>Next, we can use <a href="pages-api-reference-file-conventions-proxy.html">Proxy</a> to add custom routing rules:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">proxy.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { NextRequest, NextResponse } from &#x27;next/server&#x27;
+
+const PUBLIC_FILE = /\.(.*)$/
+
+export async function proxy(req: NextRequest) {
+  if (
+    req.nextUrl.pathname.startsWith(&#x27;/_next&#x27;) ||
+    req.nextUrl.pathname.includes(&#x27;/api/&#x27;) ||
+    PUBLIC_FILE.test(req.nextUrl.pathname)
+  ) {
+    return
+  }
+
+  if (req.nextUrl.locale === &#x27;default&#x27;) {
+    const locale = req.cookies.get(&#x27;NEXT_LOCALE&#x27;)?.value || &#x27;en&#x27;
+
+    return NextResponse.redirect(
+      new URL(`/${locale}${req.nextUrl.pathname}${req.nextUrl.search}`, req.url)
+    )
+  }
+}</code></pre></div></div>
+<p>이 <a href="pages-api-reference-file-conventions-proxy.html">Proxy</a>는 <a href="pages-building-your-application-routing-api-routes.html">API Routes</a>와 font나 이미지 같은 <a href="pages-api-reference-file-conventions-public-folder.html">public</a> 파일에는 default prefix를 붙이지 않습니다. default locale로 request가 들어오면 prefix <code>/en</code>으로 redirect합니다.</p><div class="en-orig"><p>This <a href="pages-api-reference-file-conventions-proxy.html">Proxy</a> skips adding the default prefix to <a href="pages-building-your-application-routing-api-routes.html">API Routes</a> and <a href="pages-api-reference-file-conventions-public-folder.html">public</a> files like fonts or images. If a request is made to the default locale, we redirect to our prefix <code>/en</code>.</p></div>
+<h3 class="sec" id="disabling-automatic-locale-detection"><a class="anchor" href="#disabling-automatic-locale-detection">Disabling Automatic Locale Detection<span class="ko">자동 Locale 감지 비활성화</span></a></h3>
+<p>자동 locale 감지는 다음과 같이 비활성화할 수 있습니다:</p><div class="en-orig"><p>The automatic locale detection can be disabled with:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  i18n: {
+    localeDetection: false,
+  },
+}</code></pre></div></div>
+<p><code>localeDetection</code>을 <code>false</code>로 설정하면 Next.js는 더 이상 사용자가 선호하는 locale에 따라 자동으로 redirect하지 않으며, 위에서 설명한 locale 기반 domain이나 locale path에서 감지된 locale 정보만 제공합니다.</p><div class="en-orig"><p>When <code>localeDetection</code> is set to <code>false</code> Next.js will no longer automatically redirect based on the user's preferred locale and will only provide locale information detected from either the locale based domain or locale path as described above.</p></div>
+<h2 class="sec" id="accessing-the-locale-information"><a class="anchor" href="#accessing-the-locale-information">Accessing the locale information<span class="ko">Locale 정보 접근하기</span></a></h2>
+<p>Next.js router를 통해 locale 정보에 접근할 수 있습니다. 예를 들어 <a href="pages-api-reference-functions-use-router.html"><code>useRouter()</code></a> hook을 사용하면 다음 property를 사용할 수 있습니다:</p><div class="en-orig"><p>You can access the locale information via the Next.js router. For example, using the <a href="pages-api-reference-functions-use-router.html"><code>useRouter()</code></a> hook the following properties are available:</p></div>
+<ul>
+<li><code>locale</code>에는 현재 활성화된 locale이 들어 있습니다.</li>
+<li><code>locales</code>에는 설정된 모든 locale이 들어 있습니다.</li>
+<li><code>defaultLocale</code>에는 설정된 default locale이 들어 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>locale</code> contains the currently active locale.</li>
+<li><code>locales</code> contains all configured locales.</li>
+<li><code>defaultLocale</code> contains the configured default locale.</li>
+</ul></div>
+<p><code>getStaticProps</code>나 <code>getServerSideProps</code>로 page를 <a href="pages-building-your-application-rendering-static-site-generation.html">prerendering</a>할 때는 function에 전달되는 <a href="pages-building-your-application-data-fetching-get-static-props.html">context</a>에 locale 정보가 제공됩니다.</p><div class="en-orig"><p>When <a href="pages-building-your-application-rendering-static-site-generation.html">prerendering</a> pages with <code>getStaticProps</code> or <code>getServerSideProps</code>, the locale information is provided in <a href="pages-building-your-application-data-fetching-get-static-props.html">the context</a> provided to the function.</p></div>
+<p><code>getStaticPaths</code>를 활용할 때는 function의 context parameter에서 설정된 locale이 <code>locales</code>로, 설정된 defaultLocale이 <code>defaultLocale</code>로 제공됩니다.</p><div class="en-orig"><p>When leveraging <code>getStaticPaths</code>, the configured locales are provided in the context parameter of the function under <code>locales</code> and the configured defaultLocale under <code>defaultLocale</code>.</p></div>
+<h2 class="sec" id="transition-between-locales"><a class="anchor" href="#transition-between-locales">Transition between locales<span class="ko">Locale 간 전환</span></a></h2>
+<p><code>next/link</code>나 <code>next/router</code>를 사용해 locale 간에 전환할 수 있습니다.</p><div class="en-orig"><p>You can use <code>next/link</code> or <code>next/router</code> to transition between locales.</p></div>
+<p><code>next/link</code>에서는 <code>locale</code> prop을 제공해 현재 활성화된 locale과 다른 locale로 전환할 수 있습니다. <code>locale</code> prop을 제공하지 않으면 client-transition 중에 현재 활성화된 <code>locale</code>이 사용됩니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For <code>next/link</code>, a <code>locale</code> prop can be provided to transition to a different locale from the currently active one. If no <code>locale</code> prop is provided, the currently active <code>locale</code> is used during client-transitions. For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function IndexPage(props) {
+  return (
+    &lt;Link href=&quot;/another&quot; locale=&quot;fr&quot;&gt;
+      To /fr/another
+    &lt;/Link&gt;
+  )
+}</code></pre></div></div>
+<p><code>next/router</code> method를 직접 사용할 때는 transition option으로 사용할 <code>locale</code>을 지정할 수 있습니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>When using the <code>next/router</code> methods directly, you can specify the <code>locale</code> that should be used via the transition options. For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useRouter } from &#x27;next/router&#x27;
+
+export default function IndexPage(props) {
+  const router = useRouter()
+
+  return (
+    &lt;div
+      onClick={() =&gt; {
+        router.push(&#x27;/another&#x27;, &#x27;/another&#x27;, { locale: &#x27;fr&#x27; })
+      }}
+    &gt;
+      to /fr/another
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p><a href="pages-building-your-application-routing-dynamic-routes.html">dynamic route</a>의 query 값이나 숨겨진 href query 값 같은 모든 routing 정보를 유지하면서 <code>locale</code>만 전환하려면, <code>href</code> parameter를 object로 제공할 수 있습니다:</p><div class="en-orig"><p>Note that to handle switching only the <code>locale</code> while preserving all routing information such as <a href="pages-building-your-application-routing-dynamic-routes.html">dynamic route</a> query values or hidden href query values, you can provide the <code>href</code> parameter as an object:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useRouter } from &#x27;next/router&#x27;
+const router = useRouter()
+const { pathname, asPath, query } = router
+// change just the locale and maintain all other route information including href&#x27;s query
+router.push({ pathname, query }, asPath, { locale: nextLocale })</code></pre></div></div>
+<p><code>router.push</code>의 object 구조에 대한 자세한 내용은 <a href="pages-api-reference-functions-use-router.html#with-url-object">여기</a>를 참고하세요.</p><div class="en-orig"><p>See <a href="pages-api-reference-functions-use-router.html#with-url-object">here</a> for more information on the object structure for <code>router.push</code>.</p></div>
+<p><code>href</code>에 이미 locale이 포함되어 있다면 locale prefix 자동 처리를 opt-out할 수 있습니다:</p><div class="en-orig"><p>If you have a <code>href</code> that already includes the locale you can opt-out of automatically handling the locale prefixing:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function IndexPage(props) {
+  return (
+    &lt;Link href=&quot;/fr/another&quot; locale={false}&gt;
+      To /fr/another
+    &lt;/Link&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="leveraging-the-next_locale-cookie"><a class="anchor" href="#leveraging-the-next_locale-cookie">Leveraging the <code>NEXT_LOCALE</code> cookie<span class="ko"><code>NEXT_LOCALE</code> cookie 활용하기</span></a></h2>
+<p>Next.js에서는 accept-language header보다 우선순위가 높은 <code>NEXT_LOCALE=the-locale</code> cookie를 설정할 수 있습니다. 이 cookie는 language switcher로 설정할 수 있으며, 사용자가 사이트에 다시 방문하면 <code>/</code>에서 올바른 locale 위치로 redirect할 때 cookie에 지정된 locale을 활용합니다.</p><div class="en-orig"><p>Next.js allows setting a <code>NEXT_LOCALE=the-locale</code> cookie, which takes priority over the accept-language header. This cookie can be set using a language switcher and then when a user comes back to the site it will leverage the locale specified in the cookie when redirecting from <code>/</code> to the correct locale location.</p></div>
+<p>예를 들어 사용자의 accept-language header에서는 <code>fr</code> locale을 선호하지만 <code>NEXT_LOCALE=en</code> cookie가 설정되어 있다면, <code>/</code>에 방문할 때 cookie가 삭제되거나 만료될 때까지 사용자는 <code>en</code> locale 위치로 redirect됩니다.</p><div class="en-orig"><p>For example, if a user prefers the locale <code>fr</code> in their accept-language header but a <code>NEXT_LOCALE=en</code> cookie is set the <code>en</code> locale when visiting <code>/</code> the user will be redirected to the <code>en</code> locale location until the cookie is removed or expired.</p></div>
+<h2 class="sec" id="search-engine-optimization"><a class="anchor" href="#search-engine-optimization">Search Engine Optimization<span class="ko">검색 엔진 최적화</span></a></h2>
+<p>Next.js는 사용자가 어떤 언어로 방문하는지 알기 때문에 <code>&lt;html&gt;</code> tag에 <code>lang</code> attribute를 자동으로 추가합니다.</p><div class="en-orig"><p>Since Next.js knows what language the user is visiting it will automatically add the <code>lang</code> attribute to the <code>&lt;html&gt;</code> tag.</p></div>
+<p>Next.js는 page의 variant를 알지 못하므로 <a href="pages-api-reference-components-head.html"><code>next/head</code></a>를 사용해 <code>hreflang</code> meta tag를 추가하는 것은 직접 해야 합니다. <code>hreflang</code>에 대해서는 <a href="https://support.google.com/webmasters/answer/189077" target="_blank" rel="noopener">Google Webmasters 문서</a>에서 더 알아볼 수 있습니다.</p><div class="en-orig"><p>Next.js doesn't know about variants of a page so it's up to you to add the <code>hreflang</code> meta tags using <a href="pages-api-reference-components-head.html"><code>next/head</code></a>. You can learn more about <code>hreflang</code> in the <a href="https://support.google.com/webmasters/answer/189077" target="_blank" rel="noopener">Google Webmasters documentation</a>.</p></div>
+<h2 class="sec" id="how-does-this-work-with-static-generation"><a class="anchor" href="#how-does-this-work-with-static-generation">How does this work with Static Generation?<span class="ko">Static Generation과는 어떻게 동작하나요?</span></a></h2>
+<blockquote><p>Internationalized Routing은 Next.js routing layer를 활용하지 않는 <a href="pages-guides-static-exports.html"><code>output: &#x27;export&#x27;</code></a>와는 통합되지 않는다는 점에 유의하세요. <code>output: &#x27;export&#x27;</code>를 사용하지 않는 hybrid Next.js 애플리케이션은 완전히 지원됩니다.</p><div class="en-orig"><p>Note that Internationalized Routing does not integrate with <a href="pages-guides-static-exports.html"><code>output: &#x27;export&#x27;</code></a> as it does not leverage the Next.js routing layer. Hybrid Next.js applications that do not use <code>output: &#x27;export&#x27;</code> are fully supported.</p></div></blockquote>
+<h3 class="sec" id="dynamic-routes-and-getstaticprops-pages"><a class="anchor" href="#dynamic-routes-and-getstaticprops-pages">Dynamic Routes and <code>getStaticProps</code> Pages<span class="ko">Dynamic Routes와 <code>getStaticProps</code> Page</span></a></h3>
+<p><a href="pages-building-your-application-routing-dynamic-routes.html">Dynamic Routes</a>와 함께 <code>getStaticProps</code>를 사용하는 page에서는, prerender하려는 page의 모든 locale variant를 <a href="pages-building-your-application-data-fetching-get-static-paths.html"><code>getStaticPaths</code></a>에서 반환해야 합니다. <code>paths</code>로 반환하는 <code>params</code> object와 함께, render할 locale을 지정하는 <code>locale</code> field도 반환할 수 있습니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For pages using <code>getStaticProps</code> with <a href="pages-building-your-application-routing-dynamic-routes.html">Dynamic Routes</a>, all locale variants of the page desired to be prerendered need to be returned from <a href="pages-building-your-application-data-fetching-get-static-paths.html"><code>getStaticPaths</code></a>. Along with the <code>params</code> object returned for <code>paths</code>, you can also return a <code>locale</code> field specifying which locale you want to render. For example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/blog/[slug].js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const getStaticPaths = ({ locales }) =&gt; {
+  return {
+    paths: [
+      // if no `locale` is provided only the defaultLocale will be generated
+      { params: { slug: &#x27;post-1&#x27; }, locale: &#x27;en-US&#x27; },
+      { params: { slug: &#x27;post-1&#x27; }, locale: &#x27;fr&#x27; },
+    ],
+    fallback: true,
+  }
+}</code></pre></div></div>
+<p><a href="pages-building-your-application-rendering-automatic-static-optimization.html">Automatically Statically Optimized</a> page와 non-dynamic <code>getStaticProps</code> page의 경우, <strong>locale마다 page의 버전이 하나씩 생성됩니다</strong>. <code>getStaticProps</code> 안에 설정된 locale 수에 따라 build time이 늘어날 수 있으므로 고려해야 할 중요한 점입니다.</p><div class="en-orig"><p>For <a href="pages-building-your-application-rendering-automatic-static-optimization.html">Automatically Statically Optimized</a> and non-dynamic <code>getStaticProps</code> pages, <strong>a version of the page will be generated for each locale</strong>. This is important to consider because it can increase build times depending on how many locales are configured inside <code>getStaticProps</code>.</p></div>
+<p>예를 들어 50개의 locale이 설정되어 있고 <code>getStaticProps</code>를 사용하는 non-dynamic page가 10개라면 <code>getStaticProps</code>는 500번 호출됩니다. 매 build마다 10개 page의 50개 버전이 생성됩니다.</p><div class="en-orig"><p>For example, if you have 50 locales configured with 10 non-dynamic pages using <code>getStaticProps</code>, this means <code>getStaticProps</code> will be called 500 times. 50 versions of the 10 pages will be generated during each build.</p></div>
+<p><code>getStaticProps</code>를 사용하는 dynamic page의 build time을 줄이려면 <a href="pages-api-reference-functions-get-static-paths.html#fallback-true"><code>fallback</code> mode</a>를 사용하세요. 이렇게 하면 build 중 prerendering을 위해 <code>getStaticPaths</code>에서 가장 인기 있는 path와 locale만 반환할 수 있습니다. 그러면 Next.js는 나머지 page를 request될 때 runtime에 build합니다.</p><div class="en-orig"><p>To decrease the build time of dynamic pages with <code>getStaticProps</code>, use a <a href="pages-api-reference-functions-get-static-paths.html#fallback-true"><code>fallback</code> mode</a>. This allows you to return only the most popular paths and locales from <code>getStaticPaths</code> for prerendering during the build. Then, Next.js will build the remaining pages at runtime as they are requested.</p></div>
+<h3 class="sec" id="automatically-statically-optimized-pages"><a class="anchor" href="#automatically-statically-optimized-pages">Automatically Statically Optimized Pages<span class="ko">Automatically Statically Optimized Page</span></a></h3>
+<p><a href="pages-building-your-application-rendering-automatic-static-optimization.html">automatically statically optimized</a> page의 경우 locale마다 page의 버전이 하나씩 생성됩니다.</p><div class="en-orig"><p>For pages that are <a href="pages-building-your-application-rendering-automatic-static-optimization.html">automatically statically optimized</a>, a version of the page will be generated for each locale.</p></div>
+<h3 class="sec" id="non-dynamic-getstaticprops-pages"><a class="anchor" href="#non-dynamic-getstaticprops-pages">Non-dynamic getStaticProps Pages<span class="ko">Non-dynamic getStaticProps Page</span></a></h3>
+<p>non-dynamic <code>getStaticProps</code> page의 경우에도 위와 같이 locale마다 버전이 생성됩니다. <code>getStaticProps</code>는 render되는 각 <code>locale</code>과 함께 호출됩니다. 특정 locale을 prerender 대상에서 opt-out하고 싶다면 <code>getStaticProps</code>에서 <code>notFound: true</code>를 반환하면 해당 page variant는 생성되지 않습니다.</p><div class="en-orig"><p>For non-dynamic <code>getStaticProps</code> pages, a version is generated for each locale like above. <code>getStaticProps</code> is called with each <code>locale</code> that is being rendered. If you would like to opt-out of a certain locale from being prerendered, you can return <code>notFound: true</code> from <code>getStaticProps</code> and this variant of the page will not be generated.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export async function getStaticProps({ locale }) {
+  // Call an external API endpoint to get posts.
+  // You can use any data fetching library
+  const res = await fetch(`https://.../posts?locale=${locale}`)
+  const posts = await res.json()
+
+  if (posts.length === 0) {
+    return {
+      notFound: true,
+    }
+  }
+
+  // By returning { props: posts }, the Blog component
+  // will receive `posts` as a prop at build time
+  return {
+    props: {
+      posts,
+    },
+  }
+}</code></pre></div></div>
+<h2 class="sec" id="limits-for-the-i18n-config"><a class="anchor" href="#limits-for-the-i18n-config">Limits for the i18n config<span class="ko">i18n config의 제한</span></a></h2>
+<ul>
+<li><code>locales</code>: 총 100개 locale</li>
+<li><code>domains</code>: 총 100개 locale domain 항목</li>
+</ul><div class="en-orig"><ul>
+<li><code>locales</code>: 100 total locales</li>
+<li><code>domains</code>: 100 total locale domain items</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 제한은 처음에 잠재적인 <a href="#dynamic-routes-and-getstaticprops-pages">build time performance 문제</a>를 막기 위해 추가되었습니다. Next.js 12에서는 <a href="pages-api-reference-file-conventions-proxy.html">Proxy</a>를 사용한 custom routing으로 이 제한을 우회할 수 있습니다.</p><div class="en-orig"><p>These limits have been added initially to prevent potential <a href="#dynamic-routes-and-getstaticprops-pages">performance issues at build time</a>. You can workaround these limits with custom routing using <a href="pages-api-reference-file-conventions-proxy.html">Proxy</a> in Next.js 12.</p></div></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/02-guides/internationalization.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/guides/internationalization" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-guides-instrumentation.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Instrumentation</div><div class="ttl-ko">instrumentation 설정하기</div></a>
+      <a href="pages-guides-lazy-loading.html" class="next"><div class="dir">다음 →</div><div class="ttl">Lazy Loading</div><div class="ttl-ko">Client Component와 library lazy loading하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/guides/internationalization" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#getting-started">Getting started</a></li><li class="l2"><a href="#locale-strategies">Locale Strategies</a></li><li class="l3"><a href="#sub-path-routing">Sub-path Routing</a></li><li class="l3"><a href="#domain-routing">Domain Routing</a></li><li class="l2"><a href="#automatic-locale-detection">Automatic Locale Detection</a></li><li class="l3"><a href="#prefixing-the-default-locale">Prefixing the Default Locale</a></li><li class="l3"><a href="#disabling-automatic-locale-detection">Disabling Automatic Locale Detection</a></li><li class="l2"><a href="#accessing-the-locale-information">Accessing the locale information</a></li><li class="l2"><a href="#transition-between-locales">Transition between locales</a></li><li class="l2"><a href="#leveraging-the-next_locale-cookie">Leveraging the <code>NEXT_LOCALE</code> cookie</a></li><li class="l2"><a href="#search-engine-optimization">Search Engine Optimization</a></li><li class="l2"><a href="#how-does-this-work-with-static-generation">How does this work with Static Generation?</a></li><li class="l3"><a href="#dynamic-routes-and-getstaticprops-pages">Dynamic Routes and <code>getStaticProps</code> Pages</a></li><li class="l3"><a href="#automatically-statically-optimized-pages">Automatically Statically Optimized Pages</a></li><li class="l3"><a href="#non-dynamic-getstaticprops-pages">Non-dynamic getStaticProps Pages</a></li><li class="l2"><a href="#limits-for-the-i18n-config">Limits for the i18n config</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+&lt;details&gt;
+  &lt;summary&gt;예제&lt;/summary&gt;
+
+- [i18n routing](https://github.com/vercel/next.js/tree/canary/examples/i18n-routing-pages)
+
+&lt;/details&gt;
+
+Next.js는 `v10.0.0`부터 internationalized([i18n](https://en.wikipedia.org/wiki/Internationalization_and_localization#Naming)) routing을 기본으로 지원합니다. locale 목록, default locale, domain별 locale을 제공하면 Next.js가 routing을 자동으로 처리합니다.
+
+i18n routing 지원은 현재 route와 locale parsing을 간소화하여 [`react-intl`](https://formatjs.io/docs/getting-started/installation), [`react-i18next`](https://react.i18next.com/), [`lingui`](https://lingui.dev/), [`rosetta`](https://github.com/lukeed/rosetta), [`next-intl`](https://github.com/amannn/next-intl), [`next-translate`](https://github.com/aralroca/next-translate), [`next-multilingual`](https://github.com/Avansai/next-multilingual), [`tolgee`](https://tolgee.io/integrations/next), [`paraglide-next`](https://inlang.com/m/osslbuzt/paraglide-next-i18n), [`next-intlayer`](https://intlayer.org/doc/environment/nextjs/next-with-page-router), [`gt-react`](https://generaltranslation.com/en/docs/react) 등 기존 i18n library solution을 보완하기 위한 것입니다.
+
+## Getting started || 시작하기
+
+시작하려면 `next.config.js` 파일에 `i18n` config를 추가하세요.
+
+locale은 locale을 정의하는 표준화된 형식인 [UTS Locale Identifiers](https://www.unicode.org/reports/tr35/tr35-59/tr35.html#Identifiers)를 따릅니다.
+
+일반적으로 Locale Identifier는 language, region, script를 dash로 구분해 구성합니다: `language-region-script`. region과 script는 선택 사항입니다. 예시:
+
+- `en-US` - 미국에서 쓰는 영어
+- `nl-NL` - 네덜란드에서 쓰는 네덜란드어
+- `nl` - 특정 region이 없는 네덜란드어
+
+사용자 locale이 `nl-BE`이고 이것이 configuration에 없다면, `nl`이 있으면 `nl`로, 없으면 default locale로 redirect됩니다.
+따라서 한 국가의 모든 region을 지원할 계획이 없다면 fallback 역할을 할 국가 locale을 포함해 두는 것이 좋은 practice입니다.
+
+[[CODE 1]]
+
+## Locale Strategies || Locale 전략
+
+locale 처리 전략에는 Sub-path Routing과 Domain Routing 두 가지가 있습니다.
+
+### Sub-path Routing
+
+Sub-path Routing은 locale을 url path에 넣습니다.
+
+[[CODE 2]]
+
+위 configuration에서는 `en-US`, `fr`, `nl-NL`로 route할 수 있고, `en-US`가 default locale입니다. `pages/blog.js`가 있다면 다음 url을 사용할 수 있습니다:
+
+- `/blog`
+- `/fr/blog`
+- `/nl-nl/blog`
+
+default locale에는 prefix가 붙지 않습니다.
+
+### Domain Routing
+
+domain routing을 사용하면 locale별로 서로 다른 domain에서 제공되도록 설정할 수 있습니다:
+
+[[CODE 3]]
+
+예를 들어 `pages/blog.js`가 있다면 다음 url을 사용할 수 있습니다:
+
+- `example.com/blog`
+- `www.example.com/blog`
+- `example.fr/blog`
+- `example.nl/blog`
+- `example.nl/nl-BE/blog`
+
+## Automatic Locale Detection || 자동 Locale 감지
+
+사용자가 애플리케이션 root(일반적으로 `/`)에 방문하면, Next.js는 [`Accept-Language`](https://developer.mozilla.org/docs/Web/HTTP/Headers/Accept-Language) header와 현재 domain을 기반으로 사용자가 선호하는 locale을 자동으로 감지하려고 합니다.
+
+default locale이 아닌 locale이 감지되면 사용자는 다음 중 하나로 redirect됩니다:
+
+- **Sub-path Routing을 사용할 때:** locale prefix가 붙은 path
+- **Domain Routing을 사용할 때:** 해당 locale이 default로 지정된 domain
+
+Domain Routing을 사용할 때 `Accept-Language` header가 `fr;q=0.9`인 사용자가 `example.com`에 방문하면, `example.fr` domain이 기본적으로 `fr` locale을 처리하므로 그쪽으로 redirect됩니다.
+
+Sub-path Routing을 사용할 때는 사용자가 `/fr`로 redirect됩니다.
+
+### Prefixing the Default Locale || Default Locale에 prefix 붙이기
+
+Next.js 12와 [Proxy](/docs/pages/api-reference/file-conventions/proxy)를 사용하면 [workaround](https://github.com/vercel/next.js/discussions/18419)로 default locale에 prefix를 붙일 수 있습니다.
+
+예를 들어 다음은 몇 가지 언어를 지원하는 `next.config.js` 파일입니다. `&quot;default&quot;` locale이 의도적으로 추가되어 있다는 점에 주목하세요.
+
+[[CODE 4]]
+
+다음으로 [Proxy](/docs/pages/api-reference/file-conventions/proxy)를 사용해 custom routing rule을 추가할 수 있습니다:
+
+[[CODE 5]]
+
+이 [Proxy](/docs/pages/api-reference/file-conventions/proxy)는 [API Routes](/docs/pages/building-your-application/routing/api-routes)와 font나 이미지 같은 [public](/docs/pages/api-reference/file-conventions/public-folder) 파일에는 default prefix를 붙이지 않습니다. default locale로 request가 들어오면 prefix `/en`으로 redirect합니다.
+
+### Disabling Automatic Locale Detection || 자동 Locale 감지 비활성화
+
+자동 locale 감지는 다음과 같이 비활성화할 수 있습니다:
+
+[[CODE 6]]
+
+`localeDetection`을 `false`로 설정하면 Next.js는 더 이상 사용자가 선호하는 locale에 따라 자동으로 redirect하지 않으며, 위에서 설명한 locale 기반 domain이나 locale path에서 감지된 locale 정보만 제공합니다.
+
+## Accessing the locale information || Locale 정보 접근하기
+
+Next.js router를 통해 locale 정보에 접근할 수 있습니다. 예를 들어 [`useRouter()`](/docs/pages/api-reference/functions/use-router) hook을 사용하면 다음 property를 사용할 수 있습니다:
+
+- `locale`에는 현재 활성화된 locale이 들어 있습니다.
+- `locales`에는 설정된 모든 locale이 들어 있습니다.
+- `defaultLocale`에는 설정된 default locale이 들어 있습니다.
+
+`getStaticProps`나 `getServerSideProps`로 page를 [prerendering](/docs/pages/building-your-application/rendering/static-site-generation)할 때는 function에 전달되는 [context](/docs/pages/building-your-application/data-fetching/get-static-props)에 locale 정보가 제공됩니다.
+
+`getStaticPaths`를 활용할 때는 function의 context parameter에서 설정된 locale이 `locales`로, 설정된 defaultLocale이 `defaultLocale`로 제공됩니다.
+
+## Transition between locales || Locale 간 전환
+
+`next/link`나 `next/router`를 사용해 locale 간에 전환할 수 있습니다.
+
+`next/link`에서는 `locale` prop을 제공해 현재 활성화된 locale과 다른 locale로 전환할 수 있습니다. `locale` prop을 제공하지 않으면 client-transition 중에 현재 활성화된 `locale`이 사용됩니다. 예를 들면 다음과 같습니다:
+
+[[CODE 7]]
+
+`next/router` method를 직접 사용할 때는 transition option으로 사용할 `locale`을 지정할 수 있습니다. 예를 들면 다음과 같습니다:
+
+[[CODE 8]]
+
+[dynamic route](/docs/pages/building-your-application/routing/dynamic-routes)의 query 값이나 숨겨진 href query 값 같은 모든 routing 정보를 유지하면서 `locale`만 전환하려면, `href` parameter를 object로 제공할 수 있습니다:
+
+[[CODE 9]]
+
+`router.push`의 object 구조에 대한 자세한 내용은 [여기](/docs/pages/api-reference/functions/use-router#with-url-object)를 참고하세요.
+
+`href`에 이미 locale이 포함되어 있다면 locale prefix 자동 처리를 opt-out할 수 있습니다:
+
+[[CODE 10]]
+
+## Leveraging the `NEXT_LOCALE` cookie || `NEXT_LOCALE` cookie 활용하기
+
+Next.js에서는 accept-language header보다 우선순위가 높은 `NEXT_LOCALE=the-locale` cookie를 설정할 수 있습니다. 이 cookie는 language switcher로 설정할 수 있으며, 사용자가 사이트에 다시 방문하면 `/`에서 올바른 locale 위치로 redirect할 때 cookie에 지정된 locale을 활용합니다.
+
+예를 들어 사용자의 accept-language header에서는 `fr` locale을 선호하지만 `NEXT_LOCALE=en` cookie가 설정되어 있다면, `/`에 방문할 때 cookie가 삭제되거나 만료될 때까지 사용자는 `en` locale 위치로 redirect됩니다.
+
+## Search Engine Optimization || 검색 엔진 최적화
+
+Next.js는 사용자가 어떤 언어로 방문하는지 알기 때문에 `&lt;html&gt;` tag에 `lang` attribute를 자동으로 추가합니다.
+
+Next.js는 page의 variant를 알지 못하므로 [`next/head`](/docs/pages/api-reference/components/head)를 사용해 `hreflang` meta tag를 추가하는 것은 직접 해야 합니다. `hreflang`에 대해서는 [Google Webmasters 문서](https://support.google.com/webmasters/answer/189077)에서 더 알아볼 수 있습니다.
+
+## How does this work with Static Generation? || Static Generation과는 어떻게 동작하나요?
+
+&gt; Internationalized Routing은 Next.js routing layer를 활용하지 않는 [`output: &#x27;export&#x27;`](/docs/pages/guides/static-exports)와는 통합되지 않는다는 점에 유의하세요. `output: &#x27;export&#x27;`를 사용하지 않는 hybrid Next.js 애플리케이션은 완전히 지원됩니다.
+
+### Dynamic Routes and `getStaticProps` Pages || Dynamic Routes와 `getStaticProps` Page
+
+[Dynamic Routes](/docs/pages/building-your-application/routing/dynamic-routes)와 함께 `getStaticProps`를 사용하는 page에서는, prerender하려는 page의 모든 locale variant를 [`getStaticPaths`](/docs/pages/building-your-application/data-fetching/get-static-paths)에서 반환해야 합니다. `paths`로 반환하는 `params` object와 함께, render할 locale을 지정하는 `locale` field도 반환할 수 있습니다. 예를 들면 다음과 같습니다:
+
+[[CODE 11]]
+
+[Automatically Statically Optimized](/docs/pages/building-your-application/rendering/automatic-static-optimization) page와 non-dynamic `getStaticProps` page의 경우, **locale마다 page의 버전이 하나씩 생성됩니다**. `getStaticProps` 안에 설정된 locale 수에 따라 build time이 늘어날 수 있으므로 고려해야 할 중요한 점입니다.
+
+예를 들어 50개의 locale이 설정되어 있고 `getStaticProps`를 사용하는 non-dynamic page가 10개라면 `getStaticProps`는 500번 호출됩니다. 매 build마다 10개 page의 50개 버전이 생성됩니다.
+
+`getStaticProps`를 사용하는 dynamic page의 build time을 줄이려면 [`fallback` mode](/docs/pages/api-reference/functions/get-static-paths#fallback-true)를 사용하세요. 이렇게 하면 build 중 prerendering을 위해 `getStaticPaths`에서 가장 인기 있는 path와 locale만 반환할 수 있습니다. 그러면 Next.js는 나머지 page를 request될 때 runtime에 build합니다.
+
+### Automatically Statically Optimized Pages || Automatically Statically Optimized Page
+
+[automatically statically optimized](/docs/pages/building-your-application/rendering/automatic-static-optimization) page의 경우 locale마다 page의 버전이 하나씩 생성됩니다.
+
+### Non-dynamic getStaticProps Pages || Non-dynamic getStaticProps Page
+
+non-dynamic `getStaticProps` page의 경우에도 위와 같이 locale마다 버전이 생성됩니다. `getStaticProps`는 render되는 각 `locale`과 함께 호출됩니다. 특정 locale을 prerender 대상에서 opt-out하고 싶다면 `getStaticProps`에서 `notFound: true`를 반환하면 해당 page variant는 생성되지 않습니다.
+
+[[CODE 12]]
+
+## Limits for the i18n config || i18n config의 제한
+
+- `locales`: 총 100개 locale
+- `domains`: 총 100개 locale domain 항목
+
+&gt; **Good to know**: 이 제한은 처음에 잠재적인 [build time performance 문제](#dynamic-routes-and-getstaticprops-pages)를 막기 위해 추가되었습니다. Next.js 12에서는 [Proxy](/docs/pages/api-reference/file-conventions/proxy)를 사용한 custom routing으로 이 제한을 우회할 수 있습니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

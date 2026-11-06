@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Server Actions and Mutations (Server Action과 Mutation) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/server-actions" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/server-actions" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/server-actions.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Server Actions and Mutations<span class="sub">Server Action과 Mutation</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><strong>Server Action</strong>은 <code>&lt;form action&gt;</code>, <code>&lt;button formAction&gt;</code>, client-side transition 같은 React의 action 메커니즘을 통해 호출되는 <a href="https://react.dev/reference/rsc/server-functions" target="_blank" rel="noopener">React Server Function</a>입니다.</p><div class="en-orig"><p>A <strong>Server Action</strong> is a <a href="https://react.dev/reference/rsc/server-functions" target="_blank" rel="noopener">React Server Function</a> invoked through React's action mechanisms, such as <code>&lt;form action&gt;</code>, <code>&lt;button formAction&gt;</code>, or a client-side transition.</p></div>
+<p><a href="app-api-reference-directives-use-server.html"><code>&#x27;use server&#x27;</code></a> directive를 추가해 만들고, form에서 호출하거나 <code>startTransition</code>으로 감싼 event handler 또는 <code>useEffect</code>에서 호출합니다. Server Function을 만들고 호출하는 기본 내용은 <a href="app-getting-started-mutating-data.html">Mutating data</a>와 <a href="app-guides-forms.html">Forms 가이드</a>를 참고하세요.</p><div class="en-orig"><p>You create one by adding the <a href="app-api-reference-directives-use-server.html"><code>&#x27;use server&#x27;</code></a> directive, then invoke it from a form, or from an event handler or <code>useEffect</code> wrapped in <code>startTransition</code>. For the basics of creating and invoking Server Functions, see <a href="app-getting-started-mutating-data.html">Mutating data</a> and the <a href="app-guides-forms.html">Forms guide</a>.</p></div>
+<p>이 페이지는 Server Action 중 Next.js에 특화된 부분을 다룹니다: 흔히 mutation에 어떻게 대응되는지, response가 반환 데이터와 다시 render된 UI를 어떻게 함께 전달하는지, client가 action을 어떻게 dispatch하는지, framework가 강제하는 보안 경계, 그리고 사용할 수 있는 configuration입니다.</p><div class="en-orig"><p>This page covers the parts of Server Actions that are specific to Next.js: how they commonly map to mutations, how the response carries both returned data and re-rendered UI, how the client dispatches them, the security boundary the framework enforces, and the configuration available.</p></div>
+<h2 class="sec" id="sequential-dispatch-on-the-client"><a class="anchor" href="#sequential-dispatch-on-the-client">Sequential dispatch on the client<span class="ko">Client의 순차 dispatch</span></a></h2>
+<p>Next.js는 client마다 Server Action을 한 번에 하나씩 dispatch합니다. 사용자가 action 세 개를 연달아 빠르게 실행하면, 두 번째는 첫 번째가 끝나기를 기다리고, 세 번째는 두 번째를 기다립니다. 이렇게 해서 다시 render된 server tree가 그것을 만들어 낸 action 결과와 일관되게 유지됩니다.</p><div class="en-orig"><p>Next.js dispatches Server Actions one at a time per client. If a user triggers three actions in quick succession, the second waits for the first to finish, then the third waits for the second. This keeps the re-rendered server tree consistent with the action result that produced it.</p></div>
+<p>그 결과: client에서 Server Action을 병렬화하기 위해 <code>Promise.all</code>에 의존하지 마세요. 병렬 작업이 필요하다면 하나의 Server Action 안에서 처리하거나, <a href="app-getting-started-fetching-data.html#server-components">Server Component</a>에서 병렬로 fetch하거나, mutation이 아닌 request라면 <a href="app-guides-backend-for-frontend.html#manipulating-data">Route Handler</a>를 사용하세요.</p><div class="en-orig"><p>A consequence: do not rely on <code>Promise.all</code> to parallelize Server Actions from the client. If you need parallel work, do it inside a single Server Action, fetch in parallel from a <a href="app-getting-started-fetching-data.html#server-components">Server Component</a>, or use a <a href="app-guides-backend-for-frontend.html#manipulating-data">Route Handler</a> for non-mutation requests.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이것은 Server Function 일반의 특성이 아니라 client dispatcher의 특성입니다. server는 Server Action을 queue에 넣지 않습니다. 각 action은 도착하는 대로 자체 request에서 실행되며, async 함수가 할 수 있는 일은 무엇이든 할 수 있습니다.</p><div class="en-orig"><p>This is a property of the client dispatcher, not of Server Functions in general. The server does not queue Server Actions. Each one runs in its own request as it arrives, and can do anything an async function can do.</p></div></div></div>
+<h2 class="sec" id="a-single-response-carries-data-and-ui"><a class="anchor" href="#a-single-response-carries-data-and-ui">A single response carries data and UI<span class="ko">하나의 response가 데이터와 UI를 함께 전달</span></a></h2>
+<p>Server Action이 즉시 revalidation을 일으키면, Next.js는 하나의 HTTP request 안에서 작업을 처리합니다: action을 실행한 다음, 현재 route를 server-side에서 다시 render합니다. 돌아오는 response는 같은 Flight stream 안에 두 가지를 모두 담고 있습니다:</p><div class="en-orig"><p>When a Server Action triggers an immediate revalidation, Next.js does the work inside one HTTP request: it runs the action, then re-renders the current route server-side. The response that comes back contains both pieces in the same Flight stream:</p></div>
+<ul>
+<li>action의 반환 값. client에서 <code>useActionState</code>나 await한 promise가 이 값을 받습니다.</li>
+<li>현재 route에 대해 새로 render된 <a href="app-glossary.html#rsc-payload">RSC Payload</a>. client는 이를 seeded navigation으로 commit합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The action's return value, consumed by <code>useActionState</code> or the awaited promise on the client.</li>
+<li>A newly rendered <a href="app-glossary.html#rsc-payload">RSC Payload</a> for the current route, which the client commits as a seeded navigation.</li>
+</ul></div>
+<p>애플리케이션 코드는 현재 page의 업데이트된 UI를 보기 위해 후속 fetch를 할 필요가 없습니다.</p><div class="en-orig"><p>Your application code does not need a follow-up fetch to see the updated UI for the current page.</p></div>
+<p>action이 다음 중 하나라도 수행하면 같은 response에 re-render가 포함됩니다:</p><div class="en-orig"><p>A re-render is included in the same response when the action does any of these:</p></div>
+<ul>
+<li><a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>나 <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>를 호출해 cache된 데이터를 즉시 invalidate합니다.</li>
+<li><a href="app-api-reference-functions-refresh.html"><code>refresh</code></a>를 호출해 현재 route의 RSC Payload를 다시 fetch합니다.</li>
+<li><a href="app-api-reference-functions-cookies.html#understanding-cookie-behavior-in-server-functions"><code>cookies()</code></a>를 통해 cookie를 변경합니다. cookie를 설정하거나 삭제하면 UI에 새 값이 반영되도록 현재 page가 자동으로 다시 render됩니다.</li>
+<li><a href="app-api-reference-functions-redirect.html"><code>redirect</code></a>를 호출합니다. response가 router를 navigate시키고 목적지의 RSC Payload를 stream합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Calls <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a> or <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a> to immediately invalidate cached data.</li>
+<li>Calls <a href="app-api-reference-functions-refresh.html"><code>refresh</code></a> to refetch the current route's RSC Payload.</li>
+<li>Mutates cookies through <a href="app-api-reference-functions-cookies.html#understanding-cookie-behavior-in-server-functions"><code>cookies()</code></a>. Setting or deleting a cookie automatically re-renders the current page so the UI reflects the new value.</li>
+<li>Calls <a href="app-api-reference-functions-redirect.html"><code>redirect</code></a>. The response navigates the router and streams the destination's RSC Payload.</li>
+</ul></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/posts/actions.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use server&#x27;
+
+import { revalidatePath } from &#x27;next/cache&#x27;
+import { auth } from &#x27;@/lib/auth&#x27;
+import { db } from &#x27;@/lib/db&#x27;
+
+export async function createPost(formData: FormData) {
+  const session = await auth()
+  if (!session?.user) throw new Error(&#x27;Unauthorized&#x27;)
+
+  await db.post.create({
+    data: {
+      title: String(formData.get(&#x27;title&#x27;)),
+      authorId: session.user.id,
+    },
+  })
+
+  revalidatePath(&#x27;/posts&#x27;)
+}</code></pre></div></div>
+<p>mutation, cache invalidation, page re-render가 모두 한 번의 roundtrip으로 완료됩니다. <a href="app-api-reference-functions-redirect.html#behavior"><code>redirect</code></a>는 control-flow exception을 throw하므로 그 뒤의 코드는 실행되지 않습니다. 목적지에서 최신 데이터가 필요하다면 revalidation 호출을 <code>redirect</code> 앞에 두세요.</p><div class="en-orig"><p>The mutation, the cache invalidation, and the page re-render all complete in a single roundtrip. Because <a href="app-api-reference-functions-redirect.html#behavior"><code>redirect</code></a> throws a control-flow exception, any code after it does not run. Place revalidation calls before <code>redirect</code> if the destination needs the fresh data.</p></div>
+<p>stale-while-revalidate profile을 사용하는 <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>는 예외입니다: tag를 background refresh 대상으로 표시할 뿐, action response에 re-render를 <strong>포함하지 않습니다</strong>. page는 이후의 read에서 변경 사항을 반영합니다. 위의 어느 것도 하지 않는 action은 반환 값만 전달하며, 현재 route는 다시 render되지 않습니다.</p><div class="en-orig"><p><a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a> with a stale-while-revalidate profile is the exception: it marks the tag for background refresh and does <strong>not</strong> include a re-render in the action response. The page reflects the change on a later read. An action that does none of the above carries only its return value, and the current route is not re-rendered.</p></div>
+<h2 class="sec" id="security"><a class="anchor" href="#security">Security<span class="ko">보안</span></a></h2>
+<p>Server Action은 그것을 호출한 page에 대한 POST request로 실행됩니다. build 시점에 <code>&#x27;use server&#x27;</code> directive는 compiler에게 client bundle 속 함수 구현을 server로 다시 POST하는 reference(action ID와 dispatcher)로 바꾸라고 알려 줍니다. 구현은 server에 남아 있지만, 같은 POST를 보낼 수 있는 사람이라면 누구나 그 route에 도달할 수 있습니다. 모든 action을 신뢰할 수 없는 진입점으로 취급하세요.</p><div class="en-orig"><p>A Server Action runs as a POST request against the page that invokes it. At build time, the <code>&#x27;use server&#x27;</code> directive tells the compiler to swap the function's implementation in client bundles for a reference (an action ID plus a dispatcher) that POSTs back to the server. The implementation stays on the server, but the route is reachable to anyone who can send the same POST. Treat every action as an untrusted entry point.</p></div>
+<p>Next.js는 몇 가지 framework 수준의 보호 장치를 강제합니다:</p><div class="en-orig"><p>Next.js enforces a few framework-level protections:</p></div>
+<ul>
+<li><strong>CSRF 검사.</strong> request의 <code>Origin</code>을 <code>Host</code>(또는 <code>X-Forwarded-Host</code>)와 비교합니다. 일치하지 않으면 거부됩니다. proxy나 CDN domain에는 <a href="app-api-reference-config-next-config-js-serverActions.html#allowedorigins"><code>serverActions.allowedOrigins</code></a>를 설정하세요.</li>
+<li><strong>Body 크기 제한.</strong> action request는 기본적으로 1MB로 제한됩니다. 더 큰 payload를 받아야 한다면 <a href="app-api-reference-config-next-config-js-serverActions.html#bodysizelimit"><code>serverActions.bodySizeLimit</code></a>를 설정하세요.</li>
+<li><strong>암호화된 action ID와 dead code elimination.</strong> action reference는 build 시점에 암호화되고, 사용되지 않는 Server Function은 client bundle에서 제거되어 public endpoint를 갖지 않습니다. <a href="app-guides-data-security.html#built-in-server-actions-security-features">Built-in Server Actions security features</a>를 참고하세요.</li>
+<li><strong>Closure 변수 암호화.</strong> inline action이 capture한 변수는 client로 보내기 전에 암호화됩니다. multi-instance나 self-hosted deployment에서는 <code>NEXT_SERVER_ACTIONS_ENCRYPTION_KEY</code>를 instance 사이에서 공유되는 안정적인 key로 설정하세요. <a href="app-guides-data-security.html#closures-and-encryption">Closures and encryption</a>을 참고하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>CSRF check.</strong> The request's <code>Origin</code> is compared to the <code>Host</code> (or <code>X-Forwarded-Host</code>). Mismatches are rejected. Configure <a href="app-api-reference-config-next-config-js-serverActions.html#allowedorigins"><code>serverActions.allowedOrigins</code></a> for proxy or CDN domains.</li>
+<li><strong>Body size limit.</strong> Action requests are capped at 1MB by default. Configure <a href="app-api-reference-config-next-config-js-serverActions.html#bodysizelimit"><code>serverActions.bodySizeLimit</code></a> when accepting larger payloads.</li>
+<li><strong>Encrypted action IDs and dead code elimination.</strong> Action references are encrypted at build time, and unused Server Functions are stripped from client bundles so they have no public endpoint. See <a href="app-guides-data-security.html#built-in-server-actions-security-features">Built-in Server Actions security features</a>.</li>
+<li><strong>Closure variable encryption.</strong> Variables captured by an inline action are encrypted before being sent to the client. For multi-instance and self-hosted deployments, set <code>NEXT_SERVER_ACTIONS_ENCRYPTION_KEY</code> to a stable key shared across instances. See <a href="app-guides-data-security.html#closures-and-encryption">Closures and encryption</a>.</li>
+</ul></div>
+<p>framework의 보호 장치가 애플리케이션 수준의 검사를 대신하지는 않습니다. 모든 action 안에서:</p><div class="en-orig"><p>Framework protections are not a substitute for application-level checks. Inside every action:</p></div>
+<ul>
+<li><strong>인증과 인가를 수행하세요.</strong> render 시점의 gating(인증된 page에서만 form을 render하는 것)은 보안 경계가 아닙니다. request는 UI를 거치지 않고도 보낼 수 있기 때문입니다.</li>
+<li><strong>입력을 검증하세요.</strong> <code>FormData</code>, query parameter, header를 신뢰할 수 없는 것으로 취급하세요.</li>
+<li><strong>반환 값을 제한하세요.</strong> action의 반환 값은 serialize되어 client로 전달됩니다. 원시 database record가 아니라 UI가 render하는 형태로 가공하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Authenticate and authorize.</strong> Render-time gating (only rendering a form on an authenticated page) is not a security boundary, because requests can be sent without going through the UI.</li>
+<li><strong>Validate inputs.</strong> Treat <code>FormData</code>, query parameters, and headers as untrusted.</li>
+<li><strong>Constrain return values.</strong> Action returns are serialized to the client. Shape them to what the UI renders, not raw database records.</li>
+</ul></div>
+<p>Data Access Layer, return-value tainting, rate limiting을 포함한 end-to-end 패턴은 <a href="app-guides-data-security.html#mutating-data">Data Security 가이드</a>를 참고하세요.</p><div class="en-orig"><p>For end-to-end patterns including a Data Access Layer, return-value tainting, and rate limiting, see the <a href="app-guides-data-security.html#mutating-data">Data Security guide</a>.</p></div>
+<p>삭제처럼 파괴적인 작업에는 강화된 session 검사나 재인증 같은 더 강력한 처리와, 그런 검사를 통과하지 못했을 때 확실하게 실패를 드러내는 처리가 필요할 수 있습니다.</p><div class="en-orig"><p>Destructive operations like deletes may warrant stronger handling, such as elevated session checks or re-authentication, and a loud failure when those checks miss.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/posts/actions.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use server&#x27;
+
+import { auth } from &#x27;@/lib/auth&#x27;
+
+export async function deletePost(postId: string) {
+  const session = await auth()
+  if (!session?.user) throw new Error(&#x27;Unauthorized&#x27;)
+  if (!(await canDelete(session.user, postId))) throw new Error(&#x27;Forbidden&#x27;)
+
+  await db.post.delete({ where: { id: postId } })
+}</code></pre></div></div>
+<p>experimental <a href="app-api-reference-config-next-config-js-authInterrupts.html"><code>authInterrupts</code></a> flag를 활성화했다면, 대신 <code>next/navigation</code>의 <a href="app-api-reference-functions-unauthorized.html"><code>unauthorized()</code></a>와 <a href="app-api-reference-functions-forbidden.html"><code>forbidden()</code></a>을 throw할 수 있습니다. 그러면 Next.js가 해당하는 <code>unauthorized.tsx</code> / <code>forbidden.tsx</code> UI segment를 자동으로 render합니다.</p><div class="en-orig"><p>If you've enabled the experimental <a href="app-api-reference-config-next-config-js-authInterrupts.html"><code>authInterrupts</code></a> flag, you can throw <a href="app-api-reference-functions-unauthorized.html"><code>unauthorized()</code></a> and <a href="app-api-reference-functions-forbidden.html"><code>forbidden()</code></a> from <code>next/navigation</code> instead, so Next.js renders the corresponding <code>unauthorized.tsx</code> / <code>forbidden.tsx</code> UI segment automatically.</p></div>
+<p>예를 들어, client가 server에 <em>어떤</em> item에 대해 작업할지 알려 주는 것은 정당하지만, 그 row의 내용이나 소유권을 제공해서는 안 됩니다. reference(보통 ID)와 사용자의 변경 사항만 보내고, 나머지는 session을 사용해 신뢰할 수 있는 source에서 다시 읽으세요. schema validation(zod 등)은 입력의 _형태_만 검사합니다. 형식이 올바른 <code>Item</code> object라도 호출자가 소유하지 않은 row를 가리킬 수 있습니다.</p><div class="en-orig"><p>For example, a client legitimately tells the server <em>which</em> item to act on, but it should not supply the row's contents or ownership. Send a reference (typically an ID) plus the user's change, and re-read the rest from a trusted source using the session. Schema validation (zod or similar) only checks the <em>shape</em> of the input. A well-formed <code>Item</code> object can still refer to a row the caller does not own.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/items/actions.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use server&#x27;
+
+import { auth } from &#x27;@/lib/auth&#x27;
+import { db } from &#x27;@/lib/db&#x27;
+
+// Unsafe: no auth, no ownership check. The whole item, including its id, comes
+// from the client, so anyone who can POST here can mark any item complete.
+export async function completeItemUnsafe(item: Item) {
+  await db.item.update({ where: { id: item.id }, data: { completed: true } })
+}
+
+// Safe: take only the change, derive identity from the session, look up by ownership.
+export async function completeItem(itemId: string) {
+  const session = await auth()
+  if (!session?.user) return
+
+  const item = await db.item.findFirst({
+    where: { id: itemId, ownerId: session.user.id },
+  })
+  if (!item) return
+
+  await db.item.update({ where: { id: item.id }, data: { completed: true } })
+}</code></pre></div></div>
+<h2 class="sec" id="choosing-a-cache-update"><a class="anchor" href="#choosing-a-cache-update">Choosing a cache update<span class="ko">Cache 업데이트 방식 선택</span></a></h2>
+<p>데이터를 변경한 뒤에는 on-demand revalidation이 server cache, client router, 또는 둘 다를 업데이트합니다. 무엇을 바꿔야 하는지에 따라 선택하세요:</p><div class="en-orig"><p>After mutating data, on-demand revalidation updates the server cache, the client router, or both. Choose based on what needs to change:</p></div>
+<ul>
+<li><a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>: tag를 즉시 만료시킵니다. 다음 read(action의 response와 함께 전달되는 route re-render 포함)는 최신 데이터를 기다립니다. 사용자가 자신의 변경 사항을 즉시 볼 수 있도록 action에 <strong>read-your-own-writes</strong>가 필요할 때 사용하세요. Server Action 전용입니다.</li>
+<li><a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>: cache-life profile로 tag를 stale-while-revalidate 방식으로 refresh합니다. 이후 read는 background에서 새 fetch가 진행되는 동안 stale 값을 받으므로, action 자체의 re-render는 새 데이터를 기다리지 <strong>않습니다</strong>.</li>
+<li><a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>: URL 경로로 invalidate합니다. 영향을 받는 route가 하나뿐이고 tagging이 과할 때 사용하세요.</li>
+<li><a href="app-api-reference-functions-refresh.html"><code>refresh</code></a>: cache된 데이터를 invalidate하지 않고 현재 route의 RSC Payload를 다시 fetch합니다. 화면이 action이 방금 변경한, cache 바깥의 state에 의존할 때 사용하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>: immediate expiration of a tag. The next read (including the route re-render that ships with the action's response) waits for fresh data. Use when the action needs <strong>read-your-own-writes</strong> so the user immediately sees their change. Server Actions only.</li>
+<li><a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>: stale-while-revalidate refresh of a tag with a cache-life profile. Subsequent reads get the stale value while a fresh fetch happens in the background, so the action's own re-render does <strong>not</strong> wait for the new data.</li>
+<li><a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>: invalidate by URL path. Use when one route is affected and tagging is overkill.</li>
+<li><a href="app-api-reference-functions-refresh.html"><code>refresh</code></a>: refetch the current route's RSC Payload without invalidating cached data. Use when the view depends on state outside the cache that the action just changed.</li>
+</ul></div>
+<p><code>updateTag</code>, <code>revalidatePath</code>, <code>refresh</code>가 실행되면 Next.js는 현재 route를 server-side에서 다시 render하고 새로 render된 <a href="app-glossary.html#rsc-payload">RSC Payload</a>를 action의 response에 포함하므로, page가 같은 roundtrip 안에서 변경 사항을 반영합니다. stale-while-revalidate profile을 사용하는 <code>revalidateTag</code>는 의도적으로 이 즉시 re-render를 건너뜁니다.</p><div class="en-orig"><p>When <code>updateTag</code>, <code>revalidatePath</code>, or <code>refresh</code> runs, Next.js re-renders the current route server-side and includes a newly rendered <a href="app-glossary.html#rsc-payload">RSC Payload</a> in the action's response, so the page reflects the change in the same roundtrip. <code>revalidateTag</code> with a stale-while-revalidate profile intentionally skips that immediate re-render.</p></div>
+<p><a href="app-api-reference-functions-redirect.html"><code>redirect</code></a>와 달리 이들은 모두 throw하지 않으므로, action에서 호출한 뒤에도 호출자에게 값을 반환할 수 있습니다. 기반 모델은 <a href="app-guides-how-revalidation-works.html">How revalidation works</a>를 참고하세요.</p><div class="en-orig"><p>Unlike <a href="app-api-reference-functions-redirect.html"><code>redirect</code></a>, none of these throw, so an action can call them and still return a value to the caller. See <a href="app-guides-how-revalidation-works.html">How revalidation works</a> for the underlying model.</p></div>
+<h2 class="sec" id="configuration"><a class="anchor" href="#configuration">Configuration</a></h2>
+<p><code>next.config.js</code>의 <a href="app-api-reference-config-next-config-js-serverActions.html"><code>serverActions</code></a> option은 framework 수준의 동작을 제어합니다:</p><div class="en-orig"><p>The <a href="app-api-reference-config-next-config-js-serverActions.html"><code>serverActions</code></a> option in <code>next.config.js</code> controls framework-level behavior:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+module.exports = {
+  experimental: {
+    serverActions: {
+      allowedOrigins: [&#x27;my-proxy.com&#x27;, &#x27;*.my-proxy.com&#x27;],
+      bodySizeLimit: &#x27;2mb&#x27;,
+    },
+  },
+}</code></pre></div></div>
+<p>closure encryption key는 deployment environment에 <code>NEXT_SERVER_ACTIONS_ENCRYPTION_KEY</code>를 설정하세요. deployment별 가이드는 <a href="app-guides-self-hosting.html#server-functions-encryption-key">Self-hosting: Server Functions encryption key</a>를 참고하세요.</p><div class="en-orig"><p>For the closure encryption key, set <code>NEXT_SERVER_ACTIONS_ENCRYPTION_KEY</code> in the deployment environment. See <a href="app-guides-self-hosting.html#server-functions-encryption-key">Self-hosting: Server Functions encryption key</a> for deployment-specific guidance.</p></div>
+<h2 class="sec" id="deployment-considerations"><a class="anchor" href="#deployment-considerations">Deployment considerations<span class="ko">Deployment 시 고려 사항</span></a></h2>
+<p>각 Server Action은 build artifact의 일부인 <a href="#security">action ID</a>로 식별됩니다. 새 deployment는 보통 새 ID를 생성하므로(source가 바뀌지 않아도 Next.js는 최대 14일마다 ID를 교체합니다), 이전 build를 아직 실행 중인 client가 더 이상 존재하지 않는 action ID를 호출할 수 있습니다. 이 오류는 "<a href="https://nextjs.org/docs/messages/failed-to-find-server-action" target="_blank" rel="noopener">Failed to find Server Action</a>"으로 나타납니다.</p><div class="en-orig"><p>Each Server Action is identified by the <a href="#security">action ID</a> that is part of its build artifacts. New deployments typically generate new IDs (Next.js rotates them at most every 14 days, even when the source is unchanged), so a client still running the previous build may invoke an action ID that no longer exists. The error surfaces as "<a href="https://nextjs.org/docs/messages/failed-to-find-server-action" target="_blank" rel="noopener">Failed to find Server Action</a>".</p></div>
+<p>영향을 최소화하려면:</p><div class="en-orig"><p>To minimize disruption:</p></div>
+<ul>
+<li>활성 사용자가 mutation 도중일 가능성이 높다면 급작스러운 전환보다 rolling deployment를 선호하세요.</li>
+<li>action reference가 어디서나 복호화될 수 있도록 <code>NEXT_SERVER_ACTIONS_ENCRYPTION_KEY</code>를 instance 사이에서 안정적으로 유지하세요.</li>
+<li>오류를 hard failure가 아니라 UI의 retry 경로로 노출해서, refresh로 사용자가 복구할 수 있게 하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>Prefer rolling deployments over abrupt cutovers when active users are likely to be mid-mutation.</li>
+<li>Keep <code>NEXT_SERVER_ACTIONS_ENCRYPTION_KEY</code> stable across instances so action references remain decryptable everywhere.</li>
+<li>Surface the error as a retry path in the UI rather than a hard failure, so a refresh recovers the user.</li>
+</ul></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">다음 단계</h2><p>Server Action을 만들고, 보호하고, 설정하는 방법을 더 알아보세요.</p><div class="rgrid"><a class="rcard" href="app-getting-started-mutating-data.html"><div class="rt">Mutating Data</div><div class="rk">데이터 변경하기</div><div class="rd">Next.js에서 Server Function과 Server Action을 사용해 데이터를 mutate하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-forms.html"><div class="rt">How to create forms with Server Actions</div><div class="rk">Server Actions로 form 만들기</div><div class="rd">React Server Actions로 Next.js에서 form을 만드는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-data-security.html"><div class="rt">How to think about data security in Next.js</div><div class="rk">Next.js의 데이터 보안을 생각하는 방법</div><div class="rd">Next.js에 내장된 데이터 보안 기능과 애플리케이션 데이터를 보호하기 위한 best practice를 알아봅니다.</div></a><a class="rcard" href="app-api-reference-directives-use-server.html"><div class="rt">use server</div><div class="rk">use server</div><div class="rd">use server directive를 사용해 server에서 코드를 실행하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-functions-revalidatePath.html"><div class="rt">revalidatePath</div><div class="rk">revalidatePath</div><div class="rd">revalidatePath 함수의 API Reference입니다.</div></a><a class="rcard" href="app-api-reference-functions-revalidateTag.html"><div class="rt">revalidateTag</div><div class="rk">revalidateTag</div><div class="rd">revalidateTag 함수에 대한 API Reference입니다.</div></a><a class="rcard" href="app-api-reference-functions-redirect.html"><div class="rt">redirect</div><div class="rk">redirect</div><div class="rd">redirect 함수의 API Reference입니다.</div></a><a class="rcard" href="app-api-reference-functions-refresh.html"><div class="rt">refresh</div><div class="rk">refresh</div><div class="rd">refresh 함수의 API Reference입니다.</div></a><a class="rcard" href="app-api-reference-config-next-config-js-serverActions.html"><div class="rt">serverActions</div><div class="rk">serverActions</div><div class="rd">Next.js 애플리케이션에서 Server Action의 동작을 설정합니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/server-actions.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/server-actions" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-self-hosting.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Self-Hosting</div><div class="ttl-ko">Next.js 애플리케이션 self-hosting하기</div></a>
+      <a href="app-guides-server-and-client-boundary.html" class="next"><div class="dir">다음 →</div><div class="ttl">Server and Client Boundary</div><div class="ttl-ko">Server와 Client 경계</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/server-actions" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#sequential-dispatch-on-the-client">Sequential dispatch on the client</a></li><li class="l2"><a href="#a-single-response-carries-data-and-ui">A single response carries data and UI</a></li><li class="l2"><a href="#security">Security</a></li><li class="l2"><a href="#choosing-a-cache-update">Choosing a cache update</a></li><li class="l2"><a href="#configuration">Configuration</a></li><li class="l2"><a href="#deployment-considerations">Deployment considerations</a></li><li class="l2"><a href="#next-steps">다음 단계</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+**Server Action**은 `&lt;form action&gt;`, `&lt;button formAction&gt;`, client-side transition 같은 React의 action 메커니즘을 통해 호출되는 [React Server Function](https://react.dev/reference/rsc/server-functions)입니다.
+
+[`&#x27;use server&#x27;`](/docs/app/api-reference/directives/use-server) directive를 추가해 만들고, form에서 호출하거나 `startTransition`으로 감싼 event handler 또는 `useEffect`에서 호출합니다. Server Function을 만들고 호출하는 기본 내용은 [Mutating data](/docs/app/getting-started/mutating-data)와 [Forms 가이드](/docs/app/guides/forms)를 참고하세요.
+
+이 페이지는 Server Action 중 Next.js에 특화된 부분을 다룹니다: 흔히 mutation에 어떻게 대응되는지, response가 반환 데이터와 다시 render된 UI를 어떻게 함께 전달하는지, client가 action을 어떻게 dispatch하는지, framework가 강제하는 보안 경계, 그리고 사용할 수 있는 configuration입니다.
+
+## Sequential dispatch on the client || Client의 순차 dispatch
+
+Next.js는 client마다 Server Action을 한 번에 하나씩 dispatch합니다. 사용자가 action 세 개를 연달아 빠르게 실행하면, 두 번째는 첫 번째가 끝나기를 기다리고, 세 번째는 두 번째를 기다립니다. 이렇게 해서 다시 render된 server tree가 그것을 만들어 낸 action 결과와 일관되게 유지됩니다.
+
+그 결과: client에서 Server Action을 병렬화하기 위해 `Promise.all`에 의존하지 마세요. 병렬 작업이 필요하다면 하나의 Server Action 안에서 처리하거나, [Server Component](/docs/app/getting-started/fetching-data#server-components)에서 병렬로 fetch하거나, mutation이 아닌 request라면 [Route Handler](/docs/app/guides/backend-for-frontend#manipulating-data)를 사용하세요.
+
+&gt; **Good to know:** 이것은 Server Function 일반의 특성이 아니라 client dispatcher의 특성입니다. server는 Server Action을 queue에 넣지 않습니다. 각 action은 도착하는 대로 자체 request에서 실행되며, async 함수가 할 수 있는 일은 무엇이든 할 수 있습니다.
+
+## A single response carries data and UI || 하나의 response가 데이터와 UI를 함께 전달
+
+Server Action이 즉시 revalidation을 일으키면, Next.js는 하나의 HTTP request 안에서 작업을 처리합니다: action을 실행한 다음, 현재 route를 server-side에서 다시 render합니다. 돌아오는 response는 같은 Flight stream 안에 두 가지를 모두 담고 있습니다:
+
+- action의 반환 값. client에서 `useActionState`나 await한 promise가 이 값을 받습니다.
+- 현재 route에 대해 새로 render된 [RSC Payload](/docs/app/glossary#rsc-payload). client는 이를 seeded navigation으로 commit합니다.
+
+애플리케이션 코드는 현재 page의 업데이트된 UI를 보기 위해 후속 fetch를 할 필요가 없습니다.
+
+action이 다음 중 하나라도 수행하면 같은 response에 re-render가 포함됩니다:
+
+- [`updateTag`](/docs/app/api-reference/functions/updateTag)나 [`revalidatePath`](/docs/app/api-reference/functions/revalidatePath)를 호출해 cache된 데이터를 즉시 invalidate합니다.
+- [`refresh`](/docs/app/api-reference/functions/refresh)를 호출해 현재 route의 RSC Payload를 다시 fetch합니다.
+- [`cookies()`](/docs/app/api-reference/functions/cookies#understanding-cookie-behavior-in-server-functions)를 통해 cookie를 변경합니다. cookie를 설정하거나 삭제하면 UI에 새 값이 반영되도록 현재 page가 자동으로 다시 render됩니다.
+- [`redirect`](/docs/app/api-reference/functions/redirect)를 호출합니다. response가 router를 navigate시키고 목적지의 RSC Payload를 stream합니다.
+
+[[CODE 1]]
+
+mutation, cache invalidation, page re-render가 모두 한 번의 roundtrip으로 완료됩니다. [`redirect`](/docs/app/api-reference/functions/redirect#behavior)는 control-flow exception을 throw하므로 그 뒤의 코드는 실행되지 않습니다. 목적지에서 최신 데이터가 필요하다면 revalidation 호출을 `redirect` 앞에 두세요.
+
+stale-while-revalidate profile을 사용하는 [`revalidateTag`](/docs/app/api-reference/functions/revalidateTag)는 예외입니다: tag를 background refresh 대상으로 표시할 뿐, action response에 re-render를 **포함하지 않습니다**. page는 이후의 read에서 변경 사항을 반영합니다. 위의 어느 것도 하지 않는 action은 반환 값만 전달하며, 현재 route는 다시 render되지 않습니다.
+
+## Security || 보안
+
+Server Action은 그것을 호출한 page에 대한 POST request로 실행됩니다. build 시점에 `&#x27;use server&#x27;` directive는 compiler에게 client bundle 속 함수 구현을 server로 다시 POST하는 reference(action ID와 dispatcher)로 바꾸라고 알려 줍니다. 구현은 server에 남아 있지만, 같은 POST를 보낼 수 있는 사람이라면 누구나 그 route에 도달할 수 있습니다. 모든 action을 신뢰할 수 없는 진입점으로 취급하세요.
+
+Next.js는 몇 가지 framework 수준의 보호 장치를 강제합니다:
+
+- **CSRF 검사.** request의 `Origin`을 `Host`(또는 `X-Forwarded-Host`)와 비교합니다. 일치하지 않으면 거부됩니다. proxy나 CDN domain에는 [`serverActions.allowedOrigins`](/docs/app/api-reference/config/next-config-js/serverActions#allowedorigins)를 설정하세요.
+- **Body 크기 제한.** action request는 기본적으로 1MB로 제한됩니다. 더 큰 payload를 받아야 한다면 [`serverActions.bodySizeLimit`](/docs/app/api-reference/config/next-config-js/serverActions#bodysizelimit)를 설정하세요.
+- **암호화된 action ID와 dead code elimination.** action reference는 build 시점에 암호화되고, 사용되지 않는 Server Function은 client bundle에서 제거되어 public endpoint를 갖지 않습니다. [Built-in Server Actions security features](/docs/app/guides/data-security#built-in-server-actions-security-features)를 참고하세요.
+- **Closure 변수 암호화.** inline action이 capture한 변수는 client로 보내기 전에 암호화됩니다. multi-instance나 self-hosted deployment에서는 `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY`를 instance 사이에서 공유되는 안정적인 key로 설정하세요. [Closures and encryption](/docs/app/guides/data-security#closures-and-encryption)을 참고하세요.
+
+framework의 보호 장치가 애플리케이션 수준의 검사를 대신하지는 않습니다. 모든 action 안에서:
+
+- **인증과 인가를 수행하세요.** render 시점의 gating(인증된 page에서만 form을 render하는 것)은 보안 경계가 아닙니다. request는 UI를 거치지 않고도 보낼 수 있기 때문입니다.
+- **입력을 검증하세요.** `FormData`, query parameter, header를 신뢰할 수 없는 것으로 취급하세요.
+- **반환 값을 제한하세요.** action의 반환 값은 serialize되어 client로 전달됩니다. 원시 database record가 아니라 UI가 render하는 형태로 가공하세요.
+
+Data Access Layer, return-value tainting, rate limiting을 포함한 end-to-end 패턴은 [Data Security 가이드](/docs/app/guides/data-security#mutating-data)를 참고하세요.
+
+삭제처럼 파괴적인 작업에는 강화된 session 검사나 재인증 같은 더 강력한 처리와, 그런 검사를 통과하지 못했을 때 확실하게 실패를 드러내는 처리가 필요할 수 있습니다.
+
+[[CODE 2]]
+
+experimental [`authInterrupts`](/docs/app/api-reference/config/next-config-js/authInterrupts) flag를 활성화했다면, 대신 `next/navigation`의 [`unauthorized()`](/docs/app/api-reference/functions/unauthorized)와 [`forbidden()`](/docs/app/api-reference/functions/forbidden)을 throw할 수 있습니다. 그러면 Next.js가 해당하는 `unauthorized.tsx` / `forbidden.tsx` UI segment를 자동으로 render합니다.
+
+예를 들어, client가 server에 _어떤_ item에 대해 작업할지 알려 주는 것은 정당하지만, 그 row의 내용이나 소유권을 제공해서는 안 됩니다. reference(보통 ID)와 사용자의 변경 사항만 보내고, 나머지는 session을 사용해 신뢰할 수 있는 source에서 다시 읽으세요. schema validation(zod 등)은 입력의 _형태_만 검사합니다. 형식이 올바른 `Item` object라도 호출자가 소유하지 않은 row를 가리킬 수 있습니다.
+
+[[CODE 3]]
+
+## Choosing a cache update || Cache 업데이트 방식 선택
+
+데이터를 변경한 뒤에는 on-demand revalidation이 server cache, client router, 또는 둘 다를 업데이트합니다. 무엇을 바꿔야 하는지에 따라 선택하세요:
+
+- [`updateTag`](/docs/app/api-reference/functions/updateTag): tag를 즉시 만료시킵니다. 다음 read(action의 response와 함께 전달되는 route re-render 포함)는 최신 데이터를 기다립니다. 사용자가 자신의 변경 사항을 즉시 볼 수 있도록 action에 **read-your-own-writes**가 필요할 때 사용하세요. Server Action 전용입니다.
+- [`revalidateTag`](/docs/app/api-reference/functions/revalidateTag): cache-life profile로 tag를 stale-while-revalidate 방식으로 refresh합니다. 이후 read는 background에서 새 fetch가 진행되는 동안 stale 값을 받으므로, action 자체의 re-render는 새 데이터를 기다리지 **않습니다**.
+- [`revalidatePath`](/docs/app/api-reference/functions/revalidatePath): URL 경로로 invalidate합니다. 영향을 받는 route가 하나뿐이고 tagging이 과할 때 사용하세요.
+- [`refresh`](/docs/app/api-reference/functions/refresh): cache된 데이터를 invalidate하지 않고 현재 route의 RSC Payload를 다시 fetch합니다. 화면이 action이 방금 변경한, cache 바깥의 state에 의존할 때 사용하세요.
+
+`updateTag`, `revalidatePath`, `refresh`가 실행되면 Next.js는 현재 route를 server-side에서 다시 render하고 새로 render된 [RSC Payload](/docs/app/glossary#rsc-payload)를 action의 response에 포함하므로, page가 같은 roundtrip 안에서 변경 사항을 반영합니다. stale-while-revalidate profile을 사용하는 `revalidateTag`는 의도적으로 이 즉시 re-render를 건너뜁니다.
+
+[`redirect`](/docs/app/api-reference/functions/redirect)와 달리 이들은 모두 throw하지 않으므로, action에서 호출한 뒤에도 호출자에게 값을 반환할 수 있습니다. 기반 모델은 [How revalidation works](/docs/app/guides/how-revalidation-works)를 참고하세요.
+
+## Configuration
+
+`next.config.js`의 [`serverActions`](/docs/app/api-reference/config/next-config-js/serverActions) option은 framework 수준의 동작을 제어합니다:
+
+[[CODE 4]]
+
+closure encryption key는 deployment environment에 `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY`를 설정하세요. deployment별 가이드는 [Self-hosting: Server Functions encryption key](/docs/app/guides/self-hosting#server-functions-encryption-key)를 참고하세요.
+
+## Deployment considerations || Deployment 시 고려 사항
+
+각 Server Action은 build artifact의 일부인 [action ID](#security)로 식별됩니다. 새 deployment는 보통 새 ID를 생성하므로(source가 바뀌지 않아도 Next.js는 최대 14일마다 ID를 교체합니다), 이전 build를 아직 실행 중인 client가 더 이상 존재하지 않는 action ID를 호출할 수 있습니다. 이 오류는 &quot;[Failed to find Server Action](https://nextjs.org/docs/messages/failed-to-find-server-action)&quot;으로 나타납니다.
+
+영향을 최소화하려면:
+
+- 활성 사용자가 mutation 도중일 가능성이 높다면 급작스러운 전환보다 rolling deployment를 선호하세요.
+- action reference가 어디서나 복호화될 수 있도록 `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY`를 instance 사이에서 안정적으로 유지하세요.
+- 오류를 hard failure가 아니라 UI의 retry 경로로 노출해서, refresh로 사용자가 복구할 수 있게 하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

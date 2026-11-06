@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deploying (배포) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/getting-started/deploying" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/getting-started/deploying" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/17-deploying.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-getting-started.html">Getting Started</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Deploying<span class="sub">배포</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js는 Node.js server, Docker container, static export로 deploy하거나, 여러 platform에서 실행되도록 adapt할 수 있습니다.</p><div class="en-orig"><p>Next.js can be deployed as a Node.js server, Docker container, static export, or adapted to run on different platforms.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Deployment Option</th><th>지원 기능</th></tr></thead>
+<tbody>
+<tr><td><a href="#nodejs-server">Node.js server</a></td><td>전체</td></tr>
+<tr><td><a href="#docker">Docker container</a></td><td>전체</td></tr>
+<tr><td><a href="#static-export">Static export</a></td><td>제한적</td></tr>
+<tr><td><a href="#adapters">Adapters</a></td><td>다양함(<a href="#verified-adapters">verified</a> adapter는 test suite를 실행함)</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Deployment Option</th><th>Feature Support</th></tr></thead>
+<tbody>
+<tr><td><a href="#nodejs-server">Node.js server</a></td><td>All</td></tr>
+<tr><td><a href="#docker">Docker container</a></td><td>All</td></tr>
+<tr><td><a href="#static-export">Static export</a></td><td>Limited</td></tr>
+<tr><td><a href="#adapters">Adapters</a></td><td>Varies (<a href="#verified-adapters">verified</a> adapters run the test suite)</td></tr>
+</tbody></table></div></div>
+<h2 class="sec" id="nodejs-server"><a class="anchor" href="#nodejs-server">Node.js server</a></h2>
+<p>Next.js는 Node.js를 지원하는 모든 provider에 deploy할 수 있습니다. <code>package.json</code>에 <code>&quot;build&quot;</code>와 <code>&quot;start&quot;</code> script가 있는지 확인하세요:</p><div class="en-orig"><p>Next.js can be deployed to any provider that supports Node.js. Ensure your <code>package.json</code> has the <code>&quot;build&quot;</code> and <code>&quot;start&quot;</code> scripts:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">package.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;next dev&quot;,
+    &quot;build&quot;: &quot;next build&quot;,
+    &quot;start&quot;: &quot;next start&quot;
+  }
+}</code></pre></div></div>
+<p>그런 다음 <code>npm run build</code>를 실행해 <a href="app-guides-building.html">애플리케이션을 build</a>하고, <code>npm run start</code>로 Node.js server를 시작하세요. 이 server는 모든 Next.js 기능을 지원합니다. 필요하다면 <a href="app-guides-custom-server.html">custom server</a>로 eject할 수도 있습니다.</p><div class="en-orig"><p>Then, run <code>npm run build</code> to <a href="app-guides-building.html">build your application</a> and <code>npm run start</code> to start the Node.js server. This server supports all Next.js features. If needed, you can also eject to a <a href="app-guides-custom-server.html">custom server</a>.</p></div>
+<p>Node.js deployment는 모든 Next.js 기능을 지원합니다. 인프라에 맞게 <a href="app-guides-self-hosting.html">설정하는 방법</a>을 알아보세요.</p><div class="en-orig"><p>Node.js deployments support all Next.js features. Learn how to <a href="app-guides-self-hosting.html">configure them</a> for your infrastructure.</p></div>
+<h3 class="sec" id="templates"><a class="anchor" href="#templates">Templates<span class="ko">템플릿</span></a></h3>
+<ul>
+<li><a href="https://github.com/nextjs/deploy-flightcontrol" target="_blank" rel="noopener">Flightcontrol</a></li>
+<li><a href="https://github.com/nextjs/deploy-railway" target="_blank" rel="noopener">Railway</a></li>
+<li><a href="https://github.com/nextjs/deploy-replit" target="_blank" rel="noopener">Replit</a></li>
+<li><a href="https://github.com/hostinger/deploy-nextjs" target="_blank" rel="noopener">Hostinger</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://github.com/nextjs/deploy-flightcontrol" target="_blank" rel="noopener">Flightcontrol</a></li>
+<li><a href="https://github.com/nextjs/deploy-railway" target="_blank" rel="noopener">Railway</a></li>
+<li><a href="https://github.com/nextjs/deploy-replit" target="_blank" rel="noopener">Replit</a></li>
+<li><a href="https://github.com/hostinger/deploy-nextjs" target="_blank" rel="noopener">Hostinger</a></li>
+</ul></div>
+<h2 class="sec" id="docker"><a class="anchor" href="#docker">Docker</a></h2>
+<p>Next.js는 <a href="https://www.docker.com/" target="_blank" rel="noopener">Docker</a> container를 지원하는 모든 provider에 deploy할 수 있습니다. 여기에는 Kubernetes 같은 container orchestrator나 Docker를 실행하는 cloud provider가 포함됩니다. 앱을 containerize하는 best practice는 Docker 공식 <a href="https://docs.docker.com/guides/nextjs" target="_blank" rel="noopener">Next.js</a> 및 <a href="https://docs.docker.com/guides/reactjs" target="_blank" rel="noopener">React.js</a> 가이드를 참고하세요.</p><div class="en-orig"><p>Next.js can be deployed to any provider that supports <a href="https://www.docker.com/" target="_blank" rel="noopener">Docker</a> containers. This includes container orchestrators like Kubernetes or a cloud provider that runs Docker. For best practices on containerizing your app, refer to Docker's official <a href="https://docs.docker.com/guides/nextjs" target="_blank" rel="noopener">Next.js</a> and <a href="https://docs.docker.com/guides/reactjs" target="_blank" rel="noopener">React.js</a> guides.</p></div>
+<p>Docker deployment는 모든 Next.js 기능을 지원합니다. 인프라에 맞게 <a href="app-guides-self-hosting.html">설정하는 방법</a>을 알아보세요.</p><div class="en-orig"><p>Docker deployments support all Next.js features. Learn how to <a href="app-guides-self-hosting.html">configure them</a> for your infrastructure.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note for development</div><p>Docker는 production deployment에 아주 좋지만, Mac과 Windows에서 개발할 때는 더 나은 성능을 위해 Docker 대신 로컬 개발 환경(<code>npm run dev</code>)을 사용하는 것을 고려하세요. <a href="app-guides-local-development.html">로컬 개발 최적화에 대해 더 알아보기</a>.</p><div class="en-orig"><p>While Docker is excellent for production deployments, consider using local development (<code>npm run dev</code>) instead of Docker during development on Mac and Windows for better performance. <a href="app-guides-local-development.html">Learn more about optimizing local development</a>.</p></div></div></div>
+<h3 class="sec" id="templates-1"><a class="anchor" href="#templates-1">Templates<span class="ko">템플릿</span></a></h3>
+<p>다음 예제들은 Next.js 애플리케이션을 containerize하는 best practice를 보여 줍니다:</p><div class="en-orig"><p>The following examples demonstrate best practices for containerizing Next.js applications:</p></div>
+<ul>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/with-docker" target="_blank" rel="noopener">Docker Standalone Output</a> - <code>output: &quot;standalone&quot;</code>을 사용해 필요한 runtime 파일과 dependency만 담은 최소한의 production-ready Docker image를 생성하여 Next.js 애플리케이션을 deploy합니다.</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/with-docker-export-output" target="_blank" rel="noopener">Docker Export Output</a> - <code>output: &quot;export&quot;</code>를 사용해 가벼운 container나 어떤 static hosting 환경에서도 제공할 수 있는 최적화된 HTML 파일을 생성하여 완전히 static한 Next.js 애플리케이션을 deploy합니다.</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/with-docker-multi-env" target="_blank" rel="noopener">Docker Multi-Environment</a> - 서로 다른 environment variable을 사용하는 development, staging, production 환경별로 Docker configuration을 따로 관리합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/with-docker" target="_blank" rel="noopener">Docker Standalone Output</a> - Deploy a Next.js application using <code>output: &quot;standalone&quot;</code> to generate a minimal, production-ready Docker image with only the required runtime files and dependencies.</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/with-docker-export-output" target="_blank" rel="noopener">Docker Export Output</a> - Deploy a fully static Next.js application using <code>output: &quot;export&quot;</code> to generate optimized HTML files that can be served from a lightweight container or any static hosting environment.</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/with-docker-multi-env" target="_blank" rel="noopener">Docker Multi-Environment</a> - Manage separate Docker configurations for development, staging, and production environments with different environment variables.</li>
+</ul></div>
+<p>또한 hosting provider들도 Next.js deploy에 대한 가이드를 제공합니다:</p><div class="en-orig"><p>Additionally, hosting providers offer guidance on deploying Next.js:</p></div>
+<ul>
+<li><a href="https://github.com/nextjs/deploy-digitalocean" target="_blank" rel="noopener">DigitalOcean</a></li>
+<li><a href="https://github.com/nextjs/deploy-fly" target="_blank" rel="noopener">Fly.io</a></li>
+<li><a href="https://github.com/nextjs/deploy-google-cloud-run" target="_blank" rel="noopener">Google Cloud Run</a></li>
+<li><a href="https://github.com/nextjs/deploy-render" target="_blank" rel="noopener">Render</a></li>
+<li><a href="https://github.com/nextjs/deploy-sst" target="_blank" rel="noopener">SST</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://github.com/nextjs/deploy-digitalocean" target="_blank" rel="noopener">DigitalOcean</a></li>
+<li><a href="https://github.com/nextjs/deploy-fly" target="_blank" rel="noopener">Fly.io</a></li>
+<li><a href="https://github.com/nextjs/deploy-google-cloud-run" target="_blank" rel="noopener">Google Cloud Run</a></li>
+<li><a href="https://github.com/nextjs/deploy-render" target="_blank" rel="noopener">Render</a></li>
+<li><a href="https://github.com/nextjs/deploy-sst" target="_blank" rel="noopener">SST</a></li>
+</ul></div>
+<h2 class="sec" id="static-export"><a class="anchor" href="#static-export">Static export</a></h2>
+<p>Next.js는 static site나 <a href="app-guides-single-page-applications.html">Single-Page Application (SPA)</a>로 시작한 뒤, 나중에 필요하면 server가 필요한 기능을 사용하도록 upgrade할 수 있습니다.</p><div class="en-orig"><p>Next.js enables starting as a static site or <a href="app-guides-single-page-applications.html">Single-Page Application (SPA)</a>, then later optionally upgrading to use features that require a server.</p></div>
+<p>Next.js는 <a href="app-guides-static-exports.html">static export</a>를 지원하므로 HTML/CSS/JS static asset을 제공할 수 있는 어떤 web server에도 deploy하고 hosting할 수 있습니다. 여기에는 AWS S3, Nginx, Apache 같은 도구가 포함됩니다.</p><div class="en-orig"><p>Since Next.js supports <a href="app-guides-static-exports.html">static exports</a>, it can be deployed and hosted on any web server that can serve HTML/CSS/JS static assets. This includes tools like AWS S3, Nginx, or Apache.</p></div>
+<p><a href="app-guides-static-exports.html">static export</a>로 실행하면 server가 필요한 Next.js 기능은 지원되지 <strong>않습니다</strong>. <a href="app-guides-static-exports.html#unsupported-features">더 알아보기</a>.</p><div class="en-orig"><p>Running as a <a href="app-guides-static-exports.html">static export</a> <strong>does not</strong> support Next.js features that require a server. <a href="app-guides-static-exports.html#unsupported-features">Learn more</a>.</p></div>
+<h3 class="sec" id="templates-2"><a class="anchor" href="#templates-2">Templates<span class="ko">템플릿</span></a></h3>
+<ul>
+<li><a href="https://github.com/nextjs/deploy-github-pages" target="_blank" rel="noopener">GitHub Pages</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://github.com/nextjs/deploy-github-pages" target="_blank" rel="noopener">GitHub Pages</a></li>
+</ul></div>
+<h2 class="sec" id="adapters"><a class="anchor" href="#adapters">Adapters</a></h2>
+<p>Next.js는 여러 platform의 인프라 기능을 지원하도록 해당 platform에서 실행되게 adapt할 수 있습니다. <a href="app-api-reference-config-next-config-js-adapterPath.html">Deployment Adapter API</a>를 사용하면 platform이 Next.js 애플리케이션의 build 및 deploy 방식을 customize할 수 있습니다.</p><div class="en-orig"><p>Next.js can be adapted to run on different platforms to support their infrastructure capabilities. The <a href="app-api-reference-config-next-config-js-adapterPath.html">Deployment Adapter API</a> lets platforms customize how Next.js applications are built and deployed.</p></div>
+<h3 class="sec" id="verified-adapters"><a class="anchor" href="#verified-adapters">Verified Adapters</a></h3>
+<p>Verified adapter는 open source이며, 전체 <a href="app-api-reference-adapters-testing-adapters.html">Next.js compatibility test suite</a>를 실행하고, <a href="https://github.com/nextjs" target="_blank" rel="noopener">Next.js GitHub organization</a> 아래에서 hosting됩니다. Next.js 팀은 major release 전에 이 platform들과 함께 test를 조율합니다. 각 adapter의 공개 test 결과도 곧 제공될 예정입니다. <a href="app-guides-deploying-to-platforms.html#verified-adapters">verified adapter에 대해 더 알아보기</a>.</p><div class="en-orig"><p>Verified adapters are open source, run the full <a href="app-api-reference-adapters-testing-adapters.html">Next.js compatibility test suite</a>, and are hosted under the <a href="https://github.com/nextjs" target="_blank" rel="noopener">Next.js GitHub organization</a>. The Next.js team coordinates testing with these platforms before major releases. Publicly visible test results for each adapter are coming soon. <a href="app-guides-deploying-to-platforms.html#verified-adapters">Learn more about verified adapters</a>.</p></div>
+<ul>
+<li><a href="https://vercel.com/docs/frameworks/full-stack/nextjs" target="_blank" rel="noopener">Vercel</a></li>
+<li><a href="https://bun.com/docs/guides/ecosystem/nextjs" target="_blank" rel="noopener">Bun</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://vercel.com/docs/frameworks/full-stack/nextjs" target="_blank" rel="noopener">Vercel</a></li>
+<li><a href="https://bun.com/docs/guides/ecosystem/nextjs" target="_blank" rel="noopener">Bun</a></li>
+</ul></div>
+<p>Cloudflare와 Netlify는 Adapter API 기반의 verified adapter를 개발하고 있습니다. 그동안에는 각자의 Next.js integration을 제공합니다(아래 참고).</p><div class="en-orig"><p>Cloudflare and Netlify are working on verified adapters built on the Adapter API. In the meantime, they offer their own Next.js integrations (see below).</p></div>
+<h3 class="sec" id="other-platforms"><a class="anchor" href="#other-platforms">Other Platforms<span class="ko">기타 Platform</span></a></h3>
+<p>다음 platform들은 자체 Next.js integration을 제공합니다. 이들은 공개 <a href="app-api-reference-config-next-config-js-adapterPath.html">Adapter API</a> 기반이 아니고 Next.js 팀의 검증을 받지 않았으므로 기능 지원과 호환성이 다를 수 있습니다. 자세한 내용은 각 provider의 문서를 참고하세요:</p><div class="en-orig"><p>The following platforms offer their own Next.js integrations. These are not built on the public <a href="app-api-reference-config-next-config-js-adapterPath.html">Adapter API</a> and are not verified by the Next.js team, so feature support and compatibility may vary. Refer to each provider's documentation for details:</p></div>
+<ul>
+<li><a href="https://appwrite.io/docs/products/sites/quick-start/nextjs" target="_blank" rel="noopener">Appwrite Sites</a></li>
+<li><a href="https://docs.amplify.aws/nextjs/start/quickstart/nextjs-app-router-client-components" target="_blank" rel="noopener">AWS Amplify Hosting</a></li>
+<li><a href="https://developers.cloudflare.com/workers/frameworks/framework-guides/nextjs" target="_blank" rel="noopener">Cloudflare</a></li>
+<li><a href="https://docs.deno.com/examples/next_tutorial" target="_blank" rel="noopener">Deno Deploy</a></li>
+<li><a href="https://firebase.google.com/docs/app-hosting/get-started" target="_blank" rel="noopener">Firebase App Hosting</a></li>
+<li><a href="https://docs.netlify.com/frameworks/next-js/overview/#next-js-support-on-netlify" target="_blank" rel="noopener">Netlify</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://appwrite.io/docs/products/sites/quick-start/nextjs" target="_blank" rel="noopener">Appwrite Sites</a></li>
+<li><a href="https://docs.amplify.aws/nextjs/start/quickstart/nextjs-app-router-client-components" target="_blank" rel="noopener">AWS Amplify Hosting</a></li>
+<li><a href="https://developers.cloudflare.com/workers/frameworks/framework-guides/nextjs" target="_blank" rel="noopener">Cloudflare</a></li>
+<li><a href="https://docs.deno.com/examples/next_tutorial" target="_blank" rel="noopener">Deno Deploy</a></li>
+<li><a href="https://firebase.google.com/docs/app-hosting/get-started" target="_blank" rel="noopener">Firebase App Hosting</a></li>
+<li><a href="https://docs.netlify.com/frameworks/next-js/overview/#next-js-support-on-netlify" target="_blank" rel="noopener">Netlify</a></li>
+</ul></div>
+<p>어떤 Next.js 기능에 특정 platform 기능이 필요한지에 대한 자세한 내용은 <a href="app-guides-deploying-to-platforms.html">Deploying to Platforms</a>를 참고하세요.</p><div class="en-orig"><p>For details on which Next.js features require specific platform capabilities, see <a href="app-guides-deploying-to-platforms.html">Deploying to Platforms</a>.</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/17-deploying.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/getting-started/deploying" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-getting-started-proxy.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Proxy</div><div class="ttl-ko">Proxy</div></a>
+      <a href="app-getting-started-upgrading.html" class="next"><div class="dir">다음 →</div><div class="ttl">Upgrading</div><div class="ttl-ko">업그레이드</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/getting-started/deploying" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#nodejs-server">Node.js server</a></li><li class="l3"><a href="#templates">Templates</a></li><li class="l2"><a href="#docker">Docker</a></li><li class="l3"><a href="#templates-1">Templates</a></li><li class="l2"><a href="#static-export">Static export</a></li><li class="l3"><a href="#templates-2">Templates</a></li><li class="l2"><a href="#adapters">Adapters</a></li><li class="l3"><a href="#verified-adapters">Verified Adapters</a></li><li class="l3"><a href="#other-platforms">Other Platforms</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js는 Node.js server, Docker container, static export로 deploy하거나, 여러 platform에서 실행되도록 adapt할 수 있습니다.
+
+| Deployment Option                | 지원 기능                                                     |
+| -------------------------------- | ------------------------------------------------------------------- |
+| [Node.js server](#nodejs-server) | 전체                                                                 |
+| [Docker container](#docker)      | 전체                                                                 |
+| [Static export](#static-export)  | 제한적                                                             |
+| [Adapters](#adapters)            | 다양함([verified](#verified-adapters) adapter는 test suite를 실행함) |
+
+## Node.js server
+
+Next.js는 Node.js를 지원하는 모든 provider에 deploy할 수 있습니다. `package.json`에 `&quot;build&quot;`와 `&quot;start&quot;` script가 있는지 확인하세요:
+
+[[CODE 1]]
+
+그런 다음 `npm run build`를 실행해 [애플리케이션을 build](/docs/app/guides/building)하고, `npm run start`로 Node.js server를 시작하세요. 이 server는 모든 Next.js 기능을 지원합니다. 필요하다면 [custom server](/docs/app/guides/custom-server)로 eject할 수도 있습니다.
+
+Node.js deployment는 모든 Next.js 기능을 지원합니다. 인프라에 맞게 [설정하는 방법](/docs/app/guides/self-hosting)을 알아보세요.
+
+### Templates || 템플릿
+
+- [Flightcontrol](https://github.com/nextjs/deploy-flightcontrol)
+- [Railway](https://github.com/nextjs/deploy-railway)
+- [Replit](https://github.com/nextjs/deploy-replit)
+- [Hostinger](https://github.com/hostinger/deploy-nextjs)
+
+## Docker
+
+Next.js는 [Docker](https://www.docker.com/) container를 지원하는 모든 provider에 deploy할 수 있습니다. 여기에는 Kubernetes 같은 container orchestrator나 Docker를 실행하는 cloud provider가 포함됩니다. 앱을 containerize하는 best practice는 Docker 공식 [Next.js](https://docs.docker.com/guides/nextjs) 및 [React.js](https://docs.docker.com/guides/reactjs) 가이드를 참고하세요.
+
+Docker deployment는 모든 Next.js 기능을 지원합니다. 인프라에 맞게 [설정하는 방법](/docs/app/guides/self-hosting)을 알아보세요.
+
+&gt; **Note for development:** Docker는 production deployment에 아주 좋지만, Mac과 Windows에서 개발할 때는 더 나은 성능을 위해 Docker 대신 로컬 개발 환경(`npm run dev`)을 사용하는 것을 고려하세요. [로컬 개발 최적화에 대해 더 알아보기](/docs/app/guides/local-development).
+
+### Templates || 템플릿
+
+다음 예제들은 Next.js 애플리케이션을 containerize하는 best practice를 보여 줍니다:
+
+- [Docker Standalone Output](https://github.com/vercel/next.js/tree/canary/examples/with-docker) - `output: &quot;standalone&quot;`을 사용해 필요한 runtime 파일과 dependency만 담은 최소한의 production-ready Docker image를 생성하여 Next.js 애플리케이션을 deploy합니다.
+- [Docker Export Output](https://github.com/vercel/next.js/tree/canary/examples/with-docker-export-output) - `output: &quot;export&quot;`를 사용해 가벼운 container나 어떤 static hosting 환경에서도 제공할 수 있는 최적화된 HTML 파일을 생성하여 완전히 static한 Next.js 애플리케이션을 deploy합니다.
+- [Docker Multi-Environment](https://github.com/vercel/next.js/tree/canary/examples/with-docker-multi-env) - 서로 다른 environment variable을 사용하는 development, staging, production 환경별로 Docker configuration을 따로 관리합니다.
+
+또한 hosting provider들도 Next.js deploy에 대한 가이드를 제공합니다:
+
+- [DigitalOcean](https://github.com/nextjs/deploy-digitalocean)
+- [Fly.io](https://github.com/nextjs/deploy-fly)
+- [Google Cloud Run](https://github.com/nextjs/deploy-google-cloud-run)
+- [Render](https://github.com/nextjs/deploy-render)
+- [SST](https://github.com/nextjs/deploy-sst)
+
+## Static export
+
+Next.js는 static site나 [Single-Page Application (SPA)](/docs/app/guides/single-page-applications)로 시작한 뒤, 나중에 필요하면 server가 필요한 기능을 사용하도록 upgrade할 수 있습니다.
+
+Next.js는 [static export](/docs/app/guides/static-exports)를 지원하므로 HTML/CSS/JS static asset을 제공할 수 있는 어떤 web server에도 deploy하고 hosting할 수 있습니다. 여기에는 AWS S3, Nginx, Apache 같은 도구가 포함됩니다.
+
+[static export](/docs/app/guides/static-exports)로 실행하면 server가 필요한 Next.js 기능은 지원되지 **않습니다**. [더 알아보기](/docs/app/guides/static-exports#unsupported-features).
+
+### Templates || 템플릿
+
+- [GitHub Pages](https://github.com/nextjs/deploy-github-pages)
+
+## Adapters
+
+Next.js는 여러 platform의 인프라 기능을 지원하도록 해당 platform에서 실행되게 adapt할 수 있습니다. [Deployment Adapter API](/docs/app/api-reference/config/next-config-js/adapterPath)를 사용하면 platform이 Next.js 애플리케이션의 build 및 deploy 방식을 customize할 수 있습니다.
+
+### Verified Adapters
+
+Verified adapter는 open source이며, 전체 [Next.js compatibility test suite](/docs/app/api-reference/adapters/testing-adapters)를 실행하고, [Next.js GitHub organization](https://github.com/nextjs) 아래에서 hosting됩니다. Next.js 팀은 major release 전에 이 platform들과 함께 test를 조율합니다. 각 adapter의 공개 test 결과도 곧 제공될 예정입니다. [verified adapter에 대해 더 알아보기](/docs/app/guides/deploying-to-platforms#verified-adapters).
+
+- [Vercel](https://vercel.com/docs/frameworks/full-stack/nextjs)
+- [Bun](https://bun.com/docs/guides/ecosystem/nextjs)
+
+Cloudflare와 Netlify는 Adapter API 기반의 verified adapter를 개발하고 있습니다. 그동안에는 각자의 Next.js integration을 제공합니다(아래 참고).
+
+### Other Platforms || 기타 Platform
+
+다음 platform들은 자체 Next.js integration을 제공합니다. 이들은 공개 [Adapter API](/docs/app/api-reference/config/next-config-js/adapterPath) 기반이 아니고 Next.js 팀의 검증을 받지 않았으므로 기능 지원과 호환성이 다를 수 있습니다. 자세한 내용은 각 provider의 문서를 참고하세요:
+
+- [Appwrite Sites](https://appwrite.io/docs/products/sites/quick-start/nextjs)
+- [AWS Amplify Hosting](https://docs.amplify.aws/nextjs/start/quickstart/nextjs-app-router-client-components)
+- [Cloudflare](https://developers.cloudflare.com/workers/frameworks/framework-guides/nextjs)
+- [Deno Deploy](https://docs.deno.com/examples/next_tutorial)
+- [Firebase App Hosting](https://firebase.google.com/docs/app-hosting/get-started)
+- [Netlify](https://docs.netlify.com/frameworks/next-js/overview/#next-js-support-on-netlify)
+
+어떤 Next.js 기능에 특정 platform 기능이 필요한지에 대한 자세한 내용은 [Deploying to Platforms](/docs/app/guides/deploying-to-platforms)를 참고하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

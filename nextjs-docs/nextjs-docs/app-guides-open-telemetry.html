@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to set up instrumentation with OpenTelemetry (OpenTelemetry로 instrumentation 설정하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/open-telemetry" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/open-telemetry" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/open-telemetry.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to set up instrumentation with OpenTelemetry<span class="sub">OpenTelemetry로 instrumentation 설정하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>observability는 Next.js 앱의 동작과 performance를 이해하고 최적화하는 데 매우 중요합니다.</p><div class="en-orig"><p>Observability is crucial for understanding and optimizing the behavior and performance of your Next.js app.</p></div>
+<p>애플리케이션이 복잡해질수록 발생할 수 있는 문제를 찾아내고 진단하기가 점점 더 어려워집니다. logging과 metrics 같은 observability 도구를 활용하면 개발자는 애플리케이션의 동작에 대한 insight를 얻고 최적화할 부분을 찾을 수 있습니다. observability가 있으면 개발자는 문제가 커지기 전에 선제적으로 대응하고 더 나은 사용자 경험을 제공할 수 있습니다. 따라서 performance를 개선하고, resource를 최적화하고, 사용자 경험을 향상시키기 위해 Next.js 애플리케이션에서 observability를 사용하는 것을 적극 권장합니다.</p><div class="en-orig"><p>As applications become more complex, it becomes increasingly difficult to identify and diagnose issues that may arise. By leveraging observability tools, such as logging and metrics, developers can gain insights into their application's behavior and identify areas for optimization. With observability, developers can proactively address issues before they become major problems and provide a better user experience. Therefore, it is highly recommended to use observability in your Next.js applications to improve performance, optimize resources, and enhance user experience.</p></div>
+<p>앱을 instrument할 때는 OpenTelemetry 사용을 권장합니다.
+OpenTelemetry는 platform에 구애받지 않는(platform-agnostic) 방식으로 앱을 instrument하므로, 코드를 바꾸지 않고도 observability provider를 변경할 수 있습니다.
+OpenTelemetry와 그 동작 방식에 대한 자세한 내용은 <a href="https://opentelemetry.io/docs/" target="_blank" rel="noopener">공식 OpenTelemetry 문서</a>를 읽어 보세요.</p><div class="en-orig"><p>We recommend using OpenTelemetry for instrumenting your apps.
+It's a platform-agnostic way to instrument apps that allows you to change your observability provider without changing your code.
+Read <a href="https://opentelemetry.io/docs/" target="_blank" rel="noopener">Official OpenTelemetry docs</a> for more information about OpenTelemetry and how it works.</p></div>
+<p>이 문서 전반에서는 <em>Span</em>, <em>Trace</em>, <em>Exporter</em> 같은 용어를 사용하며, 이 용어들은 모두 <a href="https://opentelemetry.io/docs/concepts/observability-primer/" target="_blank" rel="noopener">OpenTelemetry Observability Primer</a>에서 찾아볼 수 있습니다.</p><div class="en-orig"><p>This documentation uses terms like <em>Span</em>, <em>Trace</em> or <em>Exporter</em> throughout this doc, all of which can be found in <a href="https://opentelemetry.io/docs/concepts/observability-primer/" target="_blank" rel="noopener">the OpenTelemetry Observability Primer</a>.</p></div>
+<p>Next.js는 OpenTelemetry instrumentation을 별도 설정 없이(out of the box) 지원합니다. 즉, Next.js 자체는 이미 instrument되어 있습니다.</p><div class="en-orig"><p>Next.js supports OpenTelemetry instrumentation out of the box, which means that we already instrumented Next.js itself.</p></div>
+<h2 class="sec" id="getting-started"><a class="anchor" href="#getting-started">Getting Started<span class="ko">시작하기</span></a></h2>
+<p>OpenTelemetry는 확장성이 좋지만, 제대로 설정하려면 꽤 장황해질 수 있습니다.
+그래서 빠르게 시작할 수 있도록 돕는 <code>@vercel/otel</code> package를 준비했습니다.</p><div class="en-orig"><p>OpenTelemetry is extensible but setting it up properly can be quite verbose.
+That's why we prepared a package <code>@vercel/otel</code> that helps you get started quickly.</p></div>
+<h3 class="sec" id="using-vercelotel"><a class="anchor" href="#using-vercelotel">Using <code>@vercel/otel</code><span class="ko"><code>@vercel/otel</code> 사용하기</span></a></h3>
+<p>시작하려면 다음 package를 설치하세요:</p><div class="en-orig"><p>To get started, install the following packages:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add @vercel/otel @opentelemetry/sdk-logs @opentelemetry/api-logs @opentelemetry/instrumentation</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install @vercel/otel @opentelemetry/sdk-logs @opentelemetry/api-logs @opentelemetry/instrumentation</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add @vercel/otel @opentelemetry/sdk-logs @opentelemetry/api-logs @opentelemetry/instrumentation</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add @vercel/otel @opentelemetry/sdk-logs @opentelemetry/api-logs @opentelemetry/instrumentation</code></pre></div></div>
+<p>다음으로 프로젝트의 <strong>root directory</strong>(또는 <code>src</code> 폴더를 사용한다면 그 안)에 custom <a href="app-guides-instrumentation.html"><code>instrumentation.ts</code></a>(또는 <code>.js</code>) 파일을 만드세요:</p><div class="en-orig"><p>Next, create a custom <a href="app-guides-instrumentation.html"><code>instrumentation.ts</code></a> (or <code>.js</code>) file in the <strong>root directory</strong> of the project (or inside <code>src</code> folder if using one):</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="your-project/instrumentation.ts" data-js="your-project/instrumentation.js">your-project/instrumentation.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { registerOTel } from &#x27;@vercel/otel&#x27;
+
+export function register() {
+  registerOTel({ serviceName: &#x27;next-app&#x27; })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { registerOTel } from &#x27;@vercel/otel&#x27;
+
+export function register() {
+  registerOTel({ serviceName: &#x27;next-app&#x27; })
+}</code></pre></div></div>
+<p>추가 configuration option은 <a href="https://www.npmjs.com/package/@vercel/otel" target="_blank" rel="noopener"><code>@vercel/otel</code> 문서</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="https://www.npmjs.com/package/@vercel/otel" target="_blank" rel="noopener"><code>@vercel/otel</code> documentation</a> for additional configuration options.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>instrumentation</code> 파일은 <code>app</code>이나 <code>pages</code> directory 안이 아니라 프로젝트 root에 있어야 합니다. <code>src</code> 폴더를 사용한다면 <code>pages</code>, <code>app</code>과 나란히 <code>src</code> 안에 파일을 두세요.</li>
+<li><a href="app-api-reference-config-next-config-js-pageExtensions.html"><code>pageExtensions</code> config option</a>으로 suffix를 추가한다면, <code>instrumentation</code> 파일 이름도 그에 맞게 바꿔야 합니다.</li>
+<li>바로 사용할 수 있는 기본 <a href="https://github.com/vercel/next.js/tree/canary/examples/with-opentelemetry" target="_blank" rel="noopener">with-opentelemetry</a> 예시를 만들어 두었습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The <code>instrumentation</code> file should be in the root of your project and not inside the <code>app</code> or <code>pages</code> directory. If you're using the <code>src</code> folder, then place the file inside <code>src</code> alongside <code>pages</code> and <code>app</code>.</li>
+<li>If you use the <a href="app-api-reference-config-next-config-js-pageExtensions.html"><code>pageExtensions</code> config option</a> to add a suffix, you will also need to update the <code>instrumentation</code> filename to match.</li>
+<li>We have created a basic <a href="https://github.com/vercel/next.js/tree/canary/examples/with-opentelemetry" target="_blank" rel="noopener">with-opentelemetry</a> example that you can use.</li>
+</ul></div></div></div>
+<h3 class="sec" id="manual-opentelemetry-configuration"><a class="anchor" href="#manual-opentelemetry-configuration">Manual OpenTelemetry configuration<span class="ko">OpenTelemetry 수동 설정</span></a></h3>
+<p><code>@vercel/otel</code> package는 많은 configuration option을 제공하며 대부분의 일반적인 use case를 충족할 것입니다. 하지만 필요에 맞지 않는다면 OpenTelemetry를 수동으로 설정할 수 있습니다.</p><div class="en-orig"><p>The <code>@vercel/otel</code> package provides many configuration options and should serve most of common use cases. But if it doesn't suit your needs, you can configure OpenTelemetry manually.</p></div>
+<p>먼저 OpenTelemetry package를 설치해야 합니다:</p><div class="en-orig"><p>Firstly you need to install OpenTelemetry packages:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add @opentelemetry/sdk-node @opentelemetry/resources @opentelemetry/semantic-conventions @opentelemetry/sdk-trace-node @opentelemetry/exporter-trace-otlp-http</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install @opentelemetry/sdk-node @opentelemetry/resources @opentelemetry/semantic-conventions @opentelemetry/sdk-trace-node @opentelemetry/exporter-trace-otlp-http</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add @opentelemetry/sdk-node @opentelemetry/resources @opentelemetry/semantic-conventions @opentelemetry/sdk-trace-node @opentelemetry/exporter-trace-otlp-http</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add @opentelemetry/sdk-node @opentelemetry/resources @opentelemetry/semantic-conventions @opentelemetry/sdk-trace-node @opentelemetry/exporter-trace-otlp-http</code></pre></div></div>
+<p>이제 <code>instrumentation.ts</code>에서 <code>NodeSDK</code>를 초기화할 수 있습니다.
+<code>@vercel/otel</code>과 달리 <code>NodeSDK</code>는 edge runtime과 호환되지 않으므로, <code>process.env.NEXT_RUNTIME === &#x27;nodejs&#x27;</code>일 때만 import하도록 해야 합니다. node를 사용할 때만 조건부로 import하는 새 파일 <code>instrumentation.node.ts</code>를 만드는 것을 권장합니다:</p><div class="en-orig"><p>Now you can initialize <code>NodeSDK</code> in your <code>instrumentation.ts</code>.
+Unlike <code>@vercel/otel</code>, <code>NodeSDK</code> is not compatible with edge runtime, so you need to make sure that you are importing them only when <code>process.env.NEXT_RUNTIME === &#x27;nodejs&#x27;</code>. We recommend creating a new file <code>instrumentation.node.ts</code> which you conditionally import only when using node:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="instrumentation.ts" data-js="instrumentation.js">instrumentation.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function register() {
+  if (process.env.NEXT_RUNTIME === &#x27;nodejs&#x27;) {
+    await import(&#x27;./instrumentation.node.ts&#x27;)
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function register() {
+  if (process.env.NEXT_RUNTIME === &#x27;nodejs&#x27;) {
+    await import(&#x27;./instrumentation.node.js&#x27;)
+  }
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="instrumentation.node.ts" data-js="instrumentation.node.js">instrumentation.node.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { OTLPTraceExporter } from &#x27;@opentelemetry/exporter-trace-otlp-http&#x27;
+import { resourceFromAttributes } from &#x27;@opentelemetry/resources&#x27;
+import { NodeSDK } from &#x27;@opentelemetry/sdk-node&#x27;
+import { SimpleSpanProcessor } from &#x27;@opentelemetry/sdk-trace-node&#x27;
+import { ATTR_SERVICE_NAME } from &#x27;@opentelemetry/semantic-conventions&#x27;
+
+const sdk = new NodeSDK({
+  resource: resourceFromAttributes({
+    [ATTR_SERVICE_NAME]: &#x27;next-app&#x27;,
+  }),
+  spanProcessor: new SimpleSpanProcessor(new OTLPTraceExporter()),
+})
+sdk.start()</code></pre><pre class="v-js" hidden><code class="language-javascript">import { OTLPTraceExporter } from &#x27;@opentelemetry/exporter-trace-otlp-http&#x27;
+import { resourceFromAttributes } from &#x27;@opentelemetry/resources&#x27;
+import { NodeSDK } from &#x27;@opentelemetry/sdk-node&#x27;
+import { SimpleSpanProcessor } from &#x27;@opentelemetry/sdk-trace-node&#x27;
+import { ATTR_SERVICE_NAME } from &#x27;@opentelemetry/semantic-conventions&#x27;
+
+const sdk = new NodeSDK({
+  resource: resourceFromAttributes({
+    [ATTR_SERVICE_NAME]: &#x27;next-app&#x27;,
+  }),
+  spanProcessor: new SimpleSpanProcessor(new OTLPTraceExporter()),
+})
+sdk.start()</code></pre></div></div>
+<p>이렇게 하는 것은 <code>@vercel/otel</code>을 사용하는 것과 동일하지만, <code>@vercel/otel</code>이 노출하지 않는 일부 기능을 수정하고 확장할 수 있습니다. edge runtime 지원이 필요하다면 <code>@vercel/otel</code>을 사용해야 합니다.</p><div class="en-orig"><p>Doing this is equivalent to using <code>@vercel/otel</code>, but it's possible to modify and extend some features that are not exposed by the <code>@vercel/otel</code>. If edge runtime support is necessary, you will have to use <code>@vercel/otel</code>.</p></div>
+<h2 class="sec" id="testing-your-instrumentation"><a class="anchor" href="#testing-your-instrumentation">Testing your instrumentation<span class="ko">Instrumentation 테스트하기</span></a></h2>
+<p>OpenTelemetry trace를 로컬에서 테스트하려면 호환되는 backend가 있는 OpenTelemetry collector가 필요합니다.
+<a href="https://github.com/vercel/opentelemetry-collector-dev-setup" target="_blank" rel="noopener">OpenTelemetry dev environment</a> 사용을 권장합니다.</p><div class="en-orig"><p>You need an OpenTelemetry collector with a compatible backend to test OpenTelemetry traces locally.
+We recommend using our <a href="https://github.com/vercel/opentelemetry-collector-dev-setup" target="_blank" rel="noopener">OpenTelemetry dev environment</a>.</p></div>
+<p>모든 것이 잘 동작한다면 <code>GET /requested/pathname</code>이라는 label이 붙은 root server span을 볼 수 있을 것입니다.
+해당 trace의 다른 모든 span은 그 아래에 중첩됩니다.</p><div class="en-orig"><p>If everything works well you should be able to see the root server span labeled as <code>GET /requested/pathname</code>.
+All other spans from that particular trace will be nested under it.</p></div>
+<p>Next.js는 기본으로 내보내는 것보다 더 많은 span을 trace합니다.
+더 많은 span을 보려면 <code>NEXT_OTEL_VERBOSE=1</code>을 설정해야 합니다.</p><div class="en-orig"><p>Next.js traces more spans than are emitted by default.
+To see more spans, you must set <code>NEXT_OTEL_VERBOSE=1</code>.</p></div>
+<h2 class="sec" id="deployment"><a class="anchor" href="#deployment">Deployment<span class="ko">배포</span></a></h2>
+<h3 class="sec" id="using-opentelemetry-collector"><a class="anchor" href="#using-opentelemetry-collector">Using OpenTelemetry Collector<span class="ko">OpenTelemetry Collector 사용하기</span></a></h3>
+<p>OpenTelemetry Collector와 함께 deploy할 때는 <code>@vercel/otel</code>을 사용할 수 있습니다.
+Vercel에서도, self-hosting 환경에서도 동작합니다.</p><div class="en-orig"><p>When you are deploying with OpenTelemetry Collector, you can use <code>@vercel/otel</code>.
+It will work both on Vercel and when self-hosted.</p></div>
+<h4 class="sec" id="deploying-on-vercel"><a class="anchor" href="#deploying-on-vercel">Deploying on Vercel<span class="ko">Vercel에 배포하기</span></a></h4>
+<p>OpenTelemetry가 Vercel에서 별도 설정 없이 동작하도록 해 두었습니다.</p><div class="en-orig"><p>We made sure that OpenTelemetry works out of the box on Vercel.</p></div>
+<p><a href="https://vercel.com/docs/tracing/instrumentation" target="_blank" rel="noopener">Vercel 문서</a>를 따라 프로젝트를 observability provider에 연결하세요.</p><div class="en-orig"><p>Follow <a href="https://vercel.com/docs/tracing/instrumentation" target="_blank" rel="noopener">Vercel documentation</a> to connect your project to an observability provider.</p></div>
+<h4 class="sec" id="self-hosting"><a class="anchor" href="#self-hosting">Self-hosting</a></h4>
+<p>다른 platform에 deploy하는 것도 간단합니다. Next.js 앱의 telemetry 데이터를 받아 처리할 OpenTelemetry Collector를 직접 띄워야 합니다.</p><div class="en-orig"><p>Deploying to other platforms is also straightforward. You will need to spin up your own OpenTelemetry Collector to receive and process the telemetry data from your Next.js app.</p></div>
+<p>이를 위해 <a href="https://opentelemetry.io/docs/collector/getting-started/" target="_blank" rel="noopener">OpenTelemetry Collector Getting Started 가이드</a>를 따르세요. collector를 설정하고 Next.js 앱에서 데이터를 받도록 구성하는 과정을 안내합니다.</p><div class="en-orig"><p>To do this, follow the <a href="https://opentelemetry.io/docs/collector/getting-started/" target="_blank" rel="noopener">OpenTelemetry Collector Getting Started guide</a>, which will walk you through setting up the collector and configuring it to receive data from your Next.js app.</p></div>
+<p>collector가 실행되고 나면, 선택한 platform의 deployment 가이드에 따라 Next.js 앱을 deploy할 수 있습니다.</p><div class="en-orig"><p>Once you have your collector up and running, you can deploy your Next.js app to your chosen platform following their respective deployment guides.</p></div>
+<h3 class="sec" id="custom-exporters"><a class="anchor" href="#custom-exporters">Custom Exporters<span class="ko">Custom Exporter</span></a></h3>
+<p>OpenTelemetry Collector가 반드시 필요한 것은 아닙니다. <a href="#using-vercelotel"><code>@vercel/otel</code></a>이나 <a href="#manual-opentelemetry-configuration">OpenTelemetry 수동 설정</a>과 함께 custom OpenTelemetry exporter를 사용할 수 있습니다.</p><div class="en-orig"><p>OpenTelemetry Collector is not necessary. You can use a custom OpenTelemetry exporter with <a href="#using-vercelotel"><code>@vercel/otel</code></a> or <a href="#manual-opentelemetry-configuration">manual OpenTelemetry configuration</a>.</p></div>
+<h2 class="sec" id="custom-spans"><a class="anchor" href="#custom-spans">Custom Spans<span class="ko">Custom Span</span></a></h2>
+<p><a href="https://opentelemetry.io/docs/instrumentation/js/instrumentation" target="_blank" rel="noopener">OpenTelemetry API</a>로 custom span을 추가할 수 있습니다.</p><div class="en-orig"><p>You can add a custom span with <a href="https://opentelemetry.io/docs/instrumentation/js/instrumentation" target="_blank" rel="noopener">OpenTelemetry APIs</a>.</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add @opentelemetry/api</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install @opentelemetry/api</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add @opentelemetry/api</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add @opentelemetry/api</code></pre></div></div>
+<p>다음 예시는 GitHub star 수를 fetch하고, fetch request의 결과를 추적하기 위해 custom <code>fetchGithubStars</code> span을 추가하는 함수를 보여 줍니다:</p><div class="en-orig"><p>The following example demonstrates a function that fetches GitHub stars and adds a custom <code>fetchGithubStars</code> span to track the fetch request's result:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { trace } from &#x27;@opentelemetry/api&#x27;
+
+export async function fetchGithubStars() {
+  return await trace
+    .getTracer(&#x27;nextjs-example&#x27;)
+    .startActiveSpan(&#x27;fetchGithubStars&#x27;, async (span) =&gt; {
+      try {
+        return await getValue()
+      } finally {
+        span.end()
+      }
+    })
+}</code></pre></div></div>
+<p><code>register</code> 함수는 새 environment에서 코드가 실행되기 전에 실행됩니다.
+그 후 request를 처리하는 동안 만든 span은 해당 request의 trace에 추가됩니다.</p><div class="en-orig"><p>The <code>register</code> function will execute before your code runs in a new environment.
+After that, spans you create while handling a request are added to that request's trace.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>instrumentation</code> 파일이 로드되는 동안이나 <code>register</code> 안에서 만든 span은 자동으로 request trace에 합류하지 않습니다. tracer provider가 설치되기 전에 시작된 span(예: <code>registerOTel</code>이 실행되기 전 파일 최상위에서 시작된 span)은 기록되지 않으며, <code>registerOTel</code>(또는 사용하는 OpenTelemetry SDK)이 시작된 후 <code>register</code> 안에서 시작된 span은 보통 별도의 root trace가 됩니다. 작업을 request의 일부로 trace하려면, page를 render할 때나 Route Handler 또는 API Route 안처럼 request를 처리하는 동안 실행되는 코드에서 span을 만드세요.</p><div class="en-orig"><p>Spans created while the <code>instrumentation</code> file is loaded, or inside <code>register</code>, don't automatically join a request trace. Spans started before the tracer provider is installed (for example, at the top level of the file before <code>registerOTel</code> runs) are not recorded, and spans started inside <code>register</code> after <code>registerOTel</code> (or your OpenTelemetry SDK) has started typically become separate root traces. To trace work as part of a request, create the span in code that runs while handling the request, such as when rendering a page or in a Route Handler or API Route.</p></div></div></div>
+<h2 class="sec" id="default-spans-in-nextjs"><a class="anchor" href="#default-spans-in-nextjs">Default Spans in Next.js<span class="ko">Next.js의 기본 Span</span></a></h2>
+<p>Next.js는 애플리케이션 performance에 대한 유용한 insight를 제공하기 위해 여러 span을 자동으로 instrument합니다.</p><div class="en-orig"><p>Next.js automatically instruments several spans for you to provide useful insights into your application's performance.</p></div>
+<p>span의 attribute는 <a href="https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/" target="_blank" rel="noopener">OpenTelemetry semantic conventions</a>를 따릅니다. 또한 <code>next</code> namespace 아래에 몇 가지 custom attribute를 추가합니다:</p><div class="en-orig"><p>Attributes on spans follow <a href="https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/" target="_blank" rel="noopener">OpenTelemetry semantic conventions</a>. We also add some custom attributes under the <code>next</code> namespace:</p></div>
+<ul>
+<li><code>next.span_name</code> - span 이름을 복제합니다</li>
+<li><code>next.span_type</code> - 각 span type마다 고유한 식별자가 있습니다</li>
+<li><code>next.route</code> - request의 route pattern입니다(예: <code>/[param]/user</code>).</li>
+<li><code>next.rsc</code> (true/false) - prefetch 같은 RSC request인지 여부입니다.</li>
+<li><code>next.page</code><ul>
+<li>app router에서 사용하는 내부 값입니다.</li>
+<li>특별한 파일(<code>page.ts</code>, <code>layout.ts</code>, <code>loading.ts</code> 등)로 가는 route라고 생각하면 됩니다</li>
+<li><code>/layout</code>은 <code>/(groupA)/layout.ts</code>와 <code>/(groupB)/layout.ts</code>를 모두 가리킬 수 있으므로, <code>next.route</code>와 짝을 이룰 때만 고유한 식별자로 사용할 수 있습니다</li>
+</ul></li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_name</code> - duplicates span name</li>
+<li><code>next.span_type</code> - each span type has a unique identifier</li>
+<li><code>next.route</code> - The route pattern of the request (e.g., <code>/[param]/user</code>).</li>
+<li><code>next.rsc</code> (true/false) - Whether the request is an RSC request, such as prefetch.</li>
+<li><code>next.page</code><ul>
+<li>This is an internal value used by an app router.</li>
+<li>You can think about it as a route to a special file (like <code>page.ts</code>, <code>layout.ts</code>, <code>loading.ts</code> and others)</li>
+<li>It can be used as a unique identifier only when paired with <code>next.route</code> because <code>/layout</code> can be used to identify both <code>/(groupA)/layout.ts</code> and <code>/(groupB)/layout.ts</code></li>
+</ul></li>
+</ul></div>
+<h3 class="sec" id="httpmethod-nextroute"><a class="anchor" href="#httpmethod-nextroute"><code>[http.method] [next.route]</code></a></h3>
+<ul>
+<li><code>next.span_type</code>: <code>BaseServer.handleRequest</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_type</code>: <code>BaseServer.handleRequest</code></li>
+</ul></div>
+<p>이 span은 Next.js 애플리케이션으로 들어오는 각 request의 root span을 나타냅니다. request의 HTTP method, route, target, status code를 추적합니다.</p><div class="en-orig"><p>This span represents the root span for each incoming request to your Next.js application. It tracks the HTTP method, route, target, and status code of the request.</p></div>
+<p>Attributes:</p><div class="en-orig"><p>Attributes:</p></div>
+<ul>
+<li><a href="https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/#common-attributes" target="_blank" rel="noopener">Common HTTP attributes</a><ul>
+<li><code>http.method</code></li>
+<li><code>http.status_code</code></li>
+</ul></li>
+<li><a href="https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/#http-server-semantic-conventions" target="_blank" rel="noopener">Server HTTP attributes</a><ul>
+<li><code>http.route</code></li>
+<li><code>http.target</code></li>
+</ul></li>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.route</code></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/#common-attributes" target="_blank" rel="noopener">Common HTTP attributes</a><ul>
+<li><code>http.method</code></li>
+<li><code>http.status_code</code></li>
+</ul></li>
+<li><a href="https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/#http-server-semantic-conventions" target="_blank" rel="noopener">Server HTTP attributes</a><ul>
+<li><code>http.route</code></li>
+<li><code>http.target</code></li>
+</ul></li>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.route</code></li>
+</ul></div>
+<h3 class="sec" id="render-route-app-nextroute"><a class="anchor" href="#render-route-app-nextroute"><code>render route (app) [next.route]</code></a></h3>
+<ul>
+<li><code>next.span_type</code>: <code>AppRender.getBodyResult</code>.</li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_type</code>: <code>AppRender.getBodyResult</code>.</li>
+</ul></div>
+<p>이 span은 app router에서 route를 render하는 과정을 나타냅니다.</p><div class="en-orig"><p>This span represents the process of rendering a route in the app router.</p></div>
+<p>Attributes:</p><div class="en-orig"><p>Attributes:</p></div>
+<ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.route</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.route</code></li>
+</ul></div>
+<h3 class="sec" id="fetch-httpmethod-httpurl"><a class="anchor" href="#fetch-httpmethod-httpurl"><code>fetch [http.method] [http.url]</code></a></h3>
+<ul>
+<li><code>next.span_type</code>: <code>AppRender.fetch</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_type</code>: <code>AppRender.fetch</code></li>
+</ul></div>
+<p>이 span은 코드에서 실행된 fetch request를 나타냅니다.</p><div class="en-orig"><p>This span represents the fetch request executed in your code.</p></div>
+<p>Attributes:</p><div class="en-orig"><p>Attributes:</p></div>
+<ul>
+<li><a href="https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/#common-attributes" target="_blank" rel="noopener">Common HTTP attributes</a><ul>
+<li><code>http.method</code></li>
+</ul></li>
+<li><a href="https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/#http-client" target="_blank" rel="noopener">Client HTTP attributes</a><ul>
+<li><code>http.url</code></li>
+<li><code>net.peer.name</code></li>
+<li><code>net.peer.port</code> (지정된 경우에만)</li>
+</ul></li>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/#common-attributes" target="_blank" rel="noopener">Common HTTP attributes</a><ul>
+<li><code>http.method</code></li>
+</ul></li>
+<li><a href="https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/#http-client" target="_blank" rel="noopener">Client HTTP attributes</a><ul>
+<li><code>http.url</code></li>
+<li><code>net.peer.name</code></li>
+<li><code>net.peer.port</code> (only if specified)</li>
+</ul></li>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+</ul></div>
+<p>environment에 <code>NEXT_OTEL_FETCH_DISABLED=1</code>을 설정하면 이 span을 끌 수 있습니다. custom fetch instrumentation library를 사용하고 싶을 때 유용합니다.</p><div class="en-orig"><p>This span can be turned off by setting <code>NEXT_OTEL_FETCH_DISABLED=1</code> in your environment. This is useful when you want to use a custom fetch instrumentation library.</p></div>
+<h3 class="sec" id="executing-api-route-app-nextroute"><a class="anchor" href="#executing-api-route-app-nextroute"><code>executing api route (app) [next.route]</code></a></h3>
+<ul>
+<li><code>next.span_type</code>: <code>AppRouteRouteHandlers.runHandler</code>.</li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_type</code>: <code>AppRouteRouteHandlers.runHandler</code>.</li>
+</ul></div>
+<p>이 span은 app router에서 API Route Handler가 실행되는 것을 나타냅니다.</p><div class="en-orig"><p>This span represents the execution of an API Route Handler in the app router.</p></div>
+<p>Attributes:</p><div class="en-orig"><p>Attributes:</p></div>
+<ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.route</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.route</code></li>
+</ul></div>
+<h3 class="sec" id="getserversideprops-nextroute"><a class="anchor" href="#getserversideprops-nextroute"><code>getServerSideProps [next.route]</code></a></h3>
+<ul>
+<li><code>next.span_type</code>: <code>Render.getServerSideProps</code>.</li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_type</code>: <code>Render.getServerSideProps</code>.</li>
+</ul></div>
+<p>이 span은 특정 route에 대한 <code>getServerSideProps</code> 실행을 나타냅니다.</p><div class="en-orig"><p>This span represents the execution of <code>getServerSideProps</code> for a specific route.</p></div>
+<p>Attributes:</p><div class="en-orig"><p>Attributes:</p></div>
+<ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.route</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.route</code></li>
+</ul></div>
+<h3 class="sec" id="getstaticprops-nextroute"><a class="anchor" href="#getstaticprops-nextroute"><code>getStaticProps [next.route]</code></a></h3>
+<ul>
+<li><code>next.span_type</code>: <code>Render.getStaticProps</code>.</li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_type</code>: <code>Render.getStaticProps</code>.</li>
+</ul></div>
+<p>이 span은 특정 route에 대한 <code>getStaticProps</code> 실행을 나타냅니다.</p><div class="en-orig"><p>This span represents the execution of <code>getStaticProps</code> for a specific route.</p></div>
+<p>Attributes:</p><div class="en-orig"><p>Attributes:</p></div>
+<ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.route</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.route</code></li>
+</ul></div>
+<h3 class="sec" id="render-route-pages-nextroute"><a class="anchor" href="#render-route-pages-nextroute"><code>render route (pages) [next.route]</code></a></h3>
+<ul>
+<li><code>next.span_type</code>: <code>Render.renderDocument</code>.</li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_type</code>: <code>Render.renderDocument</code>.</li>
+</ul></div>
+<p>이 span은 특정 route의 document를 render하는 과정을 나타냅니다.</p><div class="en-orig"><p>This span represents the process of rendering the document for a specific route.</p></div>
+<p>Attributes:</p><div class="en-orig"><p>Attributes:</p></div>
+<ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.route</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.route</code></li>
+</ul></div>
+<h3 class="sec" id="generatemetadata-nextpage"><a class="anchor" href="#generatemetadata-nextpage"><code>generateMetadata [next.page]</code></a></h3>
+<ul>
+<li><code>next.span_type</code>: <code>ResolveMetadata.generateMetadata</code>.</li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_type</code>: <code>ResolveMetadata.generateMetadata</code>.</li>
+</ul></div>
+<p>이 span은 특정 page의 metadata를 생성하는 과정을 나타냅니다(하나의 route에 이 span이 여러 개 있을 수 있습니다).</p><div class="en-orig"><p>This span represents the process of generating metadata for a specific page (a single route can have multiple of these spans).</p></div>
+<p>Attributes:</p><div class="en-orig"><p>Attributes:</p></div>
+<ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.page</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.page</code></li>
+</ul></div>
+<h3 class="sec" id="resolve-page-components"><a class="anchor" href="#resolve-page-components"><code>resolve page components</code></a></h3>
+<ul>
+<li><code>next.span_type</code>: <code>NextNodeServer.findPageComponents</code>.</li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_type</code>: <code>NextNodeServer.findPageComponents</code>.</li>
+</ul></div>
+<p>이 span은 특정 page의 page component를 resolve하는 과정을 나타냅니다.</p><div class="en-orig"><p>This span represents the process of resolving page components for a specific page.</p></div>
+<p>Attributes:</p><div class="en-orig"><p>Attributes:</p></div>
+<ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.route</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.route</code></li>
+</ul></div>
+<h3 class="sec" id="resolve-segment-modules"><a class="anchor" href="#resolve-segment-modules"><code>resolve segment modules</code></a></h3>
+<ul>
+<li><code>next.span_type</code>: <code>NextNodeServer.getLayoutOrPageModule</code>.</li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_type</code>: <code>NextNodeServer.getLayoutOrPageModule</code>.</li>
+</ul></div>
+<p>이 span은 layout이나 page의 코드 module을 로드하는 과정을 나타냅니다.</p><div class="en-orig"><p>This span represents loading of code modules for a layout or a page.</p></div>
+<p>Attributes:</p><div class="en-orig"><p>Attributes:</p></div>
+<ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.segment</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_name</code></li>
+<li><code>next.span_type</code></li>
+<li><code>next.segment</code></li>
+</ul></div>
+<h3 class="sec" id="start-response"><a class="anchor" href="#start-response"><code>start response</code></a></h3>
+<ul>
+<li><code>next.span_type</code>: <code>NextNodeServer.startResponse</code>.</li>
+</ul><div class="en-orig"><ul>
+<li><code>next.span_type</code>: <code>NextNodeServer.startResponse</code>.</li>
+</ul></div>
+<p>이 길이가 0인 span은 response에서 첫 byte가 전송된 시점을 나타냅니다.</p><div class="en-orig"><p>This zero-length span represents the time when the first byte has been sent in the response.</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/open-telemetry.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/open-telemetry" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-offline-support.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Offline support</div><div class="ttl-ko">연결 끊김 처리하기</div></a>
+      <a href="app-guides-optimizing-prefetching.html" class="next"><div class="dir">다음 →</div><div class="ttl">Optimizing prefetching</div><div class="ttl-ko">prefetching 최적화</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/open-telemetry" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#getting-started">Getting Started</a></li><li class="l3"><a href="#using-vercelotel">Using <code>@vercel/otel</code></a></li><li class="l3"><a href="#manual-opentelemetry-configuration">Manual OpenTelemetry configuration</a></li><li class="l2"><a href="#testing-your-instrumentation">Testing your instrumentation</a></li><li class="l2"><a href="#deployment">Deployment</a></li><li class="l3"><a href="#using-opentelemetry-collector">Using OpenTelemetry Collector</a></li><li class="l3"><a href="#custom-exporters">Custom Exporters</a></li><li class="l2"><a href="#custom-spans">Custom Spans</a></li><li class="l2"><a href="#default-spans-in-nextjs">Default Spans in Next.js</a></li><li class="l3"><a href="#httpmethod-nextroute"><code>[http.method] [next.route]</code></a></li><li class="l3"><a href="#render-route-app-nextroute"><code>render route (app) [next.route]</code></a></li><li class="l3"><a href="#fetch-httpmethod-httpurl"><code>fetch [http.method] [http.url]</code></a></li><li class="l3"><a href="#executing-api-route-app-nextroute"><code>executing api route (app) [next.route]</code></a></li><li class="l3"><a href="#getserversideprops-nextroute"><code>getServerSideProps [next.route]</code></a></li><li class="l3"><a href="#getstaticprops-nextroute"><code>getStaticProps [next.route]</code></a></li><li class="l3"><a href="#render-route-pages-nextroute"><code>render route (pages) [next.route]</code></a></li><li class="l3"><a href="#generatemetadata-nextpage"><code>generateMetadata [next.page]</code></a></li><li class="l3"><a href="#resolve-page-components"><code>resolve page components</code></a></li><li class="l3"><a href="#resolve-segment-modules"><code>resolve segment modules</code></a></li><li class="l3"><a href="#start-response"><code>start response</code></a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+observability는 Next.js 앱의 동작과 performance를 이해하고 최적화하는 데 매우 중요합니다.
+
+애플리케이션이 복잡해질수록 발생할 수 있는 문제를 찾아내고 진단하기가 점점 더 어려워집니다. logging과 metrics 같은 observability 도구를 활용하면 개발자는 애플리케이션의 동작에 대한 insight를 얻고 최적화할 부분을 찾을 수 있습니다. observability가 있으면 개발자는 문제가 커지기 전에 선제적으로 대응하고 더 나은 사용자 경험을 제공할 수 있습니다. 따라서 performance를 개선하고, resource를 최적화하고, 사용자 경험을 향상시키기 위해 Next.js 애플리케이션에서 observability를 사용하는 것을 적극 권장합니다.
+
+앱을 instrument할 때는 OpenTelemetry 사용을 권장합니다.
+OpenTelemetry는 platform에 구애받지 않는(platform-agnostic) 방식으로 앱을 instrument하므로, 코드를 바꾸지 않고도 observability provider를 변경할 수 있습니다.
+OpenTelemetry와 그 동작 방식에 대한 자세한 내용은 [공식 OpenTelemetry 문서](https://opentelemetry.io/docs/)를 읽어 보세요.
+
+이 문서 전반에서는 _Span_, _Trace_, _Exporter_ 같은 용어를 사용하며, 이 용어들은 모두 [OpenTelemetry Observability Primer](https://opentelemetry.io/docs/concepts/observability-primer/)에서 찾아볼 수 있습니다.
+
+Next.js는 OpenTelemetry instrumentation을 별도 설정 없이(out of the box) 지원합니다. 즉, Next.js 자체는 이미 instrument되어 있습니다.
+
+
+
+## Getting Started || 시작하기
+
+OpenTelemetry는 확장성이 좋지만, 제대로 설정하려면 꽤 장황해질 수 있습니다.
+그래서 빠르게 시작할 수 있도록 돕는 `@vercel/otel` package를 준비했습니다.
+
+### Using `@vercel/otel` || `@vercel/otel` 사용하기
+
+시작하려면 다음 package를 설치하세요:
+
+[[CODE 1]]
+
+
+
+다음으로 프로젝트의 **root directory**(또는 `src` 폴더를 사용한다면 그 안)에 custom [`instrumentation.ts`](/docs/app/guides/instrumentation)(또는 `.js`) 파일을 만드세요:
+
+
+
+
+
+[[CODE 2]]
+
+추가 configuration option은 [`@vercel/otel` 문서](https://www.npmjs.com/package/@vercel/otel)를 참고하세요.
+
+
+
+&gt; **Good to know**:
+&gt;
+&gt; - `instrumentation` 파일은 `app`이나 `pages` directory 안이 아니라 프로젝트 root에 있어야 합니다. `src` 폴더를 사용한다면 `pages`, `app`과 나란히 `src` 안에 파일을 두세요.
+&gt; - [`pageExtensions` config option](/docs/app/api-reference/config/next-config-js/pageExtensions)으로 suffix를 추가한다면, `instrumentation` 파일 이름도 그에 맞게 바꿔야 합니다.
+&gt; - 바로 사용할 수 있는 기본 [with-opentelemetry](https://github.com/vercel/next.js/tree/canary/examples/with-opentelemetry) 예시를 만들어 두었습니다.
+
+
+
+
+
+### Manual OpenTelemetry configuration || OpenTelemetry 수동 설정
+
+`@vercel/otel` package는 많은 configuration option을 제공하며 대부분의 일반적인 use case를 충족할 것입니다. 하지만 필요에 맞지 않는다면 OpenTelemetry를 수동으로 설정할 수 있습니다.
+
+먼저 OpenTelemetry package를 설치해야 합니다:
+
+[[CODE 3]]
+
+이제 `instrumentation.ts`에서 `NodeSDK`를 초기화할 수 있습니다.
+`@vercel/otel`과 달리 `NodeSDK`는 edge runtime과 호환되지 않으므로, `process.env.NEXT_RUNTIME === &#x27;nodejs&#x27;`일 때만 import하도록 해야 합니다. node를 사용할 때만 조건부로 import하는 새 파일 `instrumentation.node.ts`를 만드는 것을 권장합니다:
+
+[[CODE 4]]
+
+[[CODE 5]]
+
+이렇게 하는 것은 `@vercel/otel`을 사용하는 것과 동일하지만, `@vercel/otel`이 노출하지 않는 일부 기능을 수정하고 확장할 수 있습니다. edge runtime 지원이 필요하다면 `@vercel/otel`을 사용해야 합니다.
+
+## Testing your instrumentation || Instrumentation 테스트하기
+
+OpenTelemetry trace를 로컬에서 테스트하려면 호환되는 backend가 있는 OpenTelemetry collector가 필요합니다.
+[OpenTelemetry dev environment](https://github.com/vercel/opentelemetry-collector-dev-setup) 사용을 권장합니다.
+
+모든 것이 잘 동작한다면 `GET /requested/pathname`이라는 label이 붙은 root server span을 볼 수 있을 것입니다.
+해당 trace의 다른 모든 span은 그 아래에 중첩됩니다.
+
+Next.js는 기본으로 내보내는 것보다 더 많은 span을 trace합니다.
+더 많은 span을 보려면 `NEXT_OTEL_VERBOSE=1`을 설정해야 합니다.
+
+## Deployment || 배포
+
+### Using OpenTelemetry Collector || OpenTelemetry Collector 사용하기
+
+OpenTelemetry Collector와 함께 deploy할 때는 `@vercel/otel`을 사용할 수 있습니다.
+Vercel에서도, self-hosting 환경에서도 동작합니다.
+
+#### Deploying on Vercel || Vercel에 배포하기
+
+OpenTelemetry가 Vercel에서 별도 설정 없이 동작하도록 해 두었습니다.
+
+[Vercel 문서](https://vercel.com/docs/tracing/instrumentation)를 따라 프로젝트를 observability provider에 연결하세요.
+
+#### Self-hosting
+
+다른 platform에 deploy하는 것도 간단합니다. Next.js 앱의 telemetry 데이터를 받아 처리할 OpenTelemetry Collector를 직접 띄워야 합니다.
+
+이를 위해 [OpenTelemetry Collector Getting Started 가이드](https://opentelemetry.io/docs/collector/getting-started/)를 따르세요. collector를 설정하고 Next.js 앱에서 데이터를 받도록 구성하는 과정을 안내합니다.
+
+collector가 실행되고 나면, 선택한 platform의 deployment 가이드에 따라 Next.js 앱을 deploy할 수 있습니다.
+
+### Custom Exporters || Custom Exporter
+
+OpenTelemetry Collector가 반드시 필요한 것은 아닙니다. [`@vercel/otel`](#using-vercelotel)이나 [OpenTelemetry 수동 설정](#manual-opentelemetry-configuration)과 함께 custom OpenTelemetry exporter를 사용할 수 있습니다.
+
+## Custom Spans || Custom Span
+
+[OpenTelemetry API](https://opentelemetry.io/docs/instrumentation/js/instrumentation)로 custom span을 추가할 수 있습니다.
+
+[[CODE 6]]
+
+다음 예시는 GitHub star 수를 fetch하고, fetch request의 결과를 추적하기 위해 custom `fetchGithubStars` span을 추가하는 함수를 보여 줍니다:
+
+[[CODE 7]]
+
+`register` 함수는 새 environment에서 코드가 실행되기 전에 실행됩니다.
+그 후 request를 처리하는 동안 만든 span은 해당 request의 trace에 추가됩니다.
+
+&gt; **Good to know**: `instrumentation` 파일이 로드되는 동안이나 `register` 안에서 만든 span은 자동으로 request trace에 합류하지 않습니다. tracer provider가 설치되기 전에 시작된 span(예: `registerOTel`이 실행되기 전 파일 최상위에서 시작된 span)은 기록되지 않으며, `registerOTel`(또는 사용하는 OpenTelemetry SDK)이 시작된 후 `register` 안에서 시작된 span은 보통 별도의 root trace가 됩니다. 작업을 request의 일부로 trace하려면, page를 render할 때나 Route Handler 또는 API Route 안처럼 request를 처리하는 동안 실행되는 코드에서 span을 만드세요.
+
+## Default Spans in Next.js || Next.js의 기본 Span
+
+Next.js는 애플리케이션 performance에 대한 유용한 insight를 제공하기 위해 여러 span을 자동으로 instrument합니다.
+
+span의 attribute는 [OpenTelemetry semantic conventions](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/)를 따릅니다. 또한 `next` namespace 아래에 몇 가지 custom attribute를 추가합니다:
+
+- `next.span_name` - span 이름을 복제합니다
+- `next.span_type` - 각 span type마다 고유한 식별자가 있습니다
+- `next.route` - request의 route pattern입니다(예: `/[param]/user`).
+- `next.rsc` (true/false) - prefetch 같은 RSC request인지 여부입니다.
+- `next.page`
+  - app router에서 사용하는 내부 값입니다.
+  - 특별한 파일(`page.ts`, `layout.ts`, `loading.ts` 등)로 가는 route라고 생각하면 됩니다
+  - `/layout`은 `/(groupA)/layout.ts`와 `/(groupB)/layout.ts`를 모두 가리킬 수 있으므로, `next.route`와 짝을 이룰 때만 고유한 식별자로 사용할 수 있습니다
+
+### `[http.method] [next.route]`
+
+- `next.span_type`: `BaseServer.handleRequest`
+
+이 span은 Next.js 애플리케이션으로 들어오는 각 request의 root span을 나타냅니다. request의 HTTP method, route, target, status code를 추적합니다.
+
+Attributes:
+
+- [Common HTTP attributes](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/#common-attributes)
+  - `http.method`
+  - `http.status_code`
+- [Server HTTP attributes](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/#http-server-semantic-conventions)
+  - `http.route`
+  - `http.target`
+- `next.span_name`
+- `next.span_type`
+- `next.route`
+
+### `render route (app) [next.route]`
+
+- `next.span_type`: `AppRender.getBodyResult`.
+
+이 span은 app router에서 route를 render하는 과정을 나타냅니다.
+
+Attributes:
+
+- `next.span_name`
+- `next.span_type`
+- `next.route`
+
+### `fetch [http.method] [http.url]`
+
+- `next.span_type`: `AppRender.fetch`
+
+이 span은 코드에서 실행된 fetch request를 나타냅니다.
+
+Attributes:
+
+- [Common HTTP attributes](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/#common-attributes)
+  - `http.method`
+- [Client HTTP attributes](https://opentelemetry.io/docs/reference/specification/trace/semantic_conventions/http/#http-client)
+  - `http.url`
+  - `net.peer.name`
+  - `net.peer.port` (지정된 경우에만)
+- `next.span_name`
+- `next.span_type`
+
+environment에 `NEXT_OTEL_FETCH_DISABLED=1`을 설정하면 이 span을 끌 수 있습니다. custom fetch instrumentation library를 사용하고 싶을 때 유용합니다.
+
+### `executing api route (app) [next.route]`
+
+- `next.span_type`: `AppRouteRouteHandlers.runHandler`.
+
+이 span은 app router에서 API Route Handler가 실행되는 것을 나타냅니다.
+
+Attributes:
+
+- `next.span_name`
+- `next.span_type`
+- `next.route`
+
+### `getServerSideProps [next.route]`
+
+- `next.span_type`: `Render.getServerSideProps`.
+
+이 span은 특정 route에 대한 `getServerSideProps` 실행을 나타냅니다.
+
+Attributes:
+
+- `next.span_name`
+- `next.span_type`
+- `next.route`
+
+### `getStaticProps [next.route]`
+
+- `next.span_type`: `Render.getStaticProps`.
+
+이 span은 특정 route에 대한 `getStaticProps` 실행을 나타냅니다.
+
+Attributes:
+
+- `next.span_name`
+- `next.span_type`
+- `next.route`
+
+### `render route (pages) [next.route]`
+
+- `next.span_type`: `Render.renderDocument`.
+
+이 span은 특정 route의 document를 render하는 과정을 나타냅니다.
+
+Attributes:
+
+- `next.span_name`
+- `next.span_type`
+- `next.route`
+
+### `generateMetadata [next.page]`
+
+- `next.span_type`: `ResolveMetadata.generateMetadata`.
+
+이 span은 특정 page의 metadata를 생성하는 과정을 나타냅니다(하나의 route에 이 span이 여러 개 있을 수 있습니다).
+
+Attributes:
+
+- `next.span_name`
+- `next.span_type`
+- `next.page`
+
+### `resolve page components`
+
+- `next.span_type`: `NextNodeServer.findPageComponents`.
+
+이 span은 특정 page의 page component를 resolve하는 과정을 나타냅니다.
+
+Attributes:
+
+- `next.span_name`
+- `next.span_type`
+- `next.route`
+
+### `resolve segment modules`
+
+- `next.span_type`: `NextNodeServer.getLayoutOrPageModule`.
+
+이 span은 layout이나 page의 코드 module을 로드하는 과정을 나타냅니다.
+
+Attributes:
+
+- `next.span_name`
+- `next.span_type`
+- `next.segment`
+
+### `start response`
+
+- `next.span_type`: `NextNodeServer.startResponse`.
+
+이 길이가 0인 span은 response에서 첫 byte가 전송된 시점을 나타냅니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to set up a custom server in Next.js (Next.js에서 custom server 설정하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/guides/custom-server" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/guides/custom-server" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/custom-server.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to set up a custom server in Next.js<span class="sub">Next.js에서 custom server 설정하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js에는 기본적으로 <code>next start</code>로 실행되는 자체 server가 포함되어 있습니다. 기존 backend가 있다면 Next.js와 함께 그대로 사용할 수 있습니다(이것은 custom server가 아닙니다). custom Next.js server를 사용하면 custom 패턴을 위해 server를 programmatic하게 시작할 수 있습니다. 대부분의 경우에는 이 방식이 필요하지 않습니다. 하지만 eject해야 한다면 사용할 수 있습니다.</p><div class="en-orig"><p>Next.js includes its own server with <code>next start</code> by default. If you have an existing backend, you can still use it with Next.js (this is not a custom server). A custom Next.js server allows you to programmatically start a server for custom patterns. The majority of the time, you will not need this approach. However, it's available if you need to eject.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>custom server 사용을 결정하기 전에, Next.js의 통합 router가 앱의 요구 사항을 충족하지 못할 때만 사용해야 한다는 점을 기억하세요.</li>
+<li>standalone output mode를 사용하면 custom server 파일은 trace되지 않습니다. 대신 이 mode는 별도의 최소화된 <code>server.js</code> 파일을 출력합니다. 둘은 함께 사용할 수 없습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Before deciding to use a custom server, keep in mind that it should only be used when the integrated router of Next.js can't meet your app requirements.</li>
+<li>When using standalone output mode, it does not trace custom server files. This mode outputs a separate minimal <code>server.js</code> file, instead. These cannot be used together.</li>
+</ul></div></div></div>
+<p>custom server의 <a href="https://github.com/vercel/next.js/tree/canary/examples/custom-server" target="_blank" rel="noopener">다음 예시</a>를 살펴보세요:</p><div class="en-orig"><p>Take a look at the <a href="https://github.com/vercel/next.js/tree/canary/examples/custom-server" target="_blank" rel="noopener">following example</a> of a custom server:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="server.ts" data-js="server.js">server.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { createServer } from &#x27;http&#x27;
+import next from &#x27;next&#x27;
+
+const port = parseInt(process.env.PORT || &#x27;3000&#x27;, 10)
+const dev = process.env.NODE_ENV !== &#x27;production&#x27;
+const app = next({ dev })
+const handle = app.getRequestHandler()
+
+app.prepare().then(() =&gt; {
+  createServer((req, res) =&gt; {
+    handle(req, res)
+  }).listen(port)
+
+  console.log(
+    `&gt; Server listening at http://localhost:${port} as ${
+      dev ? &#x27;development&#x27; : process.env.NODE_ENV
+    }`
+  )
+})</code></pre><pre class="v-js" hidden><code class="language-javascript">import { createServer } from &#x27;http&#x27;
+import next from &#x27;next&#x27;
+
+const port = parseInt(process.env.PORT || &#x27;3000&#x27;, 10)
+const dev = process.env.NODE_ENV !== &#x27;production&#x27;
+const app = next({ dev })
+const handle = app.getRequestHandler()
+
+app.prepare().then(() =&gt; {
+  createServer((req, res) =&gt; {
+    handle(req, res)
+  }).listen(port)
+
+  console.log(
+    `&gt; Server listening at http://localhost:${port} as ${
+      dev ? &#x27;development&#x27; : process.env.NODE_ENV
+    }`
+  )
+})</code></pre></div></div>
+<blockquote><p><strong><code>handle</code>을 호출하기 전에 직접 관리하는 response header를 설정하세요</strong>: Next.js는 <code>handle(req, res)</code> 안에서 response 전송을 시작하므로, 그 promise가 resolve될 무렵에는 <code>res.headersSent</code>가 이미 <code>true</code>이고 이후의 <code>res.setHeader()</code> 호출은 아무 경고 없이 무시됩니다. <code>Set-Cookie</code>처럼 직접 관리하는 header는 request를 Next.js에 넘기기 전에 설정하세요:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">res.setHeader(&#x27;Set-Cookie&#x27;, &#x27;sessionId=abc123; Max-Age=2592000&#x27;)
+
+await handle(req, res)</code></pre></div></div>
+<p>다른 framework로 Next.js를 감쌀 때도 같은 순서가 적용됩니다. 예를 들어 Fastify의 <code>reply.raw</code>나 Express의 <code>res</code>가 그렇습니다.</p><div class="en-orig"><p><strong>Set your own response headers before calling <code>handle</code></strong>: Next.js begins sending the response inside <code>handle(req, res)</code>, so by the time its promise resolves <code>res.headersSent</code> is already <code>true</code> and any later <code>res.setHeader()</code> call is silently discarded. Set headers you own, such as <code>Set-Cookie</code>, before handing the request to Next.js:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">res.setHeader(&#x27;Set-Cookie&#x27;, &#x27;sessionId=abc123; Max-Age=2592000&#x27;)
+
+await handle(req, res)</code></pre></div></div>
+<p>The same ordering applies when wrapping Next.js in another framework, for example <code>reply.raw</code> in Fastify or <code>res</code> in Express.</p></div></blockquote>
+<blockquote><p><code>server.js</code>는 Next.js Compiler나 bundling 과정을 거치지 않습니다. 이 파일이 사용하는 문법과 source code가 현재 사용 중인 Node.js 버전과 호환되는지 확인하세요. <a href="https://github.com/vercel/next.js/tree/canary/examples/custom-server" target="_blank" rel="noopener">예시 보기</a>.</p><div class="en-orig"><p><code>server.js</code> does not run through the Next.js Compiler or bundling process. Make sure the syntax and source code this file requires are compatible with the current Node.js version you are using. <a href="https://github.com/vercel/next.js/tree/canary/examples/custom-server" target="_blank" rel="noopener">View an example</a>.</p></div></blockquote>
+<p>custom server를 실행하려면 <code>package.json</code>의 <code>scripts</code>를 다음과 같이 업데이트해야 합니다:</p><div class="en-orig"><p>To run the custom server, you'll need to update the <code>scripts</code> in <code>package.json</code> like so:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">package.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;node server.js&quot;,
+    &quot;build&quot;: &quot;next build&quot;,
+    &quot;start&quot;: &quot;NODE_ENV=production node server.js&quot;
+  }
+}</code></pre></div></div>
+<p>또는 <code>nodemon</code>을 설정할 수도 있습니다(<a href="https://github.com/vercel/next.js/tree/canary/examples/custom-server" target="_blank" rel="noopener">예시</a>). custom server는 다음 import를 사용해 server를 Next.js 애플리케이션과 연결합니다:</p><div class="en-orig"><p>Alternatively, you can set up <code>nodemon</code> (<a href="https://github.com/vercel/next.js/tree/canary/examples/custom-server" target="_blank" rel="noopener">example</a>). The custom server uses the following import to connect the server with the Next.js application:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import next from &#x27;next&#x27;
+
+const app = next({})</code></pre></div></div>
+<p>위의 <code>next</code> import는 다음 option을 가진 object를 받는 함수입니다:</p><div class="en-orig"><p>The above <code>next</code> import is a function that receives an object with the following options:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Type</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>conf</code></td><td><code>Object</code></td><td><code>next.config.js</code>에서 사용하는 것과 같은 object. 기본값은 <code>{}</code></td></tr>
+<tr><td><code>dev</code></td><td><code>Boolean</code></td><td>(<em>선택</em>) Next.js를 dev mode로 실행할지 여부. 기본값은 <code>false</code></td></tr>
+<tr><td><code>dir</code></td><td><code>String</code></td><td>(<em>선택</em>) Next.js 프로젝트의 위치. 기본값은 <code>&#x27;.&#x27;</code></td></tr>
+<tr><td><code>quiet</code></td><td><code>Boolean</code></td><td>(<em>선택</em>) server 정보가 담긴 error message를 숨김. 기본값은 <code>false</code></td></tr>
+<tr><td><code>hostname</code></td><td><code>String</code></td><td>(<em>선택</em>) server가 실행되는 hostname</td></tr>
+<tr><td><code>port</code></td><td><code>Number</code></td><td>(<em>선택</em>) server가 실행되는 port</td></tr>
+<tr><td><code>httpServer</code></td><td><code>node:http#Server</code></td><td>(<em>선택</em>) Next.js가 그 뒤에서 실행되는 HTTP Server</td></tr>
+<tr><td><code>turbopack</code></td><td><code>Boolean</code></td><td>(<em>선택</em>) Turbopack 활성화(기본적으로 활성화됨)</td></tr>
+<tr><td><code>webpack</code></td><td><code>Boolean</code></td><td>(<em>선택</em>) webpack 활성화</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>conf</code></td><td><code>Object</code></td><td>The same object you would use in <code>next.config.js</code>. Defaults to <code>{}</code></td></tr>
+<tr><td><code>dev</code></td><td><code>Boolean</code></td><td>(<em>Optional</em>) Whether or not to launch Next.js in dev mode. Defaults to <code>false</code></td></tr>
+<tr><td><code>dir</code></td><td><code>String</code></td><td>(<em>Optional</em>) Location of the Next.js project. Defaults to <code>&#x27;.&#x27;</code></td></tr>
+<tr><td><code>quiet</code></td><td><code>Boolean</code></td><td>(<em>Optional</em>) Hide error messages containing server information. Defaults to <code>false</code></td></tr>
+<tr><td><code>hostname</code></td><td><code>String</code></td><td>(<em>Optional</em>) The hostname the server is running behind</td></tr>
+<tr><td><code>port</code></td><td><code>Number</code></td><td>(<em>Optional</em>) The port the server is running behind</td></tr>
+<tr><td><code>httpServer</code></td><td><code>node:http#Server</code></td><td>(<em>Optional</em>) The HTTP Server that Next.js is running behind</td></tr>
+<tr><td><code>turbopack</code></td><td><code>Boolean</code></td><td>(<em>Optional</em>) Enable Turbopack (enabled by default)</td></tr>
+<tr><td><code>webpack</code></td><td><code>Boolean</code></td><td>(<em>Optional</em>) Enable webpack</td></tr>
+</tbody></table></div></div>
+<p>그러면 반환된 <code>app</code>을 사용해 필요에 따라 Next.js가 request를 처리하도록 할 수 있습니다.</p><div class="en-orig"><p>The returned <code>app</code> can then be used to let Next.js handle requests as required.</p></div>
+<h2 class="sec" id="disabling-file-system-routing"><a class="anchor" href="#disabling-file-system-routing">Disabling file-system routing<span class="ko">file-system routing 비활성화하기</span></a></h2>
+<p>기본적으로 <code>Next</code>는 <code>pages</code> 폴더의 각 파일을 파일 이름과 일치하는 pathname으로 제공합니다. 프로젝트에서 custom server를 사용한다면 이 동작 때문에 같은 콘텐츠가 여러 path에서 제공될 수 있고, 이는 SEO와 UX에 문제를 일으킬 수 있습니다.</p><div class="en-orig"><p>By default, <code>Next</code> will serve each file in the <code>pages</code> folder under a pathname matching the filename. If your project uses a custom server, this behavior may result in the same content being served from multiple paths, which can present problems with SEO and UX.</p></div>
+<p>이 동작을 비활성화하고 <code>pages</code>의 파일을 기반으로 한 routing을 막으려면 <code>next.config.js</code>를 열고 <code>useFileSystemPublicRoutes</code> config를 비활성화하세요:</p><div class="en-orig"><p>To disable this behavior and prevent routing based on files in <code>pages</code>, open <code>next.config.js</code> and disable the <code>useFileSystemPublicRoutes</code> config:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  useFileSystemPublicRoutes: false,
+}</code></pre></div></div>
+<blockquote><p><code>useFileSystemPublicRoutes</code>는 SSR에서 파일 이름 route를 비활성화할 뿐이며, client-side routing은 여전히 그 path에 접근할 수 있다는 점에 유의하세요. 이 option을 사용할 때는 원하지 않는 route로의 navigation을 programmatic하게 막아야 합니다.</p><div class="en-orig"><p>Note that <code>useFileSystemPublicRoutes</code> disables filename routes from SSR; client-side routing may still access those paths. When using this option, you should guard against navigation to routes you do not want programmatically.</p></div></blockquote>
+<blockquote><p>client-side router가 파일 이름 route로의 client-side redirect를 허용하지 않도록 설정하고 싶을 수도 있습니다. 이에 대해서는 <a href="pages-api-reference-functions-use-router.html#routerbeforepopstate"><code>router.beforePopState</code></a>를 참고하세요.</p><div class="en-orig"><p>You may also wish to configure the client-side router to disallow client-side redirects to filename routes; for that refer to <a href="pages-api-reference-functions-use-router.html#routerbeforepopstate"><code>router.beforePopState</code></a>.</p></div></blockquote>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/custom-server.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/guides/custom-server" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-guides-css-in-js.html" class="prev"><div class="dir">← 이전</div><div class="ttl">CSS-in-JS</div><div class="ttl-ko">CSS-in-JS library 사용하기</div></a>
+      <a href="pages-guides-custom-webpack.html" class="next"><div class="dir">다음 →</div><div class="ttl">Custom Webpack</div><div class="ttl-ko">Next.js에서 custom webpack 버전 사용하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/guides/custom-server" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#disabling-file-system-routing">Disabling file-system routing</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js에는 기본적으로 `next start`로 실행되는 자체 server가 포함되어 있습니다. 기존 backend가 있다면 Next.js와 함께 그대로 사용할 수 있습니다(이것은 custom server가 아닙니다). custom Next.js server를 사용하면 custom 패턴을 위해 server를 programmatic하게 시작할 수 있습니다. 대부분의 경우에는 이 방식이 필요하지 않습니다. 하지만 eject해야 한다면 사용할 수 있습니다.
+
+&gt; **Good to know**:
+&gt;
+&gt; - custom server 사용을 결정하기 전에, Next.js의 통합 router가 앱의 요구 사항을 충족하지 못할 때만 사용해야 한다는 점을 기억하세요.
+&gt; - standalone output mode를 사용하면 custom server 파일은 trace되지 않습니다. 대신 이 mode는 별도의 최소화된 `server.js` 파일을 출력합니다. 둘은 함께 사용할 수 없습니다.
+
+custom server의 [다음 예시](https://github.com/vercel/next.js/tree/canary/examples/custom-server)를 살펴보세요:
+
+[[CODE 1]]
+
+&gt; **`handle`을 호출하기 전에 직접 관리하는 response header를 설정하세요**: Next.js는 `handle(req, res)` 안에서 response 전송을 시작하므로, 그 promise가 resolve될 무렵에는 `res.headersSent`가 이미 `true`이고 이후의 `res.setHeader()` 호출은 아무 경고 없이 무시됩니다. `Set-Cookie`처럼 직접 관리하는 header는 request를 Next.js에 넘기기 전에 설정하세요:
+&gt;
+&gt; ```js
+&gt; res.setHeader(&#x27;Set-Cookie&#x27;, &#x27;sessionId=abc123; Max-Age=2592000&#x27;)
+&gt;
+&gt; await handle(req, res)
+&gt; ```
+&gt;
+&gt; 다른 framework로 Next.js를 감쌀 때도 같은 순서가 적용됩니다. 예를 들어 Fastify의 `reply.raw`나 Express의 `res`가 그렇습니다.
+
+&gt; `server.js`는 Next.js Compiler나 bundling 과정을 거치지 않습니다. 이 파일이 사용하는 문법과 source code가 현재 사용 중인 Node.js 버전과 호환되는지 확인하세요. [예시 보기](https://github.com/vercel/next.js/tree/canary/examples/custom-server).
+
+custom server를 실행하려면 `package.json`의 `scripts`를 다음과 같이 업데이트해야 합니다:
+
+[[CODE 2]]
+
+또는 `nodemon`을 설정할 수도 있습니다([예시](https://github.com/vercel/next.js/tree/canary/examples/custom-server)). custom server는 다음 import를 사용해 server를 Next.js 애플리케이션과 연결합니다:
+
+[[CODE 3]]
+
+위의 `next` import는 다음 option을 가진 object를 받는 함수입니다:
+
+| Option       | Type               | 설명                                                                                  |
+| ------------ | ------------------ | ----------------------------------------------------------------------------------- |
+| `conf`       | `Object`           | `next.config.js`에서 사용하는 것과 같은 object. 기본값은 `{}`                              |
+| `dev`        | `Boolean`          | (_선택_) Next.js를 dev mode로 실행할지 여부. 기본값은 `false`                               |
+| `dir`        | `String`           | (_선택_) Next.js 프로젝트의 위치. 기본값은 `&#x27;.&#x27;`                                          |
+| `quiet`      | `Boolean`          | (_선택_) server 정보가 담긴 error message를 숨김. 기본값은 `false`                          |
+| `hostname`   | `String`           | (_선택_) server가 실행되는 hostname                                                     |
+| `port`       | `Number`           | (_선택_) server가 실행되는 port                                                         |
+| `httpServer` | `node:http#Server` | (_선택_) Next.js가 그 뒤에서 실행되는 HTTP Server                                         |
+| `turbopack`  | `Boolean`          | (_선택_) Turbopack 활성화(기본적으로 활성화됨)                                             |
+| `webpack`    | `Boolean`          | (_선택_) webpack 활성화                                                                |
+
+그러면 반환된 `app`을 사용해 필요에 따라 Next.js가 request를 처리하도록 할 수 있습니다.
+
+
+
+## Disabling file-system routing || file-system routing 비활성화하기
+
+기본적으로 `Next`는 `pages` 폴더의 각 파일을 파일 이름과 일치하는 pathname으로 제공합니다. 프로젝트에서 custom server를 사용한다면 이 동작 때문에 같은 콘텐츠가 여러 path에서 제공될 수 있고, 이는 SEO와 UX에 문제를 일으킬 수 있습니다.
+
+이 동작을 비활성화하고 `pages`의 파일을 기반으로 한 routing을 막으려면 `next.config.js`를 열고 `useFileSystemPublicRoutes` config를 비활성화하세요:
+
+[[CODE 4]]
+
+&gt; `useFileSystemPublicRoutes`는 SSR에서 파일 이름 route를 비활성화할 뿐이며, client-side routing은 여전히 그 path에 접근할 수 있다는 점에 유의하세요. 이 option을 사용할 때는 원하지 않는 route로의 navigation을 programmatic하게 막아야 합니다.
+
+&gt; client-side router가 파일 이름 route로의 client-side redirect를 허용하지 않도록 설정하고 싶을 수도 있습니다. 이에 대해서는 [`router.beforePopState`](/docs/pages/api-reference/functions/use-router#routerbeforepopstate)를 참고하세요.
+
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

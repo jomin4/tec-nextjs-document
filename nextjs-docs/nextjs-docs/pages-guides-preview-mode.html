@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to preview content with Preview Mode in Next.js (Next.js에서 Preview Mode로 콘텐츠 미리보기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/guides/preview-mode" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/guides/preview-mode" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/02-guides/preview-mode.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to preview content with Preview Mode in Next.js<span class="vbadge">legacy</span><span class="sub">Next.js에서 Preview Mode로 콘텐츠 미리보기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p>이 기능은 <a href="pages-guides-draft-mode.html">Draft Mode</a>로 대체되었습니다.</p><div class="en-orig"><p>This feature is superseded by <a href="pages-guides-draft-mode.html">Draft Mode</a>.</p></div></div></div>
+<details><summary>예제</summary><div class="details-body"><ul>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-agilitycms" target="_blank" rel="noopener">Agility CMS 예제</a> (<a href="https://next-blog-agilitycms.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-builder-io" target="_blank" rel="noopener">Builder.io 예제</a> (<a href="https://cms-builder-io.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-buttercms" target="_blank" rel="noopener">ButterCMS 예제</a> (<a href="https://next-blog-buttercms.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-contentful" target="_blank" rel="noopener">Contentful 예제</a> (<a href="https://app-router-contentful.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-cosmic" target="_blank" rel="noopener">Cosmic 예제</a> (<a href="https://next-blog-cosmic.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-datocms" target="_blank" rel="noopener">DatoCMS 예제</a> (<a href="https://next-blog-datocms.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-dotcms" target="_blank" rel="noopener">DotCMS 예제</a> (<a href="https://nextjs-dotcms-blog.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-drupal" target="_blank" rel="noopener">Drupal 예제</a> (<a href="https://cms-drupal.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-enterspeed" target="_blank" rel="noopener">Enterspeed 예제</a> (<a href="https://next-blog-demo.enterspeed.com/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-graphcms" target="_blank" rel="noopener">GraphCMS 예제</a> (<a href="https://next-blog-graphcms.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-keystonejs-embedded" target="_blank" rel="noopener">Keystone 예제</a> (<a href="https://nextjs-keystone-demo.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-kontent-ai" target="_blank" rel="noopener">Kontent.ai 예제</a> (<a href="https://next-blog-kontent-ai.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-makeswift" target="_blank" rel="noopener">Makeswift 예제</a> (<a href="https://nextjs-makeswift-example.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-plasmic" target="_blank" rel="noopener">Plasmic 예제</a> (<a href="https://nextjs-plasmic-example.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-prepr" target="_blank" rel="noopener">Prepr 예제</a> (<a href="https://next-blog-prepr.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-prismic" target="_blank" rel="noopener">Prismic 예제</a> (<a href="https://next-blog-prismic.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-sanity" target="_blank" rel="noopener">Sanity 예제</a> (<a href="https://next-blog.sanity.build/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-sitecore-xmcloud" target="_blank" rel="noopener">Sitecore XM Cloud 예제</a> (<a href="https://vercel-sitecore-xmcloud-demo.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-storyblok" target="_blank" rel="noopener">Storyblok 예제</a> (<a href="https://next-blog-storyblok.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-strapi" target="_blank" rel="noopener">Strapi 예제</a> (<a href="https://next-blog-strapi.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-takeshape" target="_blank" rel="noopener">TakeShape 예제</a> (<a href="https://next-blog-takeshape.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-tina" target="_blank" rel="noopener">Tina 예제</a> (<a href="https://cms-tina-example.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-umbraco" target="_blank" rel="noopener">Umbraco 예제</a> (<a href="https://nextjs-umbraco-sample-blog.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-umbraco-heartcore" target="_blank" rel="noopener">Umbraco Heartcore 예제</a> (<a href="https://next-blog-umbraco-heartcore.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-webiny" target="_blank" rel="noopener">Webiny 예제</a> (<a href="https://webiny-headlesscms-nextjs-example.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/cms-wordpress" target="_blank" rel="noopener">WordPress 예제</a> (<a href="https://next-blog-wordpress.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/blog-starter" target="_blank" rel="noopener">Blog Starter 예제</a> (<a href="https://next-blog-starter.vercel.app/" target="_blank" rel="noopener">데모</a>)</li>
+</ul></div></details>
+<p><a href="pages-building-your-application-routing-pages-and-layouts.html">Pages 문서</a>와 <a href="pages-building-your-application-data-fetching.html">Data Fetching 문서</a>에서는 <code>getStaticProps</code>와 <code>getStaticPaths</code>를 사용해 build time에 page를 prerender하는 방법(<strong>Static Generation</strong>)을 다뤘습니다.</p><div class="en-orig"><p>In the <a href="pages-building-your-application-routing-pages-and-layouts.html">Pages documentation</a> and the <a href="pages-building-your-application-data-fetching.html">Data Fetching documentation</a>, we talked about how to prerender a page at build time (<strong>Static Generation</strong>) using <code>getStaticProps</code> and <code>getStaticPaths</code>.</p></div>
+<p>Static Generation은 page가 headless CMS에서 data를 fetch할 때 유용합니다. 하지만 headless CMS에서 draft(초안)를 작성하고 있고 그 draft를 page에서 바로 <strong>preview</strong>하고 싶을 때는 적합하지 않습니다. 이럴 때는 Next.js가 이 page들을 build time이 아니라 <strong>request time</strong>에 render하고, 게시된 콘텐츠 대신 draft 콘텐츠를 fetch하기를 원할 것입니다. 즉, 이 특정한 경우에만 Next.js가 Static Generation을 우회하기를 원할 것입니다.</p><div class="en-orig"><p>Static Generation is useful when your pages fetch data from a headless CMS. However, it’s not ideal when you’re writing a draft on your headless CMS and want to <strong>preview</strong> the draft immediately on your page. You’d want Next.js to render these pages at <strong>request time</strong> instead of build time and fetch the draft content instead of the published content. You’d want Next.js to bypass Static Generation only for this specific case.</p></div>
+<p>Next.js에는 이 문제를 해결하는 <strong>Preview Mode</strong>라는 기능이 있습니다. 사용 방법은 다음과 같습니다.</p><div class="en-orig"><p>Next.js has a feature called <strong>Preview Mode</strong> which solves this problem. Here are instructions on how to use it.</p></div>
+<h2 class="sec" id="step-1-create-and-access-a-preview-api-route"><a class="anchor" href="#step-1-create-and-access-a-preview-api-route">Step 1: Create and access a preview API route<span class="ko">1단계: preview API route 만들고 접근하기</span></a></h2>
+<blockquote><p>Next.js API Routes에 익숙하지 않다면 먼저 <a href="pages-building-your-application-routing-api-routes.html">API Routes 문서</a>를 살펴보세요.</p><div class="en-orig"><p>Take a look at the <a href="pages-building-your-application-routing-api-routes.html">API Routes documentation</a> first if you’re not familiar with Next.js API Routes.</p></div></blockquote>
+<p>먼저 <strong>preview API route</strong>를 만드세요. 이름은 무엇이든 상관없습니다. 예: <code>pages/api/preview.js</code> (TypeScript를 사용한다면 <code>.ts</code>)</p><div class="en-orig"><p>First, create a <strong>preview API route</strong>. It can have any name - e.g. <code>pages/api/preview.js</code> (or <code>.ts</code> if using TypeScript).</p></div>
+<p>이 API route에서 response object의 <code>setPreviewData</code>를 호출해야 합니다. <code>setPreviewData</code>의 argument는 object여야 하며, 이 값은 <code>getStaticProps</code>에서 사용할 수 있습니다(자세한 내용은 뒤에서 다룹니다). 지금은 <code>{}</code>를 사용하겠습니다.</p><div class="en-orig"><p>In this API route, you need to call <code>setPreviewData</code> on the response object. The argument for <code>setPreviewData</code> should be an object, and this can be used by <code>getStaticProps</code> (more on this later). For now, we’ll use <code>{}</code>.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export default function handler(req, res) {
+  // ...
+  res.setPreviewData({})
+  // ...
+}</code></pre></div></div>
+<p><code>res.setPreviewData</code>는 브라우저에 preview mode를 켜는 몇 가지 <strong>cookie</strong>를 설정합니다. 이 cookie를 포함한 Next.js로의 모든 request는 <strong>preview mode</strong>로 간주되며, statically generated page의 동작이 바뀝니다(자세한 내용은 뒤에서 다룹니다).</p><div class="en-orig"><p><code>res.setPreviewData</code> sets some <strong>cookies</strong> on the browser which turns on the preview mode. Any requests to Next.js containing these cookies will be considered as the <strong>preview mode</strong>, and the behavior for statically generated pages will change (more on this later).</p></div>
+<p>아래와 같은 API route를 만들고 브라우저에서 직접 접근해 수동으로 테스트해 볼 수 있습니다:</p><div class="en-orig"><p>You can test this manually by creating an API route like below and accessing it from your browser manually:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/api/preview.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// simple example for testing it manually from your browser.
+export default function handler(req, res) {
+  res.setPreviewData({})
+  res.end(&#x27;Preview mode enabled&#x27;)
+}</code></pre></div></div>
+<p>브라우저의 developer tools를 열고 <code>/api/preview</code>에 방문하면 이 request에서 <code>__prerender_bypass</code>와 <code>__next_preview_data</code> cookie가 설정되는 것을 확인할 수 있습니다.</p><div class="en-orig"><p>If you open your browser’s developer tools and visit <code>/api/preview</code>, you’ll notice that the <code>__prerender_bypass</code> and <code>__next_preview_data</code> cookies will be set on this request.</p></div>
+<h3 class="sec" id="securely-accessing-it-from-your-headless-cms"><a class="anchor" href="#securely-accessing-it-from-your-headless-cms">Securely accessing it from your Headless CMS<span class="ko">Headless CMS에서 안전하게 접근하기</span></a></h3>
+<p>실제로는 headless CMS에서 이 API route를 <em>안전하게</em> 호출하고 싶을 것입니다. 구체적인 단계는 사용하는 headless CMS에 따라 다르지만, 일반적으로 다음과 같은 단계를 밟을 수 있습니다.</p><div class="en-orig"><p>In practice, you’d want to call this API route <em>securely</em> from your headless CMS. The specific steps will vary depending on which headless CMS you’re using, but here are some common steps you could take.</p></div>
+<p>이 단계들은 사용 중인 headless CMS가 <strong>custom preview URL</strong> 설정을 지원한다고 가정합니다. 지원하지 않더라도 이 방법으로 preview URL을 보호할 수는 있지만, preview URL을 직접 만들고 접근해야 합니다.</p><div class="en-orig"><p>These steps assume that the headless CMS you’re using supports setting <strong>custom preview URLs</strong>. If it doesn’t, you can still use this method to secure your preview URLs, but you’ll need to construct and access the preview URL manually.</p></div>
+<p><strong>먼저</strong>, 원하는 token generator로 <strong>secret token string</strong>을 만드세요. 이 secret은 Next.js 앱과 headless CMS만 알고 있어야 합니다. 이 secret은 CMS 접근 권한이 없는 사람이 preview URL에 접근하지 못하게 막아 줍니다.</p><div class="en-orig"><p><strong>First</strong>, you should create a <strong>secret token string</strong> using a token generator of your choice. This secret will only be known by your Next.js app and your headless CMS. This secret prevents people who don’t have access to your CMS from accessing preview URLs.</p></div>
+<p><strong>둘째</strong>, headless CMS가 custom preview URL 설정을 지원한다면 다음을 preview URL로 지정하세요. 여기서는 preview API route가 <code>pages/api/preview.js</code>에 있다고 가정합니다.</p><div class="en-orig"><p><strong>Second</strong>, if your headless CMS supports setting custom preview URLs, specify the following as the preview URL. This assumes that your preview API route is located at <code>pages/api/preview.js</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">https://&lt;your-site&gt;/api/preview?secret=&lt;token&gt;&amp;slug=&lt;path&gt;</code></pre></div></div>
+<ul>
+<li><code>&lt;your-site&gt;</code>는 deployment domain이어야 합니다.</li>
+<li><code>&lt;token&gt;</code>은 생성한 secret token으로 바꿔야 합니다.</li>
+<li><code>&lt;path&gt;</code>는 preview하려는 page의 path여야 합니다. <code>/posts/foo</code>를 preview하고 싶다면 <code>&amp;slug=/posts/foo</code>를 사용하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><code>&lt;your-site&gt;</code> should be your deployment domain.</li>
+<li><code>&lt;token&gt;</code> should be replaced with the secret token you generated.</li>
+<li><code>&lt;path&gt;</code> should be the path for the page that you want to preview. If you want to preview <code>/posts/foo</code>, then you should use <code>&amp;slug=/posts/foo</code>.</li>
+</ul></div>
+<p>headless CMS에 따라 preview URL에 변수를 넣어서 <code>&lt;path&gt;</code>가 CMS의 data에 따라 동적으로 설정되게 할 수도 있습니다. 예: <code>&amp;slug=/posts/{entry.fields.slug}</code></p><div class="en-orig"><p>Your headless CMS might allow you to include a variable in the preview URL so that <code>&lt;path&gt;</code> can be set dynamically based on the CMS’s data like so: <code>&amp;slug=/posts/{entry.fields.slug}</code></p></div>
+<p><strong>마지막으로</strong>, preview API route에서 다음을 수행합니다:</p><div class="en-orig"><p><strong>Finally</strong>, in the preview API route:</p></div>
+<ul>
+<li>secret이 일치하는지, 그리고 <code>slug</code> parameter가 존재하는지 확인합니다(그렇지 않으면 request가 실패해야 합니다).
+-</li>
+<li><code>res.setPreviewData</code>를 호출합니다.</li>
+<li>그다음 <code>slug</code>로 지정된 path로 브라우저를 redirect합니다. (다음 예제는 <a href="https://developer.mozilla.org/docs/Web/HTTP/Status/307" target="_blank" rel="noopener">307 redirect</a>를 사용합니다.)</li>
+</ul><div class="en-orig"><ul>
+<li>Check that the secret matches and that the <code>slug</code> parameter exists (if not, the request should fail).
+-</li>
+<li>Call <code>res.setPreviewData</code>.</li>
+<li>Then redirect the browser to the path specified by <code>slug</code>. (The following example uses a <a href="https://developer.mozilla.org/docs/Web/HTTP/Status/307" target="_blank" rel="noopener">307 redirect</a>).</li>
+</ul></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export default async (req, res) =&gt; {
+  // Check the secret and next parameters
+  // This secret should only be known to this API route and the CMS
+  if (req.query.secret !== &#x27;MY_SECRET_TOKEN&#x27; || !req.query.slug) {
+    return res.status(401).json({ message: &#x27;Invalid token&#x27; })
+  }
+
+  // Fetch the headless CMS to check if the provided `slug` exists
+  // getPostBySlug would implement the required fetching logic to the headless CMS
+  const post = await getPostBySlug(req.query.slug)
+
+  // If the slug doesn&#x27;t exist prevent preview mode from being enabled
+  if (!post) {
+    return res.status(401).json({ message: &#x27;Invalid slug&#x27; })
+  }
+
+  // Enable Preview Mode by setting the cookies
+  res.setPreviewData({})
+
+  // Redirect to the path from the fetched post
+  // We don&#x27;t redirect to req.query.slug as that might lead to open redirect vulnerabilities
+  res.redirect(post.slug)
+}</code></pre></div></div>
+<p>성공하면 브라우저는 preview mode cookie가 설정된 채로 preview하려는 path로 redirect됩니다.</p><div class="en-orig"><p>If it succeeds, then the browser will be redirected to the path you want to preview with the preview mode cookies being set.</p></div>
+<h2 class="sec" id="step-2-update-getstaticprops"><a class="anchor" href="#step-2-update-getstaticprops">Step 2: Update <code>getStaticProps</code><span class="ko">2단계: <code>getStaticProps</code> 업데이트하기</span></a></h2>
+<p>다음 단계는 preview mode를 지원하도록 <code>getStaticProps</code>를 업데이트하는 것입니다.</p><div class="en-orig"><p>The next step is to update <code>getStaticProps</code> to support the preview mode.</p></div>
+<p>(<code>res.setPreviewData</code>로) preview mode cookie가 설정된 상태에서 <code>getStaticProps</code>가 있는 page를 request하면, <code>getStaticProps</code>는 (build time 대신) <strong>request time</strong>에 호출됩니다.</p><div class="en-orig"><p>If you request a page which has <code>getStaticProps</code> with the preview mode cookies set (via <code>res.setPreviewData</code>), then <code>getStaticProps</code> will be called at <strong>request time</strong> (instead of at build time).</p></div>
+<p>또한 다음과 같은 <code>context</code> object와 함께 호출됩니다:</p><div class="en-orig"><p>Furthermore, it will be called with a <code>context</code> object where:</p></div>
+<ul>
+<li><code>context.preview</code>는 <code>true</code>가 됩니다.</li>
+<li><code>context.previewData</code>는 <code>setPreviewData</code>에 사용한 argument와 같습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>context.preview</code> will be <code>true</code>.</li>
+<li><code>context.previewData</code> will be the same as the argument used for <code>setPreviewData</code>.</li>
+</ul></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export async function getStaticProps(context) {
+  // If you request this page with the preview mode cookies set:
+  //
+  // - context.preview will be true
+  // - context.previewData will be the same as
+  //   the argument used for `setPreviewData`.
+}</code></pre></div></div>
+<p>preview API route에서 <code>res.setPreviewData({})</code>를 사용했으므로 <code>context.previewData</code>는 <code>{}</code>가 됩니다. 필요하다면 이를 이용해 preview API route에서 <code>getStaticProps</code>로 session 정보를 전달할 수 있습니다.</p><div class="en-orig"><p>We used <code>res.setPreviewData({})</code> in the preview API route, so <code>context.previewData</code> will be <code>{}</code>. You can use this to pass session information from the preview API route to <code>getStaticProps</code> if necessary.</p></div>
+<p><code>getStaticPaths</code>도 사용하고 있다면 <code>context.params</code>도 사용할 수 있습니다.</p><div class="en-orig"><p>If you’re also using <code>getStaticPaths</code>, then <code>context.params</code> will also be available.</p></div>
+<h3 class="sec" id="fetch-preview-data"><a class="anchor" href="#fetch-preview-data">Fetch preview data<span class="ko">preview data fetch하기</span></a></h3>
+<p><code>context.preview</code> 및/또는 <code>context.previewData</code>에 따라 다른 data를 fetch하도록 <code>getStaticProps</code>를 업데이트할 수 있습니다.</p><div class="en-orig"><p>You can update <code>getStaticProps</code> to fetch different data based on <code>context.preview</code> and/or <code>context.previewData</code>.</p></div>
+<p>예를 들어 headless CMS에 draft post용 API endpoint가 따로 있을 수 있습니다. 그렇다면 아래처럼 <code>context.preview</code>를 사용해 API endpoint URL을 바꿀 수 있습니다:</p><div class="en-orig"><p>For example, your headless CMS might have a different API endpoint for draft posts. If so, you can use <code>context.preview</code> to modify the API endpoint URL like below:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export async function getStaticProps(context) {
+  // If context.preview is true, append &quot;/preview&quot; to the API endpoint
+  // to request draft data instead of published data. This will vary
+  // based on which headless CMS you&#x27;re using.
+  const res = await fetch(`https://.../${context.preview ? &#x27;preview&#x27; : &#x27;&#x27;}`)
+  // ...
+}</code></pre></div></div>
+<p>이것으로 끝입니다! headless CMS에서 또는 직접 (<code>secret</code>과 <code>slug</code>를 포함해) preview API route에 접근하면 이제 preview 콘텐츠를 볼 수 있습니다. 그리고 게시하지 않고 draft를 업데이트해도 그 draft를 preview할 수 있습니다.</p><div class="en-orig"><p>That’s it! If you access the preview API route (with <code>secret</code> and <code>slug</code>) from your headless CMS or manually, you should now be able to see the preview content. And if you update your draft without publishing, you should be able to preview the draft.</p></div>
+<p>이것을 headless CMS의 preview URL로 설정하거나 직접 접근하면 preview를 볼 수 있습니다.</p><div class="en-orig"><p>Set this as the preview URL on your headless CMS or access manually, and you should be able to see the preview.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">https://&lt;your-site&gt;/api/preview?secret=&lt;token&gt;&amp;slug=&lt;path&gt;</code></pre></div></div>
+<h2 class="sec" id="more-details"><a class="anchor" href="#more-details">More Details<span class="ko">자세히 알아보기</span></a></h2>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>rendering 중에 <code>next/router</code>는 <code>isPreview</code> flag를 노출합니다. 자세한 내용은 <a href="pages-api-reference-functions-use-router.html#router-object">router object 문서</a>를 참고하세요.</p><div class="en-orig"><p>during rendering <code>next/router</code> exposes an <code>isPreview</code> flag, see the <a href="pages-api-reference-functions-use-router.html#router-object">router object docs</a> for more info.</p></div></div></div>
+<h3 class="sec" id="specify-the-preview-mode-duration"><a class="anchor" href="#specify-the-preview-mode-duration">Specify the Preview Mode duration<span class="ko">Preview Mode 지속 시간 지정하기</span></a></h3>
+<p><code>setPreviewData</code>는 선택적인 두 번째 parameter로 options object를 받습니다. 다음 key를 사용할 수 있습니다:</p><div class="en-orig"><p><code>setPreviewData</code> takes an optional second parameter which should be an options object. It accepts the following keys:</p></div>
+<ul>
+<li><code>maxAge</code>: preview session이 지속될 시간(초 단위)을 지정합니다.</li>
+<li><code>path</code>: cookie가 적용될 path를 지정합니다. 기본값은 <code>/</code>로, 모든 path에서 preview mode를 활성화합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>maxAge</code>: Specifies the number (in seconds) for the preview session to last for.</li>
+<li><code>path</code>: Specifies the path the cookie should be applied under. Defaults to <code>/</code> enabling preview mode for all paths.</li>
+</ul></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">setPreviewData(data, {
+  maxAge: 60 * 60, // The preview mode cookies expire in 1 hour
+  path: &#x27;/about&#x27;, // The preview mode cookies apply to paths with /about
+})</code></pre></div></div>
+<h3 class="sec" id="clear-the-preview-mode-cookies"><a class="anchor" href="#clear-the-preview-mode-cookies">Clear the Preview Mode cookies<span class="ko">Preview Mode cookie 지우기</span></a></h3>
+<p>기본적으로 Preview Mode cookie에는 만료 날짜가 설정되지 않으므로, 브라우저를 닫으면 preview session이 끝납니다.</p><div class="en-orig"><p>By default, no expiration date is set for Preview Mode cookies, so the preview session ends when the browser is closed.</p></div>
+<p>Preview Mode cookie를 직접 지우려면 <code>clearPreviewData()</code>를 호출하는 API route를 만드세요:</p><div class="en-orig"><p>To clear the Preview Mode cookies manually, create an API route that calls <code>clearPreviewData()</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/api/clear-preview-mode-cookies.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export default function handler(req, res) {
+  res.clearPreviewData({})
+}</code></pre></div></div>
+<p>그다음 <code>/api/clear-preview-mode-cookies</code>로 request를 보내 API Route를 호출합니다. <a href="pages-api-reference-components-link.html"><code>next/link</code></a>로 이 route를 호출한다면, link prefetching 중에 <code>clearPreviewData</code>가 호출되지 않도록 <code>prefetch={false}</code>를 전달해야 합니다.</p><div class="en-orig"><p>Then, send a request to <code>/api/clear-preview-mode-cookies</code> to invoke the API Route. If calling this route using <a href="pages-api-reference-components-link.html"><code>next/link</code></a>, you must pass <code>prefetch={false}</code> to prevent calling <code>clearPreviewData</code> during link prefetching.</p></div>
+<p><code>setPreviewData</code> 호출 시 path를 지정했다면 <code>clearPreviewData</code>에도 같은 path를 전달해야 합니다:</p><div class="en-orig"><p>If a path was specified in the <code>setPreviewData</code> call, you must pass the same path to <code>clearPreviewData</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/api/clear-preview-mode-cookies.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export default function handler(req, res) {
+  const { path } = req.query
+
+  res.clearPreviewData({ path })
+}</code></pre></div></div>
+<h3 class="sec" id="previewdata-size-limits"><a class="anchor" href="#previewdata-size-limits"><code>previewData</code> size limits<span class="ko"><code>previewData</code> 크기 제한</span></a></h3>
+<p><code>setPreviewData</code>에 object를 전달해 <code>getStaticProps</code>에서 사용할 수 있게 할 수 있습니다. 하지만 data가 cookie에 저장되기 때문에 크기 제한이 있습니다. 현재 preview data는 2KB로 제한됩니다.</p><div class="en-orig"><p>You can pass an object to <code>setPreviewData</code> and have it be available in <code>getStaticProps</code>. However, because the data will be stored in a cookie, there’s a size limitation. Currently, preview data is limited to 2KB.</p></div>
+<h3 class="sec" id="works-with-getserversideprops"><a class="anchor" href="#works-with-getserversideprops">Works with <code>getServerSideProps</code><span class="ko"><code>getServerSideProps</code>와 함께 사용하기</span></a></h3>
+<p>preview mode는 <code>getServerSideProps</code>에서도 동작합니다. 이 경우에도 <code>preview</code>와 <code>previewData</code>가 담긴 <code>context</code> object에서 사용할 수 있습니다.</p><div class="en-orig"><p>The preview mode works on <code>getServerSideProps</code> as well. It will also be available on the <code>context</code> object containing <code>preview</code> and <code>previewData</code>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Preview Mode를 사용할 때는 <code>Cache-Control</code> header를 설정하면 안 됩니다. 이 header는 우회할 수 없기 때문입니다. 대신 <a href="pages-guides-incremental-static-regeneration.html">ISR</a>을 사용하는 것을 권장합니다.</p><div class="en-orig"><p>You shouldn't set the <code>Cache-Control</code> header when using Preview Mode because it cannot be bypassed. Instead, we recommend using <a href="pages-guides-incremental-static-regeneration.html">ISR</a>.</p></div></div></div>
+<h3 class="sec" id="works-with-api-routes"><a class="anchor" href="#works-with-api-routes">Works with API Routes<span class="ko">API Routes와 함께 사용하기</span></a></h3>
+<p>API Routes에서는 request object의 <code>preview</code>와 <code>previewData</code>에 접근할 수 있습니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>API Routes will have access to <code>preview</code> and <code>previewData</code> under the request object. For example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export default function myApiRoute(req, res) {
+  const isPreview = req.preview
+  const previewData = req.previewData
+  // ...
+}</code></pre></div></div>
+<h3 class="sec" id="unique-per-next-build"><a class="anchor" href="#unique-per-next-build">Unique per <code>next build</code><span class="ko"><code>next build</code>마다 고유한 값</span></a></h3>
+<p><code>next build</code>가 완료되면 bypass cookie 값과 <code>previewData</code> 암호화에 쓰이는 private key가 모두 바뀝니다.
+이렇게 해서 bypass cookie를 추측할 수 없도록 보장합니다.</p><div class="en-orig"><p>Both the bypass cookie value and the private key for encrypting the <code>previewData</code> change when <code>next build</code> is completed.
+This ensures that the bypass cookie can’t be guessed.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>HTTP로 로컬에서 Preview Mode를 테스트하려면 브라우저가 third-party cookie와 local storage 접근을 허용해야 합니다.</p><div class="en-orig"><p>To test Preview Mode locally over HTTP your browser will need to allow third-party cookies and local storage access.</p></div></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/02-guides/preview-mode.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/guides/preview-mode" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-guides-post-css.html" class="prev"><div class="dir">← 이전</div><div class="ttl">PostCSS</div><div class="ttl-ko">Next.js에서 PostCSS 설정하기</div></a>
+      <a href="pages-guides-production-checklist.html" class="next"><div class="dir">다음 →</div><div class="ttl">Production</div><div class="ttl-ko">production을 위한 Next.js 애플리케이션 최적화</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/guides/preview-mode" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#step-1-create-and-access-a-preview-api-route">Step 1: Create and access a preview API route</a></li><li class="l3"><a href="#securely-accessing-it-from-your-headless-cms">Securely accessing it from your Headless CMS</a></li><li class="l2"><a href="#step-2-update-getstaticprops">Step 2: Update <code>getStaticProps</code></a></li><li class="l3"><a href="#fetch-preview-data">Fetch preview data</a></li><li class="l2"><a href="#more-details">More Details</a></li><li class="l3"><a href="#specify-the-preview-mode-duration">Specify the Preview Mode duration</a></li><li class="l3"><a href="#clear-the-preview-mode-cookies">Clear the Preview Mode cookies</a></li><li class="l3"><a href="#previewdata-size-limits"><code>previewData</code> size limits</a></li><li class="l3"><a href="#works-with-getserversideprops">Works with <code>getServerSideProps</code></a></li><li class="l3"><a href="#works-with-api-routes">Works with API Routes</a></li><li class="l3"><a href="#unique-per-next-build">Unique per <code>next build</code></a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+&gt; **Note**: 이 기능은 [Draft Mode](/docs/pages/guides/draft-mode)로 대체되었습니다.
+
+&lt;details&gt;
+  &lt;summary&gt;예제&lt;/summary&gt;
+
+- [Agility CMS 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-agilitycms) ([데모](https://next-blog-agilitycms.vercel.app/))
+- [Builder.io 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-builder-io) ([데모](https://cms-builder-io.vercel.app/))
+- [ButterCMS 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-buttercms) ([데모](https://next-blog-buttercms.vercel.app/))
+- [Contentful 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-contentful) ([데모](https://app-router-contentful.vercel.app/))
+- [Cosmic 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-cosmic) ([데모](https://next-blog-cosmic.vercel.app/))
+- [DatoCMS 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-datocms) ([데모](https://next-blog-datocms.vercel.app/))
+- [DotCMS 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-dotcms) ([데모](https://nextjs-dotcms-blog.vercel.app/))
+- [Drupal 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-drupal) ([데모](https://cms-drupal.vercel.app/))
+- [Enterspeed 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-enterspeed) ([데모](https://next-blog-demo.enterspeed.com/))
+- [GraphCMS 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-graphcms) ([데모](https://next-blog-graphcms.vercel.app/))
+- [Keystone 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-keystonejs-embedded) ([데모](https://nextjs-keystone-demo.vercel.app/))
+- [Kontent.ai 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-kontent-ai) ([데모](https://next-blog-kontent-ai.vercel.app/))
+- [Makeswift 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-makeswift) ([데모](https://nextjs-makeswift-example.vercel.app/))
+- [Plasmic 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-plasmic) ([데모](https://nextjs-plasmic-example.vercel.app/))
+- [Prepr 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-prepr) ([데모](https://next-blog-prepr.vercel.app/))
+- [Prismic 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-prismic) ([데모](https://next-blog-prismic.vercel.app/))
+- [Sanity 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-sanity) ([데모](https://next-blog.sanity.build/))
+- [Sitecore XM Cloud 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-sitecore-xmcloud) ([데모](https://vercel-sitecore-xmcloud-demo.vercel.app/))
+- [Storyblok 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-storyblok) ([데모](https://next-blog-storyblok.vercel.app/))
+- [Strapi 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-strapi) ([데모](https://next-blog-strapi.vercel.app/))
+- [TakeShape 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-takeshape) ([데모](https://next-blog-takeshape.vercel.app/))
+- [Tina 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-tina) ([데모](https://cms-tina-example.vercel.app/))
+- [Umbraco 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-umbraco) ([데모](https://nextjs-umbraco-sample-blog.vercel.app/))
+- [Umbraco Heartcore 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-umbraco-heartcore) ([데모](https://next-blog-umbraco-heartcore.vercel.app/))
+- [Webiny 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-webiny) ([데모](https://webiny-headlesscms-nextjs-example.vercel.app/))
+- [WordPress 예제](https://github.com/vercel/next.js/tree/canary/examples/cms-wordpress) ([데모](https://next-blog-wordpress.vercel.app/))
+- [Blog Starter 예제](https://github.com/vercel/next.js/tree/canary/examples/blog-starter) ([데모](https://next-blog-starter.vercel.app/))
+
+&lt;/details&gt;
+
+[Pages 문서](/docs/pages/building-your-application/routing/pages-and-layouts)와 [Data Fetching 문서](/docs/pages/building-your-application/data-fetching)에서는 `getStaticProps`와 `getStaticPaths`를 사용해 build time에 page를 prerender하는 방법(**Static Generation**)을 다뤘습니다.
+
+Static Generation은 page가 headless CMS에서 data를 fetch할 때 유용합니다. 하지만 headless CMS에서 draft(초안)를 작성하고 있고 그 draft를 page에서 바로 **preview**하고 싶을 때는 적합하지 않습니다. 이럴 때는 Next.js가 이 page들을 build time이 아니라 **request time**에 render하고, 게시된 콘텐츠 대신 draft 콘텐츠를 fetch하기를 원할 것입니다. 즉, 이 특정한 경우에만 Next.js가 Static Generation을 우회하기를 원할 것입니다.
+
+Next.js에는 이 문제를 해결하는 **Preview Mode**라는 기능이 있습니다. 사용 방법은 다음과 같습니다.
+
+## Step 1: Create and access a preview API route || 1단계: preview API route 만들고 접근하기
+
+&gt; Next.js API Routes에 익숙하지 않다면 먼저 [API Routes 문서](/docs/pages/building-your-application/routing/api-routes)를 살펴보세요.
+
+먼저 **preview API route**를 만드세요. 이름은 무엇이든 상관없습니다. 예: `pages/api/preview.js` (TypeScript를 사용한다면 `.ts`)
+
+이 API route에서 response object의 `setPreviewData`를 호출해야 합니다. `setPreviewData`의 argument는 object여야 하며, 이 값은 `getStaticProps`에서 사용할 수 있습니다(자세한 내용은 뒤에서 다룹니다). 지금은 `{}`를 사용하겠습니다.
+
+[[CODE 1]]
+
+`res.setPreviewData`는 브라우저에 preview mode를 켜는 몇 가지 **cookie**를 설정합니다. 이 cookie를 포함한 Next.js로의 모든 request는 **preview mode**로 간주되며, statically generated page의 동작이 바뀝니다(자세한 내용은 뒤에서 다룹니다).
+
+아래와 같은 API route를 만들고 브라우저에서 직접 접근해 수동으로 테스트해 볼 수 있습니다:
+
+[[CODE 2]]
+
+브라우저의 developer tools를 열고 `/api/preview`에 방문하면 이 request에서 `__prerender_bypass`와 `__next_preview_data` cookie가 설정되는 것을 확인할 수 있습니다.
+
+### Securely accessing it from your Headless CMS || Headless CMS에서 안전하게 접근하기
+
+실제로는 headless CMS에서 이 API route를 _안전하게_ 호출하고 싶을 것입니다. 구체적인 단계는 사용하는 headless CMS에 따라 다르지만, 일반적으로 다음과 같은 단계를 밟을 수 있습니다.
+
+이 단계들은 사용 중인 headless CMS가 **custom preview URL** 설정을 지원한다고 가정합니다. 지원하지 않더라도 이 방법으로 preview URL을 보호할 수는 있지만, preview URL을 직접 만들고 접근해야 합니다.
+
+**먼저**, 원하는 token generator로 **secret token string**을 만드세요. 이 secret은 Next.js 앱과 headless CMS만 알고 있어야 합니다. 이 secret은 CMS 접근 권한이 없는 사람이 preview URL에 접근하지 못하게 막아 줍니다.
+
+**둘째**, headless CMS가 custom preview URL 설정을 지원한다면 다음을 preview URL로 지정하세요. 여기서는 preview API route가 `pages/api/preview.js`에 있다고 가정합니다.
+
+[[CODE 3]]
+
+- `&lt;your-site&gt;`는 deployment domain이어야 합니다.
+- `&lt;token&gt;`은 생성한 secret token으로 바꿔야 합니다.
+- `&lt;path&gt;`는 preview하려는 page의 path여야 합니다. `/posts/foo`를 preview하고 싶다면 `&amp;slug=/posts/foo`를 사용하세요.
+
+headless CMS에 따라 preview URL에 변수를 넣어서 `&lt;path&gt;`가 CMS의 data에 따라 동적으로 설정되게 할 수도 있습니다. 예: `&amp;slug=/posts/{entry.fields.slug}`
+
+**마지막으로**, preview API route에서 다음을 수행합니다:
+
+- secret이 일치하는지, 그리고 `slug` parameter가 존재하는지 확인합니다(그렇지 않으면 request가 실패해야 합니다).
+-
+- `res.setPreviewData`를 호출합니다.
+- 그다음 `slug`로 지정된 path로 브라우저를 redirect합니다. (다음 예제는 [307 redirect](https://developer.mozilla.org/docs/Web/HTTP/Status/307)를 사용합니다.)
+
+[[CODE 4]]
+
+성공하면 브라우저는 preview mode cookie가 설정된 채로 preview하려는 path로 redirect됩니다.
+
+## Step 2: Update `getStaticProps` || 2단계: `getStaticProps` 업데이트하기
+
+다음 단계는 preview mode를 지원하도록 `getStaticProps`를 업데이트하는 것입니다.
+
+(`res.setPreviewData`로) preview mode cookie가 설정된 상태에서 `getStaticProps`가 있는 page를 request하면, `getStaticProps`는 (build time 대신) **request time**에 호출됩니다.
+
+또한 다음과 같은 `context` object와 함께 호출됩니다:
+
+- `context.preview`는 `true`가 됩니다.
+- `context.previewData`는 `setPreviewData`에 사용한 argument와 같습니다.
+
+[[CODE 5]]
+
+preview API route에서 `res.setPreviewData({})`를 사용했으므로 `context.previewData`는 `{}`가 됩니다. 필요하다면 이를 이용해 preview API route에서 `getStaticProps`로 session 정보를 전달할 수 있습니다.
+
+`getStaticPaths`도 사용하고 있다면 `context.params`도 사용할 수 있습니다.
+
+### Fetch preview data || preview data fetch하기
+
+`context.preview` 및/또는 `context.previewData`에 따라 다른 data를 fetch하도록 `getStaticProps`를 업데이트할 수 있습니다.
+
+예를 들어 headless CMS에 draft post용 API endpoint가 따로 있을 수 있습니다. 그렇다면 아래처럼 `context.preview`를 사용해 API endpoint URL을 바꿀 수 있습니다:
+
+[[CODE 6]]
+
+이것으로 끝입니다! headless CMS에서 또는 직접 (`secret`과 `slug`를 포함해) preview API route에 접근하면 이제 preview 콘텐츠를 볼 수 있습니다. 그리고 게시하지 않고 draft를 업데이트해도 그 draft를 preview할 수 있습니다.
+
+이것을 headless CMS의 preview URL로 설정하거나 직접 접근하면 preview를 볼 수 있습니다.
+
+[[CODE 7]]
+
+## More Details || 자세히 알아보기
+
+&gt; **Good to know**: rendering 중에 `next/router`는 `isPreview` flag를 노출합니다. 자세한 내용은 [router object 문서](/docs/pages/api-reference/functions/use-router#router-object)를 참고하세요.
+
+### Specify the Preview Mode duration || Preview Mode 지속 시간 지정하기
+
+`setPreviewData`는 선택적인 두 번째 parameter로 options object를 받습니다. 다음 key를 사용할 수 있습니다:
+
+- `maxAge`: preview session이 지속될 시간(초 단위)을 지정합니다.
+- `path`: cookie가 적용될 path를 지정합니다. 기본값은 `/`로, 모든 path에서 preview mode를 활성화합니다.
+
+[[CODE 8]]
+
+### Clear the Preview Mode cookies || Preview Mode cookie 지우기
+
+기본적으로 Preview Mode cookie에는 만료 날짜가 설정되지 않으므로, 브라우저를 닫으면 preview session이 끝납니다.
+
+Preview Mode cookie를 직접 지우려면 `clearPreviewData()`를 호출하는 API route를 만드세요:
+
+[[CODE 9]]
+
+그다음 `/api/clear-preview-mode-cookies`로 request를 보내 API Route를 호출합니다. [`next/link`](/docs/pages/api-reference/components/link)로 이 route를 호출한다면, link prefetching 중에 `clearPreviewData`가 호출되지 않도록 `prefetch={false}`를 전달해야 합니다.
+
+`setPreviewData` 호출 시 path를 지정했다면 `clearPreviewData`에도 같은 path를 전달해야 합니다:
+
+[[CODE 10]]
+
+### `previewData` size limits || `previewData` 크기 제한
+
+`setPreviewData`에 object를 전달해 `getStaticProps`에서 사용할 수 있게 할 수 있습니다. 하지만 data가 cookie에 저장되기 때문에 크기 제한이 있습니다. 현재 preview data는 2KB로 제한됩니다.
+
+### Works with `getServerSideProps` || `getServerSideProps`와 함께 사용하기
+
+preview mode는 `getServerSideProps`에서도 동작합니다. 이 경우에도 `preview`와 `previewData`가 담긴 `context` object에서 사용할 수 있습니다.
+
+&gt; **Good to know**: Preview Mode를 사용할 때는 `Cache-Control` header를 설정하면 안 됩니다. 이 header는 우회할 수 없기 때문입니다. 대신 [ISR](/docs/pages/guides/incremental-static-regeneration)을 사용하는 것을 권장합니다.
+
+### Works with API Routes || API Routes와 함께 사용하기
+
+API Routes에서는 request object의 `preview`와 `previewData`에 접근할 수 있습니다. 예를 들면 다음과 같습니다:
+
+[[CODE 11]]
+
+### Unique per `next build` || `next build`마다 고유한 값
+
+`next build`가 완료되면 bypass cookie 값과 `previewData` 암호화에 쓰이는 private key가 모두 바뀝니다.
+이렇게 해서 bypass cookie를 추측할 수 없도록 보장합니다.
+
+&gt; **Good to know**: HTTP로 로컬에서 Preview Mode를 테스트하려면 브라우저가 third-party cookie와 local storage 접근을 허용해야 합니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

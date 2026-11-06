@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>unauthorized (unauthorized) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/functions/unauthorized" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/functions/unauthorized" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/unauthorized.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-functions.html">Functions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">unauthorized<span class="vbadge">experimental</span><span class="sub">unauthorized</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>unauthorized</code> 함수는 Next.js 401 page를 render하는 error를 throw합니다. request가 로그인되어 있지 않은 경우의 authentication error를 처리할 때 유용합니다. <a href="app-api-reference-file-conventions-unauthorized.html"><code>unauthorized.js</code> 파일</a>로 UI를 customize할 수 있습니다.</p><div class="en-orig"><p>The <code>unauthorized</code> function throws an error that renders a Next.js 401 page. It's useful for handling authentication errors, when a request is not signed in. You can customize the UI using the <a href="app-api-reference-file-conventions-unauthorized.html"><code>unauthorized.js</code> file</a>.</p></div>
+<p><code>unauthorized()</code>를 호출하면 <code>NEXT_HTTP_ERROR_FALLBACK;401</code> error가 throw되고, 이 error가 throw된 route segment의 rendering이 종료됩니다. 또한 Next.js는 page가 index되지 않도록 <code>&lt;meta name=&quot;robots&quot; content=&quot;noindex&quot; /&gt;</code> tag를 삽입합니다. throw하는 방식으로 동작하기 때문에 render path 안에서 호출해야 합니다. 즉, component 안이나 component가 <code>await</code>하는 function 안에서 호출하세요. await되지 않은 promise 안에 남겨진 호출은 아무것도 catch하지 않는 곳에서 throw되므로 unauthorized UI가 render되지 않습니다.</p><div class="en-orig"><p>Invoking <code>unauthorized()</code> throws a <code>NEXT_HTTP_ERROR_FALLBACK;401</code> error and terminates rendering of the route segment where it was thrown. Next.js also injects a <code>&lt;meta name=&quot;robots&quot; content=&quot;noindex&quot; /&gt;</code> tag so the page is not indexed. Because it works by throwing, call it in the render path: a component, or a function a component <code>await</code>s. A call left in an un-awaited promise throws where nothing catches it, and no unauthorized UI renders.</p></div>
+<p><code>unauthorized</code>를 사용하려면 <code>next.config.js</code> 파일에서 experimental <a href="app-api-reference-config-next-config-js-authInterrupts.html"><code>authInterrupts</code></a> configuration option을 활성화하세요:</p><div class="en-orig"><p>To start using <code>unauthorized</code>, enable the experimental <a href="app-api-reference-config-next-config-js-authInterrupts.html"><code>authInterrupts</code></a> configuration option in your <code>next.config.js</code> file:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  experimental: {
+    authInterrupts: true,
+  },
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">module.exports = {
+  experimental: {
+    authInterrupts: true,
+  },
+}</code></pre></div></div>
+<p><code>unauthorized</code>는 <a href="app-getting-started-server-and-client-components.html">Server Components</a>, <a href="app-getting-started-mutating-data.html">Server Functions</a>, <a href="app-api-reference-file-conventions-route.html">Route Handlers</a>에서 호출할 수 있습니다.</p><div class="en-orig"><p><code>unauthorized</code> can be invoked in <a href="app-getting-started-server-and-client-components.html">Server Components</a>, <a href="app-getting-started-mutating-data.html">Server Functions</a>, and <a href="app-api-reference-file-conventions-route.html">Route Handlers</a>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/page.tsx" data-js="app/dashboard/page.js">app/dashboard/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { verifySession } from &#x27;@/app/lib/dal&#x27;
+import { unauthorized } from &#x27;next/navigation&#x27;
+
+export default async function DashboardPage() {
+  const session = await verifySession()
+
+  if (!session) {
+    unauthorized()
+  }
+
+  // Render the dashboard for authenticated users
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Welcome to the Dashboard&lt;/h1&gt;
+      &lt;p&gt;Hi, {session.user.name}.&lt;/p&gt;
+    &lt;/main&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { verifySession } from &#x27;@/app/lib/dal&#x27;
+import { unauthorized } from &#x27;next/navigation&#x27;
+
+export default async function DashboardPage() {
+  const session = await verifySession()
+
+  if (!session) {
+    unauthorized()
+  }
+
+  // Render the dashboard for authenticated users
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Welcome to the Dashboard&lt;/h1&gt;
+      &lt;p&gt;Hi, {session.user.name}.&lt;/p&gt;
+    &lt;/main&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="good-to-know"><a class="anchor" href="#good-to-know">Good to know<span class="ko">알아두면 좋은 점</span></a></h2>
+<ul>
+<li><code>unauthorized</code> 함수는 <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a>에서 호출할 수 없습니다.</li>
+<li><code>return unauthorized()</code>라고 쓸 필요는 없습니다. 이 함수는 throw하므로(TypeScript <a href="https://www.typescriptlang.org/docs/handbook/2/functions.html#never" target="_blank" rel="noopener"><code>never</code></a> return type) 실행이 멈춥니다. 호출을 <code>try/catch</code>로 감싸면 interrupt가 억제되어 unauthorized UI가 render되지 않습니다. 이를 통과시키려면 <a href="app-api-reference-functions-unstable_rethrow.html"><code>unstable_rethrow</code></a>를 사용하세요.</li>
+<li>await되지 않은 promise 안에 남겨진 <code>unauthorized()</code>는 아무것도 catch하지 않는 곳에서 throw되므로 unauthorized UI가 render되지 않습니다. development 환경에서는 server가 <code>⨯ unhandledRejection: NEXT_HTTP_ERROR_FALLBACK;401</code>을 log로 남깁니다. 이 함수를 호출할 수 있는 function은 항상 <code>await</code>하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>The <code>unauthorized</code> function cannot be called in the <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a>.</li>
+<li>You do not need to write <code>return unauthorized()</code>. It throws (its TypeScript <a href="https://www.typescriptlang.org/docs/handbook/2/functions.html#never" target="_blank" rel="noopener"><code>never</code></a> return type), so execution stops. A <code>try/catch</code> around the call suppresses the interrupt and no unauthorized UI renders. Use <a href="app-api-reference-functions-unstable_rethrow.html"><code>unstable_rethrow</code></a> to let it through.</li>
+<li>An <code>unauthorized()</code> left in an un-awaited promise throws where nothing catches it, so no unauthorized UI renders. In development the server logs <code>⨯ unhandledRejection: NEXT_HTTP_ERROR_FALLBACK;401</code>. Always <code>await</code> the function that may call it.</li>
+</ul></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<h3 class="sec" id="calling-unauthorized-after-streaming-has-started"><a class="anchor" href="#calling-unauthorized-after-streaming-has-started">Calling <code>unauthorized()</code> after streaming has started<span class="ko">streaming이 시작된 후 <code>unauthorized()</code> 호출하기</span></a></h3>
+<p>session을 검증하는 동안 page의 shell과 loading UI가 계속 보이도록 하려면, auth check를 data를 로드하는 <a href="app-guides-authentication.html#creating-a-data-access-layer-dal">Data Access Layer</a> function 안에 넣고, 이를 <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a>로 감싼 component에서 render하세요. check가 boundary 안에서 실행되므로 session이 resolve되는 동안 shell이 stream됩니다:</p><div class="en-orig"><p>To keep the page's shell and loading UI visible while the session is verified, put the auth check in the <a href="app-guides-authentication.html#creating-a-data-access-layer-dal">Data Access Layer</a> function that loads the data, and render it in a component wrapped in <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a>. The check runs inside the boundary, so the shell streams while the session resolves:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/account/page.tsx" data-js="app/account/page.js">app/account/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { verifySession } from &#x27;@/app/lib/dal&#x27;
+import { unauthorized } from &#x27;next/navigation&#x27;
+
+async function getAccount() {
+  const session = await verifySession()
+  if (!session) {
+    unauthorized()
+  }
+  return db.accounts.findByUserId(session.userId)
+}
+
+async function AccountDetails() {
+  const account = await getAccount()
+  return &lt;p&gt;Signed in as {account.email}&lt;/p&gt;
+}
+
+export default function AccountPage() {
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Account&lt;/h1&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading...&lt;/p&gt;}&gt;
+        &lt;AccountDetails /&gt;
+      &lt;/Suspense&gt;
+    &lt;/main&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { Suspense } from &#x27;react&#x27;
+import { verifySession } from &#x27;@/app/lib/dal&#x27;
+import { unauthorized } from &#x27;next/navigation&#x27;
+
+async function getAccount() {
+  const session = await verifySession()
+  if (!session) {
+    unauthorized()
+  }
+  return db.accounts.findByUserId(session.userId)
+}
+
+async function AccountDetails() {
+  const account = await getAccount()
+  return &lt;p&gt;Signed in as {account.email}&lt;/p&gt;
+}
+
+export default function AccountPage() {
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;Account&lt;/h1&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading...&lt;/p&gt;}&gt;
+        &lt;AccountDetails /&gt;
+      &lt;/Suspense&gt;
+    &lt;/main&gt;
+  )
+}</code></pre></div></div>
+<p>request가 로그인되어 있지 않으면 <code>getAccount</code>가 <code>unauthorized()</code>를 호출하고, 이 함수가 throw합니다. 이 일이 rendering 중에 일어나므로 exception은 가장 가까운 <a href="app-api-reference-file-conventions-unauthorized.html"><code>unauthorized</code></a> boundary까지 전파되고, page shell이 이미 전송되었더라도 stream되어 들어올 content 자리에 이 boundary가 render됩니다.</p><div class="en-orig"><p>When the request isn't signed in, <code>getAccount</code> calls <code>unauthorized()</code>, which throws. Because this happens during rendering, the exception propagates to the nearest <a href="app-api-reference-file-conventions-unauthorized.html"><code>unauthorized</code></a> boundary, which renders in place of the streamed-in content, even though the page shell has already been sent.</p></div>
+<p>그 UI를 정의하려면 route 옆에 <code>unauthorized.tsx</code>를 추가하세요:</p><div class="en-orig"><p>Add an <code>unauthorized.tsx</code> alongside the route to define that UI:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/account/unauthorized.tsx" data-js="app/account/unauthorized.js">app/account/unauthorized.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Link from &#x27;next/link&#x27;
+
+export default function Unauthorized() {
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;401 - Unauthorized&lt;/h1&gt;
+      &lt;p&gt;
+        Please &lt;Link href=&quot;/login&quot;&gt;sign in&lt;/Link&gt; to view your account.
+      &lt;/p&gt;
+    &lt;/main&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Unauthorized() {
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;401 - Unauthorized&lt;/h1&gt;
+      &lt;p&gt;
+        Please &lt;Link href=&quot;/login&quot;&gt;sign in&lt;/Link&gt; to view your account.
+      &lt;/p&gt;
+    &lt;/main&gt;
+  )
+}</code></pre></div></div>
+<p>response는 <code>unauthorized()</code>가 실행되기 전에 <code>&lt;Suspense&gt;</code> boundary에서 streaming을 시작하므로 <code>200</code> status를 유지합니다. Next.js는 <code>noindex</code> tag를 추가합니다.</p><div class="en-orig"><p>The response starts streaming from the <code>&lt;Suspense&gt;</code> boundary before <code>unauthorized()</code> runs, so it keeps its <code>200</code> status. Next.js adds a <code>noindex</code> tag.</p></div>
+<p>streaming이 시작되기 전에 <code>unauthorized()</code>를 호출하면 <code>401</code>이 반환됩니다. prerendering 중에 <code>unauthorized()</code>에 도달하는 page는 <code>○</code> Static으로 남아 <code>401</code>을 제공할 수 있습니다. request 시점의 check는 page가 render되기 전에 <a href="app-api-reference-file-conventions-proxy.html">Proxy</a>에서 실행할 수 있습니다. <a href="app-api-reference-file-conventions-loading.html#status-codes">Status codes</a>를 참고하세요.</p><div class="en-orig"><p>Calling <code>unauthorized()</code> before streaming starts returns a <code>401</code>. A page that reaches <code>unauthorized()</code> during prerendering can remain <code>○</code> Static and serve a <code>401</code>. A request-time check can run in <a href="app-api-reference-file-conventions-proxy.html">Proxy</a> before the page renders. See <a href="app-api-reference-file-conventions-loading.html#status-codes">Status codes</a>.</p></div>
+<h3 class="sec" id="displaying-login-ui-to-unauthenticated-users"><a class="anchor" href="#displaying-login-ui-to-unauthenticated-users">Displaying login UI to unauthenticated users<span class="ko">인증되지 않은 사용자에게 로그인 UI 표시하기</span></a></h3>
+<p><code>unauthorized</code> 함수를 사용해 로그인 UI가 있는 <code>unauthorized.js</code> 파일을 표시할 수 있습니다.</p><div class="en-orig"><p>You can use <code>unauthorized</code> function to display the <code>unauthorized.js</code> file with a login UI.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/page.tsx" data-js="app/dashboard/page.js">app/dashboard/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { verifySession } from &#x27;@/app/lib/dal&#x27;
+import { unauthorized } from &#x27;next/navigation&#x27;
+
+export default async function DashboardPage() {
+  const session = await verifySession()
+
+  if (!session) {
+    unauthorized()
+  }
+
+  return &lt;div&gt;Dashboard&lt;/div&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { verifySession } from &#x27;@/app/lib/dal&#x27;
+import { unauthorized } from &#x27;next/navigation&#x27;
+
+export default async function DashboardPage() {
+  const session = await verifySession()
+
+  if (!session) {
+    unauthorized()
+  }
+
+  return &lt;div&gt;Dashboard&lt;/div&gt;
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/unauthorized.tsx" data-js="app/unauthorized.js">app/unauthorized.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Login from &#x27;@/app/components/Login&#x27;
+
+export default function UnauthorizedPage() {
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;401 - Unauthorized&lt;/h1&gt;
+      &lt;p&gt;Please log in to access this page.&lt;/p&gt;
+      &lt;Login /&gt;
+    &lt;/main&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Login from &#x27;@/app/components/Login&#x27;
+
+export default function UnauthorizedPage() {
+  return (
+    &lt;main&gt;
+      &lt;h1&gt;401 - Unauthorized&lt;/h1&gt;
+      &lt;p&gt;Please log in to access this page.&lt;/p&gt;
+      &lt;Login /&gt;
+    &lt;/main&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="mutations-with-server-actions"><a class="anchor" href="#mutations-with-server-actions">Mutations with Server Actions<span class="ko">Server Action으로 mutation 처리하기</span></a></h3>
+<p>Server Action에서 <code>unauthorized</code>를 호출해 인증된 사용자만 특정 mutation을 수행할 수 있도록 할 수 있습니다.</p><div class="en-orig"><p>You can invoke <code>unauthorized</code> in Server Actions to ensure only authenticated users can perform specific mutations.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions/update-profile.ts" data-js="app/actions/update-profile.js">app/actions/update-profile.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { verifySession } from &#x27;@/app/lib/dal&#x27;
+import { unauthorized } from &#x27;next/navigation&#x27;
+import db from &#x27;@/app/lib/db&#x27;
+
+export async function updateProfile(data: FormData) {
+  const session = await verifySession()
+
+  // If the user is not authenticated, return a 401
+  if (!session) {
+    unauthorized()
+  }
+
+  // Proceed with mutation
+  // ...
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { verifySession } from &#x27;@/app/lib/dal&#x27;
+import { unauthorized } from &#x27;next/navigation&#x27;
+import db from &#x27;@/app/lib/db&#x27;
+
+export async function updateProfile(data) {
+  const session = await verifySession()
+
+  // If the user is not authenticated, return a 401
+  if (!session) {
+    unauthorized()
+  }
+
+  // Proceed with mutation
+  // ...
+}</code></pre></div></div>
+<h3 class="sec" id="fetching-data-with-route-handlers"><a class="anchor" href="#fetching-data-with-route-handlers">Fetching data with Route Handlers<span class="ko">Route Handler로 data fetching하기</span></a></h3>
+<p>Route Handler에서 <code>unauthorized</code>를 사용해 인증된 사용자만 endpoint에 접근할 수 있도록 할 수 있습니다.</p><div class="en-orig"><p>You can use <code>unauthorized</code> in Route Handlers to ensure only authenticated users can access the endpoint.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/api/profile/route.ts" data-js="app/api/profile/route.js">app/api/profile/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { NextRequest, NextResponse } from &#x27;next/server&#x27;
+import { verifySession } from &#x27;@/app/lib/dal&#x27;
+import { unauthorized } from &#x27;next/navigation&#x27;
+
+export async function GET(req: NextRequest): Promise&lt;NextResponse&gt; {
+  // Verify the user&#x27;s session
+  const session = await verifySession()
+
+  // If no session exists, return a 401 and render unauthorized.tsx
+  if (!session) {
+    unauthorized()
+  }
+
+  // Fetch data
+  // ...
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { verifySession } from &#x27;@/app/lib/dal&#x27;
+import { unauthorized } from &#x27;next/navigation&#x27;
+
+export async function GET() {
+  const session = await verifySession()
+
+  // If the user is not authenticated, return a 401 and render unauthorized.tsx
+  if (!session) {
+    unauthorized()
+  }
+
+  // Fetch data
+  // ...
+}</code></pre></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v15.1.0</code></td><td><code>unauthorized</code> 도입.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v15.1.0</code></td><td><code>unauthorized</code> introduced.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><div class="rgrid"><a class="rcard" href="app-api-reference-file-conventions-unauthorized.html"><div class="rt">unauthorized.js</div><div class="rk">unauthorized.js</div><div class="rd">unauthorized.js special file에 대한 API reference입니다.</div></a><a class="rcard" href="app-api-reference-functions-not-found.html"><div class="rt">notFound</div><div class="rk">notFound</div><div class="rd">notFound 함수의 API Reference입니다.</div></a><a class="rcard" href="app-api-reference-functions-forbidden.html"><div class="rt">forbidden</div><div class="rk">forbidden</div><div class="rd">forbidden 함수에 대한 API Reference입니다.</div></a><a class="rcard" href="app-api-reference-config-next-config-js-authInterrupts.html"><div class="rt">authInterrupts</div><div class="rk">authInterrupts</div><div class="rd">experimental <code>authInterrupts</code> configuration option을 활성화하여 <code>forbidden</code>과 <code>unauthorized</code>를 사용하는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/unauthorized.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/functions/unauthorized" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-functions-revalidateTag.html" class="prev"><div class="dir">← 이전</div><div class="ttl">revalidateTag</div><div class="ttl-ko">revalidateTag</div></a>
+      <a href="app-api-reference-functions-unstable_cache.html" class="next"><div class="dir">다음 →</div><div class="ttl">unstable_cache</div><div class="ttl-ko">unstable_cache</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/functions/unauthorized" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#good-to-know">Good to know</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#calling-unauthorized-after-streaming-has-started">Calling <code>unauthorized()</code> after streaming has started</a></li><li class="l3"><a href="#displaying-login-ui-to-unauthenticated-users">Displaying login UI to unauthenticated users</a></li><li class="l3"><a href="#mutations-with-server-actions">Mutations with Server Actions</a></li><li class="l3"><a href="#fetching-data-with-route-handlers">Fetching data with Route Handlers</a></li><li class="l2"><a href="#version-history">Version History</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`unauthorized` 함수는 Next.js 401 page를 render하는 error를 throw합니다. request가 로그인되어 있지 않은 경우의 authentication error를 처리할 때 유용합니다. [`unauthorized.js` 파일](/docs/app/api-reference/file-conventions/unauthorized)로 UI를 customize할 수 있습니다.
+
+`unauthorized()`를 호출하면 `NEXT_HTTP_ERROR_FALLBACK;401` error가 throw되고, 이 error가 throw된 route segment의 rendering이 종료됩니다. 또한 Next.js는 page가 index되지 않도록 `&lt;meta name=&quot;robots&quot; content=&quot;noindex&quot; /&gt;` tag를 삽입합니다. throw하는 방식으로 동작하기 때문에 render path 안에서 호출해야 합니다. 즉, component 안이나 component가 `await`하는 function 안에서 호출하세요. await되지 않은 promise 안에 남겨진 호출은 아무것도 catch하지 않는 곳에서 throw되므로 unauthorized UI가 render되지 않습니다.
+
+`unauthorized`를 사용하려면 `next.config.js` 파일에서 experimental [`authInterrupts`](/docs/app/api-reference/config/next-config-js/authInterrupts) configuration option을 활성화하세요:
+
+[[CODE 1]]
+
+`unauthorized`는 [Server Components](/docs/app/getting-started/server-and-client-components), [Server Functions](/docs/app/getting-started/mutating-data), [Route Handlers](/docs/app/api-reference/file-conventions/route)에서 호출할 수 있습니다.
+
+[[CODE 2]]
+
+## Good to know || 알아두면 좋은 점
+
+- `unauthorized` 함수는 [root layout](/docs/app/api-reference/file-conventions/layout#root-layout)에서 호출할 수 없습니다.
+- `return unauthorized()`라고 쓸 필요는 없습니다. 이 함수는 throw하므로(TypeScript [`never`](https://www.typescriptlang.org/docs/handbook/2/functions.html#never) return type) 실행이 멈춥니다. 호출을 `try/catch`로 감싸면 interrupt가 억제되어 unauthorized UI가 render되지 않습니다. 이를 통과시키려면 [`unstable_rethrow`](/docs/app/api-reference/functions/unstable_rethrow)를 사용하세요.
+- await되지 않은 promise 안에 남겨진 `unauthorized()`는 아무것도 catch하지 않는 곳에서 throw되므로 unauthorized UI가 render되지 않습니다. development 환경에서는 server가 `⨯ unhandledRejection: NEXT_HTTP_ERROR_FALLBACK;401`을 log로 남깁니다. 이 함수를 호출할 수 있는 function은 항상 `await`하세요.
+
+## Examples || 예시
+
+### Calling `unauthorized()` after streaming has started || streaming이 시작된 후 `unauthorized()` 호출하기
+
+session을 검증하는 동안 page의 shell과 loading UI가 계속 보이도록 하려면, auth check를 data를 로드하는 [Data Access Layer](/docs/app/guides/authentication#creating-a-data-access-layer-dal) function 안에 넣고, 이를 [`&lt;Suspense&gt;`](https://react.dev/reference/react/Suspense)로 감싼 component에서 render하세요. check가 boundary 안에서 실행되므로 session이 resolve되는 동안 shell이 stream됩니다:
+
+[[CODE 3]]
+
+request가 로그인되어 있지 않으면 `getAccount`가 `unauthorized()`를 호출하고, 이 함수가 throw합니다. 이 일이 rendering 중에 일어나므로 exception은 가장 가까운 [`unauthorized`](/docs/app/api-reference/file-conventions/unauthorized) boundary까지 전파되고, page shell이 이미 전송되었더라도 stream되어 들어올 content 자리에 이 boundary가 render됩니다.
+
+그 UI를 정의하려면 route 옆에 `unauthorized.tsx`를 추가하세요:
+
+[[CODE 4]]
+
+response는 `unauthorized()`가 실행되기 전에 `&lt;Suspense&gt;` boundary에서 streaming을 시작하므로 `200` status를 유지합니다. Next.js는 `noindex` tag를 추가합니다.
+
+streaming이 시작되기 전에 `unauthorized()`를 호출하면 `401`이 반환됩니다. prerendering 중에 `unauthorized()`에 도달하는 page는 `○` Static으로 남아 `401`을 제공할 수 있습니다. request 시점의 check는 page가 render되기 전에 [Proxy](/docs/app/api-reference/file-conventions/proxy)에서 실행할 수 있습니다. [Status codes](/docs/app/api-reference/file-conventions/loading#status-codes)를 참고하세요.
+
+### Displaying login UI to unauthenticated users || 인증되지 않은 사용자에게 로그인 UI 표시하기
+
+`unauthorized` 함수를 사용해 로그인 UI가 있는 `unauthorized.js` 파일을 표시할 수 있습니다.
+
+[[CODE 5]]
+
+[[CODE 6]]
+
+### Mutations with Server Actions || Server Action으로 mutation 처리하기
+
+Server Action에서 `unauthorized`를 호출해 인증된 사용자만 특정 mutation을 수행할 수 있도록 할 수 있습니다.
+
+[[CODE 7]]
+
+### Fetching data with Route Handlers || Route Handler로 data fetching하기
+
+Route Handler에서 `unauthorized`를 사용해 인증된 사용자만 endpoint에 접근할 수 있도록 할 수 있습니다.
+
+[[CODE 8]]
+
+## Version History || 버전 기록
+
+| Version   | Changes                    |
+| --------- | -------------------------- |
+| `v15.1.0` | `unauthorized` 도입. |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

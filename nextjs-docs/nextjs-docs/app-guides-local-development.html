@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to optimize your local development environment (로컬 개발 환경 최적화하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/local-development" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/local-development" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/local-development.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to optimize your local development environment<span class="sub">로컬 개발 환경 최적화하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js는 뛰어난 개발자 경험을 제공하도록 설계되었습니다. 애플리케이션이 커지면 로컬 개발 중에 compile 시간이 느려지는 것을 느낄 수 있습니다. 이 가이드는 흔한 compile-time 성능 문제를 찾아내고 고치는 데 도움을 줍니다.</p><div class="en-orig"><p>Next.js is designed to provide a great developer experience. As your application grows, you might notice slower compilation times during local development. This guide will help you identify and fix common compile-time performance issues.</p></div>
+<h2 class="sec" id="local-dev-vs-production"><a class="anchor" href="#local-dev-vs-production">Local dev vs. production<span class="ko">로컬 개발 vs. production</span></a></h2>
+<p><code>next dev</code>를 사용한 개발 과정은 <code>next build</code>, <code>next start</code>와 다릅니다.</p><div class="en-orig"><p>The development process with <code>next dev</code> is different than <code>next build</code> and <code>next start</code>.</p></div>
+<p><code>next dev</code>는 애플리케이션의 route를 열거나 navigate할 때 그 route를 compile합니다. 덕분에 애플리케이션의 모든 route가 compile되기를 기다리지 않고 dev server를 시작할 수 있어서, 더 빠르고 memory도 적게 사용합니다. production build를 실행하면 파일 minify, content hash 생성 같은 다른 최적화가 적용되는데, 이는 로컬 개발에는 필요하지 않습니다.</p><div class="en-orig"><p><code>next dev</code> compiles routes in your application as you open or navigate to them. This enables you to start the dev server without waiting for every route in your application to compile, which is both faster and uses less memory. Running a production build applies other optimizations, like minifying files and creating content hashes, which are not needed for local development.</p></div>
+<h2 class="sec" id="system-configuration"><a class="anchor" href="#system-configuration">System configuration<span class="ko">시스템 설정</span></a></h2>
+<h3 class="sec" id="1-check-your-computers-antivirus"><a class="anchor" href="#1-check-your-computers-antivirus">1. Check your computer's antivirus<span class="ko">1. 컴퓨터의 백신 프로그램 확인하기</span></a></h3>
+<p>백신(antivirus) 소프트웨어는 파일 접근 속도를 늦출 수 있습니다. Windows 컴퓨터에서 더 흔하긴 하지만, 백신 도구가 설치된 어떤 시스템에서든 문제가 될 수 있습니다.</p><div class="en-orig"><p>Antivirus software can slow down file access. While this is more common on Windows machines, this can be an issue for any system with an antivirus tool installed.</p></div>
+<p><strong>Windows에서는</strong> 프로젝트를 <a href="https://support.microsoft.com/en-us/windows/virus-and-threat-protection-in-the-windows-security-app-1362f4cd-d71a-b52a-0b66-c2820032b65e#bkmk_threat-protection-settings" target="_blank" rel="noopener">Microsoft Defender Antivirus 제외 목록</a>에 추가할 수 있습니다.</p><div class="en-orig"><p><strong>On Windows,</strong> you can add your project to the <a href="https://support.microsoft.com/en-us/windows/virus-and-threat-protection-in-the-windows-security-app-1362f4cd-d71a-b52a-0b66-c2820032b65e#bkmk_threat-protection-settings" target="_blank" rel="noopener">Microsoft Defender Antivirus exclusion list</a>.</p></div>
+<ol>
+<li><strong>"Windows Security"</strong> 애플리케이션을 열고 <strong>"Virus &amp; threat protection"</strong> &rarr; <strong>"Manage settings"</strong> &rarr; <strong>"Add or remove exclusions"</strong> 순서로 선택합니다.</li>
+<li><strong>"Folder"</strong> 제외 항목을 추가합니다. 프로젝트 폴더를 선택하세요.</li>
+</ol><div class="en-orig"><ol>
+<li>Open the <strong>"Windows Security"</strong> application and then select <strong>"Virus &amp; threat protection"</strong> &rarr; <strong>"Manage settings"</strong> &rarr; <strong>"Add or remove exclusions"</strong>.</li>
+<li>Add a <strong>"Folder"</strong> exclusion. Select your project folder.</li>
+</ol></div>
+<p>또는 <a href="#3-windows-use-dev-drive-or-wsl-2">Dev Drive</a>를 활성화해 사용할 수 있는데, Dev Drive는 <a href="https://learn.microsoft.com/en-us/windows/dev-drive/#understanding-security-risks-and-trust-in-relation-to-dev-drive" target="_blank" rel="noopener">Microsoft Defender의 "performance mode"를 사용합니다</a>.</p><div class="en-orig"><p>Alternatively, you can enable and use a <a href="#3-windows-use-dev-drive-or-wsl-2">Dev Drive</a>, which <a href="https://learn.microsoft.com/en-us/windows/dev-drive/#understanding-security-risks-and-trust-in-relation-to-dev-drive" target="_blank" rel="noopener">uses Microsoft Defender's "performance mode"</a>.</p></div>
+<p><strong>macOS에서는</strong> terminal 안에서 <a href="https://support.apple.com/guide/security/gatekeeper-and-runtime-protection-sec5599b66df/web" target="_blank" rel="noopener">Gatekeeper</a>를 비활성화할 수 있습니다.</p><div class="en-orig"><p><strong>On macOS,</strong> you can disable <a href="https://support.apple.com/guide/security/gatekeeper-and-runtime-protection-sec5599b66df/web" target="_blank" rel="noopener">Gatekeeper</a> inside of your terminal.</p></div>
+<ol>
+<li>terminal에서 <code>sudo spctl developer-mode enable-terminal</code>을 실행합니다.</li>
+<li><strong>"System Settings"</strong> 앱을 열고 <strong>"Privacy &amp; Security"</strong> &rarr; <strong>"Developer Tools"</strong> 순서로 선택합니다.</li>
+<li>사용 중인 terminal이 목록에 있고 활성화되어 있는지 확인합니다. iTerm이나 Ghostty 같은 third-party terminal을 사용한다면 그것을 목록에 추가하세요.</li>
+<li>terminal을 다시 시작합니다.</li>
+</ol><div class="en-orig"><ol>
+<li>Run <code>sudo spctl developer-mode enable-terminal</code> in your terminal.</li>
+<li>Open the <strong>"System Settings"</strong> app and then select <strong>"Privacy &amp; Security"</strong> &rarr; <strong>"Developer Tools"</strong>.</li>
+<li>Ensure your terminal is listed and enabled. If you're using a third-party terminal like iTerm or Ghostty, add that to the list.</li>
+<li>Restart your terminal.</li>
+</ol></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/macos-gatekeeper-privacy-and-security.png" alt="Privacy &amp; Security 창이 표시된 macOS System Settings 스크린샷" width="723" height="250" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/macos-gatekeeper-privacy-and-security.png" alt="Privacy &amp; Security 창이 표시된 macOS System Settings 스크린샷" width="723" height="250" loading="lazy" /></figure>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/macos-gatekeeper-developer-tools.png" alt="Developer Tools option이 표시된 macOS System Settings 스크린샷" width="723" height="250" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/macos-gatekeeper-developer-tools.png" alt="Developer Tools option이 표시된 macOS System Settings 스크린샷" width="723" height="250" loading="lazy" /></figure>
+<p>본인이나 회사가 시스템에 다른 백신 솔루션을 설정해 두었다면, 해당 제품의 관련 설정을 확인해야 합니다.</p><div class="en-orig"><p>If you or your employer have configured any other Antivirus solutions on your system, you should inspect the relevant settings for those products.</p></div>
+<h3 class="sec" id="2-avoid-common-docker-pitfalls"><a class="anchor" href="#2-avoid-common-docker-pitfalls">2. Avoid common Docker pitfalls<span class="ko">2. 흔한 Docker 함정 피하기</span></a></h3>
+<p>Mac이나 Windows에서 개발에 Docker를 사용한다면, Docker 없이 Next.js를 실행할 때보다 성능이 크게 느려질 수 있습니다.</p><div class="en-orig"><p>If you're using Docker for development on Mac or Windows, you may experience significantly slower performance compared to running Next.js without Docker.</p></div>
+<p>production 환경이나 Docker가 Linux에서 native로 실행될 때는 프로젝트 파일이 Docker Desktop의 host-to-VM 파일 공유 계층을 거치지 않으므로 일반적으로 문제가 되지 않습니다.</p><div class="en-orig"><p>This generally isn't an issue in production or when Docker runs natively on Linux, because project files don't cross Docker Desktop's host-to-VM file-sharing layer.</p></div>
+<p>프로젝트 파일이 macOS나 Windows host에 저장되어 있고 Docker Desktop 같은 도구를 통해 container에 mount되면, host-to-VM 파일 공유 계층이 filesystem event 전달을 지연시키거나 전달하지 못할 수 있습니다. 이 때문에 <a href="architecture-fast-refresh.html">Fast Refresh</a>가 몇 초, 심지어 몇 분씩 걸릴 수 있는 반면, 같은 애플리케이션도 Docker 없이 host에서 개발하면 업데이트가 빠르게 반영됩니다.</p><div class="en-orig"><p>When project files are stored on the macOS or Windows host and mounted into a container through Docker Desktop or similar tools, the host-to-VM file-sharing layer can delay or fail to propagate filesystem events. This can cause <a href="architecture-fast-refresh.html">Fast Refresh</a> to take seconds or even minutes, while the same application shows updates quickly when developed on the host without Docker.</p></div>
+<p>최상의 개발 경험을 위해서는:</p><div class="en-orig"><p>For the best development experience:</p></div>
+<ul>
+<li>개발 중에는 Docker 없이 Next.js를 실행하세요(<code>npm run dev</code> 또는 <code>pnpm dev</code>).</li>
+<li>Docker는 production deploy와 production build 테스트용으로 남겨 두세요.</li>
+<li>개발에 꼭 Docker를 써야 한다면 Linux 머신이나 수동으로 설정한 virtual machine에서 Docker를 native로 실행하는 것을 고려하세요. 수동으로 설정한 virtual machine을 사용한다면 source code를 VM 안으로 옮기고 host에서 공유하지 마세요.</li>
+<li>Docker Desktop을 사용한다면 <a href="https://docs.docker.com/desktop/features/synchronized-file-sharing/" target="_blank" rel="noopener">synchronized file shares</a> 사용을 검토해 보세요. synchronized file share도 host에서 Next.js를 직접 실행하는 것에 비하면 여전히 latency가 추가되지만, polling에 의존하지 않고도 file-watching 안정성을 높일 수 있습니다.</li>
+<li>Fast Refresh 문제를 우회하려고 <code>next.config.js</code>에서 <code>watchOptions.pollIntervalMs</code>를 사용하는 것은 피하세요. 최후의 수단으로만 사용하세요. polling은 상당한 latency를 추가하고 CPU와 I/O 사용량을 크게 늘릴 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Run Next.js without Docker (<code>npm run dev</code> or <code>pnpm dev</code>) during development.</li>
+<li>Reserve Docker for production deployments and testing production builds.</li>
+<li>If you must use Docker for development, consider running Docker natively on a Linux machine or a manually configured virtual machine. If using a manually configured virtual machine, move the source code into the VM and do not share it from the host.</li>
+<li>If you're using Docker Desktop, evaluate using <a href="https://docs.docker.com/desktop/features/synchronized-file-sharing/" target="_blank" rel="noopener">synchronized file shares</a>. Synchronized file shares still add latency compared to running Next.js directly on the host, but can improve file-watching reliability without resorting to polling.</li>
+<li>Avoid using <code>watchOptions.pollIntervalMs</code> in <code>next.config.js</code> to work around Fast Refresh issues. Only use it as a last resort. Polling adds significant latency and can drastically increase CPU and I/O usage.</li>
+</ul></div>
+<p>production에서의 사용은 <a href="app-getting-started-deploying.html#docker">Docker deploy에 대해 더 알아보기</a>를 참고하세요.</p><div class="en-orig"><p><a href="app-getting-started-deploying.html#docker">Learn more about Docker deployment</a> for production use.</p></div>
+<h3 class="sec" id="3-windows-use-dev-drive-or-wsl-2"><a class="anchor" href="#3-windows-use-dev-drive-or-wsl-2">3. (Windows) Use Dev Drive or WSL 2<span class="ko">3. (Windows) Dev Drive 또는 WSL 2 사용하기</span></a></h3>
+<p>Windows 11의 Dev Drive 기능은 일반적인 개발 workflow의 성능을 높이기 위해 대체 filesystem을 사용합니다. <a href="https://learn.microsoft.com/en-us/windows/dev-drive/" target="_blank" rel="noopener">Microsoft에 설정 방법을 설명하는 가이드가 있습니다</a>.</p><div class="en-orig"><p>Windows 11's Dev Drive feature uses an alternative filesystem to improve performance for common development workflows. <a href="https://learn.microsoft.com/en-us/windows/dev-drive/" target="_blank" rel="noopener">Microsoft has a guide explaining how to configure it</a>.</p></div>
+<p>또는 Windows는 <a href="https://learn.microsoft.com/en-us/windows/wsl/" target="_blank" rel="noopener">Windows Subsystem for Linux</a>를 사용해 Linux virtual machine을 쉽게 설정하는 방법을 제공합니다. WSL 2를 사용하면 더 나은 성능을 얻을 수 있습니다.</p><div class="en-orig"><p>Alternatively, Windows provides an easy way to set up a Linux virtual machine using <a href="https://learn.microsoft.com/en-us/windows/wsl/" target="_blank" rel="noopener">Windows Subsystem for Linux</a>. You may see better performance by using WSL 2.</p></div>
+<p>WSL 2를 사용할 때는 프로젝트 directory를 Windows drive(예: <code>C:\</code> 또는 <code>/mnt/c</code>)가 아니라 virtual machine의 filesystem 안(예: <code>/home/$USER/project</code>)에 저장하세요. 그렇지 않으면 성능이 더 나빠지고, 개발 중에 파일 업데이트가 제대로 반영되지 않을 수 있습니다.</p><div class="en-orig"><p>When using WSL 2, store your project directory inside the virtual machine's filesystem (e.g. <code>/home/$USER/project</code>) and not on a Windows drive (e.g. <code>C:\</code> or <code>/mnt/c</code>). If you do not do this, you will experience worse performance and file updates may not be reflected properly in development.</p></div>
+<h2 class="sec" id="improving-application-development-performance"><a class="anchor" href="#improving-application-development-performance">Improving application development performance<span class="ko">애플리케이션 개발 성능 개선하기</span></a></h2>
+<h3 class="sec" id="1-update-nextjs-and-use-turbopack"><a class="anchor" href="#1-update-nextjs-and-use-turbopack">1. Update Next.js and use Turbopack<span class="ko">1. Next.js 업데이트하고 Turbopack 사용하기</span></a></h3>
+<p>최신 버전의 Next.js를 사용하고 있는지 확인하세요. 새 버전에는 성능 개선이 포함되는 경우가 많습니다.</p><div class="en-orig"><p>Make sure you're using the latest version of Next.js. Each new version often includes performance improvements.</p></div>
+<p>이제 Turbopack이 Next.js 개발의 기본 bundler이며, webpack보다 성능이 크게 향상되었습니다.</p><div class="en-orig"><p>Turbopack is now the default bundler for Next.js development and provides significant performance improvements over webpack.</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add next@latest
+pnpm dev  # Turbopack is used by default</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install next@latest
+npm run dev  # Turbopack is used by default</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add next@latest
+yarn dev  # Turbopack is used by default</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add next@latest
+bun dev  # Turbopack is used by default</code></pre></div></div>
+<p>Turbopack 대신 Webpack을 사용해야 한다면 opt-in할 수 있습니다:</p><div class="en-orig"><p>If you need to use Webpack instead of Turbopack, you can opt-in:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm dev --webpack</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm run dev -- --webpack</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn dev --webpack</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun run dev --webpack</code></pre></div></div>
+<p><a href="https://nextjs.org/blog/turbopack-for-development-stable" target="_blank" rel="noopener">Turbopack에 대해 더 알아보기</a>. 자세한 내용은 <a href="app-guides-upgrading.html">upgrade 가이드</a>와 codemod를 참고하세요.</p><div class="en-orig"><p><a href="https://nextjs.org/blog/turbopack-for-development-stable" target="_blank" rel="noopener">Learn more about Turbopack</a>. See our <a href="app-guides-upgrading.html">upgrade guides</a> and codemods for more information.</p></div>
+<h3 class="sec" id="2-check-your-imports"><a class="anchor" href="#2-check-your-imports">2. Check your imports<span class="ko">2. import 확인하기</span></a></h3>
+<p>코드를 import하는 방식은 compile 및 bundling 시간에 큰 영향을 줄 수 있습니다. <a href="app-guides-package-bundling.html">package bundling 최적화</a>에 대해 더 알아보고, <a href="https://github.com/sverweij/dependency-cruiser" target="_blank" rel="noopener">Dependency Cruiser</a>나 <a href="https://github.com/pahen/madge" target="_blank" rel="noopener">Madge</a> 같은 도구를 살펴보세요.</p><div class="en-orig"><p>The way you import code can greatly affect compilation and bundling time. Learn more about <a href="app-guides-package-bundling.html">optimizing package bundling</a> and explore tools like <a href="https://github.com/sverweij/dependency-cruiser" target="_blank" rel="noopener">Dependency Cruiser</a> or <a href="https://github.com/pahen/madge" target="_blank" rel="noopener">Madge</a>.</p></div>
+<h4 class="sec" id="icon-libraries"><a class="anchor" href="#icon-libraries">Icon libraries<span class="ko">Icon library</span></a></h4>
+<p><code>@material-ui/icons</code>, <code>@phosphor-icons/react</code>, <code>react-icons</code> 같은 library는 몇 개만 사용하더라도 수천 개의 icon을 import할 수 있습니다. 필요한 icon만 import하도록 해 보세요:</p><div class="en-orig"><p>Libraries like <code>@material-ui/icons</code>, <code>@phosphor-icons/react</code>, or <code>react-icons</code> can import thousands of icons, even if you only use a few. Try to import only the icons you need:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// Instead of this:
+import { TriangleIcon } from &#x27;@phosphor-icons/react&#x27;
+
+// Do this:
+import { TriangleIcon } from &#x27;@phosphor-icons/react/dist/csr/Triangle&#x27;</code></pre></div></div>
+<p>어떤 import 패턴을 써야 하는지는 사용 중인 icon library의 문서에서 찾을 수 있는 경우가 많습니다. 이 예제는 <a href="https://www.npmjs.com/package/@phosphor-icons/react#import-performance-optimization" target="_blank" rel="noopener"><code>@phosphor-icons/react</code></a>의 권장 사항을 따릅니다.</p><div class="en-orig"><p>You can often find what import pattern to use in the documentation for the icon library you're using. This example follows <a href="https://www.npmjs.com/package/@phosphor-icons/react#import-performance-optimization" target="_blank" rel="noopener"><code>@phosphor-icons/react</code></a> recommendation.</p></div>
+<p><code>react-icons</code> 같은 library에는 여러 가지 icon set이 들어 있습니다. 하나의 set을 골라 그 set만 계속 사용하세요.</p><div class="en-orig"><p>Libraries like <code>react-icons</code> includes many different icon sets. Choose one set and stick with that set.</p></div>
+<p>예를 들어 애플리케이션이 <code>react-icons</code>를 사용하면서 다음을 모두 import한다고 해 봅시다:</p><div class="en-orig"><p>For example, if your application uses <code>react-icons</code> and imports all of these:</p></div>
+<ul>
+<li><code>pi</code> (Phosphor Icons)</li>
+<li><code>md</code> (Material Design Icons)</li>
+<li><code>tb</code> (tabler-icons)</li>
+<li><code>cg</code> (cssgg)</li>
+</ul><div class="en-orig"><ul>
+<li><code>pi</code> (Phosphor Icons)</li>
+<li><code>md</code> (Material Design Icons)</li>
+<li><code>tb</code> (tabler-icons)</li>
+<li><code>cg</code> (cssgg)</li>
+</ul></div>
+<p>각각에서 import를 하나씩만 사용하더라도, 합치면 compiler가 처리해야 하는 module이 수만 개가 됩니다.</p><div class="en-orig"><p>Combined they will be tens of thousands of modules that the compiler has to handle, even if you only use a single import from each.</p></div>
+<h4 class="sec" id="barrel-files"><a class="anchor" href="#barrel-files">Barrel files<span class="ko">Barrel 파일</span></a></h4>
+<p>"Barrel file"은 다른 파일의 여러 항목을 export하는 파일입니다. compiler가 import를 통해 module scope에 side-effect가 있는지 알아내기 위해 이 파일을 parse해야 하므로 build가 느려질 수 있습니다.</p><div class="en-orig"><p>"Barrel files" are files that export many items from other files. They can slow down builds because the compiler has to parse them to find if there are side-effects in the module scope by using the import.</p></div>
+<p>가능하면 특정 파일에서 직접 import하세요. <a href="https://vercel.com/blog/how-we-optimized-package-imports-in-next-js" target="_blank" rel="noopener">barrel file</a>과 Next.js의 built-in 최적화에 대해 더 알아보세요.</p><div class="en-orig"><p>Try to import directly from specific files when possible. <a href="https://vercel.com/blog/how-we-optimized-package-imports-in-next-js" target="_blank" rel="noopener">Learn more about barrel files</a> and the built-in optimizations in Next.js.</p></div>
+<h4 class="sec" id="optimize-package-imports"><a class="anchor" href="#optimize-package-imports">Optimize package imports<span class="ko">package import 최적화하기</span></a></h4>
+<p>Next.js는 특정 package의 import를 자동으로 최적화할 수 있습니다. barrel file을 사용하는 package를 쓰고 있다면 <code>next.config.js</code>에 추가하세요:</p><div class="en-orig"><p>Next.js can automatically optimize imports for certain packages. If you are using packages that utilize barrel files, add them to your <code>next.config.js</code>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">module.exports = {
+  experimental: {
+    optimizePackageImports: [&#x27;package-name&#x27;],
+  },
+}</code></pre></div></div>
+<p>Turbopack은 import를 자동으로 분석하고 최적화합니다. 이 configuration이 필요하지 않습니다.</p><div class="en-orig"><p>Turbopack automatically analyzes imports and optimizes them. It does not require this configuration.</p></div>
+<h3 class="sec" id="3-check-your-tailwind-css-setup"><a class="anchor" href="#3-check-your-tailwind-css-setup">3. Check your Tailwind CSS setup<span class="ko">3. Tailwind CSS setup 확인하기</span></a></h3>
+<p>Tailwind CSS를 사용한다면 올바르게 설정되어 있는지 확인하세요.</p><div class="en-orig"><p>If you're using Tailwind CSS, make sure it's set up correctly.</p></div>
+<p>흔한 실수는 <code>content</code> 배열을 <code>node_modules</code>나 scan하면 안 되는 다른 큰 파일 directory가 포함되도록 설정하는 것입니다.</p><div class="en-orig"><p>A common mistake is configuring your <code>content</code> array in a way which includes <code>node_modules</code> or other large directories of files that should not be scanned.</p></div>
+<p>Tailwind CSS 3.4.8 이상 버전은 build를 느리게 할 수 있는 설정에 대해 경고해 줍니다.</p><div class="en-orig"><p>Tailwind CSS version 3.4.8 or newer will warn you about settings that might slow down your build.</p></div>
+<ol>
+<li><p><code>tailwind.config.js</code>에서 scan할 파일을 구체적으로 지정하세요:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">module.exports = {
+  content: [
+    &#x27;./src/**/*.{js,ts,jsx,tsx}&#x27;, // Good
+    // This might be too broad
+    // It will match `packages/**/node_modules` too
+    // &#x27;../../packages/**/*.{js,ts,jsx,tsx}&#x27;,
+  ],
+}</code></pre></div></div></li>
+<li><p>불필요한 파일을 scan하지 마세요:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">module.exports = {
+  content: [
+    // Better - only scans the &#x27;src&#x27; folder
+    &#x27;../../packages/ui/src/**/*.{js,ts,jsx,tsx}&#x27;,
+  ],
+}</code></pre></div></div></li>
+</ol><div class="en-orig"><ol>
+<li><p>In your <code>tailwind.config.js</code>, be specific about which files to scan:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">module.exports = {
+  content: [
+    &#x27;./src/**/*.{js,ts,jsx,tsx}&#x27;, // Good
+    // This might be too broad
+    // It will match `packages/**/node_modules` too
+    // &#x27;../../packages/**/*.{js,ts,jsx,tsx}&#x27;,
+  ],
+}</code></pre></div></div></li>
+<li><p>Avoid scanning unnecessary files:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">module.exports = {
+  content: [
+    // Better - only scans the &#x27;src&#x27; folder
+    &#x27;../../packages/ui/src/**/*.{js,ts,jsx,tsx}&#x27;,
+  ],
+}</code></pre></div></div></li>
+</ol></div>
+<h3 class="sec" id="4-check-custom-webpack-settings"><a class="anchor" href="#4-check-custom-webpack-settings">4. Check custom webpack settings<span class="ko">4. custom webpack 설정 확인하기</span></a></h3>
+<p>custom webpack 설정을 추가했다면 그것이 compile을 느리게 하고 있을 수 있습니다.</p><div class="en-orig"><p>If you've added custom webpack settings, they might be slowing down compilation.</p></div>
+<p>로컬 개발에 정말 필요한지 생각해 보세요. 특정 도구를 production build에만 포함하도록 선택할 수도 있고, 대신 기본 bundler인 Turbopack을 사용하면서 <a href="app-api-reference-config-next-config-js-turbopack.html#configuring-webpack-loaders">loader</a>를 설정하는 방법을 살펴볼 수도 있습니다.</p><div class="en-orig"><p>Consider if you really need them for local development. You can optionally only include certain tools for production builds, or explore using the default Turbopack bundler and configuring <a href="app-api-reference-config-next-config-js-turbopack.html#configuring-webpack-loaders">loaders</a> instead.</p></div>
+<h3 class="sec" id="5-optimize-memory-usage"><a class="anchor" href="#5-optimize-memory-usage">5. Optimize memory usage<span class="ko">5. memory 사용량 최적화하기</span></a></h3>
+<p>앱이 매우 크다면 더 많은 memory가 필요할 수 있습니다.</p><div class="en-orig"><p>If your app is very large, it might need more memory.</p></div>
+<p><a href="app-guides-memory-usage.html">memory 사용량 최적화에 대해 더 알아보기</a>.</p><div class="en-orig"><p><a href="app-guides-memory-usage.html">Learn more about optimizing memory usage</a>.</p></div>
+<h3 class="sec" id="6-server-components-and-data-fetching"><a class="anchor" href="#6-server-components-and-data-fetching">6. Server Components and data fetching<span class="ko">6. Server Component와 data fetching</span></a></h3>
+<p>Server Component를 변경하면 새 변경 사항을 보여 주기 위해 로컬에서 페이지 전체가 다시 render되며, 여기에는 component의 새 데이터를 fetch하는 것도 포함됩니다.</p><div class="en-orig"><p>Changes to Server Components cause the entire page to re-render locally in order to show the new changes, which includes fetching new data for the component.</p></div>
+<p>experimental <code>serverComponentsHmrCache</code> option을 사용하면 로컬 개발에서 Hot Module Replacement(HMR) refresh 사이에 Server Component의 <code>fetch</code> response를 cache할 수 있습니다. 그 결과 response가 더 빨라지고 과금되는 API 호출 비용이 줄어듭니다.</p><div class="en-orig"><p>The experimental <code>serverComponentsHmrCache</code> option allows you to cache <code>fetch</code> responses in Server Components across Hot Module Replacement (HMR) refreshes in local development. This results in faster responses and reduced costs for billed API calls.</p></div>
+<p><a href="app-api-reference-config-next-config-js-serverComponentsHmrCache.html">experimental option에 대해 더 알아보기</a>.</p><div class="en-orig"><p><a href="app-api-reference-config-next-config-js-serverComponentsHmrCache.html">Learn more about the experimental option</a>.</p></div>
+<h2 class="sec" id="tools-for-finding-problems"><a class="anchor" href="#tools-for-finding-problems">Tools for finding problems<span class="ko">문제를 찾는 도구</span></a></h2>
+<h3 class="sec" id="detailed-fetch-logging"><a class="anchor" href="#detailed-fetch-logging">Detailed fetch logging<span class="ko">상세 fetch logging</span></a></h3>
+<p>개발 중에 무슨 일이 일어나고 있는지 더 자세한 정보를 보려면 <code>next.config.js</code> 파일에서 <code>logging.fetches</code> option을 사용하세요:</p><div class="en-orig"><p>Use the <code>logging.fetches</code> option in your <code>next.config.js</code> file, to see more detailed information about what's happening during development:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">module.exports = {
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
+}</code></pre></div></div>
+<p><a href="app-api-reference-config-next-config-js-logging.html">fetch logging에 대해 더 알아보기</a>.</p><div class="en-orig"><p><a href="app-api-reference-config-next-config-js-logging.html">Learn more about fetch logging</a>.</p></div>
+<h3 class="sec" id="turbopack-tracing"><a class="anchor" href="#turbopack-tracing">Turbopack tracing</a></h3>
+<p>Turbopack tracing은 로컬 개발 중 애플리케이션의 성능을 이해하는 데 도움을 주는 도구입니다.
+각 module을 compile하는 데 걸린 시간과 module 간의 관계에 대한 상세한 정보를 제공합니다.</p><div class="en-orig"><p>Turbopack tracing is a tool that helps you understand the performance of your application during local development.
+It provides detailed information about the time taken for each module to compile and how they are related.</p></div>
+<ol>
+<li>최신 버전의 Next.js가 설치되어 있는지 확인합니다.</li>
+<li><p>Turbopack trace 파일을 생성합니다:</p>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm dev --internal-trace</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm run dev -- --internal-trace</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn dev --internal-trace</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun dev --internal-trace</code></pre></div></div></li>
+<li>애플리케이션을 돌아다니거나 파일을 수정해 문제를 재현합니다.</li>
+<li>Next.js development server를 중지합니다.</li>
+<li><code>.next-profiles</code> 폴더에 <code>trace-turbopack.bin</code>이라는 파일이 생깁니다.</li>
+<li><p><code>npx next internal trace [path-to-file]</code>로 이 파일을 해석할 수 있습니다:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-bash">npx next internal trace .next-profiles/trace-turbopack.bin</code></pre></div></div>
+<p><code>trace</code>를 사용할 수 없는 버전에서는 이 command의 이름이 <code>turbo-trace-server</code>였습니다:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-bash">npx next internal turbo-trace-server .next-profiles/trace-turbopack.bin</code></pre></div></div></li>
+<li>trace server가 실행되면 https://trace.nextjs.org/ 에서 trace를 볼 수 있습니다.</li>
+<li>기본적으로 trace viewer는 시간을 집계(aggregate)해서 보여 줍니다. 개별 시간을 보려면 viewer 오른쪽 위에서 "Aggregated in order"를 "Spans in order"로 바꾸면 됩니다.</li>
+</ol><div class="en-orig"><ol>
+<li>Make sure you have the latest version of Next.js installed.</li>
+<li><p>Generate a Turbopack trace file:</p>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm dev --internal-trace</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm run dev -- --internal-trace</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn dev --internal-trace</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun dev --internal-trace</code></pre></div></div></li>
+<li>Navigate around your application or make edits to files to reproduce the problem.</li>
+<li>Stop the Next.js development server.</li>
+<li>A file called <code>trace-turbopack.bin</code> will be available in the <code>.next-profiles</code> folder.</li>
+<li><p>You can interpret the file using <code>npx next internal trace [path-to-file]</code>:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-bash">npx next internal trace .next-profiles/trace-turbopack.bin</code></pre></div></div>
+<p>On versions where <code>trace</code> is not available, the command was named <code>turbo-trace-server</code>:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-bash">npx next internal turbo-trace-server .next-profiles/trace-turbopack.bin</code></pre></div></div></li>
+<li>Once the trace server is running you can view the trace at https://trace.nextjs.org/.</li>
+<li>By default the trace viewer will aggregate timings, in order to see each individual time you can switch from "Aggregated in order" to "Spans in order" at the top right of the viewer.</li>
+</ol></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>trace 파일은 프로젝트 root의 <code>.next-profiles</code> directory에 생성됩니다.</p><div class="en-orig"><p>The trace file is placed in the <code>.next-profiles</code> directory at the project root.</p></div></div></div>
+<h3 class="sec" id="still-having-problems"><a class="anchor" href="#still-having-problems">Still having problems?<span class="ko">여전히 문제가 있나요?</span></a></h3>
+<p><a href="#turbopack-tracing">Turbopack Tracing</a> 섹션에서 생성한 trace 파일을 <a href="https://github.com/vercel/next.js/discussions" target="_blank" rel="noopener">GitHub Discussions</a>나 <a href="https://nextjs.org/discord" target="_blank" rel="noopener">Discord</a>에 공유하세요.</p><div class="en-orig"><p>Share the trace file generated in the <a href="#turbopack-tracing">Turbopack Tracing</a> section and share it on <a href="https://github.com/vercel/next.js/discussions" target="_blank" rel="noopener">GitHub Discussions</a> or <a href="https://nextjs.org/discord" target="_blank" rel="noopener">Discord</a>.</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/local-development.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/local-development" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-lazy-loading.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Lazy Loading</div><div class="ttl-ko">Client Component와 library lazy loading하기</div></a>
+      <a href="app-guides-mcp.html" class="next"><div class="dir">다음 →</div><div class="ttl">Next.js MCP Server</div><div class="ttl-ko">coding agent를 Next.js MCP server에 연결하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/local-development" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#local-dev-vs-production">Local dev vs. production</a></li><li class="l2"><a href="#system-configuration">System configuration</a></li><li class="l3"><a href="#1-check-your-computers-antivirus">1. Check your computer's antivirus</a></li><li class="l3"><a href="#2-avoid-common-docker-pitfalls">2. Avoid common Docker pitfalls</a></li><li class="l3"><a href="#3-windows-use-dev-drive-or-wsl-2">3. (Windows) Use Dev Drive or WSL 2</a></li><li class="l2"><a href="#improving-application-development-performance">Improving application development performance</a></li><li class="l3"><a href="#1-update-nextjs-and-use-turbopack">1. Update Next.js and use Turbopack</a></li><li class="l3"><a href="#2-check-your-imports">2. Check your imports</a></li><li class="l3"><a href="#3-check-your-tailwind-css-setup">3. Check your Tailwind CSS setup</a></li><li class="l3"><a href="#4-check-custom-webpack-settings">4. Check custom webpack settings</a></li><li class="l3"><a href="#5-optimize-memory-usage">5. Optimize memory usage</a></li><li class="l3"><a href="#6-server-components-and-data-fetching">6. Server Components and data fetching</a></li><li class="l2"><a href="#tools-for-finding-problems">Tools for finding problems</a></li><li class="l3"><a href="#detailed-fetch-logging">Detailed fetch logging</a></li><li class="l3"><a href="#turbopack-tracing">Turbopack tracing</a></li><li class="l3"><a href="#still-having-problems">Still having problems?</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js는 뛰어난 개발자 경험을 제공하도록 설계되었습니다. 애플리케이션이 커지면 로컬 개발 중에 compile 시간이 느려지는 것을 느낄 수 있습니다. 이 가이드는 흔한 compile-time 성능 문제를 찾아내고 고치는 데 도움을 줍니다.
+
+## Local dev vs. production || 로컬 개발 vs. production
+
+`next dev`를 사용한 개발 과정은 `next build`, `next start`와 다릅니다.
+
+`next dev`는 애플리케이션의 route를 열거나 navigate할 때 그 route를 compile합니다. 덕분에 애플리케이션의 모든 route가 compile되기를 기다리지 않고 dev server를 시작할 수 있어서, 더 빠르고 memory도 적게 사용합니다. production build를 실행하면 파일 minify, content hash 생성 같은 다른 최적화가 적용되는데, 이는 로컬 개발에는 필요하지 않습니다.
+
+## System configuration || 시스템 설정
+
+### 1. Check your computer&#x27;s antivirus || 1. 컴퓨터의 백신 프로그램 확인하기
+
+백신(antivirus) 소프트웨어는 파일 접근 속도를 늦출 수 있습니다. Windows 컴퓨터에서 더 흔하긴 하지만, 백신 도구가 설치된 어떤 시스템에서든 문제가 될 수 있습니다.
+
+**Windows에서는** 프로젝트를 [Microsoft Defender Antivirus 제외 목록](https://support.microsoft.com/en-us/windows/virus-and-threat-protection-in-the-windows-security-app-1362f4cd-d71a-b52a-0b66-c2820032b65e#bkmk_threat-protection-settings)에 추가할 수 있습니다.
+
+1. **&quot;Windows Security&quot;** 애플리케이션을 열고 **&quot;Virus &amp; threat protection&quot;** &amp;rarr; **&quot;Manage settings&quot;** &amp;rarr; **&quot;Add or remove exclusions&quot;** 순서로 선택합니다.
+2. **&quot;Folder&quot;** 제외 항목을 추가합니다. 프로젝트 폴더를 선택하세요.
+
+또는 [Dev Drive](#3-windows-use-dev-drive-or-wsl-2)를 활성화해 사용할 수 있는데, Dev Drive는 [Microsoft Defender의 &quot;performance mode&quot;를 사용합니다](https://learn.microsoft.com/en-us/windows/dev-drive/#understanding-security-risks-and-trust-in-relation-to-dev-drive).
+
+**macOS에서는** terminal 안에서 [Gatekeeper](https://support.apple.com/guide/security/gatekeeper-and-runtime-protection-sec5599b66df/web)를 비활성화할 수 있습니다.
+
+1. terminal에서 `sudo spctl developer-mode enable-terminal`을 실행합니다.
+2. **&quot;System Settings&quot;** 앱을 열고 **&quot;Privacy &amp; Security&quot;** &amp;rarr; **&quot;Developer Tools&quot;** 순서로 선택합니다.
+3. 사용 중인 terminal이 목록에 있고 활성화되어 있는지 확인합니다. iTerm이나 Ghostty 같은 third-party terminal을 사용한다면 그것을 목록에 추가하세요.
+4. terminal을 다시 시작합니다.
+
+&lt;Image
+  alt=&quot;Privacy &amp; Security 창이 표시된 macOS System Settings 스크린샷&quot;
+  srcLight=&quot;/docs/light/macos-gatekeeper-privacy-and-security.png&quot;
+  srcDark=&quot;/docs/dark/macos-gatekeeper-privacy-and-security.png&quot;
+  width=&quot;723&quot;
+  height=&quot;250&quot;
+/&gt;
+
+&lt;Image
+  alt=&quot;Developer Tools option이 표시된 macOS System Settings 스크린샷&quot;
+  srcLight=&quot;/docs/light/macos-gatekeeper-developer-tools.png&quot;
+  srcDark=&quot;/docs/dark/macos-gatekeeper-developer-tools.png&quot;
+  width=&quot;723&quot;
+  height=&quot;250&quot;
+/&gt;
+
+본인이나 회사가 시스템에 다른 백신 솔루션을 설정해 두었다면, 해당 제품의 관련 설정을 확인해야 합니다.
+
+### 2. Avoid common Docker pitfalls || 2. 흔한 Docker 함정 피하기
+
+Mac이나 Windows에서 개발에 Docker를 사용한다면, Docker 없이 Next.js를 실행할 때보다 성능이 크게 느려질 수 있습니다.
+
+production 환경이나 Docker가 Linux에서 native로 실행될 때는 프로젝트 파일이 Docker Desktop의 host-to-VM 파일 공유 계층을 거치지 않으므로 일반적으로 문제가 되지 않습니다.
+
+프로젝트 파일이 macOS나 Windows host에 저장되어 있고 Docker Desktop 같은 도구를 통해 container에 mount되면, host-to-VM 파일 공유 계층이 filesystem event 전달을 지연시키거나 전달하지 못할 수 있습니다. 이 때문에 [Fast Refresh](/docs/architecture/fast-refresh)가 몇 초, 심지어 몇 분씩 걸릴 수 있는 반면, 같은 애플리케이션도 Docker 없이 host에서 개발하면 업데이트가 빠르게 반영됩니다.
+
+최상의 개발 경험을 위해서는:
+
+- 개발 중에는 Docker 없이 Next.js를 실행하세요(`npm run dev` 또는 `pnpm dev`).
+- Docker는 production deploy와 production build 테스트용으로 남겨 두세요.
+- 개발에 꼭 Docker를 써야 한다면 Linux 머신이나 수동으로 설정한 virtual machine에서 Docker를 native로 실행하는 것을 고려하세요. 수동으로 설정한 virtual machine을 사용한다면 source code를 VM 안으로 옮기고 host에서 공유하지 마세요.
+- Docker Desktop을 사용한다면 [synchronized file shares](https://docs.docker.com/desktop/features/synchronized-file-sharing/) 사용을 검토해 보세요. synchronized file share도 host에서 Next.js를 직접 실행하는 것에 비하면 여전히 latency가 추가되지만, polling에 의존하지 않고도 file-watching 안정성을 높일 수 있습니다.
+- Fast Refresh 문제를 우회하려고 `next.config.js`에서 `watchOptions.pollIntervalMs`를 사용하는 것은 피하세요. 최후의 수단으로만 사용하세요. polling은 상당한 latency를 추가하고 CPU와 I/O 사용량을 크게 늘릴 수 있습니다.
+
+production에서의 사용은 [Docker deploy에 대해 더 알아보기](/docs/app/getting-started/deploying#docker)를 참고하세요.
+
+### 3. (Windows) Use Dev Drive or WSL 2 || 3. (Windows) Dev Drive 또는 WSL 2 사용하기
+
+Windows 11의 Dev Drive 기능은 일반적인 개발 workflow의 성능을 높이기 위해 대체 filesystem을 사용합니다. [Microsoft에 설정 방법을 설명하는 가이드가 있습니다](https://learn.microsoft.com/en-us/windows/dev-drive/).
+
+또는 Windows는 [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/)를 사용해 Linux virtual machine을 쉽게 설정하는 방법을 제공합니다. WSL 2를 사용하면 더 나은 성능을 얻을 수 있습니다.
+
+WSL 2를 사용할 때는 프로젝트 directory를 Windows drive(예: `C:\` 또는 `/mnt/c`)가 아니라 virtual machine의 filesystem 안(예: `/home/$USER/project`)에 저장하세요. 그렇지 않으면 성능이 더 나빠지고, 개발 중에 파일 업데이트가 제대로 반영되지 않을 수 있습니다.
+
+## Improving application development performance || 애플리케이션 개발 성능 개선하기
+
+### 1. Update Next.js and use Turbopack || 1. Next.js 업데이트하고 Turbopack 사용하기
+
+최신 버전의 Next.js를 사용하고 있는지 확인하세요. 새 버전에는 성능 개선이 포함되는 경우가 많습니다.
+
+이제 Turbopack이 Next.js 개발의 기본 bundler이며, webpack보다 성능이 크게 향상되었습니다.
+
+[[CODE 1]]
+
+Turbopack 대신 Webpack을 사용해야 한다면 opt-in할 수 있습니다:
+
+[[CODE 2]]
+
+[Turbopack에 대해 더 알아보기](/blog/turbopack-for-development-stable). 자세한 내용은 [upgrade 가이드](/docs/app/guides/upgrading)와 codemod를 참고하세요.
+
+### 2. Check your imports || 2. import 확인하기
+
+코드를 import하는 방식은 compile 및 bundling 시간에 큰 영향을 줄 수 있습니다. [package bundling 최적화](/docs/app/guides/package-bundling)에 대해 더 알아보고, [Dependency Cruiser](https://github.com/sverweij/dependency-cruiser)나 [Madge](https://github.com/pahen/madge) 같은 도구를 살펴보세요.
+
+#### Icon libraries || Icon library
+
+`@material-ui/icons`, `@phosphor-icons/react`, `react-icons` 같은 library는 몇 개만 사용하더라도 수천 개의 icon을 import할 수 있습니다. 필요한 icon만 import하도록 해 보세요:
+
+[[CODE 3]]
+
+어떤 import 패턴을 써야 하는지는 사용 중인 icon library의 문서에서 찾을 수 있는 경우가 많습니다. 이 예제는 [`@phosphor-icons/react`](https://www.npmjs.com/package/@phosphor-icons/react#import-performance-optimization)의 권장 사항을 따릅니다.
+
+`react-icons` 같은 library에는 여러 가지 icon set이 들어 있습니다. 하나의 set을 골라 그 set만 계속 사용하세요.
+
+예를 들어 애플리케이션이 `react-icons`를 사용하면서 다음을 모두 import한다고 해 봅시다:
+
+- `pi` (Phosphor Icons)
+- `md` (Material Design Icons)
+- `tb` (tabler-icons)
+- `cg` (cssgg)
+
+각각에서 import를 하나씩만 사용하더라도, 합치면 compiler가 처리해야 하는 module이 수만 개가 됩니다.
+
+#### Barrel files || Barrel 파일
+
+&quot;Barrel file&quot;은 다른 파일의 여러 항목을 export하는 파일입니다. compiler가 import를 통해 module scope에 side-effect가 있는지 알아내기 위해 이 파일을 parse해야 하므로 build가 느려질 수 있습니다.
+
+가능하면 특정 파일에서 직접 import하세요. [barrel file](https://vercel.com/blog/how-we-optimized-package-imports-in-next-js)과 Next.js의 built-in 최적화에 대해 더 알아보세요.
+
+#### Optimize package imports || package import 최적화하기
+
+Next.js는 특정 package의 import를 자동으로 최적화할 수 있습니다. barrel file을 사용하는 package를 쓰고 있다면 `next.config.js`에 추가하세요:
+
+[[CODE 4]]
+
+Turbopack은 import를 자동으로 분석하고 최적화합니다. 이 configuration이 필요하지 않습니다.
+
+### 3. Check your Tailwind CSS setup || 3. Tailwind CSS setup 확인하기
+
+Tailwind CSS를 사용한다면 올바르게 설정되어 있는지 확인하세요.
+
+흔한 실수는 `content` 배열을 `node_modules`나 scan하면 안 되는 다른 큰 파일 directory가 포함되도록 설정하는 것입니다.
+
+Tailwind CSS 3.4.8 이상 버전은 build를 느리게 할 수 있는 설정에 대해 경고해 줍니다.
+
+1. `tailwind.config.js`에서 scan할 파일을 구체적으로 지정하세요:
+
+   [[CODE 5]]
+
+2. 불필요한 파일을 scan하지 마세요:
+
+   [[CODE 6]]
+
+### 4. Check custom webpack settings || 4. custom webpack 설정 확인하기
+
+custom webpack 설정을 추가했다면 그것이 compile을 느리게 하고 있을 수 있습니다.
+
+로컬 개발에 정말 필요한지 생각해 보세요. 특정 도구를 production build에만 포함하도록 선택할 수도 있고, 대신 기본 bundler인 Turbopack을 사용하면서 [loader](/docs/app/api-reference/config/next-config-js/turbopack#configuring-webpack-loaders)를 설정하는 방법을 살펴볼 수도 있습니다.
+
+### 5. Optimize memory usage || 5. memory 사용량 최적화하기
+
+앱이 매우 크다면 더 많은 memory가 필요할 수 있습니다.
+
+[memory 사용량 최적화에 대해 더 알아보기](/docs/app/guides/memory-usage).
+
+### 6. Server Components and data fetching || 6. Server Component와 data fetching
+
+Server Component를 변경하면 새 변경 사항을 보여 주기 위해 로컬에서 페이지 전체가 다시 render되며, 여기에는 component의 새 데이터를 fetch하는 것도 포함됩니다.
+
+experimental `serverComponentsHmrCache` option을 사용하면 로컬 개발에서 Hot Module Replacement(HMR) refresh 사이에 Server Component의 `fetch` response를 cache할 수 있습니다. 그 결과 response가 더 빨라지고 과금되는 API 호출 비용이 줄어듭니다.
+
+[experimental option에 대해 더 알아보기](/docs/app/api-reference/config/next-config-js/serverComponentsHmrCache).
+
+## Tools for finding problems || 문제를 찾는 도구
+
+### Detailed fetch logging || 상세 fetch logging
+
+개발 중에 무슨 일이 일어나고 있는지 더 자세한 정보를 보려면 `next.config.js` 파일에서 `logging.fetches` option을 사용하세요:
+
+[[CODE 7]]
+
+[fetch logging에 대해 더 알아보기](/docs/app/api-reference/config/next-config-js/logging).
+
+### Turbopack tracing
+
+Turbopack tracing은 로컬 개발 중 애플리케이션의 성능을 이해하는 데 도움을 주는 도구입니다.
+각 module을 compile하는 데 걸린 시간과 module 간의 관계에 대한 상세한 정보를 제공합니다.
+
+1. 최신 버전의 Next.js가 설치되어 있는지 확인합니다.
+1. Turbopack trace 파일을 생성합니다:
+
+   [[CODE 8]]
+
+1. 애플리케이션을 돌아다니거나 파일을 수정해 문제를 재현합니다.
+1. Next.js development server를 중지합니다.
+1. `.next-profiles` 폴더에 `trace-turbopack.bin`이라는 파일이 생깁니다.
+1. `npx next internal trace [path-to-file]`로 이 파일을 해석할 수 있습니다:
+
+   [[CODE 9]]
+
+   `trace`를 사용할 수 없는 버전에서는 이 command의 이름이 `turbo-trace-server`였습니다:
+
+   [[CODE 10]]
+
+1. trace server가 실행되면 https://trace.nextjs.org/ 에서 trace를 볼 수 있습니다.
+1. 기본적으로 trace viewer는 시간을 집계(aggregate)해서 보여 줍니다. 개별 시간을 보려면 viewer 오른쪽 위에서 &quot;Aggregated in order&quot;를 &quot;Spans in order&quot;로 바꾸면 됩니다.
+
+&gt; **Good to know**: trace 파일은 프로젝트 root의 `.next-profiles` directory에 생성됩니다.
+
+### Still having problems? || 여전히 문제가 있나요?
+
+[Turbopack Tracing](#turbopack-tracing) 섹션에서 생성한 trace 파일을 [GitHub Discussions](https://github.com/vercel/next.js/discussions)나 [Discord](https://nextjs.org/discord)에 공유하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

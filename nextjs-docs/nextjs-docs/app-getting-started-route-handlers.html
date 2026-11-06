@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Route Handlers (Route Handler) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/getting-started/route-handlers" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/getting-started/route-handlers" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/15-route-handlers.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-getting-started.html">Getting Started</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Route Handlers<span class="sub">Route Handler</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<h2 class="sec" id="route-handlers"><a class="anchor" href="#route-handlers">Route Handlers</a></h2>
+<p>Route Handler를 사용하면 Web <a href="https://developer.mozilla.org/docs/Web/API/Request" target="_blank" rel="noopener">Request</a>와 <a href="https://developer.mozilla.org/docs/Web/API/Response" target="_blank" rel="noopener">Response</a> API로 특정 route에 대한 custom request handler를 만들 수 있습니다.</p><div class="en-orig"><p>Route Handlers allow you to create custom request handlers for a given route using the Web <a href="https://developer.mozilla.org/docs/Web/API/Request" target="_blank" rel="noopener">Request</a> and <a href="https://developer.mozilla.org/docs/Web/API/Response" target="_blank" rel="noopener">Response</a> APIs.</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/route-special-file.png" alt="Route.js 특수 파일" width="1600" height="444" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/route-special-file.png" alt="Route.js 특수 파일" width="1600" height="444" loading="lazy" /></figure>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Route Handler는 <code>app</code> directory 안에서만 사용할 수 있습니다. Route Handler는 <code>pages</code> directory 안의 <a href="pages-building-your-application-routing-api-routes.html">API Routes</a>와 같은 역할을 하므로, API Routes와 Route Handler를 함께 사용할 필요가 <strong>없습니다</strong>.</p><div class="en-orig"><p>Route Handlers are only available inside the <code>app</code> directory. They are the equivalent of <a href="pages-building-your-application-routing-api-routes.html">API Routes</a> inside the <code>pages</code> directory meaning you <strong>do not</strong> need to use API Routes and Route Handlers together.</p></div></div></div>
+<h3 class="sec" id="convention"><a class="anchor" href="#convention">Convention<span class="ko">관례</span></a></h3>
+<p>Route Handler는 <code>app</code> directory 안의 <a href="app-api-reference-file-conventions-route.html"><code>route.js|ts</code> 파일</a>에 정의합니다:</p><div class="en-orig"><p>Route Handlers are defined in a <a href="app-api-reference-file-conventions-route.html"><code>route.js|ts</code> file</a> inside the <code>app</code> directory:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/api/route.ts" data-js="app/api/route.js">app/api/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function GET(request: Request) {}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function GET(request) {}</code></pre></div></div>
+<p>Route Handler는 <code>page.js</code>, <code>layout.js</code>와 마찬가지로 <code>app</code> directory 안 어디에나 중첩할 수 있습니다. 하지만 <code>page.js</code>와 같은 route segment 수준에 <code>route.js</code> 파일이 있을 수는 <strong>없습니다</strong>.</p><div class="en-orig"><p>Route Handlers can be nested anywhere inside the <code>app</code> directory, similar to <code>page.js</code> and <code>layout.js</code>. But there <strong>cannot</strong> be a <code>route.js</code> file at the same route segment level as <code>page.js</code>.</p></div>
+<h3 class="sec" id="supported-http-methods"><a class="anchor" href="#supported-http-methods">Supported HTTP Methods<span class="ko">지원되는 HTTP Method</span></a></h3>
+<p>다음 <a href="https://developer.mozilla.org/docs/Web/HTTP/Methods" target="_blank" rel="noopener">HTTP method</a>가 지원됩니다: <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>, <code>HEAD</code>, <code>OPTIONS</code>. 지원되지 않는 method가 호출되면 Next.js는 <code>405 Method Not Allowed</code> response를 반환합니다.</p><div class="en-orig"><p>The following <a href="https://developer.mozilla.org/docs/Web/HTTP/Methods" target="_blank" rel="noopener">HTTP methods</a> are supported: <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>, <code>HEAD</code>, and <code>OPTIONS</code>. If an unsupported method is called, Next.js will return a <code>405 Method Not Allowed</code> response.</p></div>
+<h3 class="sec" id="extended-nextrequest-and-nextresponse-apis"><a class="anchor" href="#extended-nextrequest-and-nextresponse-apis">Extended <code>NextRequest</code> and <code>NextResponse</code> APIs<span class="ko">확장된 <code>NextRequest</code>와 <code>NextResponse</code> API</span></a></h3>
+<p>Next.js는 native <a href="https://developer.mozilla.org/docs/Web/API/Request" target="_blank" rel="noopener">Request</a>와 <a href="https://developer.mozilla.org/docs/Web/API/Response" target="_blank" rel="noopener">Response</a> API를 지원할 뿐 아니라, 이를 <a href="app-api-reference-functions-next-request.html"><code>NextRequest</code></a>와 <a href="app-api-reference-functions-next-response.html"><code>NextResponse</code></a>로 확장해 고급 사용 사례를 위한 편리한 helper를 제공합니다.</p><div class="en-orig"><p>In addition to supporting the native <a href="https://developer.mozilla.org/docs/Web/API/Request" target="_blank" rel="noopener">Request</a> and <a href="https://developer.mozilla.org/docs/Web/API/Response" target="_blank" rel="noopener">Response</a> APIs, Next.js extends them with <a href="app-api-reference-functions-next-request.html"><code>NextRequest</code></a> and <a href="app-api-reference-functions-next-response.html"><code>NextResponse</code></a> to provide convenient helpers for advanced use cases.</p></div>
+<h3 class="sec" id="caching"><a class="anchor" href="#caching">Caching</a></h3>
+<p>Route Handler는 기본적으로 cache되지 않습니다. 하지만 <code>GET</code> method에 대해서는 caching을 opt in할 수 있습니다. 지원되는 다른 HTTP method는 cache되지 <strong>않습니다</strong>. <code>GET</code> method를 cache하려면 Route Handler 파일에서 <code>export const dynamic = &#x27;force-static&#x27;</code> 같은 <a href="app-guides-caching-without-cache-components.html#dynamic">route config option</a>을 사용하세요.</p><div class="en-orig"><p>Route Handlers are not cached by default. You can, however, opt into caching for <code>GET</code> methods. Other supported HTTP methods are <strong>not</strong> cached. To cache a <code>GET</code> method, use a <a href="app-guides-caching-without-cache-components.html#dynamic">route config option</a> such as <code>export const dynamic = &#x27;force-static&#x27;</code> in your Route Handler file.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/items/route.ts" data-js="app/items/route.js">app/items/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export const dynamic = &#x27;force-static&#x27;
+
+export async function GET() {
+  const res = await fetch(&#x27;https://data.mongodb-api.com/...&#x27;, {
+    headers: {
+      &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+      &#x27;API-Key&#x27;: process.env.DATA_API_KEY,
+    },
+  })
+  const data = await res.json()
+
+  return Response.json({ data })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const dynamic = &#x27;force-static&#x27;
+
+export async function GET() {
+  const res = await fetch(&#x27;https://data.mongodb-api.com/...&#x27;, {
+    headers: {
+      &#x27;Content-Type&#x27;: &#x27;application/json&#x27;,
+      &#x27;API-Key&#x27;: process.env.DATA_API_KEY,
+    },
+  })
+  const data = await res.json()
+
+  return Response.json({ data })
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>지원되는 다른 HTTP method는 같은 파일 안에서 cache되는 <code>GET</code> method와 함께 있더라도 cache되지 <strong>않습니다</strong>.</p><div class="en-orig"><p>Other supported HTTP methods are <strong>not</strong> cached, even if they are placed alongside a <code>GET</code> method that is cached, in the same file.</p></div></div></div>
+<h4 class="sec" id="with-cache-components"><a class="anchor" href="#with-cache-components">With Cache Components<span class="ko">Cache Components와 함께 사용하기</span></a></h4>
+<p><a href="app-getting-started-caching.html">Cache Components</a>가 활성화되어 있으면 <code>GET</code> Route Handler는 애플리케이션의 일반 UI route와 같은 모델을 따릅니다. 기본적으로 request 시점에 실행되고, uncached data나 runtime data에 접근하지 않으면 prerender될 수 있으며, <code>use cache</code>를 사용해 uncached data를 static response에 포함할 수 있습니다.</p><div class="en-orig"><p>When <a href="app-getting-started-caching.html">Cache Components</a> is enabled, <code>GET</code> Route Handlers follow the same model as normal UI routes in your application. They run at request time by default, can be prerendered when they don't access uncached or runtime data, and you can use <code>use cache</code> to include uncached data in the static response.</p></div>
+<p><strong>Static 예시</strong> - uncached data나 runtime data에 접근하지 않으므로 build 시점에 prerender됩니다:</p><div class="en-orig"><p><strong>Static example</strong> - doesn't access uncached or runtime data, so it will be prerendered at build time:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/api/project-info/route.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export async function GET() {
+  return Response.json({
+    projectName: &#x27;Next.js&#x27;,
+  })
+}</code></pre></div></div>
+<p><strong>Dynamic 예시</strong> - 비결정적(non-deterministic) 연산에 접근합니다. build 중 <code>Math.random()</code>이 호출되면 prerendering이 멈추고 request 시점 rendering으로 넘어갑니다:</p><div class="en-orig"><p><strong>Dynamic example</strong> - accesses non-deterministic operations. During the build, prerendering stops when <code>Math.random()</code> is called, deferring to request-time rendering:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/api/random-number/route.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export async function GET() {
+  return Response.json({
+    randomNumber: Math.random(),
+  })
+}</code></pre></div></div>
+<p><strong>Runtime data 예시</strong> - request별 data에 접근합니다. <code>headers()</code> 같은 runtime API가 호출되면 prerendering이 종료됩니다:</p><div class="en-orig"><p><strong>Runtime data example</strong> - accesses request-specific data. Prerendering terminates when runtime APIs like <code>headers()</code> are called:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/api/user-agent/route.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { headers } from &#x27;next/headers&#x27;
+
+export async function GET() {
+  const headersList = await headers()
+  const userAgent = headersList.get(&#x27;user-agent&#x27;)
+
+  return Response.json({ userAgent })
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>GET</code> handler가 network request, database query, async file system 작업, request 객체 property(<code>req.url</code>, <code>request.headers</code>, <code>request.cookies</code>, <code>request.body</code> 등), <a href="app-api-reference-functions-cookies.html"><code>cookies()</code></a>, <a href="app-api-reference-functions-headers.html"><code>headers()</code></a>, <a href="app-api-reference-functions-connection.html"><code>connection()</code></a> 같은 runtime API, 또는 비결정적 연산에 접근하면 prerendering이 멈춥니다.</p><div class="en-orig"><p>Prerendering stops if the <code>GET</code> handler accesses network requests, database queries, async file system operations, request object properties (like <code>req.url</code>, <code>request.headers</code>, <code>request.cookies</code>, <code>request.body</code>), runtime APIs like <a href="app-api-reference-functions-cookies.html"><code>cookies()</code></a>, <a href="app-api-reference-functions-headers.html"><code>headers()</code></a>, <a href="app-api-reference-functions-connection.html"><code>connection()</code></a>, or non-deterministic operations.</p></div></div></div>
+<p><strong>Cached 예시</strong> - uncached data(database query)에 접근하지만 <code>use cache</code>로 cache하므로 prerender된 response에 포함될 수 있습니다:</p><div class="en-orig"><p><strong>Cached example</strong> - accesses uncached data (database query) but caches it with <code>use cache</code>, allowing it to be included in the prerendered response:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/api/products/route.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife } from &#x27;next/cache&#x27;
+
+export async function GET() {
+  const products = await getProducts()
+  return Response.json(products)
+}
+
+async function getProducts() {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;hours&#x27;)
+
+  return await db.query(&#x27;SELECT * FROM products&#x27;)
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>use cache</code>는 Route Handler 본문 안에서 직접 사용할 수 없으므로 helper 함수로 분리하세요. cache된 response는 새 request가 들어올 때 <code>cacheLife</code>에 따라 revalidate됩니다.</p><div class="en-orig"><p><code>use cache</code> cannot be used directly inside a Route Handler body; extract it to a helper function. Cached responses revalidate according to <code>cacheLife</code> when a new request arrives.</p></div></div></div>
+<h3 class="sec" id="special-route-handlers"><a class="anchor" href="#special-route-handlers">Special Route Handlers<span class="ko">특수 Route Handler</span></a></h3>
+<p><a href="app-api-reference-file-conventions-metadata-sitemap.html"><code>sitemap.ts</code></a>, <a href="app-api-reference-file-conventions-metadata-opengraph-image.html"><code>opengraph-image.tsx</code></a>, <a href="app-api-reference-file-conventions-metadata-app-icons.html"><code>icon.tsx</code></a> 같은 특수 Route Handler와 기타 <a href="app-api-reference-file-conventions-metadata.html">metadata 파일</a>은 Request-time API나 dynamic config option을 사용하지 않는 한 기본적으로 static으로 유지됩니다.</p><div class="en-orig"><p>Special Route Handlers like <a href="app-api-reference-file-conventions-metadata-sitemap.html"><code>sitemap.ts</code></a>, <a href="app-api-reference-file-conventions-metadata-opengraph-image.html"><code>opengraph-image.tsx</code></a>, and <a href="app-api-reference-file-conventions-metadata-app-icons.html"><code>icon.tsx</code></a>, and other <a href="app-api-reference-file-conventions-metadata.html">metadata files</a> remain static by default unless they use Request-time APIs or dynamic config options.</p></div>
+<h3 class="sec" id="route-resolution"><a class="anchor" href="#route-resolution">Route Resolution<span class="ko">Route 결정 방식</span></a></h3>
+<p><code>route</code>는 가장 낮은 수준의 routing primitive라고 생각할 수 있습니다.</p><div class="en-orig"><p>You can consider a <code>route</code> the lowest level routing primitive.</p></div>
+<ul>
+<li><code>page</code>와 달리 layout이나 client-side navigation에 참여하지 <strong>않습니다</strong>.</li>
+<li><code>page.js</code>와 같은 route에 <code>route.js</code> 파일이 있을 수 <strong>없습니다</strong>.</li>
+</ul><div class="en-orig"><ul>
+<li>They <strong>do not</strong> participate in layouts or client-side navigations like <code>page</code>.</li>
+<li>There <strong>cannot</strong> be a <code>route.js</code> file at the same route as <code>page.js</code>.</li>
+</ul></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Page</th><th>Route</th><th>결과</th></tr></thead>
+<tbody>
+<tr><td><code>app/page.js</code></td><td><code>app/route.js</code></td><td><span class="ic ic-cross">✕</span> 충돌</td></tr>
+<tr><td><code>app/page.js</code></td><td><code>app/api/route.js</code></td><td><span class="ic ic-check">✓</span> 유효</td></tr>
+<tr><td><code>app/[user]/page.js</code></td><td><code>app/api/route.js</code></td><td><span class="ic ic-check">✓</span> 유효</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Page</th><th>Route</th><th>Result</th></tr></thead>
+<tbody>
+<tr><td><code>app/page.js</code></td><td><code>app/route.js</code></td><td><span class="ic ic-cross">✕</span> Conflict</td></tr>
+<tr><td><code>app/page.js</code></td><td><code>app/api/route.js</code></td><td><span class="ic ic-check">✓</span> Valid</td></tr>
+<tr><td><code>app/[user]/page.js</code></td><td><code>app/api/route.js</code></td><td><span class="ic ic-check">✓</span> Valid</td></tr>
+</tbody></table></div></div>
+<p>각 <code>route.js</code> 또는 <code>page.js</code> 파일은 해당 route의 모든 HTTP verb를 담당합니다.</p><div class="en-orig"><p>Each <code>route.js</code> or <code>page.js</code> file takes over all HTTP verbs for that route.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.ts" data-js="app/page.js">app/page.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function Page() {
+  return &lt;h1&gt;Hello, Next.js!&lt;/h1&gt;
+}
+
+// Conflict
+// `app/route.ts`
+export async function POST(request: Request) {}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function Page() {
+  return &lt;h1&gt;Hello, Next.js!&lt;/h1&gt;
+}
+
+// Conflict
+// `app/route.js`
+export async function POST(request) {}</code></pre></div></div>
+<p>Route Handler가 <a href="app-guides-backend-for-frontend.html">frontend 애플리케이션을 어떻게 보완하는지</a> 더 읽어 보거나, Route Handler <a href="app-api-reference-file-conventions-route.html">API Reference</a>를 살펴보세요.</p><div class="en-orig"><p>Read more about how Route Handlers <a href="app-guides-backend-for-frontend.html">complement your frontend application</a>, or explore the Route Handlers <a href="app-api-reference-file-conventions-route.html">API Reference</a>.</p></div>
+<h3 class="sec" id="route-context-helper"><a class="anchor" href="#route-context-helper">Route Context Helper</a></h3>
+<p>TypeScript에서는 전역으로 사용할 수 있는 <a href="app-api-reference-file-conventions-route.html#route-context-helper"><code>RouteContext</code></a> helper로 Route Handler의 <code>context</code> parameter에 type을 지정할 수 있습니다:</p><div class="en-orig"><p>In TypeScript, you can type the <code>context</code> parameter for Route Handlers with the globally available <a href="app-api-reference-file-conventions-route.html#route-context-helper"><code>RouteContext</code></a> helper:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/users/[id]/route.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextRequest } from &#x27;next/server&#x27;
+
+export async function GET(_req: NextRequest, ctx: RouteContext&lt;&#x27;/users/[id]&#x27;&gt;) {
+  const { id } = await ctx.params
+  return Response.json({ id })
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>type은 <code>next dev</code>, <code>next build</code> 또는 <code>next typegen</code> 실행 중에 생성됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Types are generated during <code>next dev</code>, <code>next build</code> or <code>next typegen</code>.</li>
+</ul></div></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">API Reference</h2><p>Route Handler에 대해 더 알아보세요</p><div class="rgrid"><a class="rcard" href="app-api-reference-file-conventions-route.html"><div class="rt">route.js</div><div class="rk">route.js</div><div class="rd">route.js special file에 대한 API reference입니다.</div></a><a class="rcard" href="app-guides-backend-for-frontend.html"><div class="rt">How to use Next.js as a backend for your frontend</div><div class="rk">Next.js를 frontend용 backend로 사용하기</div><div class="rd">Next.js를 backend framework로 사용하는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/01-getting-started/15-route-handlers.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/getting-started/route-handlers" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-getting-started-metadata-and-og-images.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Metadata and OG images</div><div class="ttl-ko">Metadata와 OG 이미지</div></a>
+      <a href="app-getting-started-proxy.html" class="next"><div class="dir">다음 →</div><div class="ttl">Proxy</div><div class="ttl-ko">Proxy</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/getting-started/route-handlers" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#route-handlers">Route Handlers</a></li><li class="l3"><a href="#convention">Convention</a></li><li class="l3"><a href="#supported-http-methods">Supported HTTP Methods</a></li><li class="l3"><a href="#extended-nextrequest-and-nextresponse-apis">Extended <code>NextRequest</code> and <code>NextResponse</code> APIs</a></li><li class="l3"><a href="#caching">Caching</a></li><li class="l3"><a href="#special-route-handlers">Special Route Handlers</a></li><li class="l3"><a href="#route-resolution">Route Resolution</a></li><li class="l3"><a href="#route-context-helper">Route Context Helper</a></li><li class="l2"><a href="#next-steps">API Reference</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+## Route Handlers
+
+Route Handler를 사용하면 Web [Request](https://developer.mozilla.org/docs/Web/API/Request)와 [Response](https://developer.mozilla.org/docs/Web/API/Response) API로 특정 route에 대한 custom request handler를 만들 수 있습니다.
+
+&lt;Image
+  alt=&quot;Route.js 특수 파일&quot;
+  srcLight=&quot;/docs/light/route-special-file.png&quot;
+  srcDark=&quot;/docs/dark/route-special-file.png&quot;
+  width=&quot;1600&quot;
+  height=&quot;444&quot;
+/&gt;
+
+&gt; **Good to know**: Route Handler는 `app` directory 안에서만 사용할 수 있습니다. Route Handler는 `pages` directory 안의 [API Routes](/docs/pages/building-your-application/routing/api-routes)와 같은 역할을 하므로, API Routes와 Route Handler를 함께 사용할 필요가 **없습니다**.
+
+### Convention || 관례
+
+Route Handler는 `app` directory 안의 [`route.js|ts` 파일](/docs/app/api-reference/file-conventions/route)에 정의합니다:
+
+[[CODE 1]]
+
+Route Handler는 `page.js`, `layout.js`와 마찬가지로 `app` directory 안 어디에나 중첩할 수 있습니다. 하지만 `page.js`와 같은 route segment 수준에 `route.js` 파일이 있을 수는 **없습니다**.
+
+### Supported HTTP Methods || 지원되는 HTTP Method
+
+다음 [HTTP method](https://developer.mozilla.org/docs/Web/HTTP/Methods)가 지원됩니다: `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS`. 지원되지 않는 method가 호출되면 Next.js는 `405 Method Not Allowed` response를 반환합니다.
+
+### Extended `NextRequest` and `NextResponse` APIs || 확장된 `NextRequest`와 `NextResponse` API
+
+Next.js는 native [Request](https://developer.mozilla.org/docs/Web/API/Request)와 [Response](https://developer.mozilla.org/docs/Web/API/Response) API를 지원할 뿐 아니라, 이를 [`NextRequest`](/docs/app/api-reference/functions/next-request)와 [`NextResponse`](/docs/app/api-reference/functions/next-response)로 확장해 고급 사용 사례를 위한 편리한 helper를 제공합니다.
+
+### Caching
+
+Route Handler는 기본적으로 cache되지 않습니다. 하지만 `GET` method에 대해서는 caching을 opt in할 수 있습니다. 지원되는 다른 HTTP method는 cache되지 **않습니다**. `GET` method를 cache하려면 Route Handler 파일에서 `export const dynamic = &#x27;force-static&#x27;` 같은 [route config option](/docs/app/guides/caching-without-cache-components#dynamic)을 사용하세요.
+
+[[CODE 2]]
+
+&gt; **Good to know**: 지원되는 다른 HTTP method는 같은 파일 안에서 cache되는 `GET` method와 함께 있더라도 cache되지 **않습니다**.
+
+#### With Cache Components || Cache Components와 함께 사용하기
+
+[Cache Components](/docs/app/getting-started/caching)가 활성화되어 있으면 `GET` Route Handler는 애플리케이션의 일반 UI route와 같은 모델을 따릅니다. 기본적으로 request 시점에 실행되고, uncached data나 runtime data에 접근하지 않으면 prerender될 수 있으며, `use cache`를 사용해 uncached data를 static response에 포함할 수 있습니다.
+
+**Static 예시** - uncached data나 runtime data에 접근하지 않으므로 build 시점에 prerender됩니다:
+
+[[CODE 3]]
+
+**Dynamic 예시** - 비결정적(non-deterministic) 연산에 접근합니다. build 중 `Math.random()`이 호출되면 prerendering이 멈추고 request 시점 rendering으로 넘어갑니다:
+
+[[CODE 4]]
+
+**Runtime data 예시** - request별 data에 접근합니다. `headers()` 같은 runtime API가 호출되면 prerendering이 종료됩니다:
+
+[[CODE 5]]
+
+&gt; **Good to know**: `GET` handler가 network request, database query, async file system 작업, request 객체 property(`req.url`, `request.headers`, `request.cookies`, `request.body` 등), [`cookies()`](/docs/app/api-reference/functions/cookies), [`headers()`](/docs/app/api-reference/functions/headers), [`connection()`](/docs/app/api-reference/functions/connection) 같은 runtime API, 또는 비결정적 연산에 접근하면 prerendering이 멈춥니다.
+
+**Cached 예시** - uncached data(database query)에 접근하지만 `use cache`로 cache하므로 prerender된 response에 포함될 수 있습니다:
+
+[[CODE 6]]
+
+&gt; **Good to know**: `use cache`는 Route Handler 본문 안에서 직접 사용할 수 없으므로 helper 함수로 분리하세요. cache된 response는 새 request가 들어올 때 `cacheLife`에 따라 revalidate됩니다.
+
+### Special Route Handlers || 특수 Route Handler
+
+[`sitemap.ts`](/docs/app/api-reference/file-conventions/metadata/sitemap), [`opengraph-image.tsx`](/docs/app/api-reference/file-conventions/metadata/opengraph-image), [`icon.tsx`](/docs/app/api-reference/file-conventions/metadata/app-icons) 같은 특수 Route Handler와 기타 [metadata 파일](/docs/app/api-reference/file-conventions/metadata)은 Request-time API나 dynamic config option을 사용하지 않는 한 기본적으로 static으로 유지됩니다.
+
+### Route Resolution || Route 결정 방식
+
+`route`는 가장 낮은 수준의 routing primitive라고 생각할 수 있습니다.
+
+- `page`와 달리 layout이나 client-side navigation에 참여하지 **않습니다**.
+- `page.js`와 같은 route에 `route.js` 파일이 있을 수 **없습니다**.
+
+| Page                 | Route              | 결과                       |
+| -------------------- | ------------------ | ---------------------------- |
+| `app/page.js`        | `app/route.js`     | &lt;Cross size={18} /&gt; 충돌 |
+| `app/page.js`        | `app/api/route.js` | &lt;Check size={18} /&gt; 유효    |
+| `app/[user]/page.js` | `app/api/route.js` | &lt;Check size={18} /&gt; 유효    |
+
+각 `route.js` 또는 `page.js` 파일은 해당 route의 모든 HTTP verb를 담당합니다.
+
+[[CODE 7]]
+
+Route Handler가 [frontend 애플리케이션을 어떻게 보완하는지](/docs/app/guides/backend-for-frontend) 더 읽어 보거나, Route Handler [API Reference](/docs/app/api-reference/file-conventions/route)를 살펴보세요.
+
+### Route Context Helper
+
+TypeScript에서는 전역으로 사용할 수 있는 [`RouteContext`](/docs/app/api-reference/file-conventions/route#route-context-helper) helper로 Route Handler의 `context` parameter에 type을 지정할 수 있습니다:
+
+[[CODE 8]]
+
+&gt; **Good to know**
+&gt;
+&gt; - type은 `next dev`, `next build` 또는 `next typegen` 실행 중에 생성됩니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

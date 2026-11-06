@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>cacheLife (cacheLife) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/functions/cacheLife" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/functions/cacheLife" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/cacheLife.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-functions.html">Functions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">cacheLife<span class="sub">cacheLife</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>cacheLife</code> 함수는 함수나 component의 cache 수명(lifetime)을 설정하는 데 사용합니다. <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a> directive와 함께, 해당 함수나 component의 scope 안에서 사용해야 합니다.</p><div class="en-orig"><p>The <code>cacheLife</code> function is used to set the cache lifetime of a function or component. It should be used alongside the <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a> directive, and within the scope of the function or component.</p></div>
+<h2 class="sec" id="usage"><a class="anchor" href="#usage">Usage<span class="ko">사용법</span></a></h2>
+<h3 class="sec" id="basic-setup"><a class="anchor" href="#basic-setup">Basic setup<span class="ko">기본 설정</span></a></h3>
+<p><code>cacheLife</code>를 사용하려면 먼저 <code>next.config.js</code> 파일에서 <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code> flag</a>를 활성화하세요:</p><div class="en-orig"><p>To use <code>cacheLife</code>, first enable the <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code> flag</a> in your <code>next.config.js</code> file:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">const nextConfig = {
+  cacheComponents: true,
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p><code>cacheLife</code>는 cache directive scope 안에서만 사용할 수 있습니다.</p><div class="en-orig"><p><code>cacheLife</code> can only be used within a cache directive scope.</p></div>
+<p>파일 레벨 또는 async 함수나 component의 맨 위에 cache directive(예: <code>use cache</code>)를 추가하세요.</p><div class="en-orig"><p>Add a cache directive (for example, <code>use cache</code>) at the file level or at the top of an async function or component.</p></div>
+<p><code>cacheLife</code>는 module scope에서 사용할 수 없습니다. 파일의 최상위 레벨에서 호출하면 error가 발생합니다.</p><div class="en-orig"><p><code>cacheLife</code> cannot be used at module scope. Calling it at the top level of a file will throw an error.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>호출 위치에서 동작이 명확하도록 모든 <code>use cache</code> scope에 <code>cacheLife</code>를 설정하는 것을 권장합니다. 생략하면 수명이 암묵적으로 정해지며(<code>default</code> profile 적용), 예를 들어 <a href="#nested-caching-behavior">nested cached scopes</a>에서처럼 동작을 파악하기 어려워집니다.</li>
+<li>caching이 정의된 같은 함수나 component 안에서 <code>cacheLife</code>를 호출하세요. cache 동작이 명시적이고 파악하기 쉽도록 공유 유틸리티로 추상화하지 마세요.</li>
+<li><code>cacheLife</code>를 호출한다면 함수 호출당 한 번만 실행되도록 하세요. 서로 다른 control flow 분기에서 호출할 수는 있지만, request당 하나만 실행되어야 합니다. <a href="#conditional-cache-lifetimes">conditional cache lifetimes</a> 예시를 참고하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>We recommend setting a <code>cacheLife</code> in every <code>use cache</code> scope so its behavior is clear at the call site. Omitting it leaves the lifetime implicit (the <code>default</code> profile applies), which makes it harder to reason about, for example in <a href="#nested-caching-behavior">nested cached scopes</a>.</li>
+<li>Call <code>cacheLife</code> in the same function or component where caching is defined. Avoid abstracting it into shared utilities so the cache behavior remains explicit and easy to reason about.</li>
+<li>If you call <code>cacheLife</code>, ensure only one call executes per function invocation. You can call it in different control flow branches, but only one should run per request. See the <a href="#conditional-cache-lifetimes">conditional cache lifetimes</a> example.</li>
+</ul></div></div></div>
+<h3 class="sec" id="using-preset-profiles"><a class="anchor" href="#using-preset-profiles">Using preset profiles<span class="ko">Preset profile 사용하기</span></a></h3>
+<p>Next.js는 일반적인 caching 요구를 충족하는 preset cache profile을 제공합니다. 각 profile은 세 가지 요소의 균형을 맞춥니다:</p><div class="en-orig"><p>Next.js provides preset cache profiles that cover common caching needs. Each profile balances three factors:</p></div>
+<ul>
+<li>사용자가 업데이트 확인 없이 cache된 콘텐츠를 보는 기간 (client-side)</li>
+<li>서버에서 새 콘텐츠가 생성되는 빈도</li>
+<li>오래된 콘텐츠가 완전히 만료되는 시점</li>
+</ul><div class="en-orig"><ul>
+<li>How long users see cached content without checking for updates (client-side)</li>
+<li>How often fresh content is generated on the server</li>
+<li>When old content expires completely</li>
+</ul></div>
+<p>콘텐츠가 얼마나 자주 바뀌는지에 따라 profile을 선택하세요:</p><div class="en-orig"><p>Choose a profile based on how frequently your content changes:</p></div>
+<ul>
+<li><strong><code>seconds</code></strong> - 실시간 데이터 (주가, 실시간 경기 점수)</li>
+<li><strong><code>minutes</code></strong> - 자주 업데이트됨 (소셜 피드, 뉴스)</li>
+<li><strong><code>hours</code></strong> - 하루에 여러 번 업데이트 (상품 재고, 날씨)</li>
+<li><strong><code>days</code></strong> - 매일 업데이트 (블로그 글, 기사)</li>
+<li><strong><code>weeks</code></strong> - 매주 업데이트 (팟캐스트, 뉴스레터)</li>
+<li><strong><code>max</code></strong> - 거의 바뀌지 않음 (법률 페이지, 보관된 콘텐츠)</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>seconds</code></strong> - Real-time data (stock prices, live scores)</li>
+<li><strong><code>minutes</code></strong> - Frequently updated (social feeds, news)</li>
+<li><strong><code>hours</code></strong> - Multiple daily updates (product inventory, weather)</li>
+<li><strong><code>days</code></strong> - Daily updates (blog posts, articles)</li>
+<li><strong><code>weeks</code></strong> - Weekly updates (podcasts, newsletters)</li>
+<li><strong><code>max</code></strong> - Rarely changes (legal pages, archived content)</li>
+</ul></div>
+<p><code>cacheLife</code>를 import하고 profile 이름을 전달하세요:</p><div class="en-orig"><p>Import <code>cacheLife</code> and pass a profile name:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/blog/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use cache&#x27;
+import { cacheLife } from &#x27;next/cache&#x27;
+
+export default async function BlogPage() {
+  cacheLife(&#x27;days&#x27;) // Blog content updated daily
+
+  const posts = await getBlogPosts()
+  return &lt;div&gt;{/* render posts */}&lt;/div&gt;
+}</code></pre></div></div>
+<p>profile 이름은 Next.js에게 함수 전체 출력을 어떻게 cache할지 알려 줍니다. <code>cacheLife</code>를 호출하지 않으면 <code>default</code> profile이 사용됩니다. 시간 관련 자세한 내용은 <a href="#preset-cache-profiles">preset cache profiles</a>를 참고하세요.</p><div class="en-orig"><p>The profile name tells Next.js how to cache the entire function's output. If you don't call <code>cacheLife</code>, the <code>default</code> profile is used. See <a href="#preset-cache-profiles">preset cache profiles</a> for timing details.</p></div>
+<h2 class="sec" id="reference"><a class="anchor" href="#reference">Reference</a></h2>
+<h3 class="sec" id="cache-profile-properties"><a class="anchor" href="#cache-profile-properties">Cache profile properties<span class="ko">Cache profile 속성</span></a></h3>
+<p>Cache profile은 세 가지 시간 속성으로 caching 동작을 제어합니다:</p><div class="en-orig"><p>Cache profiles control caching behavior through three timing properties:</p></div>
+<ul>
+<li><strong><a href="#stale"><code>stale</code></a></strong>: client가 서버 확인 없이 cache된 데이터를 사용할 수 있는 기간</li>
+<li><strong><a href="#revalidate"><code>revalidate</code></a></strong>: 이 시간이 지나면 다음 request가 background refresh를 trigger함</li>
+<li><strong><a href="#expire"><code>expire</code></a></strong>: 이 시간 동안 request가 없으면 다음 request는 새 콘텐츠를 기다림</li>
+</ul><div class="en-orig"><ul>
+<li><strong><a href="#stale"><code>stale</code></a></strong>: How long the client can use cached data without checking the server</li>
+<li><strong><a href="#revalidate"><code>revalidate</code></a></strong>: After this time, the next request will trigger a background refresh</li>
+<li><strong><a href="#expire"><code>expire</code></a></strong>: After this time with no requests, the next one waits for fresh content</li>
+</ul></div>
+<h4 class="sec" id="stale"><a class="anchor" href="#stale"><code>stale</code></a></h4>
+<p><strong>Client-side:</strong> client가 서버 확인 없이 cache된 데이터를 사용할 수 있는 기간입니다.</p><div class="en-orig"><p><strong>Client-side:</strong> How long the client can use cached data without checking the server.</p></div>
+<p>이 기간 동안 client-side router는 network request 없이 cache된 콘텐츠를 즉시 표시합니다. 이 기간이 만료되면 router는 다음 navigation이나 request 때 서버에 확인해야 합니다. client cache 덕분에 페이지가 즉시 로드되지만, 데이터가 오래되었을 수 있습니다.</p><div class="en-orig"><p>During this time, the client-side router displays cached content immediately without any network request. After this period expires, the router must check with the server on the next navigation or request. This provides instant page loads from the client cache, but data may be outdated.</p></div>
+<ul>
+<li>생략하면 <code>default</code> profile의 <code>stale</code> 값(5분, <a href="app-api-reference-config-next-config-js-staleTimes.html"><code>staleTimes</code></a> 참고)이 기본값이 됩니다</li>
+<li>콘텐츠가 route의 <a href="app-glossary.html#app-shell">App Shell</a>에 포함될 수 있는지도 결정합니다. <a href="#prerendering-behavior">Prerendering behavior</a>를 참고하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>If omitted, defaults to the <code>default</code> profile's <code>stale</code> value (5 minutes, see <a href="app-api-reference-config-next-config-js-staleTimes.html"><code>staleTimes</code></a>)</li>
+<li>Also determines whether the content can be part of the route's <a href="app-glossary.html#app-shell">App Shell</a>. See <a href="#prerendering-behavior">Prerendering behavior</a>.</li>
+</ul></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">cacheLife({ stale: 300 }) // 5 minutes</code></pre></div></div>
+<h4 class="sec" id="revalidate"><a class="anchor" href="#revalidate"><code>revalidate</code></a></h4>
+<p>서버가 background에서 cache된 콘텐츠를 다시 생성하는 빈도입니다.</p><div class="en-orig"><p>How often the server regenerates cached content in the background.</p></div>
+<ul>
+<li>이 기간 이후 request가 도착하면 서버는:<ol>
+<li>cache된 버전을 즉시 제공합니다 (있는 경우)</li>
+<li>background에서 콘텐츠를 다시 생성합니다</li>
+<li>새 콘텐츠로 cache를 업데이트합니다</li>
+</ol></li>
+<li><a href="app-guides-incremental-static-regeneration.html">Incremental Static Regeneration (ISR)</a>과 비슷합니다</li>
+<li>생략하면 <code>default</code> profile의 <code>revalidate</code> 값(15분)이 기본값이 됩니다</li>
+</ul><div class="en-orig"><ul>
+<li>When a request arrives after this period, the server:<ol>
+<li>Serves the cached version immediately (if available)</li>
+<li>Regenerates content in the background</li>
+<li>Updates the cache with fresh content</li>
+</ol></li>
+<li>Similar to <a href="app-guides-incremental-static-regeneration.html">Incremental Static Regeneration (ISR)</a></li>
+<li>If omitted, defaults to the <code>default</code> profile's <code>revalidate</code> value (15 minutes)</li>
+</ul></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">cacheLife({ revalidate: 900 }) // 15 minutes</code></pre></div></div>
+<h4 class="sec" id="expire"><a class="anchor" href="#expire"><code>expire</code></a></h4>
+<p>서버가 cache된 콘텐츠를 반드시 다시 생성해야 하기까지의 최대 시간입니다.</p><div class="en-orig"><p>Maximum time before the server must regenerate cached content.</p></div>
+<ul>
+<li>이 기간 동안 traffic이 없으면 서버는 다음 request 때 콘텐츠를 동기적으로 다시 생성합니다</li>
+<li><code>revalidate</code>와 <code>expire</code>를 모두 설정할 때 <code>expire</code>는 <code>revalidate</code>보다 길어야 합니다. Next.js는 이를 검증하고 잘못된 설정에 대해 error를 발생시킵니다.</li>
+<li>생략하면 <code>default</code> profile의 <code>expire</code> 값(만료되지 않음)이 기본값이 됩니다</li>
+</ul><div class="en-orig"><ul>
+<li>After this period with no traffic, the server regenerates content synchronously on the next request</li>
+<li>When you set both <code>revalidate</code> and <code>expire</code>, <code>expire</code> must be longer than <code>revalidate</code>. Next.js validates this and raises an error for invalid configurations.</li>
+<li>If omitted, defaults to the <code>default</code> profile's <code>expire</code> value (never expires)</li>
+</ul></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">cacheLife({ expire: 3600 }) // 1 hour</code></pre></div></div>
+<h3 class="sec" id="preset-cache-profiles"><a class="anchor" href="#preset-cache-profiles">Preset cache profiles</a></h3>
+<p>profile을 지정하지 않으면 Next.js는 <code>default</code> profile을 사용합니다. caching 동작을 명확히 하려면 profile을 명시적으로 설정하는 것을 권장합니다.</p><div class="en-orig"><p>If you don't specify a profile, Next.js uses the <code>default</code> profile. We recommend explicitly setting a profile to make caching behavior clear.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th><strong>Profile</strong></th><th><strong>Use Case</strong></th><th><code>stale</code></th><th><code>revalidate</code></th><th><code>expire</code></th></tr></thead>
+<tbody>
+<tr><td><code>default</code></td><td>일반 콘텐츠</td><td>5분</td><td>15분</td><td>만료 없음</td></tr>
+<tr><td><code>seconds</code></td><td>실시간 데이터</td><td>30초</td><td>1초</td><td>1분</td></tr>
+<tr><td><code>minutes</code></td><td>자주 업데이트되는 콘텐츠</td><td>5분</td><td>1분</td><td>1시간</td></tr>
+<tr><td><code>hours</code></td><td>하루에 여러 번 업데이트되는 콘텐츠</td><td>5분</td><td>1시간</td><td>1일</td></tr>
+<tr><td><code>days</code></td><td>매일 업데이트되는 콘텐츠</td><td>5분</td><td>1일</td><td>1주</td></tr>
+<tr><td><code>weeks</code></td><td>매주 업데이트되는 콘텐츠</td><td>5분</td><td>1주</td><td>30일</td></tr>
+<tr><td><code>max</code></td><td>거의 바뀌지 않는 안정적인 콘텐츠</td><td>5분</td><td>30일</td><td>1년</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th><strong>Profile</strong></th><th><strong>Use Case</strong></th><th><code>stale</code></th><th><code>revalidate</code></th><th><code>expire</code></th></tr></thead>
+<tbody>
+<tr><td><code>default</code></td><td>Standard content</td><td>5 minutes</td><td>15 minutes</td><td>never</td></tr>
+<tr><td><code>seconds</code></td><td>Real-time data</td><td>30 seconds</td><td>1 second</td><td>1 minute</td></tr>
+<tr><td><code>minutes</code></td><td>Frequently updated content</td><td>5 minutes</td><td>1 minute</td><td>1 hour</td></tr>
+<tr><td><code>hours</code></td><td>Content updated multiple times per day</td><td>5 minutes</td><td>1 hour</td><td>1 day</td></tr>
+<tr><td><code>days</code></td><td>Content updated daily</td><td>5 minutes</td><td>1 day</td><td>1 week</td></tr>
+<tr><td><code>weeks</code></td><td>Content updated weekly</td><td>5 minutes</td><td>1 week</td><td>30 days</td></tr>
+<tr><td><code>max</code></td><td>Stable content that rarely changes</td><td>5 minutes</td><td>30 days</td><td>1 year</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="overriding-the-default-cache-profiles"><a class="anchor" href="#overriding-the-default-cache-profiles">Overriding the default cache profiles<span class="ko">기본 cache profile 재정의하기</span></a></h3>
+<p>preset profile은 익숙한 시간 단위(<code>seconds</code>, <code>minutes</code>, <code>hours</code>, <code>days</code>, <code>weeks</code>)와 <code>default</code>, <code>max</code>로 구성됩니다. 이들을 그대로 사용하거나, <code>default</code>와 <code>max</code>를 포함해 어떤 것이든 <code>next.config.ts</code>에서 재정의할 수 있습니다. 기본 제공 이름은 editor 자동 완성과 함께 계속 동작합니다.</p><div class="en-orig"><p>The preset profiles map to familiar time periods (<code>seconds</code>, <code>minutes</code>, <code>hours</code>, <code>days</code>, <code>weeks</code>), alongside <code>default</code> and <code>max</code>. You can use these as they are, or redefine any of them, including <code>default</code> and <code>max</code>, in <code>next.config.ts</code>. The built-in names keep working with editor autocomplete.</p></div>
+<p>기본 제공 profile을 재정의하는 것은 지원되는 패턴이지만, <code>cacheLife(&#x27;hours&#x27;)</code> 같은 호출이 preset이 아니라 직접 설정한 값을 반영한다는 사실을 프로젝트에 문서화해 두세요. 시간 이름이 붙은 profile은 직관적인 기대를 동반하므로(<code>days</code>는 대략 24시간으로 읽힘), 특정 기간을 암시하지 않는 <code>default</code>나 <code>max</code>를 재정의하는 것보다 코드를 읽는 사람을 놀라게 할 가능성이 큽니다. 기본 제공 이름을 덮어쓰는 대신 직접 <a href="#custom-cache-profiles">custom profile</a>을 정의하는 것도 똑같이 유효한 방법입니다.</p><div class="en-orig"><p>Redefining a built-in is a supported pattern, but document it in your project so a call like <code>cacheLife(&#x27;hours&#x27;)</code> reflects the values you set, not the presets. The time-named profiles carry an intuitive expectation (<code>days</code> reads as roughly 24 hours), so redefining them is more likely to surprise a reader than redefining <code>default</code> or <code>max</code>, which don't imply a specific duration. An equally valid approach is to define your own <a href="#custom-cache-profiles">custom profile</a> rather than overloading a built-in name.</p></div>
+<p><code>default</code>를 재정의하면 <code>use cache</code> scope에서 <code>cacheLife</code>를 호출하지 않을 때 적용되는 수명도 바뀝니다. 아래 예시는 <code>default</code>의 revalidate를 1시간으로 설정합니다:</p><div class="en-orig"><p>Redefining <code>default</code> also changes the lifetime applied when a <code>use cache</code> scope calls no <code>cacheLife</code>. The example below sets <code>default</code> to a one hour revalidate:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">const nextConfig = {
+  cacheComponents: true,
+  cacheLife: {
+    // Redefine the &#x27;default&#x27; profile
+    default: {
+      stale: 300, // 5 minutes
+      revalidate: 3600, // 1 hour
+      expire: 86400, // 1 day
+    },
+  },
+}
+
+export default nextConfig</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>cacheLife</code> 함수의 type signature는 <code>next dev</code>, <code>next build</code> 또는 <a href="app-api-reference-cli-next.html#next-typegen-options"><code>next typegen</code></a> 실행 중에 <code>next.config.ts</code>로부터 생성되므로, 재정의한 profile의 editor 자동 완성과 JSDoc hint는 preset이 아니라 직접 설정한 값을 반영합니다.</p><div class="en-orig"><p>The <code>cacheLife</code> function's type signature is generated from <code>next.config.ts</code> during <code>next dev</code>, <code>next build</code>, or <a href="app-api-reference-cli-next.html#next-typegen-options"><code>next typegen</code></a>, so an overridden profile's editor autocomplete and JSDoc hint reflect the values you set, not the presets.</p></div></div></div>
+<h3 class="sec" id="custom-cache-profiles"><a class="anchor" href="#custom-cache-profiles">Custom cache profiles</a></h3>
+<p><code>next.config.ts</code>에서 직접 정한 이름으로 재사용 가능한 cache profile을 정의하세요:</p><div class="en-orig"><p>Define reusable cache profiles with your own names in <code>next.config.ts</code>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+  cacheLife: {
+    biweekly: {
+      stale: 60 * 60 * 24 * 14, // 14 days
+      revalidate: 60 * 60 * 24, // 1 day
+      expire: 60 * 60 * 24 * 14, // 14 days
+    },
+  },
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">const nextConfig = {
+  cacheComponents: true,
+  cacheLife: {
+    biweekly: {
+      stale: 60 * 60 * 24 * 14, // 14 days
+      revalidate: 60 * 60 * 24, // 1 day
+      expire: 60 * 60 * 24 * 14, // 14 days
+    },
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p>위 예시는 14일 동안 cache하고, 매일 업데이트를 확인하며, 14일 후 cache를 만료시킵니다. 그런 다음 애플리케이션 전체에서 이 profile을 이름으로 참조할 수 있습니다:</p><div class="en-orig"><p>The example above caches for 14 days, checks for updates daily, and expires the cache after 14 days. You can then reference this profile throughout your application by its name:</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>custom profile에서 생략된 속성은 <code>default</code> profile에서 상속됩니다. 이는 <code>cacheLife()</code>에 직접 전달하는 inline profile 객체에도 적용됩니다.</p><div class="en-orig"><p>Any omitted properties in a custom profile inherit from the <code>default</code> profile. This also applies to inline profile objects passed directly to <code>cacheLife()</code>.</p></div></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use cache&#x27;
+import { cacheLife } from &#x27;next/cache&#x27;
+
+export default async function Page() {
+  cacheLife(&#x27;biweekly&#x27;)
+  return &lt;div&gt;Page&lt;/div&gt;
+}</code></pre></div></div>
+<h3 class="sec" id="inline-cache-profiles"><a class="anchor" href="#inline-cache-profiles">Inline cache profiles</a></h3>
+<p>일회성인 경우에는 profile 객체를 <code>cacheLife</code>에 직접 전달하세요:</p><div class="en-orig"><p>For one-off cases, pass a profile object directly to <code>cacheLife</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use cache&#x27;
+import { cacheLife } from &#x27;next/cache&#x27;
+
+export default async function Page() {
+  cacheLife({
+    stale: 3600,
+    revalidate: 900,
+    expire: 86400,
+  })
+
+  return &lt;div&gt;Page&lt;/div&gt;
+}</code></pre></div></div>
+<p>Inline profile은 해당 함수나 component에만 적용됩니다. 재사용 가능한 설정이 필요하면 <code>next.config.ts</code>에 custom profile을 정의하세요.</p><div class="en-orig"><p>Inline profiles apply only to the specific function or component. For reusable configurations, define custom profiles in <code>next.config.ts</code>.</p></div>
+<p>빈 객체로 <code>cacheLife({})</code>를 사용하면 <code>default</code> profile 값이 적용됩니다.</p><div class="en-orig"><p>Using <code>cacheLife({})</code> with an empty object applies the <code>default</code> profile values.</p></div>
+<h3 class="sec" id="client-cache-behavior"><a class="anchor" href="#client-cache-behavior">Client cache behavior<span class="ko">Client cache 동작</span></a></h3>
+<p><code>stale</code> 속성은 <code>Cache-Control</code> header가 아니라 <a href="app-glossary.html#client-cache">Client Cache</a>를 제어합니다:</p><div class="en-orig"><p>The <code>stale</code> property controls the <a href="app-glossary.html#client-cache">Client Cache</a>, not the <code>Cache-Control</code> header:</p></div>
+<ul>
+<li>서버는 <code>x-nextjs-stale-time</code> response header를 통해 stale time을 전송합니다</li>
+<li>client router는 이 값을 사용해 언제 revalidate할지 결정합니다</li>
+<li>prefetch된 link가 계속 사용 가능하도록 <strong>최소 30초가 강제됩니다</strong></li>
+</ul><div class="en-orig"><ul>
+<li>The server sends the stale time via the <code>x-nextjs-stale-time</code> response header</li>
+<li>The client router uses this value to determine when to revalidate</li>
+<li><strong>Minimum of 30 seconds is enforced</strong> to ensure prefetched links remain usable</li>
+</ul></div>
+<p>이 30초 최소값은 사용자가 link를 클릭하기 전에 prefetch된 데이터가 만료되는 것을 방지합니다. 시간 기반 만료에만 적용됩니다.</p><div class="en-orig"><p>This 30-second minimum prevents prefetched data from expiring before users can click on links. It only applies to time-based expiration.</p></div>
+<p>Server Action에서 revalidation 함수(<a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>, <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>, <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>, <a href="app-api-reference-functions-refresh.html"><code>refresh</code></a>)를 호출하면 stale time과 상관없이 client cache 전체가 즉시 비워집니다.</p><div class="en-orig"><p>When you call revalidation functions from a Server Action (<a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>, <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>, <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>, or <a href="app-api-reference-functions-refresh.html"><code>refresh</code></a>), the entire client cache is immediately cleared, bypassing the stale time.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>cacheLife</code>의 <code>stale</code> 속성은 <a href="app-api-reference-config-next-config-js-staleTimes.html"><code>staleTimes</code></a>와 다릅니다. <code>staleTimes</code>는 모든 route에 영향을 주는 전역 설정인 반면, <code>cacheLife</code>는 함수별 또는 route별 설정을 가능하게 합니다. <code>staleTimes.static</code>을 업데이트하면 <code>default</code> cache profile의 <code>stale</code> 값도 업데이트됩니다.</p><div class="en-orig"><p>The <code>stale</code> property in <code>cacheLife</code> differs from <a href="app-api-reference-config-next-config-js-staleTimes.html"><code>staleTimes</code></a>. While <code>staleTimes</code> is a global setting affecting all routes, <code>cacheLife</code> allows per-function or per-route configuration. Updating <code>staleTimes.static</code> also updates the <code>stale</code> value of the <code>default</code> cache profile.</p></div></div></div>
+<h3 class="sec" id="prerendering-behavior"><a class="anchor" href="#prerendering-behavior">Prerendering behavior<span class="ko">Prerendering 동작</span></a></h3>
+<p>cache 수명이 짧으면 cache된 콘텐츠가 제공될 수 있는 위치가 달라집니다:</p><div class="en-orig"><p>A short cache lifetime changes where the cached content can be delivered from:</p></div>
+<ul>
+<li><strong><code>revalidate</code>가 <code>0</code>이거나 <code>expire</code>가 5분 미만</strong>: prerender에서 제외되어 request 시점에 resolve되는 "dynamic hole"이 됩니다.</li>
+<li><strong><code>stale</code>이 30초 미만</strong>: 사용자가 클릭하기 전에 prefetch가 만료되므로 prerender에서 제외됩니다.</li>
+<li><strong><code>stale</code>이 30초 이상 5분 미만</strong>: prerender에는 포함되지만 route의 <a href="app-glossary.html#app-shell">App Shell</a>에서는 제외됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>revalidate</code> of <code>0</code>, or <code>expire</code> under 5 minutes</strong>: excluded from prerenders, becoming a "dynamic hole" resolved at request time.</li>
+<li><strong><code>stale</code> under 30 seconds</strong>: excluded from prerenders, because a prefetch would expire before the user could click.</li>
+<li><strong><code>stale</code> of at least 30 seconds but under 5 minutes</strong>: included in prerenders, but excluded from the route's <a href="app-glossary.html#app-shell">App Shell</a>.</li>
+</ul></div>
+<p>preset 중에서는 <code>seconds</code>만 이 기준에 해당합니다: <code>expire</code>가 1분이므로 prerender에서 제외됩니다.</p><div class="en-orig"><p>Of the presets, only <code>seconds</code> falls under any of these thresholds: its <code>expire</code> of 1 minute excludes it from prerenders.</p></div>
+<p>이 동작 덕분에 같은 페이지 안에서 static 콘텐츠와 dynamic 콘텐츠를 섞을 수 있습니다. static 부분은 prerender되고, 수명이 짧은 cache는 build 시점이 아니라 request 시점에 데이터를 fetch하는 경계를 만듭니다. 콘텐츠가 로드되는 동안 fallback을 제공하려면 dynamic cache를 <code>&lt;Suspense&gt;</code> boundary로 감싸세요.</p><div class="en-orig"><p>This behavior allows you to mix static and dynamic content within the same page. Static parts are prerendered, while short-lived caches create boundaries where data is fetched at request time rather than build time. Use a <code>&lt;Suspense&gt;</code> boundary around dynamic caches to provide a fallback while content loads.</p></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<h3 class="sec" id="using-preset-profiles-1"><a class="anchor" href="#using-preset-profiles-1">Using preset profiles<span class="ko">Preset profile 사용하기</span></a></h3>
+<p>caching을 설정하는 가장 간단한 방법은 preset profile을 사용하는 것입니다. 콘텐츠의 업데이트 패턴에 맞는 것을 선택하세요:</p><div class="en-orig"><p>The simplest way to configure caching is using preset profiles. Choose one that matches your content's update pattern:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/blog/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife } from &#x27;next/cache&#x27;
+
+export default async function BlogPost() {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;days&#x27;) // Blog posts updated daily
+
+  const post = await fetchBlogPost()
+  return &lt;article&gt;{post.content}&lt;/article&gt;
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/products/[id]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife } from &#x27;next/cache&#x27;
+
+export default async function ProductPage() {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;hours&#x27;) // Product data updated multiple times per day
+
+  const product = await fetchProduct()
+  return &lt;div&gt;{product.name}&lt;/div&gt;
+}</code></pre></div></div>
+<h3 class="sec" id="custom-profiles-for-specific-needs"><a class="anchor" href="#custom-profiles-for-specific-needs">Custom profiles for specific needs<span class="ko">특정 요구를 위한 custom profile</span></a></h3>
+<p>preset option이 요구 사항에 맞지 않을 때 custom profile을 정의하세요:</p><div class="en-orig"><p>Define custom profiles when preset options don't match your requirements:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+  cacheLife: {
+    editorial: {
+      stale: 600, // 10 minutes
+      revalidate: 3600, // 1 hour
+      expire: 86400, // 1 day
+    },
+    marketing: {
+      stale: 300, // 5 minutes
+      revalidate: 1800, // 30 minutes
+      expire: 43200, // 12 hours
+    },
+  },
+}
+
+export default nextConfig</code></pre></div></div>
+<p>그런 다음 애플리케이션 전체에서 이 profile을 사용하세요:</p><div class="en-orig"><p>Then use these profiles throughout your application:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/editorial/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife } from &#x27;next/cache&#x27;
+
+export default async function EditorialPage() {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;editorial&#x27;)
+  // ...
+}</code></pre></div></div>
+<h3 class="sec" id="inline-profiles-for-unique-cases"><a class="anchor" href="#inline-profiles-for-unique-cases">Inline profiles for unique cases<span class="ko">특수한 경우를 위한 inline profile</span></a></h3>
+<p>특정 함수에 일회성 caching 동작이 필요할 때 inline profile을 사용하세요:</p><div class="en-orig"><p>Use inline profiles when a specific function needs one-off caching behavior:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/api/limited-offer/route.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife } from &#x27;next/cache&#x27;
+import { getDb } from &#x27;@lib/db&#x27;
+
+async function getLimitedOffer() {
+  &#x27;use cache&#x27;
+
+  cacheLife({
+    stale: 60, // 1 minute
+    revalidate: 300, // 5 minutes
+    expire: 3600, // 1 hour
+  })
+
+  const offer = await getDb().offer.findFirst({
+    where: { type: &#x27;limited&#x27; },
+    orderBy: { created_at: &#x27;desc&#x27; },
+  })
+
+  return offer
+}
+
+export async function GET() {
+  const offer = await getLimitedOffer()
+
+  return Response.json(offer)
+}</code></pre></div></div>
+<h3 class="sec" id="caching-individual-functions"><a class="anchor" href="#caching-individual-functions">Caching individual functions<span class="ko">개별 함수 caching</span></a></h3>
+<p>세밀하게 제어하려면 유틸리티 함수에 caching을 적용하세요:</p><div class="en-orig"><p>Apply caching to utility functions for granular control:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">lib/api.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife } from &#x27;next/cache&#x27;
+
+export async function getSettings() {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;max&#x27;) // Settings rarely change
+
+  return await fetchSettings()
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">lib/stats.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife } from &#x27;next/cache&#x27;
+
+export async function getRealtimeStats() {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;seconds&#x27;) // Stats update constantly
+
+  return await fetchStats()
+}</code></pre></div></div>
+<h3 class="sec" id="nested-caching-behavior"><a class="anchor" href="#nested-caching-behavior">Nested caching behavior<span class="ko">중첩 caching 동작</span></a></h3>
+<p><code>use cache</code> directive를 중첩하면(cache된 함수나 component가 다른 cache된 함수나 component를 사용하는 경우), 바깥 cache의 동작은 명시적인 <code>cacheLife</code>가 있는지에 따라 달라집니다.</p><div class="en-orig"><p>When you nest <code>use cache</code> directives (a cached function or component using another cached function or component), the outer cache's behavior depends on whether it has an explicit <code>cacheLife</code>.</p></div>
+<h4 class="sec" id="with-explicit-outer-cachelife"><a class="anchor" href="#with-explicit-outer-cachelife">With explicit outer cacheLife<span class="ko">바깥에 명시적 cacheLife가 있는 경우</span></a></h4>
+<p>바깥 cache는 안쪽 cache의 수명과 관계없이 자신의 수명을 사용합니다. 바깥 cache가 hit되면 모든 중첩 데이터를 포함한 전체 출력을 반환합니다. 명시적 <code>cacheLife</code>는 안쪽 수명보다 길든 짧든 항상 우선합니다.</p><div class="en-orig"><p>The outer cache uses its own lifetime, regardless of inner cache lifetimes. When the outer cache hits, it returns the complete output including all nested data. An explicit <code>cacheLife</code> always takes precedence, whether it's longer or shorter than inner lifetimes.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/dashboard/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife } from &#x27;next/cache&#x27;
+import { Widget } from &#x27;./widget&#x27;
+
+export default async function Dashboard() {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;hours&#x27;) // Outer scope sets its own lifetime
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Dashboard&lt;/h1&gt;
+      &lt;Widget /&gt; {/* Inner scope has &#x27;minutes&#x27; lifetime */}
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<h4 class="sec" id="without-explicit-outer-cachelife"><a class="anchor" href="#without-explicit-outer-cachelife">Without explicit outer cacheLife<span class="ko">바깥에 명시적 cacheLife가 없는 경우</span></a></h4>
+<p>바깥 cache에서 <code>cacheLife</code>를 호출하지 않으면 <code>default</code> profile(15분 revalidate)을 사용합니다. 수명이 더 짧은 안쪽 cache는 바깥 cache의 <code>default</code> 수명을 줄일 수 있습니다. 수명이 더 긴 안쪽 cache는 이를 default 이상으로 늘릴 수 없습니다.</p><div class="en-orig"><p>If you don't call <code>cacheLife</code> in the outer cache, it uses the <code>default</code> profile (15 min revalidate). Inner caches with shorter lifetimes can reduce the outer cache's <code>default</code> lifetime. Inner caches with longer lifetimes cannot extend it beyond the default.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/dashboard/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Widget } from &#x27;./widget&#x27;
+
+export default async function Dashboard() {
+  &#x27;use cache&#x27;
+  // No cacheLife call - uses default (15 min)
+  // If Widget has 5 min → Dashboard becomes 5 min
+  // If Widget has 1 hour → Dashboard stays 15 min
+
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Dashboard&lt;/h1&gt;
+      &lt;Widget /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p><strong>명시적인 <code>cacheLife</code>를 지정하는 것을 권장합니다.</strong> 명시적 수명 값이 있으면 중첩된 cache를 추적하지 않고도 cache된 함수나 component를 보고 동작을 바로 알 수 있습니다. 명시적 수명 값이 없으면 동작이 안쪽 cache 수명에 의존하게 되어 파악하기 어려워집니다.</p><div class="en-orig"><p><strong>It is recommended to specify an explicit <code>cacheLife</code>.</strong> With explicit lifetime values, you can inspect a cached function or component and immediately know its behavior without tracing through nested caches. Without explicit lifetime values, the behavior becomes dependent on inner cache lifetimes, making it harder to reason about.</p></div>
+<h4 class="sec" id="nested-short-lived-caches"><a class="anchor" href="#nested-short-lived-caches">Nested short-lived caches<span class="ko">중첩된 단기 cache</span></a></h4>
+<p><a href="#prerendering-behavior">Prerendering behavior</a>에서 설명했듯이, 수명이 짧은 cache(<code>revalidate</code>가 0이거나 <code>expire</code>가 5분 미만)는 prerender에서 제외되는 dynamic hole이 됩니다.</p><div class="en-orig"><p>As described in <a href="#prerendering-behavior">Prerendering behavior</a>, short-lived caches (zero <code>revalidate</code> or <code>expire</code> under 5 minutes) become dynamic holes excluded from prerenders.</p></div>
+<p>수명이 짧은 cache가 명시적 <code>cacheLife</code> 없는 다른 <code>use cache</code> 안에 중첩되면, 전파(propagation)에 의해 바깥 cache의 수명도 조용히 짧아지게 됩니다. 이런 실수로 인한 잘못된 설정을 방지하기 위해 Next.js는 prerendering 중에 error를 throw합니다.</p><div class="en-orig"><p>When a short-lived cache is nested inside another <code>use cache</code> without an explicit <code>cacheLife</code>, the outer cache's lifetime would silently become short too via propagation. To prevent this accidental misconfiguration, Next.js throws an error during prerendering.</p></div>
+<p>중첩된 cache는 명확히 드러나지 않을 수 있다는 점에 유의하세요. import한 module이나 심지어 third-party dependency 안에 있을 수도 있습니다:</p><div class="en-orig"><p>Note that the nested cache may not be obvious — it could be in an imported module or even a third-party dependency:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">components/short-lived-widget.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife } from &#x27;next/cache&#x27;
+
+export async function ShortLivedWidget() {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;seconds&#x27;)
+  const data = await fetchRealtimeData()
+  return &lt;div&gt;{data}&lt;/div&gt;
+}</code></pre></div></div>
+<p>명시적 <code>cacheLife</code> 없이 다른 <code>use cache</code>에서 이 component를 사용하면 prerendering 중에 error가 발생합니다:</p><div class="en-orig"><p>Using this component from another <code>use cache</code> without an explicit <code>cacheLife</code> will error during prerendering:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { ShortLivedWidget } from &#x27;@/components/short-lived-widget&#x27;
+
+export default async function Page() {
+  &#x27;use cache&#x27;
+  // Error: no explicit cacheLife on outer cache
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Dashboard&lt;/h1&gt;
+      &lt;p&gt;Last updated: {new Date().toISOString()}&lt;/p&gt;
+      &lt;ShortLivedWidget /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>error를 해결하려면 바깥 <code>use cache</code>에 명시적 <code>cacheLife()</code>를 추가하세요:</p><div class="en-orig"><p>To fix the error, add an explicit <code>cacheLife()</code> to the outer <code>use cache</code>:</p></div>
+<p><strong>바깥 cache를 static(prerender됨)으로 유지하고 싶다면</strong> 더 긴 cache 수명을 설정하세요:</p><div class="en-orig"><p><strong>If you want the outer cache to remain static (prerendered)</strong>, set a longer cache lifetime:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife } from &#x27;next/cache&#x27;
+import { ShortLivedWidget } from &#x27;@/components/short-lived-widget&#x27;
+
+export default async function Page() {
+  &#x27;use cache&#x27;
+  cacheLife(&#x27;default&#x27;) // Explicit cacheLife prevents the error
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Dashboard&lt;/h1&gt;
+      &lt;p&gt;Last updated: {new Date().toISOString()}&lt;/p&gt;
+      &lt;ShortLivedWidget /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p><strong>바깥 cache도 단기 cache로 만들고 싶다면</strong> 의도한 것임을 확인하기 위해 짧은 cache 수명을 명시적으로 설정하세요. 콘텐츠가 로드되는 동안 fallback을 제공하려면 component를 <code>&lt;Suspense&gt;</code> boundary로 감싸세요:</p><div class="en-orig"><p><strong>If you want the outer cache to also be short-lived</strong>, explicitly set a short cache lifetime to confirm this is intentional. Wrap the component in a <code>&lt;Suspense&gt;</code> boundary to provide a fallback while content loads:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { cacheLife } from &#x27;next/cache&#x27;
+import { ShortLivedWidget } from &#x27;@/components/short-lived-widget&#x27;
+
+async function Content() {
+  &#x27;use cache: remote&#x27;
+  cacheLife(&#x27;seconds&#x27;) // Explicit cacheLife confirms this is intentionally short-lived
+  return (
+    &lt;&gt;
+      &lt;p&gt;Last updated: {new Date().toISOString()}&lt;/p&gt;
+      &lt;ShortLivedWidget /&gt;
+    &lt;/&gt;
+  )
+}
+
+export default function Page() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Dashboard&lt;/h1&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading...&lt;/p&gt;}&gt;
+        &lt;Content /&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p>serverless 배포에서는 기본 in-memory cache를 사용한 runtime caching이 request 간에 유지되지 않으므로 이 예시는 <code>&quot;use cache: remote&quot;</code>를 사용합니다. self-hosted 환경에서는 <code>&quot;use cache&quot;</code>로 충분할 수 있습니다. 자세한 내용은 <a href="app-api-reference-directives-use-cache.html#runtime-caching-considerations">Runtime caching considerations</a>를 참고하세요.</p><div class="en-orig"><p>This example uses <code>&quot;use cache: remote&quot;</code> because runtime caching in serverless deployments doesn't persist across requests with the default in-memory cache. For self-hosted environments, <code>&quot;use cache&quot;</code> may be sufficient. See <a href="app-api-reference-directives-use-cache.html#runtime-caching-considerations">Runtime caching considerations</a> for more details.</p></div></div></div>
+<h3 class="sec" id="conditional-cache-lifetimes"><a class="anchor" href="#conditional-cache-lifetimes">Conditional cache lifetimes<span class="ko">조건부 cache 수명</span></a></h3>
+<p>애플리케이션 로직에 따라 서로 다른 cache 기간을 설정하도록 여러 코드 경로에서 조건부로 <code>cacheLife</code>를 호출할 수 있습니다:</p><div class="en-orig"><p>You can call <code>cacheLife</code> conditionally in different code paths to set different cache durations based on your application logic:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">lib/posts.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife, cacheTag } from &#x27;next/cache&#x27;
+
+async function getPostContent(slug: string) {
+  &#x27;use cache&#x27;
+
+  const post = await fetchPost(slug)
+
+  // Tag the cache entry for targeted revalidation
+  cacheTag(`post-${slug}`)
+
+  if (!post) {
+    // Content may not be published yet or could be in draft
+    // Cache briefly to reduce database load
+    cacheLife(&#x27;minutes&#x27;)
+    return null
+  }
+
+  // Published content can be cached longer
+  cacheLife(&#x27;days&#x27;)
+
+  // Return only the necessary data to keep cache size minimal
+  return post.data
+}</code></pre></div></div>
+<p>이 패턴은 결과에 따라 다른 cache 기간이 필요할 때 유용합니다. 예를 들어 항목이 없지만 나중에 생길 가능성이 높은 경우입니다.</p><div class="en-orig"><p>This pattern is useful when different outcomes need different cache durations, for example, when an item is missing but is likely to be available later.</p></div>
+<h4 class="sec" id="using-dynamic-cache-lifetimes-from-data"><a class="anchor" href="#using-dynamic-cache-lifetimes-from-data">Using dynamic cache lifetimes from data<span class="ko">데이터에서 동적 cache 수명 사용하기</span></a></h4>
+<p>runtime에 cache 수명을 계산하고 싶다면(예: fetch한 데이터에서 읽어 오는 경우) <a href="#inline-cache-profiles">inline cache profile</a> 객체를 사용하세요:</p><div class="en-orig"><p>If you want to calculate cache lifetime at runtime, for example by reading it from the fetched data, use an <a href="#inline-cache-profiles">inline cache profile</a> object:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">lib/posts.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cacheLife, cacheTag } from &#x27;next/cache&#x27;
+
+async function getPostContent(slug: string) {
+  &#x27;use cache&#x27;
+
+  const post = await fetchPost(slug)
+  cacheTag(`post-${slug}`)
+
+  if (!post) {
+    cacheLife(&#x27;minutes&#x27;)
+    return null
+  }
+
+  // Use cache timing from CMS data directly as an object
+  cacheLife({
+    // Ensure post.revalidateSeconds is a number in seconds
+    // stale and expire inherit from &#x27;default&#x27; profile
+    revalidate: post.revalidateSeconds ?? 3600,
+  })
+
+  return post.data
+}</code></pre></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.0.0</code></td><td><code>cacheLife</code> stable화. <code>unstable_cacheLife</code> deprecated.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.0.0</code></td><td><code>cacheLife</code> stabilized. <code>unstable_cacheLife</code> deprecated.</td></tr>
+</tbody></table></div></div>
+<p><code>unstable_cacheLife</code>에서 <code>cacheLife</code>로 import를 업데이트하려면 <a href="app-guides-upgrading-version-16.html#cachelife-and-cachetag">Next.js 16 upgrade guide</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-guides-upgrading-version-16.html#cachelife-and-cachetag">Next.js 16 upgrade guide</a> to update imports from <code>unstable_cacheLife</code> to <code>cacheLife</code>.</p></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">관련 문서</h2><p>관련 API reference를 확인하세요.</p><div class="rgrid"><a class="rcard" href="app-api-reference-config-next-config-js-cacheComponents.html"><div class="rt">cacheComponents</div><div class="rk">cacheComponents</div><div class="rd">Next.js에서 cacheComponents flag를 활성화하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-directives-use-cache.html"><div class="rt">use cache</div><div class="rk">use cache</div><div class="rd">\"use cache\" directive로 Next.js 애플리케이션의 데이터를 cache하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-functions-revalidateTag.html"><div class="rt">revalidateTag</div><div class="rk">revalidateTag</div><div class="rd">revalidateTag 함수에 대한 API Reference입니다.</div></a><a class="rcard" href="app-api-reference-functions-cacheTag.html"><div class="rt">cacheTag</div><div class="rk">cacheTag</div><div class="rd">cacheTag 함수를 사용해 Next.js 애플리케이션의 cache 무효화(invalidation)를 관리하는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/cacheLife.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/functions/cacheLife" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-functions-after.html" class="prev"><div class="dir">← 이전</div><div class="ttl">after</div><div class="ttl-ko">after</div></a>
+      <a href="app-api-reference-functions-cacheTag.html" class="next"><div class="dir">다음 →</div><div class="ttl">cacheTag</div><div class="ttl-ko">cacheTag</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/functions/cacheLife" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#usage">Usage</a></li><li class="l3"><a href="#basic-setup">Basic setup</a></li><li class="l3"><a href="#using-preset-profiles">Using preset profiles</a></li><li class="l2"><a href="#reference">Reference</a></li><li class="l3"><a href="#cache-profile-properties">Cache profile properties</a></li><li class="l3"><a href="#preset-cache-profiles">Preset cache profiles</a></li><li class="l3"><a href="#overriding-the-default-cache-profiles">Overriding the default cache profiles</a></li><li class="l3"><a href="#custom-cache-profiles">Custom cache profiles</a></li><li class="l3"><a href="#inline-cache-profiles">Inline cache profiles</a></li><li class="l3"><a href="#client-cache-behavior">Client cache behavior</a></li><li class="l3"><a href="#prerendering-behavior">Prerendering behavior</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#using-preset-profiles-1">Using preset profiles</a></li><li class="l3"><a href="#custom-profiles-for-specific-needs">Custom profiles for specific needs</a></li><li class="l3"><a href="#inline-profiles-for-unique-cases">Inline profiles for unique cases</a></li><li class="l3"><a href="#caching-individual-functions">Caching individual functions</a></li><li class="l3"><a href="#nested-caching-behavior">Nested caching behavior</a></li><li class="l3"><a href="#conditional-cache-lifetimes">Conditional cache lifetimes</a></li><li class="l2"><a href="#version-history">Version History</a></li><li class="l2"><a href="#next-steps">관련 문서</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`cacheLife` 함수는 함수나 component의 cache 수명(lifetime)을 설정하는 데 사용합니다. [`use cache`](/docs/app/api-reference/directives/use-cache) directive와 함께, 해당 함수나 component의 scope 안에서 사용해야 합니다.
+
+## Usage || 사용법
+
+### Basic setup || 기본 설정
+
+`cacheLife`를 사용하려면 먼저 `next.config.js` 파일에서 [`cacheComponents` flag](/docs/app/api-reference/config/next-config-js/cacheComponents)를 활성화하세요:
+
+[[CODE 1]]
+
+`cacheLife`는 cache directive scope 안에서만 사용할 수 있습니다.
+
+파일 레벨 또는 async 함수나 component의 맨 위에 cache directive(예: `use cache`)를 추가하세요.
+
+`cacheLife`는 module scope에서 사용할 수 없습니다. 파일의 최상위 레벨에서 호출하면 error가 발생합니다.
+
+&gt; **Good to know**:
+&gt;
+&gt; - 호출 위치에서 동작이 명확하도록 모든 `use cache` scope에 `cacheLife`를 설정하는 것을 권장합니다. 생략하면 수명이 암묵적으로 정해지며(`default` profile 적용), 예를 들어 [nested cached scopes](#nested-caching-behavior)에서처럼 동작을 파악하기 어려워집니다.
+&gt; - caching이 정의된 같은 함수나 component 안에서 `cacheLife`를 호출하세요. cache 동작이 명시적이고 파악하기 쉽도록 공유 유틸리티로 추상화하지 마세요.
+&gt; - `cacheLife`를 호출한다면 함수 호출당 한 번만 실행되도록 하세요. 서로 다른 control flow 분기에서 호출할 수는 있지만, request당 하나만 실행되어야 합니다. [conditional cache lifetimes](#conditional-cache-lifetimes) 예시를 참고하세요.
+
+### Using preset profiles || Preset profile 사용하기
+
+Next.js는 일반적인 caching 요구를 충족하는 preset cache profile을 제공합니다. 각 profile은 세 가지 요소의 균형을 맞춥니다:
+
+- 사용자가 업데이트 확인 없이 cache된 콘텐츠를 보는 기간 (client-side)
+- 서버에서 새 콘텐츠가 생성되는 빈도
+- 오래된 콘텐츠가 완전히 만료되는 시점
+
+콘텐츠가 얼마나 자주 바뀌는지에 따라 profile을 선택하세요:
+
+- **`seconds`** - 실시간 데이터 (주가, 실시간 경기 점수)
+- **`minutes`** - 자주 업데이트됨 (소셜 피드, 뉴스)
+- **`hours`** - 하루에 여러 번 업데이트 (상품 재고, 날씨)
+- **`days`** - 매일 업데이트 (블로그 글, 기사)
+- **`weeks`** - 매주 업데이트 (팟캐스트, 뉴스레터)
+- **`max`** - 거의 바뀌지 않음 (법률 페이지, 보관된 콘텐츠)
+
+`cacheLife`를 import하고 profile 이름을 전달하세요:
+
+[[CODE 2]]
+
+profile 이름은 Next.js에게 함수 전체 출력을 어떻게 cache할지 알려 줍니다. `cacheLife`를 호출하지 않으면 `default` profile이 사용됩니다. 시간 관련 자세한 내용은 [preset cache profiles](#preset-cache-profiles)를 참고하세요.
+
+## Reference
+
+### Cache profile properties || Cache profile 속성
+
+Cache profile은 세 가지 시간 속성으로 caching 동작을 제어합니다:
+
+- **[`stale`](#stale)**: client가 서버 확인 없이 cache된 데이터를 사용할 수 있는 기간
+- **[`revalidate`](#revalidate)**: 이 시간이 지나면 다음 request가 background refresh를 trigger함
+- **[`expire`](#expire)**: 이 시간 동안 request가 없으면 다음 request는 새 콘텐츠를 기다림
+
+#### `stale`
+
+**Client-side:** client가 서버 확인 없이 cache된 데이터를 사용할 수 있는 기간입니다.
+
+이 기간 동안 client-side router는 network request 없이 cache된 콘텐츠를 즉시 표시합니다. 이 기간이 만료되면 router는 다음 navigation이나 request 때 서버에 확인해야 합니다. client cache 덕분에 페이지가 즉시 로드되지만, 데이터가 오래되었을 수 있습니다.
+
+- 생략하면 `default` profile의 `stale` 값(5분, [`staleTimes`](/docs/app/api-reference/config/next-config-js/staleTimes) 참고)이 기본값이 됩니다
+- 콘텐츠가 route의 [App Shell](/docs/app/glossary#app-shell)에 포함될 수 있는지도 결정합니다. [Prerendering behavior](#prerendering-behavior)를 참고하세요.
+
+[[CODE 3]]
+
+#### `revalidate`
+
+서버가 background에서 cache된 콘텐츠를 다시 생성하는 빈도입니다.
+
+- 이 기간 이후 request가 도착하면 서버는:
+  1. cache된 버전을 즉시 제공합니다 (있는 경우)
+  2. background에서 콘텐츠를 다시 생성합니다
+  3. 새 콘텐츠로 cache를 업데이트합니다
+- [Incremental Static Regeneration (ISR)](/docs/app/guides/incremental-static-regeneration)과 비슷합니다
+- 생략하면 `default` profile의 `revalidate` 값(15분)이 기본값이 됩니다
+
+[[CODE 4]]
+
+#### `expire`
+
+서버가 cache된 콘텐츠를 반드시 다시 생성해야 하기까지의 최대 시간입니다.
+
+- 이 기간 동안 traffic이 없으면 서버는 다음 request 때 콘텐츠를 동기적으로 다시 생성합니다
+- `revalidate`와 `expire`를 모두 설정할 때 `expire`는 `revalidate`보다 길어야 합니다. Next.js는 이를 검증하고 잘못된 설정에 대해 error를 발생시킵니다.
+- 생략하면 `default` profile의 `expire` 값(만료되지 않음)이 기본값이 됩니다
+
+[[CODE 5]]
+
+### Preset cache profiles
+
+profile을 지정하지 않으면 Next.js는 `default` profile을 사용합니다. caching 동작을 명확히 하려면 profile을 명시적으로 설정하는 것을 권장합니다.
+
+| **Profile** | **Use Case**                           | `stale`    | `revalidate` | `expire` |
+| ----------- | -------------------------------------- | ---------- | ------------ | -------- |
+| `default`   | 일반 콘텐츠                       | 5분  | 15분   | 만료 없음    |
+| `seconds`   | 실시간 데이터                         | 30초 | 1초     | 1분 |
+| `minutes`   | 자주 업데이트되는 콘텐츠             | 5분  | 1분     | 1시간   |
+| `hours`     | 하루에 여러 번 업데이트되는 콘텐츠 | 5분  | 1시간       | 1일    |
+| `days`      | 매일 업데이트되는 콘텐츠                  | 5분  | 1일        | 1주   |
+| `weeks`     | 매주 업데이트되는 콘텐츠                 | 5분  | 1주       | 30일  |
+| `max`       | 거의 바뀌지 않는 안정적인 콘텐츠     | 5분  | 30일      | 1년   |
+
+### Overriding the default cache profiles || 기본 cache profile 재정의하기
+
+preset profile은 익숙한 시간 단위(`seconds`, `minutes`, `hours`, `days`, `weeks`)와 `default`, `max`로 구성됩니다. 이들을 그대로 사용하거나, `default`와 `max`를 포함해 어떤 것이든 `next.config.ts`에서 재정의할 수 있습니다. 기본 제공 이름은 editor 자동 완성과 함께 계속 동작합니다.
+
+기본 제공 profile을 재정의하는 것은 지원되는 패턴이지만, `cacheLife(&#x27;hours&#x27;)` 같은 호출이 preset이 아니라 직접 설정한 값을 반영한다는 사실을 프로젝트에 문서화해 두세요. 시간 이름이 붙은 profile은 직관적인 기대를 동반하므로(`days`는 대략 24시간으로 읽힘), 특정 기간을 암시하지 않는 `default`나 `max`를 재정의하는 것보다 코드를 읽는 사람을 놀라게 할 가능성이 큽니다. 기본 제공 이름을 덮어쓰는 대신 직접 [custom profile](#custom-cache-profiles)을 정의하는 것도 똑같이 유효한 방법입니다.
+
+`default`를 재정의하면 `use cache` scope에서 `cacheLife`를 호출하지 않을 때 적용되는 수명도 바뀝니다. 아래 예시는 `default`의 revalidate를 1시간으로 설정합니다:
+
+[[CODE 6]]
+
+&gt; **Good to know:** `cacheLife` 함수의 type signature는 `next dev`, `next build` 또는 [`next typegen`](/docs/app/api-reference/cli/next#next-typegen-options) 실행 중에 `next.config.ts`로부터 생성되므로, 재정의한 profile의 editor 자동 완성과 JSDoc hint는 preset이 아니라 직접 설정한 값을 반영합니다.
+
+### Custom cache profiles
+
+`next.config.ts`에서 직접 정한 이름으로 재사용 가능한 cache profile을 정의하세요:
+
+[[CODE 7]]
+
+위 예시는 14일 동안 cache하고, 매일 업데이트를 확인하며, 14일 후 cache를 만료시킵니다. 그런 다음 애플리케이션 전체에서 이 profile을 이름으로 참조할 수 있습니다:
+
+&gt; **Good to know**: custom profile에서 생략된 속성은 `default` profile에서 상속됩니다. 이는 `cacheLife()`에 직접 전달하는 inline profile 객체에도 적용됩니다.
+
+[[CODE 8]]
+
+### Inline cache profiles
+
+일회성인 경우에는 profile 객체를 `cacheLife`에 직접 전달하세요:
+
+[[CODE 9]]
+
+Inline profile은 해당 함수나 component에만 적용됩니다. 재사용 가능한 설정이 필요하면 `next.config.ts`에 custom profile을 정의하세요.
+
+빈 객체로 `cacheLife({})`를 사용하면 `default` profile 값이 적용됩니다.
+
+### Client cache behavior || Client cache 동작
+
+`stale` 속성은 `Cache-Control` header가 아니라 [Client Cache](/docs/app/glossary#client-cache)를 제어합니다:
+
+- 서버는 `x-nextjs-stale-time` response header를 통해 stale time을 전송합니다
+- client router는 이 값을 사용해 언제 revalidate할지 결정합니다
+- prefetch된 link가 계속 사용 가능하도록 **최소 30초가 강제됩니다**
+
+이 30초 최소값은 사용자가 link를 클릭하기 전에 prefetch된 데이터가 만료되는 것을 방지합니다. 시간 기반 만료에만 적용됩니다.
+
+Server Action에서 revalidation 함수([`revalidateTag`](/docs/app/api-reference/functions/revalidateTag), [`revalidatePath`](/docs/app/api-reference/functions/revalidatePath), [`updateTag`](/docs/app/api-reference/functions/updateTag), [`refresh`](/docs/app/api-reference/functions/refresh))를 호출하면 stale time과 상관없이 client cache 전체가 즉시 비워집니다.
+
+&gt; **Good to know**: `cacheLife`의 `stale` 속성은 [`staleTimes`](/docs/app/api-reference/config/next-config-js/staleTimes)와 다릅니다. `staleTimes`는 모든 route에 영향을 주는 전역 설정인 반면, `cacheLife`는 함수별 또는 route별 설정을 가능하게 합니다. `staleTimes.static`을 업데이트하면 `default` cache profile의 `stale` 값도 업데이트됩니다.
+
+### Prerendering behavior || Prerendering 동작
+
+cache 수명이 짧으면 cache된 콘텐츠가 제공될 수 있는 위치가 달라집니다:
+
+- **`revalidate`가 `0`이거나 `expire`가 5분 미만**: prerender에서 제외되어 request 시점에 resolve되는 &quot;dynamic hole&quot;이 됩니다.
+- **`stale`이 30초 미만**: 사용자가 클릭하기 전에 prefetch가 만료되므로 prerender에서 제외됩니다.
+- **`stale`이 30초 이상 5분 미만**: prerender에는 포함되지만 route의 [App Shell](/docs/app/glossary#app-shell)에서는 제외됩니다.
+
+preset 중에서는 `seconds`만 이 기준에 해당합니다: `expire`가 1분이므로 prerender에서 제외됩니다.
+
+이 동작 덕분에 같은 페이지 안에서 static 콘텐츠와 dynamic 콘텐츠를 섞을 수 있습니다. static 부분은 prerender되고, 수명이 짧은 cache는 build 시점이 아니라 request 시점에 데이터를 fetch하는 경계를 만듭니다. 콘텐츠가 로드되는 동안 fallback을 제공하려면 dynamic cache를 `&lt;Suspense&gt;` boundary로 감싸세요.
+
+## Examples || 예시
+
+### Using preset profiles || Preset profile 사용하기
+
+caching을 설정하는 가장 간단한 방법은 preset profile을 사용하는 것입니다. 콘텐츠의 업데이트 패턴에 맞는 것을 선택하세요:
+
+[[CODE 10]]
+
+[[CODE 11]]
+
+### Custom profiles for specific needs || 특정 요구를 위한 custom profile
+
+preset option이 요구 사항에 맞지 않을 때 custom profile을 정의하세요:
+
+[[CODE 12]]
+
+그런 다음 애플리케이션 전체에서 이 profile을 사용하세요:
+
+[[CODE 13]]
+
+### Inline profiles for unique cases || 특수한 경우를 위한 inline profile
+
+특정 함수에 일회성 caching 동작이 필요할 때 inline profile을 사용하세요:
+
+[[CODE 14]]
+
+### Caching individual functions || 개별 함수 caching
+
+세밀하게 제어하려면 유틸리티 함수에 caching을 적용하세요:
+
+[[CODE 15]]
+
+[[CODE 16]]
+
+### Nested caching behavior || 중첩 caching 동작
+
+`use cache` directive를 중첩하면(cache된 함수나 component가 다른 cache된 함수나 component를 사용하는 경우), 바깥 cache의 동작은 명시적인 `cacheLife`가 있는지에 따라 달라집니다.
+
+#### With explicit outer cacheLife || 바깥에 명시적 cacheLife가 있는 경우
+
+바깥 cache는 안쪽 cache의 수명과 관계없이 자신의 수명을 사용합니다. 바깥 cache가 hit되면 모든 중첩 데이터를 포함한 전체 출력을 반환합니다. 명시적 `cacheLife`는 안쪽 수명보다 길든 짧든 항상 우선합니다.
+
+[[CODE 17]]
+
+#### Without explicit outer cacheLife || 바깥에 명시적 cacheLife가 없는 경우
+
+바깥 cache에서 `cacheLife`를 호출하지 않으면 `default` profile(15분 revalidate)을 사용합니다. 수명이 더 짧은 안쪽 cache는 바깥 cache의 `default` 수명을 줄일 수 있습니다. 수명이 더 긴 안쪽 cache는 이를 default 이상으로 늘릴 수 없습니다.
+
+[[CODE 18]]
+
+**명시적인 `cacheLife`를 지정하는 것을 권장합니다.** 명시적 수명 값이 있으면 중첩된 cache를 추적하지 않고도 cache된 함수나 component를 보고 동작을 바로 알 수 있습니다. 명시적 수명 값이 없으면 동작이 안쪽 cache 수명에 의존하게 되어 파악하기 어려워집니다.
+
+#### Nested short-lived caches || 중첩된 단기 cache
+
+[Prerendering behavior](#prerendering-behavior)에서 설명했듯이, 수명이 짧은 cache(`revalidate`가 0이거나 `expire`가 5분 미만)는 prerender에서 제외되는 dynamic hole이 됩니다.
+
+수명이 짧은 cache가 명시적 `cacheLife` 없는 다른 `use cache` 안에 중첩되면, 전파(propagation)에 의해 바깥 cache의 수명도 조용히 짧아지게 됩니다. 이런 실수로 인한 잘못된 설정을 방지하기 위해 Next.js는 prerendering 중에 error를 throw합니다.
+
+중첩된 cache는 명확히 드러나지 않을 수 있다는 점에 유의하세요. import한 module이나 심지어 third-party dependency 안에 있을 수도 있습니다:
+
+[[CODE 19]]
+
+명시적 `cacheLife` 없이 다른 `use cache`에서 이 component를 사용하면 prerendering 중에 error가 발생합니다:
+
+[[CODE 20]]
+
+error를 해결하려면 바깥 `use cache`에 명시적 `cacheLife()`를 추가하세요:
+
+**바깥 cache를 static(prerender됨)으로 유지하고 싶다면** 더 긴 cache 수명을 설정하세요:
+
+[[CODE 21]]
+
+**바깥 cache도 단기 cache로 만들고 싶다면** 의도한 것임을 확인하기 위해 짧은 cache 수명을 명시적으로 설정하세요. 콘텐츠가 로드되는 동안 fallback을 제공하려면 component를 `&lt;Suspense&gt;` boundary로 감싸세요:
+
+[[CODE 22]]
+
+&gt; **Note:** serverless 배포에서는 기본 in-memory cache를 사용한 runtime caching이 request 간에 유지되지 않으므로 이 예시는 `&quot;use cache: remote&quot;`를 사용합니다. self-hosted 환경에서는 `&quot;use cache&quot;`로 충분할 수 있습니다. 자세한 내용은 [Runtime caching considerations](/docs/app/api-reference/directives/use-cache#runtime-caching-considerations)를 참고하세요.
+
+### Conditional cache lifetimes || 조건부 cache 수명
+
+애플리케이션 로직에 따라 서로 다른 cache 기간을 설정하도록 여러 코드 경로에서 조건부로 `cacheLife`를 호출할 수 있습니다:
+
+[[CODE 23]]
+
+이 패턴은 결과에 따라 다른 cache 기간이 필요할 때 유용합니다. 예를 들어 항목이 없지만 나중에 생길 가능성이 높은 경우입니다.
+
+#### Using dynamic cache lifetimes from data || 데이터에서 동적 cache 수명 사용하기
+
+runtime에 cache 수명을 계산하고 싶다면(예: fetch한 데이터에서 읽어 오는 경우) [inline cache profile](#inline-cache-profiles) 객체를 사용하세요:
+
+[[CODE 24]]
+
+## Version History || 버전 기록
+
+| Version   | Changes                                                  |
+| --------- | -------------------------------------------------------- |
+| `v16.0.0` | `cacheLife` stable화. `unstable_cacheLife` deprecated. |
+
+`unstable_cacheLife`에서 `cacheLife`로 import를 업데이트하려면 [Next.js 16 upgrade guide](/docs/app/guides/upgrading/version-16#cachelife-and-cachetag)를 참고하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

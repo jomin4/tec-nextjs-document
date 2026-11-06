@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to set a Content Security Policy (CSP) for your Next.js application (Next.js 애플리케이션에 Content Security Policy(CSP) 설정하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/guides/content-security-policy" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/guides/content-security-policy" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/content-security-policy.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to set a Content Security Policy (CSP) for your Next.js application<span class="sub">Next.js 애플리케이션에 Content Security Policy(CSP) 설정하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><a href="https://developer.mozilla.org/docs/Web/HTTP/CSP" target="_blank" rel="noopener">Content Security Policy(CSP)</a>는 cross-site scripting(XSS), clickjacking, 기타 code injection 공격 같은 다양한 보안 위협으로부터 Next.js 애플리케이션을 보호하는 데 중요합니다.</p><div class="en-orig"><p><a href="https://developer.mozilla.org/docs/Web/HTTP/CSP" target="_blank" rel="noopener">Content Security Policy (CSP)</a> is important to guard your Next.js application against various security threats such as cross-site scripting (XSS), clickjacking, and other code injection attacks.</p></div>
+<p>CSP를 사용하면 개발자는 content source, script, stylesheet, 이미지, font, object, media(audio, video), iframe 등에 대해 어떤 origin을 허용할지 지정할 수 있습니다.</p><div class="en-orig"><p>By using CSP, developers can specify which origins are permissible for content sources, scripts, stylesheets, images, fonts, objects, media (audio, video), iframes, and more.</p></div>
+<details><summary>예시</summary><div class="details-body"><ul>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/with-strict-csp" target="_blank" rel="noopener">Strict CSP</a></li>
+</ul></div></details>
+<h2 class="sec" id="nonces"><a class="anchor" href="#nonces">Nonces<span class="ko">Nonce</span></a></h2>
+<p><a href="https://developer.mozilla.org/docs/Web/HTML/Global_attributes/nonce" target="_blank" rel="noopener">nonce</a>는 한 번만 사용하도록 만든 고유한 무작위 문자열입니다. CSP와 함께 사용해, 엄격한 CSP directive를 우회하여 특정 inline script나 style만 선택적으로 실행되도록 허용합니다.</p><div class="en-orig"><p>A <a href="https://developer.mozilla.org/docs/Web/HTML/Global_attributes/nonce" target="_blank" rel="noopener">nonce</a> is a unique, random string of characters created for a one-time use. It is used in conjunction with CSP to selectively allow certain inline scripts or styles to execute, bypassing strict CSP directives.</p></div>
+<h3 class="sec" id="why-use-a-nonce"><a class="anchor" href="#why-use-a-nonce">Why use a nonce?<span class="ko">왜 nonce를 사용할까요?</span></a></h3>
+<p>CSP는 공격을 막기 위해 inline script와 외부 script를 모두 차단할 수 있습니다. nonce를 사용하면 일치하는 nonce 값을 포함한 특정 script만 안전하게 실행되도록 허용할 수 있습니다.</p><div class="en-orig"><p>CSP can block both inline and external scripts to prevent attacks. A nonce lets you safely allow specific scripts to run—only if they include the matching nonce value.</p></div>
+<p>공격자가 page에 script를 로드하려면 nonce 값을 추측해야 합니다. 그래서 nonce는 예측할 수 없어야 하고 request마다 고유해야 합니다.</p><div class="en-orig"><p>If an attacker wanted to load a script into your page, they'd need to guess the nonce value. That's why the nonce must be unpredictable and unique for every request.</p></div>
+<h3 class="sec" id="adding-a-nonce-with-proxy"><a class="anchor" href="#adding-a-nonce-with-proxy">Adding a nonce with Proxy<span class="ko">Proxy로 nonce 추가하기</span></a></h3>
+<p><a href="app-api-reference-file-conventions-proxy.html">Proxy</a>를 사용하면 page가 render되기 전에 header를 추가하고 nonce를 생성할 수 있습니다.</p><div class="en-orig"><p><a href="app-api-reference-file-conventions-proxy.html">Proxy</a> enables you to add headers and generate nonces before the page renders.</p></div>
+<p>page를 볼 때마다 새 nonce가 생성되어야 합니다. 즉, <strong>nonce를 추가하려면 반드시 <a href="app-glossary.html#dynamic-rendering">dynamic rendering</a>을 사용해야 합니다</strong>.</p><div class="en-orig"><p>Every time a page is viewed, a fresh nonce should be generated. This means that you <strong>must use <a href="app-glossary.html#dynamic-rendering">dynamic rendering</a> to add nonces</strong>.</p></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>development 환경에서는 <code>&#x27;unsafe-eval&#x27;</code>이 필요합니다. React가 browser에서 server-side error stack을 재구성하는 등 향상된 debugging 정보를 제공하기 위해 <code>eval</code>을 사용하기 때문입니다. production에서는 <code>unsafe-eval</code>이 필요하지 않습니다. React와 Next.js 모두 기본적으로 production에서는 <code>eval</code>을 사용하지 않습니다.</p><div class="en-orig"><p>In development, <code>&#x27;unsafe-eval&#x27;</code> is required because React uses <code>eval</code> to provide enhanced debugging information, such as reconstructing server-side error stacks in the browser. <code>unsafe-eval</code> is not required for production. Neither React nor Next.js use <code>eval</code> in production by default.</p></div></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { NextRequest, NextResponse } from &#x27;next/server&#x27;
+
+export function proxy(request: NextRequest) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString(&#x27;base64&#x27;)
+  const isDev = process.env.NODE_ENV === &#x27;development&#x27;
+  const cspHeader = `
+    default-src &#x27;self&#x27;;
+    script-src &#x27;self&#x27; &#x27;nonce-${nonce}&#x27; &#x27;strict-dynamic&#x27;${isDev ? &quot; &#x27;unsafe-eval&#x27;&quot; : &#x27;&#x27;};
+    style-src &#x27;self&#x27; &#x27;nonce-${nonce}&#x27;;
+    img-src &#x27;self&#x27; blob: data:;
+    font-src &#x27;self&#x27;;
+    object-src &#x27;none&#x27;;
+    base-uri &#x27;self&#x27;;
+    form-action &#x27;self&#x27;;
+    frame-ancestors &#x27;none&#x27;;
+    upgrade-insecure-requests;
+`
+  // Replace newline characters and spaces
+  const contentSecurityPolicyHeaderValue = cspHeader
+    .replace(/\s{2,}/g, &#x27; &#x27;)
+    .trim()
+
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set(&#x27;x-nonce&#x27;, nonce)
+
+  requestHeaders.set(
+    &#x27;Content-Security-Policy&#x27;,
+    contentSecurityPolicyHeaderValue
+  )
+
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  })
+  response.headers.set(
+    &#x27;Content-Security-Policy&#x27;,
+    contentSecurityPolicyHeaderValue
+  )
+
+  return response
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { NextResponse } from &#x27;next/server&#x27;
+
+export function proxy(request) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString(&#x27;base64&#x27;)
+  const isDev = process.env.NODE_ENV === &#x27;development&#x27;
+  const cspHeader = `
+    default-src &#x27;self&#x27;;
+    script-src &#x27;self&#x27; &#x27;nonce-${nonce}&#x27; &#x27;strict-dynamic&#x27;${isDev ? &quot; &#x27;unsafe-eval&#x27;&quot; : &#x27;&#x27;};
+    style-src &#x27;self&#x27; &#x27;nonce-${nonce}&#x27;;
+    img-src &#x27;self&#x27; blob: data:;
+    font-src &#x27;self&#x27;;
+    object-src &#x27;none&#x27;;
+    base-uri &#x27;self&#x27;;
+    form-action &#x27;self&#x27;;
+    frame-ancestors &#x27;none&#x27;;
+    upgrade-insecure-requests;
+`
+  // Replace newline characters and spaces
+  const contentSecurityPolicyHeaderValue = cspHeader
+    .replace(/\s{2,}/g, &#x27; &#x27;)
+    .trim()
+
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set(&#x27;x-nonce&#x27;, nonce)
+  requestHeaders.set(
+    &#x27;Content-Security-Policy&#x27;,
+    contentSecurityPolicyHeaderValue
+  )
+
+  const response = NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  })
+  response.headers.set(
+    &#x27;Content-Security-Policy&#x27;,
+    contentSecurityPolicyHeaderValue
+  )
+
+  return response
+}</code></pre></div></div>
+<p>기본적으로 Proxy는 모든 request에서 실행됩니다. <a href="app-api-reference-file-conventions-proxy.html#matcher"><code>matcher</code></a>를 사용해 특정 path에서만 Proxy가 실행되도록 filter할 수 있습니다.</p><div class="en-orig"><p>By default, Proxy runs on all requests. You can filter Proxy to run on specific paths using a <a href="app-api-reference-file-conventions-proxy.html#matcher"><code>matcher</code></a>.</p></div>
+<p>(<code>next/link</code>에서 오는) prefetch와 CSP header가 필요 없는 static asset은 match 대상에서 제외하는 것을 권장합니다.</p><div class="en-orig"><p>We recommend ignoring matching prefetches (from <code>next/link</code>) and static assets that don't need the CSP header.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    {
+      source: &#x27;/((?!api|_next/static|_next/image|favicon.ico).*)&#x27;,
+      missing: [
+        { type: &#x27;header&#x27;, key: &#x27;next-router-prefetch&#x27; },
+        { type: &#x27;header&#x27;, key: &#x27;purpose&#x27;, value: &#x27;prefetch&#x27; },
+      ],
+    },
+  ],
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    {
+      source: &#x27;/((?!api|_next/static|_next/image|favicon.ico).*)&#x27;,
+      missing: [
+        { type: &#x27;header&#x27;, key: &#x27;next-router-prefetch&#x27; },
+        { type: &#x27;header&#x27;, key: &#x27;purpose&#x27;, value: &#x27;prefetch&#x27; },
+      ],
+    },
+  ],
+}</code></pre></div></div>
+<h3 class="sec" id="how-nonces-work-in-nextjs"><a class="anchor" href="#how-nonces-work-in-nextjs">How nonces work in Next.js<span class="ko">Next.js에서 nonce가 동작하는 방식</span></a></h3>
+<p>nonce를 사용하려면 page가 <strong>dynamic하게 render</strong>되어야 합니다. Next.js는 request에 있는 CSP header를 기반으로 <strong>server-side rendering</strong> 중에 nonce를 적용하기 때문입니다. static page는 request나 response header가 존재하지 않는 build 시점에 생성되므로 nonce를 주입할 수 없습니다.</p><div class="en-orig"><p>To use a nonce, your page must be <strong>dynamically rendered</strong>. This is because Next.js applies nonces during <strong>server-side rendering</strong>, based on the CSP header present in the request. Static pages are generated at build time, when no request or response headers exist—so no nonce can be injected.</p></div>
+<p>dynamic하게 render되는 page에서 nonce 지원은 다음과 같이 동작합니다:</p><div class="en-orig"><p>Here’s how nonce support works in a dynamically rendered page:</p></div>
+<ol>
+<li><strong>Proxy가 nonce를 생성</strong>: proxy가 request마다 고유한 nonce를 만들어 <code>Content-Security-Policy</code> header에 추가하고, custom <code>x-nonce</code> header에도 설정합니다.</li>
+<li><strong>Next.js가 nonce를 추출</strong>: rendering 중에 Next.js는 <code>Content-Security-Policy</code> header를 parse하고 <code>&#x27;nonce-{value}&#x27;</code> 패턴으로 nonce를 추출합니다.</li>
+<li><strong>nonce가 자동으로 적용</strong>: Next.js는 다음 항목에 nonce를 붙입니다:<ul>
+<li>Framework script(React, Next.js runtime)</li>
+<li>page별 JavaScript bundle</li>
+<li>Next.js가 생성하는 inline style과 script</li>
+<li><code>nonce</code> prop을 사용하는 모든 <code>&lt;Script&gt;</code> component</li>
+</ul></li>
+</ol><div class="en-orig"><ol>
+<li><strong>Proxy generates a nonce</strong>: Your proxy creates a unique nonce for the request, adds it to your <code>Content-Security-Policy</code> header, and also sets it in a custom <code>x-nonce</code> header.</li>
+<li><strong>Next.js extracts the nonce</strong>: During rendering, Next.js parses the <code>Content-Security-Policy</code> header and extracts the nonce using the <code>&#x27;nonce-{value}&#x27;</code> pattern.</li>
+<li><strong>Nonce is applied automatically</strong>: Next.js attaches the nonce to:<ul>
+<li>Framework scripts (React, Next.js runtime)</li>
+<li>Page-specific JavaScript bundles</li>
+<li>Inline styles and scripts generated by Next.js</li>
+<li>Any <code>&lt;Script&gt;</code> components using the <code>nonce</code> prop</li>
+</ul></li>
+</ol></div>
+<p>이런 자동 동작 덕분에 각 tag에 직접 nonce를 추가할 필요가 없습니다.</p><div class="en-orig"><p>Because of this automatic behavior, you don’t need to manually add a nonce to each tag.</p></div>
+<h3 class="sec" id="forcing-dynamic-rendering"><a class="anchor" href="#forcing-dynamic-rendering">Forcing dynamic rendering<span class="ko">dynamic rendering 강제하기</span></a></h3>
+<p>nonce를 사용한다면 page가 dynamic rendering을 사용하도록 명시적으로 opt-in해야 할 수 있습니다:</p><div class="en-orig"><p>If you're using nonces, you may need to explicitly opt pages into dynamic rendering:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.jsx">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { connection } from &#x27;next/server&#x27;
+
+export default async function Page() {
+  // wait for an incoming request to render this page
+  await connection()
+  // Your page content
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { connection } from &#x27;next/server&#x27;
+
+export default async function Page() {
+  // wait for an incoming request to render this page
+  await connection()
+  // Your page content
+}</code></pre></div></div>
+<h3 class="sec" id="reading-the-nonce"><a class="anchor" href="#reading-the-nonce">Reading the nonce<span class="ko">nonce 읽기</span></a></h3>
+<p>  <a href="pages-building-your-application-data-fetching-get-server-side-props.html"><code>getServerSideProps</code></a>를
+  사용해 page에 nonce를 제공할 수 있습니다:</p><div class="en-orig"><p>  You can provide the nonce to your page using
+  <a href="pages-building-your-application-data-fetching-get-server-side-props.html"><code>getServerSideProps</code></a>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/index.tsx" data-js="pages/index.jsx">pages/index.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Script from &#x27;next/script&#x27;
+
+import type { GetServerSideProps } from &#x27;next&#x27;
+
+export default function Page({ nonce }) {
+  return (
+    &lt;Script
+      src=&quot;https://www.googletagmanager.com/gtag/js&quot;
+      strategy=&quot;afterInteractive&quot;
+      nonce={nonce}
+    /&gt;
+  )
+}
+
+export const getServerSideProps: GetServerSideProps = async ({ req }) =&gt; {
+  const nonce = req.headers[&#x27;x-nonce&#x27;]
+  return { props: { nonce } }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Script from &#x27;next/script&#x27;
+export default function Page({ nonce }) {
+  return (
+    &lt;Script
+      src=&quot;https://www.googletagmanager.com/gtag/js&quot;
+      strategy=&quot;afterInteractive&quot;
+      nonce={nonce}
+    /&gt;
+  )
+}
+
+export async function getServerSideProps({ req }) {
+  const nonce = req.headers[&#x27;x-nonce&#x27;]
+  return { props: { nonce } }
+}</code></pre></div></div>
+<p>Pages Router 애플리케이션에서는 <code>_document.tsx</code>에서도 nonce에 접근할 수 있습니다:</p><div class="en-orig"><p>You can also access the nonce in <code>_document.tsx</code> for Pages Router applications:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/_document.tsx" data-js="pages/_document.jsx">pages/_document.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Document, {
+  Html,
+  Head,
+  Main,
+  NextScript,
+  DocumentContext,
+  DocumentInitialProps,
+} from &#x27;next/document&#x27;
+
+interface ExtendedDocumentProps extends DocumentInitialProps {
+  nonce?: string
+}
+
+class MyDocument extends Document&lt;ExtendedDocumentProps&gt; {
+  static async getInitialProps(
+    ctx: DocumentContext
+  ): Promise&lt;ExtendedDocumentProps&gt; {
+    const initialProps = await Document.getInitialProps(ctx)
+    const nonce = ctx.req?.headers?.[&#x27;x-nonce&#x27;] as string | undefined
+
+    return {
+      ...initialProps,
+      nonce,
+    }
+  }
+
+  render() {
+    const { nonce } = this.props
+
+    return (
+      &lt;Html lang=&quot;en&quot;&gt;
+        &lt;Head nonce={nonce} /&gt;
+        &lt;body&gt;
+          &lt;Main /&gt;
+          &lt;NextScript nonce={nonce} /&gt;
+        &lt;/body&gt;
+      &lt;/Html&gt;
+    )
+  }
+}
+
+export default MyDocument</code></pre><pre class="v-js" hidden><code class="language-javascript">import Document, { Html, Head, Main, NextScript } from &#x27;next/document&#x27;
+
+class MyDocument extends Document {
+  static async getInitialProps(ctx) {
+    const initialProps = await Document.getInitialProps(ctx)
+    const nonce = ctx.req?.headers?.[&#x27;x-nonce&#x27;]
+
+    return {
+      ...initialProps,
+      nonce,
+    }
+  }
+
+  render() {
+    const { nonce } = this.props
+
+    return (
+      &lt;Html lang=&quot;en&quot;&gt;
+        &lt;Head nonce={nonce} /&gt;
+        &lt;body&gt;
+          &lt;Main /&gt;
+          &lt;NextScript nonce={nonce} /&gt;
+        &lt;/body&gt;
+      &lt;/Html&gt;
+    )
+  }
+}
+
+export default MyDocument</code></pre></div></div>
+<h2 class="sec" id="static-vs-dynamic-rendering-with-csp"><a class="anchor" href="#static-vs-dynamic-rendering-with-csp">Static vs Dynamic Rendering with CSP<span class="ko">CSP와 Static vs Dynamic Rendering</span></a></h2>
+<p>nonce를 사용하면 Next.js 애플리케이션이 render되는 방식에 중요한 영향을 줍니다:</p><div class="en-orig"><p>Using nonces has important implications for how your Next.js application renders:</p></div>
+<h3 class="sec" id="dynamic-rendering-requirement"><a class="anchor" href="#dynamic-rendering-requirement">Dynamic Rendering Requirement<span class="ko">Dynamic Rendering 요구 사항</span></a></h3>
+<p>CSP에서 nonce를 사용하면 <strong>모든 page가 dynamic하게 render되어야 합니다</strong>. 즉:</p><div class="en-orig"><p>When you use nonces in your CSP, <strong>all pages must be dynamically rendered</strong>. This means:</p></div>
+<ul>
+<li>page는 build에 성공하지만, dynamic rendering에 맞게 제대로 설정되지 않으면 runtime error가 발생할 수 있습니다</li>
+<li>각 request마다 새 nonce가 들어간 새 page가 생성됩니다</li>
+<li>Static optimization과 Incremental Static Regeneration(ISR)이 비활성화됩니다</li>
+<li>추가 설정 없이는 CDN이 page를 cache할 수 없습니다</li>
+<li>static shell script가 nonce에 접근할 수 없으므로 <strong>Partial Prerendering(PPR)은 nonce 기반 CSP와 호환되지 않습니다</strong></li>
+</ul><div class="en-orig"><ul>
+<li>Pages will build successfully but may encounter runtime errors if not properly configured for dynamic rendering</li>
+<li>Each request generates a fresh page with a new nonce</li>
+<li>Static optimization and Incremental Static Regeneration (ISR) are disabled</li>
+<li>Pages cannot be cached by CDNs without additional configuration</li>
+<li><strong>Partial Prerendering (PPR) is incompatible</strong> with nonce-based CSP since static shell scripts won't have access to the nonce</li>
+</ul></div>
+<h3 class="sec" id="performance-implications"><a class="anchor" href="#performance-implications">Performance Implications<span class="ko">성능에 미치는 영향</span></a></h3>
+<p>static rendering에서 dynamic rendering으로 바뀌면 성능에 영향을 줍니다:</p><div class="en-orig"><p>The shift from static to dynamic rendering affects performance:</p></div>
+<ul>
+<li><strong>초기 page 로딩이 느려짐</strong>: page가 매 request마다 생성되어야 합니다</li>
+<li><strong>server 부하 증가</strong>: 모든 request에 server-side rendering이 필요합니다</li>
+<li><strong>CDN caching 불가</strong>: dynamic page는 기본적으로 edge에서 cache할 수 없습니다</li>
+<li><strong>hosting 비용 증가</strong>: dynamic rendering에 더 많은 server 자원이 필요합니다</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Slower initial page loads</strong>: Pages must be generated on each request</li>
+<li><strong>Increased server load</strong>: Every request requires server-side rendering</li>
+<li><strong>No CDN caching</strong>: Dynamic pages cannot be cached at the edge by default</li>
+<li><strong>Higher hosting costs</strong>: More server resources needed for dynamic rendering</li>
+</ul></div>
+<h3 class="sec" id="when-to-use-nonces"><a class="anchor" href="#when-to-use-nonces">When to use nonces<span class="ko">nonce를 사용해야 할 때</span></a></h3>
+<p>다음과 같은 경우 nonce를 고려하세요:</p><div class="en-orig"><p>Consider nonces when:</p></div>
+<ul>
+<li><code>&#x27;unsafe-inline&#x27;</code>을 금지하는 엄격한 보안 요구 사항이 있을 때</li>
+<li>애플리케이션이 민감한 데이터를 다룰 때</li>
+<li>다른 script는 차단하면서 특정 inline script만 허용해야 할 때</li>
+<li>compliance 요구 사항이 엄격한 CSP를 의무화할 때</li>
+</ul><div class="en-orig"><ul>
+<li>You have strict security requirements that prohibit <code>&#x27;unsafe-inline&#x27;</code></li>
+<li>Your application handles sensitive data</li>
+<li>You need to allow specific inline scripts while blocking others</li>
+<li>Compliance requirements mandate strict CSP</li>
+</ul></div>
+<h2 class="sec" id="without-nonces"><a class="anchor" href="#without-nonces">Without Nonces<span class="ko">Nonce 없이 사용하기</span></a></h2>
+<p>nonce가 필요 없는 애플리케이션에서는 <a href="app-api-reference-config-next-config-js.html"><code>next.config.js</code></a> 파일에서 CSP header를 직접 설정할 수 있습니다:</p><div class="en-orig"><p>For applications that do not require nonces, you can set the CSP header directly in your <a href="app-api-reference-config-next-config-js.html"><code>next.config.js</code></a> file:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">const isDev = process.env.NODE_ENV === &#x27;development&#x27;
+
+const cspHeader = `
+    default-src &#x27;self&#x27;;
+    script-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;${isDev ? &quot; &#x27;unsafe-eval&#x27;&quot; : &#x27;&#x27;};
+    style-src &#x27;self&#x27; &#x27;unsafe-inline&#x27;;
+    img-src &#x27;self&#x27; blob: data:;
+    font-src &#x27;self&#x27;;
+    object-src &#x27;none&#x27;;
+    base-uri &#x27;self&#x27;;
+    form-action &#x27;self&#x27;;
+    frame-ancestors &#x27;none&#x27;;
+    upgrade-insecure-requests;
+`
+
+module.exports = {
+  async headers() {
+    return [
+      {
+        source: &#x27;/(.*)&#x27;,
+        headers: [
+          {
+            key: &#x27;Content-Security-Policy&#x27;,
+            value: cspHeader.replace(/\n/g, &#x27;&#x27;),
+          },
+        ],
+      },
+    ]
+  },
+}</code></pre></div></div>
+<h2 class="sec" id="development-vs-production-considerations"><a class="anchor" href="#development-vs-production-considerations">Development vs Production Considerations<span class="ko">Development와 Production 고려 사항</span></a></h2>
+<p>CSP 구현은 development 환경과 production 환경에서 다릅니다:</p><div class="en-orig"><p>CSP implementation differs between development and production environments:</p></div>
+<h3 class="sec" id="development-environment"><a class="anchor" href="#development-environment">Development Environment<span class="ko">Development 환경</span></a></h3>
+<p>development에서는 <code>&#x27;unsafe-eval&#x27;</code>을 활성화해야 합니다. React가 server에서 error가 어디서 발생했는지 보여 주기 위해 browser에서 server-side error stack을 재구성하는 등 향상된 debugging 정보를 제공하는 데 <code>eval</code>을 사용하기 때문입니다:</p><div class="en-orig"><p>In development, you will need to enable <code>&#x27;unsafe-eval&#x27;</code> because React uses <code>eval</code> to provide enhanced debugging information, such as reconstructing server-side error stacks in the browser to show you where errors originated on the server:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export function proxy(request: NextRequest) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString(&#x27;base64&#x27;)
+  const isDev = process.env.NODE_ENV === &#x27;development&#x27;
+
+  const cspHeader = `
+    default-src &#x27;self&#x27;;
+    script-src &#x27;self&#x27; &#x27;nonce-${nonce}&#x27; &#x27;strict-dynamic&#x27; ${isDev ? &quot;&#x27;unsafe-eval&#x27;&quot; : &#x27;&#x27;};
+    style-src &#x27;self&#x27; ${isDev ? &quot;&#x27;unsafe-inline&#x27;&quot; : `&#x27;nonce-${nonce}&#x27;`};
+    img-src &#x27;self&#x27; blob: data:;
+    font-src &#x27;self&#x27;;
+    object-src &#x27;none&#x27;;
+    base-uri &#x27;self&#x27;;
+    form-action &#x27;self&#x27;;
+    frame-ancestors &#x27;none&#x27;;
+    upgrade-insecure-requests;
+`
+
+  // Rest of proxy implementation
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export function proxy(request) {
+  const nonce = Buffer.from(crypto.randomUUID()).toString(&#x27;base64&#x27;)
+  const isDev = process.env.NODE_ENV === &#x27;development&#x27;
+
+  const cspHeader = `
+    default-src &#x27;self&#x27;;
+    script-src &#x27;self&#x27; &#x27;nonce-${nonce}&#x27; &#x27;strict-dynamic&#x27; ${isDev ? &quot;&#x27;unsafe-eval&#x27;&quot; : &#x27;&#x27;};
+    style-src &#x27;self&#x27; ${isDev ? &quot;&#x27;unsafe-inline&#x27;&quot; : `&#x27;nonce-${nonce}&#x27;`};
+    img-src &#x27;self&#x27; blob: data:;
+    font-src &#x27;self&#x27;;
+    object-src &#x27;none&#x27;;
+    base-uri &#x27;self&#x27;;
+    form-action &#x27;self&#x27;;
+    frame-ancestors &#x27;none&#x27;;
+    upgrade-insecure-requests;
+`
+
+  // Rest of proxy implementation
+}</code></pre></div></div>
+<h3 class="sec" id="production-deployment"><a class="anchor" href="#production-deployment">Production Deployment<span class="ko">Production 배포</span></a></h3>
+<p>production에서 흔히 발생하는 문제:</p><div class="en-orig"><p>Common issues in production:</p></div>
+<ul>
+<li><strong>nonce가 적용되지 않음</strong>: 필요한 모든 route에서 proxy가 실행되는지 확인하세요</li>
+<li><strong>static asset이 차단됨</strong>: CSP가 Next.js static asset을 허용하는지 확인하세요</li>
+<li><strong>Third-party script</strong>: 필요한 domain을 CSP policy에 추가하세요</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Nonce not applied</strong>: Ensure your proxy runs on all necessary routes</li>
+<li><strong>Static assets blocked</strong>: Verify your CSP allows Next.js static assets</li>
+<li><strong>Third-party scripts</strong>: Add necessary domains to your CSP policy</li>
+</ul></div>
+<h2 class="sec" id="troubleshooting"><a class="anchor" href="#troubleshooting">Troubleshooting<span class="ko">문제 해결</span></a></h2>
+<h3 class="sec" id="third-party-scripts"><a class="anchor" href="#third-party-scripts">Third-party Scripts<span class="ko">Third-party script</span></a></h3>
+<p>CSP와 함께 third-party script를 사용할 때는 필요한 domain을 추가하고 nonce를 전달하세요:</p><div class="en-orig"><p>When using third-party scripts with CSP, ensure you add the necessary domains and pass the nonce:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/_app.tsx" data-js="pages/_app.jsx">pages/_app.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { AppProps } from &#x27;next/app&#x27;
+import Script from &#x27;next/script&#x27;
+
+export default function App({ Component, pageProps }: AppProps) {
+  const nonce = pageProps.nonce
+
+  return (
+    &lt;&gt;
+      &lt;Component {...pageProps} /&gt;
+      &lt;Script
+        src=&quot;https://www.googletagmanager.com/gtag/js&quot;
+        strategy=&quot;afterInteractive&quot;
+        nonce={nonce}
+      /&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Script from &#x27;next/script&#x27;
+
+export default function App({ Component, pageProps }) {
+  const nonce = pageProps.nonce
+
+  return (
+    &lt;&gt;
+      &lt;Component {...pageProps} /&gt;
+      &lt;Script
+        src=&quot;https://www.googletagmanager.com/gtag/js&quot;
+        strategy=&quot;afterInteractive&quot;
+        nonce={nonce}
+      /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p>third-party domain을 허용하도록 CSP를 업데이트하세요:</p><div class="en-orig"><p>Update your CSP to allow third-party domains:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">const cspHeader = `
+  default-src &#x27;self&#x27;;
+  script-src &#x27;self&#x27; &#x27;nonce-${nonce}&#x27; &#x27;strict-dynamic&#x27; https://www.googletagmanager.com;
+  connect-src &#x27;self&#x27; https://www.google-analytics.com;
+  img-src &#x27;self&#x27; data: https://www.google-analytics.com;
+`</code></pre><pre class="v-js" hidden><code class="language-javascript">const cspHeader = `
+  default-src &#x27;self&#x27;;
+  script-src &#x27;self&#x27; &#x27;nonce-${nonce}&#x27; &#x27;strict-dynamic&#x27; https://www.googletagmanager.com;
+  connect-src &#x27;self&#x27; https://www.google-analytics.com;
+  img-src &#x27;self&#x27; data: https://www.google-analytics.com;
+`</code></pre></div></div>
+<h3 class="sec" id="common-csp-violations"><a class="anchor" href="#common-csp-violations">Common CSP Violations<span class="ko">흔한 CSP 위반</span></a></h3>
+<ol>
+<li><strong>Inline style</strong>: nonce를 지원하는 CSS-in-JS library를 사용하거나 style을 외부 파일로 옮기세요</li>
+<li><strong>Dynamic import</strong>: script-src policy에서 dynamic import가 허용되는지 확인하세요</li>
+<li><strong>WebAssembly</strong>: WebAssembly를 사용한다면 <code>&#x27;wasm-unsafe-eval&#x27;</code>을 추가하세요</li>
+<li><strong>Service worker</strong>: service worker script에 맞는 policy를 추가하세요</li>
+</ol><div class="en-orig"><ol>
+<li><strong>Inline styles</strong>: Use CSS-in-JS libraries that support nonces or move styles to external files</li>
+<li><strong>Dynamic imports</strong>: Ensure dynamic imports are allowed in your script-src policy</li>
+<li><strong>WebAssembly</strong>: Add <code>&#x27;wasm-unsafe-eval&#x27;</code> if using WebAssembly</li>
+<li><strong>Service workers</strong>: Add appropriate policies for service worker scripts</li>
+</ol></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>버전</th><th>변경 사항</th></tr></thead>
+<tbody>
+<tr><td><code>v14.0.0</code></td><td>hash 기반 CSP를 위한 experimental SRI 지원 추가</td></tr>
+<tr><td><code>v13.4.20</code></td><td>올바른 nonce 처리와 CSP header parsing을 위해 권장되는 버전.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v14.0.0</code></td><td>Experimental SRI support added for hash-based CSP</td></tr>
+<tr><td><code>v13.4.20</code></td><td>Recommended for proper nonce handling and CSP header parsing.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><div class="rgrid"><a class="rcard" href="app-api-reference-file-conventions-proxy.html"><div class="rt">proxy.js</div><div class="rk">proxy.js</div><div class="rd">proxy.js 파일에 대한 API reference입니다.</div></a><a class="rcard" href="app-api-reference-functions-headers.html"><div class="rt">headers</div><div class="rk">headers</div><div class="rd">headers 함수에 대한 API reference입니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/content-security-policy.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/guides/content-security-policy" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-guides-ci-build-caching.html" class="prev"><div class="dir">← 이전</div><div class="ttl">CI Build Caching</div><div class="ttl-ko">CI build caching 설정하기</div></a>
+      <a href="pages-guides-css-in-js.html" class="next"><div class="dir">다음 →</div><div class="ttl">CSS-in-JS</div><div class="ttl-ko">CSS-in-JS library 사용하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/guides/content-security-policy" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#nonces">Nonces</a></li><li class="l3"><a href="#why-use-a-nonce">Why use a nonce?</a></li><li class="l3"><a href="#adding-a-nonce-with-proxy">Adding a nonce with Proxy</a></li><li class="l3"><a href="#how-nonces-work-in-nextjs">How nonces work in Next.js</a></li><li class="l3"><a href="#forcing-dynamic-rendering">Forcing dynamic rendering</a></li><li class="l3"><a href="#reading-the-nonce">Reading the nonce</a></li><li class="l2"><a href="#static-vs-dynamic-rendering-with-csp">Static vs Dynamic Rendering with CSP</a></li><li class="l3"><a href="#dynamic-rendering-requirement">Dynamic Rendering Requirement</a></li><li class="l3"><a href="#performance-implications">Performance Implications</a></li><li class="l3"><a href="#when-to-use-nonces">When to use nonces</a></li><li class="l2"><a href="#without-nonces">Without Nonces</a></li><li class="l2"><a href="#development-vs-production-considerations">Development vs Production Considerations</a></li><li class="l3"><a href="#development-environment">Development Environment</a></li><li class="l3"><a href="#production-deployment">Production Deployment</a></li><li class="l2"><a href="#troubleshooting">Troubleshooting</a></li><li class="l3"><a href="#third-party-scripts">Third-party Scripts</a></li><li class="l3"><a href="#common-csp-violations">Common CSP Violations</a></li><li class="l2"><a href="#version-history">Version History</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+[Content Security Policy(CSP)](https://developer.mozilla.org/docs/Web/HTTP/CSP)는 cross-site scripting(XSS), clickjacking, 기타 code injection 공격 같은 다양한 보안 위협으로부터 Next.js 애플리케이션을 보호하는 데 중요합니다.
+
+CSP를 사용하면 개발자는 content source, script, stylesheet, 이미지, font, object, media(audio, video), iframe 등에 대해 어떤 origin을 허용할지 지정할 수 있습니다.
+
+&lt;details&gt;
+  &lt;summary&gt;예시&lt;/summary&gt;
+
+- [Strict CSP](https://github.com/vercel/next.js/tree/canary/examples/with-strict-csp)
+
+&lt;/details&gt;
+
+## Nonces || Nonce
+
+[nonce](https://developer.mozilla.org/docs/Web/HTML/Global_attributes/nonce)는 한 번만 사용하도록 만든 고유한 무작위 문자열입니다. CSP와 함께 사용해, 엄격한 CSP directive를 우회하여 특정 inline script나 style만 선택적으로 실행되도록 허용합니다.
+
+### Why use a nonce? || 왜 nonce를 사용할까요?
+
+CSP는 공격을 막기 위해 inline script와 외부 script를 모두 차단할 수 있습니다. nonce를 사용하면 일치하는 nonce 값을 포함한 특정 script만 안전하게 실행되도록 허용할 수 있습니다.
+
+공격자가 page에 script를 로드하려면 nonce 값을 추측해야 합니다. 그래서 nonce는 예측할 수 없어야 하고 request마다 고유해야 합니다.
+
+### Adding a nonce with Proxy || Proxy로 nonce 추가하기
+
+[Proxy](/docs/app/api-reference/file-conventions/proxy)를 사용하면 page가 render되기 전에 header를 추가하고 nonce를 생성할 수 있습니다.
+
+page를 볼 때마다 새 nonce가 생성되어야 합니다. 즉, **nonce를 추가하려면 반드시 [dynamic rendering](/docs/app/glossary#dynamic-rendering)을 사용해야 합니다**.
+
+예를 들면 다음과 같습니다:
+
+&gt; **Good to know**: development 환경에서는 `&#x27;unsafe-eval&#x27;`이 필요합니다. React가 browser에서 server-side error stack을 재구성하는 등 향상된 debugging 정보를 제공하기 위해 `eval`을 사용하기 때문입니다. production에서는 `unsafe-eval`이 필요하지 않습니다. React와 Next.js 모두 기본적으로 production에서는 `eval`을 사용하지 않습니다.
+
+[[CODE 1]]
+
+기본적으로 Proxy는 모든 request에서 실행됩니다. [`matcher`](/docs/app/api-reference/file-conventions/proxy#matcher)를 사용해 특정 path에서만 Proxy가 실행되도록 filter할 수 있습니다.
+
+(`next/link`에서 오는) prefetch와 CSP header가 필요 없는 static asset은 match 대상에서 제외하는 것을 권장합니다.
+
+[[CODE 2]]
+
+### How nonces work in Next.js || Next.js에서 nonce가 동작하는 방식
+
+nonce를 사용하려면 page가 **dynamic하게 render**되어야 합니다. Next.js는 request에 있는 CSP header를 기반으로 **server-side rendering** 중에 nonce를 적용하기 때문입니다. static page는 request나 response header가 존재하지 않는 build 시점에 생성되므로 nonce를 주입할 수 없습니다.
+
+dynamic하게 render되는 page에서 nonce 지원은 다음과 같이 동작합니다:
+
+1. **Proxy가 nonce를 생성**: proxy가 request마다 고유한 nonce를 만들어 `Content-Security-Policy` header에 추가하고, custom `x-nonce` header에도 설정합니다.
+2. **Next.js가 nonce를 추출**: rendering 중에 Next.js는 `Content-Security-Policy` header를 parse하고 `&#x27;nonce-{value}&#x27;` 패턴으로 nonce를 추출합니다.
+3. **nonce가 자동으로 적용**: Next.js는 다음 항목에 nonce를 붙입니다:
+   - Framework script(React, Next.js runtime)
+   - page별 JavaScript bundle
+   - Next.js가 생성하는 inline style과 script
+   - `nonce` prop을 사용하는 모든 `&lt;Script&gt;` component
+
+이런 자동 동작 덕분에 각 tag에 직접 nonce를 추가할 필요가 없습니다.
+
+### Forcing dynamic rendering || dynamic rendering 강제하기
+
+nonce를 사용한다면 page가 dynamic rendering을 사용하도록 명시적으로 opt-in해야 할 수 있습니다:
+
+[[CODE 3]]
+
+### Reading the nonce || nonce 읽기
+
+
+  [`getServerSideProps`](/docs/pages/building-your-application/data-fetching/get-server-side-props)를
+  사용해 page에 nonce를 제공할 수 있습니다:
+
+[[CODE 4]]
+
+Pages Router 애플리케이션에서는 `_document.tsx`에서도 nonce에 접근할 수 있습니다:
+
+[[CODE 5]]
+
+
+
+
+
+## Static vs Dynamic Rendering with CSP || CSP와 Static vs Dynamic Rendering
+
+nonce를 사용하면 Next.js 애플리케이션이 render되는 방식에 중요한 영향을 줍니다:
+
+### Dynamic Rendering Requirement || Dynamic Rendering 요구 사항
+
+CSP에서 nonce를 사용하면 **모든 page가 dynamic하게 render되어야 합니다**. 즉:
+
+- page는 build에 성공하지만, dynamic rendering에 맞게 제대로 설정되지 않으면 runtime error가 발생할 수 있습니다
+- 각 request마다 새 nonce가 들어간 새 page가 생성됩니다
+- Static optimization과 Incremental Static Regeneration(ISR)이 비활성화됩니다
+- 추가 설정 없이는 CDN이 page를 cache할 수 없습니다
+- static shell script가 nonce에 접근할 수 없으므로 **Partial Prerendering(PPR)은 nonce 기반 CSP와 호환되지 않습니다**
+
+### Performance Implications || 성능에 미치는 영향
+
+static rendering에서 dynamic rendering으로 바뀌면 성능에 영향을 줍니다:
+
+- **초기 page 로딩이 느려짐**: page가 매 request마다 생성되어야 합니다
+- **server 부하 증가**: 모든 request에 server-side rendering이 필요합니다
+- **CDN caching 불가**: dynamic page는 기본적으로 edge에서 cache할 수 없습니다
+- **hosting 비용 증가**: dynamic rendering에 더 많은 server 자원이 필요합니다
+
+### When to use nonces || nonce를 사용해야 할 때
+
+다음과 같은 경우 nonce를 고려하세요:
+
+- `&#x27;unsafe-inline&#x27;`을 금지하는 엄격한 보안 요구 사항이 있을 때
+- 애플리케이션이 민감한 데이터를 다룰 때
+- 다른 script는 차단하면서 특정 inline script만 허용해야 할 때
+- compliance 요구 사항이 엄격한 CSP를 의무화할 때
+
+## Without Nonces || Nonce 없이 사용하기
+
+nonce가 필요 없는 애플리케이션에서는 [`next.config.js`](/docs/app/api-reference/config/next-config-js) 파일에서 CSP header를 직접 설정할 수 있습니다:
+
+[[CODE 7]]
+
+
+
+## Development vs Production Considerations || Development와 Production 고려 사항
+
+CSP 구현은 development 환경과 production 환경에서 다릅니다:
+
+### Development Environment || Development 환경
+
+development에서는 `&#x27;unsafe-eval&#x27;`을 활성화해야 합니다. React가 server에서 error가 어디서 발생했는지 보여 주기 위해 browser에서 server-side error stack을 재구성하는 등 향상된 debugging 정보를 제공하는 데 `eval`을 사용하기 때문입니다:
+
+[[CODE 10]]
+
+### Production Deployment || Production 배포
+
+production에서 흔히 발생하는 문제:
+
+- **nonce가 적용되지 않음**: 필요한 모든 route에서 proxy가 실행되는지 확인하세요
+- **static asset이 차단됨**: CSP가 Next.js static asset을 허용하는지 확인하세요
+- **Third-party script**: 필요한 domain을 CSP policy에 추가하세요
+
+## Troubleshooting || 문제 해결
+
+### Third-party Scripts || Third-party script
+
+
+
+
+
+CSP와 함께 third-party script를 사용할 때는 필요한 domain을 추가하고 nonce를 전달하세요:
+
+[[CODE 12]]
+
+
+
+third-party domain을 허용하도록 CSP를 업데이트하세요:
+
+[[CODE 13]]
+
+### Common CSP Violations || 흔한 CSP 위반
+
+1. **Inline style**: nonce를 지원하는 CSS-in-JS library를 사용하거나 style을 외부 파일로 옮기세요
+2. **Dynamic import**: script-src policy에서 dynamic import가 허용되는지 확인하세요
+3. **WebAssembly**: WebAssembly를 사용한다면 `&#x27;wasm-unsafe-eval&#x27;`을 추가하세요
+4. **Service worker**: service worker script에 맞는 policy를 추가하세요
+
+## Version History || 버전 기록
+
+| 버전        | 변경 사항                                                       |
+| ---------- | ------------------------------------------------------------- |
+| `v14.0.0`  | hash 기반 CSP를 위한 experimental SRI 지원 추가                     |
+| `v13.4.20` | 올바른 nonce 처리와 CSP header parsing을 위해 권장되는 버전.            |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

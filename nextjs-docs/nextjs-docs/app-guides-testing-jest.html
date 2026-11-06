@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to set up Jest with Next.js (Next.js에 Jest 설정하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/testing/jest" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/testing/jest" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/testing/jest.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides-testing.html">Testing</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to set up Jest with Next.js<span class="sub">Next.js에 Jest 설정하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Jest와 React Testing Library는 <strong>Unit Testing</strong>과 <strong>Snapshot Testing</strong>에 자주 함께 사용됩니다. 이 가이드에서는 Next.js에 Jest를 설정하고 첫 test를 작성하는 방법을 보여 줍니다.</p><div class="en-orig"><p>Jest and React Testing Library are frequently used together for <strong>Unit Testing</strong> and <strong>Snapshot Testing</strong>. This guide will show you how to set up Jest with Next.js and write your first tests.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>async</code> Server Component는 React ecosystem에서 새로운 개념이라 Jest는 현재 이를 지원하지 않습니다. 동기 Server Component와 Client Component에 대해서는 여전히 <strong>unit test</strong>를 실행할 수 있지만, <code>async</code> component에 대해서는 <strong>E2E test</strong>를 사용하는 것을 권장합니다.</p><div class="en-orig"><p>Since <code>async</code> Server Components are new to the React ecosystem, Jest currently does not support them. While you can still run <strong>unit tests</strong> for synchronous Server and Client Components, we recommend using an <strong>E2E tests</strong> for <code>async</code> components.</p></div></div></div>
+<h2 class="sec" id="quickstart"><a class="anchor" href="#quickstart">Quickstart<span class="ko">빠른 시작</span></a></h2>
+<p>Next.js <a href="https://github.com/vercel/next.js/tree/canary/examples/with-jest" target="_blank" rel="noopener">with-jest</a> example과 함께 <code>create-next-app</code>을 사용하면 빠르게 시작할 수 있습니다:</p><div class="en-orig"><p>You can use <code>create-next-app</code> with the Next.js <a href="https://github.com/vercel/next.js/tree/canary/examples/with-jest" target="_blank" rel="noopener">with-jest</a> example to quickly get started:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm create next-app --example with-jest with-jest-app</code></pre><pre class="pm-npm" hidden><code class="language-bash">npx create-next-app@latest --example with-jest with-jest-app</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn create next-app --example with-jest with-jest-app</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun create next-app --example with-jest with-jest-app</code></pre></div></div>
+<h2 class="sec" id="manual-setup"><a class="anchor" href="#manual-setup">Manual setup<span class="ko">수동 설정</span></a></h2>
+<p><a href="https://nextjs.org/blog/next-12" target="_blank" rel="noopener">Next.js 12</a>가 release된 이후로 Next.js에는 Jest용 configuration이 내장되어 있습니다.</p><div class="en-orig"><p>Since the release of <a href="https://nextjs.org/blog/next-12" target="_blank" rel="noopener">Next.js 12</a>, Next.js now has built-in configuration for Jest.</p></div>
+<p>Jest를 설정하려면 <code>jest</code>와 다음 package들을 dev dependency로 설치하세요:</p><div class="en-orig"><p>To set up Jest, install <code>jest</code> and the following packages as dev dependencies:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add -D jest jest-environment-jsdom @testing-library/react @testing-library/dom @testing-library/jest-dom ts-node @types/jest</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install -D jest jest-environment-jsdom @testing-library/react @testing-library/dom @testing-library/jest-dom ts-node @types/jest</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add -D jest jest-environment-jsdom @testing-library/react @testing-library/dom @testing-library/jest-dom ts-node @types/jest</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add -D jest jest-environment-jsdom @testing-library/react @testing-library/dom @testing-library/jest-dom ts-node @types/jest</code></pre></div></div>
+<p>다음 command를 실행해 기본 Jest configuration 파일을 생성하세요:</p><div class="en-orig"><p>Generate a basic Jest configuration file by running the following command:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm create jest@latest</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm init jest@latest</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn create jest@latest</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun create jest@latest</code></pre></div></div>
+<p>일련의 prompt를 거치며 프로젝트에 Jest를 설정하게 되며, <code>jest.config.ts|js</code> 파일도 자동으로 만들어집니다.</p><div class="en-orig"><p>This will take you through a series of prompts to set up Jest for your project, including automatically creating a <code>jest.config.ts|js</code> file.</p></div>
+<p>config 파일이 <code>next/jest</code>를 사용하도록 업데이트하세요. 이 transformer에는 Jest가 Next.js와 함께 동작하는 데 필요한 모든 configuration option이 들어 있습니다:</p><div class="en-orig"><p>Update your config file to use <code>next/jest</code>. This transformer has all the necessary configuration options for Jest to work with Next.js:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="jest.config.ts" data-js="jest.config.js">jest.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Config } from &#x27;jest&#x27;
+import nextJest from &#x27;next/jest.js&#x27;
+
+const createJestConfig = nextJest({
+  // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
+  dir: &#x27;./&#x27;,
+})
+
+// Add any custom config to be passed to Jest
+const config: Config = {
+  coverageProvider: &#x27;v8&#x27;,
+  testEnvironment: &#x27;jsdom&#x27;,
+  // Add more setup options before each test is run
+  // setupFilesAfterEnv: [&#x27;&lt;rootDir&gt;/jest.setup.ts&#x27;],
+}
+
+// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
+export default createJestConfig(config)</code></pre><pre class="v-js" hidden><code class="language-javascript">const nextJest = require(&#x27;next/jest&#x27;)
+
+/** @type {import(&#x27;jest&#x27;).Config} */
+const createJestConfig = nextJest({
+  // Provide the path to your Next.js app to load next.config.js and .env files in your test environment
+  dir: &#x27;./&#x27;,
+})
+
+// Add any custom config to be passed to Jest
+const config = {
+  coverageProvider: &#x27;v8&#x27;,
+  testEnvironment: &#x27;jsdom&#x27;,
+  // Add more setup options before each test is run
+  // setupFilesAfterEnv: [&#x27;&lt;rootDir&gt;/jest.setup.ts&#x27;],
+}
+
+// createJestConfig is exported this way to ensure that next/jest can load the Next.js config which is async
+module.exports = createJestConfig(config)</code></pre></div></div>
+<p>내부적으로 <code>next/jest</code>는 다음을 포함해 Jest를 자동으로 설정해 줍니다:</p><div class="en-orig"><p>Under the hood, <code>next/jest</code> is automatically configuring Jest for you, including:</p></div>
+<ul>
+<li><a href="architecture-nextjs-compiler.html">Next.js Compiler</a>를 사용하도록 <code>transform</code> 설정.</li>
+<li>stylesheet(<code>.css</code>, <code>.module.css</code>, 그리고 각각의 scss 변형), 이미지 import, <a href="app-api-reference-components-font.html"><code>next/font</code></a>를 자동으로 mocking.</li>
+<li><code>.env</code>(및 모든 변형)를 <code>process.env</code>로 로드.</li>
+<li>test resolving과 transform 대상에서 <code>node_modules</code> 제외.</li>
+<li>test resolving 대상에서 <code>.next</code> 제외.</li>
+<li>SWC transform을 활성화하는 flag를 위해 <code>next.config.js</code> 로드.</li>
+</ul><div class="en-orig"><ul>
+<li>Setting up <code>transform</code> using the <a href="architecture-nextjs-compiler.html">Next.js Compiler</a>.</li>
+<li>Auto mocking stylesheets (<code>.css</code>, <code>.module.css</code>, and their scss variants), image imports and <a href="app-api-reference-components-font.html"><code>next/font</code></a>.</li>
+<li>Loading <code>.env</code> (and all variants) into <code>process.env</code>.</li>
+<li>Ignoring <code>node_modules</code> from test resolving and transforms.</li>
+<li>Ignoring <code>.next</code> from test resolving.</li>
+<li>Loading <code>next.config.js</code> for flags that enable SWC transforms.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>environment variable을 직접 test하려면 별도의 setup script나 <code>jest.config.ts</code> 파일에서 수동으로 로드하세요. 자세한 내용은 <a href="app-guides-environment-variables.html#test-environment-variables">Test Environment Variables</a>를 참고하세요.</p><div class="en-orig"><p>To test environment variables directly, load them manually in a separate setup script or in your <code>jest.config.ts</code> file. For more information, please see <a href="app-guides-environment-variables.html#test-environment-variables">Test Environment Variables</a>.</p></div></div></div>
+<h2 class="sec" id="optional-handling-absolute-imports-and-module-path-aliases"><a class="anchor" href="#optional-handling-absolute-imports-and-module-path-aliases">Optional: Handling Absolute Imports and Module Path Aliases<span class="ko">선택: Absolute Import와 Module Path Alias 처리하기</span></a></h2>
+<p>프로젝트에서 <a href="app-getting-started-installation.html#set-up-absolute-imports-and-module-path-aliases">Module Path Aliases</a>를 사용한다면, <code>jsconfig.json</code> 파일의 paths option과 <code>jest.config.js</code> 파일의 <code>moduleNameMapper</code> option을 맞춰서 Jest가 import를 resolve하도록 설정해야 합니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>If your project is using <a href="app-getting-started-installation.html#set-up-absolute-imports-and-module-path-aliases">Module Path Aliases</a>, you will need to configure Jest to resolve the imports by matching the paths option in the <code>jsconfig.json</code> file with the <code>moduleNameMapper</code> option in the <code>jest.config.js</code> file. For example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">tsconfig.json or jsconfig.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;compilerOptions&quot;: {
+    &quot;module&quot;: &quot;esnext&quot;,
+    &quot;moduleResolution&quot;: &quot;bundler&quot;,
+    &quot;baseUrl&quot;: &quot;./&quot;,
+    &quot;paths&quot;: {
+      &quot;@/components/*&quot;: [&quot;components/*&quot;]
+    }
+  }
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">jest.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">moduleNameMapper: {
+  // ...
+  &#x27;^@/components/(.*)$&#x27;: &#x27;&lt;rootDir&gt;/components/$1&#x27;,
+}</code></pre></div></div>
+<h2 class="sec" id="optional-extend-jest-with-custom-matchers"><a class="anchor" href="#optional-extend-jest-with-custom-matchers">Optional: Extend Jest with custom matchers<span class="ko">선택: custom matcher로 Jest 확장하기</span></a></h2>
+<p><code>@testing-library/jest-dom</code>에는 <code>.toBeInTheDocument()</code>처럼 test를 더 쉽게 작성하게 해 주는 편리한 <a href="https://github.com/testing-library/jest-dom#custom-matchers" target="_blank" rel="noopener">custom matcher</a>들이 포함되어 있습니다. Jest configuration 파일에 다음 option을 추가하면 모든 test에서 custom matcher를 import할 수 있습니다:</p><div class="en-orig"><p><code>@testing-library/jest-dom</code> includes a set of convenient <a href="https://github.com/testing-library/jest-dom#custom-matchers" target="_blank" rel="noopener">custom matchers</a> such as <code>.toBeInTheDocument()</code> making it easier to write tests. You can import the custom matchers for every test by adding the following option to the Jest configuration file:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="jest.config.ts" data-js="jest.config.js">jest.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">setupFilesAfterEnv: [&#x27;&lt;rootDir&gt;/jest.setup.ts&#x27;]</code></pre><pre class="v-js" hidden><code class="language-javascript">setupFilesAfterEnv: [&#x27;&lt;rootDir&gt;/jest.setup.js&#x27;]</code></pre></div></div>
+<p>그런 다음 <code>jest.setup</code> 안에 다음 import를 추가하세요:</p><div class="en-orig"><p>Then, inside <code>jest.setup</code>, add the following import:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="jest.setup.ts" data-js="jest.setup.js">jest.setup.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import &#x27;@testing-library/jest-dom&#x27;</code></pre><pre class="v-js" hidden><code class="language-javascript">import &#x27;@testing-library/jest-dom&#x27;</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="https://github.com/testing-library/jest-dom/releases/tag/v6.0.0" target="_blank" rel="noopener"><code>extend-expect</code>는 <code>v6.0</code>에서 제거되었으므로</a>, 버전 6 이전의 <code>@testing-library/jest-dom</code>을 사용한다면 대신 <code>@testing-library/jest-dom/extend-expect</code>를 import해야 합니다.</p><div class="en-orig"><p><a href="https://github.com/testing-library/jest-dom/releases/tag/v6.0.0" target="_blank" rel="noopener"><code>extend-expect</code> was removed in <code>v6.0</code></a>, so if you are using <code>@testing-library/jest-dom</code> before version 6, you will need to import <code>@testing-library/jest-dom/extend-expect</code> instead.</p></div></div></div>
+<p>각 test 전에 setup option을 더 추가해야 한다면 위의 <code>jest.setup</code> 파일에 추가할 수 있습니다.</p><div class="en-orig"><p>If you need to add more setup options before each test, you can add them to the <code>jest.setup</code> file above.</p></div>
+<h2 class="sec" id="add-a-test-script-to-packagejson"><a class="anchor" href="#add-a-test-script-to-packagejson">Add a test script to <code>package.json</code><span class="ko"><code>package.json</code>에 test script 추가하기</span></a></h2>
+<p>마지막으로 <code>package.json</code> 파일에 Jest <code>test</code> script를 추가하세요:</p><div class="en-orig"><p>Finally, add a Jest <code>test</code> script to your <code>package.json</code> file:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">package.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;next dev&quot;,
+    &quot;build&quot;: &quot;next build&quot;,
+    &quot;start&quot;: &quot;next start&quot;,
+    &quot;test&quot;: &quot;jest&quot;,
+    &quot;test:watch&quot;: &quot;jest --watch&quot;
+  }
+}</code></pre></div></div>
+<p><code>jest --watch</code>는 파일이 변경되면 test를 다시 실행합니다. Jest CLI option에 대한 자세한 내용은 <a href="https://jestjs.io/docs/cli#reference" target="_blank" rel="noopener">Jest 문서</a>를 참고하세요.</p><div class="en-orig"><p><code>jest --watch</code> will re-run tests when a file is changed. For more Jest CLI options, please refer to the <a href="https://jestjs.io/docs/cli#reference" target="_blank" rel="noopener">Jest Docs</a>.</p></div>
+<h3 class="sec" id="creating-your-first-test"><a class="anchor" href="#creating-your-first-test">Creating your first test<span class="ko">첫 test 만들기</span></a></h3>
+<p>이제 프로젝트에서 test를 실행할 준비가 되었습니다. 프로젝트 root directory에 <code>__tests__</code>라는 폴더를 만드세요.</p><div class="en-orig"><p>Your project is now ready to run tests. Create a folder called <code>__tests__</code> in your project's root directory.</p></div>
+<p>예를 들어 <code>&lt;Page /&gt;</code> component가 heading을 제대로 render하는지 확인하는 test를 추가할 수 있습니다:</p><div class="en-orig"><p>For example, we can add a test to check if the <code>&lt;Page /&gt;</code> component successfully renders a heading:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/page.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import Link from &#x27;next/link&#x27;
+
+export default function Page() {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Home&lt;/h1&gt;
+      &lt;Link href=&quot;/about&quot;&gt;About&lt;/Link&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">__tests__/page.test.jsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import &#x27;@testing-library/jest-dom&#x27;
+import { render, screen } from &#x27;@testing-library/react&#x27;
+import Page from &#x27;../app/page&#x27;
+
+describe(&#x27;Page&#x27;, () =&gt; {
+  it(&#x27;renders a heading&#x27;, () =&gt; {
+    render(&lt;Page /&gt;)
+
+    const heading = screen.getByRole(&#x27;heading&#x27;, { level: 1 })
+
+    expect(heading).toBeInTheDocument()
+  })
+})</code></pre></div></div>
+<p>선택적으로 <a href="https://jestjs.io/docs/snapshot-testing" target="_blank" rel="noopener">snapshot test</a>를 추가해 component의 예상치 못한 변경을 추적할 수 있습니다:</p><div class="en-orig"><p>Optionally, add a <a href="https://jestjs.io/docs/snapshot-testing" target="_blank" rel="noopener">snapshot test</a> to keep track of any unexpected changes in your component:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">__tests__/snapshot.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { render } from &#x27;@testing-library/react&#x27;
+import Page from &#x27;../app/page&#x27;
+
+it(&#x27;renders homepage unchanged&#x27;, () =&gt; {
+  const { container } = render(&lt;Page /&gt;)
+  expect(container).toMatchSnapshot()
+})</code></pre></div></div>
+<h2 class="sec" id="running-your-tests"><a class="anchor" href="#running-your-tests">Running your tests<span class="ko">test 실행하기</span></a></h2>
+<p>그런 다음 다음 command를 실행해 test를 실행하세요:</p><div class="en-orig"><p>Then, run the following command to run your tests:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm test</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm run test</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn test</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun run test</code></pre></div></div>
+<h2 class="sec" id="additional-resources"><a class="anchor" href="#additional-resources">Additional Resources<span class="ko">추가 자료</span></a></h2>
+<p>더 읽어 볼 만한 유용한 자료는 다음과 같습니다:</p><div class="en-orig"><p>For further reading, you may find these resources helpful:</p></div>
+<ul>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/with-jest" target="_blank" rel="noopener">Next.js with Jest example</a></li>
+<li><a href="https://jestjs.io/docs/getting-started" target="_blank" rel="noopener">Jest Docs</a></li>
+<li><a href="https://testing-library.com/docs/react-testing-library/intro/" target="_blank" rel="noopener">React Testing Library Docs</a></li>
+<li><a href="https://testing-playground.com/" target="_blank" rel="noopener">Testing Playground</a> - 좋은 testing 관행에 따라 element를 매칭할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/with-jest" target="_blank" rel="noopener">Next.js with Jest example</a></li>
+<li><a href="https://jestjs.io/docs/getting-started" target="_blank" rel="noopener">Jest Docs</a></li>
+<li><a href="https://testing-library.com/docs/react-testing-library/intro/" target="_blank" rel="noopener">React Testing Library Docs</a></li>
+<li><a href="https://testing-playground.com/" target="_blank" rel="noopener">Testing Playground</a> - use good testing practices to match elements.</li>
+</ul></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/testing/jest.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/testing/jest" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-testing-cypress.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Cypress</div><div class="ttl-ko">Next.js에 Cypress 설정하기</div></a>
+      <a href="app-guides-testing-playwright.html" class="next"><div class="dir">다음 →</div><div class="ttl">Playwright</div><div class="ttl-ko">Next.js에 Playwright 설정하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/testing/jest" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#quickstart">Quickstart</a></li><li class="l2"><a href="#manual-setup">Manual setup</a></li><li class="l2"><a href="#optional-handling-absolute-imports-and-module-path-aliases">Optional: Handling Absolute Imports and Module Path Aliases</a></li><li class="l2"><a href="#optional-extend-jest-with-custom-matchers">Optional: Extend Jest with custom matchers</a></li><li class="l2"><a href="#add-a-test-script-to-packagejson">Add a test script to <code>package.json</code></a></li><li class="l3"><a href="#creating-your-first-test">Creating your first test</a></li><li class="l2"><a href="#running-your-tests">Running your tests</a></li><li class="l2"><a href="#additional-resources">Additional Resources</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Jest와 React Testing Library는 **Unit Testing**과 **Snapshot Testing**에 자주 함께 사용됩니다. 이 가이드에서는 Next.js에 Jest를 설정하고 첫 test를 작성하는 방법을 보여 줍니다.
+
+&gt; **Good to know:** `async` Server Component는 React ecosystem에서 새로운 개념이라 Jest는 현재 이를 지원하지 않습니다. 동기 Server Component와 Client Component에 대해서는 여전히 **unit test**를 실행할 수 있지만, `async` component에 대해서는 **E2E test**를 사용하는 것을 권장합니다.
+
+## Quickstart || 빠른 시작
+
+Next.js [with-jest](https://github.com/vercel/next.js/tree/canary/examples/with-jest) example과 함께 `create-next-app`을 사용하면 빠르게 시작할 수 있습니다:
+
+[[CODE 1]]
+
+## Manual setup || 수동 설정
+
+[Next.js 12](https://nextjs.org/blog/next-12)가 release된 이후로 Next.js에는 Jest용 configuration이 내장되어 있습니다.
+
+Jest를 설정하려면 `jest`와 다음 package들을 dev dependency로 설치하세요:
+
+[[CODE 2]]
+
+다음 command를 실행해 기본 Jest configuration 파일을 생성하세요:
+
+[[CODE 3]]
+
+일련의 prompt를 거치며 프로젝트에 Jest를 설정하게 되며, `jest.config.ts|js` 파일도 자동으로 만들어집니다.
+
+config 파일이 `next/jest`를 사용하도록 업데이트하세요. 이 transformer에는 Jest가 Next.js와 함께 동작하는 데 필요한 모든 configuration option이 들어 있습니다:
+
+[[CODE 4]]
+
+내부적으로 `next/jest`는 다음을 포함해 Jest를 자동으로 설정해 줍니다:
+
+- [Next.js Compiler](/docs/architecture/nextjs-compiler)를 사용하도록 `transform` 설정.
+- stylesheet(`.css`, `.module.css`, 그리고 각각의 scss 변형), 이미지 import, [`next/font`](/docs/app/api-reference/components/font)를 자동으로 mocking.
+- `.env`(및 모든 변형)를 `process.env`로 로드.
+- test resolving과 transform 대상에서 `node_modules` 제외.
+- test resolving 대상에서 `.next` 제외.
+- SWC transform을 활성화하는 flag를 위해 `next.config.js` 로드.
+
+&gt; **Good to know**: environment variable을 직접 test하려면 별도의 setup script나 `jest.config.ts` 파일에서 수동으로 로드하세요. 자세한 내용은 [Test Environment Variables](/docs/app/guides/environment-variables#test-environment-variables)를 참고하세요.
+
+
+
+## Optional: Handling Absolute Imports and Module Path Aliases || 선택: Absolute Import와 Module Path Alias 처리하기
+
+프로젝트에서 [Module Path Aliases](/docs/app/getting-started/installation#set-up-absolute-imports-and-module-path-aliases)를 사용한다면, `jsconfig.json` 파일의 paths option과 `jest.config.js` 파일의 `moduleNameMapper` option을 맞춰서 Jest가 import를 resolve하도록 설정해야 합니다. 예를 들면 다음과 같습니다:
+
+[[CODE 9]]
+
+[[CODE 10]]
+
+## Optional: Extend Jest with custom matchers || 선택: custom matcher로 Jest 확장하기
+
+`@testing-library/jest-dom`에는 `.toBeInTheDocument()`처럼 test를 더 쉽게 작성하게 해 주는 편리한 [custom matcher](https://github.com/testing-library/jest-dom#custom-matchers)들이 포함되어 있습니다. Jest configuration 파일에 다음 option을 추가하면 모든 test에서 custom matcher를 import할 수 있습니다:
+
+[[CODE 11]]
+
+그런 다음 `jest.setup` 안에 다음 import를 추가하세요:
+
+[[CODE 12]]
+
+&gt; **Good to know:** [`extend-expect`는 `v6.0`에서 제거되었으므로](https://github.com/testing-library/jest-dom/releases/tag/v6.0.0), 버전 6 이전의 `@testing-library/jest-dom`을 사용한다면 대신 `@testing-library/jest-dom/extend-expect`를 import해야 합니다.
+
+각 test 전에 setup option을 더 추가해야 한다면 위의 `jest.setup` 파일에 추가할 수 있습니다.
+
+## Add a test script to `package.json` || `package.json`에 test script 추가하기
+
+마지막으로 `package.json` 파일에 Jest `test` script를 추가하세요:
+
+[[CODE 13]]
+
+`jest --watch`는 파일이 변경되면 test를 다시 실행합니다. Jest CLI option에 대한 자세한 내용은 [Jest 문서](https://jestjs.io/docs/cli#reference)를 참고하세요.
+
+### Creating your first test || 첫 test 만들기
+
+이제 프로젝트에서 test를 실행할 준비가 되었습니다. 프로젝트 root directory에 `__tests__`라는 폴더를 만드세요.
+
+
+
+
+
+예를 들어 `&lt;Page /&gt;` component가 heading을 제대로 render하는지 확인하는 test를 추가할 수 있습니다:
+
+[[CODE 16]]
+
+[[CODE 17]]
+
+
+
+선택적으로 [snapshot test](https://jestjs.io/docs/snapshot-testing)를 추가해 component의 예상치 못한 변경을 추적할 수 있습니다:
+
+
+
+
+
+[[CODE 19]]
+
+
+
+## Running your tests || test 실행하기
+
+그런 다음 다음 command를 실행해 test를 실행하세요:
+
+[[CODE 20]]
+
+## Additional Resources || 추가 자료
+
+더 읽어 볼 만한 유용한 자료는 다음과 같습니다:
+
+- [Next.js with Jest example](https://github.com/vercel/next.js/tree/canary/examples/with-jest)
+- [Jest Docs](https://jestjs.io/docs/getting-started)
+- [React Testing Library Docs](https://testing-library.com/docs/react-testing-library/intro/)
+- [Testing Playground](https://testing-playground.com/) - 좋은 testing 관행에 따라 element를 매칭할 수 있습니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

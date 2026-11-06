@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adopting Partial Prefetching (Partial Prefetching 도입하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/adopting-partial-prefetching" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/adopting-partial-prefetching" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/adopting-partial-prefetching.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Adopting Partial Prefetching<span class="sub">Partial Prefetching 도입하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><a href="app-glossary.html#partial-prefetching">Partial Prefetching</a>은 Cache Components route에서 <code>&lt;Link&gt;</code>가 다운로드하는 내용을 바꿉니다. Partial Prefetching이 활성화되면 <code>&lt;Link&gt;</code>는 route의 <a href="app-glossary.html#app-shell">App Shell</a>, 즉 static content와 URL에 의존하지 않는 cached content를 prefetch합니다. Next.js는 예전처럼 link마다 따로 prefetch하는 대신, route마다 App Shell을 하나 build하고 그 route를 가리키는 모든 link에서 이를 재사용합니다.</p><div class="en-orig"><p><a href="app-glossary.html#partial-prefetching">Partial Prefetching</a> changes what a <code>&lt;Link&gt;</code> downloads for a Cache Components route. With Partial Prefetching enabled, a <code>&lt;Link&gt;</code> prefetches the route's <a href="app-glossary.html#app-shell">App Shell</a>: its static content and the cached content that doesn't depend on the URL. Next.js builds one App Shell per route and reuses it for every link to that route, rather than prefetching each link separately as it did before.</p></div>
+<p>App Shell보다 더 많이 prefetch하려면 link에서 <a href="app-api-reference-components-link.html#prefetch"><code>&lt;Link prefetch={true}&gt;</code></a>로 <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a>을 opt in할 수 있습니다. 그러면 prefetch가 <code>params</code>, <code>searchParams</code> 또는 전체 URL에 의존하는 cached URL-specific content까지 resolve할 수 있습니다.</p><div class="en-orig"><p>To prefetch more than the App Shell, a link can opt into <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a> with <a href="app-api-reference-components-link.html#prefetch"><code>&lt;Link prefetch={true}&gt;</code></a>. The prefetch can then resolve cached URL-specific content that depends on <code>params</code>, <code>searchParams</code>, or the full URL.</p></div>
+<p>그 과정에서 Next.js는 development 중에 <a href="app-guides-instant-navigation.html">instant navigation</a> insight를 보여 주며, 바꿔야 할 link나 route를 알려 줍니다.</p><div class="en-orig"><p>Along the way, Next.js surfaces <a href="app-guides-instant-navigation.html">instant navigation</a> insights in development, naming the link or route to change.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Partial Prefetching은 <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a>가 활성화되어 있을 때만 동작합니다.</p><div class="en-orig"><p>Partial Prefetching only works when <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a> is enabled.</p></div></div></div>
+<h2 class="sec" id="use-the-adoption-skill-recommended"><a class="anchor" href="#use-the-adoption-skill-recommended">Use the adoption skill (recommended)<span class="ko">adoption skill 사용하기 (권장)</span></a></h2>
+<p><a href="app-guides-ai-agents.html#next-partial-prefetching-adoption"><code>next-partial-prefetching-adoption</code></a> skill은 coding agent를 이용해 이 도입 과정을 진행합니다. 이 skill은 <code>&lt;Link prefetch={true}&gt;</code> 호출을 검토하고, production test 환경(test rig)이 있으면 보존해야 할 prefetch된 UI를 <a href="#verify-prefetched-ui-with-tests"><code>instant()</code> test</a>로 기록한 다음, flag를 활성화하고 각 route에서 이 가이드가 다루는 insight를 확인합니다.</p><div class="en-orig"><p>The <a href="app-guides-ai-agents.html#next-partial-prefetching-adoption"><code>next-partial-prefetching-adoption</code></a> skill drives this adoption with a coding agent. It reviews your <code>&lt;Link prefetch={true}&gt;</code> calls, captures the prefetched UI to preserve with <a href="#verify-prefetched-ui-with-tests"><code>instant()</code> tests</a> when a production test rig is available, then enables the flag and checks each route for the insights this guide covers.</p></div>
+<p>skill을 설치하세요:</p><div class="en-orig"><p>Install the skill:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx skills add vercel/next.js --skill next-partial-prefetching-adoption</code></pre></div></div>
+<p>그런 다음 agent에게 이 prompt를 주세요:</p><div class="en-orig"><p>Then give the agent this prompt:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-plaintext">Adopt Partial Prefetching in this project using the next-partial-prefetching-adoption skill.</code></pre></div></div>
+<h2 class="sec" id="or-adopt-by-hand"><a class="anchor" href="#or-adopt-by-hand">Or adopt by hand<span class="ko">또는 직접 도입하기</span></a></h2>
+<p>기존 앱에 직접 도입하려면:</p><div class="en-orig"><p>To adopt an existing app by hand:</p></div>
+<ol>
+<li><a href="#migrate-existing-full-prefetches">기존 full prefetch를 검토</a>하고 각 destination의 어느 부분을 계속 prefetch할지 정합니다. <a href="#verify-prefetched-ui-with-tests"><code>instant()</code> test</a>로 regression coverage를 추가할 수 있습니다.</li>
+<li><a href="#enable-partial-prefetching"><code>partialPrefetching</code>을 활성화</a>합니다. 규모가 큰 migration이라면 global flag를 끈 채로 <a href="#adopting-incrementally">점진적으로 도입</a>할 수 있습니다. <a href="https://nextjs.org/docs/messages/instant-link-prefetch-partial" target="_blank" rel="noopener">dynamic data during prefetching</a> insight가 아직 legacy full prefetch를 사용하는 destination을 하나하나 찾아 줍니다.</li>
+<li><a href="#move-url-data-behind-suspense">URL data를 Suspense 뒤로 옮겨</a> <a href="https://nextjs.org/docs/messages/instant-shell-url-data" target="_blank" rel="noopener">URL data outside of Suspense</a> insight를 해결합니다.</li>
+<li>필요하다면 navigation 후에 stream되는 것만으로는 부족한 route에서 <a href="#prefetching-url-data">URL data를 prefetch</a>합니다.</li>
+</ol><div class="en-orig"><ol>
+<li><a href="#migrate-existing-full-prefetches">Review existing full prefetches</a> and choose which part of each destination should continue to be prefetched. You can use <a href="#verify-prefetched-ui-with-tests"><code>instant()</code> tests</a> to add regression coverage.</li>
+<li><a href="#enable-partial-prefetching">Enable <code>partialPrefetching</code></a>. For larger migrations, you can <a href="#adopting-incrementally">adopt incrementally</a> with the global flag off. The <a href="https://nextjs.org/docs/messages/instant-link-prefetch-partial" target="_blank" rel="noopener">dynamic data during prefetching</a> insight identifies each destination that still uses the legacy full prefetch.</li>
+<li><a href="#move-url-data-behind-suspense">Move URL data behind Suspense</a>, resolving the <a href="https://nextjs.org/docs/messages/instant-shell-url-data" target="_blank" rel="noopener">URL data outside of Suspense</a> insight.</li>
+<li>Optionally, <a href="#prefetching-url-data">prefetch URL data</a> on the routes where streaming in after navigation isn't enough.</li>
+</ol></div>
+<p>두 insight 모두 development 전용이며 build를 막지 않습니다. 이 insight들은 dev overlay에 fix card와 함께 표시되며, 각 fix card는 해당 해결 방법의 문서 페이지로 연결됩니다. 아직 도입할 준비가 안 된 route가 있다면 그 page나 layout에서 <a href="app-api-reference-file-conventions-route-segment-config-instant.html"><code>instant = false</code></a>를 export해 해당 route를 instant-navigation 검증에서 제외하고, 나중에 다시 돌아오세요.</p><div class="en-orig"><p>Both insights are development-only and never block the build. They appear in the dev overlay with fix cards that link the docs page for each fix. If a route isn't ready to adopt, export <a href="app-api-reference-file-conventions-route-segment-config-instant.html"><code>instant = false</code></a> from its page or layout to opt the route out of instant-navigation validation, and return to it later.</p></div>
+<h2 class="sec" id="enable-partial-prefetching"><a class="anchor" href="#enable-partial-prefetching">Enable Partial Prefetching<span class="ko">Partial Prefetching 활성화하기</span></a></h2>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>기존 앱에서는 Partial Prefetching을 활성화하기 전에 <a href="#migrate-existing-full-prefetches"><code>&lt;Link prefetch={true}&gt;</code></a>가 전달하는 UI를 검토하세요. 이 link들은 legacy full prefetch를 사용하며, Partial Prefetching을 활성화하면 동작이 바뀝니다.</p><div class="en-orig"><p>In an existing app, review the UI delivered by <a href="#migrate-existing-full-prefetches"><code>&lt;Link prefetch={true}&gt;</code></a> before enabling Partial Prefetching. These links use the legacy full prefetch, and enabling Partial Prefetching changes their behavior.</p></div></div></div>
+<p><code>next.config.ts</code>에서 <a href="app-api-reference-config-next-config-js-partialPrefetching.html"><code>partialPrefetching</code></a>을 활성화하세요:</p><div class="en-orig"><p>Enable <a href="app-api-reference-config-next-config-js-partialPrefetching.html"><code>partialPrefetching</code></a> in <code>next.config.ts</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+  partialPrefetching: true,
+}
+
+export default nextConfig</code></pre></div></div>
+<p>flag를 활성화하면 기본 동작, <code>prefetch=&quot;auto&quot;</code>, <code>prefetch={true}</code>를 사용하는 link는 destination의 App Shell을 prefetch합니다. <code>prefetch={true}</code>가 있는 link는 cached URL-specific content도 resolve할 수 있지만, 더 이상 legacy full prefetch에 있던 uncached dynamic content는 포함하지 않습니다. 새 프로젝트는 migrate할 legacy full prefetch가 없으므로 이 검토 없이 flag를 활성화해도 됩니다.</p><div class="en-orig"><p>After enabling the flag, links using the default behavior, <code>prefetch=&quot;auto&quot;</code>, or <code>prefetch={true}</code> prefetch the destination's App Shell. A link with <code>prefetch={true}</code> can also resolve cached URL-specific content, but it no longer includes uncached dynamic content from the legacy full prefetch. New projects can enable the flag without this audit because they have no legacy full prefetches to migrate.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>partialPrefetching</code> 값 없이 <code>cacheComponents</code>가 활성화되어 있으면, Next.js는 이를 <code>true</code> 또는 <code>false</code>로 설정하라는 경고를 log에 남깁니다. <code>false</code>는 이 가이드를 진행하는 동안 이전 prefetch 동작을 유지하려는 경우에만 설정하세요. 다음 major release에서는 두 기능이 모든 곳에서 활성화되고 이 option들은 제거될 예정입니다.</p><div class="en-orig"><p>When <code>cacheComponents</code> is enabled without a <code>partialPrefetching</code> value, Next.js logs a warning asking you to set it to <code>true</code> or <code>false</code>. Set <code>false</code> only to keep the previous prefetch behavior while you work through this guide. Both features will be enabled everywhere in the next major release, and the options will be removed.</p></div></div></div>
+<h2 class="sec" id="what-changes-for-link"><a class="anchor" href="#what-changes-for-link">What changes for <code>&lt;Link&gt;</code><span class="ko"><code>&lt;Link&gt;</code>에서 바뀌는 점</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th><code>&lt;Link&gt;</code> prop</th><th>이전 (Cache Components 기본값)</th><th>Partial Prefetching 이후</th></tr></thead>
+<tbody>
+<tr><td><code>&lt;Link href=&quot;/x&quot;&gt;</code></td><td>cache된 page render를 prefetch했습니다.</td><td><code>/x</code>의 공유 App Shell을 prefetch합니다.</td></tr>
+<tr><td><code>&lt;Link href=&quot;/x&quot; prefetch&gt;</code></td><td>cache된 page render <strong>그리고</strong> 모든 dynamic content를 prefetch했습니다.</td><td>App Shell을 prefetch하고, <code>/x</code>가 URL-specific content를 읽는 경우 <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a>으로 cached URL-specific content도 prefetch합니다.</td></tr>
+<tr><td><code>&lt;Link href=&quot;/x&quot; prefetch={false}&gt;</code></td><td>이 link의 prefetching을 비활성화했습니다.</td><td>변경 없음. 여전히 비활성화됩니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th><code>&lt;Link&gt;</code> prop</th><th>Before (Cache Components default)</th><th>After Partial Prefetching</th></tr></thead>
+<tbody>
+<tr><td><code>&lt;Link href=&quot;/x&quot;&gt;</code></td><td>Prefetched the cached page render.</td><td>Prefetches the shared App Shell for <code>/x</code>.</td></tr>
+<tr><td><code>&lt;Link href=&quot;/x&quot; prefetch&gt;</code></td><td>Prefetched the cached page render <strong>and</strong> any dynamic content.</td><td>Prefetches the App Shell, plus cached URL-specific content through <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a> when <code>/x</code> reads it.</td></tr>
+<tr><td><code>&lt;Link href=&quot;/x&quot; prefetch={false}&gt;</code></td><td>Disabled prefetching for this link.</td><td>Unchanged. Still disabled.</td></tr>
+</tbody></table></div></div>
+<p>App Shell은 dynamic param과 관계없이 특정 route를 가리키는 모든 link가 공유하므로, 같은 destination으로 가는 <code>&lt;Link&gt;</code>를 많이 render해도 작업량이 늘어나지 않습니다.</p><div class="en-orig"><p>The App Shell is shared across every link to a given route, regardless of dynamic params, so rendering many <code>&lt;Link&gt;</code>s to the same destination doesn't multiply the work.</p></div>
+<h2 class="sec" id="migrate-existing-full-prefetches"><a class="anchor" href="#migrate-existing-full-prefetches">Migrate existing full prefetches<span class="ko">기존 full prefetch migrate하기</span></a></h2>
+<p>Partial Prefetching 이전에는 실제 적용되는 <code>prefetch</code> 값이 <code>true</code>인 <code>&lt;Link&gt;</code>가 uncached dynamic content를 포함해 destination 전체를 prefetch합니다. 여기에는 <code>prefetch={true}</code>, 값 없는 <code>prefetch</code> prop, 그리고 <code>true</code>로 resolve되는 wrapper prop이나 조건부 prop이 포함됩니다. 기본값, <code>prefetch=&quot;auto&quot;</code>, <code>prefetch={false}</code>는 legacy full prefetch를 사용하지 않습니다.</p><div class="en-orig"><p>Before Partial Prefetching, a <code>&lt;Link&gt;</code> whose effective <code>prefetch</code> value is <code>true</code> prefetches the complete destination, including uncached dynamic content. This includes <code>prefetch={true}</code>, the bare <code>prefetch</code> prop, and wrapper or conditional props that resolve to <code>true</code>. The default value, <code>prefetch=&quot;auto&quot;</code>, and <code>prefetch={false}</code> don't use the legacy full prefetch.</p></div>
+<p>legacy full prefetch는 navigation에 필요한 것보다 더 많은 UI를 포함할 수 있습니다. 대부분의 경우 destination 상단의 주요 콘텐츠는 navigation 전에 준비되어 있어야 하고, 부차적이거나 자주 바뀌는 콘텐츠는 그 뒤에 stream해도 됩니다.</p><div class="en-orig"><p>A legacy full prefetch can include more UI than the navigation needs. In most cases, the primary content at the top of the destination should be available before navigation, while secondary or frequently changing content can stream afterward.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>cookies()</code>와 <code>headers()</code>는 prefetch를 URL에 묶지 않습니다. 이 값들은 link마다가 아니라 session마다 달라지므로 App Shell에 여전히 session content가 들어갑니다. <code>params</code>와 <code>searchParams</code>만이 <a href="app-glossary.html#url-data">URL data</a>이며, 이는 link마다 달라지므로 공유 App Shell에 포함될 수 없습니다.</p><div class="en-orig"><p><code>cookies()</code> and <code>headers()</code> don't tie a prefetch to a URL. They vary per session, not per link, so the App Shell still carries session content. Only <code>params</code> and <code>searchParams</code> are <a href="app-glossary.html#url-data">URL data</a>, which varies per link and can't be included in the shared App Shell.</p></div></div></div>
+<h3 class="sec" id="verify-prefetched-ui-with-tests"><a class="anchor" href="#verify-prefetched-ui-with-tests">Verify prefetched UI with tests<span class="ko">test로 prefetch된 UI 검증하기</span></a></h3>
+<p>migration을 프로그래밍 방식으로 검증하려면 <a href="app-guides-instant-navigation.html#prevent-regressions-with-e2e-tests"><code>instant()</code></a> test로 기존 full prefetch에서 계속 제공되어야 할 UI를 기록할 수 있습니다. 같은 destination으로 가는 link라도 prefetch 설정이 다를 수 있으므로 정확히 그 source link를 test하세요:</p><div class="en-orig"><p>To verify the migration programmatically, an <a href="app-guides-instant-navigation.html#prevent-regressions-with-e2e-tests"><code>instant()</code></a> test can capture the UI that should stay available from an existing full prefetch. Test the exact source link because different links to the same destination can use different prefetch settings:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">e2e/product-navigation.test.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { expect, test } from &#x27;@playwright/test&#x27;
+import { instant } from &#x27;@next/playwright&#x27;
+
+test(&#x27;preserves the prefetched product summary&#x27;, async ({ page }) =&gt; {
+  await page.goto(&#x27;/products&#x27;)
+
+  await instant(page, async () =&gt; {
+    const link = page.getByRole(&#x27;link&#x27;, { name: &#x27;Baseball Cap&#x27; })
+    await expect(link).toBeVisible()
+    await link.click()
+    await page.waitForURL((url) =&gt; url.pathname === &#x27;/products/baseball-cap&#x27;)
+
+    await expect(
+      page.getByRole(&#x27;heading&#x27;, { name: &#x27;Baseball Cap&#x27; })
+    ).toBeVisible()
+    await expect(page.getByTestId(&#x27;product-summary&#x27;)).toBeVisible()
+  })
+})</code></pre></div></div>
+<p><code>next dev</code>에서는 자동 prefetching이 실행되지 않으므로, 이 baseline은 <code>partialPrefetching</code>을 비활성화한 production build에서 실행하세요. 그런 다음 destination을 도입한 뒤 같은 test를 다시 실행합니다. test가 실패하면 선택한 UI가 더 이상 prefetch되지 않는다는 뜻입니다. 계속 제공되어야 할 재사용 가능한 data나 subtree를 cache한 다음, 통과한 test는 regression coverage로 남겨 두세요.</p><div class="en-orig"><p>Run this baseline against a production build with <code>partialPrefetching</code> disabled because automatic prefetching doesn't run in <code>next dev</code>. Then rerun the same test after adopting the destination. If it fails, the selected UI is no longer prefetched. Cache the reusable data or subtree that should stay available, then keep the passing test as regression coverage.</p></div>
+<h3 class="sec" id="static-or-cached-content"><a class="anchor" href="#static-or-cached-content">Static or cached content<span class="ko">Static 또는 cached content</span></a></h3>
+<p>출력 결과가 이미 App Shell에 들어 있습니다. 이제 불필요해진 <code>prefetch={true}</code>를 제거하세요:</p><div class="en-orig"><p>The output is already in the App Shell. Remove the now-redundant <code>prefetch={true}</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/nav.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">// Before
+&lt;Link href=&quot;/about&quot; prefetch={true}&gt;About&lt;/Link&gt;
+// After
+&lt;Link href=&quot;/about&quot;&gt;About&lt;/Link&gt;</code></pre></div></div>
+<h3 class="sec" id="uncached-content"><a class="anchor" href="#uncached-content">Uncached content</a></h3>
+<p><code>use cache</code>로 cache해서 App Shell에 포함되게 한 다음, link에서 <code>prefetch={true}</code>를 제거하세요:</p><div class="en-orig"><p>Cache it with <code>use cache</code> so it gets included in the App Shell, then remove <code>prefetch={true}</code> from the links:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/products/page.tsx" data-js="app/products/page.js">app/products/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// Before
+export default async function Page() {
+  const res = await fetch(&#x27;https://api.example.com/products&#x27;)
+  return &lt;ProductList products={await res.json()} /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// Before
+export default async function Page() {
+  const res = await fetch(&#x27;https://api.example.com/products&#x27;)
+  return &lt;ProductList products={await res.json()} /&gt;
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/products/page.tsx" data-js="app/products/page.js">app/products/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// After - cached, so the App Shell carries it
+async function getProducts() {
+  &#x27;use cache&#x27;
+  const res = await fetch(&#x27;https://api.example.com/products&#x27;)
+  return res.json()
+}
+
+export default async function Page() {
+  return &lt;ProductList products={await getProducts()} /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// After - cached, so the App Shell carries it
+async function getProducts() {
+  &#x27;use cache&#x27;
+  const res = await fetch(&#x27;https://api.example.com/products&#x27;)
+  return res.json()
+}
+
+export default async function Page() {
+  return &lt;ProductList products={await getProducts()} /&gt;
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>App Shell에는 <a href="app-api-reference-functions-cacheLife.html#stale"><code>stale</code></a> 시간이 최소 5분인 cached content가 들어갑니다. 위에서 사용한 <code>default</code> profile과 <code>seconds</code>를 제외한 모든 preset이 이 조건을 만족합니다. 이보다 수명이 짧은 콘텐츠는 대신 navigation 후에 stream됩니다. <a href="app-api-reference-functions-cacheLife.html#prerendering-behavior">Prerendering behavior</a>를 참고하세요.</p><div class="en-orig"><p>The App Shell carries cached content whose <a href="app-api-reference-functions-cacheLife.html#stale"><code>stale</code></a> time is at least 5 minutes, which holds for the <code>default</code> profile used above and every preset except <code>seconds</code>. Shorter-lived content streams in after the navigation instead. See <a href="app-api-reference-functions-cacheLife.html#prerendering-behavior">Prerendering behavior</a>.</p></div></div></div>
+<h3 class="sec" id="session-content"><a class="anchor" href="#session-content">Session content</a></h3>
+<p><a href="app-api-reference-functions-cookies.html"><code>cookies()</code></a>나 <a href="app-api-reference-functions-headers.html"><code>headers()</code></a> 뒤에 있는 콘텐츠는 link마다가 아니라 session마다 달라지고, <a href="app-guides-optimizing-prefetching.html#include-session-data-in-the-shell">session data는 App Shell 안에서 resolve</a>되므로 cached session content도 여전히 포함됩니다. session 값은 cache된 함수 밖에서 읽어 인자로 넘긴 다음, link에서 <code>prefetch={true}</code>를 제거하세요:</p><div class="en-orig"><p>Content behind <a href="app-api-reference-functions-cookies.html"><code>cookies()</code></a> or <a href="app-api-reference-functions-headers.html"><code>headers()</code></a> varies per session, not per link, and <a href="app-guides-optimizing-prefetching.html#include-session-data-in-the-shell">session data resolves in the App Shell</a>, so cached session content still gets included. Read the session value outside the cached function and pass it in, then remove <code>prefetch={true}</code> from the links:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/page.tsx" data-js="app/dashboard/page.js">app/dashboard/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// Before
+import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+
+async function TeamTopics() {
+  const team = (await cookies()).get(&#x27;team&#x27;)?.value
+  const topics = await db.topics.forTeam(team)
+  return &lt;TopicList topics={topics} /&gt;
+}
+
+export default function Page() {
+  return (
+    &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
+      &lt;TeamTopics /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// Before
+import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+
+async function TeamTopics() {
+  const team = (await cookies()).get(&#x27;team&#x27;)?.value
+  const topics = await db.topics.forTeam(team)
+  return &lt;TopicList topics={topics} /&gt;
+}
+
+export default function Page() {
+  return (
+    &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
+      &lt;TeamTopics /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/page.tsx" data-js="app/dashboard/page.js">app/dashboard/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// After - the lookup is cached behind the session value
+import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+
+async function getTopics(team: string | undefined) {
+  &#x27;use cache&#x27;
+  return db.topics.forTeam(team)
+}
+
+async function TeamTopics() {
+  const team = (await cookies()).get(&#x27;team&#x27;)?.value
+  return &lt;TopicList topics={await getTopics(team)} /&gt;
+}
+
+export default function Page() {
+  return (
+    &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
+      &lt;TeamTopics /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// After - the lookup is cached behind the session value
+import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+
+async function getTopics(team) {
+  &#x27;use cache&#x27;
+  return db.topics.forTeam(team)
+}
+
+async function TeamTopics() {
+  const team = (await cookies()).get(&#x27;team&#x27;)?.value
+  return &lt;TopicList topics={await getTopics(team)} /&gt;
+}
+
+export default function Page() {
+  return (
+    &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
+      &lt;TeamTopics /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="url-data"><a class="anchor" href="#url-data">URL data</a></h3>
+<p><a href="app-glossary.html#url-data">URL data</a>(<code>params</code>, <code>searchParams</code>)는 link마다 달라지므로, 이에 의존하는 콘텐츠는 공유 App Shell에 포함될 수 없고 navigation 후 <code>&lt;Suspense&gt;</code> boundary 뒤에서 stream됩니다. 이런 link는 <code>prefetch={true}</code>를 유지하며, 클릭 전에 콘텐츠를 prefetch하는 방법은 <a href="#prefetching-url-data">Prefetching URL data</a>에서 다룹니다.</p><div class="en-orig"><p><a href="app-glossary.html#url-data">URL data</a> (<code>params</code>, <code>searchParams</code>) varies per link, so content that depends on it can't be included in the shared App Shell and streams in after navigation from behind its <code>&lt;Suspense&gt;</code> boundary. The links keep <code>prefetch={true}</code>, and <a href="#prefetching-url-data">Prefetching URL data</a> covers prefetching the content ahead of the click.</p></div>
+<h3 class="sec" id="real-time-content"><a class="anchor" href="#real-time-content">Real-time content</a></h3>
+<p>real-time content를 prefetch해도 클릭할 때쯤이면 이미 stale 상태가 되므로 보존할 것이 없습니다. <code>prefetch={true}</code>를 제거하고 콘텐츠가 <code>&lt;Suspense&gt;</code> boundary 뒤에서 stream되도록 하세요.</p><div class="en-orig"><p>A prefetch of real-time content would be stale by the click, so there is nothing to preserve. Remove <code>prefetch={true}</code> and let the content stream in from behind its <code>&lt;Suspense&gt;</code> boundary.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Destination</th><th>권장 사항</th></tr></thead>
+<tbody>
+<tr><td><a href="#static-or-cached-content">완전히 static하거나 콘텐츠가 이미 cache된 경우</a></td><td>이제 불필요해진 <code>prefetch={true}</code>를 제거합니다.</td></tr>
+<tr><td><a href="#uncached-content">클릭 전에 준비해 두고 싶은 uncached content를 전달하는 경우</a></td><td><code>use cache</code>로 cache한 다음 <code>prefetch={true}</code>를 제거합니다.</td></tr>
+<tr><td><a href="#session-content"><code>cookies()</code>나 <code>headers()</code>에 의존하는 콘텐츠를 전달하는 경우</a></td><td>session 값 뒤의 조회를 cache한 다음 <code>prefetch={true}</code>를 제거합니다.</td></tr>
+<tr><td><a href="#url-data">URL data를 읽거나, 이에 의존하는 cached content가 있는 경우</a></td><td>클릭 전에 콘텐츠를 resolve하도록 <code>prefetch={true}</code>를 유지합니다.</td></tr>
+<tr><td><a href="#real-time-content">request마다 최신 상태여야 하는 real-time content를 전달하는 경우</a></td><td><code>prefetch={true}</code>를 제거하고 콘텐츠가 stream되도록 합니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Destination</th><th>Recommendation</th></tr></thead>
+<tbody>
+<tr><td><a href="#static-or-cached-content">Fully static, or content already cached</a></td><td>Remove the now-redundant <code>prefetch={true}</code>.</td></tr>
+<tr><td><a href="#uncached-content">Delivered uncached content you want kept ahead of the click</a></td><td>Cache it with <code>use cache</code>, then remove <code>prefetch={true}</code>.</td></tr>
+<tr><td><a href="#session-content">Delivered content that depends on <code>cookies()</code> or <code>headers()</code></a></td><td>Cache the lookup behind the session value, then remove <code>prefetch={true}</code>.</td></tr>
+<tr><td><a href="#url-data">Reads URL data, or has cached content that depends on it</a></td><td>Keep <code>prefetch={true}</code> to resolve the content ahead of the click.</td></tr>
+<tr><td><a href="#real-time-content">Delivers real-time content that must stay fresh per request</a></td><td>Remove <code>prefetch={true}</code> and let the content stream in.</td></tr>
+</tbody></table></div></div>
+<h2 class="sec" id="adopting-incrementally"><a class="anchor" href="#adopting-incrementally">Adopting incrementally<span class="ko">점진적으로 도입하기</span></a></h2>
+<p>도입을 한 번의 변경으로 끝낼 필요는 없습니다. <a href="app-api-reference-file-conventions-route-segment-config-prefetch.html"><code>prefetch = &#x27;partial&#x27;</code></a>은 하나의 route로 범위를 좁힌 global flag이므로, global flag를 끈 상태에서도 destination별로 따로 도입하고 deploy할 수 있습니다.</p><div class="en-orig"><p>Adoption doesn't have to happen in one change. <a href="app-api-reference-file-conventions-route-segment-config-prefetch.html"><code>prefetch = &#x27;partial&#x27;</code></a> is the global flag scoped to one route, so with the global flag still off, you can adopt and deploy each destination on its own.</p></div>
+<p>destination이 Partial Prefetching을 opt in하기 전에는 <code>prefetch={true}</code>가 legacy full prefetch를 수행합니다. development 중에 이런 link로 navigation하면 <a href="https://nextjs.org/docs/messages/instant-link-prefetch-partial" target="_blank" rel="noopener">dynamic data during prefetching</a> insight가 나타나 해당 destination을 알려 주고 해결 방법을 안내합니다:</p><div class="en-orig"><p>Before a destination opts into Partial Prefetching, <code>prefetch={true}</code> performs the legacy full prefetch. Navigating through one of these links in development surfaces the <a href="https://nextjs.org/docs/messages/instant-link-prefetch-partial" target="_blank" rel="noopener">dynamic data during prefetching</a> insight, naming the destination and pointing at its fixes:</p></div>
+<div class="fixgrid"><a class="fixcard" href="https://nextjs.org/docs/messages/instant-link-prefetch-partial#opt-into-partial-prefetching" target="_blank" rel="noopener"><div class="fc-t">Opt into Partial Prefetching</div><div class="fc-c"><div class="fl">// page.tsx or layout.tsx</div><div class="fl hl">export const prefetch = &#x27;partial&#x27;</div></div></a><a class="fixcard" href="https://nextjs.org/docs/messages/instant-link-prefetch-partial#use-the-default-prefetch" target="_blank" rel="noopener"><div class="fc-t">Use the default prefetch</div><div class="fc-c"><div class="fl hl">&lt;Link href=&quot;/dashboard&quot;&gt;</div><div class="fl">  Dashboard</div><div class="fl">&lt;/Link&gt;</div></div></a></div>
+<p>각 card는 클릭할 수 있으며, 패턴, 코드 예제, trade-off를 담은 페이지를 엽니다.</p><div class="en-orig"><p>Each card is clickable and opens a page with patterns, code samples, and trade-offs.</p></div>
+<ol>
+<li><p>destination 하나부터 시작하세요. 의도한 prefetch UI를 보존하고 <a href="#migrate-existing-full-prefetches">위의 패턴</a>을 사용해 해당 destination의 <code>prefetch={true}</code> link를 업데이트합니다. 그런 다음 그 page나 layout에 <code>export const prefetch = &#x27;partial&#x27;</code>을 추가하면, 그 route를 가리키는 모든 link에서 insight가 사라집니다:</p>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/page.tsx" data-js="app/dashboard/page.js">app/dashboard/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// Before
+export default function Page() {
+  return &lt;Dashboard /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// Before
+export default function Page() {
+  return &lt;Dashboard /&gt;
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/page.tsx" data-js="app/dashboard/page.js">app/dashboard/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// After - adopted without the global flag
+export const prefetch = &#x27;partial&#x27;
+
+export default function Page() {
+  return &lt;Dashboard /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// After - adopted without the global flag
+export const prefetch = &#x27;partial&#x27;
+
+export default function Page() {
+  return &lt;Dashboard /&gt;
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>page나 layout에서 이미 <a href="app-api-reference-functions-prefetch.html"><code>prefetch()</code></a>를 호출하고 있다면, <code>prefetch</code> export와 이름이 겹치지 않도록 <code>import { prefetch as prefetchStage } from &#x27;next/cache&#x27;</code>처럼 다른 이름으로 import하세요.</p></div></div></li>
+<li>변경 사항을 deploy합니다. 도입을 마친 destination으로 가는 link는 App Shell을 load하고, 아직 손대지 않은 destination에서는 insight가 계속 나타납니다.</li>
+<li>범위 안의 모든 destination을 도입할 때까지 반복한 다음 <a href="#enable-partial-prefetching">flag를 활성화</a>하세요.</li>
+</ol><div class="en-orig"><ol>
+<li><p>Start with one destination. Preserve the intended prefetched UI and update its <code>prefetch={true}</code> links using the <a href="#migrate-existing-full-prefetches">patterns above</a>. Then add <code>export const prefetch = &#x27;partial&#x27;</code> to its page or layout, which clears the insight for every link pointing at the route:</p>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/page.tsx" data-js="app/dashboard/page.js">app/dashboard/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// Before
+export default function Page() {
+  return &lt;Dashboard /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// Before
+export default function Page() {
+  return &lt;Dashboard /&gt;
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/page.tsx" data-js="app/dashboard/page.js">app/dashboard/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// After - adopted without the global flag
+export const prefetch = &#x27;partial&#x27;
+
+export default function Page() {
+  return &lt;Dashboard /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// After - adopted without the global flag
+export const prefetch = &#x27;partial&#x27;
+
+export default function Page() {
+  return &lt;Dashboard /&gt;
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>If the page or layout already calls <a href="app-api-reference-functions-prefetch.html"><code>prefetch()</code></a>, import it under another name, for example <code>import { prefetch as prefetchStage } from &#x27;next/cache&#x27;</code>, so it doesn't collide with the <code>prefetch</code> export.</p></div></div></li>
+<li>Deploy the change. Links to the adopted destination load the App Shell, and the insight keeps surfacing for the destinations you haven't reached.</li>
+<li>Repeat until every destination in scope is adopted, then <a href="#enable-partial-prefetching">enable the flag</a>.</li>
+</ol></div>
+<p>이제 route별 <code>prefetch = &#x27;partial&#x27;</code> export는 불필요합니다. 모든 <code>page</code>와 <code>layout</code>에서 <code>export const prefetch = &#x27;partial&#x27;</code>을 제거해 주는 <a href="app-guides-upgrading-codemods.html#remove-partial-prefetch"><code>remove-partial-prefetch</code></a> codemod로 한 번에 제거하세요:</p><div class="en-orig"><p>The per-route <code>prefetch = &#x27;partial&#x27;</code> exports are now redundant. Remove them in one pass with the <a href="app-guides-upgrading-codemods.html#remove-partial-prefetch"><code>remove-partial-prefetch</code></a> codemod, which strips <code>export const prefetch = &#x27;partial&#x27;</code> from every <code>page</code> and <code>layout</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx @next/codemod@canary remove-partial-prefetch ./app</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>src/</code> 프로젝트에서는 <code>./src/app</code>을 넘기세요. 경로가 잘못되면 실패하는 대신 <code>0 ok</code>를 출력하므로 파일 개수를 확인하세요.</p><div class="en-orig"><p>Pass <code>./src/app</code> in a <code>src/</code> project. A wrong path reports <code>0 ok</code> instead of failing, so check the file count.</p></div></div></div>
+<p>이 codemod는 <code>&#x27;partial&#x27;</code> 값만 제거하며 <code>prefetch = &#x27;force-disabled&#x27;</code> 같은 다른 값은 그대로 둡니다.</p><div class="en-orig"><p>The codemod removes only the <code>&#x27;partial&#x27;</code> value and leaves other values such as <code>prefetch = &#x27;force-disabled&#x27;</code> in place.</p></div>
+<h2 class="sec" id="move-url-data-behind-suspense"><a class="anchor" href="#move-url-data-behind-suspense">Move URL data behind Suspense<span class="ko">URL data를 Suspense 뒤로 옮기기</span></a></h2>
+<p>flag를 활성화하면 Next.js는 development 중에 navigation할 때마다 각 App Shell을 검증합니다. App Shell은 route를 가리키는 모든 link가 공유하므로 하나의 URL에만 속하는 data를 담을 수 없습니다. <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> boundary 밖에서 <a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code></a>나 <a href="app-api-reference-file-conventions-page.html#searchparams-optional"><code>searchParams</code></a>를 읽으면 shell이 link의 URL에 묶이게 되고, <a href="https://nextjs.org/docs/messages/instant-shell-url-data" target="_blank" rel="noopener">URL data outside of Suspense</a> insight가 나타나 해당 route를 알려 주고 해결 방법을 안내합니다:</p><div class="en-orig"><p>With the flag enabled, Next.js validates each App Shell as you navigate in development. The App Shell is shared across every link to a route, so it can't contain data that belongs to a single URL. Reading <a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code></a> or <a href="app-api-reference-file-conventions-page.html#searchparams-optional"><code>searchParams</code></a> outside a <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> boundary ties the shell to the link's URL and surfaces the <a href="https://nextjs.org/docs/messages/instant-shell-url-data" target="_blank" rel="noopener">URL data outside of Suspense</a> insight, naming the route and pointing at its fixes:</p></div>
+<div class="fixgrid"><a class="fixcard" href="https://nextjs.org/docs/messages/instant-shell-url-data#wrap-in-or-move-into-suspense" target="_blank" rel="noopener"><div class="fc-t">Wrap in or move into Suspense</div><div class="fc-c"><div class="fl hl">&lt;Suspense fallback={…}&gt;</div></div></a><a class="fixcard" href="https://nextjs.org/docs/messages/instant-shell-url-data#allow-blocking-route" target="_blank" rel="noopener"><div class="fc-t">Allow blocking route</div><div class="fc-c"><div class="fl">// page.tsx or layout.tsx</div><div class="fl hl">export const instant = false</div></div></a></div>
+<p>이 insight는 build를 막지 않으므로, 이 작업은 flag를 켠 뒤 언제든 진행할 수 있습니다. <code>next dev</code>에서 모든 route를 load해 확인하세요.</p><div class="en-orig"><p>The insight never blocks the build, so this pass can happen any time after the flag is on. Load every route in <code>next dev</code> to check for it.</p></div>
+<p>해결 방법은 route에서 URL과 무관한 부분은 boundary 밖에 두고, <code>params</code>나 <code>searchParams</code>를 읽는 부분을 <code>&lt;Suspense&gt;</code>로 감싼 child로 옮기는 것입니다:</p><div class="en-orig"><p>The fix is to keep the URL-independent parts of the route outside the boundary and move the <code>params</code> or <code>searchParams</code> read into a child wrapped in <code>&lt;Suspense&gt;</code>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/products/[slug]/page.tsx" data-js="app/products/[slug]/page.js">app/products/[slug]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// Before - awaiting params at the top ties the App Shell to one URL
+export default async function Page({ params }: PageProps&lt;&#x27;/products/[slug]&#x27;&gt;) {
+  const { slug } = await params
+  const product = await getProduct(slug)
+  return (
+    &lt;ProductLayout&gt;
+      &lt;Details product={product} /&gt;
+    &lt;/ProductLayout&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// Before - awaiting params at the top ties the App Shell to one URL
+export default async function Page({ params }) {
+  const { slug } = await params
+  const product = await getProduct(slug)
+  return (
+    &lt;ProductLayout&gt;
+      &lt;Details product={product} /&gt;
+    &lt;/ProductLayout&gt;
+  )
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/products/[slug]/page.tsx" data-js="app/products/[slug]/page.js">app/products/[slug]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// After - pass the promise down without awaiting it
+import { Suspense } from &#x27;react&#x27;
+import { ProductDetails } from &#x27;./product-details&#x27;
+
+export default function Page({ params }: PageProps&lt;&#x27;/products/[slug]&#x27;&gt;) {
+  return (
+    &lt;ProductLayout&gt;
+      &lt;Suspense fallback={&lt;DetailsSkeleton /&gt;}&gt;
+        &lt;ProductDetails params={params} /&gt;
+      &lt;/Suspense&gt;
+    &lt;/ProductLayout&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// After - pass the promise down without awaiting it
+import { Suspense } from &#x27;react&#x27;
+import { ProductDetails } from &#x27;./product-details&#x27;
+
+export default function Page({ params }) {
+  return (
+    &lt;ProductLayout&gt;
+      &lt;Suspense fallback={&lt;DetailsSkeleton /&gt;}&gt;
+        &lt;ProductDetails params={params} /&gt;
+      &lt;/Suspense&gt;
+    &lt;/ProductLayout&gt;
+  )
+}</code></pre></div></div>
+<p>child는 boundary 안에서 promise를 await합니다:</p><div class="en-orig"><p>The child awaits the promise inside the boundary:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/products/[slug]/product-details.tsx" data-js="app/products/[slug]/product-details.js">app/products/[slug]/product-details.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function ProductDetails({
+  params,
+}: Pick&lt;PageProps&lt;&#x27;/products/[slug]&#x27;&gt;, &#x27;params&#x27;&gt;) {
+  const { slug } = await params
+  const product = await getProduct(slug)
+  return &lt;Details product={product} /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function ProductDetails({ params }) {
+  const { slug } = await params
+  const product = await getProduct(slug)
+  return &lt;Details product={product} /&gt;
+}</code></pre></div></div>
+<p>boundary 밖의 모든 것은 공유 App Shell에 남고, URL-specific 영역만 navigation마다 render됩니다. route를 다시 load하거나 navigation해서 insight가 사라졌는지, 그리고 페이지가 여전히 의미 있는 UI를 그리는지 확인하세요.</p><div class="en-orig"><p>Everything outside the boundary stays in the shared App Shell, and only the URL-specific region renders per navigation. Load or navigate to the route again to confirm the insight is gone and the page still paints meaningful UI.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="app-api-reference-functions-generate-metadata.html"><code>generateMetadata</code></a> 안에서 <code>params</code>나 <code>searchParams</code>를 읽으면 대신 <a href="https://nextjs.org/docs/messages/blocking-prerender-metadata-runtime" target="_blank" rel="noopener">URL data in <code>generateMetadata()</code></a>로 표시됩니다.</p><div class="en-orig"><p>A <code>params</code> or <code>searchParams</code> read inside <a href="app-api-reference-functions-generate-metadata.html"><code>generateMetadata</code></a> surfaces as <a href="https://nextjs.org/docs/messages/blocking-prerender-metadata-runtime" target="_blank" rel="noopener">URL data in <code>generateMetadata()</code></a> instead.</p></div></div></div>
+<h2 class="sec" id="prefetching-url-data"><a class="anchor" href="#prefetching-url-data">Prefetching URL data<span class="ko">URL data prefetch하기</span></a></h2>
+<p><a href="app-glossary.html#url-data">URL data</a>(<code>params</code>, <code>searchParams</code>)에 의존하는 콘텐츠는 공유 App Shell에 포함될 수 없으므로 navigation 후에 stream됩니다. <a href="app-guides-optimizing-prefetching.html">Per-link prefetching</a>은 <code>prefetch={true}</code>가 있는 link에 대해 클릭 전에 이를 resolve하지만, prefetch 가능한 link마다 server invocation이 한 번씩 발생하는 비용이 듭니다. prefetch 시점에 콘텐츠를 resolve할 수 있게 하려면 read 뒤에서 <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a>로 cache하세요. <code>searchParams</code>를 읽는 search 페이지라면 다음과 같습니다:</p><div class="en-orig"><p>Content that depends on <a href="app-glossary.html#url-data">URL data</a> (<code>params</code>, <code>searchParams</code>) can't be included in the shared App Shell, so it streams in after navigation. <a href="app-guides-optimizing-prefetching.html">Per-link prefetching</a> resolves it ahead of the click for links with <code>prefetch={true}</code>, at the cost of a server invocation per prefetchable link. To make the content resolvable at prefetch time, cache it behind the read with <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a>. For a search page that reads <code>searchParams</code>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/search/page.tsx" data-js="app/search/page.js">app/search/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// Before - the results stream in after navigation
+import { Suspense } from &#x27;react&#x27;
+
+async function getResults(query: string) {
+  const res = await fetch(`https://api.example.com/search?q=${query}`)
+  return res.json()
+}
+
+async function Results({
+  searchParams,
+}: Pick&lt;PageProps&lt;&#x27;/search&#x27;&gt;, &#x27;searchParams&#x27;&gt;) {
+  const { q } = await searchParams
+  return &lt;ResultList results={await getResults(q)} /&gt;
+}
+
+export default function Page({ searchParams }: PageProps&lt;&#x27;/search&#x27;&gt;) {
+  return (
+    &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
+      &lt;Results searchParams={searchParams} /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// Before - the results stream in after navigation
+import { Suspense } from &#x27;react&#x27;
+
+async function getResults(query) {
+  const res = await fetch(`https://api.example.com/search?q=${query}`)
+  return res.json()
+}
+
+async function Results({ searchParams }) {
+  const { q } = await searchParams
+  return &lt;ResultList results={await getResults(q)} /&gt;
+}
+
+export default function Page({ searchParams }) {
+  return (
+    &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
+      &lt;Results searchParams={searchParams} /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/search/page.tsx" data-js="app/search/page.js">app/search/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// After - the results are cached and prefetched behind the resolved searchParams
+import { Suspense } from &#x27;react&#x27;
+
+async function getResults(query: string) {
+  &#x27;use cache&#x27;
+  const res = await fetch(`https://api.example.com/search?q=${query}`)
+  return res.json()
+}
+
+async function Results({
+  searchParams,
+}: Pick&lt;PageProps&lt;&#x27;/search&#x27;&gt;, &#x27;searchParams&#x27;&gt;) {
+  const { q } = await searchParams
+  return &lt;ResultList results={await getResults(q)} /&gt;
+}
+
+export default function Page({ searchParams }: PageProps&lt;&#x27;/search&#x27;&gt;) {
+  return (
+    &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
+      &lt;Results searchParams={searchParams} /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// After - the results are cached and prefetched behind the resolved searchParams
+import { Suspense } from &#x27;react&#x27;
+
+async function getResults(query) {
+  &#x27;use cache&#x27;
+  const res = await fetch(`https://api.example.com/search?q=${query}`)
+  return res.json()
+}
+
+async function Results({ searchParams }) {
+  const { q } = await searchParams
+  return &lt;ResultList results={await getResults(q)} /&gt;
+}
+
+export default function Page({ searchParams }) {
+  return (
+    &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
+      &lt;Results searchParams={searchParams} /&gt;
+    &lt;/Suspense&gt;
+  )
+}</code></pre></div></div>
+<p><a href="app-guides-optimizing-prefetching.html">Optimizing prefetching 가이드</a>에서 이 비용이 언제 가치가 있는지, 그리고 runtime read 뒤에 두는 caching 패턴을 다룹니다.</p><div class="en-orig"><p>The <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching guide</a> covers when the cost pays off and the caching patterns behind runtime reads.</p></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">다음 단계</h2><p>prefetching과 instant navigation에 대해 더 알아보세요.</p><div class="rgrid"><a class="rcard" href="app-guides-instant-navigation.html"><div class="rt">Ensuring instant navigations</div><div class="rk">즉각적인 navigation 보장하기</div><div class="rd">더 많은 콘텐츠를 prefetch하고 prerender하도록 앱을 구성해, 즉각적인 페이지 로드와 client navigation을 제공하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-guides-optimizing-prefetching.html"><div class="rt">Optimizing prefetching</div><div class="rk">prefetching 최적화</div><div class="rd">link별 URL data를 resolve하거나, session data를 App Shell에 포함하거나, 비용이 큰 작업을 이후 navigation 단계로 미루는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-config-next-config-js-partialPrefetching.html"><div class="rt">partialPrefetching</div><div class="rk">partialPrefetching</div><div class="rd">각 route의 static 부분만 fetch하도록 기본 link prefetch 동작을 설정합니다.</div></a><a class="rcard" href="app-api-reference-file-conventions-route-segment-config-prefetch.html"><div class="rt">prefetch</div><div class="rk">prefetch</div><div class="rd">client navigation 중에 route segment가 prefetch되는 방식을 설정합니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/adopting-partial-prefetching.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/adopting-partial-prefetching" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Guides</div><div class="ttl-ko">가이드</div></a>
+      <a href="app-guides-ai-agents.html" class="next"><div class="dir">다음 →</div><div class="ttl">AI Coding Agents</div><div class="ttl-ko">Next.js가 AI coding agent를 지원하는 방법</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/adopting-partial-prefetching" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#use-the-adoption-skill-recommended">Use the adoption skill (recommended)</a></li><li class="l2"><a href="#or-adopt-by-hand">Or adopt by hand</a></li><li class="l2"><a href="#enable-partial-prefetching">Enable Partial Prefetching</a></li><li class="l2"><a href="#what-changes-for-link">What changes for <code>&lt;Link&gt;</code></a></li><li class="l2"><a href="#migrate-existing-full-prefetches">Migrate existing full prefetches</a></li><li class="l3"><a href="#verify-prefetched-ui-with-tests">Verify prefetched UI with tests</a></li><li class="l3"><a href="#static-or-cached-content">Static or cached content</a></li><li class="l3"><a href="#uncached-content">Uncached content</a></li><li class="l3"><a href="#session-content">Session content</a></li><li class="l3"><a href="#url-data">URL data</a></li><li class="l3"><a href="#real-time-content">Real-time content</a></li><li class="l2"><a href="#adopting-incrementally">Adopting incrementally</a></li><li class="l2"><a href="#move-url-data-behind-suspense">Move URL data behind Suspense</a></li><li class="l2"><a href="#prefetching-url-data">Prefetching URL data</a></li><li class="l2"><a href="#next-steps">다음 단계</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+[Partial Prefetching](/docs/app/glossary#partial-prefetching)은 Cache Components route에서 `&lt;Link&gt;`가 다운로드하는 내용을 바꿉니다. Partial Prefetching이 활성화되면 `&lt;Link&gt;`는 route의 [App Shell](/docs/app/glossary#app-shell), 즉 static content와 URL에 의존하지 않는 cached content를 prefetch합니다. Next.js는 예전처럼 link마다 따로 prefetch하는 대신, route마다 App Shell을 하나 build하고 그 route를 가리키는 모든 link에서 이를 재사용합니다.
+
+App Shell보다 더 많이 prefetch하려면 link에서 [`&lt;Link prefetch={true}&gt;`](/docs/app/api-reference/components/link#prefetch)로 [per-link prefetching](/docs/app/guides/optimizing-prefetching)을 opt in할 수 있습니다. 그러면 prefetch가 `params`, `searchParams` 또는 전체 URL에 의존하는 cached URL-specific content까지 resolve할 수 있습니다.
+
+그 과정에서 Next.js는 development 중에 [instant navigation](/docs/app/guides/instant-navigation) insight를 보여 주며, 바꿔야 할 link나 route를 알려 줍니다.
+
+&gt; **Good to know**: Partial Prefetching은 [`cacheComponents`](/docs/app/api-reference/config/next-config-js/cacheComponents)가 활성화되어 있을 때만 동작합니다.
+
+## Use the adoption skill (recommended) || adoption skill 사용하기 (권장)
+
+[`next-partial-prefetching-adoption`](/docs/app/guides/ai-agents#next-partial-prefetching-adoption) skill은 coding agent를 이용해 이 도입 과정을 진행합니다. 이 skill은 `&lt;Link prefetch={true}&gt;` 호출을 검토하고, production test 환경(test rig)이 있으면 보존해야 할 prefetch된 UI를 [`instant()` test](#verify-prefetched-ui-with-tests)로 기록한 다음, flag를 활성화하고 각 route에서 이 가이드가 다루는 insight를 확인합니다.
+
+skill을 설치하세요:
+
+[[CODE 1]]
+
+그런 다음 agent에게 이 prompt를 주세요:
+
+[[CODE 2]]
+
+## Or adopt by hand || 또는 직접 도입하기
+
+기존 앱에 직접 도입하려면:
+
+1. [기존 full prefetch를 검토](#migrate-existing-full-prefetches)하고 각 destination의 어느 부분을 계속 prefetch할지 정합니다. [`instant()` test](#verify-prefetched-ui-with-tests)로 regression coverage를 추가할 수 있습니다.
+2. [`partialPrefetching`을 활성화](#enable-partial-prefetching)합니다. 규모가 큰 migration이라면 global flag를 끈 채로 [점진적으로 도입](#adopting-incrementally)할 수 있습니다. [dynamic data during prefetching](/docs/messages/instant-link-prefetch-partial) insight가 아직 legacy full prefetch를 사용하는 destination을 하나하나 찾아 줍니다.
+3. [URL data를 Suspense 뒤로 옮겨](#move-url-data-behind-suspense) [URL data outside of Suspense](/docs/messages/instant-shell-url-data) insight를 해결합니다.
+4. 필요하다면 navigation 후에 stream되는 것만으로는 부족한 route에서 [URL data를 prefetch](#prefetching-url-data)합니다.
+
+두 insight 모두 development 전용이며 build를 막지 않습니다. 이 insight들은 dev overlay에 fix card와 함께 표시되며, 각 fix card는 해당 해결 방법의 문서 페이지로 연결됩니다. 아직 도입할 준비가 안 된 route가 있다면 그 page나 layout에서 [`instant = false`](/docs/app/api-reference/file-conventions/route-segment-config/instant)를 export해 해당 route를 instant-navigation 검증에서 제외하고, 나중에 다시 돌아오세요.
+
+## Enable Partial Prefetching || Partial Prefetching 활성화하기
+
+&gt; **Good to know**: 기존 앱에서는 Partial Prefetching을 활성화하기 전에 [`&lt;Link prefetch={true}&gt;`](#migrate-existing-full-prefetches)가 전달하는 UI를 검토하세요. 이 link들은 legacy full prefetch를 사용하며, Partial Prefetching을 활성화하면 동작이 바뀝니다.
+
+`next.config.ts`에서 [`partialPrefetching`](/docs/app/api-reference/config/next-config-js/partialPrefetching)을 활성화하세요:
+
+[[CODE 3]]
+
+flag를 활성화하면 기본 동작, `prefetch=&quot;auto&quot;`, `prefetch={true}`를 사용하는 link는 destination의 App Shell을 prefetch합니다. `prefetch={true}`가 있는 link는 cached URL-specific content도 resolve할 수 있지만, 더 이상 legacy full prefetch에 있던 uncached dynamic content는 포함하지 않습니다. 새 프로젝트는 migrate할 legacy full prefetch가 없으므로 이 검토 없이 flag를 활성화해도 됩니다.
+
+&gt; **Good to know**: `partialPrefetching` 값 없이 `cacheComponents`가 활성화되어 있으면, Next.js는 이를 `true` 또는 `false`로 설정하라는 경고를 log에 남깁니다. `false`는 이 가이드를 진행하는 동안 이전 prefetch 동작을 유지하려는 경우에만 설정하세요. 다음 major release에서는 두 기능이 모든 곳에서 활성화되고 이 option들은 제거될 예정입니다.
+
+## What changes for `&lt;Link&gt;` || `&lt;Link&gt;`에서 바뀌는 점
+
+| `&lt;Link&gt;` prop                       | 이전 (Cache Components 기본값)                              | Partial Prefetching 이후                                                                                                                              |
+| ----------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `&lt;Link href=&quot;/x&quot;&gt;`                  | cache된 page render를 prefetch했습니다.                             | `/x`의 공유 App Shell을 prefetch합니다.                                                                                                              |
+| `&lt;Link href=&quot;/x&quot; prefetch&gt;`         | cache된 page render **그리고** 모든 dynamic content를 prefetch했습니다. | App Shell을 prefetch하고, `/x`가 URL-specific content를 읽는 경우 [per-link prefetching](/docs/app/guides/optimizing-prefetching)으로 cached URL-specific content도 prefetch합니다. |
+| `&lt;Link href=&quot;/x&quot; prefetch={false}&gt;` | 이 link의 prefetching을 비활성화했습니다.                            | 변경 없음. 여전히 비활성화됩니다.                                                                                                                             |
+
+App Shell은 dynamic param과 관계없이 특정 route를 가리키는 모든 link가 공유하므로, 같은 destination으로 가는 `&lt;Link&gt;`를 많이 render해도 작업량이 늘어나지 않습니다.
+
+## Migrate existing full prefetches || 기존 full prefetch migrate하기
+
+Partial Prefetching 이전에는 실제 적용되는 `prefetch` 값이 `true`인 `&lt;Link&gt;`가 uncached dynamic content를 포함해 destination 전체를 prefetch합니다. 여기에는 `prefetch={true}`, 값 없는 `prefetch` prop, 그리고 `true`로 resolve되는 wrapper prop이나 조건부 prop이 포함됩니다. 기본값, `prefetch=&quot;auto&quot;`, `prefetch={false}`는 legacy full prefetch를 사용하지 않습니다.
+
+legacy full prefetch는 navigation에 필요한 것보다 더 많은 UI를 포함할 수 있습니다. 대부분의 경우 destination 상단의 주요 콘텐츠는 navigation 전에 준비되어 있어야 하고, 부차적이거나 자주 바뀌는 콘텐츠는 그 뒤에 stream해도 됩니다.
+
+&gt; **Good to know**: `cookies()`와 `headers()`는 prefetch를 URL에 묶지 않습니다. 이 값들은 link마다가 아니라 session마다 달라지므로 App Shell에 여전히 session content가 들어갑니다. `params`와 `searchParams`만이 [URL data](/docs/app/glossary#url-data)이며, 이는 link마다 달라지므로 공유 App Shell에 포함될 수 없습니다.
+
+### Verify prefetched UI with tests || test로 prefetch된 UI 검증하기
+
+migration을 프로그래밍 방식으로 검증하려면 [`instant()`](/docs/app/guides/instant-navigation#prevent-regressions-with-e2e-tests) test로 기존 full prefetch에서 계속 제공되어야 할 UI를 기록할 수 있습니다. 같은 destination으로 가는 link라도 prefetch 설정이 다를 수 있으므로 정확히 그 source link를 test하세요:
+
+[[CODE 4]]
+
+`next dev`에서는 자동 prefetching이 실행되지 않으므로, 이 baseline은 `partialPrefetching`을 비활성화한 production build에서 실행하세요. 그런 다음 destination을 도입한 뒤 같은 test를 다시 실행합니다. test가 실패하면 선택한 UI가 더 이상 prefetch되지 않는다는 뜻입니다. 계속 제공되어야 할 재사용 가능한 data나 subtree를 cache한 다음, 통과한 test는 regression coverage로 남겨 두세요.
+
+### Static or cached content || Static 또는 cached content
+
+출력 결과가 이미 App Shell에 들어 있습니다. 이제 불필요해진 `prefetch={true}`를 제거하세요:
+
+[[CODE 5]]
+
+### Uncached content
+
+`use cache`로 cache해서 App Shell에 포함되게 한 다음, link에서 `prefetch={true}`를 제거하세요:
+
+[[CODE 6]]
+
+[[CODE 7]]
+
+&gt; **Good to know**: App Shell에는 [`stale`](/docs/app/api-reference/functions/cacheLife#stale) 시간이 최소 5분인 cached content가 들어갑니다. 위에서 사용한 `default` profile과 `seconds`를 제외한 모든 preset이 이 조건을 만족합니다. 이보다 수명이 짧은 콘텐츠는 대신 navigation 후에 stream됩니다. [Prerendering behavior](/docs/app/api-reference/functions/cacheLife#prerendering-behavior)를 참고하세요.
+
+### Session content
+
+[`cookies()`](/docs/app/api-reference/functions/cookies)나 [`headers()`](/docs/app/api-reference/functions/headers) 뒤에 있는 콘텐츠는 link마다가 아니라 session마다 달라지고, [session data는 App Shell 안에서 resolve](/docs/app/guides/optimizing-prefetching#include-session-data-in-the-shell)되므로 cached session content도 여전히 포함됩니다. session 값은 cache된 함수 밖에서 읽어 인자로 넘긴 다음, link에서 `prefetch={true}`를 제거하세요:
+
+[[CODE 8]]
+
+[[CODE 9]]
+
+### URL data
+
+[URL data](/docs/app/glossary#url-data)(`params`, `searchParams`)는 link마다 달라지므로, 이에 의존하는 콘텐츠는 공유 App Shell에 포함될 수 없고 navigation 후 `&lt;Suspense&gt;` boundary 뒤에서 stream됩니다. 이런 link는 `prefetch={true}`를 유지하며, 클릭 전에 콘텐츠를 prefetch하는 방법은 [Prefetching URL data](#prefetching-url-data)에서 다룹니다.
+
+### Real-time content
+
+real-time content를 prefetch해도 클릭할 때쯤이면 이미 stale 상태가 되므로 보존할 것이 없습니다. `prefetch={true}`를 제거하고 콘텐츠가 `&lt;Suspense&gt;` boundary 뒤에서 stream되도록 하세요.
+
+| Destination                                                                       | 권장 사항                                                            |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| [완전히 static하거나 콘텐츠가 이미 cache된 경우](#static-or-cached-content)              | 이제 불필요해진 `prefetch={true}`를 제거합니다.                               |
+| [클릭 전에 준비해 두고 싶은 uncached content를 전달하는 경우](#uncached-content)  | `use cache`로 cache한 다음 `prefetch={true}`를 제거합니다.                 |
+| [`cookies()`나 `headers()`에 의존하는 콘텐츠를 전달하는 경우](#session-content)  | session 값 뒤의 조회를 cache한 다음 `prefetch={true}`를 제거합니다. |
+| [URL data를 읽거나, 이에 의존하는 cached content가 있는 경우](#url-data)             | 클릭 전에 콘텐츠를 resolve하도록 `prefetch={true}`를 유지합니다.         |
+| [request마다 최신 상태여야 하는 real-time content를 전달하는 경우](#real-time-content) | `prefetch={true}`를 제거하고 콘텐츠가 stream되도록 합니다.                   |
+
+## Adopting incrementally || 점진적으로 도입하기
+
+도입을 한 번의 변경으로 끝낼 필요는 없습니다. [`prefetch = &#x27;partial&#x27;`](/docs/app/api-reference/file-conventions/route-segment-config/prefetch)은 하나의 route로 범위를 좁힌 global flag이므로, global flag를 끈 상태에서도 destination별로 따로 도입하고 deploy할 수 있습니다.
+
+destination이 Partial Prefetching을 opt in하기 전에는 `prefetch={true}`가 legacy full prefetch를 수행합니다. development 중에 이런 link로 navigation하면 [dynamic data during prefetching](/docs/messages/instant-link-prefetch-partial) insight가 나타나 해당 destination을 알려 주고 해결 방법을 안내합니다:
+
+&lt;FixCardGrid&gt;
+  &lt;FixCard
+    group=&quot;upgrade&quot;
+    title=&quot;Opt into Partial Prefetching&quot;
+    href=&quot;/docs/messages/instant-link-prefetch-partial#opt-into-partial-prefetching&quot;
+    snippets={[
+      { text: &#x27;// page.tsx or layout.tsx&#x27; },
+      { text: &quot;export const prefetch = &#x27;partial&#x27;&quot;, highlight: true },
+    ]}
+  /&gt;
+  &lt;FixCard
+    group=&quot;disable&quot;
+    title=&quot;Use the default prefetch&quot;
+    href=&quot;/docs/messages/instant-link-prefetch-partial#use-the-default-prefetch&quot;
+    snippets={[
+      { text: &#x27;&lt;Link href=&quot;/dashboard&quot;&gt;&#x27;, highlight: true },
+      { text: &#x27;  Dashboard&#x27; },
+      { text: &#x27;&lt;/Link&gt;&#x27; },
+    ]}
+  /&gt;
+&lt;/FixCardGrid&gt;
+
+각 card는 클릭할 수 있으며, 패턴, 코드 예제, trade-off를 담은 페이지를 엽니다.
+
+1. destination 하나부터 시작하세요. 의도한 prefetch UI를 보존하고 [위의 패턴](#migrate-existing-full-prefetches)을 사용해 해당 destination의 `prefetch={true}` link를 업데이트합니다. 그런 다음 그 page나 layout에 `export const prefetch = &#x27;partial&#x27;`을 추가하면, 그 route를 가리키는 모든 link에서 insight가 사라집니다:
+
+   [[CODE 10]]
+
+   [[CODE 11]]
+
+   &gt; **Good to know**: page나 layout에서 이미 [`prefetch()`](/docs/app/api-reference/functions/prefetch)를 호출하고 있다면, `prefetch` export와 이름이 겹치지 않도록 `import { prefetch as prefetchStage } from &#x27;next/cache&#x27;`처럼 다른 이름으로 import하세요.
+
+2. 변경 사항을 deploy합니다. 도입을 마친 destination으로 가는 link는 App Shell을 load하고, 아직 손대지 않은 destination에서는 insight가 계속 나타납니다.
+3. 범위 안의 모든 destination을 도입할 때까지 반복한 다음 [flag를 활성화](#enable-partial-prefetching)하세요.
+
+이제 route별 `prefetch = &#x27;partial&#x27;` export는 불필요합니다. 모든 `page`와 `layout`에서 `export const prefetch = &#x27;partial&#x27;`을 제거해 주는 [`remove-partial-prefetch`](/docs/app/guides/upgrading/codemods#remove-partial-prefetch) codemod로 한 번에 제거하세요:
+
+[[CODE 12]]
+
+&gt; **Good to know**: `src/` 프로젝트에서는 `./src/app`을 넘기세요. 경로가 잘못되면 실패하는 대신 `0 ok`를 출력하므로 파일 개수를 확인하세요.
+
+이 codemod는 `&#x27;partial&#x27;` 값만 제거하며 `prefetch = &#x27;force-disabled&#x27;` 같은 다른 값은 그대로 둡니다.
+
+## Move URL data behind Suspense || URL data를 Suspense 뒤로 옮기기
+
+flag를 활성화하면 Next.js는 development 중에 navigation할 때마다 각 App Shell을 검증합니다. App Shell은 route를 가리키는 모든 link가 공유하므로 하나의 URL에만 속하는 data를 담을 수 없습니다. [`&lt;Suspense&gt;`](https://react.dev/reference/react/Suspense) boundary 밖에서 [`params`](/docs/app/api-reference/file-conventions/page#params-optional)나 [`searchParams`](/docs/app/api-reference/file-conventions/page#searchparams-optional)를 읽으면 shell이 link의 URL에 묶이게 되고, [URL data outside of Suspense](/docs/messages/instant-shell-url-data) insight가 나타나 해당 route를 알려 주고 해결 방법을 안내합니다:
+
+&lt;FixCardGrid&gt;
+  &lt;FixCard
+    group=&quot;stream&quot;
+    title=&quot;Wrap in or move into Suspense&quot;
+    href=&quot;/docs/messages/instant-shell-url-data#wrap-in-or-move-into-suspense&quot;
+    snippets={[
+      { text: &#x27;&lt;Suspense fallback={…}&gt;&#x27;, highlight: true },
+      { text: &#x27;  &lt;Details params={params} /&gt;&#x27; },
+      { text: &#x27;&lt;/Suspense&gt;&#x27;, highlight: true },
+    ]}
+  /&gt;
+  &lt;FixCard
+    group=&quot;block&quot;
+    title=&quot;Allow blocking route&quot;
+    href=&quot;/docs/messages/instant-shell-url-data#allow-blocking-route&quot;
+    snippets={[
+      { text: &#x27;// page.tsx or layout.tsx&#x27; },
+      { text: &#x27;export const instant = false&#x27;, highlight: true },
+    ]}
+  /&gt;
+&lt;/FixCardGrid&gt;
+
+이 insight는 build를 막지 않으므로, 이 작업은 flag를 켠 뒤 언제든 진행할 수 있습니다. `next dev`에서 모든 route를 load해 확인하세요.
+
+해결 방법은 route에서 URL과 무관한 부분은 boundary 밖에 두고, `params`나 `searchParams`를 읽는 부분을 `&lt;Suspense&gt;`로 감싼 child로 옮기는 것입니다:
+
+[[CODE 13]]
+
+[[CODE 14]]
+
+child는 boundary 안에서 promise를 await합니다:
+
+[[CODE 15]]
+
+boundary 밖의 모든 것은 공유 App Shell에 남고, URL-specific 영역만 navigation마다 render됩니다. route를 다시 load하거나 navigation해서 insight가 사라졌는지, 그리고 페이지가 여전히 의미 있는 UI를 그리는지 확인하세요.
+
+&gt; **Good to know**: [`generateMetadata`](/docs/app/api-reference/functions/generate-metadata) 안에서 `params`나 `searchParams`를 읽으면 대신 [URL data in `generateMetadata()`](/docs/messages/blocking-prerender-metadata-runtime)로 표시됩니다.
+
+## Prefetching URL data || URL data prefetch하기
+
+[URL data](/docs/app/glossary#url-data)(`params`, `searchParams`)에 의존하는 콘텐츠는 공유 App Shell에 포함될 수 없으므로 navigation 후에 stream됩니다. [Per-link prefetching](/docs/app/guides/optimizing-prefetching)은 `prefetch={true}`가 있는 link에 대해 클릭 전에 이를 resolve하지만, prefetch 가능한 link마다 server invocation이 한 번씩 발생하는 비용이 듭니다. prefetch 시점에 콘텐츠를 resolve할 수 있게 하려면 read 뒤에서 [`use cache`](/docs/app/api-reference/directives/use-cache)로 cache하세요. `searchParams`를 읽는 search 페이지라면 다음과 같습니다:
+
+[[CODE 16]]
+
+[[CODE 17]]
+
+[Optimizing prefetching 가이드](/docs/app/guides/optimizing-prefetching)에서 이 비용이 언제 가치가 있는지, 그리고 runtime read 뒤에 두는 caching 패턴을 다룹니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

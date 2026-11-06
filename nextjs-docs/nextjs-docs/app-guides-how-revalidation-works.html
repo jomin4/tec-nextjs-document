@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How revalidation works in Next.js (Next.js에서 revalidation이 동작하는 방식) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/how-revalidation-works" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/how-revalidation-works" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/how-revalidation-works.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How revalidation works in Next.js<span class="sub">Next.js에서 revalidation이 동작하는 방식</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><a href="app-getting-started-caching.html">Caching</a> 페이지에서는 <code>use cache</code>, <code>cacheTag</code>, <code>cacheLife</code> 사용법을 다룹니다. 이 페이지는 <a href="app-api-reference-config-next-config-js-cacheHandlers.html">custom cache handler</a>를 구현하거나 revalidation 동작을 debug하기 위해 시스템을 이해해야 하는 플랫폼 엔지니어와 고급 사용자를 위해 <strong>revalidation이 내부적으로 어떻게 동작하는지</strong> 설명합니다.</p><div class="en-orig"><p>The <a href="app-getting-started-caching.html">Caching</a> page covers how to use <code>use cache</code>, <code>cacheTag</code>, and <code>cacheLife</code>. This page explains <strong>how revalidation works internally</strong>, for platform engineers and advanced users who need to understand the system to implement <a href="app-api-reference-config-next-config-js-cacheHandlers.html">custom cache handlers</a> or debug revalidation behavior.</p></div>
+<h2 class="sec" id="the-revalidation-model"><a class="anchor" href="#the-revalidation-model">The Revalidation Model<span class="ko">Revalidation 모델</span></a></h2>
+<p>Next.js의 대부분의 route는 on demand로 revalidate할 수 있습니다. 여기에는 App Router route와 ISR/prerender cache entry를 생성하는 Pages Router route가 포함됩니다. 자동으로 static 최적화된(순수 static output) Pages Router route는 on demand로 revalidate되지 않습니다. 다시 deploy하지 않고 cache된 content를 업데이트하는 능력은 Next.js <a href="app-guides-rendering-philosophy.html">rendering 모델</a>의 핵심 부분입니다.</p><div class="en-orig"><p>Most routes in Next.js can be revalidated on demand. This includes App Router routes and Pages Router routes that produce ISR/prerender cache entries. Pages Router routes that are automatically statically optimized (pure static output) are not revalidated on demand. The ability to update cached content without redeploying is a core part of Next.js's <a href="app-guides-rendering-philosophy.html">rendering model</a>.</p></div>
+<p>revalidation에는 두 가지 유형이 있습니다:</p><div class="en-orig"><p>There are two types of revalidation:</p></div>
+<ul>
+<li><strong>Time-based revalidation</strong>은 stale-while-revalidate 패턴을 사용합니다. cache된 content는 즉시 제공되고, content의 나이가 <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a> 또는 <code>revalidate</code> 기간을 넘으면 background 재생성이 트리거됩니다. 새 content가 준비될 때까지 stale content가 계속 제공됩니다.</li>
+<li><strong>On-demand revalidation</strong>은 <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag()</code></a>나 <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath()</code></a>를 호출해 cache된 content를 명시적으로 무효화합니다. 해당 content에 대한 다음 request가 새 render를 트리거합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Time-based revalidation</strong> uses a stale-while-revalidate pattern. The cached content is served immediately, and a background regeneration is triggered when the content's age exceeds the <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a> or <code>revalidate</code> duration. The stale content continues to be served until the fresh content is ready.</li>
+<li><strong>On-demand revalidation</strong> explicitly invalidates cached content by calling <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag()</code></a> or <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath()</code></a>. The next request to that content triggers a fresh render.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Pages Router의 on-demand ISR API(예: <code>res.revalidate()</code>와 <code>x-prerender-revalidate</code> 흐름)는 여전히 지원되며, server cache handler(<code>cacheHandler</code>, 단수)를 사용합니다. <code>cacheHandlers</code> option(복수)은 <code>&#x27;use cache&#x27;</code> directive용입니다.</p><div class="en-orig"><p>Pages Router on-demand ISR APIs (for example <code>res.revalidate()</code> and the <code>x-prerender-revalidate</code> flow) are still supported and use the server cache handler (<code>cacheHandler</code>, singular). The <code>cacheHandlers</code> option (plural) is for <code>&#x27;use cache&#x27;</code> directives.</p></div></div></div>
+<h2 class="sec" id="what-gets-revalidated"><a class="anchor" href="#what-gets-revalidated">What Gets Revalidated<span class="ko">무엇이 revalidate되는가</span></a></h2>
+<p>route가 revalidate되면 Next.js는 같은 React component tree로부터 HTML response와 RSC payload(React Server Components payload)를 <strong>둘 다</strong> 다시 생성합니다. 두 결과물은 같은 cache entry에 함께 저장됩니다.</p><div class="en-orig"><p>When a route is revalidated, Next.js regenerates <strong>both</strong> the HTML response and the RSC payload (React Server Components payload) from the same React component tree. Both artifacts are stored together in the same cache entry.</p></div>
+<p>RSC payload는 client-side navigation에 사용되기 때문에 이 일관성이 중요합니다. 브라우저 navigation과 client-side navigation은 같은 content를 가져야 합니다.</p><div class="en-orig"><p>This consistency matters because the RSC payload is used for client-side navigations. Browser navigations and client-side navigations should hold the same content.</p></div>
+<h3 class="sec" id="what-happens-if-they-get-out-of-sync"><a class="anchor" href="#what-happens-if-they-get-out-of-sync">What happens if they get out of sync<span class="ko">둘이 어긋나면 어떻게 되는가</span></a></h3>
+<p>플랫폼의 cache가 한 render의 HTML과 다른 render의 RSC payload를 제공하면, 사용자는 client-side navigation 중에 stale하거나 일치하지 않는 content를 볼 수 있습니다. 주된 완화책은 HTML과 RSC response를 같은 TTL과 무효화 정책으로 함께 cache하고, Next.js가 설정하는 <a href="app-guides-cdn-caching.html"><code>Vary</code> header</a>를 존중하는 것입니다. 자세한 내용은 <a href="app-guides-cdn-caching.html">CDN Caching</a>을 참고하세요.</p><div class="en-orig"><p>If a platform's cache serves HTML from one render and an RSC payload from a different render, users may see stale or mismatched content during client-side navigation. The primary mitigation is to cache HTML and RSC responses together with the same TTL and invalidation policy, and to respect the <a href="app-guides-cdn-caching.html"><code>Vary</code> header</a> that Next.js sets. See <a href="app-guides-cdn-caching.html">CDN Caching</a> for details.</p></div>
+<p>별개지만 관련된 문제로 <strong>cross-deployment skew</strong>가 있습니다: rolling deployment 중에 deploy A로 build된 client가 deploy B를 실행하는 server로부터 response를 받을 수 있습니다. <a href="app-api-reference-config-next-config-js-deploymentId.html"><code>deploymentId</code></a>가 이를 완화합니다: client가 server에서 다른 deployment ID를 감지하면 일관된 content를 가져오기 위해 hard navigation을 트리거합니다.</p><div class="en-orig"><p>A separate but related problem is <strong>cross-deployment skew</strong>: during rolling deployments, a client built with deploy A may receive responses from a server running deploy B. <a href="app-api-reference-config-next-config-js-deploymentId.html"><code>deploymentId</code></a> mitigates this: when the client detects a different deployment ID from the server, it triggers a hard navigation to fetch consistent content.</p></div>
+<h2 class="sec" id="tag-system-architecture"><a class="anchor" href="#tag-system-architecture">Tag System Architecture<span class="ko">Tag System 아키텍처</span></a></h2>
+<p>Next.js는 어떤 cache된 content를 무효화해야 하는지 추적하기 위해 tag 기반 시스템을 사용합니다. tag에는 두 가지 유형이 있습니다:</p><div class="en-orig"><p>Next.js uses a tag-based system to track which cached content needs to be invalidated. There are two types of tags:</p></div>
+<h3 class="sec" id="explicit-tags"><a class="anchor" href="#explicit-tags">Explicit tags<span class="ko">Explicit tag</span></a></h3>
+<p>explicit tag는 개발자가 <code>use cache</code> 함수 안에서 <a href="app-api-reference-functions-cacheTag.html"><code>cacheTag()</code></a>를 사용하거나, <code>fetch</code> 호출에 <code>next: { tags: [...] }</code>를 지정해 설정합니다. <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag(&#x27;my-tag&#x27;, &#x27;max&#x27;)</code></a>가 호출되면 해당 tag를 가진 모든 cache entry가 무효화됩니다.</p><div class="en-orig"><p>Explicit tags are set by the developer using <a href="app-api-reference-functions-cacheTag.html"><code>cacheTag()</code></a> inside a <code>use cache</code> function, or via <code>next: { tags: [...] }</code> on a <code>fetch</code> call. When <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag(&#x27;my-tag&#x27;, &#x27;max&#x27;)</code></a> is called, all cache entries with that tag are invalidated.</p></div>
+<h3 class="sec" id="soft-tags"><a class="anchor" href="#soft-tags">Soft tags<span class="ko">Soft tag</span></a></h3>
+<p>soft tag는 Next.js가 route 경로를 기반으로 자동 생성하며, <code>_N_T_</code> 접두사가 붙습니다. 예를 들어 route <code>/blog/hello</code>는 <code>_N_T_/layout</code>, <code>_N_T_/blog/layout</code>, <code>_N_T_/blog/hello/layout</code>, <code>_N_T_/blog/hello</code> 같은 soft tag를 생성합니다. 경로의 각 segment가 layout tag를 하나씩 받고, 여기에 leaf route 자체의 tag가 더해집니다.</p><div class="en-orig"><p>Soft tags are automatically generated by Next.js based on the route path, prefixed with <code>_N_T_</code>. For example, the route <code>/blog/hello</code> generates soft tags like <code>_N_T_/layout</code>, <code>_N_T_/blog/layout</code>, <code>_N_T_/blog/hello/layout</code>, and <code>_N_T_/blog/hello</code>. Each segment in the path gets a layout tag, plus the leaf route itself.</p></div>
+<p>soft tag 덕분에 <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath()</code></a>가 같은 tag 기반 시스템을 통해 동작할 수 있습니다. <code>revalidatePath(&#x27;/blog/hello&#x27;)</code>가 호출되면, 해당 경로의 leaf route tag와 상위 layout soft tag(예: <code>_N_T_/layout</code>, <code>_N_T_/blog/layout</code>, <code>_N_T_/blog/hello/layout</code>, <code>_N_T_/blog/hello</code>)에 연결된 cache entry를 무효화합니다.</p><div class="en-orig"><p>Soft tags enable <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath()</code></a> to work through the same tag-based system. When <code>revalidatePath(&#x27;/blog/hello&#x27;)</code> is called, it invalidates cache entries associated with that path's leaf route tag and its ancestor layout soft tags (for example <code>_N_T_/layout</code>, <code>_N_T_/blog/layout</code>, <code>_N_T_/blog/hello/layout</code>, and <code>_N_T_/blog/hello</code>).</p></div>
+<p><a href="app-api-reference-config-next-config-js-cacheHandlers.html">cache handler API</a>에서 soft tag는 <code>get()</code> method에 <code>softTags</code> parameter로 전달됩니다. handler는 cache entry의 timestamp 이후에 무효화된 soft tag가 있는지 확인해야 합니다. <code>getExpiration()</code> method는 전달된 모든 tag 중 가장 최근의 revalidation timestamp를 반환하고, 아무것도 revalidate되지 않았다면 <code>0</code>을 반환합니다. 또한 <code>Infinity</code>를 반환해서 soft tag를 대신 <code>get()</code>에 전달해 그곳에서 만료 여부를 확인하라는 신호를 보낼 수도 있습니다. 반환된 timestamp가 entry 자체의 timestamp보다 최신이라면 handler는 해당 entry를 stale로 취급해야 합니다. 전체 semantics는 <a href="app-api-reference-config-next-config-js-cacheHandlers.html#getexpiration">cache handler API reference</a>를 참고하세요.</p><div class="en-orig"><p>In the <a href="app-api-reference-config-next-config-js-cacheHandlers.html">cache handler API</a>, soft tags are passed to the <code>get()</code> method as the <code>softTags</code> parameter. Your handler should check whether any soft tag has been invalidated after the cache entry's timestamp. The <code>getExpiration()</code> method returns the most recent revalidation timestamp across all provided tags, or <code>0</code> if none have been revalidated. It can also return <code>Infinity</code> to signal that the soft tags should instead be passed to <code>get()</code> and checked for expiration there. Your handler should treat an entry as stale if the returned timestamp is newer than the entry's own timestamp. See the <a href="app-api-reference-config-next-config-js-cacheHandlers.html#getexpiration">cache handler API reference</a> for the full semantics.</p></div>
+<h2 class="sec" id="multi-instance-considerations"><a class="anchor" href="#multi-instance-considerations">Multi-Instance Considerations<span class="ko">Multi-Instance 고려 사항</span></a></h2>
+<p>load balancer 뒤에서 여러 Next.js instance를 실행하는 경우, revalidation 이벤트는 기본적으로 local입니다. instance A에서 <code>revalidateTag()</code>를 호출하면 그 instance의 cache만 무효화됩니다. 다른 instance들은 무효화 사실을 알게 될 때까지 stale content를 계속 제공합니다.</p><div class="en-orig"><p>When running multiple Next.js instances behind a load balancer, revalidation events are local by default. Calling <code>revalidateTag()</code> on instance A only invalidates the cache on that instance. Other instances continue serving the stale content until they learn about the invalidation.</p></div>
+<p>cache handler API는 분산 조정을 위한 두 가지 hook을 제공합니다:</p><div class="en-orig"><p>The cache handler API provides two hooks for distributed coordination:</p></div>
+<ul>
+<li><strong><code>updateTags()</code></strong>: <code>revalidateTag()</code>가 호출될 때 호출됩니다. handler는 다른 instance가 발견할 수 있도록 무효화 이벤트를 공유 저장소(예: Redis나 database)에 기록해야 합니다.</li>
+<li><strong><code>refreshTags()</code></strong>: 주기적으로 호출되지만, 새 request를 시작하기 전에는 항상 호출됩니다. handler는 공유 저장소에서 최근 무효화 이벤트를 확인하고 그에 따라 local tag 상태를 업데이트해야 합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>updateTags()</code></strong> is called when <code>revalidateTag()</code> is invoked. Your handler should write the invalidation event to shared storage (for example, Redis or a database) so other instances can discover it.</li>
+<li><strong><code>refreshTags()</code></strong> is called periodically, but always before starting a new request. Your handler should check shared storage for recent invalidation events and update its local tag state accordingly.</li>
+</ul></div>
+<p>구현 세부 사항과 Redis 예제는 <a href="app-api-reference-config-next-config-js-cacheHandlers.html">Custom Cache Handlers</a>를 참고하세요.</p><div class="en-orig"><p>For implementation details and a Redis example, see <a href="app-api-reference-config-next-config-js-cacheHandlers.html">Custom Cache Handlers</a>.</p></div>
+<h2 class="sec" id="implementation-patterns-for-platforms"><a class="anchor" href="#implementation-patterns-for-platforms">Implementation Patterns for Platforms<span class="ko">플랫폼을 위한 구현 패턴</span></a></h2>
+<h3 class="sec" id="single-instance"><a class="anchor" href="#single-instance">Single instance<span class="ko">단일 instance</span></a></h3>
+<p>기본 file-system cache가 일관성을 자동으로 처리합니다. cache 쓰기는 local filesystem에서 atomic하게 이루어지고, tag 상태는 memory에 유지됩니다. 추가 설정은 필요 없습니다.</p><div class="en-orig"><p>The default file-system cache handles consistency automatically. Cache writes are atomic on the local filesystem, and tag state is maintained in memory. No additional configuration is needed.</p></div>
+<h3 class="sec" id="multi-instance-with-shared-cache"><a class="anchor" href="#multi-instance-with-shared-cache">Multi-instance with shared cache<span class="ko">Shared cache를 사용하는 multi-instance</span></a></h3>
+<p>조정이 없으면 각 instance는 자신의 local cache만 사용해 독립적으로 content를 제공하고 revalidation을 처리합니다. 어떤 instance가 request를 처리하느냐에 따라 사용자마다 다른 content를 볼 수 있으며, on-demand revalidation은 호출을 받은 instance에서만 효과가 있습니다.</p><div class="en-orig"><p>Without coordination, each instance independently serves content and handles revalidation using only its local cache. Different users may see different content depending on which instance serves their request, and on-demand revalidation only takes effect on the instance that received the call.</p></div>
+<p>이 기간을 줄이고 revalidation이 instance 간에 전파되도록 하려면:</p><div class="en-orig"><p>To reduce this window and ensure revalidation propagates across instances:</p></div>
+<ol>
+<li>tag 무효화 timestamp를 공유 서비스(Redis, DynamoDB, 또는 간단한 HTTP API)에 저장합니다.</li>
+<li>공유 서비스에 기록하도록 <code>updateTags()</code>를 구현합니다.</li>
+<li>공유 서비스에서 읽도록 <code>refreshTags()</code>를 구현합니다. handler는 <code>refreshTags()</code>에서 발생하는 error를 반드시 catch해야 합니다: error가 throw되면 그 exception이 request 실패로 전파됩니다. error를 catch하면 마지막으로 알려진 local tag 상태로 request를 계속 처리할 수 있으며, 연결이 복구될 때까지 stale content를 제공할 수 있습니다.</li>
+<li>cache entry(HTML + RSC payload)를 공유 저장소에 저장합니다. atomic 쓰기는 불일치 기간을 더 줄여 주지만, 정확성을 위해 필수는 아닙니다.</li>
+</ol><div class="en-orig"><ol>
+<li>Store tag invalidation timestamps in a shared service (Redis, DynamoDB, or a simple HTTP API).</li>
+<li>Implement <code>updateTags()</code> to write to the shared service.</li>
+<li>Implement <code>refreshTags()</code> to read from the shared service. Your handler must catch errors in <code>refreshTags()</code>: if it throws, the exception propagates as a request failure. Catching the error allows requests to continue with the last known local tag state, serving potentially stale content until connectivity is restored.</li>
+<li>Store cache entries (HTML + RSC payload) in shared storage. Atomic writes reduce the mismatch window further but are not required for correctness.</li>
+</ol></div>
+<h3 class="sec" id="cdn-integration"><a class="anchor" href="#cdn-integration">CDN integration</a></h3>
+<p>CDN이 Next.js response를 cache한다면, Next.js가 설정하는 <code>Vary</code> header와 <code>Cache-Control</code> directive를 존중해야 합니다. HTML과 RSC payload response를 서로 다른 TTL로 따로 cache하지 마세요. 자세한 내용은 <a href="app-guides-cdn-caching.html">CDN Caching</a>을 참고하세요.</p><div class="en-orig"><p>If a CDN caches Next.js responses, it should respect the <code>Vary</code> header and the <code>Cache-Control</code> directives that Next.js sets. Do not cache HTML and RSC payload responses separately with different TTLs. See <a href="app-guides-cdn-caching.html">CDN Caching</a> for details.</p></div>
+<h2 class="sec" id="graceful-degradation"><a class="anchor" href="#graceful-degradation">Graceful Degradation<span class="ko">점진적 성능 저하(Graceful Degradation)</span></a></h2>
+<p>revalidation 시스템은 엄격한 일관성보다 가용성을 우선합니다. 인프라 보장을 완전히 충족할 수 없을 때도 content는 항상 제공됩니다:</p><div class="en-orig"><p>The revalidation system prioritizes availability over strict consistency. Content is always served, even when infrastructure guarantees cannot be fully met:</p></div>
+<ul>
+<li><strong>Cache write 실패</strong>: 쓰기는 비동기로 이루어지므로 response는 여전히 사용자에게 제공됩니다. cache entry는 손실되고, 다음 request가 새 render를 트리거합니다.</li>
+<li><strong>Cache read 실패</strong>: handler는 내부 error를 catch하고 <code>undefined</code>(cache miss 신호)를 반환해야 합니다. 그러면 route가 server에서 새로 render됩니다. throw된 error는 cache miss로 취급되지 않고 render error로 전파되므로, miss를 알리려면 항상 <code>undefined</code>를 반환하세요.</li>
+<li><strong>HTML/RSC cache 불일치</strong>: CDN이 HTML과 RSC response를 서로 다른 TTL이나 무효화 타이밍으로 cache하면, 사용자는 client-side navigation 중에 일치하지 않는 content를 볼 수 있습니다. 이를 피하려면 둘을 함께 cache하고 <code>Vary</code> header를 존중하세요.</li>
+<li><strong>Cross-deployment skew</strong>: rolling deployment 중에는 build ID 변경이 일관된 content를 가져오는 hard navigation을 트리거하도록 <a href="app-api-reference-config-next-config-js-deploymentId.html"><code>deploymentId</code></a>를 설정하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Cache write failure</strong>: the response is still served to the user because writes are asynchronous. The cache entry is lost, and the next request triggers a fresh render.</li>
+<li><strong>Cache read failure</strong>: your handler should catch internal errors and return <code>undefined</code> (the cache miss signal). The route is then server-rendered fresh. A thrown error is not treated as a cache miss; it propagates as a render error, so always return <code>undefined</code> to signal a miss.</li>
+<li><strong>HTML/RSC cache inconsistency</strong>: if a CDN caches HTML and RSC responses with different TTLs or invalidation timing, users may see mismatched content during client-side navigation. Cache them together and respect the <code>Vary</code> header to avoid this.</li>
+<li><strong>Cross-deployment skew</strong>: during rolling deployments, configure <a href="app-api-reference-config-next-config-js-deploymentId.html"><code>deploymentId</code></a> so that a build ID change triggers a hard navigation to fetch consistent content.</li>
+</ul></div>
+<p>cache 실패는 애플리케이션이 망가지는 것이 아니라 performance 저하(stale content, 추가 render)로 이어집니다.</p><div class="en-orig"><p>Cache failures result in degraded performance (stale content, extra renders), not broken applications.</p></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><p>관련 가이드와 reference.</p><div class="rgrid"><a class="rcard" href="app-getting-started-caching.html"><div class="rt">Caching</div><div class="rk">캐싱</div><div class="rd">Next.js에서 데이터와 UI를 cache하는 방법을 알아봅니다</div></a><a class="rcard" href="app-guides-incremental-static-regeneration.html"><div class="rt">How to implement Incremental Static Regeneration (ISR)</div><div class="rk">Incremental Static Regeneration (ISR) 구현하기</div><div class="rd">Incremental Static Regeneration으로 runtime에 static page를 생성하거나 업데이트하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-config-next-config-js-cacheHandlers.html"><div class="rt">cacheHandlers</div><div class="rk">cacheHandlers</div><div class="rd">Next.js에서 use cache directive에 사용할 custom cache handler를 설정합니다.</div></a><a class="rcard" href="app-api-reference-functions-revalidateTag.html"><div class="rt">revalidateTag</div><div class="rk">revalidateTag</div><div class="rd">revalidateTag 함수에 대한 API Reference입니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/how-revalidation-works.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/how-revalidation-works" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-forms.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Forms</div><div class="ttl-ko">Server Actions로 form 만들기</div></a>
+      <a href="app-guides-incremental-static-regeneration-cache-components.html" class="next"><div class="dir">다음 →</div><div class="ttl">ISR with Cache Components</div><div class="ttl-ko">Cache Components와 함께 쓰는 ISR</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/how-revalidation-works" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#the-revalidation-model">The Revalidation Model</a></li><li class="l2"><a href="#what-gets-revalidated">What Gets Revalidated</a></li><li class="l3"><a href="#what-happens-if-they-get-out-of-sync">What happens if they get out of sync</a></li><li class="l2"><a href="#tag-system-architecture">Tag System Architecture</a></li><li class="l3"><a href="#explicit-tags">Explicit tags</a></li><li class="l3"><a href="#soft-tags">Soft tags</a></li><li class="l2"><a href="#multi-instance-considerations">Multi-Instance Considerations</a></li><li class="l2"><a href="#implementation-patterns-for-platforms">Implementation Patterns for Platforms</a></li><li class="l3"><a href="#single-instance">Single instance</a></li><li class="l3"><a href="#multi-instance-with-shared-cache">Multi-instance with shared cache</a></li><li class="l3"><a href="#cdn-integration">CDN integration</a></li><li class="l2"><a href="#graceful-degradation">Graceful Degradation</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+[Caching](/docs/app/getting-started/caching) 페이지에서는 `use cache`, `cacheTag`, `cacheLife` 사용법을 다룹니다. 이 페이지는 [custom cache handler](/docs/app/api-reference/config/next-config-js/cacheHandlers)를 구현하거나 revalidation 동작을 debug하기 위해 시스템을 이해해야 하는 플랫폼 엔지니어와 고급 사용자를 위해 **revalidation이 내부적으로 어떻게 동작하는지** 설명합니다.
+
+## The Revalidation Model || Revalidation 모델
+
+Next.js의 대부분의 route는 on demand로 revalidate할 수 있습니다. 여기에는 App Router route와 ISR/prerender cache entry를 생성하는 Pages Router route가 포함됩니다. 자동으로 static 최적화된(순수 static output) Pages Router route는 on demand로 revalidate되지 않습니다. 다시 deploy하지 않고 cache된 content를 업데이트하는 능력은 Next.js [rendering 모델](/docs/app/guides/rendering-philosophy)의 핵심 부분입니다.
+
+revalidation에는 두 가지 유형이 있습니다:
+
+- **Time-based revalidation**은 stale-while-revalidate 패턴을 사용합니다. cache된 content는 즉시 제공되고, content의 나이가 [`cacheLife`](/docs/app/api-reference/functions/cacheLife) 또는 `revalidate` 기간을 넘으면 background 재생성이 트리거됩니다. 새 content가 준비될 때까지 stale content가 계속 제공됩니다.
+- **On-demand revalidation**은 [`revalidateTag()`](/docs/app/api-reference/functions/revalidateTag)나 [`revalidatePath()`](/docs/app/api-reference/functions/revalidatePath)를 호출해 cache된 content를 명시적으로 무효화합니다. 해당 content에 대한 다음 request가 새 render를 트리거합니다.
+
+&gt; **Good to know:** Pages Router의 on-demand ISR API(예: `res.revalidate()`와 `x-prerender-revalidate` 흐름)는 여전히 지원되며, server cache handler(`cacheHandler`, 단수)를 사용합니다. `cacheHandlers` option(복수)은 `&#x27;use cache&#x27;` directive용입니다.
+
+## What Gets Revalidated || 무엇이 revalidate되는가
+
+route가 revalidate되면 Next.js는 같은 React component tree로부터 HTML response와 RSC payload(React Server Components payload)를 **둘 다** 다시 생성합니다. 두 결과물은 같은 cache entry에 함께 저장됩니다.
+
+RSC payload는 client-side navigation에 사용되기 때문에 이 일관성이 중요합니다. 브라우저 navigation과 client-side navigation은 같은 content를 가져야 합니다.
+
+### What happens if they get out of sync || 둘이 어긋나면 어떻게 되는가
+
+플랫폼의 cache가 한 render의 HTML과 다른 render의 RSC payload를 제공하면, 사용자는 client-side navigation 중에 stale하거나 일치하지 않는 content를 볼 수 있습니다. 주된 완화책은 HTML과 RSC response를 같은 TTL과 무효화 정책으로 함께 cache하고, Next.js가 설정하는 [`Vary` header](/docs/app/guides/cdn-caching)를 존중하는 것입니다. 자세한 내용은 [CDN Caching](/docs/app/guides/cdn-caching)을 참고하세요.
+
+별개지만 관련된 문제로 **cross-deployment skew**가 있습니다: rolling deployment 중에 deploy A로 build된 client가 deploy B를 실행하는 server로부터 response를 받을 수 있습니다. [`deploymentId`](/docs/app/api-reference/config/next-config-js/deploymentId)가 이를 완화합니다: client가 server에서 다른 deployment ID를 감지하면 일관된 content를 가져오기 위해 hard navigation을 트리거합니다.
+
+## Tag System Architecture || Tag System 아키텍처
+
+Next.js는 어떤 cache된 content를 무효화해야 하는지 추적하기 위해 tag 기반 시스템을 사용합니다. tag에는 두 가지 유형이 있습니다:
+
+### Explicit tags || Explicit tag
+
+explicit tag는 개발자가 `use cache` 함수 안에서 [`cacheTag()`](/docs/app/api-reference/functions/cacheTag)를 사용하거나, `fetch` 호출에 `next: { tags: [...] }`를 지정해 설정합니다. [`revalidateTag(&#x27;my-tag&#x27;, &#x27;max&#x27;)`](/docs/app/api-reference/functions/revalidateTag)가 호출되면 해당 tag를 가진 모든 cache entry가 무효화됩니다.
+
+### Soft tags || Soft tag
+
+soft tag는 Next.js가 route 경로를 기반으로 자동 생성하며, `_N_T_` 접두사가 붙습니다. 예를 들어 route `/blog/hello`는 `_N_T_/layout`, `_N_T_/blog/layout`, `_N_T_/blog/hello/layout`, `_N_T_/blog/hello` 같은 soft tag를 생성합니다. 경로의 각 segment가 layout tag를 하나씩 받고, 여기에 leaf route 자체의 tag가 더해집니다.
+
+soft tag 덕분에 [`revalidatePath()`](/docs/app/api-reference/functions/revalidatePath)가 같은 tag 기반 시스템을 통해 동작할 수 있습니다. `revalidatePath(&#x27;/blog/hello&#x27;)`가 호출되면, 해당 경로의 leaf route tag와 상위 layout soft tag(예: `_N_T_/layout`, `_N_T_/blog/layout`, `_N_T_/blog/hello/layout`, `_N_T_/blog/hello`)에 연결된 cache entry를 무효화합니다.
+
+[cache handler API](/docs/app/api-reference/config/next-config-js/cacheHandlers)에서 soft tag는 `get()` method에 `softTags` parameter로 전달됩니다. handler는 cache entry의 timestamp 이후에 무효화된 soft tag가 있는지 확인해야 합니다. `getExpiration()` method는 전달된 모든 tag 중 가장 최근의 revalidation timestamp를 반환하고, 아무것도 revalidate되지 않았다면 `0`을 반환합니다. 또한 `Infinity`를 반환해서 soft tag를 대신 `get()`에 전달해 그곳에서 만료 여부를 확인하라는 신호를 보낼 수도 있습니다. 반환된 timestamp가 entry 자체의 timestamp보다 최신이라면 handler는 해당 entry를 stale로 취급해야 합니다. 전체 semantics는 [cache handler API reference](/docs/app/api-reference/config/next-config-js/cacheHandlers#getexpiration)를 참고하세요.
+
+## Multi-Instance Considerations || Multi-Instance 고려 사항
+
+load balancer 뒤에서 여러 Next.js instance를 실행하는 경우, revalidation 이벤트는 기본적으로 local입니다. instance A에서 `revalidateTag()`를 호출하면 그 instance의 cache만 무효화됩니다. 다른 instance들은 무효화 사실을 알게 될 때까지 stale content를 계속 제공합니다.
+
+cache handler API는 분산 조정을 위한 두 가지 hook을 제공합니다:
+
+- **`updateTags()`**: `revalidateTag()`가 호출될 때 호출됩니다. handler는 다른 instance가 발견할 수 있도록 무효화 이벤트를 공유 저장소(예: Redis나 database)에 기록해야 합니다.
+- **`refreshTags()`**: 주기적으로 호출되지만, 새 request를 시작하기 전에는 항상 호출됩니다. handler는 공유 저장소에서 최근 무효화 이벤트를 확인하고 그에 따라 local tag 상태를 업데이트해야 합니다.
+
+구현 세부 사항과 Redis 예제는 [Custom Cache Handlers](/docs/app/api-reference/config/next-config-js/cacheHandlers)를 참고하세요.
+
+## Implementation Patterns for Platforms || 플랫폼을 위한 구현 패턴
+
+### Single instance || 단일 instance
+
+기본 file-system cache가 일관성을 자동으로 처리합니다. cache 쓰기는 local filesystem에서 atomic하게 이루어지고, tag 상태는 memory에 유지됩니다. 추가 설정은 필요 없습니다.
+
+### Multi-instance with shared cache || Shared cache를 사용하는 multi-instance
+
+조정이 없으면 각 instance는 자신의 local cache만 사용해 독립적으로 content를 제공하고 revalidation을 처리합니다. 어떤 instance가 request를 처리하느냐에 따라 사용자마다 다른 content를 볼 수 있으며, on-demand revalidation은 호출을 받은 instance에서만 효과가 있습니다.
+
+이 기간을 줄이고 revalidation이 instance 간에 전파되도록 하려면:
+
+1. tag 무효화 timestamp를 공유 서비스(Redis, DynamoDB, 또는 간단한 HTTP API)에 저장합니다.
+2. 공유 서비스에 기록하도록 `updateTags()`를 구현합니다.
+3. 공유 서비스에서 읽도록 `refreshTags()`를 구현합니다. handler는 `refreshTags()`에서 발생하는 error를 반드시 catch해야 합니다: error가 throw되면 그 exception이 request 실패로 전파됩니다. error를 catch하면 마지막으로 알려진 local tag 상태로 request를 계속 처리할 수 있으며, 연결이 복구될 때까지 stale content를 제공할 수 있습니다.
+4. cache entry(HTML + RSC payload)를 공유 저장소에 저장합니다. atomic 쓰기는 불일치 기간을 더 줄여 주지만, 정확성을 위해 필수는 아닙니다.
+
+### CDN integration || CDN integration
+
+CDN이 Next.js response를 cache한다면, Next.js가 설정하는 `Vary` header와 `Cache-Control` directive를 존중해야 합니다. HTML과 RSC payload response를 서로 다른 TTL로 따로 cache하지 마세요. 자세한 내용은 [CDN Caching](/docs/app/guides/cdn-caching)을 참고하세요.
+
+## Graceful Degradation || 점진적 성능 저하(Graceful Degradation)
+
+revalidation 시스템은 엄격한 일관성보다 가용성을 우선합니다. 인프라 보장을 완전히 충족할 수 없을 때도 content는 항상 제공됩니다:
+
+- **Cache write 실패**: 쓰기는 비동기로 이루어지므로 response는 여전히 사용자에게 제공됩니다. cache entry는 손실되고, 다음 request가 새 render를 트리거합니다.
+- **Cache read 실패**: handler는 내부 error를 catch하고 `undefined`(cache miss 신호)를 반환해야 합니다. 그러면 route가 server에서 새로 render됩니다. throw된 error는 cache miss로 취급되지 않고 render error로 전파되므로, miss를 알리려면 항상 `undefined`를 반환하세요.
+- **HTML/RSC cache 불일치**: CDN이 HTML과 RSC response를 서로 다른 TTL이나 무효화 타이밍으로 cache하면, 사용자는 client-side navigation 중에 일치하지 않는 content를 볼 수 있습니다. 이를 피하려면 둘을 함께 cache하고 `Vary` header를 존중하세요.
+- **Cross-deployment skew**: rolling deployment 중에는 build ID 변경이 일관된 content를 가져오는 hard navigation을 트리거하도록 [`deploymentId`](/docs/app/api-reference/config/next-config-js/deploymentId)를 설정하세요.
+
+cache 실패는 애플리케이션이 망가지는 것이 아니라 performance 저하(stale content, 추가 render)로 이어집니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>revalidateTag (revalidateTag) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/functions/revalidateTag" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/functions/revalidateTag" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/revalidateTag.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-functions.html">Functions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">revalidateTag<span class="sub">revalidateTag</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>revalidateTag</code>를 사용하면 특정 cache tag에 해당하는 cached data를 on-demand로 무효화할 수 있습니다.</p><div class="en-orig"><p><code>revalidateTag</code> allows you to invalidate cached data on-demand for a specific cache tag.</p></div>
+<p>이 함수는 블로그 글, 상품 카탈로그, 문서처럼 업데이트가 약간 늦게 반영되어도 괜찮은 콘텐츠에 적합합니다. 권장되는 <code>max</code> profile을 사용하면, 사용자는 새 data가 background에서 로드되는 동안 stale content를 받습니다.</p><div class="en-orig"><p>This function is ideal for content where a slight delay in updates is acceptable, such as blog posts, product catalogs, or documentation. With the recommended <code>max</code> profile, users receive stale content while fresh data loads in the background.</p></div>
+<h2 class="sec" id="usage"><a class="anchor" href="#usage">Usage<span class="ko">사용법</span></a></h2>
+<p><code>revalidateTag</code>는 Server Function과 Route Handler에서 호출할 수 있습니다.</p><div class="en-orig"><p><code>revalidateTag</code> can be called in Server Functions and Route Handlers.</p></div>
+<p><code>revalidateTag</code>는 server 환경에서만 동작하므로 Client Component나 Proxy에서는 호출할 수 없습니다.</p><div class="en-orig"><p><code>revalidateTag</code> cannot be called in Client Components or Proxy, as it only works in server environments.</p></div>
+<h3 class="sec" id="revalidation-behavior"><a class="anchor" href="#revalidation-behavior">Revalidation Behavior<span class="ko">Revalidation 동작</span></a></h3>
+<p><code>revalidateTag</code>를 호출하면 해당 tag가 붙은 data가 stale로 표시됩니다. 그 data에 대한 다음 request가 revalidation을 시작하며, revalidation이 진행되는 동안에는 stale-while-revalidate semantics에 따라 stale content가 제공됩니다. 두 번째 argument는 stale content를 얼마나 오래 제공할 수 있는지를 설정합니다. 그 시간이 지나면 request는 revalidation이 끝날 때까지 block됩니다.</p><div class="en-orig"><p>Calling <code>revalidateTag</code> marks the tagged data as stale. The next request for that data kicks off a revalidation and is served stale content while it runs, using stale-while-revalidate semantics. The second argument sets how long stale content may be served. Past that, a request blocks until the revalidation completes.</p></div>
+<ul>
+<li><strong><code>profile=&quot;max&quot;</code> (권장)</strong>: 1년의 기간으로, revalidation이 진행되는 동안 request가 항상 stale content를 제공받을 만큼 충분히 깁니다.</li>
+<li><strong>다른 profile 또는 object</strong>: 다른 기간을 원할 때는 <a href="app-api-reference-config-next-config-js-cacheLife.html"><code>cacheLife</code></a>에 정의된 다른 기본 또는 custom profile, 혹은 <code>expire</code> property를 가진 object를 사용합니다.</li>
+<li><strong><code>{ expire: 0 }</code></strong>: stale content가 절대 제공되지 않으므로, 다음 request는 blocking revalidate/cache miss가 됩니다. 호출하는 쪽에서 data를 즉시 없애야 하는데 <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>를 사용할 수 없을 때 사용하세요.</li>
+<li><strong>두 번째 argument 없음 (deprecated)</strong>: <code>{ expire: 0 }</code>처럼 동작합니다. Server Action에서는 <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>로, 그 외에는 <code>profile=&quot;max&quot;</code>로 migrate하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>profile=&quot;max&quot;</code> (recommended)</strong>: A one year window, long enough that requests are always served stale content while the revalidation runs.</li>
+<li><strong>Another profile, or an object</strong>: Any other default or custom profile defined in <a href="app-api-reference-config-next-config-js-cacheLife.html"><code>cacheLife</code></a>, or an object with an <code>expire</code> property, when you want a different window.</li>
+<li><strong><code>{ expire: 0 }</code></strong>: Stale content is never served, so the next request is a blocking revalidate/cache miss. Use it when the caller needs the data gone immediately and you cannot use <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>.</li>
+<li><strong>No second argument (deprecated)</strong>: Behaves like <code>{ expire: 0 }</code>. Migrate to <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a> in Server Actions, or <code>profile=&quot;max&quot;</code>.</li>
+</ul></div>
+<p>profile은 빠른 응답보다 data의 정확성이 더 중요해지는 시점을 설정합니다.</p><div class="en-orig"><p>The profile sets the point past which data correctness is more important than being fast.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>revalidation은 <code>revalidateTag</code> 호출이 아니라 request에 의해 trigger되므로, 해당 tag를 사용하는 page들은 한꺼번에 revalidate되는 것이 아니라 방문될 때마다 revalidate됩니다.</p><div class="en-orig"><p>A revalidation is triggered by a request, not by the <code>revalidateTag</code> call, so pages using the tag revalidate as they are visited rather than all at once.</p></div></div></div>
+<h2 class="sec" id="parameters"><a class="anchor" href="#parameters">Parameters</a></h2>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">revalidateTag(tag: string, profile: string | { expire?: number }): void;</code></pre></div></div>
+<ul>
+<li><code>tag</code>: revalidate하려는 data에 연결된 cache tag를 나타내는 string입니다. tag는 대소문자를 구분하며 256자를 넘으면 안 됩니다. 제한을 넘는 tag는 cached data에 절대 할당되지 않으므로, 그런 tag를 revalidate해도 아무 일도 일어나지 않습니다.</li>
+<li><code>profile</code>: stale content를 얼마나 오래 제공할 수 있는지를 나타냅니다. <a href="#revalidation-behavior">Revalidation Behavior</a>를 참고하세요. 권장 값은 <code>&quot;max&quot;</code>입니다. <a href="app-api-reference-config-next-config-js-cacheLife.html"><code>cacheLife</code></a>에 정의된 다른 기본 또는 custom profile도 받을 수 있으며, 이 경우 해당 profile의 <code>expire</code>만 읽습니다. 초 단위의 <code>expire</code> property를 가진 object를 전달할 수도 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>tag</code>: A string representing the cache tag associated with the data you want to revalidate. Tags are case-sensitive and must not exceed 256 characters. A tag that exceeds the limit is never assigned to cached data, so revalidating it does nothing.</li>
+<li><code>profile</code>: How long stale content may be served, see <a href="#revalidation-behavior">Revalidation Behavior</a>. The recommended value is <code>&quot;max&quot;</code>. Any other default or custom profile defined in <a href="app-api-reference-config-next-config-js-cacheLife.html"><code>cacheLife</code></a> is also accepted, and only its <code>expire</code> is read. You can also pass an object with an <code>expire</code> property, in seconds.</li>
+</ul></div>
+<p>tag는 먼저 cached data에 할당되어 있어야 합니다. 두 가지 방법이 있습니다:</p><div class="en-orig"><p>Tags must first be assigned to cached data. You can do this in two ways:</p></div>
+<ul>
+<li>외부 API request를 caching할 때 <code>fetch</code>의 <a href="app-api-reference-functions-fetch.html"><code>next.tags</code></a> option 사용:</li>
+</ul><div class="en-orig"><ul>
+<li>Using the <a href="app-api-reference-functions-fetch.html"><code>next.tags</code></a> option with <code>fetch</code> for caching external API requests:</li>
+</ul></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">fetch(url, { next: { tags: [&#x27;posts&#x27;] } })</code></pre></div></div>
+<ul>
+<li><code>&#x27;use cache&#x27;</code> directive가 있는 cached function이나 component 안에서 <a href="app-api-reference-functions-cacheTag.html"><code>cacheTag</code></a> 사용:</li>
+</ul><div class="en-orig"><ul>
+<li>Using <a href="app-api-reference-functions-cacheTag.html"><code>cacheTag</code></a> inside cached functions or components with the <code>&#x27;use cache&#x27;</code> directive:</li>
+</ul></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { cacheTag } from &#x27;next/cache&#x27;
+
+async function getData() {
+  &#x27;use cache&#x27;
+  cacheTag(&#x27;posts&#x27;)
+  // ...
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>argument가 하나인 <code>revalidateTag(tag)</code> 형태는 deprecated되었습니다. 현재는 TypeScript error를 무시하면 동작하지만, 이 동작은 향후 버전에서 제거될 수 있습니다. argument 두 개를 받는 signature로 업데이트하세요.</p><div class="en-orig"><p>The single-argument form <code>revalidateTag(tag)</code> is deprecated. It currently works if TypeScript errors are suppressed, but this behavior may be removed in a future version. Update to the two-argument signature.</p></div></div></div>
+<h2 class="sec" id="returns"><a class="anchor" href="#returns">Returns</a></h2>
+<p><code>revalidateTag</code>는 값을 반환하지 않습니다.</p><div class="en-orig"><p><code>revalidateTag</code> does not return a value.</p></div>
+<h2 class="sec" id="relationship-with-revalidatepath"><a class="anchor" href="#relationship-with-revalidatepath">Relationship with <code>revalidatePath</code><span class="ko"><code>revalidatePath</code>와의 관계</span></a></h2>
+<p><code>revalidateTag</code>는 특정 tag가 붙은 data를 그 tag를 사용하는 모든 page에 걸쳐 무효화하고, <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>는 특정 page 또는 layout 경로를 무효화합니다.</p><div class="en-orig"><p><code>revalidateTag</code> invalidates data with specific tags across all pages that use those tags, while <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a> invalidates specific page or layout paths.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 함수들은 서로 다른 목적을 가지며, 포괄적인 data 일관성을 위해 함께 사용해야 할 수도 있습니다. 자세한 예시와 고려 사항은 <a href="app-api-reference-functions-revalidatePath.html#relationship-with-revalidatetag-and-updatetag">relationship with revalidateTag and updateTag</a>를 참고하세요.</p><div class="en-orig"><p>These functions serve different purposes and may need to be used together for comprehensive data consistency. For detailed examples and considerations, see <a href="app-api-reference-functions-revalidatePath.html#relationship-with-revalidatetag-and-updatetag">relationship with revalidateTag and updateTag</a> for more information.</p></div></div></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<p>다음 예시들은 다양한 context에서 <code>revalidateTag</code>를 사용하는 방법을 보여 줍니다. 두 경우 모두 <code>profile=&quot;max&quot;</code>를 사용해 data를 stale로 표시하고 stale-while-revalidate semantics를 사용하며, 이는 대부분의 use case에 권장되는 방식입니다.</p><div class="en-orig"><p>The following examples demonstrate how to use <code>revalidateTag</code> in different contexts. In both cases, we're using <code>profile=&quot;max&quot;</code> to mark data as stale and use stale-while-revalidate semantics, which is the recommended approach for most use cases.</p></div>
+<h3 class="sec" id="server-action"><a class="anchor" href="#server-action">Server Action</a></h3>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/actions.ts" data-js="app/actions.js">app/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use server&#x27;
+
+import { revalidateTag } from &#x27;next/cache&#x27;
+
+export default async function submit() {
+  await addPost()
+  revalidateTag(&#x27;posts&#x27;, &#x27;max&#x27;)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use server&#x27;
+
+import { revalidateTag } from &#x27;next/cache&#x27;
+
+export default async function submit() {
+  await addPost()
+  revalidateTag(&#x27;posts&#x27;, &#x27;max&#x27;)
+}</code></pre></div></div>
+<h3 class="sec" id="route-handler"><a class="anchor" href="#route-handler">Route Handler</a></h3>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/api/revalidate/route.ts" data-js="app/api/revalidate/route.js">app/api/revalidate/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextRequest } from &#x27;next/server&#x27;
+import { revalidateTag } from &#x27;next/cache&#x27;
+
+export async function GET(request: NextRequest) {
+  const tag = request.nextUrl.searchParams.get(&#x27;tag&#x27;)
+
+  if (tag) {
+    revalidateTag(tag, &#x27;max&#x27;)
+    return Response.json({ revalidated: true, now: Date.now() })
+  }
+
+  return Response.json({
+    revalidated: false,
+    now: Date.now(),
+    message: &#x27;Missing tag to revalidate&#x27;,
+  })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { revalidateTag } from &#x27;next/cache&#x27;
+
+export async function GET(request) {
+  const tag = request.nextUrl.searchParams.get(&#x27;tag&#x27;)
+
+  if (tag) {
+    revalidateTag(tag, &#x27;max&#x27;)
+    return Response.json({ revalidated: true, now: Date.now() })
+  }
+
+  return Response.json({
+    revalidated: false,
+    now: Date.now(),
+    message: &#x27;Missing tag to revalidate&#x27;,
+  })
+}</code></pre></div></div>
+<p>invalidation이 Server Action 밖에서 발생하는 경우, 예를 들어 webhook이나 다른 service가 Route Handler를 호출하는 경우에는 <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>를 사용할 수 없습니다. data를 즉시 만료시키려면 <code>{ expire: 0 }</code>을 전달하세요:</p><div class="en-orig"><p>When the invalidation comes from outside a Server Action, for example a webhook or another service calling a Route Handler, <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a> is not available. Pass <code>{ expire: 0 }</code> to expire the data immediately:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">revalidateTag(tag, { expire: 0 })</code></pre></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><div class="rgrid"><a class="rcard" href="app-guides-server-actions.html"><div class="rt">Server Actions and Mutations</div><div class="rk">Server Action과 Mutation</div><div class="rd">single-roundtrip response 모델, 순차 dispatch, 보안, caching 통합을 포함해 Next.js에서 Server Action이 동작하는 방식을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/revalidateTag.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/functions/revalidateTag" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-functions-revalidatePath.html" class="prev"><div class="dir">← 이전</div><div class="ttl">revalidatePath</div><div class="ttl-ko">revalidatePath</div></a>
+      <a href="app-api-reference-functions-unauthorized.html" class="next"><div class="dir">다음 →</div><div class="ttl">unauthorized</div><div class="ttl-ko">unauthorized</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/functions/revalidateTag" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#usage">Usage</a></li><li class="l3"><a href="#revalidation-behavior">Revalidation Behavior</a></li><li class="l2"><a href="#parameters">Parameters</a></li><li class="l2"><a href="#returns">Returns</a></li><li class="l2"><a href="#relationship-with-revalidatepath">Relationship with <code>revalidatePath</code></a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#server-action">Server Action</a></li><li class="l3"><a href="#route-handler">Route Handler</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`revalidateTag`를 사용하면 특정 cache tag에 해당하는 cached data를 on-demand로 무효화할 수 있습니다.
+
+이 함수는 블로그 글, 상품 카탈로그, 문서처럼 업데이트가 약간 늦게 반영되어도 괜찮은 콘텐츠에 적합합니다. 권장되는 `max` profile을 사용하면, 사용자는 새 data가 background에서 로드되는 동안 stale content를 받습니다.
+
+## Usage || 사용법
+
+`revalidateTag`는 Server Function과 Route Handler에서 호출할 수 있습니다.
+
+`revalidateTag`는 server 환경에서만 동작하므로 Client Component나 Proxy에서는 호출할 수 없습니다.
+
+### Revalidation Behavior || Revalidation 동작
+
+`revalidateTag`를 호출하면 해당 tag가 붙은 data가 stale로 표시됩니다. 그 data에 대한 다음 request가 revalidation을 시작하며, revalidation이 진행되는 동안에는 stale-while-revalidate semantics에 따라 stale content가 제공됩니다. 두 번째 argument는 stale content를 얼마나 오래 제공할 수 있는지를 설정합니다. 그 시간이 지나면 request는 revalidation이 끝날 때까지 block됩니다.
+
+- **`profile=&quot;max&quot;` (권장)**: 1년의 기간으로, revalidation이 진행되는 동안 request가 항상 stale content를 제공받을 만큼 충분히 깁니다.
+- **다른 profile 또는 object**: 다른 기간을 원할 때는 [`cacheLife`](/docs/app/api-reference/config/next-config-js/cacheLife)에 정의된 다른 기본 또는 custom profile, 혹은 `expire` property를 가진 object를 사용합니다.
+- **`{ expire: 0 }`**: stale content가 절대 제공되지 않으므로, 다음 request는 blocking revalidate/cache miss가 됩니다. 호출하는 쪽에서 data를 즉시 없애야 하는데 [`updateTag`](/docs/app/api-reference/functions/updateTag)를 사용할 수 없을 때 사용하세요.
+- **두 번째 argument 없음 (deprecated)**: `{ expire: 0 }`처럼 동작합니다. Server Action에서는 [`updateTag`](/docs/app/api-reference/functions/updateTag)로, 그 외에는 `profile=&quot;max&quot;`로 migrate하세요.
+
+profile은 빠른 응답보다 data의 정확성이 더 중요해지는 시점을 설정합니다.
+
+&gt; **Good to know**: revalidation은 `revalidateTag` 호출이 아니라 request에 의해 trigger되므로, 해당 tag를 사용하는 page들은 한꺼번에 revalidate되는 것이 아니라 방문될 때마다 revalidate됩니다.
+
+## Parameters
+
+[[CODE 1]]
+
+- `tag`: revalidate하려는 data에 연결된 cache tag를 나타내는 string입니다. tag는 대소문자를 구분하며 256자를 넘으면 안 됩니다. 제한을 넘는 tag는 cached data에 절대 할당되지 않으므로, 그런 tag를 revalidate해도 아무 일도 일어나지 않습니다.
+- `profile`: stale content를 얼마나 오래 제공할 수 있는지를 나타냅니다. [Revalidation Behavior](#revalidation-behavior)를 참고하세요. 권장 값은 `&quot;max&quot;`입니다. [`cacheLife`](/docs/app/api-reference/config/next-config-js/cacheLife)에 정의된 다른 기본 또는 custom profile도 받을 수 있으며, 이 경우 해당 profile의 `expire`만 읽습니다. 초 단위의 `expire` property를 가진 object를 전달할 수도 있습니다.
+
+tag는 먼저 cached data에 할당되어 있어야 합니다. 두 가지 방법이 있습니다:
+
+- 외부 API request를 caching할 때 `fetch`의 [`next.tags`](/docs/app/api-reference/functions/fetch) option 사용:
+
+[[CODE 2]]
+
+- `&#x27;use cache&#x27;` directive가 있는 cached function이나 component 안에서 [`cacheTag`](/docs/app/api-reference/functions/cacheTag) 사용:
+
+[[CODE 3]]
+
+&gt; **Good to know**: argument가 하나인 `revalidateTag(tag)` 형태는 deprecated되었습니다. 현재는 TypeScript error를 무시하면 동작하지만, 이 동작은 향후 버전에서 제거될 수 있습니다. argument 두 개를 받는 signature로 업데이트하세요.
+
+## Returns
+
+`revalidateTag`는 값을 반환하지 않습니다.
+
+## Relationship with `revalidatePath` || `revalidatePath`와의 관계
+
+`revalidateTag`는 특정 tag가 붙은 data를 그 tag를 사용하는 모든 page에 걸쳐 무효화하고, [`revalidatePath`](/docs/app/api-reference/functions/revalidatePath)는 특정 page 또는 layout 경로를 무효화합니다.
+
+&gt; **Good to know**: 이 함수들은 서로 다른 목적을 가지며, 포괄적인 data 일관성을 위해 함께 사용해야 할 수도 있습니다. 자세한 예시와 고려 사항은 [relationship with revalidateTag and updateTag](/docs/app/api-reference/functions/revalidatePath#relationship-with-revalidatetag-and-updatetag)를 참고하세요.
+
+## Examples || 예시
+
+다음 예시들은 다양한 context에서 `revalidateTag`를 사용하는 방법을 보여 줍니다. 두 경우 모두 `profile=&quot;max&quot;`를 사용해 data를 stale로 표시하고 stale-while-revalidate semantics를 사용하며, 이는 대부분의 use case에 권장되는 방식입니다.
+
+### Server Action
+
+[[CODE 4]]
+
+### Route Handler
+
+[[CODE 5]]
+
+invalidation이 Server Action 밖에서 발생하는 경우, 예를 들어 webhook이나 다른 service가 Route Handler를 호출하는 경우에는 [`updateTag`](/docs/app/api-reference/functions/updateTag)를 사용할 수 없습니다. data를 즉시 만료시키려면 `{ expire: 0 }`을 전달하세요:
+
+[[CODE 6]]
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

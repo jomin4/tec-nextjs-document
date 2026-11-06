@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to upgrade to version 15 (버전 15로 업그레이드하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/upgrading/version-15" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/upgrading/version-15" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/upgrading/version-15.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides-upgrading.html">Upgrading</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to upgrade to version 15<span class="sub">버전 15로 업그레이드하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<h2 class="sec" id="upgrading-from-14-to-15"><a class="anchor" href="#upgrading-from-14-to-15">Upgrading from 14 to 15<span class="ko">14에서 15로 업그레이드하기</span></a></h2>
+<p>Next.js 버전 15로 업데이트하려면 <code>upgrade</code> codemod를 사용할 수 있습니다:</p><div class="en-orig"><p>To update to Next.js version 15, you can use the <code>upgrade</code> codemod:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm dlx @next/codemod@canary upgrade latest</code></pre><pre class="pm-npm" hidden><code class="language-bash">npx @next/codemod@canary upgrade latest</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn dlx @next/codemod@canary upgrade latest</code></pre><pre class="pm-bun" hidden><code class="language-bash">bunx @next/codemod@canary upgrade latest</code></pre></div></div>
+<p>직접 하고 싶다면 최신 Next와 React 버전을 설치하고 있는지 확인하세요:</p><div class="en-orig"><p>If you prefer to do it manually, ensure that you're installing the latest Next &amp; React versions:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add next@latest react@latest react-dom@latest eslint-config-next@latest</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install next@latest react@latest react-dom@latest eslint-config-next@latest</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add next@latest react@latest react-dom@latest eslint-config-next@latest</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add next@latest react@latest react-dom@latest eslint-config-next@latest</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>peer dependency 경고가 보이면 <code>react</code>와 <code>react-dom</code>을 제안된 버전으로 업데이트하거나, <code>--force</code> 또는 <code>--legacy-peer-deps</code> flag를 사용해 경고를 무시해야 할 수 있습니다. Next.js 15와 React 19가 모두 stable이 되면 이 작업은 필요 없어집니다.</li>
+</ul><div class="en-orig"><ul>
+<li>If you see a peer dependencies warning, you may need to update <code>react</code> and <code>react-dom</code> to the suggested versions, or use the <code>--force</code> or <code>--legacy-peer-deps</code> flag to ignore the warning. This won't be necessary once both Next.js 15 and React 19 are stable.</li>
+</ul></div></div></div>
+<h2 class="sec" id="react-19"><a class="anchor" href="#react-19">React 19</a></h2>
+<ul>
+<li>이제 <code>react</code>와 <code>react-dom</code>의 최소 버전은 19입니다.</li>
+<li><code>useFormState</code>는 <code>useActionState</code>로 대체되었습니다. <code>useFormState</code> hook은 React 19에서도 여전히 사용할 수 있지만 deprecated되었으며 향후 release에서 제거됩니다. <code>useActionState</code> 사용을 권장하며, 여기에는 <code>pending</code> state를 직접 읽는 것 같은 추가 property가 포함되어 있습니다. <a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener">자세히 알아보기</a>.</li>
+<li>이제 <code>useFormStatus</code>에는 <code>data</code>, <code>method</code>, <code>action</code> 같은 추가 key가 포함됩니다. React 19를 사용하지 않는다면 <code>pending</code> key만 사용할 수 있습니다. <a href="https://react.dev/reference/react-dom/hooks/useFormStatus" target="_blank" rel="noopener">자세히 알아보기</a>.</li>
+<li>자세한 내용은 <a href="https://react.dev/blog/2024/04/25/react-19-upgrade-guide" target="_blank" rel="noopener">React 19 upgrade guide</a>에서 읽어 보세요.</li>
+</ul><div class="en-orig"><ul>
+<li>The minimum versions of <code>react</code> and <code>react-dom</code> is now 19.</li>
+<li><code>useFormState</code> has been replaced by <code>useActionState</code>. The <code>useFormState</code> hook is still available in React 19, but it is deprecated and will be removed in a future release. <code>useActionState</code> is recommended and includes additional properties like reading the <code>pending</code> state directly. <a href="https://react.dev/reference/react/useActionState" target="_blank" rel="noopener">Learn more</a>.</li>
+<li><code>useFormStatus</code> now includes additional keys like <code>data</code>, <code>method</code>, and <code>action</code>. If you are not using React 19, only the <code>pending</code> key is available. <a href="https://react.dev/reference/react-dom/hooks/useFormStatus" target="_blank" rel="noopener">Learn more</a>.</li>
+<li>Read more in the <a href="https://react.dev/blog/2024/04/25/react-19-upgrade-guide" target="_blank" rel="noopener">React 19 upgrade guide</a>.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>TypeScript를 사용한다면 <code>@types/react</code>와 <code>@types/react-dom</code>도 최신 버전으로 upgrade하세요.</p><div class="en-orig"><p>If you are using TypeScript, ensure you also upgrade <code>@types/react</code> and <code>@types/react-dom</code> to their latest versions.</p></div></div></div>
+<h2 class="sec" id="async-request-apis-breaking-change"><a class="anchor" href="#async-request-apis-breaking-change">Async Request APIs (Breaking change)<span class="ko">Async Request API (Breaking change)</span></a></h2>
+<p>이전에는 동기(synchronous)였던, request 정보에 의존하는 Request-time API들이 이제 <strong>비동기(asynchronous)</strong> 방식으로 바뀌었습니다:</p><div class="en-orig"><p>Previously synchronous Request-time APIs that rely on request information are now <strong>asynchronous</strong>:</p></div>
+<ul>
+<li><a href="app-api-reference-functions-cookies.html"><code>cookies</code></a></li>
+<li><a href="app-api-reference-functions-headers.html"><code>headers</code></a></li>
+<li><a href="app-api-reference-functions-draft-mode.html"><code>draftMode</code></a></li>
+<li><a href="app-api-reference-file-conventions-layout.html"><code>layout.js</code></a>, <a href="app-api-reference-file-conventions-page.html"><code>page.js</code></a>, <a href="app-api-reference-file-conventions-route.html"><code>route.js</code></a>, <a href="app-api-reference-file-conventions-default.html"><code>default.js</code></a>, <a href="app-api-reference-file-conventions-metadata-opengraph-image.html"><code>opengraph-image</code></a>, <a href="app-api-reference-file-conventions-metadata-opengraph-image.html"><code>twitter-image</code></a>, <a href="app-api-reference-file-conventions-metadata-app-icons.html"><code>icon</code></a>, <a href="app-api-reference-file-conventions-metadata-app-icons.html"><code>apple-icon</code></a>의 <code>params</code></li>
+<li><a href="app-api-reference-file-conventions-page.html"><code>page.js</code></a>의 <code>searchParams</code></li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-functions-cookies.html"><code>cookies</code></a></li>
+<li><a href="app-api-reference-functions-headers.html"><code>headers</code></a></li>
+<li><a href="app-api-reference-functions-draft-mode.html"><code>draftMode</code></a></li>
+<li><code>params</code> in <a href="app-api-reference-file-conventions-layout.html"><code>layout.js</code></a>, <a href="app-api-reference-file-conventions-page.html"><code>page.js</code></a>, <a href="app-api-reference-file-conventions-route.html"><code>route.js</code></a>, <a href="app-api-reference-file-conventions-default.html"><code>default.js</code></a>, <a href="app-api-reference-file-conventions-metadata-opengraph-image.html"><code>opengraph-image</code></a>, <a href="app-api-reference-file-conventions-metadata-opengraph-image.html"><code>twitter-image</code></a>, <a href="app-api-reference-file-conventions-metadata-app-icons.html"><code>icon</code></a>, and <a href="app-api-reference-file-conventions-metadata-app-icons.html"><code>apple-icon</code></a>.</li>
+<li><code>searchParams</code> in <a href="app-api-reference-file-conventions-page.html"><code>page.js</code></a></li>
+</ul></div>
+<p>migration 부담을 덜기 위해 이 과정을 자동화하는 <a href="app-guides-upgrading-codemods.html#150">codemod가 제공되며</a>, 이 API들은 일시적으로 동기 방식으로도 접근할 수 있습니다.</p><div class="en-orig"><p>To ease the burden of migration, a <a href="app-guides-upgrading-codemods.html#150">codemod is available</a> to automate the process and the APIs can temporarily be accessed synchronously.</p></div>
+<h3 class="sec" id="cookies"><a class="anchor" href="#cookies"><code>cookies</code></a></h3>
+<h4 class="sec" id="recommended-async-usage"><a class="anchor" href="#recommended-async-usage">Recommended Async Usage<span class="ko">권장 async 사용법</span></a></h4>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { cookies } from &#x27;next/headers&#x27;
+
+// Before
+const cookieStore = cookies()
+const token = cookieStore.get(&#x27;token&#x27;)
+
+// After
+const cookieStore = await cookies()
+const token = cookieStore.get(&#x27;token&#x27;)</code></pre></div></div>
+<h4 class="sec" id="temporary-synchronous-usage"><a class="anchor" href="#temporary-synchronous-usage">Temporary Synchronous Usage<span class="ko">임시 동기 사용법</span></a></h4>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { cookies, type UnsafeUnwrappedCookies } from &#x27;next/headers&#x27;
+
+// Before
+const cookieStore = cookies()
+const token = cookieStore.get(&#x27;token&#x27;)
+
+// After
+const cookieStore = cookies() as unknown as UnsafeUnwrappedCookies
+// will log a warning in dev
+const token = cookieStore.get(&#x27;token&#x27;)</code></pre><pre class="v-js" hidden><code class="language-javascript">import { cookies } from &#x27;next/headers&#x27;
+
+// Before
+const cookieStore = cookies()
+const token = cookieStore.get(&#x27;token&#x27;)
+
+// After
+const cookieStore = cookies()
+// will log a warning in dev
+const token = cookieStore.get(&#x27;token&#x27;)</code></pre></div></div>
+<h3 class="sec" id="headers"><a class="anchor" href="#headers"><code>headers</code></a></h3>
+<h4 class="sec" id="recommended-async-usage-1"><a class="anchor" href="#recommended-async-usage-1">Recommended Async Usage<span class="ko">권장 async 사용법</span></a></h4>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { headers } from &#x27;next/headers&#x27;
+
+// Before
+const headersList = headers()
+const userAgent = headersList.get(&#x27;user-agent&#x27;)
+
+// After
+const headersList = await headers()
+const userAgent = headersList.get(&#x27;user-agent&#x27;)</code></pre></div></div>
+<h4 class="sec" id="temporary-synchronous-usage-1"><a class="anchor" href="#temporary-synchronous-usage-1">Temporary Synchronous Usage<span class="ko">임시 동기 사용법</span></a></h4>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { headers, type UnsafeUnwrappedHeaders } from &#x27;next/headers&#x27;
+
+// Before
+const headersList = headers()
+const userAgent = headersList.get(&#x27;user-agent&#x27;)
+
+// After
+const headersList = headers() as unknown as UnsafeUnwrappedHeaders
+// will log a warning in dev
+const userAgent = headersList.get(&#x27;user-agent&#x27;)</code></pre><pre class="v-js" hidden><code class="language-javascript">import { headers } from &#x27;next/headers&#x27;
+
+// Before
+const headersList = headers()
+const userAgent = headersList.get(&#x27;user-agent&#x27;)
+
+// After
+const headersList = headers()
+// will log a warning in dev
+const userAgent = headersList.get(&#x27;user-agent&#x27;)</code></pre></div></div>
+<h3 class="sec" id="draftmode"><a class="anchor" href="#draftmode"><code>draftMode</code></a></h3>
+<h4 class="sec" id="recommended-async-usage-2"><a class="anchor" href="#recommended-async-usage-2">Recommended Async Usage<span class="ko">권장 async 사용법</span></a></h4>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { draftMode } from &#x27;next/headers&#x27;
+
+// Before
+const { isEnabled } = draftMode()
+
+// After
+const { isEnabled } = await draftMode()</code></pre></div></div>
+<h4 class="sec" id="temporary-synchronous-usage-2"><a class="anchor" href="#temporary-synchronous-usage-2">Temporary Synchronous Usage<span class="ko">임시 동기 사용법</span></a></h4>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { draftMode, type UnsafeUnwrappedDraftMode } from &#x27;next/headers&#x27;
+
+// Before
+const { isEnabled } = draftMode()
+
+// After
+// will log a warning in dev
+const { isEnabled } = draftMode() as unknown as UnsafeUnwrappedDraftMode</code></pre><pre class="v-js" hidden><code class="language-javascript">import { draftMode } from &#x27;next/headers&#x27;
+
+// Before
+const { isEnabled } = draftMode()
+
+// After
+// will log a warning in dev
+const { isEnabled } = draftMode()</code></pre></div></div>
+<h3 class="sec" id="params--searchparams"><a class="anchor" href="#params--searchparams"><code>params</code> &amp; <code>searchParams</code></a></h3>
+<h4 class="sec" id="asynchronous-layout"><a class="anchor" href="#asynchronous-layout">Asynchronous Layout<span class="ko">비동기 Layout</span></a></h4>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// Before
+type Params = { slug: string }
+
+export function generateMetadata({ params }: { params: Params }) {
+  const { slug } = params
+}
+
+export default async function Layout({
+  children,
+  params,
+}: {
+  children: React.ReactNode
+  params: Params
+}) {
+  const { slug } = params
+}
+
+// After
+type Params = Promise&lt;{ slug: string }&gt;
+
+export async function generateMetadata({ params }: { params: Params }) {
+  const { slug } = await params
+}
+
+export default async function Layout({
+  children,
+  params,
+}: {
+  children: React.ReactNode
+  params: Params
+}) {
+  const { slug } = await params
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// Before
+export function generateMetadata({ params }) {
+  const { slug } = params
+}
+
+export default async function Layout({ children, params }) {
+  const { slug } = params
+}
+
+// After
+export async function generateMetadata({ params }) {
+  const { slug } = await params
+}
+
+export default async function Layout({ children, params }) {
+  const { slug } = await params
+}</code></pre></div></div>
+<h4 class="sec" id="synchronous-layout"><a class="anchor" href="#synchronous-layout">Synchronous Layout<span class="ko">동기 Layout</span></a></h4>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// Before
+type Params = { slug: string }
+
+export default function Layout({
+  children,
+  params,
+}: {
+  children: React.ReactNode
+  params: Params
+}) {
+  const { slug } = params
+}
+
+// After
+import { use } from &#x27;react&#x27;
+
+type Params = Promise&lt;{ slug: string }&gt;
+
+export default function Layout(props: {
+  children: React.ReactNode
+  params: Params
+}) {
+  const params = use(props.params)
+  const slug = params.slug
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// Before
+export default function Layout({ children, params }) {
+  const { slug } = params
+}
+
+// After
+import { use } from &#x27;react&#x27;
+export default async function Layout(props) {
+  const params = use(props.params)
+  const slug = params.slug
+}</code></pre></div></div>
+<h4 class="sec" id="asynchronous-page"><a class="anchor" href="#asynchronous-page">Asynchronous Page<span class="ko">비동기 Page</span></a></h4>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.js">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// Before
+type Params = { slug: string }
+type SearchParams = { [key: string]: string | string[] | undefined }
+
+export function generateMetadata({
+  params,
+  searchParams,
+}: {
+  params: Params
+  searchParams: SearchParams
+}) {
+  const { slug } = params
+  const { query } = searchParams
+}
+
+export default async function Page({
+  params,
+  searchParams,
+}: {
+  params: Params
+  searchParams: SearchParams
+}) {
+  const { slug } = params
+  const { query } = searchParams
+}
+
+// After
+type Params = Promise&lt;{ slug: string }&gt;
+type SearchParams = Promise&lt;{ [key: string]: string | string[] | undefined }&gt;
+
+export async function generateMetadata(props: {
+  params: Params
+  searchParams: SearchParams
+}) {
+  const params = await props.params
+  const searchParams = await props.searchParams
+  const slug = params.slug
+  const query = searchParams.query
+}
+
+export default async function Page(props: {
+  params: Params
+  searchParams: SearchParams
+}) {
+  const params = await props.params
+  const searchParams = await props.searchParams
+  const slug = params.slug
+  const query = searchParams.query
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// Before
+export function generateMetadata({ params, searchParams }) {
+  const { slug } = params
+  const { query } = searchParams
+}
+
+export default function Page({ params, searchParams }) {
+  const { slug } = params
+  const { query } = searchParams
+}
+
+// After
+export async function generateMetadata(props) {
+  const params = await props.params
+  const searchParams = await props.searchParams
+  const slug = params.slug
+  const query = searchParams.query
+}
+
+export default async function Page(props) {
+  const params = await props.params
+  const searchParams = await props.searchParams
+  const slug = params.slug
+  const query = searchParams.query
+}</code></pre></div></div>
+<h4 class="sec" id="synchronous-page"><a class="anchor" href="#synchronous-page">Synchronous Page<span class="ko">동기 Page</span></a></h4>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+// Before
+type Params = { slug: string }
+type SearchParams = { [key: string]: string | string[] | undefined }
+
+export default function Page({
+  params,
+  searchParams,
+}: {
+  params: Params
+  searchParams: SearchParams
+}) {
+  const { slug } = params
+  const { query } = searchParams
+}
+
+// After
+import { use } from &#x27;react&#x27;
+
+type Params = Promise&lt;{ slug: string }&gt;
+type SearchParams = Promise&lt;{ [key: string]: string | string[] | undefined }&gt;
+
+export default function Page(props: {
+  params: Params
+  searchParams: SearchParams
+}) {
+  const params = use(props.params)
+  const searchParams = use(props.searchParams)
+  const slug = params.slug
+  const query = searchParams.query
+}</code></pre></div></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// Before
+export default function Page({ params, searchParams }) {
+  const { slug } = params
+  const { query } = searchParams
+}
+
+// After
+import { use } from &quot;react&quot;
+
+export default function Page(props) {
+  const params = use(props.params)
+  const searchParams = use(props.searchParams)
+  const slug = params.slug
+  const query = searchParams.query
+}</code></pre></div></div>
+<h4 class="sec" id="route-handlers"><a class="anchor" href="#route-handlers">Route Handlers</a></h4>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/api/route.ts" data-js="app/api/route.js">app/api/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">// Before
+type Params = { slug: string }
+
+export async function GET(request: Request, segmentData: { params: Params }) {
+  const params = segmentData.params
+  const slug = params.slug
+}
+
+// After
+type Params = Promise&lt;{ slug: string }&gt;
+
+export async function GET(request: Request, segmentData: { params: Params }) {
+  const params = await segmentData.params
+  const slug = params.slug
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">// Before
+export async function GET(request, segmentData) {
+  const params = segmentData.params
+  const slug = params.slug
+}
+
+// After
+export async function GET(request, segmentData) {
+  const params = await segmentData.params
+  const slug = params.slug
+}</code></pre></div></div>
+<h2 class="sec" id="runtime-configuration-breaking-change"><a class="anchor" href="#runtime-configuration-breaking-change"><code>runtime</code> configuration (Breaking change)</a></h2>
+<p><code>runtime</code> <a href="app-api-reference-file-conventions-route-segment-config-runtime.html">segment configuration</a>은 이전에 <code>edge</code> 외에 <code>experimental-edge</code> 값도 지원했습니다. 두 configuration은 같은 것을 가리키므로, option을 단순화하기 위해 이제 <code>experimental-edge</code>를 사용하면 error가 발생합니다. 이를 고치려면 <code>runtime</code> configuration을 <code>edge</code>로 업데이트하세요. 이 작업을 자동으로 해 주는 <a href="app-guides-upgrading-codemods.html#app-dir-runtime-config-experimental-edge">codemod</a>가 제공됩니다.</p><div class="en-orig"><p>The <code>runtime</code> <a href="app-api-reference-file-conventions-route-segment-config-runtime.html">segment configuration</a> previously supported a value of <code>experimental-edge</code> in addition to <code>edge</code>. Both configurations refer to the same thing, and to simplify the options, we will now error if <code>experimental-edge</code> is used. To fix this, update your <code>runtime</code> configuration to <code>edge</code>. A <a href="app-guides-upgrading-codemods.html#app-dir-runtime-config-experimental-edge">codemod</a> is available to automatically do this.</p></div>
+<h2 class="sec" id="fetch-requests"><a class="anchor" href="#fetch-requests"><code>fetch</code> requests<span class="ko"><code>fetch</code> request</span></a></h2>
+<p><a href="app-api-reference-functions-fetch.html"><code>fetch</code> request</a>는 더 이상 기본으로 cache되지 않습니다.</p><div class="en-orig"><p><a href="app-api-reference-functions-fetch.html"><code>fetch</code> requests</a> are no longer cached by default.</p></div>
+<p>특정 <code>fetch</code> request를 caching에 포함시키려면 <code>cache: &#x27;force-cache&#x27;</code> option을 넘기면 됩니다.</p><div class="en-orig"><p>To opt specific <code>fetch</code> requests into caching, you can pass the <code>cache: &#x27;force-cache&#x27;</code> option.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/layout.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export default async function RootLayout() {
+  const a = await fetch(&#x27;https://...&#x27;) // Not Cached
+  const b = await fetch(&#x27;https://...&#x27;, { cache: &#x27;force-cache&#x27; }) // Cached
+
+  // ...
+}</code></pre></div></div>
+<p>layout이나 page의 모든 <code>fetch</code> request를 caching에 포함시키려면 <code>export const fetchCache = &#x27;default-cache&#x27;</code> <a href="app-api-reference-file-conventions-route-segment-config.html">segment config option</a>을 사용할 수 있습니다. 개별 <code>fetch</code> request에 <code>cache</code> option이 지정되어 있으면 그 값이 대신 사용됩니다.</p><div class="en-orig"><p>To opt all <code>fetch</code> requests in a layout or page into caching, you can use the <code>export const fetchCache = &#x27;default-cache&#x27;</code> <a href="app-api-reference-file-conventions-route-segment-config.html">segment config option</a>. If individual <code>fetch</code> requests specify a <code>cache</code> option, that will be used instead.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/layout.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// Since this is the root layout, all fetch requests in the app
+// that don&#x27;t set their own cache option will be cached.
+export const fetchCache = &#x27;default-cache&#x27;
+
+export default async function RootLayout() {
+  const a = await fetch(&#x27;https://...&#x27;) // Cached
+  const b = await fetch(&#x27;https://...&#x27;, { cache: &#x27;no-store&#x27; }) // Not cached
+
+  // ...
+}</code></pre></div></div>
+<h2 class="sec" id="route-handlers-1"><a class="anchor" href="#route-handlers-1">Route Handlers</a></h2>
+<p><a href="app-api-reference-file-conventions-route.html">Route Handler</a>의 <code>GET</code> 함수는 더 이상 기본으로 cache되지 않습니다. <code>GET</code> method를 caching에 포함시키려면 Route Handler 파일에서 <code>export const dynamic = &#x27;force-static&#x27;</code> 같은 <a href="app-api-reference-file-conventions-route-segment-config.html">route config option</a>을 사용할 수 있습니다.</p><div class="en-orig"><p><code>GET</code> functions in <a href="app-api-reference-file-conventions-route.html">Route Handlers</a> are no longer cached by default. To opt <code>GET</code> methods into caching, you can use a <a href="app-api-reference-file-conventions-route-segment-config.html">route config option</a> such as <code>export const dynamic = &#x27;force-static&#x27;</code> in your Route Handler file.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/api/route.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const dynamic = &#x27;force-static&#x27;
+
+export async function GET() {}</code></pre></div></div>
+<h2 class="sec" id="client-cache"><a class="anchor" href="#client-cache">Client Cache</a></h2>
+<p><code>&lt;Link&gt;</code>나 <code>useRouter</code>로 page 사이를 이동할 때, <a href="app-api-reference-file-conventions-page.html">page</a> segment는 더 이상 <a href="app-glossary.html#client-cache">Client Cache</a>에서 재사용되지 않습니다. 하지만 브라우저의 뒤로/앞으로 navigation과 공유 layout에서는 여전히 재사용됩니다.</p><div class="en-orig"><p>When navigating between pages via <code>&lt;Link&gt;</code> or <code>useRouter</code>, <a href="app-api-reference-file-conventions-page.html">page</a> segments are no longer reused from the <a href="app-glossary.html#client-cache">Client Cache</a>. However, they are still reused during browser backward and forward navigation and for shared layouts.</p></div>
+<p>page segment를 caching에 포함시키려면 <a href="app-api-reference-config-next-config-js-staleTimes.html"><code>staleTimes</code></a> config option을 사용할 수 있습니다:</p><div class="en-orig"><p>To opt page segments into caching, you can use the <a href="app-api-reference-config-next-config-js-staleTimes.html"><code>staleTimes</code></a> config option:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  experimental: {
+    staleTimes: {
+      dynamic: 30,
+      static: 180,
+    },
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p><a href="app-api-reference-file-conventions-layout.html">Layout</a>과 <a href="app-api-reference-file-conventions-loading.html">loading state</a>는 여전히 cache되며 navigation 시 재사용됩니다.</p><div class="en-orig"><p><a href="app-api-reference-file-conventions-layout.html">Layouts</a> and <a href="app-api-reference-file-conventions-loading.html">loading states</a> are still cached and reused on navigation.</p></div>
+<h2 class="sec" id="nextfont"><a class="anchor" href="#nextfont"><code>next/font</code></a></h2>
+<p><code>@next/font</code> package가 제거되고 built-in <a href="app-api-reference-components-font.html"><code>next/font</code></a>로 대체되었습니다. import 이름을 안전하고 자동으로 바꿔 주는 <a href="app-guides-upgrading-codemods.html#built-in-next-font">codemod가 제공됩니다</a>.</p><div class="en-orig"><p>The <code>@next/font</code> package has been removed in favor of the built-in <a href="app-api-reference-components-font.html"><code>next/font</code></a>. A <a href="app-guides-upgrading-codemods.html#built-in-next-font">codemod is available</a> to safely and automatically rename your imports.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/layout.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// Before
+import { Inter } from &#x27;@next/font/google&#x27;
+
+// After
+import { Inter } from &#x27;next/font/google&#x27;</code></pre></div></div>
+<h2 class="sec" id="bundlepagesrouterdependencies"><a class="anchor" href="#bundlepagesrouterdependencies">bundlePagesRouterDependencies</a></h2>
+<p><code>experimental.bundlePagesExternals</code>가 이제 stable이 되었고 이름이 <code>bundlePagesRouterDependencies</code>로 바뀌었습니다.</p><div class="en-orig"><p><code>experimental.bundlePagesExternals</code> is now stable and renamed to <code>bundlePagesRouterDependencies</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  // Before
+  experimental: {
+    bundlePagesExternals: true,
+  },
+
+  // After
+  bundlePagesRouterDependencies: true,
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<h2 class="sec" id="serverexternalpackages"><a class="anchor" href="#serverexternalpackages">serverExternalPackages</a></h2>
+<p><code>experimental.serverComponentsExternalPackages</code>가 이제 stable이 되었고 이름이 <code>serverExternalPackages</code>로 바뀌었습니다.</p><div class="en-orig"><p><code>experimental.serverComponentsExternalPackages</code> is now stable and renamed to <code>serverExternalPackages</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  // Before
+  experimental: {
+    serverComponentsExternalPackages: [&#x27;package-name&#x27;],
+  },
+
+  // After
+  serverExternalPackages: [&#x27;package-name&#x27;],
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<h2 class="sec" id="speed-insights"><a class="anchor" href="#speed-insights">Speed Insights</a></h2>
+<p>Next.js 15에서 Speed Insights의 자동 instrumentation이 제거되었습니다.</p><div class="en-orig"><p>Auto instrumentation for Speed Insights was removed in Next.js 15.</p></div>
+<p>Speed Insights를 계속 사용하려면 <a href="https://vercel.com/docs/speed-insights/quickstart" target="_blank" rel="noopener">Vercel Speed Insights Quickstart</a> guide를 따르세요.</p><div class="en-orig"><p>To continue using Speed Insights, follow the <a href="https://vercel.com/docs/speed-insights/quickstart" target="_blank" rel="noopener">Vercel Speed Insights Quickstart</a> guide.</p></div>
+<h2 class="sec" id="nextrequest-geolocation"><a class="anchor" href="#nextrequest-geolocation"><code>NextRequest</code> Geolocation</a></h2>
+<p><code>NextRequest</code>의 <code>geo</code>와 <code>ip</code> property는 hosting provider가 제공하는 값이므로 제거되었습니다. 이 migration을 자동화하는 <a href="app-guides-upgrading-codemods.html#150">codemod</a>가 제공됩니다.</p><div class="en-orig"><p>The <code>geo</code> and <code>ip</code> properties on <code>NextRequest</code> have been removed as these values are provided by your hosting provider. A <a href="app-guides-upgrading-codemods.html#150">codemod</a> is available to automate this migration.</p></div>
+<p>Vercel을 사용한다면 대신 <a href="https://vercel.com/docs/functions/functions-api-reference/vercel-functions-package" target="_blank" rel="noopener"><code>@vercel/functions</code></a>의 <code>geolocation</code>과 <code>ipAddress</code> 함수를 사용할 수 있습니다:</p><div class="en-orig"><p>If you are using Vercel, you can alternatively use the <code>geolocation</code> and <code>ipAddress</code> functions from <a href="https://vercel.com/docs/functions/functions-api-reference/vercel-functions-package" target="_blank" rel="noopener"><code>@vercel/functions</code></a> instead:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">middleware.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { geolocation } from &#x27;@vercel/functions&#x27;
+import type { NextRequest } from &#x27;next/server&#x27;
+
+export function middleware(request: NextRequest) {
+  const { city } = geolocation(request)
+
+  // ...
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">middleware.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { ipAddress } from &#x27;@vercel/functions&#x27;
+import type { NextRequest } from &#x27;next/server&#x27;
+
+export function middleware(request: NextRequest) {
+  const ip = ipAddress(request)
+
+  // ...
+}</code></pre></div></div>
+<h2 class="sec" id="troubleshooting"><a class="anchor" href="#troubleshooting">Troubleshooting<span class="ko">문제 해결</span></a></h2>
+<h3 class="sec" id="installation-fails-after-upgrading-to-react-19"><a class="anchor" href="#installation-fails-after-upgrading-to-react-19">Installation fails after upgrading to React 19<span class="ko">React 19로 upgrade한 뒤 설치가 실패하는 경우</span></a></h3>
+<ul>
+<li>[ ] 다른 package의 peer dependency가 React 19를 거부한다면, target Next.js 버전과 router가 지원하는 한 <code>react</code>, <code>react-dom</code>, 그 type, 그리고 (있다면) <code>react-is</code>를 이전 버전으로 되돌리세요.</li>
+<li>[ ] upgrade가 <code>package.json</code>이나 <code>pnpm-workspace.yaml</code>에 추가한 React type override 또는 resolution을 원래대로 되돌리거나 제거하세요.</li>
+<li>[ ] 설치 때문에 upgrade command가 중단되었다면, 고친 dependency를 유지하도록 <code>--skip-react-upgrade</code>와 함께 똑같은 target으로 다시 시도하세요. Next.js가 이미 target과 일치한다면 dependency를 설치하고 건너뛴 codemod를 개별적으로 실행하세요. 그런 다음 앱의 check를 실행하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>[ ] If another package's peer dependencies reject React 19, revert <code>react</code>, <code>react-dom</code>, their types, and <code>react-is</code> (if present) to the previous versions, provided the target Next.js version and router support them.</li>
+<li>[ ] Restore or remove React type overrides or resolutions added by the upgrade in <code>package.json</code> or <code>pnpm-workspace.yaml</code>.</li>
+<li>[ ] If installation interrupted the upgrade command, retry the same exact target with <code>--skip-react-upgrade</code> to preserve the repaired dependencies. If Next.js already matches the target, install dependencies and run any skipped codemods individually. Run the app's checks.</li>
+</ul></div>
+<h3 class="sec" id="installation-fails-after-upgrading-to-eslint-9"><a class="anchor" href="#installation-fails-after-upgrading-to-eslint-9">Installation fails after upgrading to ESLint 9<span class="ko">ESLint 9로 upgrade한 뒤 설치가 실패하는 경우</span></a></h3>
+<ul>
+<li>[ ] 다른 package의 peer dependency가 ESLint 9를 거부한다면, <code>eslint</code>, <code>eslint-config-next</code>, (있다면) <code>@next/eslint-plugin-next</code>의 이전 호환 버전과 이전 lint configuration을 복원하세요.</li>
+<li>[ ] 설치 때문에 upgrade command가 중단되었다면, 고친 dependency를 유지하도록 <code>--skip-eslint-upgrade</code>와 함께 똑같은 target으로 다시 시도하세요. Next.js가 이미 target과 일치한다면 dependency를 설치하고 건너뛴 codemod를 개별적으로 실행하세요. 필요한 lint migration을 직접 완료한 다음 앱의 lint check를 실행하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>[ ] If another package's peer dependencies reject ESLint 9, restore the previous compatible versions of <code>eslint</code>, <code>eslint-config-next</code>, and <code>@next/eslint-plugin-next</code> (if present), along with the previous lint configuration.</li>
+<li>[ ] If installation interrupted the upgrade command, retry the same exact target with <code>--skip-eslint-upgrade</code> to preserve the repaired dependency. If Next.js already matches the target, install dependencies and run any skipped codemods individually. Complete any required lint migration manually, then run the app's lint checks.</li>
+</ul></div>
+<h2 class="sec" id="review-migration-checklist"><a class="anchor" href="#review-migration-checklist">Review migration checklist<span class="ko">migration checklist 검토하기</span></a></h2>
+<p>앱에 해당하는 변경을 적용한 뒤, migration이 완료되었다고 판단하기 전에
+다음 action item들을 검토하세요:</p><div class="en-orig"><p>After applying the changes relevant to your app, review these action items before
+you consider the migration complete:</p></div>
+<ul>
+<li>[ ] React dependency와 type이 앱의 router에 대한 React 19 요구 사항을 충족합니다.</li>
+<li>[ ] font import가 <code>@next/font</code> 대신 <code>next/font</code>를 사용합니다.</li>
+<li>[ ] 기존 <code>bundlePagesExternals</code>와 <code>serverComponentsExternalPackages</code> 설정이 package configuration을 유지한 채 문서화된 stable 이름을 사용합니다.</li>
+<li>[ ] <code>NextRequest</code>의 <code>geo</code>와 <code>ip</code>를 사용하는 곳이 실제 hosting provider에 맞는 적절한 source를 사용합니다.</li>
+<li>[ ] 자동 Speed Insights instrumentation에 의존하던 앱이 여전히 필요하다면 명시적인 integration을 갖추고 있습니다.</li>
+<li>[ ] 앱이 지원하는 check와 영향을 받는 runtime 동작이 모두 통과합니다. 꼭 통과해야 하는 check가 아직 실패한다면 migration은 완료되지 않은 것입니다.</li>
+<li>[ ] 영향을 받는 helper와 caller를 포함해 Async Request API 접근이 migrate되었습니다. codemod error comment와 <code>UnsafeUnwrapped</code> cast를 완료된 수정으로 간주하지 말고 해결하세요.</li>
+<li>[ ] route segment runtime 설정이 더 이상 <code>experimental-edge</code>를 사용하지 않습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>[ ] React dependencies and types meet the React 19 requirements for the app's router.</li>
+<li>[ ] Font imports use <code>next/font</code> instead of <code>@next/font</code>.</li>
+<li>[ ] Existing <code>bundlePagesExternals</code> and <code>serverComponentsExternalPackages</code> settings use their documented stable names while preserving package configuration.</li>
+<li>[ ] <code>NextRequest</code> <code>geo</code> and <code>ip</code> consumers use an appropriate source for the actual hosting provider.</li>
+<li>[ ] Apps that relied on automatic Speed Insights instrumentation have an explicit integration if they still need it.</li>
+<li>[ ] The app's supported checks and affected runtime behavior pass. Remaining required failures keep the migration incomplete.</li>
+<li>[ ] Async Request API access, including affected helpers and callers, is migrated. Resolve codemod error comments and <code>UnsafeUnwrapped</code> casts instead of treating them as completed repairs.</li>
+<li>[ ] Route segment runtime settings no longer use <code>experimental-edge</code>.</li>
+</ul></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/upgrading/version-15.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/upgrading/version-15" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-upgrading-version-14.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Version 14</div><div class="ttl-ko">버전 14로 업그레이드하기</div></a>
+      <a href="app-guides-upgrading-version-16.html" class="next"><div class="dir">다음 →</div><div class="ttl">Version 16</div><div class="ttl-ko">버전 16으로 업그레이드하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/upgrading/version-15" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#upgrading-from-14-to-15">Upgrading from 14 to 15</a></li><li class="l2"><a href="#react-19">React 19</a></li><li class="l2"><a href="#async-request-apis-breaking-change">Async Request APIs (Breaking change)</a></li><li class="l3"><a href="#cookies"><code>cookies</code></a></li><li class="l3"><a href="#headers"><code>headers</code></a></li><li class="l3"><a href="#draftmode"><code>draftMode</code></a></li><li class="l3"><a href="#params--searchparams"><code>params</code> &amp; <code>searchParams</code></a></li><li class="l2"><a href="#runtime-configuration-breaking-change"><code>runtime</code> configuration (Breaking change)</a></li><li class="l2"><a href="#fetch-requests"><code>fetch</code> requests</a></li><li class="l2"><a href="#route-handlers-1">Route Handlers</a></li><li class="l2"><a href="#client-cache">Client Cache</a></li><li class="l2"><a href="#nextfont"><code>next/font</code></a></li><li class="l2"><a href="#bundlepagesrouterdependencies">bundlePagesRouterDependencies</a></li><li class="l2"><a href="#serverexternalpackages">serverExternalPackages</a></li><li class="l2"><a href="#speed-insights">Speed Insights</a></li><li class="l2"><a href="#nextrequest-geolocation"><code>NextRequest</code> Geolocation</a></li><li class="l2"><a href="#troubleshooting">Troubleshooting</a></li><li class="l3"><a href="#installation-fails-after-upgrading-to-react-19">Installation fails after upgrading to React 19</a></li><li class="l3"><a href="#installation-fails-after-upgrading-to-eslint-9">Installation fails after upgrading to ESLint 9</a></li><li class="l2"><a href="#review-migration-checklist">Review migration checklist</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+## Upgrading from 14 to 15 || 14에서 15로 업그레이드하기
+
+Next.js 버전 15로 업데이트하려면 `upgrade` codemod를 사용할 수 있습니다:
+
+[[CODE 1]]
+
+직접 하고 싶다면 최신 Next와 React 버전을 설치하고 있는지 확인하세요:
+
+[[CODE 2]]
+
+&gt; **Good to know:**
+&gt;
+&gt; - peer dependency 경고가 보이면 `react`와 `react-dom`을 제안된 버전으로 업데이트하거나, `--force` 또는 `--legacy-peer-deps` flag를 사용해 경고를 무시해야 할 수 있습니다. Next.js 15와 React 19가 모두 stable이 되면 이 작업은 필요 없어집니다.
+
+## React 19
+
+
+
+- 이제 `react`와 `react-dom`의 최소 버전은 19입니다.
+
+
+
+
+
+- `useFormState`는 `useActionState`로 대체되었습니다. `useFormState` hook은 React 19에서도 여전히 사용할 수 있지만 deprecated되었으며 향후 release에서 제거됩니다. `useActionState` 사용을 권장하며, 여기에는 `pending` state를 직접 읽는 것 같은 추가 property가 포함되어 있습니다. [자세히 알아보기](https://react.dev/reference/react/useActionState).
+- 이제 `useFormStatus`에는 `data`, `method`, `action` 같은 추가 key가 포함됩니다. React 19를 사용하지 않는다면 `pending` key만 사용할 수 있습니다. [자세히 알아보기](https://react.dev/reference/react-dom/hooks/useFormStatus).
+- 자세한 내용은 [React 19 upgrade guide](https://react.dev/blog/2024/04/25/react-19-upgrade-guide)에서 읽어 보세요.
+
+&gt; **Good to know:** TypeScript를 사용한다면 `@types/react`와 `@types/react-dom`도 최신 버전으로 upgrade하세요.
+
+
+
+## Async Request APIs (Breaking change) || Async Request API (Breaking change)
+
+이전에는 동기(synchronous)였던, request 정보에 의존하는 Request-time API들이 이제 **비동기(asynchronous)** 방식으로 바뀌었습니다:
+
+- [`cookies`](/docs/app/api-reference/functions/cookies)
+- [`headers`](/docs/app/api-reference/functions/headers)
+- [`draftMode`](/docs/app/api-reference/functions/draft-mode)
+- [`layout.js`](/docs/app/api-reference/file-conventions/layout), [`page.js`](/docs/app/api-reference/file-conventions/page), [`route.js`](/docs/app/api-reference/file-conventions/route), [`default.js`](/docs/app/api-reference/file-conventions/default), [`opengraph-image`](/docs/app/api-reference/file-conventions/metadata/opengraph-image), [`twitter-image`](/docs/app/api-reference/file-conventions/metadata/opengraph-image), [`icon`](/docs/app/api-reference/file-conventions/metadata/app-icons), [`apple-icon`](/docs/app/api-reference/file-conventions/metadata/app-icons)의 `params`
+- [`page.js`](/docs/app/api-reference/file-conventions/page)의 `searchParams`
+
+migration 부담을 덜기 위해 이 과정을 자동화하는 [codemod가 제공되며](/docs/app/guides/upgrading/codemods#150), 이 API들은 일시적으로 동기 방식으로도 접근할 수 있습니다.
+
+### `cookies`
+
+#### Recommended Async Usage || 권장 async 사용법
+
+[[CODE 3]]
+
+#### Temporary Synchronous Usage || 임시 동기 사용법
+
+[[CODE 4]]
+
+### `headers`
+
+#### Recommended Async Usage || 권장 async 사용법
+
+[[CODE 5]]
+
+#### Temporary Synchronous Usage || 임시 동기 사용법
+
+[[CODE 6]]
+
+### `draftMode`
+
+#### Recommended Async Usage || 권장 async 사용법
+
+[[CODE 7]]
+
+#### Temporary Synchronous Usage || 임시 동기 사용법
+
+[[CODE 8]]
+
+### `params` &amp; `searchParams`
+
+#### Asynchronous Layout || 비동기 Layout
+
+[[CODE 9]]
+
+#### Synchronous Layout || 동기 Layout
+
+[[CODE 10]]
+
+#### Asynchronous Page || 비동기 Page
+
+[[CODE 11]]
+
+#### Synchronous Page || 동기 Page
+
+[[CODE 12]]
+
+[[CODE 13]]
+
+#### Route Handlers
+
+[[CODE 14]]
+
+## `runtime` configuration (Breaking change) || `runtime` configuration (Breaking change)
+
+`runtime` [segment configuration](/docs/app/api-reference/file-conventions/route-segment-config/runtime)은 이전에 `edge` 외에 `experimental-edge` 값도 지원했습니다. 두 configuration은 같은 것을 가리키므로, option을 단순화하기 위해 이제 `experimental-edge`를 사용하면 error가 발생합니다. 이를 고치려면 `runtime` configuration을 `edge`로 업데이트하세요. 이 작업을 자동으로 해 주는 [codemod](/docs/app/guides/upgrading/codemods#app-dir-runtime-config-experimental-edge)가 제공됩니다.
+
+## `fetch` requests || `fetch` request
+
+[`fetch` request](/docs/app/api-reference/functions/fetch)는 더 이상 기본으로 cache되지 않습니다.
+
+특정 `fetch` request를 caching에 포함시키려면 `cache: &#x27;force-cache&#x27;` option을 넘기면 됩니다.
+
+[[CODE 15]]
+
+layout이나 page의 모든 `fetch` request를 caching에 포함시키려면 `export const fetchCache = &#x27;default-cache&#x27;` [segment config option](/docs/app/api-reference/file-conventions/route-segment-config)을 사용할 수 있습니다. 개별 `fetch` request에 `cache` option이 지정되어 있으면 그 값이 대신 사용됩니다.
+
+[[CODE 16]]
+
+## Route Handlers
+
+[Route Handler](/docs/app/api-reference/file-conventions/route)의 `GET` 함수는 더 이상 기본으로 cache되지 않습니다. `GET` method를 caching에 포함시키려면 Route Handler 파일에서 `export const dynamic = &#x27;force-static&#x27;` 같은 [route config option](/docs/app/api-reference/file-conventions/route-segment-config)을 사용할 수 있습니다.
+
+[[CODE 17]]
+
+## Client Cache
+
+`&lt;Link&gt;`나 `useRouter`로 page 사이를 이동할 때, [page](/docs/app/api-reference/file-conventions/page) segment는 더 이상 [Client Cache](/docs/app/glossary#client-cache)에서 재사용되지 않습니다. 하지만 브라우저의 뒤로/앞으로 navigation과 공유 layout에서는 여전히 재사용됩니다.
+
+page segment를 caching에 포함시키려면 [`staleTimes`](/docs/app/api-reference/config/next-config-js/staleTimes) config option을 사용할 수 있습니다:
+
+[[CODE 18]]
+
+[Layout](/docs/app/api-reference/file-conventions/layout)과 [loading state](/docs/app/api-reference/file-conventions/loading)는 여전히 cache되며 navigation 시 재사용됩니다.
+
+
+
+## `next/font`
+
+`@next/font` package가 제거되고 built-in [`next/font`](/docs/app/api-reference/components/font)로 대체되었습니다. import 이름을 안전하고 자동으로 바꿔 주는 [codemod가 제공됩니다](/docs/app/guides/upgrading/codemods#built-in-next-font).
+
+[[CODE 19]]
+
+## bundlePagesRouterDependencies
+
+`experimental.bundlePagesExternals`가 이제 stable이 되었고 이름이 `bundlePagesRouterDependencies`로 바뀌었습니다.
+
+[[CODE 20]]
+
+## serverExternalPackages
+
+`experimental.serverComponentsExternalPackages`가 이제 stable이 되었고 이름이 `serverExternalPackages`로 바뀌었습니다.
+
+[[CODE 21]]
+
+## Speed Insights
+
+Next.js 15에서 Speed Insights의 자동 instrumentation이 제거되었습니다.
+
+Speed Insights를 계속 사용하려면 [Vercel Speed Insights Quickstart](https://vercel.com/docs/speed-insights/quickstart) guide를 따르세요.
+
+## `NextRequest` Geolocation
+
+`NextRequest`의 `geo`와 `ip` property는 hosting provider가 제공하는 값이므로 제거되었습니다. 이 migration을 자동화하는 [codemod](/docs/app/guides/upgrading/codemods#150)가 제공됩니다.
+
+Vercel을 사용한다면 대신 [`@vercel/functions`](https://vercel.com/docs/functions/functions-api-reference/vercel-functions-package)의 `geolocation`과 `ipAddress` 함수를 사용할 수 있습니다:
+
+[[CODE 22]]
+
+[[CODE 23]]
+
+## Troubleshooting || 문제 해결
+
+### Installation fails after upgrading to React 19 || React 19로 upgrade한 뒤 설치가 실패하는 경우
+
+- [ ] 다른 package의 peer dependency가 React 19를 거부한다면, target Next.js 버전과 router가 지원하는 한 `react`, `react-dom`, 그 type, 그리고 (있다면) `react-is`를 이전 버전으로 되돌리세요.
+- [ ] upgrade가 `package.json`이나 `pnpm-workspace.yaml`에 추가한 React type override 또는 resolution을 원래대로 되돌리거나 제거하세요.
+- [ ] 설치 때문에 upgrade command가 중단되었다면, 고친 dependency를 유지하도록 `--skip-react-upgrade`와 함께 똑같은 target으로 다시 시도하세요. Next.js가 이미 target과 일치한다면 dependency를 설치하고 건너뛴 codemod를 개별적으로 실행하세요. 그런 다음 앱의 check를 실행하세요.
+
+### Installation fails after upgrading to ESLint 9 || ESLint 9로 upgrade한 뒤 설치가 실패하는 경우
+
+- [ ] 다른 package의 peer dependency가 ESLint 9를 거부한다면, `eslint`, `eslint-config-next`, (있다면) `@next/eslint-plugin-next`의 이전 호환 버전과 이전 lint configuration을 복원하세요.
+- [ ] 설치 때문에 upgrade command가 중단되었다면, 고친 dependency를 유지하도록 `--skip-eslint-upgrade`와 함께 똑같은 target으로 다시 시도하세요. Next.js가 이미 target과 일치한다면 dependency를 설치하고 건너뛴 codemod를 개별적으로 실행하세요. 필요한 lint migration을 직접 완료한 다음 앱의 lint check를 실행하세요.
+
+## Review migration checklist || migration checklist 검토하기
+
+앱에 해당하는 변경을 적용한 뒤, migration이 완료되었다고 판단하기 전에
+다음 action item들을 검토하세요:
+
+- [ ] React dependency와 type이 앱의 router에 대한 React 19 요구 사항을 충족합니다.
+- [ ] font import가 `@next/font` 대신 `next/font`를 사용합니다.
+- [ ] 기존 `bundlePagesExternals`와 `serverComponentsExternalPackages` 설정이 package configuration을 유지한 채 문서화된 stable 이름을 사용합니다.
+- [ ] `NextRequest`의 `geo`와 `ip`를 사용하는 곳이 실제 hosting provider에 맞는 적절한 source를 사용합니다.
+- [ ] 자동 Speed Insights instrumentation에 의존하던 앱이 여전히 필요하다면 명시적인 integration을 갖추고 있습니다.
+- [ ] 앱이 지원하는 check와 영향을 받는 runtime 동작이 모두 통과합니다. 꼭 통과해야 하는 check가 아직 실패한다면 migration은 완료되지 않은 것입니다.
+
+
+
+- [ ] 영향을 받는 helper와 caller를 포함해 Async Request API 접근이 migrate되었습니다. codemod error comment와 `UnsafeUnwrapped` cast를 완료된 수정으로 간주하지 말고 해결하세요.
+- [ ] route segment runtime 설정이 더 이상 `experimental-edge`를 사용하지 않습니다.
+
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

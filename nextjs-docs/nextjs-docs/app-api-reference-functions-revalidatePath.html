@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>revalidatePath (revalidatePath) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/functions/revalidatePath" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/functions/revalidatePath" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/revalidatePath.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-functions.html">Functions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">revalidatePath<span class="sub">revalidatePath</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>revalidatePath</code>를 사용하면 특정 path에 대한 <a href="app-getting-started-caching.html">cache된 데이터</a>를 on-demand로 invalidate할 수 있습니다.</p><div class="en-orig"><p><code>revalidatePath</code> allows you to invalidate <a href="app-getting-started-caching.html">cached data</a> on-demand for a specific path.</p></div>
+<h2 class="sec" id="usage"><a class="anchor" href="#usage">Usage<span class="ko">사용법</span></a></h2>
+<p><code>revalidatePath</code>는 Server Function과 Route Handler에서 호출할 수 있습니다.</p><div class="en-orig"><p><code>revalidatePath</code> can be called in Server Functions and Route Handlers.</p></div>
+<p><code>revalidatePath</code>는 server 환경에서만 동작하므로 Client Component나 Proxy에서는 호출할 수 없습니다.</p><div class="en-orig"><p><code>revalidatePath</code> cannot be called in Client Components or Proxy, as it only works in server environments.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><strong>Server Functions</strong>: (영향을 받는 path를 보고 있다면) UI를 즉시 업데이트합니다. 현재는 이전에 방문한 모든 page도 다시 navigate할 때 refresh되도록 만듭니다. 이 동작은 임시적이며, 향후 특정 path에만 적용되도록 업데이트될 예정입니다.</li>
+<li><strong>Route Handlers</strong>: path를 revalidation 대상으로 표시합니다. revalidation은 지정된 path를 다음에 방문할 때 수행됩니다. 즉, dynamic route segment로 <code>revalidatePath</code>를 호출해도 한 번에 많은 revalidation이 즉시 trigger되지 않습니다. invalidation은 해당 path를 다음에 방문할 때만 일어납니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Server Functions</strong>: Updates the UI immediately (if viewing the affected path). Currently, it also causes all previously visited pages to refresh when navigated to again. This behavior is temporary and will be updated in the future to apply only to the specific path.</li>
+<li><strong>Route Handlers</strong>: Marks the path for revalidation. The revalidation is done on the next visit to the specified path. This means calling <code>revalidatePath</code> with a dynamic route segment will not immediately trigger many revalidations at once. The invalidation only happens when the path is next visited.</li>
+</ul></div></div></div>
+<h2 class="sec" id="parameters"><a class="anchor" href="#parameters">Parameters</a></h2>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">revalidatePath(path: string, type?: &#x27;page&#x27; | &#x27;layout&#x27;): void;</code></pre></div></div>
+<ul>
+<li><code>path</code>: route 파일 구조를 나타내는 문자열입니다. <code>/product/123</code> 같은 literal path일 수도 있고, <code>/product/[slug]</code>처럼 dynamic segment가 있는 route pattern일 수도 있습니다. <code>/page</code>나 <code>/layout</code>을 덧붙이지 말고, 대신 <code>type</code> parameter를 사용하세요. 1024자를 넘으면 안 됩니다. 이 값은 대소문자를 구분합니다. <a href="app-api-reference-config-next-config-js-trailingSlash.html"><code>trailingSlash</code></a> config와 관계없이 trailing slash를 포함할 필요가 없습니다.</li>
+<li><code>type</code>: (선택) revalidate할 path의 type을 바꾸는 <code>&#x27;page&#x27;</code> 또는 <code>&#x27;layout&#x27;</code> 문자열입니다. <code>path</code>에 <code>/product/[slug]</code>처럼 dynamic segment가 들어 있으면 이 parameter가 필수입니다. <code>path</code>가 <code>/product/1</code> 같은 literal path라면 <code>type</code>을 생략하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><code>path</code>: Either a string that represents your route file structure. This can be a literal path like <code>/product/123</code>, or a route pattern with dynamic segments like <code>/product/[slug]</code>. Do not append <code>/page</code> or <code>/layout</code>, use the <code>type</code> parameter instead. Must not exceed 1024 characters. This value is case-sensitive. You do not need to include a trailing slash, regardless of your <a href="app-api-reference-config-next-config-js-trailingSlash.html"><code>trailingSlash</code></a> config.</li>
+<li><code>type</code>: (optional) <code>&#x27;page&#x27;</code> or <code>&#x27;layout&#x27;</code> string to change the type of path to revalidate. If <code>path</code> contains a dynamic segment, for example <code>/product/[slug]</code>, this parameter is required. If <code>path</code> is a literal path like <code>/product/1</code>, omit <code>type</code>.</li>
+</ul></div>
+<p><a href="#revalidating-a-specific-path">단일 page</a>를 refresh하려면 literal path를 사용하세요. <a href="#revalidating-a-page-path">일치하는 모든 page</a>를 refresh하려면 route pattern과 <code>type</code>을 함께 사용하세요.</p><div class="en-orig"><p>Use a literal path when you want to refresh a <a href="#revalidating-a-specific-path">single page</a>. Use a route pattern plus <code>type</code> to refresh <a href="#revalidating-a-page-path">all matching pages</a>.</p></div>
+<h2 class="sec" id="returns"><a class="anchor" href="#returns">Returns</a></h2>
+<p><code>revalidatePath</code>는 값을 반환하지 않습니다.</p><div class="en-orig"><p><code>revalidatePath</code> does not return a value.</p></div>
+<h2 class="sec" id="what-can-be-invalidated"><a class="anchor" href="#what-can-be-invalidated">What can be invalidated<span class="ko">무엇을 invalidate할 수 있나요</span></a></h2>
+<p>path parameter는 page, layout, route handler를 가리킬 수 있습니다:</p><div class="en-orig"><p>The path parameter can point to pages, layouts, or route handlers:</p></div>
+<ul>
+<li><strong>Pages</strong>: 해당 page를 invalidate합니다</li>
+<li><strong>Layouts</strong>: layout(해당 segment의 <code>layout.tsx</code>), 그 아래에 중첩된 모든 layout, 그리고 그 아래의 모든 page를 invalidate합니다</li>
+<li><strong>Route Handlers</strong>: route handler 안에서 접근한 cache된 데이터를 invalidate합니다. 예를 들어 <code>revalidatePath(&quot;/api/data&quot;)</code>는 다음 GET handler를 invalidate합니다:</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Pages</strong>: Invalidates the specific page</li>
+<li><strong>Layouts</strong>: Invalidates the layout (the <code>layout.tsx</code> at that segment), all nested layouts beneath it, and all pages beneath them</li>
+<li><strong>Route Handlers</strong>: Invalidates cached data accessed within route handlers. For example <code>revalidatePath(&quot;/api/data&quot;)</code> invalidates this GET handler:</li>
+</ul></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/api/data/route.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export async function GET() {
+  const data = await fetch(&#x27;https://api.vercel.app/blog&#x27;, {
+    cache: &#x27;force-cache&#x27;,
+  })
+
+  return Response.json(await data.json())
+}</code></pre></div></div>
+<h2 class="sec" id="using-revalidatepath-with-rewrites"><a class="anchor" href="#using-revalidatepath-with-rewrites">Using <code>revalidatePath</code> with rewrites<span class="ko">rewrite와 함께 <code>revalidatePath</code> 사용하기</span></a></h2>
+<p><a href="app-api-reference-config-next-config-js-rewrites.html">rewrite</a>를 사용할 때는 브라우저 주소창에 나타나는 source path가 아니라 <strong>destination</strong> path(실제 route 파일 위치)를 전달해야 합니다.</p><div class="en-orig"><p>When using <a href="app-api-reference-config-next-config-js-rewrites.html">rewrites</a>, you must pass the <strong>destination</strong> path (the actual route file location), not the source path that appears in the browser's address bar.</p></div>
+<p>예를 들어 <code>/blog</code>에서 <code>/news</code>로 rewrite한다면:</p><div class="en-orig"><p>For example, if you have a rewrite from <code>/blog</code> to <code>/news</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  async rewrites() {
+    return [
+      {
+        source: &#x27;/blog&#x27;,
+        destination: &#x27;/news&#x27;,
+      },
+    ]
+  },
+}</code></pre></div></div>
+<p>이 page를 revalidate하려면 destination path를 사용하세요:</p><div class="en-orig"><p>To revalidate this page, use the destination path:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">// Correct: use the destination path
+revalidatePath(&#x27;/news&#x27;)
+
+// Incorrect: the source path won&#x27;t match the cache entry
+revalidatePath(&#x27;/blog&#x27;)</code></pre></div></div>
+<p>이는 <code>revalidatePath</code>가 사용자에게 보이는 URL이 아니라 route 파일 구조를 기준으로 동작하기 때문입니다. cache entry는 어떤 route 파일이 그것을 render하는지에 따라 tag가 붙습니다.</p><div class="en-orig"><p>This is because <code>revalidatePath</code> operates on the route file structure, not the URL visible to users. Cache entries are tagged based on which route file renders them.</p></div>
+<h2 class="sec" id="relationship-with-revalidatetag-and-updatetag"><a class="anchor" href="#relationship-with-revalidatetag-and-updatetag">Relationship with <code>revalidateTag</code> and <code>updateTag</code><span class="ko"><code>revalidateTag</code>, <code>updateTag</code>와의 관계</span></a></h2>
+<p><code>revalidatePath</code>, <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>, <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>는 서로 다른 목적을 가집니다:</p><div class="en-orig"><p><code>revalidatePath</code>, <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a> and <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a> serve different purposes:</p></div>
+<ul>
+<li><strong><code>revalidatePath</code></strong>: 특정 page 또는 layout path를 invalidate합니다</li>
+<li><strong><code>revalidateTag</code></strong>: 특정 tag가 붙은 데이터를 <strong>stale</strong> 상태로 표시합니다. 그 tag를 사용하는 모든 page에 적용됩니다</li>
+<li><strong><code>updateTag</code></strong>: 특정 tag가 붙은 데이터를 만료시킵니다. 그 tag를 사용하는 모든 page에 적용됩니다</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>revalidatePath</code></strong>: Invalidates a specific page or layout path</li>
+<li><strong><code>revalidateTag</code></strong>: Marks data with specific tags as <strong>stale</strong>. Applies across all pages that use those tags</li>
+<li><strong><code>updateTag</code></strong>: Expires data with specific tags. Applies across all pages that use those tags</li>
+</ul></div>
+<p><code>revalidatePath</code>를 호출하면 지정된 path만 다음 방문 시 새 데이터를 받습니다. 같은 데이터 tag를 사용하는 다른 page는 해당 tag도 revalidate될 때까지 계속 cache된 데이터를 제공합니다:</p><div class="en-orig"><p>When you call <code>revalidatePath</code>, only the specified path gets fresh data on the next visit. Other pages that use the same data tags will continue to serve cached data until those specific tags are also revalidated:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">// Page A: /blog
+const posts = await fetch(&#x27;https://api.vercel.app/blog&#x27;, {
+  next: { tags: [&#x27;posts&#x27;] },
+})
+
+// Page B: /dashboard
+const recentPosts = await fetch(&#x27;https://api.vercel.app/blog?limit=5&#x27;, {
+  next: { tags: [&#x27;posts&#x27;] },
+})</code></pre></div></div>
+<p><code>revalidatePath(&#x27;/blog&#x27;)</code>를 호출한 뒤:</p><div class="en-orig"><p>After calling <code>revalidatePath(&#x27;/blog&#x27;)</code>:</p></div>
+<ul>
+<li><strong>Page A (/blog)</strong>: 새 데이터를 보여 줍니다(page가 다시 render됨)</li>
+<li><strong>Page B (/dashboard)</strong>: 여전히 stale 데이터를 보여 줍니다(cache tag 'posts'가 invalidate되지 않음)</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Page A (/blog)</strong>: Shows fresh data (page re-rendered)</li>
+<li><strong>Page B (/dashboard)</strong>: Still shows stale data (cache tag 'posts' not invalidated)</li>
+</ul></div>
+<p><a href="app-api-reference-functions-updateTag.html#differences-from-revalidatetag"><code>revalidateTag</code>와 <code>updateTag</code></a>의 차이에 대해 알아보세요.</p><div class="en-orig"><p>Learn about the difference between <a href="app-api-reference-functions-updateTag.html#differences-from-revalidatetag"><code>revalidateTag</code> and <code>updateTag</code></a>.</p></div>
+<h3 class="sec" id="building-revalidation-utilities"><a class="anchor" href="#building-revalidation-utilities">Building revalidation utilities<span class="ko">revalidation utility 만들기</span></a></h3>
+<p><code>revalidatePath</code>와 <code>updateTag</code>는 서로 보완하는 primitive로, 애플리케이션 전반의 데이터 일관성을 확실히 보장하기 위해 utility 함수 안에서 함께 사용하는 경우가 많습니다:</p><div class="en-orig"><p><code>revalidatePath</code> and <code>updateTag</code> are complementary primitives that are often used together in utility functions to ensure comprehensive data consistency across your application:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">&#x27;use server&#x27;
+
+import { revalidatePath, updateTag } from &#x27;next/cache&#x27;
+
+export async function updatePost() {
+  await updatePostInDatabase()
+
+  revalidatePath(&#x27;/blog&#x27;) // Refresh the blog page
+  updateTag(&#x27;posts&#x27;) // Refresh all pages using &#x27;posts&#x27; tag
+}</code></pre></div></div>
+<p>이 pattern은 특정 page와 같은 데이터를 사용하는 다른 page 모두가 일관성을 유지하도록 보장합니다.</p><div class="en-orig"><p>This pattern ensures that both the specific page and any other pages using the same data remain consistent.</p></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<h3 class="sec" id="revalidating-a-specific-path"><a class="anchor" href="#revalidating-a-specific-path">Revalidating a specific path<span class="ko">특정 path revalidate하기</span></a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { revalidatePath } from &#x27;next/cache&#x27;
+revalidatePath(&#x27;/blog/post-1&#x27;)</code></pre></div></div>
+<p>이렇게 하면 특정 path 하나를 invalidate해 다음 page 방문 시 revalidate되도록 합니다.</p><div class="en-orig"><p>This will invalidate one specific path for revalidation on the next page visit.</p></div>
+<h3 class="sec" id="revalidating-a-page-path"><a class="anchor" href="#revalidating-a-page-path">Revalidating a Page path<span class="ko">Page path revalidate하기</span></a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { revalidatePath } from &#x27;next/cache&#x27;
+revalidatePath(&#x27;/blog/[slug]&#x27;, &#x27;page&#x27;)
+// or with route groups
+revalidatePath(&#x27;/(main)/blog/[slug]&#x27;, &#x27;page&#x27;)</code></pre></div></div>
+<p>이렇게 하면 제공된 <code>page</code> 파일과 일치하는 모든 path를 invalidate해 다음 page 방문 시 revalidate되도록 합니다. 특정 page 아래의 page는 invalidate하지 <em>않습니다</em>. 예를 들어 <code>/blog/[slug]</code>는 <code>/blog/[slug]/[author]</code>를 invalidate하지 않습니다.</p><div class="en-orig"><p>This will invalidate any path that matches the provided <code>page</code> file for revalidation on the next page visit. This will <em>not</em> invalidate pages beneath the specific page. For example, <code>/blog/[slug]</code> won't invalidate <code>/blog/[slug]/[author]</code>.</p></div>
+<h3 class="sec" id="revalidating-a-layout-path"><a class="anchor" href="#revalidating-a-layout-path">Revalidating a Layout path<span class="ko">Layout path revalidate하기</span></a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { revalidatePath } from &#x27;next/cache&#x27;
+revalidatePath(&#x27;/blog/[slug]&#x27;, &#x27;layout&#x27;)
+// or with route groups
+revalidatePath(&#x27;/(main)/post/[slug]&#x27;, &#x27;layout&#x27;)</code></pre></div></div>
+<p>이렇게 하면 제공된 <code>layout</code> 파일과 일치하는 모든 path를 invalidate해 다음 page 방문 시 revalidate되도록 합니다. 같은 layout을 사용하는 아래의 page들도 invalidate되어 다음 방문 시 revalidate됩니다. 예를 들어 위의 경우 <code>/blog/[slug]/[another]</code>도 invalidate되어 다음 방문 시 revalidate됩니다.</p><div class="en-orig"><p>This will invalidate any path that matches the provided <code>layout</code> file for revalidation on the next page visit. This will cause pages beneath with the same layout to be invalidated and revalidated on the next visit. For example, in the above case, <code>/blog/[slug]/[another]</code> would also be invalidated and revalidated on the next visit.</p></div>
+<h3 class="sec" id="revalidating-all-data"><a class="anchor" href="#revalidating-all-data">Revalidating all data<span class="ko">모든 데이터 revalidate하기</span></a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { revalidatePath } from &#x27;next/cache&#x27;
+
+revalidatePath(&#x27;/&#x27;, &#x27;layout&#x27;)</code></pre></div></div>
+<p>이렇게 하면 <a href="app-glossary.html#client-cache">Client Cache</a>를 비우고, 모든 cache된 데이터를 invalidate해 다음 page 방문 시 revalidate되도록 합니다.</p><div class="en-orig"><p>This will purge the <a href="app-glossary.html#client-cache">Client Cache</a>, and invalidate all cached data for revalidation on the next page visit.</p></div>
+<h3 class="sec" id="server-function"><a class="anchor" href="#server-function">Server Function</a></h3>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/actions.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use server&#x27;
+
+import { revalidatePath } from &#x27;next/cache&#x27;
+
+export default async function submit() {
+  await submitForm()
+  revalidatePath(&#x27;/&#x27;)
+}</code></pre></div></div>
+<h3 class="sec" id="route-handler"><a class="anchor" href="#route-handler">Route Handler</a></h3>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/api/revalidate/route.ts" data-js="app/api/revalidate/route.js">app/api/revalidate/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { revalidatePath } from &#x27;next/cache&#x27;
+import type { NextRequest } from &#x27;next/server&#x27;
+
+export async function GET(request: NextRequest) {
+  const path = request.nextUrl.searchParams.get(&#x27;path&#x27;)
+
+  if (path) {
+    revalidatePath(path)
+    return Response.json({ revalidated: true, now: Date.now() })
+  }
+
+  return Response.json({
+    revalidated: false,
+    now: Date.now(),
+    message: &#x27;Missing path to revalidate&#x27;,
+  })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { revalidatePath } from &#x27;next/cache&#x27;
+
+export async function GET(request) {
+  const path = request.nextUrl.searchParams.get(&#x27;path&#x27;)
+
+  if (path) {
+    revalidatePath(path)
+    return Response.json({ revalidated: true, now: Date.now() })
+  }
+
+  return Response.json({
+    revalidated: false,
+    now: Date.now(),
+    message: &#x27;Missing path to revalidate&#x27;,
+  })
+}</code></pre></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><div class="rgrid"><a class="rcard" href="app-guides-server-actions.html"><div class="rt">Server Actions and Mutations</div><div class="rk">Server Action과 Mutation</div><div class="rd">single-roundtrip response 모델, 순차 dispatch, 보안, caching 통합을 포함해 Next.js에서 Server Action이 동작하는 방식을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/revalidatePath.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/functions/revalidatePath" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-functions-refresh.html" class="prev"><div class="dir">← 이전</div><div class="ttl">refresh</div><div class="ttl-ko">refresh</div></a>
+      <a href="app-api-reference-functions-revalidateTag.html" class="next"><div class="dir">다음 →</div><div class="ttl">revalidateTag</div><div class="ttl-ko">revalidateTag</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/functions/revalidatePath" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#usage">Usage</a></li><li class="l2"><a href="#parameters">Parameters</a></li><li class="l2"><a href="#returns">Returns</a></li><li class="l2"><a href="#what-can-be-invalidated">What can be invalidated</a></li><li class="l2"><a href="#using-revalidatepath-with-rewrites">Using <code>revalidatePath</code> with rewrites</a></li><li class="l2"><a href="#relationship-with-revalidatetag-and-updatetag">Relationship with <code>revalidateTag</code> and <code>updateTag</code></a></li><li class="l3"><a href="#building-revalidation-utilities">Building revalidation utilities</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#revalidating-a-specific-path">Revalidating a specific path</a></li><li class="l3"><a href="#revalidating-a-page-path">Revalidating a Page path</a></li><li class="l3"><a href="#revalidating-a-layout-path">Revalidating a Layout path</a></li><li class="l3"><a href="#revalidating-all-data">Revalidating all data</a></li><li class="l3"><a href="#server-function">Server Function</a></li><li class="l3"><a href="#route-handler">Route Handler</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`revalidatePath`를 사용하면 특정 path에 대한 [cache된 데이터](/docs/app/getting-started/caching)를 on-demand로 invalidate할 수 있습니다.
+
+## Usage || 사용법
+
+`revalidatePath`는 Server Function과 Route Handler에서 호출할 수 있습니다.
+
+`revalidatePath`는 server 환경에서만 동작하므로 Client Component나 Proxy에서는 호출할 수 없습니다.
+
+&gt; **Good to know**:
+&gt;
+&gt; - **Server Functions**: (영향을 받는 path를 보고 있다면) UI를 즉시 업데이트합니다. 현재는 이전에 방문한 모든 page도 다시 navigate할 때 refresh되도록 만듭니다. 이 동작은 임시적이며, 향후 특정 path에만 적용되도록 업데이트될 예정입니다.
+&gt; - **Route Handlers**: path를 revalidation 대상으로 표시합니다. revalidation은 지정된 path를 다음에 방문할 때 수행됩니다. 즉, dynamic route segment로 `revalidatePath`를 호출해도 한 번에 많은 revalidation이 즉시 trigger되지 않습니다. invalidation은 해당 path를 다음에 방문할 때만 일어납니다.
+
+## Parameters
+
+[[CODE 1]]
+
+- `path`: route 파일 구조를 나타내는 문자열입니다. `/product/123` 같은 literal path일 수도 있고, `/product/[slug]`처럼 dynamic segment가 있는 route pattern일 수도 있습니다. `/page`나 `/layout`을 덧붙이지 말고, 대신 `type` parameter를 사용하세요. 1024자를 넘으면 안 됩니다. 이 값은 대소문자를 구분합니다. [`trailingSlash`](/docs/app/api-reference/config/next-config-js/trailingSlash) config와 관계없이 trailing slash를 포함할 필요가 없습니다.
+- `type`: (선택) revalidate할 path의 type을 바꾸는 `&#x27;page&#x27;` 또는 `&#x27;layout&#x27;` 문자열입니다. `path`에 `/product/[slug]`처럼 dynamic segment가 들어 있으면 이 parameter가 필수입니다. `path`가 `/product/1` 같은 literal path라면 `type`을 생략하세요.
+
+[단일 page](#revalidating-a-specific-path)를 refresh하려면 literal path를 사용하세요. [일치하는 모든 page](#revalidating-a-page-path)를 refresh하려면 route pattern과 `type`을 함께 사용하세요.
+
+## Returns
+
+`revalidatePath`는 값을 반환하지 않습니다.
+
+## What can be invalidated || 무엇을 invalidate할 수 있나요
+
+path parameter는 page, layout, route handler를 가리킬 수 있습니다:
+
+- **Pages**: 해당 page를 invalidate합니다
+- **Layouts**: layout(해당 segment의 `layout.tsx`), 그 아래에 중첩된 모든 layout, 그리고 그 아래의 모든 page를 invalidate합니다
+- **Route Handlers**: route handler 안에서 접근한 cache된 데이터를 invalidate합니다. 예를 들어 `revalidatePath(&quot;/api/data&quot;)`는 다음 GET handler를 invalidate합니다:
+
+[[CODE 2]]
+
+## Using `revalidatePath` with rewrites || rewrite와 함께 `revalidatePath` 사용하기
+
+[rewrite](/docs/app/api-reference/config/next-config-js/rewrites)를 사용할 때는 브라우저 주소창에 나타나는 source path가 아니라 **destination** path(실제 route 파일 위치)를 전달해야 합니다.
+
+예를 들어 `/blog`에서 `/news`로 rewrite한다면:
+
+[[CODE 3]]
+
+이 page를 revalidate하려면 destination path를 사용하세요:
+
+[[CODE 4]]
+
+이는 `revalidatePath`가 사용자에게 보이는 URL이 아니라 route 파일 구조를 기준으로 동작하기 때문입니다. cache entry는 어떤 route 파일이 그것을 render하는지에 따라 tag가 붙습니다.
+
+## Relationship with `revalidateTag` and `updateTag` || `revalidateTag`, `updateTag`와의 관계
+
+`revalidatePath`, [`revalidateTag`](/docs/app/api-reference/functions/revalidateTag), [`updateTag`](/docs/app/api-reference/functions/updateTag)는 서로 다른 목적을 가집니다:
+
+- **`revalidatePath`**: 특정 page 또는 layout path를 invalidate합니다
+- **`revalidateTag`**: 특정 tag가 붙은 데이터를 **stale** 상태로 표시합니다. 그 tag를 사용하는 모든 page에 적용됩니다
+- **`updateTag`**: 특정 tag가 붙은 데이터를 만료시킵니다. 그 tag를 사용하는 모든 page에 적용됩니다
+
+`revalidatePath`를 호출하면 지정된 path만 다음 방문 시 새 데이터를 받습니다. 같은 데이터 tag를 사용하는 다른 page는 해당 tag도 revalidate될 때까지 계속 cache된 데이터를 제공합니다:
+
+[[CODE 5]]
+
+`revalidatePath(&#x27;/blog&#x27;)`를 호출한 뒤:
+
+- **Page A (/blog)**: 새 데이터를 보여 줍니다(page가 다시 render됨)
+- **Page B (/dashboard)**: 여전히 stale 데이터를 보여 줍니다(cache tag &#x27;posts&#x27;가 invalidate되지 않음)
+
+[`revalidateTag`와 `updateTag`](/docs/app/api-reference/functions/updateTag#differences-from-revalidatetag)의 차이에 대해 알아보세요.
+
+### Building revalidation utilities || revalidation utility 만들기
+
+`revalidatePath`와 `updateTag`는 서로 보완하는 primitive로, 애플리케이션 전반의 데이터 일관성을 확실히 보장하기 위해 utility 함수 안에서 함께 사용하는 경우가 많습니다:
+
+[[CODE 6]]
+
+이 pattern은 특정 page와 같은 데이터를 사용하는 다른 page 모두가 일관성을 유지하도록 보장합니다.
+
+## Examples || 예시
+
+### Revalidating a specific path || 특정 path revalidate하기
+
+[[CODE 7]]
+
+이렇게 하면 특정 path 하나를 invalidate해 다음 page 방문 시 revalidate되도록 합니다.
+
+### Revalidating a Page path || Page path revalidate하기
+
+[[CODE 8]]
+
+이렇게 하면 제공된 `page` 파일과 일치하는 모든 path를 invalidate해 다음 page 방문 시 revalidate되도록 합니다. 특정 page 아래의 page는 invalidate하지 _않습니다_. 예를 들어 `/blog/[slug]`는 `/blog/[slug]/[author]`를 invalidate하지 않습니다.
+
+### Revalidating a Layout path || Layout path revalidate하기
+
+[[CODE 9]]
+
+이렇게 하면 제공된 `layout` 파일과 일치하는 모든 path를 invalidate해 다음 page 방문 시 revalidate되도록 합니다. 같은 layout을 사용하는 아래의 page들도 invalidate되어 다음 방문 시 revalidate됩니다. 예를 들어 위의 경우 `/blog/[slug]/[another]`도 invalidate되어 다음 방문 시 revalidate됩니다.
+
+### Revalidating all data || 모든 데이터 revalidate하기
+
+[[CODE 10]]
+
+이렇게 하면 [Client Cache](/docs/app/glossary#client-cache)를 비우고, 모든 cache된 데이터를 invalidate해 다음 page 방문 시 revalidate되도록 합니다.
+
+### Server Function
+
+[[CODE 11]]
+
+### Route Handler
+
+[[CODE 12]]
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

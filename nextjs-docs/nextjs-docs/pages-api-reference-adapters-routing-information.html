@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Routing Information (Routing 정보) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/api-reference/adapters/routing-information" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/api-reference/adapters/routing-information" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/07-adapters/10-routing-information.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference-adapters.html">Adapters</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Routing Information<span class="sub">Routing 정보</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>onBuildComplete</code>의 <code>routing</code> object는 deployment에 바로 쓸 수 있도록 처리된 pattern과 함께 완전한 routing 정보를 제공합니다:</p><div class="en-orig"><p>The <code>routing</code> object in <code>onBuildComplete</code> provides complete routing information with processed patterns ready for deployment:</p></div>
+<h2 class="sec" id="routingbeforemiddleware"><a class="anchor" href="#routingbeforemiddleware"><code>routing.beforeMiddleware</code></a></h2>
+<p>middleware 실행 전에 적용되는 route입니다. 생성된 header와 redirect 동작이 여기에 포함됩니다.</p><div class="en-orig"><p>Routes applied before middleware execution. These include generated header and redirect behavior.</p></div>
+<h2 class="sec" id="routingmiddlewarematchers"><a class="anchor" href="#routingmiddlewarematchers"><code>routing.middlewareMatchers</code></a></h2>
+<p>이 build에서 출력된 middleware matcher 정의입니다. 주어진 request에 대해 middleware를 호출할지 결정할 때 사용하세요.</p><div class="en-orig"><p>Middleware matcher definitions emitted for this build. Use these to decide whether middleware should be invoked for a given request.</p></div>
+<h2 class="sec" id="routingbeforefiles"><a class="anchor" href="#routingbeforefiles"><code>routing.beforeFiles</code></a></h2>
+<p>filesystem route matching 전에 확인하는 rewrite route입니다.</p><div class="en-orig"><p>Rewrite routes checked before filesystem route matching.</p></div>
+<h2 class="sec" id="routingafterfiles"><a class="anchor" href="#routingafterfiles"><code>routing.afterFiles</code></a></h2>
+<p>filesystem route matching 후에 확인하는 rewrite route입니다.</p><div class="en-orig"><p>Rewrite routes checked after filesystem route matching.</p></div>
+<h2 class="sec" id="routingdynamicroutes"><a class="anchor" href="#routingdynamicroutes"><code>routing.dynamicRoutes</code></a></h2>
+<p><code>[slug]</code> 같은 route segment와 catch-all route에서 생성된 dynamic matcher입니다.</p><div class="en-orig"><p>Dynamic matchers generated from route segments such as <code>[slug]</code> and catch-all routes.</p></div>
+<h2 class="sec" id="routingonmatch"><a class="anchor" href="#routingonmatch"><code>routing.onMatch</code></a></h2>
+<p>hash가 붙은 static asset에 대한 immutable cache header처럼, match에 성공한 뒤 적용되는 route입니다.</p><div class="en-orig"><p>Routes that apply after a successful match, such as immutable cache headers for hashed static assets.</p></div>
+<h2 class="sec" id="routingfallback"><a class="anchor" href="#routingfallback"><code>routing.fallback</code></a></h2>
+<p>앞선 phase에서 match가 나오지 않았을 때 확인하는 최종 rewrite route입니다.</p><div class="en-orig"><p>Final rewrite routes checked when earlier phases did not produce a match.</p></div>
+<h2 class="sec" id="common-route-fields"><a class="anchor" href="#common-route-fields">Common Route Fields<span class="ko">공통 Route Field</span></a></h2>
+<p>각 route entry에는 다음이 포함될 수 있습니다:</p><div class="en-orig"><p>Each route entry can include:</p></div>
+<ul>
+<li><code>source</code>: 원래 route pattern (생성된 내부 rule에서는 선택 사항)</li>
+<li><code>sourceRegex</code>: request matching을 위해 compile된 regex</li>
+<li><code>destination</code>: 내부 destination 또는 redirect destination</li>
+<li><code>headers</code>: 적용할 header</li>
+<li><code>has</code>: 긍정(positive) matching 조건</li>
+<li><code>missing</code>: 부정(negative) matching 조건</li>
+<li><code>status</code>: redirect status code</li>
+<li><code>priority</code>: 내부 route 우선순위 flag</li>
+</ul><div class="en-orig"><ul>
+<li><code>source</code>: Original route pattern (optional for generated internal rules)</li>
+<li><code>sourceRegex</code>: Compiled regex for matching requests</li>
+<li><code>destination</code>: Internal destination or redirect destination</li>
+<li><code>headers</code>: Headers to apply</li>
+<li><code>has</code>: Positive matching conditions</li>
+<li><code>missing</code>: Negative matching conditions</li>
+<li><code>status</code>: Redirect status code</li>
+<li><code>priority</code>: Internal route priority flag</li>
+</ul></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/07-adapters/10-routing-information.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/api-reference/adapters/routing-information" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-api-reference-adapters-output-types.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Output Types</div><div class="ttl-ko">Output 타입</div></a>
+      <a href="pages-api-reference-adapters-use-cases.html" class="next"><div class="dir">다음 →</div><div class="ttl">Use Cases</div><div class="ttl-ko">사용 사례</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/api-reference/adapters/routing-information" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#routingbeforemiddleware"><code>routing.beforeMiddleware</code></a></li><li class="l2"><a href="#routingmiddlewarematchers"><code>routing.middlewareMatchers</code></a></li><li class="l2"><a href="#routingbeforefiles"><code>routing.beforeFiles</code></a></li><li class="l2"><a href="#routingafterfiles"><code>routing.afterFiles</code></a></li><li class="l2"><a href="#routingdynamicroutes"><code>routing.dynamicRoutes</code></a></li><li class="l2"><a href="#routingonmatch"><code>routing.onMatch</code></a></li><li class="l2"><a href="#routingfallback"><code>routing.fallback</code></a></li><li class="l2"><a href="#common-route-fields">Common Route Fields</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`onBuildComplete`의 `routing` object는 deployment에 바로 쓸 수 있도록 처리된 pattern과 함께 완전한 routing 정보를 제공합니다:
+
+## `routing.beforeMiddleware`
+
+middleware 실행 전에 적용되는 route입니다. 생성된 header와 redirect 동작이 여기에 포함됩니다.
+
+## `routing.middlewareMatchers`
+
+이 build에서 출력된 middleware matcher 정의입니다. 주어진 request에 대해 middleware를 호출할지 결정할 때 사용하세요.
+
+## `routing.beforeFiles`
+
+filesystem route matching 전에 확인하는 rewrite route입니다.
+
+## `routing.afterFiles`
+
+filesystem route matching 후에 확인하는 rewrite route입니다.
+
+## `routing.dynamicRoutes`
+
+`[slug]` 같은 route segment와 catch-all route에서 생성된 dynamic matcher입니다.
+
+## `routing.onMatch`
+
+hash가 붙은 static asset에 대한 immutable cache header처럼, match에 성공한 뒤 적용되는 route입니다.
+
+## `routing.fallback`
+
+앞선 phase에서 match가 나오지 않았을 때 확인하는 최종 rewrite route입니다.
+
+## Common Route Fields || 공통 Route Field
+
+각 route entry에는 다음이 포함될 수 있습니다:
+
+- `source`: 원래 route pattern (생성된 내부 rule에서는 선택 사항)
+- `sourceRegex`: request matching을 위해 compile된 regex
+- `destination`: 내부 destination 또는 redirect destination
+- `headers`: 적용할 header
+- `has`: 긍정(positive) matching 조건
+- `missing`: 부정(negative) matching 조건
+- `status`: redirect status code
+- `priority`: 내부 route 우선순위 flag
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

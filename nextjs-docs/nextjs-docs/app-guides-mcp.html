@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Connecting coding agents to the Next.js MCP server (coding agent를 Next.js MCP server에 연결하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/mcp" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/mcp" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/mcp.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Connecting coding agents to the Next.js MCP server<span class="sub">coding agent를 Next.js MCP server에 연결하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol (MCP)</a>은 AI agent와 coding assistant가 하나의 공유 interface를 통해 애플리케이션과 상호작용할 수 있게 해 주는 open standard입니다.</p><div class="en-orig"><p>The <a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">Model Context Protocol (MCP)</a> is an open standard that lets AI agents and coding assistants interact with your applications through one shared interface.</p></div>
+<p>Next.js 16 이상에서는 development server가 <code>/_next/mcp</code>에 MCP endpoint를 노출합니다. 이 endpoint는 coding agent에게 실행 중인 앱 관점의 error, route, log, compilation issue 정보를 제공합니다. agent client를 여기에 연결하려면 <a href="https://www.npmjs.com/package/next-devtools-mcp" target="_blank" rel="noopener"><code>next-devtools-mcp</code></a> package를 설치하세요.</p><div class="en-orig"><p>In Next.js 16 and later, the development server exposes an MCP endpoint at <code>/_next/mcp</code>. It gives coding agents the running app's view of errors, routes, logs, and compilation issues. To connect your agent client to it, install the <a href="https://www.npmjs.com/package/next-devtools-mcp" target="_blank" rel="noopener"><code>next-devtools-mcp</code></a> package.</p></div>
+<p><a href="app-guides-ai-agents.html#next-dev-loop"><code>next-dev-loop</code></a> 같은 skill은 <code>/_next/mcp</code>를 직접 호출하므로 이 setup 없이도 동작합니다.</p><div class="en-orig"><p>Skills such as <a href="app-guides-ai-agents.html#next-dev-loop"><code>next-dev-loop</code></a> call <code>/_next/mcp</code> directly, so they work without this setup.</p></div>
+<h2 class="sec" id="getting-started"><a class="anchor" href="#getting-started">Getting started<span class="ko">시작하기</span></a></h2>
+<p><a href="https://www.npmjs.com/package/add-mcp" target="_blank" rel="noopener"><code>add-mcp</code></a>로 내 컴퓨터의 coding agent에 <code>next-devtools-mcp</code>를 설치하세요:</p><div class="en-orig"><p>Install <code>next-devtools-mcp</code> for the coding agents on your machine with <a href="https://www.npmjs.com/package/add-mcp" target="_blank" rel="noopener"><code>add-mcp</code></a>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx add-mcp next-devtools-mcp@latest</code></pre></div></div>
+<p>또는 프로젝트 root의 <code>.mcp.json</code> 파일에 추가하세요:</p><div class="en-orig"><p>Or add it to the <code>.mcp.json</code> file at the root of your project:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">.mcp.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;mcpServers&quot;: {
+    &quot;next-devtools&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [&quot;-y&quot;, &quot;next-devtools-mcp@latest&quot;]
+    }
+  }
+}</code></pre></div></div>
+<p>development server를 시작하면 <code>next-devtools-mcp</code>가 실행 중인 Next.js instance를 찾아 연결합니다. client별 setup은 <a href="https://github.com/vercel/next-devtools-mcp" target="_blank" rel="noopener">next-devtools-mcp repository</a>를 참고하세요.</p><div class="en-orig"><p>When you start your development server, <code>next-devtools-mcp</code> discovers and connects to the running Next.js instance. For client-specific setup, see the <a href="https://github.com/vercel/next-devtools-mcp" target="_blank" rel="noopener">next-devtools-mcp repository</a>.</p></div>
+<h2 class="sec" id="capabilities"><a class="anchor" href="#capabilities">Capabilities<span class="ko">기능</span></a></h2>
+<p><code>next-devtools-mcp</code>는 agent client를 Next.js development server에 연결합니다. agent에게 다음 tool을 제공합니다:</p><div class="en-orig"><p><code>next-devtools-mcp</code> connects your agent client to the Next.js development server. It gives agents these tools:</p></div>
+<ul>
+<li><strong><code>nextjs_index</code></strong>: 실행 중인 Next.js dev server를 찾고, 각 server가 노출하는 runtime tool 목록을 보여 줍니다.</li>
+<li><strong><code>nextjs_call</code></strong>: 찾아낸 dev server의 runtime tool을 호출합니다.</li>
+<li><strong><code>nextjs_docs</code></strong>: agent가 <code>node_modules/next/dist/docs/</code>에 있는, 설치된 Next.js와 버전이 일치하는 번들 문서를 참고하도록 안내합니다.</li>
+<li><strong><code>browser_eval</code></strong>: 실제 브라우저에서 페이지를 검증할 수 있도록 agent에게 <a href="https://github.com/vercel-labs/agent-browser" target="_blank" rel="noopener"><code>agent-browser</code></a> CLI를 안내합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>nextjs_index</code></strong>: Discovers running Next.js dev servers and lists the runtime tools each one exposes.</li>
+<li><strong><code>nextjs_call</code></strong>: Calls a runtime tool on a discovered dev server.</li>
+<li><strong><code>nextjs_docs</code></strong>: Points the agent at the version-matched docs bundled with your installed Next.js in <code>node_modules/next/dist/docs/</code>.</li>
+<li><strong><code>browser_eval</code></strong>: Points the agent at the <a href="https://github.com/vercel-labs/agent-browser" target="_blank" rel="noopener"><code>agent-browser</code></a> CLI for verifying pages in a real browser.</li>
+</ul></div>
+<p><code>nextjs_docs</code>와 <code>browser_eval</code>은 직접 작업을 수행하지 않습니다. 문서가 어디에 있는지, 또는 CLI를 어떻게 실행하는지 agent에게 알려 주고, agent가 그것을 직접 사용합니다.</p><div class="en-orig"><p><code>nextjs_docs</code> and <code>browser_eval</code> don't do the work themselves. They tell the agent where the docs are or how to run the CLI, and the agent uses them directly.</p></div>
+<h3 class="sec" id="runtime-tools"><a class="anchor" href="#runtime-tools">Runtime tools<span class="ko">Runtime tool</span></a></h3>
+<p><code>nextjs_call</code>을 통해 agent는 Next.js development server가 <code>/_next/mcp</code>에 노출하는 tool을 사용할 수 있습니다:</p><div class="en-orig"><p>Through <code>nextjs_call</code>, agents can use the tools the Next.js development server exposes at <code>/_next/mcp</code>:</p></div>
+<ul>
+<li><strong><code>get_errors</code></strong>: <code>next.config</code> 검증 같은 Next.js global error, browser runtime error, source-mapped stack trace가 포함된 build error 등 현재 error 상태를 가져옵니다.</li>
+<li><strong><code>get_logs</code></strong>: 브라우저 console log와 server 출력이 담긴 development log 파일의 경로를 가져옵니다.</li>
+<li><strong><code>get_page_metadata</code></strong>: 현재 page render에 무엇이 기여하는지에 대한 runtime metadata를 가져옵니다. 페이지가 브라우저에 열려 있어야 합니다.</li>
+<li><strong><code>get_project_metadata</code></strong>: 프로젝트 경로와 dev server URL을 가져옵니다.</li>
+<li><strong><code>get_routes</code></strong>: filesystem을 scan해서 entry point가 될 모든 route를 가져옵니다. route는 router 종류(<code>appRouter</code>, <code>pagesRouter</code>)별로 묶여 반환됩니다. dynamic segment는 <code>[param]</code> 또는 <code>[...slug]</code> 패턴으로 표시됩니다.</li>
+<li><strong><code>get_server_action_by_id</code></strong>: ID로 Server Action을 조회해 source 파일과 export 이름을 찾습니다.</li>
+<li><strong><code>get_compilation_issues</code></strong>: 모든 route에 대한 module graph를 build하고, resolve error, 누락된 module, transform error 같은 compilation issue를 반환합니다. browser session이 필요 없습니다. Turbopack 전용입니다.</li>
+<li><strong><code>compile_route</code></strong>: HTTP request를 보내지 않고 특정 route를 compile합니다. <code>routeSpecifier</code>(예: <code>get_routes</code>가 반환하는 <code>/blog/[slug]</code>) 또는 <code>path</code>(예: <code>/blog/hello-world</code>)를 받으며, <code>path</code>는 일치하는 route로 resolve됩니다. 해당 route의 compilation issue를 반환합니다. Turbopack 전용입니다.</li>
+<li><strong><code>get_request_insights</code></strong>: local span recorder가 기록한 최근 App Router request timeline, server fetch, cache 동작을 가져옵니다. <code>experimental.requestInsights</code>가 필요합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>get_errors</code></strong>: Get the current error state, including Next.js global errors such as <code>next.config</code> validation, browser runtime errors, and build errors with source-mapped stack traces.</li>
+<li><strong><code>get_logs</code></strong>: Get the path to the development log file, which contains browser console logs and server output.</li>
+<li><strong><code>get_page_metadata</code></strong>: Get runtime metadata about what contributes to the current page render. Requires the page to be open in a browser.</li>
+<li><strong><code>get_project_metadata</code></strong>: Get the project path and dev server URL.</li>
+<li><strong><code>get_routes</code></strong>: Get all routes that will become entry points by scanning the filesystem. Returns routes grouped by router type (<code>appRouter</code>, <code>pagesRouter</code>). Dynamic segments appear as <code>[param]</code> or <code>[...slug]</code> patterns.</li>
+<li><strong><code>get_server_action_by_id</code></strong>: Look up a Server Action by its ID to find its source file and export name.</li>
+<li><strong><code>get_compilation_issues</code></strong>: Build the module graph for all routes and return compilation issues such as resolve errors, missing modules, and transform errors. Doesn't require a browser session. Turbopack only.</li>
+<li><strong><code>compile_route</code></strong>: Compile a specific route without making an HTTP request to it. Accepts either a <code>routeSpecifier</code> (for example, <code>/blog/[slug]</code>, as returned by <code>get_routes</code>) or a <code>path</code> (for example, <code>/blog/hello-world</code>), which is resolved to the matching route. Returns any compilation issues for the route. Turbopack only.</li>
+<li><strong><code>get_request_insights</code></strong>: Get recent App Router request timelines, server fetches, and cache behavior captured by the local span recorder. Requires <code>experimental.requestInsights</code>.</li>
+</ul></div>
+<p>compilation tool을 사용하면 agent는 아직 코드를 편집하는 중에 <code>next build</code>를 실행하는 대신, 실행 중인 dev server에서 코드가 compile되는지 확인할 수 있습니다.</p><div class="en-orig"><p>With the compilation tools, agents can check whether code compiles from the running dev server instead of running <code>next build</code> while they are still editing.</p></div>
+<h2 class="sec" id="development-workflow"><a class="anchor" href="#development-workflow">Development workflow<span class="ko">개발 workflow</span></a></h2>
+<ol>
+<li>Next.js development server를 시작합니다:</li>
+</ol><div class="en-orig"><ol>
+<li>Start your Next.js development server:</li>
+</ol></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm dev</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm run dev</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn dev</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun dev</code></pre></div></div>
+<ol start="2">
+<li>coding agent가 <code>next-devtools-mcp</code>를 통해 실행 중인 Next.js instance에 연결합니다.</li>
+<li>작업 중인 페이지를 브라우저에서 엽니다. <code>get_errors</code>, <code>get_page_metadata</code> 같은 tool은 활성 browser session에서 정보를 읽습니다.</li>
+<li>아래 예시처럼 agent에게 실행 중인 앱에 대해 물어봅니다.</li>
+</ol><div class="en-orig"><ol start="2">
+<li>Your coding agent connects to the running Next.js instance through <code>next-devtools-mcp</code>.</li>
+<li>Open the pages you're working on in the browser. Tools such as <code>get_errors</code> and <code>get_page_metadata</code> read from active browser sessions.</li>
+<li>Ask your agent about the running app, as in the examples below.</li>
+</ol></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<h3 class="sec" id="error-detection-and-diagnosis"><a class="anchor" href="#error-detection-and-diagnosis">Error detection and diagnosis<span class="ko">Error 감지와 진단</span></a></h3>
+<p>agent에게 실행 중인 앱의 error에 대해 물어보세요:</p><div class="en-orig"><p>Ask your agent about errors in the running app:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-plaintext">What errors are currently in my application?</code></pre></div></div>
+<p>agent는 다음을 수행합니다:</p><div class="en-orig"><p>The agent will:</p></div>
+<ul>
+<li><code>nextjs_index</code>로 실행 중인 dev server를 찾습니다</li>
+<li><code>nextjs_call</code>을 통해 <code>get_errors</code>를 호출해 현재 error를 가져옵니다</li>
+<li>error를 분석하고 수정 방법을 제안합니다</li>
+</ul><div class="en-orig"><ul>
+<li>Discover the running dev server with <code>nextjs_index</code></li>
+<li>Call <code>get_errors</code> through <code>nextjs_call</code> to retrieve the current errors</li>
+<li>Analyze the errors and suggest fixes</li>
+</ul></div>
+<details><summary>Agent 응답 (click해서 펼치기)</summary><div class="details-body"><div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-plaintext">&gt; fix errors on the page
+
+⏺ I&#x27;ll check which errors the running app reports before changing anything.
+
+⏺ next-devtools - nextjs_index (MCP)
+⏺ next-devtools - nextjs_call (MCP)(port: 3000, toolName: &quot;get_errors&quot;)
+  ⎿ # Found errors in 1 browser session(s)
+
+    ## Session: /about
+
+    **1 error(s) found**
+
+    ### Runtime Errors
+
+    #### Error 1 (Type: recoverable)
+
+    **Error**: Hydration failed because the server rendered text didn&#x27;t match the client.
+
+⏺ The /about page renders &quot;server&quot; on the server and &quot;client&quot; in the browser,
+  which causes a hydration mismatch. I&#x27;ll fix the component and check again.</code></pre></div></div></div></details>
+<h3 class="sec" id="concepts-and-best-practices"><a class="anchor" href="#concepts-and-best-practices">Concepts and best practices<span class="ko">개념과 best practice</span></a></h3>
+<p>개념적인 질문을 해 보세요:</p><div class="en-orig"><p>Ask conceptual questions:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-plaintext">When should I use &#x27;use client&#x27; in the App Router?</code></pre></div></div>
+<p>agent는 프로젝트에 번들된, 버전이 일치하는 Next.js 문서를 읽고 codebase의 예시와 함께 답변합니다.</p><div class="en-orig"><p>The agent reads the version-matched Next.js docs bundled with your project and answers with examples from your codebase.</p></div>
+<h2 class="sec" id="how-it-works"><a class="anchor" href="#how-it-works">How it works<span class="ko">동작 방식</span></a></h2>
+<p>Next.js 16+ development server는 <code>/_next/mcp</code>에서 built-in MCP endpoint를 실행합니다. <code>next-devtools-mcp</code> package는 이 endpoint를 찾아 통신하므로 다음을 할 수 있습니다:</p><div class="en-orig"><p>The Next.js 16+ development server runs a built-in MCP endpoint at <code>/_next/mcp</code>. The <code>next-devtools-mcp</code> package discovers these endpoints and communicates with them, so it can:</p></div>
+<ul>
+<li>서로 다른 port에서 실행 중인 여러 Next.js instance에 연결</li>
+<li>tool 호출을 올바른 Next.js dev server로 전달</li>
+<li>모든 instance에 대해 agent에게 하나의 tool set 제공</li>
+</ul><div class="en-orig"><ul>
+<li>Connect to multiple Next.js instances running on different ports</li>
+<li>Forward tool calls to the right Next.js dev server</li>
+<li>Give agents one set of tools for every instance</li>
+</ul></div>
+<p><code>next-devtools-mcp</code>를 통해 연결하는 agent는 Next.js 프로젝트와 버전에 상관없이 같은 setup을 사용합니다.</p><div class="en-orig"><p>Agents that connect through <code>next-devtools-mcp</code> use the same setup across Next.js projects and versions.</p></div>
+<p>endpoint는 기본적으로 활성화되어 있습니다. 비활성화하려면 <code>next.config</code>에서 <code>experimental.mcpServer</code>를 <code>false</code>로 설정하세요.</p><div class="en-orig"><p>The endpoint is enabled by default. To disable it, set <code>experimental.mcpServer</code> to <code>false</code> in <code>next.config</code>.</p></div>
+<h2 class="sec" id="troubleshooting"><a class="anchor" href="#troubleshooting">Troubleshooting<span class="ko">문제 해결</span></a></h2>
+<h3 class="sec" id="mcp-server-not-connecting"><a class="anchor" href="#mcp-server-not-connecting">MCP server not connecting<span class="ko">MCP server가 연결되지 않을 때</span></a></h3>
+<ul>
+<li>Next.js 16 이상을 사용하세요</li>
+<li>agent client에 <code>next-devtools-mcp</code>가 설정되어 있는지 확인하세요(예: <code>.mcp.json</code>)</li>
+<li><code>next.config</code>에서 <code>experimental.mcpServer</code>가 <code>false</code>로 설정되어 있지 않은지 확인하세요</li>
+<li><code>npm run dev</code>로 development server를 시작하거나, 이미 실행 중이었다면 다시 시작하세요</li>
+<li>coding agent가 MCP server configuration을 load했는지 확인하세요</li>
+</ul><div class="en-orig"><ul>
+<li>Use Next.js 16 or later</li>
+<li>Verify <code>next-devtools-mcp</code> is configured in your agent client, for example in <code>.mcp.json</code></li>
+<li>Check that <code>experimental.mcpServer</code> is not set to <code>false</code> in <code>next.config</code></li>
+<li>Start your development server with <code>npm run dev</code>, or restart it if it was already running</li>
+<li>Check that your coding agent has loaded the MCP server configuration</li>
+</ul></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><div class="rgrid"><a class="rcard" href="app-guides-ai-agents.html"><div class="rt">How Next.js supports AI coding agents</div><div class="rk">Next.js가 AI coding agent를 지원하는 방법</div><div class="rd">Next.js가 AI coding agent에게 최신 framework 가이드를 제공하고, 애플리케이션을 살펴보고, 변경 사항을 검증하고, 문제를 보고하도록 돕는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/mcp.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/mcp" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-local-development.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Development Environment</div><div class="ttl-ko">로컬 개발 환경 최적화하기</div></a>
+      <a href="app-guides-mdx.html" class="next"><div class="dir">다음 →</div><div class="ttl">MDX</div><div class="ttl-ko">Next.js에서 markdown과 MDX 사용하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/mcp" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#getting-started">Getting started</a></li><li class="l2"><a href="#capabilities">Capabilities</a></li><li class="l3"><a href="#runtime-tools">Runtime tools</a></li><li class="l2"><a href="#development-workflow">Development workflow</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#error-detection-and-diagnosis">Error detection and diagnosis</a></li><li class="l3"><a href="#concepts-and-best-practices">Concepts and best practices</a></li><li class="l2"><a href="#how-it-works">How it works</a></li><li class="l2"><a href="#troubleshooting">Troubleshooting</a></li><li class="l3"><a href="#mcp-server-not-connecting">MCP server not connecting</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+[Model Context Protocol (MCP)](https://modelcontextprotocol.io)은 AI agent와 coding assistant가 하나의 공유 interface를 통해 애플리케이션과 상호작용할 수 있게 해 주는 open standard입니다.
+
+Next.js 16 이상에서는 development server가 `/_next/mcp`에 MCP endpoint를 노출합니다. 이 endpoint는 coding agent에게 실행 중인 앱 관점의 error, route, log, compilation issue 정보를 제공합니다. agent client를 여기에 연결하려면 [`next-devtools-mcp`](https://www.npmjs.com/package/next-devtools-mcp) package를 설치하세요.
+
+[`next-dev-loop`](/docs/app/guides/ai-agents#next-dev-loop) 같은 skill은 `/_next/mcp`를 직접 호출하므로 이 setup 없이도 동작합니다.
+
+## Getting started || 시작하기
+
+[`add-mcp`](https://www.npmjs.com/package/add-mcp)로 내 컴퓨터의 coding agent에 `next-devtools-mcp`를 설치하세요:
+
+[[CODE 1]]
+
+또는 프로젝트 root의 `.mcp.json` 파일에 추가하세요:
+
+[[CODE 2]]
+
+development server를 시작하면 `next-devtools-mcp`가 실행 중인 Next.js instance를 찾아 연결합니다. client별 setup은 [next-devtools-mcp repository](https://github.com/vercel/next-devtools-mcp)를 참고하세요.
+
+## Capabilities || 기능
+
+`next-devtools-mcp`는 agent client를 Next.js development server에 연결합니다. agent에게 다음 tool을 제공합니다:
+
+- **`nextjs_index`**: 실행 중인 Next.js dev server를 찾고, 각 server가 노출하는 runtime tool 목록을 보여 줍니다.
+- **`nextjs_call`**: 찾아낸 dev server의 runtime tool을 호출합니다.
+- **`nextjs_docs`**: agent가 `node_modules/next/dist/docs/`에 있는, 설치된 Next.js와 버전이 일치하는 번들 문서를 참고하도록 안내합니다.
+- **`browser_eval`**: 실제 브라우저에서 페이지를 검증할 수 있도록 agent에게 [`agent-browser`](https://github.com/vercel-labs/agent-browser) CLI를 안내합니다.
+
+`nextjs_docs`와 `browser_eval`은 직접 작업을 수행하지 않습니다. 문서가 어디에 있는지, 또는 CLI를 어떻게 실행하는지 agent에게 알려 주고, agent가 그것을 직접 사용합니다.
+
+### Runtime tools || Runtime tool
+
+`nextjs_call`을 통해 agent는 Next.js development server가 `/_next/mcp`에 노출하는 tool을 사용할 수 있습니다:
+
+- **`get_errors`**: `next.config` 검증 같은 Next.js global error, browser runtime error, source-mapped stack trace가 포함된 build error 등 현재 error 상태를 가져옵니다.
+- **`get_logs`**: 브라우저 console log와 server 출력이 담긴 development log 파일의 경로를 가져옵니다.
+- **`get_page_metadata`**: 현재 page render에 무엇이 기여하는지에 대한 runtime metadata를 가져옵니다. 페이지가 브라우저에 열려 있어야 합니다.
+- **`get_project_metadata`**: 프로젝트 경로와 dev server URL을 가져옵니다.
+- **`get_routes`**: filesystem을 scan해서 entry point가 될 모든 route를 가져옵니다. route는 router 종류(`appRouter`, `pagesRouter`)별로 묶여 반환됩니다. dynamic segment는 `[param]` 또는 `[...slug]` 패턴으로 표시됩니다.
+- **`get_server_action_by_id`**: ID로 Server Action을 조회해 source 파일과 export 이름을 찾습니다.
+- **`get_compilation_issues`**: 모든 route에 대한 module graph를 build하고, resolve error, 누락된 module, transform error 같은 compilation issue를 반환합니다. browser session이 필요 없습니다. Turbopack 전용입니다.
+- **`compile_route`**: HTTP request를 보내지 않고 특정 route를 compile합니다. `routeSpecifier`(예: `get_routes`가 반환하는 `/blog/[slug]`) 또는 `path`(예: `/blog/hello-world`)를 받으며, `path`는 일치하는 route로 resolve됩니다. 해당 route의 compilation issue를 반환합니다. Turbopack 전용입니다.
+- **`get_request_insights`**: local span recorder가 기록한 최근 App Router request timeline, server fetch, cache 동작을 가져옵니다. `experimental.requestInsights`가 필요합니다.
+
+compilation tool을 사용하면 agent는 아직 코드를 편집하는 중에 `next build`를 실행하는 대신, 실행 중인 dev server에서 코드가 compile되는지 확인할 수 있습니다.
+
+## Development workflow || 개발 workflow
+
+1. Next.js development server를 시작합니다:
+
+[[CODE 3]]
+
+2. coding agent가 `next-devtools-mcp`를 통해 실행 중인 Next.js instance에 연결합니다.
+
+3. 작업 중인 페이지를 브라우저에서 엽니다. `get_errors`, `get_page_metadata` 같은 tool은 활성 browser session에서 정보를 읽습니다.
+
+4. 아래 예시처럼 agent에게 실행 중인 앱에 대해 물어봅니다.
+
+## Examples || 예시
+
+### Error detection and diagnosis || Error 감지와 진단
+
+agent에게 실행 중인 앱의 error에 대해 물어보세요:
+
+[[CODE 4]]
+
+agent는 다음을 수행합니다:
+
+- `nextjs_index`로 실행 중인 dev server를 찾습니다
+- `nextjs_call`을 통해 `get_errors`를 호출해 현재 error를 가져옵니다
+- error를 분석하고 수정 방법을 제안합니다
+
+&lt;details&gt;
+&lt;summary&gt;Agent 응답 (click해서 펼치기)&lt;/summary&gt;
+
+[[CODE 5]]
+
+&lt;/details&gt;
+
+### Concepts and best practices || 개념과 best practice
+
+개념적인 질문을 해 보세요:
+
+[[CODE 6]]
+
+agent는 프로젝트에 번들된, 버전이 일치하는 Next.js 문서를 읽고 codebase의 예시와 함께 답변합니다.
+
+## How it works || 동작 방식
+
+Next.js 16+ development server는 `/_next/mcp`에서 built-in MCP endpoint를 실행합니다. `next-devtools-mcp` package는 이 endpoint를 찾아 통신하므로 다음을 할 수 있습니다:
+
+- 서로 다른 port에서 실행 중인 여러 Next.js instance에 연결
+- tool 호출을 올바른 Next.js dev server로 전달
+- 모든 instance에 대해 agent에게 하나의 tool set 제공
+
+`next-devtools-mcp`를 통해 연결하는 agent는 Next.js 프로젝트와 버전에 상관없이 같은 setup을 사용합니다.
+
+endpoint는 기본적으로 활성화되어 있습니다. 비활성화하려면 `next.config`에서 `experimental.mcpServer`를 `false`로 설정하세요.
+
+## Troubleshooting || 문제 해결
+
+### MCP server not connecting || MCP server가 연결되지 않을 때
+
+- Next.js 16 이상을 사용하세요
+- agent client에 `next-devtools-mcp`가 설정되어 있는지 확인하세요(예: `.mcp.json`)
+- `next.config`에서 `experimental.mcpServer`가 `false`로 설정되어 있지 않은지 확인하세요
+- `npm run dev`로 development server를 시작하거나, 이미 실행 중이었다면 다시 시작하세요
+- coding agent가 MCP server configuration을 load했는지 확인하세요
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

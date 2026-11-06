@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Keeping pages static (페이지를 static으로 유지하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/keeping-pages-static" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/keeping-pages-static" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/keeping-pages-static.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Keeping pages static<span class="sub">페이지를 static으로 유지하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><a href="app-api-reference-config-next-config-js-cacheComponents.html">Cache Components</a> 이전에는 <a href="app-guides-caching-without-cache-components.html#dynamic"><code>dynamic = &#x27;force-static&#x27;</code></a>, <code>dynamic = &#x27;force-dynamic&#x27;</code>, <code>dynamic = &#x27;error&#x27;</code> 같은 route segment config가 route 전체의 rendering mode를 선택했습니다. Cache Components를 사용하면 하나의 route 안에서 prerender된 UI, cache된 콘텐츠, request 시점에 render되는 request별 콘텐츠를 조합할 수 있습니다.</p><div class="en-orig"><p>Before <a href="app-api-reference-config-next-config-js-cacheComponents.html">Cache Components</a>, route segment configs such as <a href="app-guides-caching-without-cache-components.html#dynamic"><code>dynamic = &#x27;force-static&#x27;</code></a>, <code>dynamic = &#x27;force-dynamic&#x27;</code>, and <code>dynamic = &#x27;error&#x27;</code> selected a rendering mode for an entire route. Cache Components lets one route combine prerendered UI, cached content, and request-specific content rendered at request time.</p></div>
+<p>이런 유연성은 personalization이 필요한 route에 유용합니다. 예측 가능한 성능과 compute 비용을 위해 route의 일부 또는 전체가 request 시점의 server rendering을 피해야 한다면 <a href="app-api-reference-file-conventions-route-segment-config-ensureStatic.html"><code>ensureStatic</code></a>을 사용하세요.</p><div class="en-orig"><p>This flexibility is useful for routes that need personalization. Use <a href="app-api-reference-file-conventions-route-segment-config-ensureStatic.html"><code>ensureStatic</code></a> when some or all of a route must avoid request-time server rendering for predictable performance and compute costs.</p></div>
+<h2 class="sec" id="decide-what-should-stay-static"><a class="anchor" href="#decide-what-should-stay-static">Decide what should stay static<span class="ko">무엇을 static으로 유지할지 정하기</span></a></h2>
+<p>static 출력은 request별 데이터에 의존하지 않습니다. Next.js는 request가 오기 전에 이를 생성해 두고 여러 request에 걸쳐 재사용할 수 있습니다.</p><div class="en-orig"><p>Static output does not depend on request-specific data. Next.js can generate it before a request and reuse it across requests.</p></div>
+<p><a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a>을 사용하면 route 출력은 세 가지 <a href="app-glossary.html#navigation-stages">navigation stage</a>에서 사용 가능해집니다:</p><div class="en-orig"><p>With <a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a>, route output becomes available in three <a href="app-glossary.html#navigation-stages">navigation stages</a>:</p></div>
+<ol>
+<li>기본 <code>&lt;Link&gt;</code>는 <a href="app-glossary.html#app-shell">App Shell</a>을 load합니다.</li>
+<li><code>&lt;Link prefetch={true}&gt;</code>는 그 link의 URL에 대한 콘텐츠도 load할 수 있습니다.</li>
+<li>navigation은 click 이후에 남은 나머지를 render합니다.</li>
+</ol><div class="en-orig"><ol>
+<li>A default <code>&lt;Link&gt;</code> loads the <a href="app-glossary.html#app-shell">App Shell</a>.</li>
+<li><code>&lt;Link prefetch={true}&gt;</code> can also load content for that link's URL.</li>
+<li>The navigation renders anything that remains after the click.</li>
+</ol></div>
+<p>각 <code>ensureStatic</code> level은 static 요구 사항을 이 stage들 중 하나까지 확장합니다. 다음 diagram에서 회색은 static 출력을, 파란색은 request 시점에 render될 수 있는 콘텐츠를 나타냅니다:</p><div class="en-orig"><p>Each <code>ensureStatic</code> level extends the static requirement through one of these stages. In the following diagram, gray marks static output and blue marks content that can render at request time:</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/ensure-static-visual.png" alt="Shell, Prefetch, Navigation stage와, 각 ensureStatic 값이 static 요구 사항을 어느 stage까지 확장하는지 보여 주는 막대" width="1200" height="530" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/ensure-static-visual.png" alt="Shell, Prefetch, Navigation stage와, 각 ensureStatic 값이 static 요구 사항을 어느 stage까지 확장하는지 보여 주는 막대" width="1200" height="530" loading="lazy" /></figure>
+<p>어떤 request가 static 출력만 사용해야 하는지에 따라 level을 고르세요:</p><div class="en-orig"><p>Choose a level based on which request must use only static output:</p></div>
+<ul>
+<li><code>&#x27;shell&#x27;</code>: 기본 <code>&lt;Link&gt;</code>가 load하는 App Shell.</li>
+<li><code>&#x27;prefetch&#x27;</code>: App Shell과 <code>&lt;Link prefetch={true}&gt;</code>의 <a href="app-guides-optimizing-prefetching.html">per-link prefetch</a>. 여기에는 <code>params</code> 같은 link의 <a href="app-glossary.html#url-data">URL data</a>에 대한 콘텐츠가 포함될 수 있습니다.</li>
+<li><code>&#x27;navigation&#x27;</code>: 사용자가 navigate한 뒤 반환되는 response를 포함한 route 전체.</li>
+</ul><div class="en-orig"><ul>
+<li><code>&#x27;shell&#x27;</code>: the App Shell loaded by a default <code>&lt;Link&gt;</code>.</li>
+<li><code>&#x27;prefetch&#x27;</code>: the App Shell and the <a href="app-guides-optimizing-prefetching.html">per-link prefetch</a> from <code>&lt;Link prefetch={true}&gt;</code>, which can include content for the link's <a href="app-glossary.html#url-data">URL data</a>, such as <code>params</code>.</li>
+<li><code>&#x27;navigation&#x27;</code>: the complete route, including the response returned after the user navigates.</li>
+</ul></div>
+<h2 class="sec" id="example"><a class="anchor" href="#example">Example<span class="ko">예제</span></a></h2>
+<p>다음 예제는 온라인 스토어의 세 부분, 즉 공유 cart, 상품 페이지, 공개 구매 가이드에 static 요구 사항을 추가합니다.</p><div class="en-orig"><p>The following example adds static requirements to three parts of an online store: its shared cart, product pages, and public buying guides.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-plaintext">app/
+├── store/
+│   ├── layout.tsx         # Shared layout with the cart
+│   ├── page.tsx           # Product catalog
+│   └── products/
+│       └── [slug]/
+│           └── page.tsx   # Product details and cart status
+├── guides/
+│   └── [id]/
+│       └── page.tsx       # Editorial buying guides
+└── ui/
+    ├── cart.tsx
+    └── product.tsx
+lib/
+└── guides.ts</code></pre></div></div>
+<p><a href="app-api-reference-config-next-config-js-cacheComponents.html">Cache Components</a>와 <a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a>을 활성화하세요:</p><div class="en-orig"><p>Enable <a href="app-api-reference-config-next-config-js-cacheComponents.html">Cache Components</a> and <a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+  partialPrefetching: true,
+}
+
+export default nextConfig</code></pre></div></div>
+<h3 class="sec" id="step-1-load-a-static-app-shell"><a class="anchor" href="#step-1-load-a-static-app-shell">Step 1: Load a static App Shell<span class="ko">1단계: static App Shell load하기</span></a></h3>
+<p>공유 store layout은 방문자의 cart 개수를 표시합니다. <code>CartButton</code>은 server에서 cookie로부터 개수를 읽습니다:</p><div class="en-orig"><p>The shared store layout displays a visitor's cart count. <code>CartButton</code> reads the count from a cookie on the server:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/ui/cart.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cookies } from &#x27;next/headers&#x27;
+
+export async function CartButton() {
+  const value = Number((await cookies()).get(&#x27;cart-count&#x27;)?.value ?? 0)
+  return &lt;button&gt;Cart ({value})&lt;/button&gt;
+}</code></pre></div></div>
+<p>layout은 <code>CartButton</code>을 <code>&lt;Suspense&gt;</code> 안에 두는데, 이 <code>&lt;Suspense&gt;</code>는 현재 개수가 render되는 동안 static fallback을 제공합니다:</p><div class="en-orig"><p>The layout places <code>CartButton</code> inside <code>&lt;Suspense&gt;</code>, which provides a static fallback while the current count renders:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/store/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import Link from &#x27;next/link&#x27;
+import { Suspense } from &#x27;react&#x27;
+import { CartButton } from &#x27;@/app/ui/cart&#x27;
+
+export default function StoreLayout({ children }: LayoutProps&lt;&#x27;/store&#x27;&gt;) {
+  return (
+    &lt;&gt;
+      &lt;nav&gt;
+        &lt;Link href=&quot;/store&quot;&gt;Products&lt;/Link&gt;
+        &lt;Link href=&quot;/guides&quot;&gt;Buying guides&lt;/Link&gt;
+        &lt;Suspense fallback={&lt;button&gt;Cart (0)&lt;/button&gt;}&gt;
+          &lt;CartButton /&gt;
+        &lt;/Suspense&gt;
+      &lt;/nav&gt;
+      &lt;main&gt;{children}&lt;/main&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p>navigation과 cart fallback은 모든 방문자가 공유합니다. store로 가는 link를 load할 때, 사용자가 click하기 전에 server에서 개인화된 cart 개수를 render해서는 안 됩니다. <code>ensureStatic = &#x27;shell&#x27;</code>을 추가해 기본 <code>&lt;Link&gt;</code>가 static App Shell만 request하도록 하세요:</p><div class="en-orig"><p>The navigation and cart fallback are shared across visitors. Loading a link to the store should not render the personalized cart count on the server before the user clicks. Add <code>ensureStatic = &#x27;shell&#x27;</code> to make a default <code>&lt;Link&gt;</code> request only the static App Shell:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/store/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import Link from &#x27;next/link&#x27;
+import { Suspense } from &#x27;react&#x27;
+import { CartButton } from &#x27;@/app/ui/cart&#x27;
+
+export const ensureStatic = &#x27;shell&#x27;
+
+export default function StoreLayout({ children }: LayoutProps&lt;&#x27;/store&#x27;&gt;) {
+  // ...
+}</code></pre></div></div>
+<p>이제 store로 가는 기본 <code>&lt;Link&gt;</code>는 navigation과 <code>Cart (0)</code> fallback을 static 출력에서 load합니다. 이후 per-link prefetch나 navigation이 요청하기 전까지 server는 현재 cart 개수를 render하지 않습니다. 이렇게 하면 사용자가 끝내 click하지 않을 수도 있는 link에 대해 request 시점의 server 작업을 피할 수 있습니다.</p><div class="en-orig"><p>A default <code>&lt;Link&gt;</code> into the store now loads the navigation and <code>Cart (0)</code> fallback from static output. The server does not render the current cart count until a later per-link prefetch or navigation requests it. This avoids request-time server work for links that the user may never click.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>App Shell에서 <code>CartButton</code>만 미뤄야 했다면 그 subtree 안에서 <a href="app-api-reference-functions-prefetch.html"><code>await prefetch()</code></a>를 호출할 수 있습니다. 여기서는 앞으로의 변경까지 포함해 store shell 전체에 요구 사항이 적용되므로, layout에서 <code>ensureStatic = &#x27;shell&#x27;</code>을 사용합니다.</p><div class="en-orig"><p>If only <code>CartButton</code> needed to be deferred from the App Shell, you could call <a href="app-api-reference-functions-prefetch.html"><code>await prefetch()</code></a> inside that subtree. Here, the requirement applies to the entire store shell, including future changes, so the layout uses <code>ensureStatic = &#x27;shell&#x27;</code>.</p></div></div></div>
+<h3 class="sec" id="step-2-prefetch-static-product-details"><a class="anchor" href="#step-2-prefetch-static-product-details">Step 2: Prefetch static product details<span class="ko">2단계: static 상품 상세 prefetch하기</span></a></h3>
+<p>각 상품 페이지는 방문자 간에 재사용할 수 있는 상세 정보와, 현재 방문자에 따라 달라지는 cart action을 함께 담고 있습니다. <code>ProductDetails</code>는 <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a>로 query를 cache하고, <code>ProductCartStatus</code>는 cookie를 읽어 상품이 이미 cart에 있는지 확인합니다:</p><div class="en-orig"><p>Each product page combines details that can be reused across visitors with a cart action that depends on the current visitor. <code>ProductDetails</code> caches its query with <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a>, while <code>ProductCartStatus</code> reads a cookie to check whether the product is already in the cart:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/ui/product.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cookies } from &#x27;next/headers&#x27;
+import { db } from &#x27;@/lib/db&#x27;
+
+type Params = Promise&lt;{ slug: string }&gt;
+
+export async function ProductDetails({ params }: { params: Params }) {
+  const { slug } = await params
+  const product = await getProduct(slug)
+  return &lt;h1&gt;{product.name}&lt;/h1&gt;
+}
+
+export async function ProductCartStatus({ params }: { params: Params }) {
+  const { slug } = await params
+  const cart = (await cookies()).get(&#x27;cart&#x27;)?.value?.split(&#x27;,&#x27;) ?? []
+  return (
+    &lt;button&gt;{cart.includes(slug) ? &#x27;Remove from cart&#x27; : &#x27;Add to cart&#x27;}&lt;/button&gt;
+  )
+}
+
+async function getProduct(slug: string) {
+  &#x27;use cache&#x27;
+  return db.product.findUniqueOrThrow({ where: { slug } })
+}</code></pre></div></div>
+<p>상품 route는 <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams()</code></a>로 catalog의 상품 URL을 prerender합니다. <code>&lt;Suspense&gt;</code> boundary를 따로 두면 상품 상세가 static cart fallback과 함께 render될 수 있습니다:</p><div class="en-orig"><p>The product route prerenders the catalog's product URL with <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams()</code></a>. Separate <code>&lt;Suspense&gt;</code> boundaries let the product details render with a static cart fallback:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/store/products/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { ProductCartStatus, ProductDetails } from &#x27;@/app/ui/product&#x27;
+
+export function generateStaticParams() {
+  return [{ slug: &#x27;coffee-grinder&#x27; }]
+}
+
+export default function ProductPage({
+  params,
+}: PageProps&lt;&#x27;/store/products/[slug]&#x27;&gt;) {
+  return (
+    &lt;&gt;
+      &lt;Suspense fallback={&lt;p&gt;Loading product...&lt;/p&gt;}&gt;
+        &lt;ProductDetails params={params} /&gt;
+      &lt;/Suspense&gt;
+      &lt;Suspense fallback={&lt;button&gt;Add to cart&lt;/button&gt;}&gt;
+        &lt;ProductCartStatus params={params} /&gt;
+      &lt;/Suspense&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p>기본 상품 link는 상품 fallback이 들어 있는 App Shell을 load합니다. 상품 상세는 이미 prerender되어 있으므로, catalog는 <code>prefetch={true}</code>를 설정해 click 전에 이를 포함할 수 있습니다:</p><div class="en-orig"><p>A default product link loads the App Shell, which contains the product fallback. Because the product details are already prerendered, the catalog can include them before the click by setting <code>prefetch={true}</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/store/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&lt;Link href=&quot;/store/products/coffee-grinder&quot; prefetch={true}&gt;
+  Coffee grinder
+&lt;/Link&gt;</code></pre></div></div>
+<p>화면에 보이는 각 <code>prefetch={true}</code> link는 해당 상품의 cart action을 개인화하기 위해 <code>ProductCartStatus</code>를 render할 수 있습니다. 따라서 상품 20개가 보이는 grid는 사용자가 상품을 click하기도 전에 request 시점의 server render를 20번 trigger할 수 있습니다.</p><div class="en-orig"><p>Each visible <code>prefetch={true}</code> link can render <code>ProductCartStatus</code> to personalize the cart action for that product. A grid with 20 visible products can therefore trigger 20 request-time server renders before the user clicks a product.</p></div>
+<p><code>ensureStatic = &#x27;prefetch&#x27;</code>를 추가해 모든 상품 prefetch가 static 출력만 사용하도록 하세요:</p><div class="en-orig"><p>Add <code>ensureStatic = &#x27;prefetch&#x27;</code> to make every product prefetch use only static output:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/store/products/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { ProductCartStatus, ProductDetails } from &#x27;@/app/ui/product&#x27;
+
+export const ensureStatic = &#x27;prefetch&#x27;
+
+export default function ProductPage({
+  params,
+}: PageProps&lt;&#x27;/store/products/[slug]&#x27;&gt;) {
+  // ...
+}</code></pre></div></div>
+<p>이제 각 상품 prefetch는 request 시점의 server rendering을 호출하지 않고, cache된 상품 상세와 static <strong>Add to cart</strong> fallback을 포함합니다. 현재 cart 상태는 사용자가 link를 따라간 뒤에 render됩니다.</p><div class="en-orig"><p>Each product prefetch now includes the cached product details and the static <strong>Add to cart</strong> fallback without invoking request-time server rendering. The current cart status renders after the user follows the link.</p></div>
+<p><code>ensureStatic</code> 값은 그것을 export한 segment 위의 layout까지 포함해 route 전체에 적용됩니다. 상품 route에서 <code>&#x27;prefetch&#x27;</code>는 per-link prefetch 동안 store layout도 static으로 유지합니다.</p><div class="en-orig"><p>An <code>ensureStatic</code> value covers the whole route, including layouts above the segment that exports it. On product routes, <code>&#x27;prefetch&#x27;</code> also keeps the store layout static through the per-link prefetch.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>per-link prefetch에서 <code>ProductCartStatus</code>만 미뤄야 했다면 cookie를 읽기 전에 <a href="app-api-reference-functions-navigation.html"><code>await navigation()</code></a>을 호출할 수 있습니다. 여기서는 모든 상품 prefetch가 request 시점의 server rendering을 피해야 하므로, page에서 <code>ensureStatic = &#x27;prefetch&#x27;</code>를 사용합니다.</p><div class="en-orig"><p>If only <code>ProductCartStatus</code> needed to be deferred from per-link prefetches, you could call <a href="app-api-reference-functions-navigation.html"><code>await navigation()</code></a> before reading the cookie. Here, every product prefetch must avoid request-time server rendering, so the page uses <code>ensureStatic = &#x27;prefetch&#x27;</code>.</p></div></div></div>
+<h3 class="sec" id="step-3-prerender-the-buying-guides"><a class="anchor" href="#step-3-prerender-the-buying-guides">Step 3: Prerender the buying guides<span class="ko">3단계: 구매 가이드 prerender하기</span></a></h3>
+<p>store에는 공개 구매 가이드도 있습니다. 각 가이드는 database에서 콘텐츠를 읽고 cookie에서 theme을 적용합니다:</p><div class="en-orig"><p>The store also has public buying guides. Each guide reads its content from the database and applies a theme from a cookie:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/guides/[id]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+import { getGuide } from &#x27;@/lib/guides&#x27;
+
+export default function GuidePage({ params }: PageProps&lt;&#x27;/guides/[id]&#x27;&gt;) {
+  return (
+    &lt;Suspense fallback={&lt;p&gt;Loading guide...&lt;/p&gt;}&gt;
+      &lt;Guide params={params} /&gt;
+    &lt;/Suspense&gt;
+  )
+}
+
+async function Guide({ params }: { params: Promise&lt;{ id: string }&gt; }) {
+  const { id } = await params
+  const guide = await getGuide(id)
+  const theme = (await cookies()).get(&#x27;theme&#x27;)?.value
+  return &lt;article data-theme={theme}&gt;{guide.content}&lt;/article&gt;
+}</code></pre></div></div>
+<p>기존 <code>getGuide()</code> helper가 database query를 수행합니다:</p><div class="en-orig"><p>The existing <code>getGuide()</code> helper performs the database query:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">lib/guides.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { db } from &#x27;@/lib/db&#x27;
+
+export async function getGuide(id: string) {
+  return db.guide.findUniqueOrThrow({ where: { id } })
+}</code></pre></div></div>
+<p>현재 <code>next build</code>는 store route와 구매 가이드에 대해 partial prerender를 생성합니다:</p><div class="en-orig"><p><code>next build</code> currently produces partial prerenders for the store routes and the buying guides:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-plaintext">Route (app)
+├   /guides/[id]
+│ └ ◐ /guides/[id]
+├ ◐ /store
+└   /store/products/[slug]
+  ├ ◐ /store/products/[slug]
+  └ ◐ /store/products/coffee-grinder
+
+◐  (Partial Prerender)  prerendered as static HTML with dynamic server-streamed content</code></pre></div></div>
+<p>store와 상품 route는 request별 cart UI가 나중에 render되므로 partial 출력이 예상된 결과입니다. 구매 가이드는 공개 편집 페이지이므로, request 시점의 server rendering 없이 완전한 static 출력을 반환해야 합니다. <code>ensureStatic = &#x27;navigation&#x27;</code>을 추가하세요:</p><div class="en-orig"><p>Partial output is expected for the store and product routes because their request-specific cart UI renders later. The buying guides are public editorial pages, so they should return complete static output without request-time server rendering. Add <code>ensureStatic = &#x27;navigation&#x27;</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">app/guides/[id]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-diff">  import { Suspense } from &#x27;react&#x27;
+  import { cookies } from &#x27;next/headers&#x27;
+
++ export const ensureStatic = &#x27;navigation&#x27;
+
+  export default function GuidePage({ params }) {
+    // ...
+  }</code></pre></div></div>
+<p><code>next build</code>를 다시 실행하면 Next.js는 먼저 dynamic route가 prerender할 parameter 값을 하나도 제공하지 않는다고 보고합니다:</p><div class="en-orig"><p>When running <code>next build</code> again, Next.js first reports that the dynamic route does not provide any parameter values to prerender:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">Error: Page &quot;/guides/[id]&quot;: `ensureStatic = &quot;navigation&quot;` requires an exported `generateStaticParams()` function.
+Learn more: https://nextjs.org/docs/messages/generate-static-params#with-ensurestatic
+    at ignore-listed frames
+&gt; Build error occurred
+Error: Failed to collect page data for /guides/[id]</code></pre></div></div>
+<p><code>generateStaticParams()</code>를 export하고 구매 가이드 ID를 하나 이상 반환하세요. Next.js는 반환된 ID를 build 중에 prerender합니다. 허용된 다른 ID는 첫 request 때 생성하고 그 결과를 이후 request를 위해 저장할 수 있습니다. <code>&#x27;navigation&#x27;</code>에서는 그 첫 request가 fallback을 streaming하는 대신 완전한 static 페이지를 기다립니다. <a href="app-guides-incremental-static-regeneration-cache-components.html#at-runtime">ISR with Cache Components</a>를 참고하세요.</p><div class="en-orig"><p>Export <code>generateStaticParams()</code> and return at least one buying guide ID. Next.js prerenders the returned IDs during the build. It can generate other allowed IDs on their first request and store the result for later requests. With <code>&#x27;navigation&#x27;</code>, that first request waits for the complete static page instead of streaming a fallback. See <a href="app-guides-incremental-static-regeneration-cache-components.html#at-runtime">ISR with Cache Components</a>.</p></div>
+<p>prerender할 가이드 ID를 반환하는 helper를 추가하세요:</p><div class="en-orig"><p>Add a helper that returns the guide IDs to prerender:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">lib/guides.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export async function getGuideIds() {
+  const guides = await db.guide.findMany({ select: { id: true } })
+  return guides.map(({ id }) =&gt; id)
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/guides/[id]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+import { getGuide, getGuideIds } from &#x27;@/lib/guides&#x27;
+
+export const ensureStatic = &#x27;navigation&#x27;
+
+export async function generateStaticParams() {
+  const ids = await getGuideIds()
+  return ids.map((id) =&gt; ({ id }))
+}
+
+export default function GuidePage({ params }: PageProps&lt;&#x27;/guides/[id]&#x27;&gt;) {
+  return (
+    &lt;Suspense fallback={&lt;p&gt;Loading guide...&lt;/p&gt;}&gt;
+      &lt;Guide params={params} /&gt;
+    &lt;/Suspense&gt;
+  )
+}
+
+async function Guide({ params }: { params: Promise&lt;{ id: string }&gt; }) {
+  const { id } = await params
+  const guide = await getGuide(id)
+  const theme = (await cookies()).get(&#x27;theme&#x27;)?.value
+  return &lt;article data-theme={theme}&gt;{guide.content}&lt;/article&gt;
+}</code></pre></div></div>
+<p><code>generateStaticParams()</code>가 parameter 값을 제공하지만, 가이드에는 여전히 cache되지 않은 작업과 request별 작업이 들어 있습니다. 다음 build는 route가 완전히 static일 수 없다고 보고합니다:</p><div class="en-orig"><p><code>generateStaticParams()</code> provides the parameter values, but the guide still contains uncached and request-specific work. The next build reports that the route cannot be fully static:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">Error: Route &quot;/guides/[id]&quot;: Next.js encountered uncached or runtime data on a route that must be fully static.
+
+This route is configured to be fully static, but uncached or runtime data prevents it from being fully prerendered.
+
+Ways to fix this:
+  - [cache] For uncached data (`fetch`, database calls): cache the access with `&quot;use cache&quot;` (does not apply to `connection()`)
+  - [remove] Remove the data access
+  - [client] Read the data on the client
+
+Learn more: https://nextjs.org/docs/messages/static-route-dynamic
+    at Suspense (&lt;anonymous&gt;)
+    at body (&lt;anonymous&gt;)
+    at html (&lt;anonymous&gt;)</code></pre></div></div>
+<p>build는 영향을 받는 route를 알려 주지만, stack frame에는 data access의 source 위치가 포함되지 않습니다. 고치는 동안 source-mapped code frame을 얻으려면 <code>next dev</code>를 시작하고 <code>/guides/coffee</code>를 여세요. build만 실행할 수 있다면 <a href="app-guides-building.html#debug-prerender-errors"><code>next build --debug-prerender</code></a>를 사용하세요.</p><div class="en-orig"><p>The build identifies the affected route, but its stack frames do not include source locations for the data access. To get source-mapped code frames while fixing it, start <code>next dev</code> and open <code>/guides/coffee</code>. If you can only run a build, use <a href="app-guides-building.html#debug-prerender-errors"><code>next build --debug-prerender</code></a>.</p></div>
+<p>development overlay는 먼저 cache되지 않은 database query를 가리킵니다:</p><div class="en-orig"><p>The development overlay first points to the uncached database query:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">lib/guides.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">return db.guide.findUniqueOrThrow({ where: { id } })</code></pre></div></div>
+<p>overlay는 cache되지 않은 데이터를 처리하는 세 가지 방법을 보여 줍니다:</p><div class="en-orig"><p>It presents three ways to handle uncached data:</p></div>
+<div class="fixgrid"><a class="fixcard" href="https://nextjs.org/docs/messages/static-route-dynamic#cache-the-data" target="_blank" rel="noopener"><div class="fc-t">Cache the data</div><div class="fc-c"><div class="fl">async function getData() {</div><div class="fl hl">  &quot;use cache&quot;</div><div class="fl">  return await db.query(…)</div></div></a><a class="fixcard" href="https://nextjs.org/docs/messages/static-route-dynamic#remove-the-data-access" target="_blank" rel="noopener"><div class="fc-t">Remove the data access</div><div class="fc-c"><div class="fl">async function Page() {</div><div class="fl hl">- await connection()</div></div></a><a class="fixcard" href="https://nextjs.org/docs/messages/static-route-dynamic#read-the-data-on-the-client" target="_blank" rel="noopener"><div class="fc-t">Read the data on the client</div><div class="fc-c"><div class="fl">&#x27;use client&#x27;</div><div class="fl hl">const data = useSWR(&#x27;/api&#x27;)</div></div></a></div>
+<p>구매 가이드 콘텐츠는 방문자 간에 공유할 수 있으므로, <strong>Cache</strong> fix를 쓰면 페이지의 static 요구 사항을 유지할 수 있습니다. Next.js가 query 결과를 재사용할 수 있도록 <code>getGuide()</code>에 <a href="app-api-reference-directives-use-cache.html"><code>&#x27;use cache&#x27;</code> directive</a>를 추가하세요:</p><div class="en-orig"><p>The buying-guide content can be shared across visitors, so the <strong>Cache</strong> fix preserves the page's static requirement. Add the <a href="app-api-reference-directives-use-cache.html"><code>&#x27;use cache&#x27;</code> directive</a> to <code>getGuide()</code> so Next.js can reuse the query result:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">lib/guides.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { db } from &#x27;@/lib/db&#x27;
+
+export async function getGuideIds() {
+  const guides = await db.guide.findMany({ select: { id: true } })
+  return guides.map(({ id }) =&gt; id)
+}
+
+export async function getGuide(id: string) {
+  &#x27;use cache&#x27;
+  return db.guide.findUniqueOrThrow({ where: { id } })
+}</code></pre></div></div>
+<p>query가 cache되고 나면 overlay는 남아 있는 request별 값을 가리킵니다:</p><div class="en-orig"><p>After the query is cached, the overlay points to the remaining request-specific value:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/guides/[id]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">const theme = (await cookies()).get(&#x27;theme&#x27;)?.value</code></pre></div></div>
+<p>이제 overlay는 runtime 데이터에 대한 fix를 보여 줍니다:</p><div class="en-orig"><p>The overlay now presents the fixes for runtime data:</p></div>
+<div class="fixgrid"><a class="fixcard" href="https://nextjs.org/docs/messages/static-route-runtime#remove-the-data-access" target="_blank" rel="noopener"><div class="fc-t">Remove the data access</div><div class="fc-c"><div class="fl">async function Page() {</div><div class="fl hl">- const store = await cookies()</div></div></a><a class="fixcard" href="https://nextjs.org/docs/messages/static-route-runtime#read-the-data-on-the-client" target="_blank" rel="noopener"><div class="fc-t">Read the data on the client</div><div class="fc-c"><div class="fl">&#x27;use client&#x27;</div><div class="fl hl">use(browser(&#x27;Read cookie&#x27;))</div><div class="fl">document.cookie.match(/cart=/)</div></div></a></div>
+<p>구매 가이드에는 방문자별 theme이 필요 없으므로 cookie access를 제거하세요:</p><div class="en-orig"><p>The buying guides do not need a visitor-specific theme, so remove the cookie access:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">app/guides/[id]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-diff">  import { Suspense } from &#x27;react&#x27;
+- import { cookies } from &#x27;next/headers&#x27;
+  import { getGuide, getGuideIds } from &#x27;@/lib/guides&#x27;
+
+  // ...
+
+  async function Guide({ params }) {
+    const { id } = await params
+    const guide = await getGuide(id)
+-   const theme = (await cookies()).get(&#x27;theme&#x27;)?.value
+-   return &lt;article data-theme={theme}&gt;{guide.content}&lt;/article&gt;
++   return &lt;article&gt;{guide.content}&lt;/article&gt;
+  }</code></pre></div></div>
+<p>database query가 cache되고 request별 theme이 제거되면, <code>next build</code>는 목록에 있는 가이드에 대해 완전한 static 페이지를 생성합니다:</p><div class="en-orig"><p>With the database query cached and the request-specific theme removed, <code>next build</code> produces a complete static page for the listed guide:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-plaintext">Route (app)
+├   /guides/[id]
+│ ├ ◐ /guides/[id]
+│ └ ○ /guides/coffee
+├ ◐ /store
+└   /store/products/[slug]
+  ├ ◐ /store/products/[slug]
+  └ ◐ /store/products/coffee-grinder
+
+○  (Static)             prerendered as static content
+◐  (Partial Prerender)  prerendered as static HTML with dynamic server-streamed content</code></pre></div></div>
+<p>이제 목록에 있는 가이드는 완전히 prerender됩니다. 목록에 없는 가이드 ID의 경우, 첫 request는 Next.js가 완전한 static 페이지를 생성하고 저장하는 동안 기다립니다. 구매 가이드는 더 이상 request 시점의 server rendering을 수행하지 않으며, 앞으로 이 요구 사항을 깨뜨리는 변경이 생기면 <code>ensureStatic</code>이 이를 보고합니다.</p><div class="en-orig"><p>The listed guide is now fully prerendered. For an unlisted guide ID, the first request waits while Next.js generates and stores the complete static page. The buying guides no longer perform request-time server rendering, and <code>ensureStatic</code> will report future changes that would break that requirement.</p></div>
+<p>이제 store는 static App Shell에서 공유 navigation을 load하고, server를 호출하지 않고 per-link prefetch에 cache된 상품 상세를 포함하며, 구매 가이드에 대해 완전한 static 출력을 반환합니다. 개인화된 cart 데이터는 필요할 때 여전히 render됩니다.</p><div class="en-orig"><p>The store now loads shared navigation from its static App Shell, includes cached product details in per-link prefetches without invoking the server, and returns complete static output for buying guides. Personalized cart data still renders when it is needed.</p></div>
+<h2 class="sec" id="next-steps"><a class="anchor" href="#next-steps">Next steps<span class="ko">다음 단계</span></a></h2>
+<ul>
+<li><a href="app-guides-optimizing-prefetching.html#defer-work-to-a-later-stage">Optimize prefetching</a>: 개별 subtree가 render되는 시점을 제어합니다.</li>
+<li><a href="app-guides-instant-navigation.html">Ensure instant navigations</a>: store로의 client navigation이 UI를 즉시 보여 주는지 검증합니다.</li>
+<li><a href="app-guides-migrating-to-cache-components.html">Migrate to Cache Components</a>: 기존 앱에서 <code>dynamic = &#x27;force-static&#x27;</code> 같은 route 수준 config를 대체합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-guides-optimizing-prefetching.html#defer-work-to-a-later-stage">Optimize prefetching</a> to control when individual subtrees render.</li>
+<li><a href="app-guides-instant-navigation.html">Ensure instant navigations</a> to validate that client navigations into the store show UI immediately.</li>
+<li><a href="app-guides-migrating-to-cache-components.html">Migrate to Cache Components</a> to replace route-level configs such as <code>dynamic = &#x27;force-static&#x27;</code> in an existing app.</li>
+</ul></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">API reference</h2><p>route 전체에 static 출력을 요구하거나 하나의 subtree 안에서 작업을 미룹니다.</p><div class="rgrid"><a class="rcard" href="app-api-reference-file-conventions-route-segment-config-ensureStatic.html"><div class="rt">ensureStatic</div><div class="rk">ensureStatic</div><div class="rd">ensureStatic route segment config로 선택한 route output이 request마다 rendering되지 않고 static으로 유지되도록 요구합니다.</div></a><a class="rcard" href="app-api-reference-functions-prefetch.html"><div class="rt">prefetch</div><div class="rk">prefetch</div><div class="rd">prefetch 함수로 runtime 작업을 link별 prefetch 또는 navigation까지 미룹니다.</div></a><a class="rcard" href="app-api-reference-functions-navigation.html"><div class="rt">navigation</div><div class="rk">navigation</div><div class="rd">navigation 함수로 runtime 작업을 사용자가 navigate할 때까지 미룹니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/keeping-pages-static.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/keeping-pages-static" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-json-ld.html" class="prev"><div class="dir">← 이전</div><div class="ttl">JSON-LD</div><div class="ttl-ko">Next.js 애플리케이션에 JSON-LD 구현하기</div></a>
+      <a href="app-guides-lazy-loading.html" class="next"><div class="dir">다음 →</div><div class="ttl">Lazy Loading</div><div class="ttl-ko">Client Component와 library lazy loading하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/keeping-pages-static" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#decide-what-should-stay-static">Decide what should stay static</a></li><li class="l2"><a href="#example">Example</a></li><li class="l3"><a href="#step-1-load-a-static-app-shell">Step 1: Load a static App Shell</a></li><li class="l3"><a href="#step-2-prefetch-static-product-details">Step 2: Prefetch static product details</a></li><li class="l3"><a href="#step-3-prerender-the-buying-guides">Step 3: Prerender the buying guides</a></li><li class="l2"><a href="#next-steps">Next steps</a></li><li class="l2"><a href="#next-steps">API reference</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+[Cache Components](/docs/app/api-reference/config/next-config-js/cacheComponents) 이전에는 [`dynamic = &#x27;force-static&#x27;`](/docs/app/guides/caching-without-cache-components#dynamic), `dynamic = &#x27;force-dynamic&#x27;`, `dynamic = &#x27;error&#x27;` 같은 route segment config가 route 전체의 rendering mode를 선택했습니다. Cache Components를 사용하면 하나의 route 안에서 prerender된 UI, cache된 콘텐츠, request 시점에 render되는 request별 콘텐츠를 조합할 수 있습니다.
+
+이런 유연성은 personalization이 필요한 route에 유용합니다. 예측 가능한 성능과 compute 비용을 위해 route의 일부 또는 전체가 request 시점의 server rendering을 피해야 한다면 [`ensureStatic`](/docs/app/api-reference/file-conventions/route-segment-config/ensureStatic)을 사용하세요.
+
+## Decide what should stay static || 무엇을 static으로 유지할지 정하기
+
+static 출력은 request별 데이터에 의존하지 않습니다. Next.js는 request가 오기 전에 이를 생성해 두고 여러 request에 걸쳐 재사용할 수 있습니다.
+
+[Partial Prefetching](/docs/app/api-reference/config/next-config-js/partialPrefetching)을 사용하면 route 출력은 세 가지 [navigation stage](/docs/app/glossary#navigation-stages)에서 사용 가능해집니다:
+
+1. 기본 `&lt;Link&gt;`는 [App Shell](/docs/app/glossary#app-shell)을 load합니다.
+2. `&lt;Link prefetch={true}&gt;`는 그 link의 URL에 대한 콘텐츠도 load할 수 있습니다.
+3. navigation은 click 이후에 남은 나머지를 render합니다.
+
+각 `ensureStatic` level은 static 요구 사항을 이 stage들 중 하나까지 확장합니다. 다음 diagram에서 회색은 static 출력을, 파란색은 request 시점에 render될 수 있는 콘텐츠를 나타냅니다:
+
+&lt;Image
+  alt=&quot;Shell, Prefetch, Navigation stage와, 각 ensureStatic 값이 static 요구 사항을 어느 stage까지 확장하는지 보여 주는 막대&quot;
+  srcLight=&quot;/docs/light/ensure-static-visual.png&quot;
+  srcDark=&quot;/docs/dark/ensure-static-visual.png&quot;
+  width=&quot;1200&quot;
+  height=&quot;530&quot;
+/&gt;
+
+어떤 request가 static 출력만 사용해야 하는지에 따라 level을 고르세요:
+
+- `&#x27;shell&#x27;`: 기본 `&lt;Link&gt;`가 load하는 App Shell.
+- `&#x27;prefetch&#x27;`: App Shell과 `&lt;Link prefetch={true}&gt;`의 [per-link prefetch](/docs/app/guides/optimizing-prefetching). 여기에는 `params` 같은 link의 [URL data](/docs/app/glossary#url-data)에 대한 콘텐츠가 포함될 수 있습니다.
+- `&#x27;navigation&#x27;`: 사용자가 navigate한 뒤 반환되는 response를 포함한 route 전체.
+
+## Example || 예제
+
+다음 예제는 온라인 스토어의 세 부분, 즉 공유 cart, 상품 페이지, 공개 구매 가이드에 static 요구 사항을 추가합니다.
+
+[[CODE 1]]
+
+[Cache Components](/docs/app/api-reference/config/next-config-js/cacheComponents)와 [Partial Prefetching](/docs/app/api-reference/config/next-config-js/partialPrefetching)을 활성화하세요:
+
+[[CODE 2]]
+
+### Step 1: Load a static App Shell || 1단계: static App Shell load하기
+
+공유 store layout은 방문자의 cart 개수를 표시합니다. `CartButton`은 server에서 cookie로부터 개수를 읽습니다:
+
+[[CODE 3]]
+
+layout은 `CartButton`을 `&lt;Suspense&gt;` 안에 두는데, 이 `&lt;Suspense&gt;`는 현재 개수가 render되는 동안 static fallback을 제공합니다:
+
+[[CODE 4]]
+
+navigation과 cart fallback은 모든 방문자가 공유합니다. store로 가는 link를 load할 때, 사용자가 click하기 전에 server에서 개인화된 cart 개수를 render해서는 안 됩니다. `ensureStatic = &#x27;shell&#x27;`을 추가해 기본 `&lt;Link&gt;`가 static App Shell만 request하도록 하세요:
+
+[[CODE 5]]
+
+이제 store로 가는 기본 `&lt;Link&gt;`는 navigation과 `Cart (0)` fallback을 static 출력에서 load합니다. 이후 per-link prefetch나 navigation이 요청하기 전까지 server는 현재 cart 개수를 render하지 않습니다. 이렇게 하면 사용자가 끝내 click하지 않을 수도 있는 link에 대해 request 시점의 server 작업을 피할 수 있습니다.
+
+&gt; **Good to know**: App Shell에서 `CartButton`만 미뤄야 했다면 그 subtree 안에서 [`await prefetch()`](/docs/app/api-reference/functions/prefetch)를 호출할 수 있습니다. 여기서는 앞으로의 변경까지 포함해 store shell 전체에 요구 사항이 적용되므로, layout에서 `ensureStatic = &#x27;shell&#x27;`을 사용합니다.
+
+### Step 2: Prefetch static product details || 2단계: static 상품 상세 prefetch하기
+
+각 상품 페이지는 방문자 간에 재사용할 수 있는 상세 정보와, 현재 방문자에 따라 달라지는 cart action을 함께 담고 있습니다. `ProductDetails`는 [`use cache`](/docs/app/api-reference/directives/use-cache)로 query를 cache하고, `ProductCartStatus`는 cookie를 읽어 상품이 이미 cart에 있는지 확인합니다:
+
+[[CODE 6]]
+
+상품 route는 [`generateStaticParams()`](/docs/app/api-reference/functions/generate-static-params)로 catalog의 상품 URL을 prerender합니다. `&lt;Suspense&gt;` boundary를 따로 두면 상품 상세가 static cart fallback과 함께 render될 수 있습니다:
+
+[[CODE 7]]
+
+기본 상품 link는 상품 fallback이 들어 있는 App Shell을 load합니다. 상품 상세는 이미 prerender되어 있으므로, catalog는 `prefetch={true}`를 설정해 click 전에 이를 포함할 수 있습니다:
+
+[[CODE 8]]
+
+화면에 보이는 각 `prefetch={true}` link는 해당 상품의 cart action을 개인화하기 위해 `ProductCartStatus`를 render할 수 있습니다. 따라서 상품 20개가 보이는 grid는 사용자가 상품을 click하기도 전에 request 시점의 server render를 20번 trigger할 수 있습니다.
+
+`ensureStatic = &#x27;prefetch&#x27;`를 추가해 모든 상품 prefetch가 static 출력만 사용하도록 하세요:
+
+[[CODE 9]]
+
+이제 각 상품 prefetch는 request 시점의 server rendering을 호출하지 않고, cache된 상품 상세와 static **Add to cart** fallback을 포함합니다. 현재 cart 상태는 사용자가 link를 따라간 뒤에 render됩니다.
+
+`ensureStatic` 값은 그것을 export한 segment 위의 layout까지 포함해 route 전체에 적용됩니다. 상품 route에서 `&#x27;prefetch&#x27;`는 per-link prefetch 동안 store layout도 static으로 유지합니다.
+
+&gt; **Good to know**: per-link prefetch에서 `ProductCartStatus`만 미뤄야 했다면 cookie를 읽기 전에 [`await navigation()`](/docs/app/api-reference/functions/navigation)을 호출할 수 있습니다. 여기서는 모든 상품 prefetch가 request 시점의 server rendering을 피해야 하므로, page에서 `ensureStatic = &#x27;prefetch&#x27;`를 사용합니다.
+
+### Step 3: Prerender the buying guides || 3단계: 구매 가이드 prerender하기
+
+store에는 공개 구매 가이드도 있습니다. 각 가이드는 database에서 콘텐츠를 읽고 cookie에서 theme을 적용합니다:
+
+[[CODE 10]]
+
+기존 `getGuide()` helper가 database query를 수행합니다:
+
+[[CODE 11]]
+
+현재 `next build`는 store route와 구매 가이드에 대해 partial prerender를 생성합니다:
+
+[[CODE 12]]
+
+store와 상품 route는 request별 cart UI가 나중에 render되므로 partial 출력이 예상된 결과입니다. 구매 가이드는 공개 편집 페이지이므로, request 시점의 server rendering 없이 완전한 static 출력을 반환해야 합니다. `ensureStatic = &#x27;navigation&#x27;`을 추가하세요:
+
+[[CODE 13]]
+
+`next build`를 다시 실행하면 Next.js는 먼저 dynamic route가 prerender할 parameter 값을 하나도 제공하지 않는다고 보고합니다:
+
+[[CODE 14]]
+
+`generateStaticParams()`를 export하고 구매 가이드 ID를 하나 이상 반환하세요. Next.js는 반환된 ID를 build 중에 prerender합니다. 허용된 다른 ID는 첫 request 때 생성하고 그 결과를 이후 request를 위해 저장할 수 있습니다. `&#x27;navigation&#x27;`에서는 그 첫 request가 fallback을 streaming하는 대신 완전한 static 페이지를 기다립니다. [ISR with Cache Components](/docs/app/guides/incremental-static-regeneration-cache-components#at-runtime)를 참고하세요.
+
+prerender할 가이드 ID를 반환하는 helper를 추가하세요:
+
+[[CODE 15]]
+
+[[CODE 16]]
+
+`generateStaticParams()`가 parameter 값을 제공하지만, 가이드에는 여전히 cache되지 않은 작업과 request별 작업이 들어 있습니다. 다음 build는 route가 완전히 static일 수 없다고 보고합니다:
+
+[[CODE 17]]
+
+build는 영향을 받는 route를 알려 주지만, stack frame에는 data access의 source 위치가 포함되지 않습니다. 고치는 동안 source-mapped code frame을 얻으려면 `next dev`를 시작하고 `/guides/coffee`를 여세요. build만 실행할 수 있다면 [`next build --debug-prerender`](/docs/app/guides/building#debug-prerender-errors)를 사용하세요.
+
+development overlay는 먼저 cache되지 않은 database query를 가리킵니다:
+
+[[CODE 18]]
+
+overlay는 cache되지 않은 데이터를 처리하는 세 가지 방법을 보여 줍니다:
+
+&lt;FixCardGrid&gt;
+  &lt;FixCard
+    group=&quot;cache&quot;
+    title=&quot;Cache the data&quot;
+    href=&quot;/docs/messages/static-route-dynamic#cache-the-data&quot;
+    snippets={[
+      { text: &#x27;async function getData() {&#x27; },
+      { text: &#x27;  &quot;use cache&quot;&#x27;, highlight: true },
+      { text: &#x27;  return await db.query(…)&#x27; },
+    ]}
+  /&gt;
+  &lt;FixCard
+    group=&quot;remove&quot;
+    title=&quot;Remove the data access&quot;
+    href=&quot;/docs/messages/static-route-dynamic#remove-the-data-access&quot;
+    snippets={[
+      { text: &#x27;async function Page() {&#x27; },
+      { text: &#x27;- await connection()&#x27;, highlight: true },
+      { text: &#x27;  return &lt;Content /&gt;&#x27; },
+    ]}
+  /&gt;
+  &lt;FixCard
+    group=&quot;client&quot;
+    title=&quot;Read the data on the client&quot;
+    href=&quot;/docs/messages/static-route-dynamic#read-the-data-on-the-client&quot;
+    snippets={[
+      { text: &quot;&#x27;use client&#x27;&quot; },
+      { text: &quot;const data = useSWR(&#x27;/api&#x27;)&quot;, highlight: true },
+      { text: &#x27;return &lt;Content data={data} /&gt;&#x27; },
+    ]}
+  /&gt;
+&lt;/FixCardGrid&gt;
+
+구매 가이드 콘텐츠는 방문자 간에 공유할 수 있으므로, **Cache** fix를 쓰면 페이지의 static 요구 사항을 유지할 수 있습니다. Next.js가 query 결과를 재사용할 수 있도록 `getGuide()`에 [`&#x27;use cache&#x27;` directive](/docs/app/api-reference/directives/use-cache)를 추가하세요:
+
+[[CODE 19]]
+
+query가 cache되고 나면 overlay는 남아 있는 request별 값을 가리킵니다:
+
+[[CODE 20]]
+
+이제 overlay는 runtime 데이터에 대한 fix를 보여 줍니다:
+
+&lt;FixCardGrid&gt;
+  &lt;FixCard
+    group=&quot;remove&quot;
+    title=&quot;Remove the data access&quot;
+    href=&quot;/docs/messages/static-route-runtime#remove-the-data-access&quot;
+    snippets={[
+      { text: &#x27;async function Page() {&#x27; },
+      { text: &#x27;- const store = await cookies()&#x27;, highlight: true },
+      { text: &#x27;  return &lt;Content /&gt;&#x27; },
+    ]}
+  /&gt;
+  &lt;FixCard
+    group=&quot;client&quot;
+    title=&quot;Read the data on the client&quot;
+    href=&quot;/docs/messages/static-route-runtime#read-the-data-on-the-client&quot;
+    snippets={[
+      { text: &quot;&#x27;use client&#x27;&quot; },
+      { text: &quot;use(browser(&#x27;Read cookie&#x27;))&quot;, highlight: true },
+      { text: &#x27;document.cookie.match(/cart=/)&#x27; },
+    ]}
+  /&gt;
+&lt;/FixCardGrid&gt;
+
+구매 가이드에는 방문자별 theme이 필요 없으므로 cookie access를 제거하세요:
+
+[[CODE 21]]
+
+database query가 cache되고 request별 theme이 제거되면, `next build`는 목록에 있는 가이드에 대해 완전한 static 페이지를 생성합니다:
+
+[[CODE 22]]
+
+이제 목록에 있는 가이드는 완전히 prerender됩니다. 목록에 없는 가이드 ID의 경우, 첫 request는 Next.js가 완전한 static 페이지를 생성하고 저장하는 동안 기다립니다. 구매 가이드는 더 이상 request 시점의 server rendering을 수행하지 않으며, 앞으로 이 요구 사항을 깨뜨리는 변경이 생기면 `ensureStatic`이 이를 보고합니다.
+
+이제 store는 static App Shell에서 공유 navigation을 load하고, server를 호출하지 않고 per-link prefetch에 cache된 상품 상세를 포함하며, 구매 가이드에 대해 완전한 static 출력을 반환합니다. 개인화된 cart 데이터는 필요할 때 여전히 render됩니다.
+
+## Next steps || 다음 단계
+
+- [Optimize prefetching](/docs/app/guides/optimizing-prefetching#defer-work-to-a-later-stage): 개별 subtree가 render되는 시점을 제어합니다.
+- [Ensure instant navigations](/docs/app/guides/instant-navigation): store로의 client navigation이 UI를 즉시 보여 주는지 검증합니다.
+- [Migrate to Cache Components](/docs/app/guides/migrating-to-cache-components): 기존 앱에서 `dynamic = &#x27;force-static&#x27;` 같은 route 수준 config를 대체합니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

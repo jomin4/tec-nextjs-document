@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to prevent flash before hydration (hydration 전 깜빡임 방지하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/preventing-flash-before-hydration" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/preventing-flash-before-hydration" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/preventing-flash-before-hydration.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to prevent flash before hydration<span class="sub">hydration 전 깜빡임 방지하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>사용자 preference, 브라우저 설정, client-side storage는 server rendering 중에는 사용할 수 없습니다. server는 적절한 기본값을 내보내지만, client 전용 state(locale, time zone, theme, 저장된 interaction)에 의존하는 UI는 사용자가 보기 전에 업데이트되어야 합니다.</p><div class="en-orig"><p>User preferences, browser settings, and client-side storage aren't available during server rendering. The server emits a reasonable default, but any UI that depends on client-only state (locale, time zone, theme, persisted interactions) needs to be updated before the user sees it.</p></div>
+<p>이 문제에 대한 흔한 접근 방식은 다음과 같습니다:</p><div class="en-orig"><p>Some common approaches to this problem:</p></div>
+<ul>
+<li>client 값으로 re-render하는 Client Component는 hydration error를 일으킵니다.</li>
+<li><code>useEffect</code>로 미루면 error는 피하지만 눈에 보이는 깜빡임이 생깁니다.</li>
+<li>server에서만 rendering하면 client별 formatting을 완전히 포기해야 합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>A Client Component that re-renders with client values causes a hydration error.</li>
+<li>Deferring to <code>useEffect</code> avoids the error but introduces a visible flash.</li>
+<li>Rendering only on the server means giving up on client-specific formatting entirely.</li>
+</ul></div>
+<p>브라우저가 HTML을 parse하는 동안 동기적으로 실행되는 <strong>inline script</strong>를 사용하면, <strong>first paint 전에</strong> DOM을 업데이트할 수 있습니다. 이 가이드에서는 날짜, theme, 저장된 UI state를 다룹니다.</p><div class="en-orig"><p>Using an <strong>inline script</strong> that runs synchronously as the browser parses the HTML, you can update the DOM <strong>before the first paint</strong>. This guide covers dates, themes, and persisted UI state.</p></div>
+<h2 class="sec" id="example"><a class="anchor" href="#example">Example<span class="ko">예제</span></a></h2>
+<p>함께 제공되는 <a href="https://preventing-flash-before-hydration.labs.vercel.dev/" target="_blank" rel="noopener">demo</a>(<a href="https://github.com/nextjs/preventing-flash-before-hydration" target="_blank" rel="noopener">source</a>)는 server/client locale 불일치를 시뮬레이션하기 위해 <code>LANG=ja_JP.UTF-8</code>로 build되었습니다. 다음을 비교해 볼 수 있습니다:</p><div class="en-orig"><p>The companion <a href="https://preventing-flash-before-hydration.labs.vercel.dev/" target="_blank" rel="noopener">demo</a> (<a href="https://github.com/nextjs/preventing-flash-before-hydration" target="_blank" rel="noopener">source</a>) is built with <code>LANG=ja_JP.UTF-8</code> to simulate a server/client locale mismatch. It lets you compare:</p></div>
+<ul>
+<li>깜빡임도 hydration error도 없는 inline script 날짜 formatting</li>
+<li><code>toLocaleDateString()</code>을 직접 호출해 hydration error가 나타나는 Client Component</li>
+<li>lazy <code>useState</code> initializer를 사용해 열린 섹션을 <code>localStorage</code>에 저장하는 accordion</li>
+</ul><div class="en-orig"><ul>
+<li>Inline script date formatting with no flash and no hydration error</li>
+<li>A Client Component that calls <code>toLocaleDateString()</code> directly, showing the hydration error</li>
+<li>An accordion that persists its open section to <code>localStorage</code> using a lazy <code>useState</code> initializer</li>
+</ul></div>
+<p>Chrome DevTools의 <a href="https://developer.chrome.com/docs/devtools/sensors" target="_blank" rel="noopener">Sensors</a>로 locale을 override(예: <code>ru-RU</code>)해서 각 방식이 어떻게 동작하는지 확인해 보세요.</p><div class="en-orig"><p>Use Chrome DevTools <a href="https://developer.chrome.com/docs/devtools/sensors" target="_blank" rel="noopener">Sensors</a> to override your locale (e.g. <code>ru-RU</code>) and see how each approach behaves.</p></div>
+<h2 class="sec" id="dates-and-formatting"><a class="anchor" href="#dates-and-formatting">Dates and formatting<span class="ko">날짜와 formatting</span></a></h2>
+<p><code>2026-06-15T18:00:00Z</code> 같은 UTC timestamp는 고정된 시점을 나타내지만, 이를 화면에 어떻게 format할지는 사용자의 locale과 time zone에 따라 달라집니다. server에서 <code>toLocaleDateString()</code>과 <code>Intl.DateTimeFormat</code>은 server의 설정을 사용하며, 이는 사용자의 설정과 다를 수 있습니다.</p><div class="en-orig"><p>A UTC timestamp like <code>2026-06-15T18:00:00Z</code> represents a fixed point in time, but how it is formatted for display depends on the user's locale and time zone. <code>toLocaleDateString()</code> and <code>Intl.DateTimeFormat</code> on the server use the server's settings, which may not match the user's.</p></div>
+<h3 class="sec" id="the-problem"><a class="anchor" href="#the-problem">The problem<span class="ko">문제</span></a></h3>
+<p>자연스러운 접근은 날짜를 format하는 Client Component입니다:</p><div class="en-orig"><p>A natural approach is a Client Component that formats the date:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/components/event-date.tsx" data-js="app/components/event-date.js">app/components/event-date.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+export function EventDate({ date }: { date: string }) {
+  return &lt;p&gt;{new Date(date).toLocaleDateString()}&lt;/p&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+export function EventDate({ date }) {
+  return &lt;p&gt;{new Date(date).toLocaleDateString()}&lt;/p&gt;
+}</code></pre></div></div>
+<p>SSR 중에는 <code>toLocaleDateString()</code>이 Node.js에서 실행되어 server의 locale로 format합니다(예: <code>6/15/2026</code>). hydration 시 React는 브라우저에서 component를 다시 실행하고 사용자의 locale로 결과를 만듭니다(예: <code>2026/6/15</code>). React는 불일치를 감지해 hydration error를 throw하고, 사용자는 깜빡임을 보게 됩니다.</p><div class="en-orig"><p>During SSR, <code>toLocaleDateString()</code> runs in Node.js and formats using the server's locale (e.g. <code>6/15/2026</code>). On hydration, React re-executes the component in the browser and produces the user's locale (e.g. <code>2026/6/15</code>). React detects the mismatch, throws a hydration error, and the user sees a flash.</p></div>
+<p><code>useEffect</code>로 hydration 후에 날짜를 업데이트하는 우회 방법도 있지만, 사용자는 여전히 server에서 format된 날짜를 먼저 보게 됩니다. Server Component는 error를 완전히 피하지만, 날짜가 영구적으로 server의 locale로 표시됩니다.</p><div class="en-orig"><p>You could work around this with <code>useEffect</code> to update the date after hydration, but the user still sees the server-formatted date first. A Server Component avoids the error entirely, but the date is permanently in the server's locale.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>컴퓨터의 locale이 브라우저의 locale과 같으면 로컬 개발 중에 이 문제를 놓치기 쉽습니다. 불일치를 일찍 발견하려면 <code>TZ</code>와 <code>LANG</code>을 브라우저와 다르게 설정해서 dev server를 실행하세요(예: <code>TZ=UTC LANG=ja_JP.UTF-8 next dev</code>). 대부분의 server가 UTC로 동작하므로 <code>TZ=UTC</code>가 좋은 기본값입니다.</p><div class="en-orig"><p>This issue is easy to miss in local development if your machine's locale matches your browser's. Run your dev server with <code>TZ</code> and <code>LANG</code> set differently from your browser to catch mismatches early (e.g. <code>TZ=UTC LANG=ja_JP.UTF-8 next dev</code>). <code>TZ=UTC</code> is a good default since most servers run in UTC.</p></div></div></div>
+<h3 class="sec" id="fixing-it-with-an-inline-script"><a class="anchor" href="#fixing-it-with-an-inline-script">Fixing it with an inline script<span class="ko">inline script로 해결하기</span></a></h3>
+<ol>
+<li>server가 자신의 locale로 날짜를 <code>&lt;p&gt;</code> 안에 render합니다.</li>
+<li>element 뒤에 (<a href="https://react.dev/reference/react-dom/components/common#dangerously-setting-the-inner-html" target="_blank" rel="noopener"><code>dangerouslySetInnerHTML</code></a>을 통해) <code>&lt;script&gt;</code>를 둡니다. 브라우저는 HTML parsing 중 first paint 전에 이를 <strong>동기적으로</strong> 실행합니다.</li>
+<li>inline script가 React hydrate 전에 텍스트를 바꾸므로, element에 <a href="https://react.dev/reference/react-dom/client/hydrateRoot#suppressing-unavoidable-hydration-mismatch-errors" target="_blank" rel="noopener"><code>suppressHydrationWarning</code></a>을 추가합니다. 아래 <a href="#understanding-suppresshydrationwarning">Understanding <code>suppressHydrationWarning</code></a>을 참고하세요.</li>
+</ol><div class="en-orig"><ol>
+<li>The server renders the date with its locale into a <code>&lt;p&gt;</code>.</li>
+<li>Place a <code>&lt;script&gt;</code> (via <a href="https://react.dev/reference/react-dom/components/common#dangerously-setting-the-inner-html" target="_blank" rel="noopener"><code>dangerouslySetInnerHTML</code></a>) after the element. The browser runs it <strong>synchronously</strong> during HTML parsing, before the first paint.</li>
+<li>Add <a href="https://react.dev/reference/react-dom/client/hydrateRoot#suppressing-unavoidable-hydration-mismatch-errors" target="_blank" rel="noopener"><code>suppressHydrationWarning</code></a> to the element, since the inline script changes the text before React hydrates. See <a href="#understanding-suppresshydrationwarning">Understanding <code>suppressHydrationWarning</code></a> below.</li>
+</ol></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/events/page.tsx" data-js="app/events/page.js">app/events/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { getEvent } from &#x27;@/app/lib/events&#x27;
+
+export default async function Page() {
+  const event = await getEvent(&#x27;nextjs-conf&#x27;)
+
+  return (
+    &lt;section&gt;
+      &lt;h1&gt;{event.name}&lt;/h1&gt;
+      &lt;p id=&quot;event-date&quot; suppressHydrationWarning&gt;
+        {new Date(event.date).toLocaleDateString()}
+      &lt;/p&gt;
+      &lt;script
+        dangerouslySetInnerHTML={{
+          __html: `document.getElementById(&quot;event-date&quot;).textContent=new Date(&quot;${event.date}&quot;).toLocaleDateString()`,
+        }}
+      /&gt;
+    &lt;/section&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { getEvent } from &#x27;@/app/lib/events&#x27;
+
+export default async function Page() {
+  const event = await getEvent(&#x27;nextjs-conf&#x27;)
+
+  return (
+    &lt;section&gt;
+      &lt;h1&gt;{event.name}&lt;/h1&gt;
+      &lt;p id=&quot;event-date&quot; suppressHydrationWarning&gt;
+        {new Date(event.date).toLocaleDateString()}
+      &lt;/p&gt;
+      &lt;script
+        dangerouslySetInnerHTML={{
+          __html: `document.getElementById(&quot;event-date&quot;).textContent=new Date(&quot;${event.date}&quot;).toLocaleDateString()`,
+        }}
+      /&gt;
+    &lt;/section&gt;
+  )
+}</code></pre></div></div>
+<p>이 방식은 전체 page load(직접 방문, 새로고침)에서 동작합니다. <code>&lt;Link&gt;</code>를 통한 client-side navigation에 대해서는 <a href="#extracting-a-reusable-component">Extracting a reusable component</a>를 참고하세요.</p><div class="en-orig"><p>This works on full page loads (direct visits, refreshes). For client-side navigations via <code>&lt;Link&gt;</code>, see <a href="#extracting-a-reusable-component">Extracting a reusable component</a>.</p></div>
+<h3 class="sec" id="understanding-suppresshydrationwarning"><a class="anchor" href="#understanding-suppresshydrationwarning">Understanding <code>suppressHydrationWarning</code><span class="ko"><code>suppressHydrationWarning</code> 이해하기</span></a></h3>
+<p>React가 hydrate하다가 텍스트 불일치를 발견하면:</p><div class="en-orig"><p>When React hydrates and finds a text mismatch:</p></div>
+<ul>
+<li><strong><code>suppressHydrationWarning</code>이 없을 때</strong>: React는 이를 hydration error로 취급하고, 가장 가까운 error boundary 또는 Suspense boundary부터 client-rendering으로 복구합니다. 이때 깜빡임이 생기고, React가 DOM을 다시 만들 때 script가 다시 실행되지 않기 때문에 <strong>그 boundary 안의 다른 component에 적용된 inline script 수정 내용이 사라집니다</strong>.</li>
+<li><strong><code>suppressHydrationWarning</code>이 있을 때</strong>: React는 DOM에 있는 내용을 그대로 유지하고 그 element에 대한 client 결과물을 버립니다. DOM이 우선합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Without <code>suppressHydrationWarning</code></strong>: React treats it as a hydration error and recovers by client-rendering from the nearest error or Suspense boundary. This causes a flash, and inline script corrections on <strong>other components within that boundary are lost</strong> because the scripts don't re-execute when React rebuilds the DOM.</li>
+<li><strong>With <code>suppressHydrationWarning</code></strong>: React keeps whatever is in the DOM and discards the client's output for that element. The DOM wins.</li>
+</ul></div>
+<p>inline script는 React가 hydrate하기 전에 올바른 값을 DOM에 넣습니다. Server Component의 경우에도 React는 hydration 중 DOM을 RSC payload와 비교하며, inline script가 텍스트를 바꿔 놓은 상태입니다. <code>suppressHydrationWarning</code>은 React에게 payload 대신 DOM을 받아들이라고 알려 줍니다.</p><div class="en-orig"><p>The inline script puts the correct value in the DOM before React hydrates. Even for Server Components, React compares the DOM against the RSC payload during hydration, and the inline script has changed the text. <code>suppressHydrationWarning</code> tells React to accept the DOM rather than the payload.</p></div>
+<h3 class="sec" id="extracting-a-reusable-component"><a class="anchor" href="#extracting-a-reusable-component">Extracting a reusable component<span class="ko">재사용 가능한 component로 추출하기</span></a></h3>
+<p>DOM 업데이트로 삽입된 script는 브라우저에서 실행되지 않습니다. client-side navigation에서는 React가 RSC payload로 component를 render하므로 script가 실행되지 않습니다. component를 Client Component로 만들면 이 문제가 해결됩니다. soft navigation에서는 <code>toLocaleDateString()</code>이 브라우저에서 직접 실행되고, hard navigation은 inline script가 처리합니다. <a href="https://react.dev/reference/react/useId" target="_blank" rel="noopener"><code>useId</code></a>는 각 instance마다 안정적인 고유 ID를 생성합니다.</p><div class="en-orig"><p>Scripts inserted via DOM updates don't execute in the browser. On client-side navigations, React renders the component from the RSC payload and the script won't run. Making the component a Client Component solves this: <code>toLocaleDateString()</code> runs directly in the browser on soft navigations, while the inline script handles hard navigations. <a href="https://react.dev/reference/react/useId" target="_blank" rel="noopener"><code>useId</code></a> generates a stable unique ID for each instance.</p></div>
+<p>React는 개발 중 rendering 결과에 <code>&lt;script&gt;</code> tag가 생기면 경고도 표시합니다. 이를 피하려면 server에서는 <code>type=&quot;text/javascript&quot;</code>, client에서는 <code>type=&quot;text/plain&quot;</code>을 설정하는 helper로 script를 감싸세요. type 불일치는 <code>suppressHydrationWarning</code>이 처리합니다.</p><div class="en-orig"><p>React also warns in development when rendering produces <code>&lt;script&gt;</code> tags. To avoid this, wrap the script in a helper that sets <code>type=&quot;text/javascript&quot;</code> on the server and <code>type=&quot;text/plain&quot;</code> on the client. <code>suppressHydrationWarning</code> handles the type mismatch.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/components/inline-script.tsx" data-js="app/components/inline-script.js">app/components/inline-script.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export function InlineScript({ html }: { html: string }) {
+  return (
+    &lt;script
+      type={typeof window === &#x27;undefined&#x27; ? &#x27;text/javascript&#x27; : &#x27;text/plain&#x27;}
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{ __html: html }}
+    /&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export function InlineScript({ html }) {
+  return (
+    &lt;script
+      type={typeof window === &#x27;undefined&#x27; ? &#x27;text/javascript&#x27; : &#x27;text/plain&#x27;}
+      suppressHydrationWarning
+      dangerouslySetInnerHTML={{ __html: html }}
+    /&gt;
+  )
+}</code></pre></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/components/local-date.tsx" data-js="app/components/local-date.js">app/components/local-date.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useId } from &#x27;react&#x27;
+import { InlineScript } from &#x27;./inline-script&#x27;
+
+export function LocalDate({
+  date,
+  options,
+}: {
+  date: string
+  options?: Intl.DateTimeFormatOptions
+}) {
+  const id = useId()
+
+  return (
+    &lt;&gt;
+      &lt;time id={id} dateTime={date} suppressHydrationWarning&gt;
+        {new Date(date).toLocaleDateString(undefined, options)}
+      &lt;/time&gt;
+      &lt;InlineScript
+        html={`{var n=document.getElementById(&quot;${id}&quot;);if(n)n.textContent=new Date(&quot;${date}&quot;).toLocaleDateString(undefined,${JSON.stringify(options)})}`}
+      /&gt;
+    &lt;/&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useId } from &#x27;react&#x27;
+import { InlineScript } from &#x27;./inline-script&#x27;
+
+export function LocalDate({ date, options }) {
+  const id = useId()
+
+  return (
+    &lt;&gt;
+      &lt;time id={id} dateTime={date} suppressHydrationWarning&gt;
+        {new Date(date).toLocaleDateString(undefined, options)}
+      &lt;/time&gt;
+      &lt;InlineScript
+        html={`{var n=document.getElementById(&quot;${id}&quot;);if(n)n.textContent=new Date(&quot;${date}&quot;).toLocaleDateString(undefined,${JSON.stringify(options)})}`}
+      /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<ul>
+<li><strong>Hard navigation</strong>(최초 load, 새로고침): HTML parsing 중 script가 실행되어 날짜를 바로잡습니다. <code>suppressHydrationWarning</code>은 React에게 DOM을 받아들이라고 알려 줍니다.</li>
+<li><strong>Client-side navigation</strong>(<code>&lt;Link&gt;</code>를 통한 이동): Client Component render의 일부로 브라우저에서 <code>toLocaleDateString()</code>이 실행됩니다. script는 <code>text/plain</code>이므로 무시됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Hard navigation</strong> (initial load, refresh): The script executes during HTML parsing and corrects the date. <code>suppressHydrationWarning</code> tells React to accept the DOM.</li>
+<li><strong>Client-side navigation</strong> (via <code>&lt;Link&gt;</code>): <code>toLocaleDateString()</code> runs in the browser as part of the Client Component render. The script is <code>text/plain</code> and ignored.</li>
+</ul></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/events/page.tsx" data-js="app/events/page.js">app/events/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { LocalDate } from &#x27;@/app/components/local-date&#x27;
+import { getEvent } from &#x27;@/app/lib/events&#x27;
+
+export default async function Page() {
+  const event = await getEvent(&#x27;nextjs-conf&#x27;)
+
+  return (
+    &lt;section&gt;
+      &lt;h1&gt;{event.name}&lt;/h1&gt;
+      &lt;LocalDate
+        date={event.date}
+        options={{ year: &#x27;numeric&#x27;, month: &#x27;long&#x27;, day: &#x27;numeric&#x27; }}
+      /&gt;
+    &lt;/section&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { LocalDate } from &#x27;@/app/components/local-date&#x27;
+import { getEvent } from &#x27;@/app/lib/events&#x27;
+
+export default async function Page() {
+  const event = await getEvent(&#x27;nextjs-conf&#x27;)
+
+  return (
+    &lt;section&gt;
+      &lt;h1&gt;{event.name}&lt;/h1&gt;
+      &lt;LocalDate
+        date={event.date}
+        options={{ year: &#x27;numeric&#x27;, month: &#x27;long&#x27;, day: &#x27;numeric&#x27; }}
+      /&gt;
+    &lt;/section&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>표시되는 텍스트와 관계없이 검색 엔진과 screen reader가 ISO 문자열을 parse할 수 있도록 <code>dateTime</code> attribute가 있는 <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time" target="_blank" rel="noopener"><code>&lt;time&gt;</code></a> element를 사용하세요.</li>
+<li><code>dangerouslySetInnerHTML</code>을 사용한 inline script는 <code>&#x27;unsafe-inline&#x27;</code>을 허용하지 않는 엄격한 <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP" target="_blank" rel="noopener">Content Security Policy</a>에 의해 차단됩니다. 앱에서 CSP를 사용한다면 <a href="app-guides-content-security-policy.html">nonce</a>를 추가해야 합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Use a <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time" target="_blank" rel="noopener"><code>&lt;time&gt;</code></a> element with a <code>dateTime</code> attribute so search engines and screen readers can parse the ISO string regardless of the displayed text.</li>
+<li>Inline scripts with <code>dangerouslySetInnerHTML</code> are blocked by strict <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP" target="_blank" rel="noopener">Content Security Policies</a> that don't allow <code>&#x27;unsafe-inline&#x27;</code>. If your app uses a CSP, you'll need to add a <a href="app-guides-content-security-policy.html">nonce</a>.</li>
+</ul></div></div></div>
+<h2 class="sec" id="themes"><a class="anchor" href="#themes">Themes<span class="ko">Theme</span></a></h2>
+<p>page가 기본 theme(예: light)으로 server-render되더라도, 사용자는 <code>localStorage</code>에 저장된 preference를 가지고 있을 수 있습니다. 같은 inline script 기법이 여기서도 통합니다. 브라우저가 paint하기 전에 값을 읽어 <code>&lt;html&gt;</code>에 <code>data-theme</code> attribute를 설정하세요.</p><div class="en-orig"><p>Your page may be server-rendered with a default theme (e.g. light), but the user has a saved preference in <code>localStorage</code>. The same inline script technique works: read the value and set a <code>data-theme</code> attribute on <code>&lt;html&gt;</code> before the browser paints.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function RootLayout({ children }: LayoutProps&lt;&#x27;/&#x27;&gt;) {
+  return (
+    &lt;html lang=&quot;en&quot; data-theme=&quot;light&quot; suppressHydrationWarning&gt;
+      &lt;head&gt;
+        &lt;script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem(&quot;theme&quot;);if(t)document.documentElement.setAttribute(&quot;data-theme&quot;,t)}catch(e){}})()`,
+          }}
+        /&gt;
+      &lt;/head&gt;
+      &lt;body&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function RootLayout({ children }) {
+  return (
+    &lt;html lang=&quot;en&quot; data-theme=&quot;light&quot; suppressHydrationWarning&gt;
+      &lt;head&gt;
+        &lt;script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem(&quot;theme&quot;);if(t)document.documentElement.setAttribute(&quot;data-theme&quot;,t)}catch(e){}})()`,
+          }}
+        /&gt;
+      &lt;/head&gt;
+      &lt;body&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">app/globals.css</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-css">[data-theme=&#x27;light&#x27;] {
+  --background: #ffffff;
+  --foreground: #000000;
+}
+
+[data-theme=&#x27;dark&#x27;] {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}</code></pre></div></div>
+<p>script는 <code>&lt;head&gt;</code>에서 실행되므로 어떤 콘텐츠가 paint되기 전에 올바른 theme이 적용됩니다. <code>try/catch</code>는 <code>localStorage</code>를 사용할 수 없는 경우를 처리합니다.</p><div class="en-orig"><p>The script runs in <code>&lt;head&gt;</code>, so the correct theme is applied before any content is painted. The <code>try/catch</code> handles cases where <code>localStorage</code> is unavailable.</p></div>
+<h3 class="sec" id="storing-the-theme-in-a-cookie"><a class="anchor" href="#storing-the-theme-in-a-cookie">Storing the theme in a cookie<span class="ko">theme을 cookie에 저장하기</span></a></h3>
+<p><code>localStorage</code>와 달리 cookie는 모든 request와 함께 전송되므로, server가 <a href="app-api-reference-functions-cookies.html"><code>cookies()</code></a>로 이를 읽을 <em>수 있습니다</em>. 하지만 root layout에서 이를 읽으면 앱 전체가 static prerendering에서 제외됩니다(그리고 <a href="app-api-reference-config-next-config-js-cacheComponents.html">Cache Components</a> 환경에서는 layout 아래의 모든 segment가 blocking되도록 강제됩니다). 일반적인 기본값으로 page를 static prerender된 상태로 유지하면서도 깜빡임을 피하려면, 대신 inline script에서 cookie를 읽으세요:</p><div class="en-orig"><p>Unlike <code>localStorage</code>, a cookie is sent with every request, so the server <em>can</em> read it with <a href="app-api-reference-functions-cookies.html"><code>cookies()</code></a>. But reading it in the root layout opts the entire app out of static prerendering (and under <a href="app-api-reference-config-next-config-js-cacheComponents.html">Cache Components</a>, forces blocking every segment under the layout). To keep the page statically prerendered with a generic default and still avoid the flash, read the cookie in the inline script instead:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function RootLayout({ children }: LayoutProps&lt;&#x27;/&#x27;&gt;) {
+  return (
+    &lt;html lang=&quot;en&quot; data-theme=&quot;light&quot; suppressHydrationWarning&gt;
+      &lt;head&gt;
+        &lt;script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var m=document.cookie.match(/(?:^|; )theme=([^;]*)/);if(m)document.documentElement.setAttribute(&quot;data-theme&quot;,decodeURIComponent(m[1]))}catch(e){}})()`,
+          }}
+        /&gt;
+      &lt;/head&gt;
+      &lt;body&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function RootLayout({ children }) {
+  return (
+    &lt;html lang=&quot;en&quot; data-theme=&quot;light&quot; suppressHydrationWarning&gt;
+      &lt;head&gt;
+        &lt;script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var m=document.cookie.match(/(?:^|; )theme=([^;]*)/);if(m)document.documentElement.setAttribute(&quot;data-theme&quot;,decodeURIComponent(m[1]))}catch(e){}})()`,
+          }}
+        /&gt;
+      &lt;/head&gt;
+      &lt;body&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<p>theme을 전환하려면 <code>&lt;html&gt;</code>에 attribute를 설정하고 선택 값을 cookie에 저장하세요:</p><div class="en-orig"><p>To switch themes, set the attribute on <code>&lt;html&gt;</code> and persist the choice to the cookie:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">const theme = &#x27;dark&#x27;
+document.documentElement.setAttribute(&#x27;data-theme&#x27;, theme)
+document.cookie = `theme=${encodeURIComponent(theme)}; path=/; max-age=31536000; SameSite=Lax`</code></pre></div></div>
+<h2 class="sec" id="syncing-with-react-state"><a class="anchor" href="#syncing-with-react-state">Syncing with React state<span class="ko">React state와 동기화하기</span></a></h2>
+<p>Client Component가 interactive state(예: accordion의 어느 섹션이 열려 있는지)를 관리할 때, React의 initial state는 inline script가 설정한 DOM과 일치해야 합니다. script와 같은 소스에서 값을 읽는 <strong>lazy state initializer</strong>를 사용하세요.</p><div class="en-orig"><p>When a Client Component manages interactive state (like which accordion section is open), React's initial state must match the DOM that the inline script set. Use a <strong>lazy state initializer</strong> that reads from the same source as the script.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/components/accordion.tsx" data-js="app/components/accordion.js">app/components/accordion.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import { useState, useCallback } from &#x27;react&#x27;
+import { InlineScript } from &#x27;./inline-script&#x27;
+
+const STORAGE_KEY = &#x27;open-section&#x27;
+
+const sections = [
+  {
+    id: &#x27;setup&#x27;,
+    title: &#x27;Setup&#x27;,
+    content: &#x27;Install dependencies and create your project.&#x27;,
+  },
+  {
+    id: &#x27;usage&#x27;,
+    title: &#x27;Usage&#x27;,
+    content: &#x27;Import the component and pass your data.&#x27;,
+  },
+  {
+    id: &#x27;deploy&#x27;,
+    title: &#x27;Deploy&#x27;,
+    content: &#x27;Push to your Git provider and deploy.&#x27;,
+  },
+]
+
+const DEFAULT_ID = sections[0].id
+const SECTION_IDS = sections.map((s) =&gt; s.id)
+
+export function Accordion() {
+  const [openId, setOpenId] = useState(() =&gt; {
+    if (typeof window === &#x27;undefined&#x27;) return DEFAULT_ID
+    return localStorage.getItem(STORAGE_KEY) ?? DEFAULT_ID
+  })
+
+  const handleToggle = useCallback(
+    (id: string) =&gt; (e: React.ToggleEvent&lt;HTMLDetailsElement&gt;) =&gt; {
+      if (e.newState === &#x27;open&#x27;) {
+        setOpenId(id)
+        localStorage.setItem(STORAGE_KEY, id)
+      }
+    },
+    []
+  )
+
+  return (
+    &lt;div&gt;
+      {sections.map((section) =&gt; (
+        &lt;details
+          key={section.id}
+          name=&quot;accordion&quot;
+          id={`section-${section.id}`}
+          open={openId === section.id}
+          onToggle={handleToggle(section.id)}
+        &gt;
+          &lt;summary&gt;{section.title}&lt;/summary&gt;
+          &lt;p&gt;{section.content}&lt;/p&gt;
+        &lt;/details&gt;
+      ))}
+      &lt;InlineScript
+        html={`{var id=localStorage.getItem(&quot;${STORAGE_KEY}&quot;)??&quot;${DEFAULT_ID}&quot;;${JSON.stringify(SECTION_IDS)}.forEach(function(s){var el=document.getElementById(&quot;section-&quot;+s);if(el){if(s===id)el.setAttribute(&quot;open&quot;,&quot;&quot;);else el.removeAttribute(&quot;open&quot;)}})}`}
+      /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import { useState, useCallback } from &#x27;react&#x27;
+import { InlineScript } from &#x27;./inline-script&#x27;
+
+const STORAGE_KEY = &#x27;open-section&#x27;
+
+const sections = [
+  {
+    id: &#x27;setup&#x27;,
+    title: &#x27;Setup&#x27;,
+    content: &#x27;Install dependencies and create your project.&#x27;,
+  },
+  {
+    id: &#x27;usage&#x27;,
+    title: &#x27;Usage&#x27;,
+    content: &#x27;Import the component and pass your data.&#x27;,
+  },
+  {
+    id: &#x27;deploy&#x27;,
+    title: &#x27;Deploy&#x27;,
+    content: &#x27;Push to your Git provider and deploy.&#x27;,
+  },
+]
+
+const DEFAULT_ID = sections[0].id
+const SECTION_IDS = sections.map((s) =&gt; s.id)
+
+export function Accordion() {
+  const [openId, setOpenId] = useState(() =&gt; {
+    if (typeof window === &#x27;undefined&#x27;) return DEFAULT_ID
+    return localStorage.getItem(STORAGE_KEY) ?? DEFAULT_ID
+  })
+
+  const handleToggle = useCallback(
+    (id) =&gt; (e) =&gt; {
+      if (e.newState === &#x27;open&#x27;) {
+        setOpenId(id)
+        localStorage.setItem(STORAGE_KEY, id)
+      }
+    },
+    []
+  )
+
+  return (
+    &lt;div&gt;
+      {sections.map((section) =&gt; (
+        &lt;details
+          key={section.id}
+          name=&quot;accordion&quot;
+          id={`section-${section.id}`}
+          open={openId === section.id}
+          onToggle={handleToggle(section.id)}
+        &gt;
+          &lt;summary&gt;{section.title}&lt;/summary&gt;
+          &lt;p&gt;{section.content}&lt;/p&gt;
+        &lt;/details&gt;
+      ))}
+      &lt;InlineScript
+        html={`{var id=localStorage.getItem(&quot;${STORAGE_KEY}&quot;)??&quot;${DEFAULT_ID}&quot;;${JSON.stringify(SECTION_IDS)}.forEach(function(s){var el=document.getElementById(&quot;section-&quot;+s);if(el){if(s===id)el.setAttribute(&quot;open&quot;,&quot;&quot;);else el.removeAttribute(&quot;open&quot;)}})}`}
+      /&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>inline script와 lazy <code>useState</code> initializer는 둘 다 <code>localStorage</code>에서 값을 읽습니다. 둘은 항상 일치하므로 React의 initial state가 DOM과 맞아떨어집니다.</p><div class="en-orig"><p>The inline script and the lazy <code>useState</code> initializer both read from <code>localStorage</code>. They always agree, so React's initial state matches the DOM.</p></div>
+<h2 class="sec" id="re-applying-attributes-in-development"><a class="anchor" href="#re-applying-attributes-in-development">Re-applying attributes in development<span class="ko">개발 환경에서 attribute 다시 적용하기</span></a></h2>
+<p>inline script는 parsing 중에 attribute를 설정하며, production build에는 이것만으로 충분합니다. 하지만 개발 중에는 <a href="https://react.dev/reference/react/StrictMode" target="_blank" rel="noopener">React의 Strict Mode</a>가 bug를 드러내기 위해 component를 한 번 더 remount하는데, 이때 <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, <code>&lt;body&gt;</code>를 JSX에서 관리하는 attribute만 남도록 reset하면서 script가 설정한 attribute를 지워 버립니다. 그러면 page가 그 attribute 없이 render되어, 값의 source of truth를 무시하게 됩니다.</p><div class="en-orig"><p>The inline script sets the attribute during parsing, which is all a production build needs. In development, though, <a href="https://react.dev/reference/react/StrictMode" target="_blank" rel="noopener">React's Strict Mode</a> remounts components once to surface bugs, and on that remount it resets <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, and <code>&lt;body&gt;</code> to only the attributes it manages from JSX, clearing the one the script set. The page then renders without the attribute, ignoring the value's source of truth.</p></div>
+<p>이를 해결하는 한 가지 방법은 inline script가 전혀 없을 때 했을 방식을 그대로 하는 것입니다. theme을 소유하는 component에서, <a href="#why-not-useeffect">paint 전에</a> 실행되는 <a href="https://react.dev/reference/react/useLayoutEffect" target="_blank" rel="noopener"><code>useLayoutEffect</code></a> 안에서 client에 저장된 값을 읽어 적용하세요:</p><div class="en-orig"><p>One way to fix this is to do what you would do without the inline script at all. Read the stored value on the client and apply it, in the component that owns the theme, in a <a href="https://react.dev/reference/react/useLayoutEffect" target="_blank" rel="noopener"><code>useLayoutEffect</code></a> that runs <a href="#why-not-useeffect">before paint</a>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/components/theme-toggle.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import { useLayoutEffect } from &#x27;react&#x27;
+
+export function ThemeToggle() {
+  // Re-apply after React clears it on the dev remount. This is a no-op in production.
+  useLayoutEffect(() =&gt; {
+    const theme = localStorage.getItem(&#x27;theme&#x27;)
+    if (theme) document.documentElement.setAttribute(&#x27;data-theme&#x27;, theme)
+  }, [])
+
+  function toggle() {
+    const next =
+      (localStorage.getItem(&#x27;theme&#x27;) ?? &#x27;light&#x27;) === &#x27;dark&#x27; ? &#x27;light&#x27; : &#x27;dark&#x27;
+    localStorage.setItem(&#x27;theme&#x27;, next)
+    document.documentElement.setAttribute(&#x27;data-theme&#x27;, next)
+  }
+
+  return &lt;button onClick={toggle}&gt;Toggle theme&lt;/button&gt;
+}</code></pre></div></div>
+<h2 class="sec" id="when-to-use-other-approaches"><a class="anchor" href="#when-to-use-other-approaches">When to use other approaches<span class="ko">다른 접근 방식을 써야 할 때</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>상황</th><th>접근 방식</th></tr></thead>
+<tbody>
+<tr><td>날짜가 request data(cookie, header)에 의존함</td><td><a href="app-api-reference-functions-headers.html"><code>headers()</code></a> 또는 <a href="app-api-reference-functions-cookies.html"><code>cookies()</code></a>로 request data를 읽고 server-side에서 format</td></tr>
+<tr><td>날짜가 실시간으로 업데이트됨(countdown timer, 시계)</td><td><code>useEffect</code>와 <code>suppressHydrationWarning</code>을 사용하는 Client Component 사용</td></tr>
+<tr><td>page가 이미 완전히 dynamic함</td><td><code>Accept-Language</code> header를 사용해 server에서 날짜를 format</td></tr>
+<tr><td>콘텐츠를 다른 언어로 번역함</td><td>locale별 static build 또는 dynamic rendering과 함께 <a href="app-guides-internationalization.html">internationalization</a> 사용</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Situation</th><th>Approach</th></tr></thead>
+<tbody>
+<tr><td>Date depends on request data (cookies, headers)</td><td>Use <a href="app-api-reference-functions-headers.html"><code>headers()</code></a> or <a href="app-api-reference-functions-cookies.html"><code>cookies()</code></a> to read request data and format server-side</td></tr>
+<tr><td>Date updates live (countdown timers, clocks)</td><td>Use a Client Component with <code>useEffect</code> and <code>suppressHydrationWarning</code></td></tr>
+<tr><td>Page is already fully dynamic</td><td>Format the date on the server using the <code>Accept-Language</code> header</td></tr>
+<tr><td>Translating content between languages</td><td>Use <a href="app-guides-internationalization.html">internationalization</a> with per-locale static builds or dynamic rendering</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="why-not-useeffect"><a class="anchor" href="#why-not-useeffect">Why not <code>useEffect</code>?<span class="ko">왜 <code>useEffect</code>가 아닐까?</span></a></h3>
+<p><code>useEffect</code>는 hydration과 paint 이후에 실행됩니다. 사용자는 server 값을 먼저 본 뒤에 수정된 값을 보게 됩니다. effect 안에서 state를 설정하면 re-render도 일어나는데, 이는 상위 Suspense boundary를 다시 활성화할 수 있습니다.</p><div class="en-orig"><p><code>useEffect</code> runs after hydration and paint. The user sees the server value first, then the correction. Setting state in an effect also triggers a re-render, which can reactivate parent Suspense boundaries.</p></div>
+<p><code>useLayoutEffect</code>는 paint 전, 하지만 hydration 후에 실행됩니다. hydration과 paint 사이의 깜빡임은 막지만, HTML이 도착한 시점과 React가 hydrate하는 시점 사이의 깜빡임은 막지 못합니다. 느린 연결에서는 React가 load되기 전에 브라우저가 server HTML을 paint합니다. inline script는 React가 관여하기 전, HTML <strong>parsing</strong> 중에 실행됩니다.</p><div class="en-orig"><p><code>useLayoutEffect</code> runs before paint but after hydration. It prevents the flash between hydration and paint, but not the flash between the HTML arriving and React hydrating. On slow connections, the browser paints the server HTML before React has loaded. The inline script runs during HTML <strong>parsing</strong>, before React is involved.</p></div>
+<h3 class="sec" id="why-not-read-from-headers-or-cookies-at-request-time"><a class="anchor" href="#why-not-read-from-headers-or-cookies-at-request-time">Why not read from headers or cookies at request time?<span class="ko">왜 request 시점에 header나 cookie를 읽지 않을까?</span></a></h3>
+<p><code>await headers()</code>로 <code>Accept-Language</code>를 읽으면 server가 request별로 format할 수 있습니다. Cache Components를 사용하면 날짜만 Suspense fallback으로 감싸 page의 나머지는 static으로 유지할 수 있습니다. 하지만 즉시 콘텐츠를 보여 주는 대신 fallback을 보여 줘야 하고, <code>Accept-Language</code>에는 time zone 정보가 포함되지 않습니다.</p><div class="en-orig"><p>Reading <code>Accept-Language</code> with <code>await headers()</code> lets the server format per-request. With Cache Components, you can wrap just the date in a Suspense fallback so the rest of the page stays static. But you'd need to show a fallback instead of immediate content, and <code>Accept-Language</code> doesn't include time zone information.</p></div>
+<h2 class="sec" id="next-steps"><a class="anchor" href="#next-steps">Next steps<span class="ko">다음 단계</span></a></h2>
+<ul>
+<li>request data를 기반으로 format해야 할 때는 <a href="app-api-reference-functions-cookies.html">cookie 읽기</a> 또는 <a href="app-api-reference-functions-headers.html">header</a>를 참고하세요.</li>
+<li>다국어 지원을 위해 <a href="app-guides-internationalization.html">internationalization 설정하기</a>를 참고하세요.</li>
+<li>hydration 불일치의 다른 흔한 원인에 대한 해결책은 <a href="https://nextjs.org/docs/messages/react-hydration-error" target="_blank" rel="noopener">React hydration error</a>를 참고하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-functions-cookies.html">Read cookies</a> or <a href="app-api-reference-functions-headers.html">headers</a> when you need to format based on request data.</li>
+<li><a href="app-guides-internationalization.html">Configure internationalization</a> for multi-language support.</li>
+<li><a href="https://nextjs.org/docs/messages/react-hydration-error" target="_blank" rel="noopener">React hydration error</a> for solutions to other common causes of hydration mismatches.</li>
+</ul></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/preventing-flash-before-hydration.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/preventing-flash-before-hydration" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-preserving-ui-state.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Preserving UI state</div><div class="ttl-ko">Activity로 UI state 보존하기</div></a>
+      <a href="app-guides-production-checklist.html" class="next"><div class="dir">다음 →</div><div class="ttl">Production</div><div class="ttl-ko">production을 위한 Next.js 애플리케이션 최적화</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/preventing-flash-before-hydration" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#example">Example</a></li><li class="l2"><a href="#dates-and-formatting">Dates and formatting</a></li><li class="l3"><a href="#the-problem">The problem</a></li><li class="l3"><a href="#fixing-it-with-an-inline-script">Fixing it with an inline script</a></li><li class="l3"><a href="#understanding-suppresshydrationwarning">Understanding <code>suppressHydrationWarning</code></a></li><li class="l3"><a href="#extracting-a-reusable-component">Extracting a reusable component</a></li><li class="l2"><a href="#themes">Themes</a></li><li class="l3"><a href="#storing-the-theme-in-a-cookie">Storing the theme in a cookie</a></li><li class="l2"><a href="#syncing-with-react-state">Syncing with React state</a></li><li class="l2"><a href="#re-applying-attributes-in-development">Re-applying attributes in development</a></li><li class="l2"><a href="#when-to-use-other-approaches">When to use other approaches</a></li><li class="l3"><a href="#why-not-useeffect">Why not <code>useEffect</code>?</a></li><li class="l3"><a href="#why-not-read-from-headers-or-cookies-at-request-time">Why not read from headers or cookies at request time?</a></li><li class="l2"><a href="#next-steps">Next steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+사용자 preference, 브라우저 설정, client-side storage는 server rendering 중에는 사용할 수 없습니다. server는 적절한 기본값을 내보내지만, client 전용 state(locale, time zone, theme, 저장된 interaction)에 의존하는 UI는 사용자가 보기 전에 업데이트되어야 합니다.
+
+이 문제에 대한 흔한 접근 방식은 다음과 같습니다:
+
+- client 값으로 re-render하는 Client Component는 hydration error를 일으킵니다.
+- `useEffect`로 미루면 error는 피하지만 눈에 보이는 깜빡임이 생깁니다.
+- server에서만 rendering하면 client별 formatting을 완전히 포기해야 합니다.
+
+브라우저가 HTML을 parse하는 동안 동기적으로 실행되는 **inline script**를 사용하면, **first paint 전에** DOM을 업데이트할 수 있습니다. 이 가이드에서는 날짜, theme, 저장된 UI state를 다룹니다.
+
+## Example || 예제
+
+함께 제공되는 [demo](https://preventing-flash-before-hydration.labs.vercel.dev/)([source](https://github.com/nextjs/preventing-flash-before-hydration))는 server/client locale 불일치를 시뮬레이션하기 위해 `LANG=ja_JP.UTF-8`로 build되었습니다. 다음을 비교해 볼 수 있습니다:
+
+- 깜빡임도 hydration error도 없는 inline script 날짜 formatting
+- `toLocaleDateString()`을 직접 호출해 hydration error가 나타나는 Client Component
+- lazy `useState` initializer를 사용해 열린 섹션을 `localStorage`에 저장하는 accordion
+
+Chrome DevTools의 [Sensors](https://developer.chrome.com/docs/devtools/sensors)로 locale을 override(예: `ru-RU`)해서 각 방식이 어떻게 동작하는지 확인해 보세요.
+
+## Dates and formatting || 날짜와 formatting
+
+`2026-06-15T18:00:00Z` 같은 UTC timestamp는 고정된 시점을 나타내지만, 이를 화면에 어떻게 format할지는 사용자의 locale과 time zone에 따라 달라집니다. server에서 `toLocaleDateString()`과 `Intl.DateTimeFormat`은 server의 설정을 사용하며, 이는 사용자의 설정과 다를 수 있습니다.
+
+### The problem || 문제
+
+자연스러운 접근은 날짜를 format하는 Client Component입니다:
+
+[[CODE 1]]
+
+SSR 중에는 `toLocaleDateString()`이 Node.js에서 실행되어 server의 locale로 format합니다(예: `6/15/2026`). hydration 시 React는 브라우저에서 component를 다시 실행하고 사용자의 locale로 결과를 만듭니다(예: `2026/6/15`). React는 불일치를 감지해 hydration error를 throw하고, 사용자는 깜빡임을 보게 됩니다.
+
+`useEffect`로 hydration 후에 날짜를 업데이트하는 우회 방법도 있지만, 사용자는 여전히 server에서 format된 날짜를 먼저 보게 됩니다. Server Component는 error를 완전히 피하지만, 날짜가 영구적으로 server의 locale로 표시됩니다.
+
+&gt; **Good to know:** 컴퓨터의 locale이 브라우저의 locale과 같으면 로컬 개발 중에 이 문제를 놓치기 쉽습니다. 불일치를 일찍 발견하려면 `TZ`와 `LANG`을 브라우저와 다르게 설정해서 dev server를 실행하세요(예: `TZ=UTC LANG=ja_JP.UTF-8 next dev`). 대부분의 server가 UTC로 동작하므로 `TZ=UTC`가 좋은 기본값입니다.
+
+### Fixing it with an inline script || inline script로 해결하기
+
+1. server가 자신의 locale로 날짜를 `&lt;p&gt;` 안에 render합니다.
+2. element 뒤에 ([`dangerouslySetInnerHTML`](https://react.dev/reference/react-dom/components/common#dangerously-setting-the-inner-html)을 통해) `&lt;script&gt;`를 둡니다. 브라우저는 HTML parsing 중 first paint 전에 이를 **동기적으로** 실행합니다.
+3. inline script가 React hydrate 전에 텍스트를 바꾸므로, element에 [`suppressHydrationWarning`](https://react.dev/reference/react-dom/client/hydrateRoot#suppressing-unavoidable-hydration-mismatch-errors)을 추가합니다. 아래 [Understanding `suppressHydrationWarning`](#understanding-suppresshydrationwarning)을 참고하세요.
+
+[[CODE 2]]
+
+이 방식은 전체 page load(직접 방문, 새로고침)에서 동작합니다. `&lt;Link&gt;`를 통한 client-side navigation에 대해서는 [Extracting a reusable component](#extracting-a-reusable-component)를 참고하세요.
+
+### Understanding `suppressHydrationWarning` || `suppressHydrationWarning` 이해하기
+
+React가 hydrate하다가 텍스트 불일치를 발견하면:
+
+- **`suppressHydrationWarning`이 없을 때**: React는 이를 hydration error로 취급하고, 가장 가까운 error boundary 또는 Suspense boundary부터 client-rendering으로 복구합니다. 이때 깜빡임이 생기고, React가 DOM을 다시 만들 때 script가 다시 실행되지 않기 때문에 **그 boundary 안의 다른 component에 적용된 inline script 수정 내용이 사라집니다**.
+- **`suppressHydrationWarning`이 있을 때**: React는 DOM에 있는 내용을 그대로 유지하고 그 element에 대한 client 결과물을 버립니다. DOM이 우선합니다.
+
+inline script는 React가 hydrate하기 전에 올바른 값을 DOM에 넣습니다. Server Component의 경우에도 React는 hydration 중 DOM을 RSC payload와 비교하며, inline script가 텍스트를 바꿔 놓은 상태입니다. `suppressHydrationWarning`은 React에게 payload 대신 DOM을 받아들이라고 알려 줍니다.
+
+### Extracting a reusable component || 재사용 가능한 component로 추출하기
+
+DOM 업데이트로 삽입된 script는 브라우저에서 실행되지 않습니다. client-side navigation에서는 React가 RSC payload로 component를 render하므로 script가 실행되지 않습니다. component를 Client Component로 만들면 이 문제가 해결됩니다. soft navigation에서는 `toLocaleDateString()`이 브라우저에서 직접 실행되고, hard navigation은 inline script가 처리합니다. [`useId`](https://react.dev/reference/react/useId)는 각 instance마다 안정적인 고유 ID를 생성합니다.
+
+React는 개발 중 rendering 결과에 `&lt;script&gt;` tag가 생기면 경고도 표시합니다. 이를 피하려면 server에서는 `type=&quot;text/javascript&quot;`, client에서는 `type=&quot;text/plain&quot;`을 설정하는 helper로 script를 감싸세요. type 불일치는 `suppressHydrationWarning`이 처리합니다.
+
+[[CODE 3]]
+
+[[CODE 4]]
+
+- **Hard navigation**(최초 load, 새로고침): HTML parsing 중 script가 실행되어 날짜를 바로잡습니다. `suppressHydrationWarning`은 React에게 DOM을 받아들이라고 알려 줍니다.
+- **Client-side navigation**(`&lt;Link&gt;`를 통한 이동): Client Component render의 일부로 브라우저에서 `toLocaleDateString()`이 실행됩니다. script는 `text/plain`이므로 무시됩니다.
+
+[[CODE 5]]
+
+&gt; **Good to know:**
+&gt;
+&gt; - 표시되는 텍스트와 관계없이 검색 엔진과 screen reader가 ISO 문자열을 parse할 수 있도록 `dateTime` attribute가 있는 [`&lt;time&gt;`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/time) element를 사용하세요.
+&gt; - `dangerouslySetInnerHTML`을 사용한 inline script는 `&#x27;unsafe-inline&#x27;`을 허용하지 않는 엄격한 [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP)에 의해 차단됩니다. 앱에서 CSP를 사용한다면 [nonce](/docs/app/guides/content-security-policy)를 추가해야 합니다.
+
+## Themes || Theme
+
+page가 기본 theme(예: light)으로 server-render되더라도, 사용자는 `localStorage`에 저장된 preference를 가지고 있을 수 있습니다. 같은 inline script 기법이 여기서도 통합니다. 브라우저가 paint하기 전에 값을 읽어 `&lt;html&gt;`에 `data-theme` attribute를 설정하세요.
+
+[[CODE 6]]
+
+[[CODE 7]]
+
+script는 `&lt;head&gt;`에서 실행되므로 어떤 콘텐츠가 paint되기 전에 올바른 theme이 적용됩니다. `try/catch`는 `localStorage`를 사용할 수 없는 경우를 처리합니다.
+
+### Storing the theme in a cookie || theme을 cookie에 저장하기
+
+`localStorage`와 달리 cookie는 모든 request와 함께 전송되므로, server가 [`cookies()`](/docs/app/api-reference/functions/cookies)로 이를 읽을 _수 있습니다_. 하지만 root layout에서 이를 읽으면 앱 전체가 static prerendering에서 제외됩니다(그리고 [Cache Components](/docs/app/api-reference/config/next-config-js/cacheComponents) 환경에서는 layout 아래의 모든 segment가 blocking되도록 강제됩니다). 일반적인 기본값으로 page를 static prerender된 상태로 유지하면서도 깜빡임을 피하려면, 대신 inline script에서 cookie를 읽으세요:
+
+[[CODE 8]]
+
+theme을 전환하려면 `&lt;html&gt;`에 attribute를 설정하고 선택 값을 cookie에 저장하세요:
+
+[[CODE 9]]
+
+## Syncing with React state || React state와 동기화하기
+
+Client Component가 interactive state(예: accordion의 어느 섹션이 열려 있는지)를 관리할 때, React의 initial state는 inline script가 설정한 DOM과 일치해야 합니다. script와 같은 소스에서 값을 읽는 **lazy state initializer**를 사용하세요.
+
+[[CODE 10]]
+
+inline script와 lazy `useState` initializer는 둘 다 `localStorage`에서 값을 읽습니다. 둘은 항상 일치하므로 React의 initial state가 DOM과 맞아떨어집니다.
+
+## Re-applying attributes in development || 개발 환경에서 attribute 다시 적용하기
+
+inline script는 parsing 중에 attribute를 설정하며, production build에는 이것만으로 충분합니다. 하지만 개발 중에는 [React의 Strict Mode](https://react.dev/reference/react/StrictMode)가 bug를 드러내기 위해 component를 한 번 더 remount하는데, 이때 `&lt;html&gt;`, `&lt;head&gt;`, `&lt;body&gt;`를 JSX에서 관리하는 attribute만 남도록 reset하면서 script가 설정한 attribute를 지워 버립니다. 그러면 page가 그 attribute 없이 render되어, 값의 source of truth를 무시하게 됩니다.
+
+이를 해결하는 한 가지 방법은 inline script가 전혀 없을 때 했을 방식을 그대로 하는 것입니다. theme을 소유하는 component에서, [paint 전에](#why-not-useeffect) 실행되는 [`useLayoutEffect`](https://react.dev/reference/react/useLayoutEffect) 안에서 client에 저장된 값을 읽어 적용하세요:
+
+[[CODE 11]]
+
+## When to use other approaches || 다른 접근 방식을 써야 할 때
+
+| 상황                                       | 접근 방식                                                                                                                                                             |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 날짜가 request data(cookie, header)에 의존함 | [`headers()`](/docs/app/api-reference/functions/headers) 또는 [`cookies()`](/docs/app/api-reference/functions/cookies)로 request data를 읽고 server-side에서 format |
+| 날짜가 실시간으로 업데이트됨(countdown timer, 시계)    | `useEffect`와 `suppressHydrationWarning`을 사용하는 Client Component 사용                                                                                               |
+| page가 이미 완전히 dynamic함                   | `Accept-Language` header를 사용해 server에서 날짜를 format                                                                                                     |
+| 콘텐츠를 다른 언어로 번역함           | locale별 static build 또는 dynamic rendering과 함께 [internationalization](/docs/app/guides/internationalization) 사용                                                 |
+
+### Why not `useEffect`? || 왜 `useEffect`가 아닐까?
+
+`useEffect`는 hydration과 paint 이후에 실행됩니다. 사용자는 server 값을 먼저 본 뒤에 수정된 값을 보게 됩니다. effect 안에서 state를 설정하면 re-render도 일어나는데, 이는 상위 Suspense boundary를 다시 활성화할 수 있습니다.
+
+`useLayoutEffect`는 paint 전, 하지만 hydration 후에 실행됩니다. hydration과 paint 사이의 깜빡임은 막지만, HTML이 도착한 시점과 React가 hydrate하는 시점 사이의 깜빡임은 막지 못합니다. 느린 연결에서는 React가 load되기 전에 브라우저가 server HTML을 paint합니다. inline script는 React가 관여하기 전, HTML **parsing** 중에 실행됩니다.
+
+### Why not read from headers or cookies at request time? || 왜 request 시점에 header나 cookie를 읽지 않을까?
+
+`await headers()`로 `Accept-Language`를 읽으면 server가 request별로 format할 수 있습니다. Cache Components를 사용하면 날짜만 Suspense fallback으로 감싸 page의 나머지는 static으로 유지할 수 있습니다. 하지만 즉시 콘텐츠를 보여 주는 대신 fallback을 보여 줘야 하고, `Accept-Language`에는 time zone 정보가 포함되지 않습니다.
+
+## Next steps || 다음 단계
+
+- request data를 기반으로 format해야 할 때는 [cookie 읽기](/docs/app/api-reference/functions/cookies) 또는 [header](/docs/app/api-reference/functions/headers)를 참고하세요.
+- 다국어 지원을 위해 [internationalization 설정하기](/docs/app/guides/internationalization)를 참고하세요.
+- hydration 불일치의 다른 흔한 원인에 대한 해결책은 [React hydration error](/docs/messages/react-hydration-error)를 참고하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

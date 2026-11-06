@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>rewrites (rewrites) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/config/next-config-js/rewrites" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/config/next-config-js/rewrites" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/rewrites.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config.html">Configuration</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config-next-config-js.html">next.config.js</a></div>
+    <div class="title-row">
+      <h1 class="page-title">rewrites<span class="sub">rewrites</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Rewrite를 사용하면 들어오는 request path를 다른 destination path로 mapping할 수 있습니다.</p><div class="en-orig"><p>Rewrites allow you to map an incoming request path to a different destination path.</p></div>
+<p>Rewrite는 URL proxy처럼 동작하며 destination path를 가려서, 사용자가 사이트 안에서 위치를 바꾸지 않은 것처럼 보이게 합니다. 반면 <a href="app-api-reference-config-next-config-js-redirects.html">redirects</a>는 새 페이지로 경로를 바꾸고 URL 변경을 그대로 보여 줍니다.</p><div class="en-orig"><p>Rewrites act as a URL proxy and mask the destination path, making it appear the user hasn't changed their location on the site. In contrast, <a href="app-api-reference-config-next-config-js-redirects.html">redirects</a> will reroute to a new page and show the URL changes.</p></div>
+<p>rewrite를 사용하려면 <code>next.config.js</code>의 <code>rewrites</code> key를 사용하면 됩니다:</p><div class="en-orig"><p>To use rewrites you can use the <code>rewrites</code> key in <code>next.config.js</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  rewrites() {
+    return [
+      {
+        source: &#x27;/about&#x27;,
+        destination: &#x27;/&#x27;,
+      },
+    ]
+  },
+}</code></pre></div></div>
+<p>Rewrite는 client-side routing에도 적용됩니다. 위 예시에서 <code>&lt;Link href=&quot;/about&quot;&gt;</code>으로 이동하면 URL은 <code>/about</code>으로 유지되면서 <code>/</code>의 콘텐츠가 제공됩니다.</p><div class="en-orig"><p>Rewrites are applied to client-side routing. In the example above, navigating to <code>&lt;Link href=&quot;/about&quot;&gt;</code> will serve content from <code>/</code> while keeping the URL as <code>/about</code>.</p></div>
+<p><code>rewrites</code>는 동기 함수 또는 async 함수로 정의할 수 있습니다. 이 함수는 <code>source</code>와 <code>destination</code> property를 가진 객체들을 담은 배열, 또는 배열들로 이루어진 객체(아래 참고)를 반환하거나 그 값으로 resolve되어야 합니다:</p><div class="en-orig"><p><code>rewrites</code> can be defined as a synchronous or async function. It should return, or resolve to, either an array or an object of arrays (see below) holding objects with <code>source</code> and <code>destination</code> properties:</p></div>
+<ul>
+<li><code>source</code>: <code>String</code> - 들어오는 request path pattern입니다.</li>
+<li><code>destination</code>: <code>String</code> - route하려는 경로입니다.</li>
+<li><code>basePath</code>: <code>false</code> 또는 <code>undefined</code> - false이면 matching할 때 basePath가 포함되지 않습니다. external rewrite에서만 사용할 수 있습니다.</li>
+<li><code>locale</code>: <code>false</code> 또는 <code>undefined</code> - matching할 때 locale을 포함하지 않을지 여부입니다.</li>
+<li><code>has</code>는 <code>type</code>, <code>key</code>, <code>value</code> property를 가진 <a href="#header-cookie-and-query-matching">has 객체</a>의 배열입니다.</li>
+<li><code>missing</code>은 <code>type</code>, <code>key</code>, <code>value</code> property를 가진 <a href="#header-cookie-and-query-matching">missing 객체</a>의 배열입니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>source</code>: <code>String</code> - is the incoming request path pattern.</li>
+<li><code>destination</code>: <code>String</code> is the path you want to route to.</li>
+<li><code>basePath</code>: <code>false</code> or <code>undefined</code> - if false the basePath won't be included when matching, can be used for external rewrites only.</li>
+<li><code>locale</code>: <code>false</code> or <code>undefined</code> - whether the locale should not be included when matching.</li>
+<li><code>has</code> is an array of <a href="#header-cookie-and-query-matching">has objects</a> with the <code>type</code>, <code>key</code> and <code>value</code> properties.</li>
+<li><code>missing</code> is an array of <a href="#header-cookie-and-query-matching">missing objects</a> with the <code>type</code>, <code>key</code> and <code>value</code> properties.</li>
+</ul></div>
+<p><code>rewrites</code> 함수가 배열을 반환하면, rewrite는 filesystem(page와 <code>/public</code> 파일)을 확인한 뒤, 그리고 dynamic route보다 먼저 적용됩니다. Next.js <code>v10.1</code>부터는 <code>rewrites</code> 함수가 특정 형태의 배열 객체를 반환하도록 해서 이 동작을 바꾸고 더 세밀하게 제어할 수 있습니다:</p><div class="en-orig"><p>When the <code>rewrites</code> function returns an array, rewrites are applied after checking the filesystem (pages and <code>/public</code> files) and before dynamic routes. When the <code>rewrites</code> function returns an object of arrays with a specific shape, this behavior can be changed and more finely controlled, as of <code>v10.1</code> of Next.js:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  rewrites() {
+    return {
+      beforeFiles: [
+        // These rewrites are checked after headers/redirects
+        // and before all files including _next/static and public files which
+        // allows overriding page files
+        {
+          source: &#x27;/some-page&#x27;,
+          destination: &#x27;/somewhere-else&#x27;,
+          has: [{ type: &#x27;query&#x27;, key: &#x27;overrideMe&#x27; }],
+        },
+      ],
+      afterFiles: [
+        // These rewrites are checked after pages/public files
+        // are checked but before dynamic routes
+        {
+          source: &#x27;/non-existent&#x27;,
+          destination: &#x27;/somewhere-else&#x27;,
+        },
+      ],
+      fallback: [
+        // These rewrites are checked after both pages/public files
+        // and dynamic routes are checked
+        {
+          source: &#x27;/:path*&#x27;,
+          destination: `https://my-old-site.com/:path*`,
+        },
+      ],
+    }
+  },
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>beforeFiles</code>의 rewrite는 source와 match된 직후 바로 filesystem/dynamic route를 확인하지 않고, 모든 <code>beforeFiles</code>를 확인할 때까지 계속 진행합니다.</p><div class="en-orig"><p>rewrites in <code>beforeFiles</code> do not check the filesystem/dynamic routes immediately after matching a source, they continue until all <code>beforeFiles</code> have been checked.</p></div></div></div>
+<p>Next.js가 route를 확인하는 순서는 다음과 같습니다:</p><div class="en-orig"><p>The order Next.js routes are checked is:</p></div>
+<ol>
+<li><a href="app-api-reference-config-next-config-js-headers.html">headers</a>를 확인/적용합니다</li>
+<li><a href="app-api-reference-config-next-config-js-redirects.html">redirects</a>를 확인/적용합니다</li>
+<li><a href="app-api-reference-file-conventions-proxy.html">proxy</a></li>
+<li><code>beforeFiles</code> rewrite: 각 항목마다 <code>source</code>, <code>has</code>, <code>missing</code>이 request와 match되면 <code>destination</code>으로 rewrite됩니다.</li>
+<li><a href="app-api-reference-file-conventions-public-folder.html">public directory</a>의 static 파일, <code>_next/static</code> 파일, dynamic이 아닌 page를 확인/제공합니다</li>
+<li><code>afterFiles</code> rewrite를 순서대로 시도합니다. <code>source</code>, <code>has</code>, <code>missing</code>이 request와 match되면 <code>destination</code>으로 rewrite되며, static 파일, page, dynamic route로 resolve되는 첫 번째 rewrite가 제공됩니다.</li>
+<li>dynamic route(예: <code>app/blog/[slug]/page.tsx</code>)를 현재 경로와 match합니다</li>
+<li><code>fallback</code> rewrite를 확인/적용합니다. 이 rewrite는 404 page를 rendering하기 전, 그리고 dynamic route와 모든 static asset을 확인한 뒤에 적용됩니다. <code>getStaticPaths</code>에서 <a href="pages-api-reference-functions-get-static-paths.html#fallback-true">fallback: true/'blocking'</a>을 사용하면, 해당 dynamic route가 <code>next.config.js</code>에 정의한 fallback <code>rewrites</code>보다 우선합니다.</li>
+</ol><div class="en-orig"><ol>
+<li><a href="app-api-reference-config-next-config-js-headers.html">headers</a> are checked/applied</li>
+<li><a href="app-api-reference-config-next-config-js-redirects.html">redirects</a> are checked/applied</li>
+<li><a href="app-api-reference-file-conventions-proxy.html">proxy</a></li>
+<li><code>beforeFiles</code> rewrites: for each entry, if <code>source</code>, <code>has</code>, and <code>missing</code> matches the request, it's rewritten to <code>destination</code>.</li>
+<li>static files from the <a href="app-api-reference-file-conventions-public-folder.html">public directory</a>, <code>_next/static</code> files, and non-dynamic pages are checked/served</li>
+<li><code>afterFiles</code> rewrites are tried in order. If a <code>source</code>, <code>has</code>, and <code>missing</code> matches the request, it's rewritten to <code>destination</code>; the first rewrite that resolves to a static file, page, or dynamic route is served.</li>
+<li>dynamic routes (e.g., <code>app/blog/[slug]/page.tsx</code>) are matched against the current path</li>
+<li><code>fallback</code> rewrites are checked/applied, these are applied before rendering the 404 page and after dynamic routes/all static assets have been checked. If you use <a href="pages-api-reference-functions-get-static-paths.html#fallback-true">fallback: true/'blocking'</a> in <code>getStaticPaths</code>, those dynamic routes take priority over the fallback <code>rewrites</code> defined in your <code>next.config.js</code>.</li>
+</ol></div>
+<h2 class="sec" id="rewrite-parameters"><a class="anchor" href="#rewrite-parameters">Rewrite parameters<span class="ko">Rewrite parameter</span></a></h2>
+<p>rewrite에서 parameter를 사용할 때, <code>destination</code>에서 parameter를 하나도 사용하지 않으면 기본적으로 parameter가 query로 전달됩니다.</p><div class="en-orig"><p>When using parameters in a rewrite the parameters will be passed in the query by default when none of the parameters are used in the <code>destination</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  rewrites() {
+    return [
+      {
+        source: &#x27;/old-about/:path*&#x27;,
+        destination: &#x27;/about&#x27;, // The :path parameter isn&#x27;t used here so will be automatically passed in the query
+      },
+    ]
+  },
+}</code></pre></div></div>
+<p>destination에서 parameter를 하나라도 사용하면 어떤 parameter도 query로 자동 전달되지 않습니다.</p><div class="en-orig"><p>If a parameter is used in the destination none of the parameters will be automatically passed in the query.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  rewrites() {
+    return [
+      {
+        source: &#x27;/docs/:path*&#x27;,
+        destination: &#x27;/:path*&#x27;, // The :path parameter is used here so will not be automatically passed in the query
+      },
+    ]
+  },
+}</code></pre></div></div>
+<p>destination에서 이미 parameter를 사용하고 있더라도, <code>destination</code>에 query를 지정하면 parameter를 query로 직접 전달할 수 있습니다.</p><div class="en-orig"><p>You can still pass the parameters manually in the query if one is already used in the destination by specifying the query in the <code>destination</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  rewrites() {
+    return [
+      {
+        source: &#x27;/:first/:second&#x27;,
+        destination: &#x27;/:first?second=:second&#x27;,
+        // Since the :first parameter is used in the destination the :second parameter
+        // will not automatically be added in the query although we can manually add it
+        // as shown above
+      },
+    ]
+  },
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><a href="pages-building-your-application-rendering-automatic-static-optimization.html">Automatic Static Optimization</a>이나 <a href="pages-building-your-application-data-fetching-get-static-props.html">prerendering</a>으로 만들어진 static page의 경우, rewrite에서 온 param은 hydration 이후 client에서 parse되어 query로 제공됩니다.</p><div class="en-orig"><p>Static pages from <a href="pages-building-your-application-rendering-automatic-static-optimization.html">Automatic Static Optimization</a> or <a href="pages-building-your-application-data-fetching-get-static-props.html">prerendering</a> params from rewrites will be parsed on the client after hydration and provided in the query.</p></div></div></div>
+<h2 class="sec" id="path-matching"><a class="anchor" href="#path-matching">Path Matching</a></h2>
+<p>path match를 사용할 수 있습니다. 예를 들어 <code>/blog/:slug</code>는 <code>/blog/first-post</code>와 match됩니다(nested path는 제외):</p><div class="en-orig"><p>Path matches are allowed, for example <code>/blog/:slug</code> will match <code>/blog/first-post</code> (no nested paths):</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  rewrites() {
+    return [
+      {
+        source: &#x27;/blog/:slug&#x27;,
+        destination: &#x27;/news/:slug&#x27;, // Matched parameters can be used in the destination
+      },
+    ]
+  },
+}</code></pre></div></div>
+<p><code>/blog/:slug</code> pattern은 <code>/blog/first-post</code>, <code>/blog/post-1</code>과는 match되지만 <code>/blog/a/b</code>와는 match되지 않습니다(nested path 제외). pattern은 시작 부분에 고정(anchored)되므로 <code>/blog/:slug</code>는 <code>/archive/blog/first-post</code>와 match되지 않습니다.</p><div class="en-orig"><p>The pattern <code>/blog/:slug</code> matches <code>/blog/first-post</code> and <code>/blog/post-1</code> but not <code>/blog/a/b</code> (no nested paths). Patterns are anchored to the start: <code>/blog/:slug</code> will not match <code>/archive/blog/first-post</code>.</p></div>
+<p>parameter에 modifier를 사용할 수 있습니다: <code>*</code>(0개 이상), <code>+</code>(1개 이상), <code>?</code>(0개 또는 1개). 예를 들어 <code>/blog/:slug*</code>는 <code>/blog</code>, <code>/blog/a</code>, <code>/blog/a/b/c</code>와 match됩니다.</p><div class="en-orig"><p>You can use modifiers on parameters: <code>*</code> (zero or more), <code>+</code> (one or more), <code>?</code> (zero or one). For example, <code>/blog/:slug*</code> matches <code>/blog</code>, <code>/blog/a</code>, and <code>/blog/a/b/c</code>.</p></div>
+<p>자세한 내용은 <a href="https://github.com/pillarjs/path-to-regexp" target="_blank" rel="noopener">path-to-regexp</a> 문서를 참고하세요.</p><div class="en-orig"><p>Read more details on <a href="https://github.com/pillarjs/path-to-regexp" target="_blank" rel="noopener">path-to-regexp</a> documentation.</p></div>
+<h3 class="sec" id="wildcard-path-matching"><a class="anchor" href="#wildcard-path-matching">Wildcard Path Matching</a></h3>
+<p>wildcard path를 match하려면 parameter 뒤에 <code>*</code>를 사용하면 됩니다. 예를 들어 <code>/blog/:slug*</code>는 <code>/blog/a/b/c/d/hello-world</code>와 match됩니다:</p><div class="en-orig"><p>To match a wildcard path you can use <code>*</code> after a parameter, for example <code>/blog/:slug*</code> will match <code>/blog/a/b/c/d/hello-world</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  rewrites() {
+    return [
+      {
+        source: &#x27;/blog/:slug*&#x27;,
+        destination: &#x27;/news/:slug*&#x27;, // Matched parameters can be used in the destination
+      },
+    ]
+  },
+}</code></pre></div></div>
+<h3 class="sec" id="regex-path-matching"><a class="anchor" href="#regex-path-matching">Regex Path Matching</a></h3>
+<p>regex path를 match하려면 parameter 뒤에 regex를 괄호로 감싸면 됩니다. 예를 들어 <code>/blog/:slug(\\d{1,})</code>는 <code>/blog/123</code>과는 match되지만 <code>/blog/abc</code>와는 match되지 않습니다:</p><div class="en-orig"><p>To match a regex path you can wrap the regex in parenthesis after a parameter, for example <code>/blog/:slug(\\d{1,})</code> will match <code>/blog/123</code> but not <code>/blog/abc</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  rewrites() {
+    return [
+      {
+        source: &#x27;/old-blog/:post(\\d{1,})&#x27;,
+        destination: &#x27;/blog/:post&#x27;, // Matched parameters can be used in the destination
+      },
+    ]
+  },
+}</code></pre></div></div>
+<p>다음 문자 <code>(</code>, <code>)</code>, <code>{</code>, <code>}</code>, <code>[</code>, <code>]</code>, <code>|</code>, <code>\</code>, <code>^</code>, <code>.</code>, <code>:</code>, <code>*</code>, <code>+</code>, <code>-</code>, <code>?</code>, <code>$</code>는 regex path matching에 사용되므로, <code>source</code>에서 특수하지 않은 값으로 사용할 때는 앞에 <code>\\</code>를 붙여 escape해야 합니다:</p><div class="en-orig"><p>The following characters <code>(</code>, <code>)</code>, <code>{</code>, <code>}</code>, <code>[</code>, <code>]</code>, <code>|</code>, <code>\</code>, <code>^</code>, <code>.</code>, <code>:</code>, <code>*</code>, <code>+</code>, <code>-</code>, <code>?</code>, <code>$</code> are used for regex path matching, so when used in the <code>source</code> as non-special values they must be escaped by adding <code>\\</code> before them:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  rewrites() {
+    return [
+      {
+        // this will match `/english(default)/something` being requested
+        source: &#x27;/english\\(default\\)/:slug&#x27;,
+        destination: &#x27;/en-us/:slug&#x27;,
+      },
+    ]
+  },
+}</code></pre></div></div>
+<h2 class="sec" id="header-cookie-and-query-matching"><a class="anchor" href="#header-cookie-and-query-matching">Header, Cookie, and Query Matching<span class="ko">Header, cookie, query matching</span></a></h2>
+<p>header, cookie, query 값이 <code>has</code> field와 match되거나 <code>missing</code> field와 match되지 않을 때만 rewrite를 match하도록 할 수 있습니다. rewrite가 적용되려면 <code>source</code>와 모든 <code>has</code> 항목이 match되어야 하고, 모든 <code>missing</code> 항목은 match되지 않아야 합니다.</p><div class="en-orig"><p>To only match a rewrite when header, cookie, or query values also match the <code>has</code> field or don't match the <code>missing</code> field can be used. Both the <code>source</code> and all <code>has</code> items must match and all <code>missing</code> items must not match for the rewrite to be applied.</p></div>
+<p><code>has</code>와 <code>missing</code> 항목에는 다음 field를 사용할 수 있습니다:</p><div class="en-orig"><p><code>has</code> and <code>missing</code> items can have the following fields:</p></div>
+<ul>
+<li><code>type</code>: <code>String</code> - <code>header</code>, <code>cookie</code>, <code>host</code>, <code>query</code> 중 하나여야 합니다.</li>
+<li><code>key</code>: <code>String</code> - 선택한 type에서 match할 key입니다.</li>
+<li><code>value</code>: <code>String</code> 또는 <code>undefined</code> - 확인할 값입니다. undefined이면 어떤 값이든 match됩니다. regex 형태의 문자열을 사용해 값의 특정 부분을 capture할 수 있습니다. 예를 들어 <code>first-second</code>에 대해 <code>first-(?&lt;paramName&gt;.*)</code> 값을 사용하면 destination에서 <code>:paramName</code>으로 <code>second</code>를 사용할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>type</code>: <code>String</code> - must be either <code>header</code>, <code>cookie</code>, <code>host</code>, or <code>query</code>.</li>
+<li><code>key</code>: <code>String</code> - the key from the selected type to match against.</li>
+<li><code>value</code>: <code>String</code> or <code>undefined</code> - the value to check for, if undefined any value will match. A regex like string can be used to capture a specific part of the value, e.g. if the value <code>first-(?&lt;paramName&gt;.*)</code> is used for <code>first-second</code> then <code>second</code> will be usable in the destination with <code>:paramName</code>.</li>
+</ul></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  rewrites() {
+    return [
+      // if the header `x-rewrite-me` is present,
+      // this rewrite will be applied
+      {
+        source: &#x27;/:path*&#x27;,
+        has: [
+          {
+            type: &#x27;header&#x27;,
+            key: &#x27;x-rewrite-me&#x27;,
+          },
+        ],
+        destination: &#x27;/another-page&#x27;,
+      },
+      // if the header `x-rewrite-me` is not present,
+      // this rewrite will be applied
+      {
+        source: &#x27;/:path*&#x27;,
+        missing: [
+          {
+            type: &#x27;header&#x27;,
+            key: &#x27;x-rewrite-me&#x27;,
+          },
+        ],
+        destination: &#x27;/another-page&#x27;,
+      },
+      // if the source, query, and cookie are matched,
+      // this rewrite will be applied
+      {
+        source: &#x27;/specific/:path*&#x27;,
+        has: [
+          {
+            type: &#x27;query&#x27;,
+            key: &#x27;page&#x27;,
+            // the page value will not be available in the
+            // destination since value is provided and doesn&#x27;t
+            // use a named capture group e.g. (?&lt;page&gt;home)
+            value: &#x27;home&#x27;,
+          },
+          {
+            type: &#x27;cookie&#x27;,
+            key: &#x27;authorized&#x27;,
+            value: &#x27;true&#x27;,
+          },
+        ],
+        destination: &#x27;/:path*/home&#x27;,
+      },
+      // if the header `x-authorized` is present and
+      // contains a matching value, this rewrite will be applied
+      {
+        source: &#x27;/:path*&#x27;,
+        has: [
+          {
+            type: &#x27;header&#x27;,
+            key: &#x27;x-authorized&#x27;,
+            value: &#x27;(?&lt;authorized&gt;yes|true)&#x27;,
+          },
+        ],
+        destination: &#x27;/home?authorized=:authorized&#x27;,
+      },
+      // if the host is `example.com`,
+      // this rewrite will be applied
+      {
+        source: &#x27;/:path*&#x27;,
+        has: [
+          {
+            type: &#x27;host&#x27;,
+            value: &#x27;example.com&#x27;,
+          },
+        ],
+        destination: &#x27;/another-page&#x27;,
+      },
+    ]
+  },
+}</code></pre></div></div>
+<h2 class="sec" id="rewriting-to-an-external-url"><a class="anchor" href="#rewriting-to-an-external-url">Rewriting to an external URL<span class="ko">외부 URL로 rewrite하기</span></a></h2>
+<details><summary>예시</summary><div class="details-body"><ul>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/with-zones" target="_blank" rel="noopener">Using Multiple Zones</a></li>
+</ul></div></details>
+<p>Rewrite를 사용하면 외부 URL로 rewrite할 수 있습니다. 이는 Next.js를 점진적으로 도입할 때 특히 유용합니다. 다음은 main 앱의 <code>/blog</code> route를 외부 사이트로 redirect하는 rewrite 예시입니다.</p><div class="en-orig"><p>Rewrites allow you to rewrite to an external URL. This is especially useful for incrementally adopting Next.js. The following is an example rewrite for redirecting the <code>/blog</code> route of your main app to an external site.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  rewrites() {
+    return [
+      {
+        source: &#x27;/blog&#x27;,
+        destination: &#x27;https://example.com/blog&#x27;,
+      },
+      {
+        source: &#x27;/blog/:slug&#x27;,
+        destination: &#x27;https://example.com/blog/:slug&#x27;, // Matched parameters can be used in the destination
+      },
+    ]
+  },
+}</code></pre></div></div>
+<p><code>trailingSlash: true</code>를 사용하고 있다면 <code>source</code> parameter에도 trailing slash를 넣어야 합니다. destination server도 trailing slash를 기대한다면 <code>destination</code> parameter에도 포함해야 합니다.</p><div class="en-orig"><p>If you're using <code>trailingSlash: true</code>, you also need to insert a trailing slash in the <code>source</code> parameter. If the destination server is also expecting a trailing slash it should be included in the <code>destination</code> parameter as well.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  trailingSlash: true,
+  rewrites() {
+    return [
+      {
+        source: &#x27;/blog/&#x27;,
+        destination: &#x27;https://example.com/blog/&#x27;,
+      },
+      {
+        source: &#x27;/blog/:path*/&#x27;,
+        destination: &#x27;https://example.com/blog/:path*/&#x27;,
+      },
+    ]
+  },
+}</code></pre></div></div>
+<h3 class="sec" id="incremental-adoption-of-nextjs"><a class="anchor" href="#incremental-adoption-of-nextjs">Incremental adoption of Next.js<span class="ko">Next.js 점진적 도입</span></a></h3>
+<p>모든 Next.js route를 확인한 뒤 기존 웹사이트로 proxy하도록 Next.js에 fallback을 둘 수도 있습니다.</p><div class="en-orig"><p>You can also have Next.js fall back to proxying to an existing website after checking all Next.js routes.</p></div>
+<p>이렇게 하면 더 많은 page를 Next.js로 migrate할 때 rewrite 설정을 바꾸지 않아도 됩니다</p><div class="en-orig"><p>This way you don't have to change the rewrites configuration when migrating more pages to Next.js</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  rewrites() {
+    return {
+      fallback: [
+        {
+          source: &#x27;/:path*&#x27;,
+          destination: `https://custom-routes-proxying-endpoint.vercel.app/:path*`,
+        },
+      ],
+    }
+  },
+}</code></pre></div></div>
+<h3 class="sec" id="rewrites-with-basepath-support"><a class="anchor" href="#rewrites-with-basepath-support">Rewrites with basePath support<span class="ko">basePath를 지원하는 rewrite</span></a></h3>
+<p>rewrite와 함께 <a href="app-api-reference-config-next-config-js-basePath.html"><code>basePath</code> 지원</a>을 활용하면, rewrite에 <code>basePath: false</code>를 추가하지 않는 한 각 <code>source</code>와 <code>destination</code> 앞에 <code>basePath</code>가 자동으로 붙습니다:</p><div class="en-orig"><p>When leveraging <a href="app-api-reference-config-next-config-js-basePath.html"><code>basePath</code> support</a> with rewrites each <code>source</code> and <code>destination</code> is automatically prefixed with the <code>basePath</code> unless you add <code>basePath: false</code> to the rewrite:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  basePath: &#x27;/docs&#x27;,
+
+  rewrites() {
+    return [
+      {
+        source: &#x27;/with-basePath&#x27;, // automatically becomes /docs/with-basePath
+        destination: &#x27;/another&#x27;, // automatically becomes /docs/another
+      },
+      {
+        // does not add /docs to /without-basePath since basePath: false is set
+        // Note: this cannot be used for internal rewrites e.g. `destination: &#x27;/another&#x27;`
+        source: &#x27;/without-basePath&#x27;,
+        destination: &#x27;https://example.com&#x27;,
+        basePath: false,
+      },
+    ]
+  },
+}</code></pre></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v13.3.0</code></td><td><code>missing</code> 추가.</td></tr>
+<tr><td><code>v10.2.0</code></td><td><code>has</code> 추가.</td></tr>
+<tr><td><code>v9.5.0</code></td><td>Headers 추가.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v13.3.0</code></td><td><code>missing</code> added.</td></tr>
+<tr><td><code>v10.2.0</code></td><td><code>has</code> added.</td></tr>
+<tr><td><code>v9.5.0</code></td><td>Headers added.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/rewrites.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/rewrites" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-config-next-config-js-redirects.html" class="prev"><div class="dir">← 이전</div><div class="ttl">redirects</div><div class="ttl-ko">redirects</div></a>
+      <a href="app-api-reference-config-next-config-js-sassOptions.html" class="next"><div class="dir">다음 →</div><div class="ttl">sassOptions</div><div class="ttl-ko">sassOptions</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/rewrites" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#rewrite-parameters">Rewrite parameters</a></li><li class="l2"><a href="#path-matching">Path Matching</a></li><li class="l3"><a href="#wildcard-path-matching">Wildcard Path Matching</a></li><li class="l3"><a href="#regex-path-matching">Regex Path Matching</a></li><li class="l2"><a href="#header-cookie-and-query-matching">Header, Cookie, and Query Matching</a></li><li class="l2"><a href="#rewriting-to-an-external-url">Rewriting to an external URL</a></li><li class="l3"><a href="#incremental-adoption-of-nextjs">Incremental adoption of Next.js</a></li><li class="l3"><a href="#rewrites-with-basepath-support">Rewrites with basePath support</a></li><li class="l2"><a href="#version-history">Version History</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Rewrite를 사용하면 들어오는 request path를 다른 destination path로 mapping할 수 있습니다.
+
+
+
+Rewrite는 URL proxy처럼 동작하며 destination path를 가려서, 사용자가 사이트 안에서 위치를 바꾸지 않은 것처럼 보이게 합니다. 반면 [redirects](/docs/app/api-reference/config/next-config-js/redirects)는 새 페이지로 경로를 바꾸고 URL 변경을 그대로 보여 줍니다.
+
+
+
+
+
+rewrite를 사용하려면 `next.config.js`의 `rewrites` key를 사용하면 됩니다:
+
+[[CODE 1]]
+
+Rewrite는 client-side routing에도 적용됩니다. 위 예시에서 `&lt;Link href=&quot;/about&quot;&gt;`으로 이동하면 URL은 `/about`으로 유지되면서 `/`의 콘텐츠가 제공됩니다.
+
+`rewrites`는 동기 함수 또는 async 함수로 정의할 수 있습니다. 이 함수는 `source`와 `destination` property를 가진 객체들을 담은 배열, 또는 배열들로 이루어진 객체(아래 참고)를 반환하거나 그 값으로 resolve되어야 합니다:
+
+- `source`: `String` - 들어오는 request path pattern입니다.
+- `destination`: `String` - route하려는 경로입니다.
+- `basePath`: `false` 또는 `undefined` - false이면 matching할 때 basePath가 포함되지 않습니다. external rewrite에서만 사용할 수 있습니다.
+- `locale`: `false` 또는 `undefined` - matching할 때 locale을 포함하지 않을지 여부입니다.
+- `has`는 `type`, `key`, `value` property를 가진 [has 객체](#header-cookie-and-query-matching)의 배열입니다.
+- `missing`은 `type`, `key`, `value` property를 가진 [missing 객체](#header-cookie-and-query-matching)의 배열입니다.
+
+`rewrites` 함수가 배열을 반환하면, rewrite는 filesystem(page와 `/public` 파일)을 확인한 뒤, 그리고 dynamic route보다 먼저 적용됩니다. Next.js `v10.1`부터는 `rewrites` 함수가 특정 형태의 배열 객체를 반환하도록 해서 이 동작을 바꾸고 더 세밀하게 제어할 수 있습니다:
+
+[[CODE 2]]
+
+&gt; **Good to know**: `beforeFiles`의 rewrite는 source와 match된 직후 바로 filesystem/dynamic route를 확인하지 않고, 모든 `beforeFiles`를 확인할 때까지 계속 진행합니다.
+
+Next.js가 route를 확인하는 순서는 다음과 같습니다:
+
+
+
+1. [headers](/docs/app/api-reference/config/next-config-js/headers)를 확인/적용합니다
+2. [redirects](/docs/app/api-reference/config/next-config-js/redirects)를 확인/적용합니다
+3. [proxy](/docs/app/api-reference/file-conventions/proxy)
+4. `beforeFiles` rewrite: 각 항목마다 `source`, `has`, `missing`이 request와 match되면 `destination`으로 rewrite됩니다.
+5. [public directory](/docs/app/api-reference/file-conventions/public-folder)의 static 파일, `_next/static` 파일, dynamic이 아닌 page를 확인/제공합니다
+6. `afterFiles` rewrite를 순서대로 시도합니다. `source`, `has`, `missing`이 request와 match되면 `destination`으로 rewrite되며, static 파일, page, dynamic route로 resolve되는 첫 번째 rewrite가 제공됩니다.
+7. dynamic route(예: `app/blog/[slug]/page.tsx`)를 현재 경로와 match합니다
+8. `fallback` rewrite를 확인/적용합니다. 이 rewrite는 404 page를 rendering하기 전, 그리고 dynamic route와 모든 static asset을 확인한 뒤에 적용됩니다. `getStaticPaths`에서 [fallback: true/&#x27;blocking&#x27;](/docs/pages/api-reference/functions/get-static-paths#fallback-true)을 사용하면, 해당 dynamic route가 `next.config.js`에 정의한 fallback `rewrites`보다 우선합니다.
+
+
+
+
+
+## Rewrite parameters || Rewrite parameter
+
+rewrite에서 parameter를 사용할 때, `destination`에서 parameter를 하나도 사용하지 않으면 기본적으로 parameter가 query로 전달됩니다.
+
+[[CODE 3]]
+
+destination에서 parameter를 하나라도 사용하면 어떤 parameter도 query로 자동 전달되지 않습니다.
+
+[[CODE 4]]
+
+destination에서 이미 parameter를 사용하고 있더라도, `destination`에 query를 지정하면 parameter를 query로 직접 전달할 수 있습니다.
+
+[[CODE 5]]
+
+&gt; **Good to know**: [Automatic Static Optimization](/docs/pages/building-your-application/rendering/automatic-static-optimization)이나 [prerendering](/docs/pages/building-your-application/data-fetching/get-static-props)으로 만들어진 static page의 경우, rewrite에서 온 param은 hydration 이후 client에서 parse되어 query로 제공됩니다.
+
+## Path Matching || Path matching
+
+path match를 사용할 수 있습니다. 예를 들어 `/blog/:slug`는 `/blog/first-post`와 match됩니다(nested path는 제외):
+
+[[CODE 6]]
+
+`/blog/:slug` pattern은 `/blog/first-post`, `/blog/post-1`과는 match되지만 `/blog/a/b`와는 match되지 않습니다(nested path 제외). pattern은 시작 부분에 고정(anchored)되므로 `/blog/:slug`는 `/archive/blog/first-post`와 match되지 않습니다.
+
+parameter에 modifier를 사용할 수 있습니다: `*`(0개 이상), `+`(1개 이상), `?`(0개 또는 1개). 예를 들어 `/blog/:slug*`는 `/blog`, `/blog/a`, `/blog/a/b/c`와 match됩니다.
+
+자세한 내용은 [path-to-regexp](https://github.com/pillarjs/path-to-regexp) 문서를 참고하세요.
+
+### Wildcard Path Matching || Wildcard path matching
+
+wildcard path를 match하려면 parameter 뒤에 `*`를 사용하면 됩니다. 예를 들어 `/blog/:slug*`는 `/blog/a/b/c/d/hello-world`와 match됩니다:
+
+[[CODE 7]]
+
+### Regex Path Matching || Regex path matching
+
+regex path를 match하려면 parameter 뒤에 regex를 괄호로 감싸면 됩니다. 예를 들어 `/blog/:slug(\\d{1,})`는 `/blog/123`과는 match되지만 `/blog/abc`와는 match되지 않습니다:
+
+[[CODE 8]]
+
+다음 문자 `(`, `)`, `{`, `}`, `[`, `]`, `|`, `\`, `^`, `.`, `:`, `*`, `+`, `-`, `?`, `$`는 regex path matching에 사용되므로, `source`에서 특수하지 않은 값으로 사용할 때는 앞에 `\\`를 붙여 escape해야 합니다:
+
+[[CODE 9]]
+
+## Header, Cookie, and Query Matching || Header, cookie, query matching
+
+header, cookie, query 값이 `has` field와 match되거나 `missing` field와 match되지 않을 때만 rewrite를 match하도록 할 수 있습니다. rewrite가 적용되려면 `source`와 모든 `has` 항목이 match되어야 하고, 모든 `missing` 항목은 match되지 않아야 합니다.
+
+`has`와 `missing` 항목에는 다음 field를 사용할 수 있습니다:
+
+- `type`: `String` - `header`, `cookie`, `host`, `query` 중 하나여야 합니다.
+- `key`: `String` - 선택한 type에서 match할 key입니다.
+- `value`: `String` 또는 `undefined` - 확인할 값입니다. undefined이면 어떤 값이든 match됩니다. regex 형태의 문자열을 사용해 값의 특정 부분을 capture할 수 있습니다. 예를 들어 `first-second`에 대해 `first-(?&lt;paramName&gt;.*)` 값을 사용하면 destination에서 `:paramName`으로 `second`를 사용할 수 있습니다.
+
+[[CODE 10]]
+
+## Rewriting to an external URL || 외부 URL로 rewrite하기
+
+&lt;details&gt;
+  &lt;summary&gt;예시&lt;/summary&gt;
+
+- [Using Multiple Zones](https://github.com/vercel/next.js/tree/canary/examples/with-zones)
+
+&lt;/details&gt;
+
+Rewrite를 사용하면 외부 URL로 rewrite할 수 있습니다. 이는 Next.js를 점진적으로 도입할 때 특히 유용합니다. 다음은 main 앱의 `/blog` route를 외부 사이트로 redirect하는 rewrite 예시입니다.
+
+[[CODE 11]]
+
+`trailingSlash: true`를 사용하고 있다면 `source` parameter에도 trailing slash를 넣어야 합니다. destination server도 trailing slash를 기대한다면 `destination` parameter에도 포함해야 합니다.
+
+[[CODE 12]]
+
+### Incremental adoption of Next.js || Next.js 점진적 도입
+
+모든 Next.js route를 확인한 뒤 기존 웹사이트로 proxy하도록 Next.js에 fallback을 둘 수도 있습니다.
+
+이렇게 하면 더 많은 page를 Next.js로 migrate할 때 rewrite 설정을 바꾸지 않아도 됩니다
+
+[[CODE 13]]
+
+### Rewrites with basePath support || basePath를 지원하는 rewrite
+
+rewrite와 함께 [`basePath` 지원](/docs/app/api-reference/config/next-config-js/basePath)을 활용하면, rewrite에 `basePath: false`를 추가하지 않는 한 각 `source`와 `destination` 앞에 `basePath`가 자동으로 붙습니다:
+
+[[CODE 14]]
+
+
+
+## Version History || 버전 기록
+
+| Version   | Changes          |
+| --------- | ---------------- |
+| `v13.3.0` | `missing` 추가. |
+| `v10.2.0` | `has` 추가.     |
+| `v9.5.0`  | Headers 추가.   |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to upgrade to version 12 (버전 12로 업그레이드하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/guides/upgrading/version-12" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/guides/upgrading/version-12" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/02-guides/upgrading/version-12.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-guides.html">Guides</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-guides-upgrading.html">Upgrading</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to upgrade to version 12<span class="sub">버전 12로 업그레이드하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>버전 12로 업그레이드하려면 다음 command를 실행하세요:</p><div class="en-orig"><p>To upgrade to version 12, run the following command:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npm i next@12 react@17 react-dom@17 eslint-config-next@12</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">yarn add next@12 react@17 react-dom@17 eslint-config-next@12</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">pnpm up next@12 react@17 react-dom@17 eslint-config-next@12</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">bun add next@12 react@17 react-dom@17 eslint-config-next@12</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>TypeScript를 사용한다면 <code>@types/react</code>와 <code>@types/react-dom</code>도 그에 맞는 버전으로 함께 upgrade하세요.</p><div class="en-orig"><p>If you are using TypeScript, ensure you also upgrade <code>@types/react</code> and <code>@types/react-dom</code> to their corresponding versions.</p></div></div></div>
+<h3 class="sec" id="upgrading-to-122"><a class="anchor" href="#upgrading-to-122">Upgrading to 12.2<span class="ko">12.2로 업그레이드하기</span></a></h3>
+<p><a href="https://nextjs.org/docs/messages/middleware-upgrade-guide" target="_blank" rel="noopener">Middleware</a> - <code>12.2</code> 이전부터 Middleware를 사용하고 있었다면, 자세한 내용은 <a href="https://nextjs.org/docs/messages/middleware-upgrade-guide" target="_blank" rel="noopener">upgrade guide</a>를 참고하세요.</p><div class="en-orig"><p><a href="https://nextjs.org/docs/messages/middleware-upgrade-guide" target="_blank" rel="noopener">Middleware</a> - If you were using Middleware prior to <code>12.2</code>, please see the <a href="https://nextjs.org/docs/messages/middleware-upgrade-guide" target="_blank" rel="noopener">upgrade guide</a> for more information.</p></div>
+<h3 class="sec" id="upgrading-to-120"><a class="anchor" href="#upgrading-to-120">Upgrading to 12.0<span class="ko">12.0으로 업그레이드하기</span></a></h3>
+<p><a href="https://nodejs.org/en/" target="_blank" rel="noopener">최소 Node.js 버전</a> - 최소 Node.js 버전이 <code>12.0.0</code>에서 <code>12.22.0</code>으로 올라갔습니다. <code>12.22.0</code>은 native ES Modules를 지원하는 첫 Node.js 버전입니다.</p><div class="en-orig"><p><a href="https://nodejs.org/en/" target="_blank" rel="noopener">Minimum Node.js Version</a> - The minimum Node.js version has been bumped from <code>12.0.0</code> to <code>12.22.0</code> which is the first version of Node.js with native ES Modules support.</p></div>
+<p><a href="https://react.dev/learn/add-react-to-an-existing-project" target="_blank" rel="noopener">최소 React 버전</a> - 필요한 최소 React 버전은 <code>17.0.2</code>입니다. upgrade하려면 terminal에서 다음 command를 실행하세요:</p><div class="en-orig"><p><a href="https://react.dev/learn/add-react-to-an-existing-project" target="_blank" rel="noopener">Minimum React Version</a> - The minimum required React version is <code>17.0.2</code>. To upgrade you can run the following command in the terminal:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npm install react@latest react-dom@latest
+
+yarn add react@latest react-dom@latest
+
+pnpm update react@latest react-dom@latest
+
+bun add react@latest react-dom@latest</code></pre></div></div>
+<h4 class="sec" id="swc-replacing-babel"><a class="anchor" href="#swc-replacing-babel">SWC replacing Babel<span class="ko">Babel을 대체하는 SWC</span></a></h4>
+<p>이제 Next.js는 JavaScript/TypeScript를 compile할 때 Rust 기반 compiler인 <a href="https://swc.rs/" target="_blank" rel="noopener">SWC</a>를 사용합니다. 이 새 compiler는 개별 파일을 compile할 때 Babel보다 최대 17배 빠르고, Fast Refresh는 최대 5배 빠릅니다.</p><div class="en-orig"><p>Next.js now uses the Rust-based compiler <a href="https://swc.rs/" target="_blank" rel="noopener">SWC</a> to compile JavaScript/TypeScript. This new compiler is up to 17x faster than Babel when compiling individual files and up to 5x faster Fast Refresh.</p></div>
+<p>Next.js는 <a href="pages-guides-babel.html">custom Babel configuration</a>을 가진 애플리케이션과 완전한 하위 호환성(backward compatibility)을 제공합니다. styled-jsx나 <code>getStaticProps</code> / <code>getStaticPaths</code> / <code>getServerSideProps</code>의 tree-shaking처럼 Next.js가 기본으로 처리하는 모든 transformation은 Rust로 이식(port)되었습니다.</p><div class="en-orig"><p>Next.js provides full backward compatibility with applications that have <a href="pages-guides-babel.html">custom Babel configuration</a>. All transformations that Next.js handles by default like styled-jsx and tree-shaking of <code>getStaticProps</code> / <code>getStaticPaths</code> / <code>getServerSideProps</code> have been ported to Rust.</p></div>
+<p>애플리케이션에 custom Babel configuration이 있으면, Next.js는 JavaScript/TypeScript compile에 SWC를 사용하지 않도록 자동으로 opt-out하고, Next.js 11에서와 같은 방식으로 Babel을 사용하도록 fallback합니다.</p><div class="en-orig"><p>When an application has a custom Babel configuration, Next.js will automatically opt-out of using SWC for compiling JavaScript/TypeScript and will fall back to using Babel in the same way that it was used in Next.js 11.</p></div>
+<p>현재 custom Babel transformation이 필요한 외부 library integration 중 상당수는 가까운 시일 내에 Rust 기반 SWC transform으로 이식될 예정입니다. 여기에는 다음이 포함되며, 이에 국한되지 않습니다:</p><div class="en-orig"><p>Many of the integrations with external libraries that currently require custom Babel transformations will be ported to Rust-based SWC transforms in the near future. These include but are not limited to:</p></div>
+<ul>
+<li>Styled Components</li>
+<li>Emotion</li>
+<li>Relay</li>
+</ul><div class="en-orig"><ul>
+<li>Styled Components</li>
+<li>Emotion</li>
+<li>Relay</li>
+</ul></div>
+<p>SWC 도입에 도움이 될 transform의 우선순위를 정할 수 있도록, <a href="https://github.com/vercel/next.js/discussions/30174" target="_blank" rel="noopener">이 feedback thread</a>에 여러분의 <code>.babelrc</code>를 공유해 주세요.</p><div class="en-orig"><p>In order to prioritize transforms that will help you adopt SWC, please provide your <code>.babelrc</code> on <a href="https://github.com/vercel/next.js/discussions/30174" target="_blank" rel="noopener">this feedback thread</a>.</p></div>
+<h4 class="sec" id="swc-replacing-terser-for-minification"><a class="anchor" href="#swc-replacing-terser-for-minification">SWC replacing Terser for minification<span class="ko">minification에서 Terser를 대체하는 SWC</span></a></h4>
+<p><code>next.config.js</code>의 flag를 사용하면 JavaScript minify에 Terser 대신 SWC를 사용하도록 opt-in할 수 있으며, 최대 7배 빠릅니다:</p><div class="en-orig"><p>You can opt-in to replacing Terser with SWC for minifying JavaScript up to 7x faster using a flag in <code>next.config.js</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  swcMinify: true,
+}</code></pre></div></div>
+<p>SWC를 사용한 minification은 Next.js 12.1에서 기본값이 되기 전에 더 많은 실제 Next.js 애플리케이션에서 테스트될 수 있도록 opt-in flag로 제공됩니다. minification에 대한 feedback이 있다면 <a href="https://github.com/vercel/next.js/discussions/30237" target="_blank" rel="noopener">이 feedback thread</a>에 남겨 주세요.</p><div class="en-orig"><p>Minification using SWC is an opt-in flag to ensure it can be tested against more real-world Next.js applications before it becomes the default in Next.js 12.1. If you have feedback about minification, please leave it on <a href="https://github.com/vercel/next.js/discussions/30237" target="_blank" rel="noopener">this feedback thread</a>.</p></div>
+<h4 class="sec" id="improvements-to-styled-jsx-css-parsing"><a class="anchor" href="#improvements-to-styled-jsx-css-parsing">Improvements to styled-jsx CSS parsing<span class="ko">styled-jsx CSS parsing 개선</span></a></h4>
+<p>Rust 기반 compiler 위에, styled-jsx Babel transform에서 사용하던 parser를 바탕으로 새 CSS parser를 구현했습니다. 이 새 parser는 CSS 처리가 개선되었고, 이전에는 그냥 통과되어 예상치 못한 동작을 일으키던 잘못된 CSS가 사용되면 이제 error를 발생시킵니다.</p><div class="en-orig"><p>On top of the Rust-based compiler we've implemented a new CSS parser based on the one used for the styled-jsx Babel transform. This new parser has improved handling of CSS and now errors when invalid CSS is used that would previously slip through and cause unexpected behavior.</p></div>
+<p>이 변경으로 잘못된 CSS는 development 중과 <code>next build</code> 중에 error를 throw합니다. 이 변경은 styled-jsx 사용에만 영향을 줍니다.</p><div class="en-orig"><p>Because of this change invalid CSS will throw an error during development and <code>next build</code>. This change only affects styled-jsx usage.</p></div>
+<h4 class="sec" id="nextimage-changed-wrapping-element"><a class="anchor" href="#nextimage-changed-wrapping-element"><code>next/image</code> changed wrapping element<span class="ko"><code>next/image</code>의 wrapping element 변경</span></a></h4>
+<p>이제 <code>next/image</code>는 <code>&lt;img&gt;</code>를 <code>&lt;div&gt;</code>가 아닌 <code>&lt;span&gt;</code> 안에 render합니다.</p><div class="en-orig"><p><code>next/image</code> now renders the <code>&lt;img&gt;</code> inside a <code>&lt;span&gt;</code> instead of <code>&lt;div&gt;</code>.</p></div>
+<p>애플리케이션에 <code>.container span</code>처럼 span을 target으로 하는 CSS가 있다면, Next.js 12로 upgrade했을 때 <code>&lt;Image&gt;</code> component 안의 wrapping element에 잘못 match될 수 있습니다. 이를 피하려면 selector를 <code>.container span.item</code>처럼 특정 class로 제한하고, 해당 component에 <code>&lt;span className=&quot;item&quot; /&gt;</code>처럼 그 className을 추가하세요.</p><div class="en-orig"><p>If your application has specific CSS targeting span such as <code>.container span</code>, upgrading to Next.js 12 might incorrectly match the wrapping element inside the <code>&lt;Image&gt;</code> component. You can avoid this by restricting the selector to a specific class such as <code>.container span.item</code> and updating the relevant component with that className, such as <code>&lt;span className=&quot;item&quot; /&gt;</code>.</p></div>
+<p>애플리케이션에 <code>.container div</code>처럼 <code>next/image</code>의 <code>&lt;div&gt;</code> tag를 target으로 하는 CSS가 있다면 더 이상 match되지 않을 수 있습니다. selector를 <code>.container span</code>으로 바꾸거나, 더 권장하는 방법으로 <code>&lt;Image&gt;</code> component를 감싸는 새 <code>&lt;div className=&quot;wrapper&quot;&gt;</code>를 추가하고 <code>.container .wrapper</code>처럼 그것을 target으로 지정하세요.</p><div class="en-orig"><p>If your application has specific CSS targeting the <code>next/image</code> <code>&lt;div&gt;</code> tag, for example <code>.container div</code>, it may not match anymore. You can update the selector <code>.container span</code>, or preferably, add a new <code>&lt;div className=&quot;wrapper&quot;&gt;</code> wrapping the <code>&lt;Image&gt;</code> component and target that instead such as <code>.container .wrapper</code>.</p></div>
+<p><code>className</code> prop은 바뀌지 않았으며 여전히 내부의 <code>&lt;img&gt;</code> element로 전달됩니다.</p><div class="en-orig"><p>The <code>className</code> prop is unchanged and will still be passed to the underlying <code>&lt;img&gt;</code> element.</p></div>
+<p>자세한 내용은 <a href="pages-api-reference-components-image.html#styling-images">문서</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="pages-api-reference-components-image.html#styling-images">documentation</a> for more info.</p></div>
+<h4 class="sec" id="hmr-connection-now-uses-a-websocket"><a class="anchor" href="#hmr-connection-now-uses-a-websocket">HMR connection now uses a WebSocket<span class="ko">이제 HMR connection은 WebSocket을 사용합니다</span></a></h4>
+<p>이전에 Next.js는 HMR event를 받기 위해 <a href="https://developer.mozilla.org/docs/Web/API/Server-sent_events" target="_blank" rel="noopener">server-sent events</a> connection을 사용했습니다. Next.js 12부터는 WebSocket connection을 사용합니다.</p><div class="en-orig"><p>Previously, Next.js used a <a href="https://developer.mozilla.org/docs/Web/API/Server-sent_events" target="_blank" rel="noopener">server-sent events</a> connection to receive HMR events. Next.js 12 now uses a WebSocket connection.</p></div>
+<p>Next.js dev server로 request를 proxy하는 경우에는 upgrade request가 올바르게 처리되는지 확인해야 할 수 있습니다. 예를 들어 <code>nginx</code>에서는 다음 configuration을 추가해야 합니다:</p><div class="en-orig"><p>In some cases when proxying requests to the Next.js dev server, you will need to ensure the upgrade request is handled correctly. For example, in <code>nginx</code> you would need to add the following configuration:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-nginx">location /_next/webpack-hmr {
+    proxy_pass http://localhost:3000/_next/webpack-hmr;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection &quot;upgrade&quot;;
+}</code></pre></div></div>
+<p>Apache(2.x)를 사용한다면 다음 configuration을 추가해 server에서 web socket을 활성화할 수 있습니다. port, host name, server name을 확인하세요.</p><div class="en-orig"><p>If you are using Apache (2.x), you can add the following configuration to enable web sockets to the server. Review the port, host name and server names.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-plaintext">&lt;VirtualHost *:443&gt;
+ # ServerName yourwebsite.local
+ ServerName &quot;${WEBSITE_SERVER_NAME}&quot;
+ ProxyPass / http://localhost:3000/
+ ProxyPassReverse / http://localhost:3000/
+ # Next.js 12 uses websocket
+ &lt;Location /_next/webpack-hmr&gt;
+    RewriteEngine On
+    RewriteCond %{QUERY_STRING} transport=websocket [NC]
+    RewriteCond %{HTTP:Upgrade} websocket [NC]
+    RewriteCond %{HTTP:Connection} upgrade [NC]
+    RewriteRule /(.*) ws://localhost:3000/_next/webpack-hmr/$1 [P,L]
+    ProxyPass ws://localhost:3000/_next/webpack-hmr retry=0 timeout=30
+    ProxyPassReverse ws://localhost:3000/_next/webpack-hmr
+ &lt;/Location&gt;
+&lt;/VirtualHost&gt;</code></pre></div></div>
+<p><code>express</code> 같은 custom server에서는 request가 올바르게 전달되도록 <code>app.all</code>을 사용해야 할 수 있습니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For custom servers, such as <code>express</code>, you may need to use <code>app.all</code> to ensure the request is passed correctly, for example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">app.all(&#x27;/_next/webpack-hmr&#x27;, (req, res) =&gt; {
+  nextjsRequestHandler(req, res)
+})</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p>Next.js 16에서 HMR WebSocket path가 <code>/_next/webpack-hmr</code>에서 <code>/_next/hmr</code>로 이름이 바뀌었습니다.</p><div class="en-orig"><p>In Next.js 16, the HMR WebSocket path was renamed from <code>/_next/webpack-hmr</code> to <code>/_next/hmr</code>.</p></div></div></div>
+<h4 class="sec" id="webpack-4-support-has-been-removed"><a class="anchor" href="#webpack-4-support-has-been-removed">Webpack 4 support has been removed<span class="ko">Webpack 4 지원 제거</span></a></h4>
+<p>이미 webpack 5를 사용하고 있다면 이 섹션은 건너뛰어도 됩니다.</p><div class="en-orig"><p>If you are already using webpack 5 you can skip this section.</p></div>
+<p>Next.js는 Next.js 11에서 compile의 기본값으로 webpack 5를 채택했습니다. <a href="https://nextjs.org/docs/messages/webpack5" target="_blank" rel="noopener">webpack 5 upgrading 문서</a>에서 안내한 대로 Next.js 12에서는 webpack 4 지원이 제거되었습니다.</p><div class="en-orig"><p>Next.js has adopted webpack 5 as the default for compilation in Next.js 11. As communicated in the <a href="https://nextjs.org/docs/messages/webpack5" target="_blank" rel="noopener">webpack 5 upgrading documentation</a> Next.js 12 removes support for webpack 4.</p></div>
+<p>애플리케이션이 opt-out flag를 사용해 여전히 webpack 4를 쓰고 있다면, 이제 <a href="https://nextjs.org/docs/messages/webpack5" target="_blank" rel="noopener">webpack 5 upgrading 문서</a>로 연결되는 error가 표시됩니다.</p><div class="en-orig"><p>If your application is still using webpack 4 using the opt-out flag, you will now see an error linking to the <a href="https://nextjs.org/docs/messages/webpack5" target="_blank" rel="noopener">webpack 5 upgrading documentation</a>.</p></div>
+<h4 class="sec" id="target-option-deprecated"><a class="anchor" href="#target-option-deprecated"><code>target</code> option deprecated</a></h4>
+<p><code>next.config.js</code>에 <code>target</code>이 없다면 이 섹션은 건너뛰어도 됩니다.</p><div class="en-orig"><p>If you do not have <code>target</code> in <code>next.config.js</code> you can skip this section.</p></div>
+<p>page 실행에 필요한 dependency를 추적(tracing)하는 기능이 기본 지원되면서 target option은 deprecated되었습니다.</p><div class="en-orig"><p>The target option has been deprecated in favor of built-in support for tracing what dependencies are needed to run a page.</p></div>
+<p><code>next build</code> 중에 Next.js는 각 page와 그 dependency를 자동으로 trace해서, 애플리케이션의 production 버전을 deploy하는 데 필요한 모든 파일을 파악합니다.</p><div class="en-orig"><p>During <code>next build</code>, Next.js will automatically trace each page and its dependencies to determine all of the files that are needed for deploying a production version of your application.</p></div>
+<p>현재 <code>target</code> option을 <code>serverless</code>로 설정해 사용하고 있다면, <a href="pages-api-reference-config-next-config-js-output.html">새 output을 활용하는 방법에 대한 문서</a>를 읽어 보세요.</p><div class="en-orig"><p>If you are currently using the <code>target</code> option set to <code>serverless</code>, please read the <a href="pages-api-reference-config-next-config-js-output.html">documentation on how to leverage the new output</a>.</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/02-guides/upgrading/version-12.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/guides/upgrading/version-12" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-guides-upgrading-version-11.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Version 11</div><div class="ttl-ko">버전 11로 업그레이드하기</div></a>
+      <a href="pages-guides-upgrading-version-13.html" class="next"><div class="dir">다음 →</div><div class="ttl">Version 13</div><div class="ttl-ko">버전 13으로 업그레이드하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/guides/upgrading/version-12" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l3"><a href="#upgrading-to-122">Upgrading to 12.2</a></li><li class="l3"><a href="#upgrading-to-120">Upgrading to 12.0</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+버전 12로 업그레이드하려면 다음 command를 실행하세요:
+
+[[CODE 1]]
+
+[[CODE 2]]
+
+[[CODE 3]]
+
+[[CODE 4]]
+
+&gt; **Good to know:** TypeScript를 사용한다면 `@types/react`와 `@types/react-dom`도 그에 맞는 버전으로 함께 upgrade하세요.
+
+### Upgrading to 12.2 || 12.2로 업그레이드하기
+
+[Middleware](/docs/messages/middleware-upgrade-guide) - `12.2` 이전부터 Middleware를 사용하고 있었다면, 자세한 내용은 [upgrade guide](/docs/messages/middleware-upgrade-guide)를 참고하세요.
+
+### Upgrading to 12.0 || 12.0으로 업그레이드하기
+
+[최소 Node.js 버전](https://nodejs.org/en/) - 최소 Node.js 버전이 `12.0.0`에서 `12.22.0`으로 올라갔습니다. `12.22.0`은 native ES Modules를 지원하는 첫 Node.js 버전입니다.
+
+[최소 React 버전](https://react.dev/learn/add-react-to-an-existing-project) - 필요한 최소 React 버전은 `17.0.2`입니다. upgrade하려면 terminal에서 다음 command를 실행하세요:
+
+[[CODE 5]]
+
+#### SWC replacing Babel || Babel을 대체하는 SWC
+
+이제 Next.js는 JavaScript/TypeScript를 compile할 때 Rust 기반 compiler인 [SWC](https://swc.rs/)를 사용합니다. 이 새 compiler는 개별 파일을 compile할 때 Babel보다 최대 17배 빠르고, Fast Refresh는 최대 5배 빠릅니다.
+
+Next.js는 [custom Babel configuration](/docs/pages/guides/babel)을 가진 애플리케이션과 완전한 하위 호환성(backward compatibility)을 제공합니다. styled-jsx나 `getStaticProps` / `getStaticPaths` / `getServerSideProps`의 tree-shaking처럼 Next.js가 기본으로 처리하는 모든 transformation은 Rust로 이식(port)되었습니다.
+
+애플리케이션에 custom Babel configuration이 있으면, Next.js는 JavaScript/TypeScript compile에 SWC를 사용하지 않도록 자동으로 opt-out하고, Next.js 11에서와 같은 방식으로 Babel을 사용하도록 fallback합니다.
+
+현재 custom Babel transformation이 필요한 외부 library integration 중 상당수는 가까운 시일 내에 Rust 기반 SWC transform으로 이식될 예정입니다. 여기에는 다음이 포함되며, 이에 국한되지 않습니다:
+
+- Styled Components
+- Emotion
+- Relay
+
+SWC 도입에 도움이 될 transform의 우선순위를 정할 수 있도록, [이 feedback thread](https://github.com/vercel/next.js/discussions/30174)에 여러분의 `.babelrc`를 공유해 주세요.
+
+#### SWC replacing Terser for minification || minification에서 Terser를 대체하는 SWC
+
+`next.config.js`의 flag를 사용하면 JavaScript minify에 Terser 대신 SWC를 사용하도록 opt-in할 수 있으며, 최대 7배 빠릅니다:
+
+[[CODE 6]]
+
+SWC를 사용한 minification은 Next.js 12.1에서 기본값이 되기 전에 더 많은 실제 Next.js 애플리케이션에서 테스트될 수 있도록 opt-in flag로 제공됩니다. minification에 대한 feedback이 있다면 [이 feedback thread](https://github.com/vercel/next.js/discussions/30237)에 남겨 주세요.
+
+#### Improvements to styled-jsx CSS parsing || styled-jsx CSS parsing 개선
+
+Rust 기반 compiler 위에, styled-jsx Babel transform에서 사용하던 parser를 바탕으로 새 CSS parser를 구현했습니다. 이 새 parser는 CSS 처리가 개선되었고, 이전에는 그냥 통과되어 예상치 못한 동작을 일으키던 잘못된 CSS가 사용되면 이제 error를 발생시킵니다.
+
+이 변경으로 잘못된 CSS는 development 중과 `next build` 중에 error를 throw합니다. 이 변경은 styled-jsx 사용에만 영향을 줍니다.
+
+#### `next/image` changed wrapping element || `next/image`의 wrapping element 변경
+
+이제 `next/image`는 `&lt;img&gt;`를 `&lt;div&gt;`가 아닌 `&lt;span&gt;` 안에 render합니다.
+
+애플리케이션에 `.container span`처럼 span을 target으로 하는 CSS가 있다면, Next.js 12로 upgrade했을 때 `&lt;Image&gt;` component 안의 wrapping element에 잘못 match될 수 있습니다. 이를 피하려면 selector를 `.container span.item`처럼 특정 class로 제한하고, 해당 component에 `&lt;span className=&quot;item&quot; /&gt;`처럼 그 className을 추가하세요.
+
+애플리케이션에 `.container div`처럼 `next/image`의 `&lt;div&gt;` tag를 target으로 하는 CSS가 있다면 더 이상 match되지 않을 수 있습니다. selector를 `.container span`으로 바꾸거나, 더 권장하는 방법으로 `&lt;Image&gt;` component를 감싸는 새 `&lt;div className=&quot;wrapper&quot;&gt;`를 추가하고 `.container .wrapper`처럼 그것을 target으로 지정하세요.
+
+`className` prop은 바뀌지 않았으며 여전히 내부의 `&lt;img&gt;` element로 전달됩니다.
+
+자세한 내용은 [문서](/docs/pages/api-reference/components/image#styling-images)를 참고하세요.
+
+#### HMR connection now uses a WebSocket || 이제 HMR connection은 WebSocket을 사용합니다
+
+이전에 Next.js는 HMR event를 받기 위해 [server-sent events](https://developer.mozilla.org/docs/Web/API/Server-sent_events) connection을 사용했습니다. Next.js 12부터는 WebSocket connection을 사용합니다.
+
+Next.js dev server로 request를 proxy하는 경우에는 upgrade request가 올바르게 처리되는지 확인해야 할 수 있습니다. 예를 들어 `nginx`에서는 다음 configuration을 추가해야 합니다:
+
+[[CODE 7]]
+
+Apache(2.x)를 사용한다면 다음 configuration을 추가해 server에서 web socket을 활성화할 수 있습니다. port, host name, server name을 확인하세요.
+
+[[CODE 8]]
+
+`express` 같은 custom server에서는 request가 올바르게 전달되도록 `app.all`을 사용해야 할 수 있습니다. 예를 들면 다음과 같습니다:
+
+[[CODE 9]]
+
+&gt; **Note:** Next.js 16에서 HMR WebSocket path가 `/_next/webpack-hmr`에서 `/_next/hmr`로 이름이 바뀌었습니다.
+
+#### Webpack 4 support has been removed || Webpack 4 지원 제거
+
+이미 webpack 5를 사용하고 있다면 이 섹션은 건너뛰어도 됩니다.
+
+Next.js는 Next.js 11에서 compile의 기본값으로 webpack 5를 채택했습니다. [webpack 5 upgrading 문서](/docs/messages/webpack5)에서 안내한 대로 Next.js 12에서는 webpack 4 지원이 제거되었습니다.
+
+애플리케이션이 opt-out flag를 사용해 여전히 webpack 4를 쓰고 있다면, 이제 [webpack 5 upgrading 문서](/docs/messages/webpack5)로 연결되는 error가 표시됩니다.
+
+#### `target` option deprecated || `target` option deprecated
+
+`next.config.js`에 `target`이 없다면 이 섹션은 건너뛰어도 됩니다.
+
+page 실행에 필요한 dependency를 추적(tracing)하는 기능이 기본 지원되면서 target option은 deprecated되었습니다.
+
+`next build` 중에 Next.js는 각 page와 그 dependency를 자동으로 trace해서, 애플리케이션의 production 버전을 deploy하는 데 필요한 모든 파일을 파악합니다.
+
+현재 `target` option을 `serverless`로 설정해 사용하고 있다면, [새 output을 활용하는 방법에 대한 문서](/docs/pages/api-reference/config/next-config-js/output)를 읽어 보세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

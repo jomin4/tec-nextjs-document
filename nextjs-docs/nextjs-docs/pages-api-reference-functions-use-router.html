@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>useRouter (useRouter) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/api-reference/functions/use-router" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/api-reference/functions/use-router" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/04-api-reference/03-functions/use-router.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference-functions.html">Functions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">useRouter<span class="sub">useRouter</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>앱의 어떤 function component 안에서든 <a href="#router-object"><code>router</code> object</a>에 접근하고 싶다면 <code>useRouter</code> hook을 사용할 수 있습니다. 다음 예제를 살펴보세요:</p><div class="en-orig"><p>If you want to access the <a href="#router-object"><code>router</code> object</a> inside any function component in your app, you can use the <code>useRouter</code> hook, take a look at the following example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useRouter } from &#x27;next/router&#x27;
+
+function ActiveLink({ children, href }) {
+  const router = useRouter()
+  const style = {
+    marginRight: 10,
+    color: router.asPath === href ? &#x27;red&#x27; : &#x27;black&#x27;,
+  }
+
+  const handleClick = (e) =&gt; {
+    e.preventDefault()
+    router.push(href)
+  }
+
+  return (
+    &lt;a href={href} onClick={handleClick} style={style}&gt;
+      {children}
+    &lt;/a&gt;
+  )
+}
+
+export default ActiveLink</code></pre></div></div>
+<blockquote><p><code>useRouter</code>는 <a href="https://react.dev/learn#using-hooks" target="_blank" rel="noopener">React Hook</a>이므로 class와 함께 사용할 수 없습니다. <a href="#withrouter">withRouter</a>를 사용하거나 class를 function component로 감싸세요.</p><div class="en-orig"><p><code>useRouter</code> is a <a href="https://react.dev/learn#using-hooks" target="_blank" rel="noopener">React Hook</a>, meaning it cannot be used with classes. You can either use <a href="#withrouter">withRouter</a> or wrap your class in a function component.</p></div></blockquote>
+<h2 class="sec" id="router-object"><a class="anchor" href="#router-object"><code>router</code> object</a></h2>
+<p>다음은 <a href="#top"><code>useRouter</code></a>와 <a href="#withrouter"><code>withRouter</code></a>가 모두 반환하는 <code>router</code> object의 정의입니다:</p><div class="en-orig"><p>The following is the definition of the <code>router</code> object returned by both <a href="#top"><code>useRouter</code></a> and <a href="#withrouter"><code>withRouter</code></a>:</p></div>
+<ul>
+<li><code>pathname</code>: <code>String</code> - <code>/pages</code> 뒤에 오는 현재 route 파일의 경로입니다. 따라서 <code>basePath</code>, <code>locale</code>, trailing slash(<code>trailingSlash: true</code>)는 포함되지 않습니다.</li>
+<li><code>query</code>: <code>Object</code> - <a href="pages-building-your-application-routing-dynamic-routes.html">dynamic route</a> parameter를 포함해 object로 parse된 query string입니다. page가 <a href="pages-building-your-application-data-fetching-get-server-side-props.html">Server-side Rendering</a>을 사용하지 않으면 prerendering 중에는 빈 object가 됩니다. 기본값은 <code>{}</code>입니다</li>
+<li><code>asPath</code>: <code>String</code> - search params를 포함하고 <code>trailingSlash</code> 설정을 반영한, 브라우저에 표시되는 경로입니다. <code>basePath</code>와 <code>locale</code>은 포함되지 않습니다.</li>
+<li><code>isFallback</code>: <code>boolean</code> - 현재 page가 <a href="pages-api-reference-functions-get-static-paths.html#fallback-true">fallback mode</a>인지 여부입니다.</li>
+<li><code>basePath</code>: <code>String</code> - 활성화된 <a href="app-api-reference-config-next-config-js-basePath.html">basePath</a>입니다(활성화된 경우).</li>
+<li><code>locale</code>: <code>String</code> - 활성화된 locale입니다(활성화된 경우).</li>
+<li><code>locales</code>: <code>String[]</code> - 지원하는 모든 locale입니다(활성화된 경우).</li>
+<li><code>defaultLocale</code>: <code>String</code> - 현재 기본 locale입니다(활성화된 경우).</li>
+<li><code>domainLocales</code>: <code>Array&lt;{domain, defaultLocale, locales}&gt;</code> - 설정된 모든 domain locale입니다.</li>
+<li><code>isReady</code>: <code>boolean</code> - router field가 client-side에서 업데이트되어 사용할 준비가 되었는지 여부입니다. <code>useEffect</code> method 안에서만 사용해야 하며, server에서 조건부 rendering을 하는 용도로 사용하면 안 됩니다. <a href="pages-building-your-application-rendering-automatic-static-optimization.html">automatically statically optimized page</a>에서의 use case는 관련 문서를 참고하세요</li>
+<li><code>isPreview</code>: <code>boolean</code> - 애플리케이션이 현재 <a href="pages-guides-preview-mode.html">preview mode</a>인지 여부입니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>pathname</code>: <code>String</code> - The path for current route file that comes after <code>/pages</code>. Therefore, <code>basePath</code>, <code>locale</code> and trailing slash (<code>trailingSlash: true</code>) are not included.</li>
+<li><code>query</code>: <code>Object</code> - The query string parsed to an object, including <a href="pages-building-your-application-routing-dynamic-routes.html">dynamic route</a> parameters. It will be an empty object during prerendering if the page doesn't use <a href="pages-building-your-application-data-fetching-get-server-side-props.html">Server-side Rendering</a>. Defaults to <code>{}</code></li>
+<li><code>asPath</code>: <code>String</code> - The path as shown in the browser including the search params and respecting the <code>trailingSlash</code> configuration. <code>basePath</code> and <code>locale</code> are not included.</li>
+<li><code>isFallback</code>: <code>boolean</code> - Whether the current page is in <a href="pages-api-reference-functions-get-static-paths.html#fallback-true">fallback mode</a>.</li>
+<li><code>basePath</code>: <code>String</code> - The active <a href="app-api-reference-config-next-config-js-basePath.html">basePath</a> (if enabled).</li>
+<li><code>locale</code>: <code>String</code> - The active locale (if enabled).</li>
+<li><code>locales</code>: <code>String[]</code> - All supported locales (if enabled).</li>
+<li><code>defaultLocale</code>: <code>String</code> - The current default locale (if enabled).</li>
+<li><code>domainLocales</code>: <code>Array&lt;{domain, defaultLocale, locales}&gt;</code> - Any configured domain locales.</li>
+<li><code>isReady</code>: <code>boolean</code> - Whether the router fields are updated client-side and ready for use. Should only be used inside of <code>useEffect</code> methods and not for conditionally rendering on the server. See related docs for use case with <a href="pages-building-your-application-rendering-automatic-static-optimization.html">automatically statically optimized pages</a></li>
+<li><code>isPreview</code>: <code>boolean</code> - Whether the application is currently in <a href="pages-guides-preview-mode.html">preview mode</a>.</li>
+</ul></div>
+<blockquote><p>page가 server-side rendering이나 <a href="pages-building-your-application-rendering-automatic-static-optimization.html">automatic static optimization</a>으로 render되는 경우 <code>asPath</code> field를 사용하면 client와 server 사이에 mismatch가 생길 수 있습니다. <code>isReady</code> field가 <code>true</code>가 될 때까지는 <code>asPath</code> 사용을 피하세요.</p><div class="en-orig"><p>Using the <code>asPath</code> field may lead to a mismatch between client and server if the page is rendered using server-side rendering or <a href="pages-building-your-application-rendering-automatic-static-optimization.html">automatic static optimization</a>. Avoid using <code>asPath</code> until the <code>isReady</code> field is <code>true</code>.</p></div></blockquote>
+<p><code>router</code> 안에는 다음 method가 포함되어 있습니다:</p><div class="en-orig"><p>The following methods are included inside <code>router</code>:</p></div>
+<h3 class="sec" id="routerpush"><a class="anchor" href="#routerpush">router.push</a></h3>
+<p>client-side transition을 처리합니다. 이 method는 <a href="pages-api-reference-components-link.html"><code>next/link</code></a>만으로는 충분하지 않은 경우에 유용합니다.</p><div class="en-orig"><p>Handles client-side transitions, this method is useful for cases where <a href="pages-api-reference-components-link.html"><code>next/link</code></a> is not enough.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">router.push(url, as, options)</code></pre></div></div>
+<ul>
+<li><code>url</code>: <code>UrlObject | String</code> - 이동할 URL입니다(<code>UrlObject</code> property는 <a href="https://nodejs.org/api/url.html#legacy-urlobject" target="_blank" rel="noopener">Node.js URL module 문서</a>를 참고하세요).</li>
+<li><code>as</code>: <code>UrlObject | String</code> - 브라우저 URL bar에 표시될 경로를 위한 선택적 decorator입니다. Next.js 9.5.3 이전에는 dynamic route에 사용되었습니다.</li>
+<li><code>options</code> - 다음 configuration option을 가진 선택적 object입니다:<ul>
+<li><code>scroll</code> - 선택적 boolean으로, navigation 후 page 맨 위로 scroll할지 제어합니다. 기본값은 <code>true</code>입니다</li>
+<li><a href="pages-building-your-application-routing-linking-and-navigating.html#shallow-routing"><code>shallow</code></a>: <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a>, <a href="pages-building-your-application-data-fetching-get-server-side-props.html"><code>getServerSideProps</code></a>, <a href="pages-api-reference-functions-get-initial-props.html"><code>getInitialProps</code></a>를 다시 실행하지 않고 현재 page의 경로를 업데이트합니다. 기본값은 <code>false</code>입니다</li>
+<li><code>locale</code> - 선택적 string으로, 새 page의 locale을 나타냅니다</li>
+</ul></li>
+</ul><div class="en-orig"><ul>
+<li><code>url</code>: <code>UrlObject | String</code> - The URL to navigate to (see <a href="https://nodejs.org/api/url.html#legacy-urlobject" target="_blank" rel="noopener">Node.js URL module documentation</a> for <code>UrlObject</code> properties).</li>
+<li><code>as</code>: <code>UrlObject | String</code> - Optional decorator for the path that will be shown in the browser URL bar. Before Next.js 9.5.3 this was used for dynamic routes.</li>
+<li><code>options</code> - Optional object with the following configuration options:<ul>
+<li><code>scroll</code> - Optional boolean, controls scrolling to the top of the page after navigation. Defaults to <code>true</code></li>
+<li><a href="pages-building-your-application-routing-linking-and-navigating.html#shallow-routing"><code>shallow</code></a>: Update the path of the current page without rerunning <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a>, <a href="pages-building-your-application-data-fetching-get-server-side-props.html"><code>getServerSideProps</code></a> or <a href="pages-api-reference-functions-get-initial-props.html"><code>getInitialProps</code></a>. Defaults to <code>false</code></li>
+<li><code>locale</code> - Optional string, indicates locale of the new page</li>
+</ul></li>
+</ul></div>
+<blockquote><p>외부 URL에는 <code>router.push</code>를 사용할 필요가 없습니다. 그런 경우에는 <a href="https://developer.mozilla.org/docs/Web/API/Window/location" target="_blank" rel="noopener">window.location</a>이 더 적합합니다.</p><div class="en-orig"><p>You don't need to use <code>router.push</code> for external URLs. <a href="https://developer.mozilla.org/docs/Web/API/Window/location" target="_blank" rel="noopener">window.location</a> is better suited for those cases.</p></div></blockquote>
+<p>미리 정의된 route인 <code>pages/about.js</code>로 이동하기:</p><div class="en-orig"><p>Navigating to <code>pages/about.js</code>, which is a predefined route:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useRouter } from &#x27;next/router&#x27;
+
+export default function Page() {
+  const router = useRouter()
+
+  return (
+    &lt;button type=&quot;button&quot; onClick={() =&gt; router.push(&#x27;/about&#x27;)}&gt;
+      Click me
+    &lt;/button&gt;
+  )
+}</code></pre></div></div>
+<p>dynamic route인 <code>pages/post/[pid].js</code>로 이동하기:</p><div class="en-orig"><p>Navigating <code>pages/post/[pid].js</code>, which is a dynamic route:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useRouter } from &#x27;next/router&#x27;
+
+export default function Page() {
+  const router = useRouter()
+
+  return (
+    &lt;button type=&quot;button&quot; onClick={() =&gt; router.push(&#x27;/post/abc&#x27;)}&gt;
+      Click me
+    &lt;/button&gt;
+  )
+}</code></pre></div></div>
+<p>사용자를 <code>pages/login.js</code>로 redirect하기. <a href="pages-guides-authentication.html">authentication</a> 뒤에 있는 page에 유용합니다:</p><div class="en-orig"><p>Redirecting the user to <code>pages/login.js</code>, useful for pages behind <a href="pages-guides-authentication.html">authentication</a>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useEffect } from &#x27;react&#x27;
+import { useRouter } from &#x27;next/router&#x27;
+
+// Here you would fetch and return the user
+const useUser = () =&gt; ({ user: null, loading: false })
+
+export default function Page() {
+  const { user, loading } = useUser()
+  const router = useRouter()
+
+  useEffect(() =&gt; {
+    if (!(user || loading)) {
+      router.push(&#x27;/login&#x27;)
+    }
+  }, [user, loading])
+
+  return &lt;p&gt;Redirecting...&lt;/p&gt;
+}</code></pre></div></div>
+<h4 class="sec" id="resetting-state-after-navigation"><a class="anchor" href="#resetting-state-after-navigation">Resetting state after navigation<span class="ko">navigation 후 state 초기화하기</span></a></h4>
+<p>Next.js에서 같은 page로 이동할 때, React는 parent component가 바뀌지 않는 한 unmount하지 않으므로 기본적으로 page의 state는 초기화되지 <strong>않습니다</strong>.</p><div class="en-orig"><p>When navigating to the same page in Next.js, the page's state <strong>will not</strong> be reset by default as React does not unmount unless the parent component has changed.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/[slug].js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import Link from &#x27;next/link&#x27;
+import { useState } from &#x27;react&#x27;
+import { useRouter } from &#x27;next/router&#x27;
+
+export default function Page(props) {
+  const router = useRouter()
+  const [count, setCount] = useState(0)
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;Page: {router.query.slug}&lt;/h1&gt;
+      &lt;p&gt;Count: {count}&lt;/p&gt;
+      &lt;button onClick={() =&gt; setCount(count + 1)}&gt;Increase count&lt;/button&gt;
+      &lt;Link href=&quot;/one&quot;&gt;one&lt;/Link&gt; &lt;Link href=&quot;/two&quot;&gt;two&lt;/Link&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>위 예제에서 <code>/one</code>과 <code>/two</code> 사이를 이동해도 count는 초기화되지 <strong>않습니다</strong>. top-level React component인 <code>Page</code>가 동일하기 때문에 <code>useState</code>가 render 사이에 유지됩니다.</p><div class="en-orig"><p>In the above example, navigating between <code>/one</code> and <code>/two</code> <strong>will not</strong> reset the count . The <code>useState</code> is maintained between renders because the top-level React component, <code>Page</code>, is the same.</p></div>
+<p>이 동작을 원하지 않는다면 몇 가지 방법이 있습니다:</p><div class="en-orig"><p>If you do not want this behavior, you have a couple of options:</p></div>
+<ul>
+<li><p><code>useEffect</code>를 사용해 각 state가 업데이트되도록 직접 보장합니다. 위 예제에서는 다음과 같이 할 수 있습니다:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">useEffect(() =&gt; {
+  setCount(0)
+}, [router.query.slug])</code></pre></div></div></li>
+<li><p>React <code>key</code>를 사용해 <a href="https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key" target="_blank" rel="noopener">React가 component를 remount하도록 알립니다</a>. 모든 page에 이렇게 하려면 custom app을 사용할 수 있습니다:</p>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/_app.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { useRouter } from &#x27;next/router&#x27;
+
+export default function MyApp({ Component, pageProps }) {
+  const router = useRouter()
+  return &lt;Component key={router.asPath} {...pageProps} /&gt;
+}</code></pre></div></div></li>
+</ul><div class="en-orig"><ul>
+<li><p>Manually ensure each state is updated using <code>useEffect</code>. In the above example, that could look like:</p>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">useEffect(() =&gt; {
+  setCount(0)
+}, [router.query.slug])</code></pre></div></div></li>
+<li><p>Use a React <code>key</code> to <a href="https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key" target="_blank" rel="noopener">tell React to remount the component</a>. To do this for all pages, you can use a custom app:</p>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/_app.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { useRouter } from &#x27;next/router&#x27;
+
+export default function MyApp({ Component, pageProps }) {
+  const router = useRouter()
+  return &lt;Component key={router.asPath} {...pageProps} /&gt;
+}</code></pre></div></div></li>
+</ul></div>
+<h4 class="sec" id="with-url-object"><a class="anchor" href="#with-url-object">With URL object<span class="ko">URL object와 함께 사용하기</span></a></h4>
+<p><a href="pages-api-reference-components-link.html#passing-a-url-object"><code>next/link</code></a>에서 사용하는 것과 같은 방식으로 URL object를 사용할 수 있습니다. <code>url</code>과 <code>as</code> parameter 모두에서 동작합니다:</p><div class="en-orig"><p>You can use a URL object in the same way you can use it for <a href="pages-api-reference-components-link.html#passing-a-url-object"><code>next/link</code></a>. Works for both the <code>url</code> and <code>as</code> parameters:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useRouter } from &#x27;next/router&#x27;
+
+export default function ReadMore({ post }) {
+  const router = useRouter()
+
+  return (
+    &lt;button
+      type=&quot;button&quot;
+      onClick={() =&gt; {
+        router.push({
+          pathname: &#x27;/post/[pid]&#x27;,
+          query: { pid: post.id },
+        })
+      }}
+    &gt;
+      Click here to read more
+    &lt;/button&gt;
+  )
+}</code></pre></div></div>
+<p><code>pathname</code>을 생략하면 query는 현재 page의 route(<code>pathname</code>)가 아니라 브라우저에 표시되는 URL(<a href="#router-object"><code>asPath</code></a>)에 적용됩니다. 이렇게 하면 <a href="pages-api-reference-config-next-config-js-rewrites.html">rewrites</a>가 그대로 유지됩니다. rewrite로 제공되는 page에서 query만 바꾸는 navigation은 rewrite destination을 드러내는 대신 방문자가 요청한 URL을 유지합니다.</p><div class="en-orig"><p>If you omit <code>pathname</code>, the query is applied to the URL shown in the browser (<a href="#router-object"><code>asPath</code></a>) rather than to the current page's route (<code>pathname</code>). This keeps <a href="pages-api-reference-config-next-config-js-rewrites.html">rewrites</a> intact: on a page served by a rewrite, a query-only navigation preserves the URL the visitor requested instead of revealing the rewrite destination.</p></div>
+<p><code>as</code> parameter로 URL을 직접 mask하는 경우에도 두 값이 달라집니다. 이 경우에는 <code>pathname</code>을 명시적으로 전달하세요. 그렇지 않으면 query가 mask된 URL에 적용되어 다른 page로 resolve될 수 있습니다:</p><div class="en-orig"><p>The two values also differ when you mask the URL yourself with the <code>as</code> parameter. Pass <code>pathname</code> explicitly in that case, otherwise the query is applied to the masked URL and can resolve to a different page:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">// On the `/` page, with the URL masked as `/p/1`
+router.push({ pathname: &#x27;/&#x27;, query: { photoId: 2 } }, &#x27;/p/2&#x27;, { shallow: true })</code></pre></div></div>
+<h3 class="sec" id="routerreplace"><a class="anchor" href="#routerreplace">router.replace</a></h3>
+<p><a href="pages-api-reference-components-link.html"><code>next/link</code></a>의 <code>replace</code> prop과 비슷하게, <code>router.replace</code>는 <code>history</code> stack에 새 URL 항목이 추가되는 것을 막습니다.</p><div class="en-orig"><p>Similar to the <code>replace</code> prop in <a href="pages-api-reference-components-link.html"><code>next/link</code></a>, <code>router.replace</code> will prevent adding a new URL entry into the <code>history</code> stack.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">router.replace(url, as, options)</code></pre></div></div>
+<ul>
+<li><code>router.replace</code>의 API는 <a href="#routerpush"><code>router.push</code></a>의 API와 완전히 동일합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The API for <code>router.replace</code> is exactly the same as the API for <a href="#routerpush"><code>router.push</code></a>.</li>
+</ul></div>
+<p>다음 예제를 살펴보세요:</p><div class="en-orig"><p>Take a look at the following example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useRouter } from &#x27;next/router&#x27;
+
+export default function Page() {
+  const router = useRouter()
+
+  return (
+    &lt;button type=&quot;button&quot; onClick={() =&gt; router.replace(&#x27;/home&#x27;)}&gt;
+      Click me
+    &lt;/button&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="routerprefetch"><a class="anchor" href="#routerprefetch">router.prefetch</a></h3>
+<p>더 빠른 client-side transition을 위해 page를 prefetch합니다. <code>next/link</code>가 page prefetch를 자동으로 처리하므로, 이 method는 <a href="pages-api-reference-components-link.html"><code>next/link</code></a>를 사용하지 않는 navigation에서만 유용합니다.</p><div class="en-orig"><p>Prefetch pages for faster client-side transitions. This method is only useful for navigations without <a href="pages-api-reference-components-link.html"><code>next/link</code></a>, as <code>next/link</code> takes care of prefetching pages automatically.</p></div>
+<blockquote><p>이 기능은 production 전용입니다. Next.js는 development에서 page를 prefetch하지 않습니다.</p><div class="en-orig"><p>This is a production only feature. Next.js doesn't prefetch pages in development.</p></div></blockquote>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">router.prefetch(url, as, options)</code></pre></div></div>
+<ul>
+<li><code>url</code> - prefetch할 URL로, 명시적인 route(예: <code>/dashboard</code>)와 dynamic route(예: <code>/product/[id]</code>)를 포함합니다</li>
+<li><code>as</code> - <code>url</code>을 위한 선택적 decorator입니다. Next.js 9.5.3 이전에는 dynamic route를 prefetch하는 데 사용되었습니다.</li>
+<li><code>options</code> - 다음 field를 허용하는 선택적 object입니다:<ul>
+<li><code>locale</code> - 활성화된 locale과 다른 locale을 지정할 수 있습니다. <code>false</code>이면 활성화된 locale이 사용되지 않으므로 <code>url</code>에 locale이 포함되어야 합니다.</li>
+</ul></li>
+</ul><div class="en-orig"><ul>
+<li><code>url</code> - The URL to prefetch, including explicit routes (e.g. <code>/dashboard</code>) and dynamic routes (e.g. <code>/product/[id]</code>)</li>
+<li><code>as</code> - Optional decorator for <code>url</code>. Before Next.js 9.5.3 this was used to prefetch dynamic routes.</li>
+<li><code>options</code> - Optional object with the following allowed fields:<ul>
+<li><code>locale</code> - allows providing a different locale from the active one. If <code>false</code>, <code>url</code> has to include the locale as the active locale won't be used.</li>
+</ul></li>
+</ul></div>
+<p>login page가 있고, login 후 사용자를 dashboard로 redirect한다고 가정해 봅시다. 이 경우 다음 예제처럼 dashboard를 prefetch해서 더 빠르게 transition할 수 있습니다:</p><div class="en-orig"><p>Let's say you have a login page, and after a login, you redirect the user to the dashboard. For that case, we can prefetch the dashboard to make a faster transition, like in the following example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useCallback, useEffect } from &#x27;react&#x27;
+import { useRouter } from &#x27;next/router&#x27;
+
+export default function Login() {
+  const router = useRouter()
+  const handleSubmit = useCallback((e) =&gt; {
+    e.preventDefault()
+
+    fetch(&#x27;/api/login&#x27;, {
+      method: &#x27;POST&#x27;,
+      headers: { &#x27;Content-Type&#x27;: &#x27;application/json&#x27; },
+      body: JSON.stringify({
+        /* Form data */
+      }),
+    }).then((res) =&gt; {
+      // Do a fast client-side transition to the already prefetched dashboard page
+      if (res.ok) router.push(&#x27;/dashboard&#x27;)
+    })
+  }, [])
+
+  useEffect(() =&gt; {
+    // Prefetch the dashboard page
+    router.prefetch(&#x27;/dashboard&#x27;)
+  }, [router])
+
+  return (
+    &lt;form onSubmit={handleSubmit}&gt;
+      {/* Form fields */}
+      &lt;button type=&quot;submit&quot;&gt;Login&lt;/button&gt;
+    &lt;/form&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="routerbeforepopstate"><a class="anchor" href="#routerbeforepopstate">router.beforePopState</a></h3>
+<p>어떤 경우에는(예: <a href="pages-guides-custom-server.html">Custom Server</a>를 사용하는 경우) <a href="https://developer.mozilla.org/docs/Web/API/Window/popstate_event" target="_blank" rel="noopener">popstate</a>를 listen해서 router가 이를 처리하기 전에 무언가를 하고 싶을 수 있습니다.</p><div class="en-orig"><p>In some cases (for example, if using a <a href="pages-guides-custom-server.html">Custom Server</a>), you may wish to listen to <a href="https://developer.mozilla.org/docs/Web/API/Window/popstate_event" target="_blank" rel="noopener">popstate</a> and do something before the router acts on it.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">router.beforePopState(cb)</code></pre></div></div>
+<ul>
+<li><code>cb</code> - 들어오는 <code>popstate</code> event에서 실행할 함수입니다. 이 함수는 event의 state를 다음 props를 가진 object로 전달받습니다:<ul>
+<li><code>url</code>: <code>String</code> - 새 state의 route입니다. 보통 <code>page</code>의 이름입니다</li>
+<li><code>as</code>: <code>String</code> - 브라우저에 표시될 url입니다</li>
+<li><code>options</code>: <code>Object</code> - <a href="#routerpush">router.push</a>가 보낸 추가 option입니다</li>
+</ul></li>
+</ul><div class="en-orig"><ul>
+<li><code>cb</code> - The function to run on incoming <code>popstate</code> events. The function receives the state of the event as an object with the following props:<ul>
+<li><code>url</code>: <code>String</code> - the route for the new state. This is usually the name of a <code>page</code></li>
+<li><code>as</code>: <code>String</code> - the url that will be shown in the browser</li>
+<li><code>options</code>: <code>Object</code> - Additional options sent by <a href="#routerpush">router.push</a></li>
+</ul></li>
+</ul></div>
+<p><code>cb</code>가 <code>false</code>를 반환하면 Next.js router는 <code>popstate</code>를 처리하지 않으며, 이 경우 직접 처리해야 합니다. <a href="pages-guides-custom-server.html#disabling-file-system-routing">Disabling file-system routing</a>을 참고하세요.</p><div class="en-orig"><p>If <code>cb</code> returns <code>false</code>, the Next.js router will not handle <code>popstate</code>, and you'll be responsible for handling it in that case. See <a href="pages-guides-custom-server.html#disabling-file-system-routing">Disabling file-system routing</a>.</p></div>
+<p>다음 예제처럼 <code>beforePopState</code>를 사용해 request를 조작하거나 SSR refresh를 강제할 수 있습니다:</p><div class="en-orig"><p>You could use <code>beforePopState</code> to manipulate the request, or force an SSR refresh, as in the following example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useEffect } from &#x27;react&#x27;
+import { useRouter } from &#x27;next/router&#x27;
+
+export default function Page() {
+  const router = useRouter()
+
+  useEffect(() =&gt; {
+    router.beforePopState(({ url, as, options }) =&gt; {
+      // I only want to allow these two routes!
+      if (as !== &#x27;/&#x27; &amp;&amp; as !== &#x27;/other&#x27;) {
+        // Have SSR render bad routes as a 404.
+        window.location.href = as
+        return false
+      }
+
+      return true
+    })
+  }, [router])
+
+  return &lt;p&gt;Welcome to the page&lt;/p&gt;
+}</code></pre></div></div>
+<h3 class="sec" id="routerback"><a class="anchor" href="#routerback">router.back</a></h3>
+<p>history에서 뒤로 이동합니다. 브라우저의 뒤로 가기 버튼을 클릭하는 것과 같습니다. <code>window.history.back()</code>을 실행합니다.</p><div class="en-orig"><p>Navigate back in history. Equivalent to clicking the browser’s back button. It executes <code>window.history.back()</code>.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useRouter } from &#x27;next/router&#x27;
+
+export default function Page() {
+  const router = useRouter()
+
+  return (
+    &lt;button type=&quot;button&quot; onClick={() =&gt; router.back()}&gt;
+      Click here to go back
+    &lt;/button&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="routerreload"><a class="anchor" href="#routerreload">router.reload</a></h3>
+<p>현재 URL을 다시 load합니다. 브라우저의 새로고침 버튼을 클릭하는 것과 같습니다. <code>window.location.reload()</code>를 실행합니다.</p><div class="en-orig"><p>Reload the current URL. Equivalent to clicking the browser’s refresh button. It executes <code>window.location.reload()</code>.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useRouter } from &#x27;next/router&#x27;
+
+export default function Page() {
+  const router = useRouter()
+
+  return (
+    &lt;button type=&quot;button&quot; onClick={() =&gt; router.reload()}&gt;
+      Click here to reload
+    &lt;/button&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="routerevents"><a class="anchor" href="#routerevents">router.events</a></h3>
+<p>Next.js Router 안에서 일어나는 여러 event를 listen할 수 있습니다. 지원되는 event 목록은 다음과 같습니다:</p><div class="en-orig"><p>You can listen to different events happening inside the Next.js Router. Here's a list of supported events:</p></div>
+<ul>
+<li><code>routeChangeStart(url, { shallow })</code> - route가 바뀌기 시작할 때 발생합니다</li>
+<li><code>routeChangeComplete(url, { shallow })</code> - route가 완전히 바뀌었을 때 발생합니다</li>
+<li><code>routeChangeError(err, url, { shallow })</code> - route를 바꾸는 중 error가 발생하거나 route load가 취소되었을 때 발생합니다<ul>
+<li><code>err.cancelled</code> - navigation이 취소되었는지 나타냅니다</li>
+</ul></li>
+<li><code>beforeHistoryChange(url, { shallow })</code> - 브라우저의 history를 바꾸기 전에 발생합니다</li>
+<li><code>hashChangeStart(url, { shallow })</code> - page는 바뀌지 않고 hash가 바뀔 때 발생합니다</li>
+<li><code>hashChangeComplete(url, { shallow })</code> - page는 바뀌지 않고 hash가 바뀌었을 때 발생합니다</li>
+</ul><div class="en-orig"><ul>
+<li><code>routeChangeStart(url, { shallow })</code> - Fires when a route starts to change</li>
+<li><code>routeChangeComplete(url, { shallow })</code> - Fires when a route changed completely</li>
+<li><code>routeChangeError(err, url, { shallow })</code> - Fires when there's an error when changing routes, or a route load is cancelled<ul>
+<li><code>err.cancelled</code> - Indicates if the navigation was cancelled</li>
+</ul></li>
+<li><code>beforeHistoryChange(url, { shallow })</code> - Fires before changing the browser's history</li>
+<li><code>hashChangeStart(url, { shallow })</code> - Fires when the hash will change but not the page</li>
+<li><code>hashChangeComplete(url, { shallow })</code> - Fires when the hash has changed but not the page</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>여기서 <code>url</code>은 <a href="app-api-reference-config-next-config-js-basePath.html"><code>basePath</code></a>를 포함해 브라우저에 표시되는 URL입니다.</p><div class="en-orig"><p>Here <code>url</code> is the URL shown in the browser, including the <a href="app-api-reference-config-next-config-js-basePath.html"><code>basePath</code></a>.</p></div></div></div>
+<p>예를 들어 router event <code>routeChangeStart</code>를 listen하려면 <code>pages/_app.js</code>를 열거나 만든 다음, 다음과 같이 event를 subscribe하세요:</p><div class="en-orig"><p>For example, to listen to the router event <code>routeChangeStart</code>, open or create <code>pages/_app.js</code> and subscribe to the event, like so:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useEffect } from &#x27;react&#x27;
+import { useRouter } from &#x27;next/router&#x27;
+
+export default function MyApp({ Component, pageProps }) {
+  const router = useRouter()
+
+  useEffect(() =&gt; {
+    const handleRouteChange = (url, { shallow }) =&gt; {
+      console.log(
+        `App is changing to ${url} ${
+          shallow ? &#x27;with&#x27; : &#x27;without&#x27;
+        } shallow routing`
+      )
+    }
+
+    router.events.on(&#x27;routeChangeStart&#x27;, handleRouteChange)
+
+    // If the component is unmounted, unsubscribe
+    // from the event with the `off` method:
+    return () =&gt; {
+      router.events.off(&#x27;routeChangeStart&#x27;, handleRouteChange)
+    }
+  }, [router])
+
+  return &lt;Component {...pageProps} /&gt;
+}</code></pre></div></div>
+<blockquote><p>이 예제에서는 page navigation 시 unmount되지 않는 <a href="pages-building-your-application-routing-custom-app.html">Custom App</a>(<code>pages/_app.js</code>)을 사용해 event를 subscribe하지만, 애플리케이션의 어떤 component에서든 router event를 subscribe할 수 있습니다.</p><div class="en-orig"><p>We use a <a href="pages-building-your-application-routing-custom-app.html">Custom App</a> (<code>pages/_app.js</code>) for this example to subscribe to the event because it's not unmounted on page navigations, but you can subscribe to router events on any component in your application.</p></div></blockquote>
+<p>Router event는 component가 mount될 때(<a href="https://react.dev/reference/react/useEffect" target="_blank" rel="noopener">useEffect</a> 또는 <a href="https://react.dev/reference/react/Component#componentdidmount" target="_blank" rel="noopener">componentDidMount</a> / <a href="https://react.dev/reference/react/Component#componentwillunmount" target="_blank" rel="noopener">componentWillUnmount</a>) 등록하거나, event가 발생할 때 명령형(imperatively)으로 등록해야 합니다.</p><div class="en-orig"><p>Router events should be registered when a component mounts (<a href="https://react.dev/reference/react/useEffect" target="_blank" rel="noopener">useEffect</a> or <a href="https://react.dev/reference/react/Component#componentdidmount" target="_blank" rel="noopener">componentDidMount</a> / <a href="https://react.dev/reference/react/Component#componentwillunmount" target="_blank" rel="noopener">componentWillUnmount</a>) or imperatively when an event happens.</p></div>
+<p>route load가 취소되면(예: 두 link를 빠르게 연달아 클릭한 경우) <code>routeChangeError</code>가 발생합니다. 그리고 전달되는 <code>err</code>에는 다음 예제처럼 <code>true</code>로 설정된 <code>cancelled</code> property가 들어 있습니다:</p><div class="en-orig"><p>If a route load is cancelled (for example, by clicking two links rapidly in succession), <code>routeChangeError</code> will fire. And the passed <code>err</code> will contain a <code>cancelled</code> property set to <code>true</code>, as in the following example:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useEffect } from &#x27;react&#x27;
+import { useRouter } from &#x27;next/router&#x27;
+
+export default function MyApp({ Component, pageProps }) {
+  const router = useRouter()
+
+  useEffect(() =&gt; {
+    const handleRouteChangeError = (err, url) =&gt; {
+      if (err.cancelled) {
+        console.log(`Route to ${url} was cancelled!`)
+      }
+    }
+
+    router.events.on(&#x27;routeChangeError&#x27;, handleRouteChangeError)
+
+    // If the component is unmounted, unsubscribe
+    // from the event with the `off` method:
+    return () =&gt; {
+      router.events.off(&#x27;routeChangeError&#x27;, handleRouteChangeError)
+    }
+  }, [router])
+
+  return &lt;Component {...pageProps} /&gt;
+}</code></pre></div></div>
+<h2 class="sec" id="the-nextcompatrouter-export"><a class="anchor" href="#the-nextcompatrouter-export">The <code>next/compat/router</code> export<span class="ko"><code>next/compat/router</code> export</span></a></h2>
+<p>같은 <code>useRouter</code> hook이지만 <code>app</code>과 <code>pages</code> directory 모두에서 사용할 수 있습니다.</p><div class="en-orig"><p>This is the same <code>useRouter</code> hook, but can be used in both <code>app</code> and <code>pages</code> directories.</p></div>
+<p><code>next/router</code>와 다른 점은 pages router가 mount되지 않았을 때 error를 throw하지 않고, 대신 return type이 <code>NextRouter | null</code>이라는 것입니다.
+이를 통해 개발자는 <code>app</code> router로 전환하는 동안 component가 <code>app</code>과 <code>pages</code> 모두에서 실행될 수 있도록 바꿀 수 있습니다.</p><div class="en-orig"><p>It differs from <code>next/router</code> in that it does not throw an error when the pages router is not mounted, and instead has a return type of <code>NextRouter | null</code>.
+This allows developers to convert components to support running in both <code>app</code> and <code>pages</code> as they transition to the <code>app</code> router.</p></div>
+<p>이전에 다음과 같았던 component는:</p><div class="en-orig"><p>A component that previously looked like this:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useRouter } from &#x27;next/router&#x27;
+const MyComponent = () =&gt; {
+  const { isReady, query } = useRouter()
+  // ...
+}</code></pre></div></div>
+<p><code>null</code>은 destructure할 수 없으므로 <code>next/compat/router</code>로 바꾸면 error가 발생합니다. 대신 개발자는 새로운 hook을 활용할 수 있습니다:</p><div class="en-orig"><p>Will error when converted over to <code>next/compat/router</code>, as <code>null</code> cannot be destructured. Instead, developers will be able to take advantage of new hooks:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useEffect } from &#x27;react&#x27;
+import { useRouter } from &#x27;next/compat/router&#x27;
+import { useSearchParams } from &#x27;next/navigation&#x27;
+const MyComponent = () =&gt; {
+  const router = useRouter() // may be null or a NextRouter instance
+  const searchParams = useSearchParams()
+  useEffect(() =&gt; {
+    if (router &amp;&amp; !router.isReady) {
+      return
+    }
+    // In `app/`, searchParams will be ready immediately with the values, in
+    // `pages/` it will be available after the router is ready.
+    const search = searchParams.get(&#x27;search&#x27;)
+    // ...
+  }, [router, searchParams])
+  // ...
+}</code></pre></div></div>
+<p>이제 이 component는 <code>pages</code>와 <code>app</code> directory 모두에서 동작합니다. component가 더 이상 <code>pages</code>에서 사용되지 않으면 compat router에 대한 참조를 제거할 수 있습니다:</p><div class="en-orig"><p>This component will now work in both <code>pages</code> and <code>app</code> directories. When the component is no longer used in <code>pages</code>, you can remove the references to the compat router:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useSearchParams } from &#x27;next/navigation&#x27;
+const MyComponent = () =&gt; {
+  const searchParams = useSearchParams()
+  // As this component is only used in `app/`, the compat router can be removed.
+  const search = searchParams.get(&#x27;search&#x27;)
+  // ...
+}</code></pre></div></div>
+<h3 class="sec" id="using-userouter-outside-of-nextjs-context-in-pages"><a class="anchor" href="#using-userouter-outside-of-nextjs-context-in-pages">Using <code>useRouter</code> outside of Next.js context in pages<span class="ko">pages에서 Next.js context 밖에서 <code>useRouter</code> 사용하기</span></a></h3>
+<p>또 다른 특정 use case는 <code>pages</code> directory의 <code>getServerSideProps</code> 안처럼 Next.js 애플리케이션 context 밖에서 component를 render하는 경우입니다. 이 경우 compat router를 사용하면 error를 피할 수 있습니다:</p><div class="en-orig"><p>Another specific use case is when rendering components outside of a Next.js application context, such as inside <code>getServerSideProps</code> on the <code>pages</code> directory. In this case, the compat router can be used to avoid errors:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { renderToString } from &#x27;react-dom/server&#x27;
+import { useRouter } from &#x27;next/compat/router&#x27;
+const MyComponent = () =&gt; {
+  const router = useRouter() // may be null or a NextRouter instance
+  // ...
+}
+export async function getServerSideProps() {
+  const renderedComponent = renderToString(&lt;MyComponent /&gt;)
+  return {
+    props: {
+      renderedComponent,
+    },
+  }
+}</code></pre></div></div>
+<h2 class="sec" id="potential-eslint-errors"><a class="anchor" href="#potential-eslint-errors">Potential ESLint errors<span class="ko">발생할 수 있는 ESLint error</span></a></h2>
+<p><code>router</code> object에서 접근할 수 있는 일부 method는 Promise를 반환합니다. ESLint rule <a href="https://typescript-eslint.io/rules/no-floating-promises" target="_blank" rel="noopener">no-floating-promises</a>가 활성화되어 있다면, 전역으로 또는 해당 줄에 대해 비활성화하는 것을 고려하세요.</p><div class="en-orig"><p>Certain methods accessible on the <code>router</code> object return a Promise. If you have the ESLint rule, <a href="https://typescript-eslint.io/rules/no-floating-promises" target="_blank" rel="noopener">no-floating-promises</a> enabled, consider disabling it either globally, or for the affected line.</p></div>
+<p>애플리케이션에 이 rule이 필요하다면 promise를 <code>void</code> 처리하거나, <code>async</code> 함수를 사용해 Promise를 <code>await</code>한 다음 그 함수 호출을 void 처리해야 합니다. <strong>method가 <code>onClick</code> handler 안에서 호출되는 경우에는 해당되지 않습니다</strong>.</p><div class="en-orig"><p>If your application needs this rule, you should either <code>void</code> the promise – or use an <code>async</code> function, <code>await</code> the Promise, then void the function call. <strong>This is not applicable when the method is called from inside an <code>onClick</code> handler</strong>.</p></div>
+<p>영향을 받는 method는 다음과 같습니다:</p><div class="en-orig"><p>The affected methods are:</p></div>
+<ul>
+<li><code>router.push</code></li>
+<li><code>router.replace</code></li>
+<li><code>router.prefetch</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>router.push</code></li>
+<li><code>router.replace</code></li>
+<li><code>router.prefetch</code></li>
+</ul></div>
+<h3 class="sec" id="potential-solutions"><a class="anchor" href="#potential-solutions">Potential solutions<span class="ko">가능한 해결 방법</span></a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { useEffect } from &#x27;react&#x27;
+import { useRouter } from &#x27;next/router&#x27;
+
+// Here you would fetch and return the user
+const useUser = () =&gt; ({ user: null, loading: false })
+
+export default function Page() {
+  const { user, loading } = useUser()
+  const router = useRouter()
+
+  useEffect(() =&gt; {
+    // disable the linting on the next line - This is the cleanest solution
+    // eslint-disable-next-line no-floating-promises
+    router.push(&#x27;/login&#x27;)
+
+    // void the Promise returned by router.push
+    if (!(user || loading)) {
+      void router.push(&#x27;/login&#x27;)
+    }
+    // or use an async function, await the Promise, then void the function call
+    async function handleRouteChange() {
+      if (!(user || loading)) {
+        await router.push(&#x27;/login&#x27;)
+      }
+    }
+    void handleRouteChange()
+  }, [user, loading])
+
+  return &lt;p&gt;Redirecting...&lt;/p&gt;
+}</code></pre></div></div>
+<h2 class="sec" id="withrouter"><a class="anchor" href="#withrouter">withRouter</a></h2>
+<p><a href="#router-object"><code>useRouter</code></a>가 가장 적합하지 않다면, <code>withRouter</code>로도 어떤 component에든 같은 <a href="#router-object"><code>router</code> object</a>를 추가할 수 있습니다.</p><div class="en-orig"><p>If <a href="#router-object"><code>useRouter</code></a> is not the best fit for you, <code>withRouter</code> can also add the same <a href="#router-object"><code>router</code> object</a> to any component.</p></div>
+<h3 class="sec" id="usage"><a class="anchor" href="#usage">Usage<span class="ko">사용법</span></a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import { withRouter } from &#x27;next/router&#x27;
+
+function Page({ router }) {
+  return &lt;p&gt;{router.pathname}&lt;/p&gt;
+}
+
+export default withRouter(Page)</code></pre></div></div>
+<h3 class="sec" id="typescript"><a class="anchor" href="#typescript">TypeScript</a></h3>
+<p><code>withRouter</code>와 함께 class component를 사용하려면 component가 router prop을 받아야 합니다:</p><div class="en-orig"><p>To use class components with <code>withRouter</code>, the component needs to accept a router prop:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import React from &#x27;react&#x27;
+import { withRouter, NextRouter } from &#x27;next/router&#x27;
+
+interface WithRouterProps {
+  router: NextRouter
+}
+
+interface MyComponentProps extends WithRouterProps {}
+
+class MyComponent extends React.Component&lt;MyComponentProps&gt; {
+  render() {
+    return &lt;p&gt;{this.props.router.pathname}&lt;/p&gt;
+  }
+}
+
+export default withRouter(MyComponent)</code></pre></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/04-api-reference/03-functions/use-router.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/api-reference/functions/use-router" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-api-reference-functions-use-report-web-vitals.html" class="prev"><div class="dir">← 이전</div><div class="ttl">useReportWebVitals</div><div class="ttl-ko">useReportWebVitals</div></a>
+      <a href="pages-api-reference-functions-use-search-params.html" class="next"><div class="dir">다음 →</div><div class="ttl">useSearchParams</div><div class="ttl-ko">useSearchParams</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/api-reference/functions/use-router" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#router-object"><code>router</code> object</a></li><li class="l3"><a href="#routerpush">router.push</a></li><li class="l3"><a href="#routerreplace">router.replace</a></li><li class="l3"><a href="#routerprefetch">router.prefetch</a></li><li class="l3"><a href="#routerbeforepopstate">router.beforePopState</a></li><li class="l3"><a href="#routerback">router.back</a></li><li class="l3"><a href="#routerreload">router.reload</a></li><li class="l3"><a href="#routerevents">router.events</a></li><li class="l2"><a href="#the-nextcompatrouter-export">The <code>next/compat/router</code> export</a></li><li class="l3"><a href="#using-userouter-outside-of-nextjs-context-in-pages">Using <code>useRouter</code> outside of Next.js context in pages</a></li><li class="l2"><a href="#potential-eslint-errors">Potential ESLint errors</a></li><li class="l3"><a href="#potential-solutions">Potential solutions</a></li><li class="l2"><a href="#withrouter">withRouter</a></li><li class="l3"><a href="#usage">Usage</a></li><li class="l3"><a href="#typescript">TypeScript</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+앱의 어떤 function component 안에서든 [`router` object](#router-object)에 접근하고 싶다면 `useRouter` hook을 사용할 수 있습니다. 다음 예제를 살펴보세요:
+
+[[CODE 1]]
+
+&gt; `useRouter`는 [React Hook](https://react.dev/learn#using-hooks)이므로 class와 함께 사용할 수 없습니다. [withRouter](#withrouter)를 사용하거나 class를 function component로 감싸세요.
+
+## `router` object
+
+다음은 [`useRouter`](#top)와 [`withRouter`](#withrouter)가 모두 반환하는 `router` object의 정의입니다:
+
+- `pathname`: `String` - `/pages` 뒤에 오는 현재 route 파일의 경로입니다. 따라서 `basePath`, `locale`, trailing slash(`trailingSlash: true`)는 포함되지 않습니다.
+- `query`: `Object` - [dynamic route](/docs/pages/building-your-application/routing/dynamic-routes) parameter를 포함해 object로 parse된 query string입니다. page가 [Server-side Rendering](/docs/pages/building-your-application/data-fetching/get-server-side-props)을 사용하지 않으면 prerendering 중에는 빈 object가 됩니다. 기본값은 `{}`입니다
+- `asPath`: `String` - search params를 포함하고 `trailingSlash` 설정을 반영한, 브라우저에 표시되는 경로입니다. `basePath`와 `locale`은 포함되지 않습니다.
+- `isFallback`: `boolean` - 현재 page가 [fallback mode](/docs/pages/api-reference/functions/get-static-paths#fallback-true)인지 여부입니다.
+- `basePath`: `String` - 활성화된 [basePath](/docs/app/api-reference/config/next-config-js/basePath)입니다(활성화된 경우).
+- `locale`: `String` - 활성화된 locale입니다(활성화된 경우).
+- `locales`: `String[]` - 지원하는 모든 locale입니다(활성화된 경우).
+- `defaultLocale`: `String` - 현재 기본 locale입니다(활성화된 경우).
+- `domainLocales`: `Array&lt;{domain, defaultLocale, locales}&gt;` - 설정된 모든 domain locale입니다.
+- `isReady`: `boolean` - router field가 client-side에서 업데이트되어 사용할 준비가 되었는지 여부입니다. `useEffect` method 안에서만 사용해야 하며, server에서 조건부 rendering을 하는 용도로 사용하면 안 됩니다. [automatically statically optimized page](/docs/pages/building-your-application/rendering/automatic-static-optimization)에서의 use case는 관련 문서를 참고하세요
+- `isPreview`: `boolean` - 애플리케이션이 현재 [preview mode](/docs/pages/guides/preview-mode)인지 여부입니다.
+
+&gt; page가 server-side rendering이나 [automatic static optimization](/docs/pages/building-your-application/rendering/automatic-static-optimization)으로 render되는 경우 `asPath` field를 사용하면 client와 server 사이에 mismatch가 생길 수 있습니다. `isReady` field가 `true`가 될 때까지는 `asPath` 사용을 피하세요.
+
+`router` 안에는 다음 method가 포함되어 있습니다:
+
+### router.push
+
+client-side transition을 처리합니다. 이 method는 [`next/link`](/docs/pages/api-reference/components/link)만으로는 충분하지 않은 경우에 유용합니다.
+
+[[CODE 2]]
+
+- `url`: `UrlObject | String` - 이동할 URL입니다(`UrlObject` property는 [Node.js URL module 문서](https://nodejs.org/api/url.html#legacy-urlobject)를 참고하세요).
+- `as`: `UrlObject | String` - 브라우저 URL bar에 표시될 경로를 위한 선택적 decorator입니다. Next.js 9.5.3 이전에는 dynamic route에 사용되었습니다.
+- `options` - 다음 configuration option을 가진 선택적 object입니다:
+  - `scroll` - 선택적 boolean으로, navigation 후 page 맨 위로 scroll할지 제어합니다. 기본값은 `true`입니다
+  - [`shallow`](/docs/pages/building-your-application/routing/linking-and-navigating#shallow-routing): [`getStaticProps`](/docs/pages/building-your-application/data-fetching/get-static-props), [`getServerSideProps`](/docs/pages/building-your-application/data-fetching/get-server-side-props), [`getInitialProps`](/docs/pages/api-reference/functions/get-initial-props)를 다시 실행하지 않고 현재 page의 경로를 업데이트합니다. 기본값은 `false`입니다
+  - `locale` - 선택적 string으로, 새 page의 locale을 나타냅니다
+
+&gt; 외부 URL에는 `router.push`를 사용할 필요가 없습니다. 그런 경우에는 [window.location](https://developer.mozilla.org/docs/Web/API/Window/location)이 더 적합합니다.
+
+미리 정의된 route인 `pages/about.js`로 이동하기:
+
+[[CODE 3]]
+
+dynamic route인 `pages/post/[pid].js`로 이동하기:
+
+[[CODE 4]]
+
+사용자를 `pages/login.js`로 redirect하기. [authentication](/docs/pages/guides/authentication) 뒤에 있는 page에 유용합니다:
+
+[[CODE 5]]
+
+#### Resetting state after navigation || navigation 후 state 초기화하기
+
+Next.js에서 같은 page로 이동할 때, React는 parent component가 바뀌지 않는 한 unmount하지 않으므로 기본적으로 page의 state는 초기화되지 **않습니다**.
+
+[[CODE 6]]
+
+위 예제에서 `/one`과 `/two` 사이를 이동해도 count는 초기화되지 **않습니다**. top-level React component인 `Page`가 동일하기 때문에 `useState`가 render 사이에 유지됩니다.
+
+이 동작을 원하지 않는다면 몇 가지 방법이 있습니다:
+
+- `useEffect`를 사용해 각 state가 업데이트되도록 직접 보장합니다. 위 예제에서는 다음과 같이 할 수 있습니다:
+
+  [[CODE 7]]
+
+- React `key`를 사용해 [React가 component를 remount하도록 알립니다](https://react.dev/learn/rendering-lists#keeping-list-items-in-order-with-key). 모든 page에 이렇게 하려면 custom app을 사용할 수 있습니다:
+
+  [[CODE 8]]
+
+#### With URL object || URL object와 함께 사용하기
+
+[`next/link`](/docs/pages/api-reference/components/link#passing-a-url-object)에서 사용하는 것과 같은 방식으로 URL object를 사용할 수 있습니다. `url`과 `as` parameter 모두에서 동작합니다:
+
+[[CODE 9]]
+
+`pathname`을 생략하면 query는 현재 page의 route(`pathname`)가 아니라 브라우저에 표시되는 URL([`asPath`](#router-object))에 적용됩니다. 이렇게 하면 [rewrites](/docs/pages/api-reference/config/next-config-js/rewrites)가 그대로 유지됩니다. rewrite로 제공되는 page에서 query만 바꾸는 navigation은 rewrite destination을 드러내는 대신 방문자가 요청한 URL을 유지합니다.
+
+`as` parameter로 URL을 직접 mask하는 경우에도 두 값이 달라집니다. 이 경우에는 `pathname`을 명시적으로 전달하세요. 그렇지 않으면 query가 mask된 URL에 적용되어 다른 page로 resolve될 수 있습니다:
+
+[[CODE 10]]
+
+### router.replace
+
+[`next/link`](/docs/pages/api-reference/components/link)의 `replace` prop과 비슷하게, `router.replace`는 `history` stack에 새 URL 항목이 추가되는 것을 막습니다.
+
+[[CODE 11]]
+
+- `router.replace`의 API는 [`router.push`](#routerpush)의 API와 완전히 동일합니다.
+
+다음 예제를 살펴보세요:
+
+[[CODE 12]]
+
+### router.prefetch
+
+더 빠른 client-side transition을 위해 page를 prefetch합니다. `next/link`가 page prefetch를 자동으로 처리하므로, 이 method는 [`next/link`](/docs/pages/api-reference/components/link)를 사용하지 않는 navigation에서만 유용합니다.
+
+&gt; 이 기능은 production 전용입니다. Next.js는 development에서 page를 prefetch하지 않습니다.
+
+[[CODE 13]]
+
+- `url` - prefetch할 URL로, 명시적인 route(예: `/dashboard`)와 dynamic route(예: `/product/[id]`)를 포함합니다
+- `as` - `url`을 위한 선택적 decorator입니다. Next.js 9.5.3 이전에는 dynamic route를 prefetch하는 데 사용되었습니다.
+- `options` - 다음 field를 허용하는 선택적 object입니다:
+  - `locale` - 활성화된 locale과 다른 locale을 지정할 수 있습니다. `false`이면 활성화된 locale이 사용되지 않으므로 `url`에 locale이 포함되어야 합니다.
+
+login page가 있고, login 후 사용자를 dashboard로 redirect한다고 가정해 봅시다. 이 경우 다음 예제처럼 dashboard를 prefetch해서 더 빠르게 transition할 수 있습니다:
+
+[[CODE 14]]
+
+### router.beforePopState
+
+어떤 경우에는(예: [Custom Server](/docs/pages/guides/custom-server)를 사용하는 경우) [popstate](https://developer.mozilla.org/docs/Web/API/Window/popstate_event)를 listen해서 router가 이를 처리하기 전에 무언가를 하고 싶을 수 있습니다.
+
+[[CODE 15]]
+
+- `cb` - 들어오는 `popstate` event에서 실행할 함수입니다. 이 함수는 event의 state를 다음 props를 가진 object로 전달받습니다:
+  - `url`: `String` - 새 state의 route입니다. 보통 `page`의 이름입니다
+  - `as`: `String` - 브라우저에 표시될 url입니다
+  - `options`: `Object` - [router.push](#routerpush)가 보낸 추가 option입니다
+
+`cb`가 `false`를 반환하면 Next.js router는 `popstate`를 처리하지 않으며, 이 경우 직접 처리해야 합니다. [Disabling file-system routing](/docs/pages/guides/custom-server#disabling-file-system-routing)을 참고하세요.
+
+다음 예제처럼 `beforePopState`를 사용해 request를 조작하거나 SSR refresh를 강제할 수 있습니다:
+
+[[CODE 16]]
+
+### router.back
+
+history에서 뒤로 이동합니다. 브라우저의 뒤로 가기 버튼을 클릭하는 것과 같습니다. `window.history.back()`을 실행합니다.
+
+[[CODE 17]]
+
+### router.reload
+
+현재 URL을 다시 load합니다. 브라우저의 새로고침 버튼을 클릭하는 것과 같습니다. `window.location.reload()`를 실행합니다.
+
+[[CODE 18]]
+
+### router.events
+
+Next.js Router 안에서 일어나는 여러 event를 listen할 수 있습니다. 지원되는 event 목록은 다음과 같습니다:
+
+- `routeChangeStart(url, { shallow })` - route가 바뀌기 시작할 때 발생합니다
+- `routeChangeComplete(url, { shallow })` - route가 완전히 바뀌었을 때 발생합니다
+- `routeChangeError(err, url, { shallow })` - route를 바꾸는 중 error가 발생하거나 route load가 취소되었을 때 발생합니다
+  - `err.cancelled` - navigation이 취소되었는지 나타냅니다
+- `beforeHistoryChange(url, { shallow })` - 브라우저의 history를 바꾸기 전에 발생합니다
+- `hashChangeStart(url, { shallow })` - page는 바뀌지 않고 hash가 바뀔 때 발생합니다
+- `hashChangeComplete(url, { shallow })` - page는 바뀌지 않고 hash가 바뀌었을 때 발생합니다
+
+&gt; **Good to know**: 여기서 `url`은 [`basePath`](/docs/app/api-reference/config/next-config-js/basePath)를 포함해 브라우저에 표시되는 URL입니다.
+
+예를 들어 router event `routeChangeStart`를 listen하려면 `pages/_app.js`를 열거나 만든 다음, 다음과 같이 event를 subscribe하세요:
+
+[[CODE 19]]
+
+&gt; 이 예제에서는 page navigation 시 unmount되지 않는 [Custom App](/docs/pages/building-your-application/routing/custom-app)(`pages/_app.js`)을 사용해 event를 subscribe하지만, 애플리케이션의 어떤 component에서든 router event를 subscribe할 수 있습니다.
+
+Router event는 component가 mount될 때([useEffect](https://react.dev/reference/react/useEffect) 또는 [componentDidMount](https://react.dev/reference/react/Component#componentdidmount) / [componentWillUnmount](https://react.dev/reference/react/Component#componentwillunmount)) 등록하거나, event가 발생할 때 명령형(imperatively)으로 등록해야 합니다.
+
+route load가 취소되면(예: 두 link를 빠르게 연달아 클릭한 경우) `routeChangeError`가 발생합니다. 그리고 전달되는 `err`에는 다음 예제처럼 `true`로 설정된 `cancelled` property가 들어 있습니다:
+
+[[CODE 20]]
+
+## The `next/compat/router` export || `next/compat/router` export
+
+같은 `useRouter` hook이지만 `app`과 `pages` directory 모두에서 사용할 수 있습니다.
+
+`next/router`와 다른 점은 pages router가 mount되지 않았을 때 error를 throw하지 않고, 대신 return type이 `NextRouter | null`이라는 것입니다.
+이를 통해 개발자는 `app` router로 전환하는 동안 component가 `app`과 `pages` 모두에서 실행될 수 있도록 바꿀 수 있습니다.
+
+이전에 다음과 같았던 component는:
+
+[[CODE 21]]
+
+`null`은 destructure할 수 없으므로 `next/compat/router`로 바꾸면 error가 발생합니다. 대신 개발자는 새로운 hook을 활용할 수 있습니다:
+
+[[CODE 22]]
+
+이제 이 component는 `pages`와 `app` directory 모두에서 동작합니다. component가 더 이상 `pages`에서 사용되지 않으면 compat router에 대한 참조를 제거할 수 있습니다:
+
+[[CODE 23]]
+
+### Using `useRouter` outside of Next.js context in pages || pages에서 Next.js context 밖에서 `useRouter` 사용하기
+
+또 다른 특정 use case는 `pages` directory의 `getServerSideProps` 안처럼 Next.js 애플리케이션 context 밖에서 component를 render하는 경우입니다. 이 경우 compat router를 사용하면 error를 피할 수 있습니다:
+
+[[CODE 24]]
+
+## Potential ESLint errors || 발생할 수 있는 ESLint error
+
+`router` object에서 접근할 수 있는 일부 method는 Promise를 반환합니다. ESLint rule [no-floating-promises](https://typescript-eslint.io/rules/no-floating-promises)가 활성화되어 있다면, 전역으로 또는 해당 줄에 대해 비활성화하는 것을 고려하세요.
+
+애플리케이션에 이 rule이 필요하다면 promise를 `void` 처리하거나, `async` 함수를 사용해 Promise를 `await`한 다음 그 함수 호출을 void 처리해야 합니다. **method가 `onClick` handler 안에서 호출되는 경우에는 해당되지 않습니다**.
+
+영향을 받는 method는 다음과 같습니다:
+
+- `router.push`
+- `router.replace`
+- `router.prefetch`
+
+### Potential solutions || 가능한 해결 방법
+
+[[CODE 25]]
+
+## withRouter
+
+[`useRouter`](#router-object)가 가장 적합하지 않다면, `withRouter`로도 어떤 component에든 같은 [`router` object](#router-object)를 추가할 수 있습니다.
+
+### Usage || 사용법
+
+[[CODE 26]]
+
+### TypeScript
+
+`withRouter`와 함께 class component를 사용하려면 component가 router prop을 받아야 합니다:
+
+[[CODE 27]]
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

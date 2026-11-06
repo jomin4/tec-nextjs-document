@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to optimize package bundling (package bundling 최적화) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/guides/package-bundling" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/guides/package-bundling" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/package-bundling.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to optimize package bundling<span class="sub">package bundling 최적화</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Bundling은 애플리케이션 코드와 그 dependency를 client와 server용으로 최적화된 output 파일로 합치는 과정입니다. bundle이 작을수록 더 빨리 load되고, JavaScript 실행 시간이 줄어들고, <a href="https://web.dev/articles/vitals" target="_blank" rel="noopener">Core Web Vitals</a>가 개선되며, server cold start 시간이 짧아집니다.</p><div class="en-orig"><p>Bundling is the process of combining your application code and its dependencies into optimized output files for the client and server. Smaller bundles load faster, reduce JavaScript execution time, improve <a href="https://web.dev/articles/vitals" target="_blank" rel="noopener">Core Web Vitals</a>, and lower server cold start times.</p></div>
+<p>Next.js는 code splitting, tree-shaking 등의 기법으로 bundle을 자동으로 최적화합니다. 하지만 bundle을 직접 최적화해야 하는 경우도 있습니다.</p><div class="en-orig"><p>Next.js automatically optimizes bundles by code splitting, tree-shaking, and other techniques. However, there are some cases where you may need to optimize your bundles manually.</p></div>
+<p>애플리케이션의 bundle을 분석하는 도구는 두 가지입니다:</p><div class="en-orig"><p>There are two tools for analyzing your application's bundles:</p></div>
+<ul>
+<li><a href="#nextjs-bundle-analyzer">Turbopack용 Next.js Bundle Analyzer</a></li>
+<li><a href="#nextbundle-analyzer-for-webpack">Webpack용 <code>@next/bundle-analyzer</code> plugin</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="#nextjs-bundle-analyzer">Next.js Bundle Analyzer for Turbopack</a></li>
+<li><a href="#nextbundle-analyzer-for-webpack"><code>@next/bundle-analyzer</code> plugin for Webpack</a></li>
+</ul></div>
+<p>이 가이드에서는 각 도구를 사용하는 방법과 <a href="#optimizing-large-bundles">큰 bundle을 최적화하는 방법</a>을 차례로 안내합니다.</p><div class="en-orig"><p>This guide will walk you through how to use each tool and how to <a href="#optimizing-large-bundles">optimize large bundles</a>.</p></div>
+<h2 class="sec" id="nextjs-bundle-analyzer"><a class="anchor" href="#nextjs-bundle-analyzer">Next.js Bundle Analyzer</a></h2>
+<blockquote><p>v16.1 이상에서 사용할 수 있습니다. <a href="https://github.com/vercel/next.js/discussions/86731" target="_blank" rel="noopener">전용 GitHub discussion</a>에서 feedback을 남길 수 있고, <a href="https://turbopack-bundle-analyzer-demo.vercel.sh/" target="_blank" rel="noopener">turbopack-bundle-analyzer-demo.vercel.sh</a>에서 demo를 볼 수 있습니다.</p><div class="en-orig"><p>Available in v16.1 and later. You can share feedback in the <a href="https://github.com/vercel/next.js/discussions/86731" target="_blank" rel="noopener">dedicated GitHub discussion</a> and view the demo at <a href="https://turbopack-bundle-analyzer-demo.vercel.sh/" target="_blank" rel="noopener">turbopack-bundle-analyzer-demo.vercel.sh</a>.</p></div></blockquote>
+<p>Next.js Bundle Analyzer는 Turbopack의 module graph와 통합되어 있습니다. 정확한 import tracing으로 server module과 client module을 살펴볼 수 있어서 큰 dependency를 더 쉽게 찾을 수 있습니다. interactive Bundle Analyzer demo를 열어 module graph를 탐색해 보세요.</p><div class="en-orig"><p>The Next.js Bundle Analyzer is integrated with Turbopack's module graph. You can inspect server and client modules with precise import tracing, making it easier to find large dependencies. Open the interactive Bundle Analyzer demo to explore the module graph.</p></div>
+<h3 class="sec" id="step-1-run-the-turbopack-bundle-analyzer"><a class="anchor" href="#step-1-run-the-turbopack-bundle-analyzer">Step 1: Run the Turbopack Bundle Analyzer<span class="ko">1단계: Turbopack Bundle Analyzer 실행하기</span></a></h3>
+<p>시작하려면 다음 command를 실행하고 브라우저에서 interactive view를 여세요.</p><div class="en-orig"><p>To get started, run the following command and open up the interactive view in your browser.</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="pm-npm"><code class="language-bash">npx next analyze</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn next analyze</code></pre><pre class="pm-pnpm" hidden><code class="language-bash">pnpm next analyze</code></pre><pre class="pm-bun" hidden><code class="language-bash">bunx next analyze</code></pre></div></div>
+<h3 class="sec" id="step-2-filter-and-inspect-modules"><a class="anchor" href="#step-2-filter-and-inspect-modules">Step 2: Filter and inspect modules<span class="ko">2단계: module 필터링하고 살펴보기</span></a></h3>
+<p>UI에서는 route, environment(client 또는 server), type(JavaScript, CSS, JSON)으로 필터링하거나 파일로 검색할 수 있습니다:</p><div class="en-orig"><p>Within the UI, you can filter by route, environment (client or server), and type (JavaScript, CSS, JSON), or search by file:</p></div>
+<div data-c="Video"
+  caption="Next.js bundle analyzer UI walkthrough"
+  src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/videos/bundle-analyzer.mp4"
+  width={1708}
+  height={1080}
+/>
+<h3 class="sec" id="step-3-trace-modules-with-import-chains"><a class="anchor" href="#step-3-trace-modules-with-import-chains">Step 3: Trace modules with import chains<span class="ko">3단계: import chain으로 module 추적하기</span></a></h3>
+<p>treemap은 각 module을 사각형으로 보여 줍니다. module의 크기는 사각형의 면적으로 표현됩니다.</p><div class="en-orig"><p>The treemap shows each module as a rectangle. Where the size of the module is represented by the area of the rectangle.</p></div>
+<p>module을 클릭하면 크기를 확인하고, 전체 import chain을 살펴보고, 애플리케이션의 정확히 어디에서 사용되는지 볼 수 있습니다:</p><div class="en-orig"><p>Click a module to see its size, inspect its full import chain and see exactly where it’s used in your application:</p></div>
+<figure class="nx-img"><img class="only-light" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/light/bundle-analyzer.png" alt="" width="1600" height="874" loading="lazy" /><img class="only-dark" src="https://h8DxKfmAPhn8O0p3.public.blob.vercel-storage.com/docs/dark/bundle-analyzer.png" alt="" width="1600" height="874" loading="lazy" /></figure>
+<h3 class="sec" id="step-4-write-output-to-disk-for-sharing-or-diffing"><a class="anchor" href="#step-4-write-output-to-disk-for-sharing-or-diffing">Step 4: Write output to disk for sharing or diffing<span class="ko">4단계: 공유나 비교를 위해 output을 디스크에 쓰기</span></a></h3>
+<p>분석 결과를 팀원과 공유하거나 최적화 전후의 bundle 크기를 비교하고 싶다면, interactive view를 건너뛰고 <code>--output</code> flag로 분석 결과를 static 파일로 저장할 수 있습니다:</p><div class="en-orig"><p>If you want to share the analysis with teammates or compare bundle sizes before/after optimizations, you can skip the interactive view and save the analysis as a static file with the <code>--output</code> flag:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="pm-npm"><code class="language-bash">npx next analyze --output</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn next analyze --output</code></pre><pre class="pm-pnpm" hidden><code class="language-bash">pnpm next analyze --output</code></pre><pre class="pm-bun" hidden><code class="language-bash">bunx next analyze --output</code></pre></div></div>
+<p>이 command는 output을 <code>.next/diagnostics/analyze</code>에 씁니다. 이 directory를 다른 곳에 복사해서 결과를 비교할 수 있습니다:</p><div class="en-orig"><p>This command writes the output to <code>.next/diagnostics/analyze</code>. You can copy this directory elsewhere to compare results:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">cp -r .next/diagnostics/analyze ./analyze-before-refactor</code></pre></div></div>
+<h3 class="sec" id="export-analysis-data"><a class="anchor" href="#export-analysis-data">Export analysis data<span class="ko">분석 data export하기</span></a></h3>
+<blockquote><p>v16.4 이상에서 사용할 수 있습니다. <a href="https://github.com/vercel/next.js/discussions/86731" target="_blank" rel="noopener">전용 GitHub discussion</a>에서 feedback을 남길 수 있고, <a href="https://turbopack-bundle-analyzer-demo.vercel.sh/" target="_blank" rel="noopener">turbopack-bundle-analyzer-demo.vercel.sh</a>에서 demo를 볼 수 있습니다.</p><div class="en-orig"><p>Available in v16.4 and later. You can share feedback in the <a href="https://github.com/vercel/next.js/discussions/86731" target="_blank" rel="noopener">dedicated GitHub discussion</a> and view the demo at <a href="https://turbopack-bundle-analyzer-demo.vercel.sh/" target="_blank" rel="noopener">turbopack-bundle-analyzer-demo.vercel.sh</a>.</p></div></blockquote>
+<p><code>next analyze export</code>를 사용하면 다시 build하거나 server를 시작하지 않고도, 저장된 snapshot을 script나 AI 도구용 JSON Lines로 stream할 수 있습니다:</p><div class="en-orig"><p>Use <code>next analyze export</code> to stream a saved snapshot as JSON Lines for scripts or AI tools, without rebuilding or starting a server:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="pm-npm"><code class="language-bash">npx next analyze --output --snapshot before
+npx next analyze export --snapshot before &gt; bundle-graph.jsonl</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn next analyze --output --snapshot before
+yarn next analyze export --snapshot before &gt; bundle-graph.jsonl</code></pre><pre class="pm-pnpm" hidden><code class="language-bash">pnpm next analyze --output --snapshot before
+pnpm next analyze export --snapshot before &gt; bundle-graph.jsonl</code></pre><pre class="pm-bun" hidden><code class="language-bash">bunx next analyze --output --snapshot before
+bunx next analyze export --snapshot before &gt; bundle-graph.jsonl</code></pre></div></div>
+<p>export option은 <a href="app-api-reference-cli-next.html#next-analyze-export-options">CLI reference</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-api-reference-cli-next.html#next-analyze-export-options">CLI reference</a> for export options.</p></div>
+<blockquote><p>Bundle Analyzer에는 더 많은 option이 있습니다. 전체 목록은 Next.js CLI reference 문서를 참고하세요.</p><div class="en-orig"><p>More options are available for the Bundle Analyzer, see Next.js CLI reference docs for the full list.</p></div></blockquote>
+<h3 class="sec" id="give-your-ai-agent-access-to-the-bundle-analyzer"><a class="anchor" href="#give-your-ai-agent-access-to-the-bundle-analyzer">Give your AI agent access to the bundle analyzer<span class="ko">AI agent가 bundle analyzer에 접근하게 하기</span></a></h3>
+<p><a href="https://www.skills.sh/vercel/next.js/next-bundle-optimizer" target="_blank" rel="noopener"><code>next-bundle-optimizer</code></a> skill은 AI agent가 Turbopack bundle analyzer의 기반 data에 접근할 수 있게 해서, 사이트의 initial load 성능에 영향을 주는 큰 client-side bundle의 원인을 자동으로 찾아내도록 합니다.</p><div class="en-orig"><p>The <a href="https://www.skills.sh/vercel/next.js/next-bundle-optimizer" target="_blank" rel="noopener"><code>next-bundle-optimizer</code></a> skill gives your AI agent access to the data powering Turbopack's bundle analyzer to automatically identify sources of large client-side bundles that impact your site's initial load performance.</p></div>
+<p>먼저 skill을 설치하세요:</p><div class="en-orig"><p>First, install the skill:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">npx skills add vercel/next.js --skill next-bundle-optimizer</code></pre></div></div>
+<p>그다음 agent에게 prompt를 보내세요. audit-only mode에서는 아무것도 변경하지 않고 report만 만듭니다:</p><div class="en-orig"><p>Then prompt your agent. In audit-only mode, it produces a report without making any changes:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-plaintext">Use the next-bundle-optimizer skill to produce a report of the initial load performance of this site.</code></pre></div></div>
+<p>agent에게 문제를 고치라고 지시할 수도 있으며, 그러면 찾아낸 내용을 바탕으로 사이트를 최적화합니다. 또는 prompt에 route를 지정해서 특정 route에 집중하게 할 수도 있습니다.</p><div class="en-orig"><p>You can also tell your agent to fix any issues, and it will optimize your site based on its findings. Or have it focus on a specific route by providing the route in the prompt.</p></div>
+<h2 class="sec" id="nextbundle-analyzer-for-webpack"><a class="anchor" href="#nextbundle-analyzer-for-webpack"><code>@next/bundle-analyzer</code> for Webpack<span class="ko">Webpack용 <code>@next/bundle-analyzer</code></span></a></h2>
+<p><a href="https://www.npmjs.com/package/@next/bundle-analyzer" target="_blank" rel="noopener"><code>@next/bundle-analyzer</code></a>는 애플리케이션 bundle의 크기를 관리하도록 도와주는 plugin입니다. 각 package와 그 dependency의 크기를 시각적인 report로 생성합니다. 이 정보를 활용해 큰 dependency를 제거하거나, 코드를 분할하거나, <a href="app-guides-lazy-loading.html">lazy-load</a>할 수 있습니다.</p><div class="en-orig"><p>The <a href="https://www.npmjs.com/package/@next/bundle-analyzer" target="_blank" rel="noopener"><code>@next/bundle-analyzer</code></a> is a plugin that helps you manage the size of your application bundles. It generates a visual report of the size of each package and their dependencies. You can use the information to remove large dependencies, split, or <a href="app-guides-lazy-loading.html">lazy-load</a> your code.</p></div>
+<h3 class="sec" id="step-1-installation"><a class="anchor" href="#step-1-installation">Step 1: Installation<span class="ko">1단계: 설치</span></a></h3>
+<p>다음 command를 실행해 plugin을 설치하세요:</p><div class="en-orig"><p>Install the plugin by running the following command:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add @next/bundle-analyzer</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install @next/bundle-analyzer</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add @next/bundle-analyzer</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add @next/bundle-analyzer</code></pre></div></div>
+<p>그다음 <code>next.config.js</code>에 bundle analyzer 설정을 추가하세요.</p><div class="en-orig"><p>Then, add the bundle analyzer's settings to your <code>next.config.js</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {}
+
+const withBundleAnalyzer = require(&#x27;@next/bundle-analyzer&#x27;)({
+  enabled: process.env.ANALYZE === &#x27;true&#x27;,
+})
+
+module.exports = withBundleAnalyzer(nextConfig)</code></pre></div></div>
+<h3 class="sec" id="step-2-generating-a-report"><a class="anchor" href="#step-2-generating-a-report">Step 2: Generating a report<span class="ko">2단계: report 생성하기</span></a></h3>
+<p>다음 command를 실행해 bundle을 분석하세요:</p><div class="en-orig"><p>Run the following command to analyze your bundles:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-bash">ANALYZE=true npm run build
+# or
+ANALYZE=true yarn build
+# or
+ANALYZE=true pnpm build</code></pre></div></div>
+<p>report가 브라우저에 새 tab 세 개를 열며, 이를 살펴볼 수 있습니다.</p><div class="en-orig"><p>The report will open three new tabs in your browser, which you can inspect.</p></div>
+<h2 class="sec" id="optimizing-large-bundles"><a class="anchor" href="#optimizing-large-bundles">Optimizing large bundles<span class="ko">큰 bundle 최적화하기</span></a></h2>
+<p>큰 module을 찾아냈다면, 해결 방법은 use case에 따라 다릅니다. 다음은 흔한 원인과 해결 방법입니다:</p><div class="en-orig"><p>Once you've identified a large module, the solution will depend on your use case. Below are common causes and how to fix them:</p></div>
+<h3 class="sec" id="packages-with-many-exports"><a class="anchor" href="#packages-with-many-exports">Packages with many exports<span class="ko">export가 많은 package</span></a></h3>
+<p>수백 개의 module을 export하는 package(icon이나 utility library 등)를 사용한다면, <code>next.config.js</code> 파일의 <a href="app-api-reference-config-next-config-js-optimizePackageImports.html"><code>optimizePackageImports</code></a> option으로 그 import가 resolve되는 방식을 최적화할 수 있습니다. 이 option은 여러 named export로 import 문을 작성하는 편리함은 그대로 두면서, <em>실제로</em> 사용하는 module만 load합니다.</p><div class="en-orig"><p>If you're using a package that exports hundreds of modules (such as icon and utility libraries), you can optimize how those imports are resolved using the <a href="app-api-reference-config-next-config-js-optimizePackageImports.html"><code>optimizePackageImports</code></a> option in your <code>next.config.js</code> file. This option will only load the modules you <em>actually</em> use, while still giving you the convenience of writing import statements with many named exports.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  experimental: {
+    optimizePackageImports: [&#x27;icon-library&#x27;],
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Next.js는 일부 library를 자동으로 최적화하므로, 그런 library는 <code>optimizePackageImports</code> 목록에 포함할 필요가 없습니다. 지원되는 package의 <a href="app-api-reference-config-next-config-js-optimizePackageImports.html">전체 목록</a>을 참고하세요.</p><div class="en-orig"><p>Next.js also optimizes some libraries automatically, thus they do not need to be included in the <code>optimizePackageImports</code> list. See the <a href="app-api-reference-config-next-config-js-optimizePackageImports.html">full list</a> of supported packages.</p></div></div></div>
+<h3 class="sec" id="heavy-client-workloads"><a class="anchor" href="#heavy-client-workloads">Heavy client workloads<span class="ko">무거운 client 작업</span></a></h3>
+<p>client bundle이 커지는 흔한 원인 중 하나는 Client Component에서 비용이 큰 rendering 작업을 하는 것입니다. syntax highlighting, chart rendering, markdown parsing처럼 data를 UI로 변환하기 위해서만 존재하는 library에서 자주 발생합니다.</p><div class="en-orig"><p>A common cause of large client bundles is doing expensive rendering work in Client Components. This often happens with libraries that exist only to transform data into UI, such as syntax highlighting, chart rendering, or markdown parsing.</p></div>
+<p>그 작업에 브라우저 API나 사용자 interaction이 필요하지 않다면, Server Component에서 실행할 수 있습니다.</p><div class="en-orig"><p>If that work does not require browser APIs or user interaction, it can be run in a Server Component.</p></div>
+<p>이 예제에서는 prism 기반 highlighter가 Client Component에서 실행됩니다. 최종 output은 <code>&lt;code&gt;</code> block 하나일 뿐인데도, highlighting library 전체가 client JavaScript bundle에 포함됩니다:</p><div class="en-orig"><p>In this example, a prism based highlighter runs in a Client Component. Even though the final output is just a <code>&lt;code&gt;</code> block, the entire highlighting library is bundled into the client JavaScript bundle:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/blog/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use client&#x27;
+
+import Highlight from &#x27;prism-react-renderer&#x27;
+import theme from &#x27;prism-react-renderer/themes/github&#x27;
+
+export default function Page() {
+  const code = `export function hello() {
+    console.log(&quot;hi&quot;)
+  }`
+
+  return (
+    &lt;article&gt;
+      &lt;h1&gt;Blog Post Title&lt;/h1&gt;
+
+      {/* The prism package and its tokenization logic are shipped to the client */}
+      &lt;Highlight code={code} language=&quot;tsx&quot; theme={theme}&gt;
+        {({ className, style, tokens, getLineProps, getTokenProps }) =&gt; (
+          &lt;pre className={className} style={style}&gt;
+            &lt;code&gt;
+              {tokens.map((line, i) =&gt; (
+                &lt;div key={i} {...getLineProps({ line })}&gt;
+                  {line.map((token, key) =&gt; (
+                    &lt;span key={key} {...getTokenProps({ token })} /&gt;
+                  ))}
+                &lt;/div&gt;
+              ))}
+            &lt;/code&gt;
+          &lt;/pre&gt;
+        )}
+      &lt;/Highlight&gt;
+    &lt;/article&gt;
+  )
+}</code></pre></div></div>
+<p>결과가 static HTML인데도 client가 highlighting library를 다운로드하고 실행해야 하므로 bundle 크기가 커집니다.</p><div class="en-orig"><p>This increases bundle size because the client must download and execute the highlighting library, even though the result is static HTML.</p></div>
+<p>대신 highlighting 로직을 Server Component로 옮기고 최종 HTML을 server에서 render하세요. client는 render된 markup만 받게 됩니다.</p><div class="en-orig"><p>Instead, move the highlighting logic to a Server Component and render the final HTML on the server. The client will only receive the rendered markup.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/blog/[slug]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { codeToHtml } from &#x27;shiki&#x27;
+
+export default async function Page() {
+  const code = `export function hello() {
+    console.log(&quot;hi&quot;)
+  }`
+
+  // The Shiki package runs on the server and is never bundled for the client.
+  const highlightedHtml = await codeToHtml(code, {
+    lang: &#x27;tsx&#x27;,
+    theme: &#x27;github-dark&#x27;,
+  })
+
+  return (
+    &lt;article&gt;
+      &lt;h1&gt;Blog Post Title&lt;/h1&gt;
+
+      {/* Client receives plain markup */}
+      &lt;pre&gt;
+        &lt;code dangerouslySetInnerHTML={{ __html: highlightedHtml }} /&gt;
+      &lt;/pre&gt;
+    &lt;/article&gt;
+  )
+}</code></pre></div></div>
+<h3 class="sec" id="external-packages-that-arent-pre-bundled"><a class="anchor" href="#external-packages-that-arent-pre-bundled">External packages that aren't pre-bundled<span class="ko">pre-bundle되지 않은 external package</span></a></h3>
+<p>기본적으로 애플리케이션에 import한 package는 bundle되지 않습니다. monorepo나 <code>node_modules</code>에서 import한 경우처럼 external package가 pre-bundle되어 있지 않으면 성능에 영향을 줄 수 있습니다.</p><div class="en-orig"><p>By default, packages imported into your application are not bundled. This can impact performance if external packages are not pre-bundled, for example, if imported from a monorepo or <code>node_modules</code>.</p></div>
+<p>특정 package를 bundle하려면 <code>next.config.js</code>의 <a href="app-api-reference-config-next-config-js-transpilePackages.html"><code>transpilePackages</code></a> option을 사용할 수 있습니다.</p><div class="en-orig"><p>To bundle specific packages, you can use the <a href="app-api-reference-config-next-config-js-transpilePackages.html"><code>transpilePackages</code></a> option in your <code>next.config.js</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  transpilePackages: [&#x27;package-name&#x27;],
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p>모든 package를 자동으로 bundle하려면 <code>next.config.js</code>의 <a href="pages-api-reference-config-next-config-js-bundlePagesRouterDependencies.html"><code>bundlePagesRouterDependencies</code></a> option을 사용할 수 있습니다. 이 option의 기본값은 <code>false</code>입니다.</p><div class="en-orig"><p>To automatically bundle all packages, you can use the <a href="pages-api-reference-config-next-config-js-bundlePagesRouterDependencies.html"><code>bundlePagesRouterDependencies</code></a> option in your <code>next.config.js</code>. This option defaults to <code>false</code>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  bundlePagesRouterDependencies: true,
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<h3 class="sec" id="opting-specific-packages-out-of-bundling"><a class="anchor" href="#opting-specific-packages-out-of-bundling">Opting specific packages out of bundling<span class="ko">특정 package를 bundling에서 제외하기</span></a></h3>
+<p>bundle에 들어가면 안 되는 package를 찾았다면, <code>next.config.js</code>의 <a href="pages-api-reference-config-next-config-js-serverExternalPackages.html"><code>serverExternalPackages</code></a> option으로 특정 package를 자동 bundling에서 제외할 수 있습니다:</p><div class="en-orig"><p>If you identify packages that shouldn't be in the bundle, you can opt specific packages out of automatic bundling using the <a href="pages-api-reference-config-next-config-js-serverExternalPackages.html"><code>serverExternalPackages</code></a> option in your <code>next.config.js</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  // Automatically bundle external packages:
+  bundlePagesRouterDependencies: true,
+  // Opt specific packages out of bundling:
+  serverExternalPackages: [&#x27;package-name&#x27;],
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.4.0</code></td><td><code>next analyze export</code>와 <code>next-bundle-optimizer</code> skill 추가.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.4.0</code></td><td>Add <code>next analyze export</code> and the <code>next-bundle-optimizer</code> skill.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><p>production을 위해 애플리케이션을 최적화하는 방법을 더 알아보세요.</p><div class="rgrid"><a class="rcard" href="app-guides-production-checklist.html"><div class="rt">How to optimize your Next.js application for production</div><div class="rk">production을 위한 Next.js 애플리케이션 최적화</div><div class="rd">Next.js 애플리케이션을 production에 배포하기 전에 최고의 performance와 사용자 경험을 보장하기 위한 권장 사항입니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/package-bundling.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/guides/package-bundling" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-guides-open-telemetry.html" class="prev"><div class="dir">← 이전</div><div class="ttl">OpenTelemetry</div><div class="ttl-ko">OpenTelemetry로 instrumentation 설정하기</div></a>
+      <a href="pages-guides-post-css.html" class="next"><div class="dir">다음 →</div><div class="ttl">PostCSS</div><div class="ttl-ko">Next.js에서 PostCSS 설정하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/guides/package-bundling" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#nextjs-bundle-analyzer">Next.js Bundle Analyzer</a></li><li class="l3"><a href="#step-1-run-the-turbopack-bundle-analyzer">Step 1: Run the Turbopack Bundle Analyzer</a></li><li class="l3"><a href="#step-2-filter-and-inspect-modules">Step 2: Filter and inspect modules</a></li><li class="l3"><a href="#step-3-trace-modules-with-import-chains">Step 3: Trace modules with import chains</a></li><li class="l3"><a href="#step-4-write-output-to-disk-for-sharing-or-diffing">Step 4: Write output to disk for sharing or diffing</a></li><li class="l3"><a href="#export-analysis-data">Export analysis data</a></li><li class="l3"><a href="#give-your-ai-agent-access-to-the-bundle-analyzer">Give your AI agent access to the bundle analyzer</a></li><li class="l2"><a href="#nextbundle-analyzer-for-webpack"><code>@next/bundle-analyzer</code> for Webpack</a></li><li class="l3"><a href="#step-1-installation">Step 1: Installation</a></li><li class="l3"><a href="#step-2-generating-a-report">Step 2: Generating a report</a></li><li class="l2"><a href="#optimizing-large-bundles">Optimizing large bundles</a></li><li class="l3"><a href="#packages-with-many-exports">Packages with many exports</a></li><li class="l3"><a href="#heavy-client-workloads">Heavy client workloads</a></li><li class="l3"><a href="#external-packages-that-arent-pre-bundled">External packages that aren't pre-bundled</a></li><li class="l3"><a href="#opting-specific-packages-out-of-bundling">Opting specific packages out of bundling</a></li><li class="l2"><a href="#version-history">Version History</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Bundling은 애플리케이션 코드와 그 dependency를 client와 server용으로 최적화된 output 파일로 합치는 과정입니다. bundle이 작을수록 더 빨리 load되고, JavaScript 실행 시간이 줄어들고, [Core Web Vitals](https://web.dev/articles/vitals)가 개선되며, server cold start 시간이 짧아집니다.
+
+Next.js는 code splitting, tree-shaking 등의 기법으로 bundle을 자동으로 최적화합니다. 하지만 bundle을 직접 최적화해야 하는 경우도 있습니다.
+
+애플리케이션의 bundle을 분석하는 도구는 두 가지입니다:
+
+- [Turbopack용 Next.js Bundle Analyzer](#nextjs-bundle-analyzer)
+- [Webpack용 `@next/bundle-analyzer` plugin](#nextbundle-analyzer-for-webpack)
+
+이 가이드에서는 각 도구를 사용하는 방법과 [큰 bundle을 최적화하는 방법](#optimizing-large-bundles)을 차례로 안내합니다.
+
+## Next.js Bundle Analyzer
+
+&gt; v16.1 이상에서 사용할 수 있습니다. [전용 GitHub discussion](https://github.com/vercel/next.js/discussions/86731)에서 feedback을 남길 수 있고, [turbopack-bundle-analyzer-demo.vercel.sh](https://turbopack-bundle-analyzer-demo.vercel.sh/)에서 demo를 볼 수 있습니다.
+
+Next.js Bundle Analyzer는 Turbopack의 module graph와 통합되어 있습니다. 정확한 import tracing으로 server module과 client module을 살펴볼 수 있어서 큰 dependency를 더 쉽게 찾을 수 있습니다. interactive Bundle Analyzer demo를 열어 module graph를 탐색해 보세요.
+
+### Step 1: Run the Turbopack Bundle Analyzer || 1단계: Turbopack Bundle Analyzer 실행하기
+
+시작하려면 다음 command를 실행하고 브라우저에서 interactive view를 여세요.
+
+[[CODE 1]]
+
+### Step 2: Filter and inspect modules || 2단계: module 필터링하고 살펴보기
+
+UI에서는 route, environment(client 또는 server), type(JavaScript, CSS, JSON)으로 필터링하거나 파일로 검색할 수 있습니다:
+
+&lt;Video
+  caption=&quot;Next.js bundle analyzer UI walkthrough&quot;
+  src=&quot;/videos/bundle-analyzer.mp4&quot;
+  width={1708}
+  height={1080}
+/&gt;
+
+### Step 3: Trace modules with import chains || 3단계: import chain으로 module 추적하기
+
+treemap은 각 module을 사각형으로 보여 줍니다. module의 크기는 사각형의 면적으로 표현됩니다.
+
+module을 클릭하면 크기를 확인하고, 전체 import chain을 살펴보고, 애플리케이션의 정확히 어디에서 사용되는지 볼 수 있습니다:
+
+&lt;Image
+  caption=&quot;Next.js Bundle Analyzer import chain view&quot;
+  srcLight=&quot;/docs/light/bundle-analyzer.png&quot;
+  srcDark=&quot;/docs/dark/bundle-analyzer.png&quot;
+  width={1600}
+  height={874}
+/&gt;
+
+### Step 4: Write output to disk for sharing or diffing || 4단계: 공유나 비교를 위해 output을 디스크에 쓰기
+
+분석 결과를 팀원과 공유하거나 최적화 전후의 bundle 크기를 비교하고 싶다면, interactive view를 건너뛰고 `--output` flag로 분석 결과를 static 파일로 저장할 수 있습니다:
+
+[[CODE 2]]
+
+이 command는 output을 `.next/diagnostics/analyze`에 씁니다. 이 directory를 다른 곳에 복사해서 결과를 비교할 수 있습니다:
+
+[[CODE 3]]
+
+### Export analysis data || 분석 data export하기
+
+&gt; v16.4 이상에서 사용할 수 있습니다. [전용 GitHub discussion](https://github.com/vercel/next.js/discussions/86731)에서 feedback을 남길 수 있고, [turbopack-bundle-analyzer-demo.vercel.sh](https://turbopack-bundle-analyzer-demo.vercel.sh/)에서 demo를 볼 수 있습니다.
+
+`next analyze export`를 사용하면 다시 build하거나 server를 시작하지 않고도, 저장된 snapshot을 script나 AI 도구용 JSON Lines로 stream할 수 있습니다:
+
+[[CODE 4]]
+
+export option은 [CLI reference](/docs/app/api-reference/cli/next#next-analyze-export-options)를 참고하세요.
+
+&gt; Bundle Analyzer에는 더 많은 option이 있습니다. 전체 목록은 Next.js CLI reference 문서를 참고하세요.
+
+### Give your AI agent access to the bundle analyzer || AI agent가 bundle analyzer에 접근하게 하기
+
+[`next-bundle-optimizer`](https://www.skills.sh/vercel/next.js/next-bundle-optimizer) skill은 AI agent가 Turbopack bundle analyzer의 기반 data에 접근할 수 있게 해서, 사이트의 initial load 성능에 영향을 주는 큰 client-side bundle의 원인을 자동으로 찾아내도록 합니다.
+
+먼저 skill을 설치하세요:
+
+[[CODE 5]]
+
+그다음 agent에게 prompt를 보내세요. audit-only mode에서는 아무것도 변경하지 않고 report만 만듭니다:
+
+[[CODE 6]]
+
+agent에게 문제를 고치라고 지시할 수도 있으며, 그러면 찾아낸 내용을 바탕으로 사이트를 최적화합니다. 또는 prompt에 route를 지정해서 특정 route에 집중하게 할 수도 있습니다.
+
+## `@next/bundle-analyzer` for Webpack || Webpack용 `@next/bundle-analyzer`
+
+[`@next/bundle-analyzer`](https://www.npmjs.com/package/@next/bundle-analyzer)는 애플리케이션 bundle의 크기를 관리하도록 도와주는 plugin입니다. 각 package와 그 dependency의 크기를 시각적인 report로 생성합니다. 이 정보를 활용해 큰 dependency를 제거하거나, 코드를 분할하거나, [lazy-load](/docs/app/guides/lazy-loading)할 수 있습니다.
+
+### Step 1: Installation || 1단계: 설치
+
+다음 command를 실행해 plugin을 설치하세요:
+
+[[CODE 7]]
+
+그다음 `next.config.js`에 bundle analyzer 설정을 추가하세요.
+
+[[CODE 8]]
+
+### Step 2: Generating a report || 2단계: report 생성하기
+
+다음 command를 실행해 bundle을 분석하세요:
+
+[[CODE 9]]
+
+report가 브라우저에 새 tab 세 개를 열며, 이를 살펴볼 수 있습니다.
+
+## Optimizing large bundles || 큰 bundle 최적화하기
+
+큰 module을 찾아냈다면, 해결 방법은 use case에 따라 다릅니다. 다음은 흔한 원인과 해결 방법입니다:
+
+### Packages with many exports || export가 많은 package
+
+수백 개의 module을 export하는 package(icon이나 utility library 등)를 사용한다면, `next.config.js` 파일의 [`optimizePackageImports`](/docs/app/api-reference/config/next-config-js/optimizePackageImports) option으로 그 import가 resolve되는 방식을 최적화할 수 있습니다. 이 option은 여러 named export로 import 문을 작성하는 편리함은 그대로 두면서, _실제로_ 사용하는 module만 load합니다.
+
+[[CODE 10]]
+
+&gt; **Good to know:** Next.js는 일부 library를 자동으로 최적화하므로, 그런 library는 `optimizePackageImports` 목록에 포함할 필요가 없습니다. 지원되는 package의 [전체 목록](/docs/app/api-reference/config/next-config-js/optimizePackageImports)을 참고하세요.
+
+### Heavy client workloads || 무거운 client 작업
+
+client bundle이 커지는 흔한 원인 중 하나는 Client Component에서 비용이 큰 rendering 작업을 하는 것입니다. syntax highlighting, chart rendering, markdown parsing처럼 data를 UI로 변환하기 위해서만 존재하는 library에서 자주 발생합니다.
+
+그 작업에 브라우저 API나 사용자 interaction이 필요하지 않다면, Server Component에서 실행할 수 있습니다.
+
+이 예제에서는 prism 기반 highlighter가 Client Component에서 실행됩니다. 최종 output은 `&lt;code&gt;` block 하나일 뿐인데도, highlighting library 전체가 client JavaScript bundle에 포함됩니다:
+
+[[CODE 11]]
+
+결과가 static HTML인데도 client가 highlighting library를 다운로드하고 실행해야 하므로 bundle 크기가 커집니다.
+
+대신 highlighting 로직을 Server Component로 옮기고 최종 HTML을 server에서 render하세요. client는 render된 markup만 받게 됩니다.
+
+[[CODE 12]]
+
+
+
+
+
+### External packages that aren&#x27;t pre-bundled || pre-bundle되지 않은 external package
+
+기본적으로 애플리케이션에 import한 package는 bundle되지 않습니다. monorepo나 `node_modules`에서 import한 경우처럼 external package가 pre-bundle되어 있지 않으면 성능에 영향을 줄 수 있습니다.
+
+특정 package를 bundle하려면 `next.config.js`의 [`transpilePackages`](/docs/app/api-reference/config/next-config-js/transpilePackages) option을 사용할 수 있습니다.
+
+[[CODE 14]]
+
+모든 package를 자동으로 bundle하려면 `next.config.js`의 [`bundlePagesRouterDependencies`](/docs/pages/api-reference/config/next-config-js/bundlePagesRouterDependencies) option을 사용할 수 있습니다. 이 option의 기본값은 `false`입니다.
+
+[[CODE 15]]
+
+### Opting specific packages out of bundling || 특정 package를 bundling에서 제외하기
+
+bundle에 들어가면 안 되는 package를 찾았다면, `next.config.js`의 [`serverExternalPackages`](/docs/pages/api-reference/config/next-config-js/serverExternalPackages) option으로 특정 package를 자동 bundling에서 제외할 수 있습니다:
+
+[[CODE 16]]
+
+
+
+## Version History || 버전 기록
+
+| Version   | Changes                                                          |
+| --------- | ---------------------------------------------------------------- |
+| `v16.4.0` | `next analyze export`와 `next-bundle-optimizer` skill 추가. |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

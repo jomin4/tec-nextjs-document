@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Next.js Glossary (Next.js 용어 사전) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/glossary" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/glossary" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/04-glossary.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span></div>
+    <div class="title-row">
+      <h1 class="page-title">Next.js Glossary<span class="sub">Next.js 용어 사전</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>이 용어 사전은 routing, rendering, caching 관련 용어를 포함해 Next.js 문서 전반에서 쓰이는 일반적인 용어를 정의합니다.</p><div class="en-orig"><p>This glossary defines common terms used throughout the Next.js documentation, including terms related to routing, rendering, and caching.</p></div>
+<h2 class="sec" id="a"><a class="anchor" href="#a">A</a></h2>
+<h2 class="sec" id="app-router"><a class="anchor" href="#app-router">App Router</a></h2>
+<p>version 13에서 도입된 Next.js router로, React Server Components 위에 만들어졌습니다. file-system 기반 routing을 사용하며 layout, nested routing, loading state, error handling 등을 지원합니다. 자세한 내용은 <a href="app.html">App Router 문서</a>를 참고하세요.</p><div class="en-orig"><p>The Next.js router introduced in version 13, built on top of React Server Components. It uses file-system based routing and supports layouts, nested routing, loading states, error handling, and more. Learn more in the <a href="app.html">App Router documentation</a>.</p></div>
+<h2 class="sec" id="app-shell"><a class="anchor" href="#app-shell">App Shell</a></h2>
+<p>page에서 URL data에 의존하지 않는 부분을 담은 route별 prerender입니다. cache된 콘텐츠는 <a href="app-api-reference-functions-cacheLife.html#stale"><code>stale</code></a> 시간이 5분 이상일 때 포함됩니다. shell은 수명이 짧은 콘텐츠가 fresh 상태로 유지되는 시간보다 더 오래 재사용되기 때문입니다. <code>cookies()</code>나 <code>headers()</code>를 읽는 route는 session data까지 포함한 shell을 만들며, 이는 client에서 session별로 cache됩니다. client navigation 중 기본 prefetch payload로, <a href="app-guides-optimizing-prefetching.html">per-link prefetch</a>가 준비되지 않았을 때의 loading state로, 그리고 <a href="app-guides-incremental-static-regeneration-cache-components.html">ISR with Cache Components</a>의 fallback으로 사용됩니다.</p><div class="en-orig"><p>A per-route prerender containing the parts of a page that don't depend on URL data. Cached content is included when its <a href="app-api-reference-functions-cacheLife.html#stale"><code>stale</code></a> time is at least 5 minutes, since the shell is reused for longer than shorter-lived content stays fresh. Routes that read <code>cookies()</code> or <code>headers()</code> produce one that also includes session data, cached per session on the client. Used as the default prefetch payload during client navigations, the loading state when a <a href="app-guides-optimizing-prefetching.html">per-link prefetch</a> is not ready, and the fallback for <a href="app-guides-incremental-static-regeneration-cache-components.html">ISR with Cache Components</a>.</p></div>
+<h2 class="sec" id="b"><a class="anchor" href="#b">B</a></h2>
+<h2 class="sec" id="build-time"><a class="anchor" href="#build-time">Build time<span class="ko">빌드 타임</span></a></h2>
+<p>애플리케이션이 compile되는 단계입니다. build time 동안 Next.js는 코드를 production용 최적화 파일로 변환하고, static page를 생성하며, deploy를 위한 asset을 준비합니다. <a href="app-api-reference-cli-next.html#next-build-options"><code>next build</code> CLI reference</a>를 참고하세요.</p><div class="en-orig"><p>The stage when your application is being compiled. During build time, Next.js transforms your code into optimized files for production, generates static pages, and prepares assets for deployment. See the <a href="app-api-reference-cli-next.html#next-build-options"><code>next build</code> CLI reference</a>.</p></div>
+<h2 class="sec" id="c"><a class="anchor" href="#c">C</a></h2>
+<h2 class="sec" id="cache-components"><a class="anchor" href="#cache-components">Cache Components</a></h2>
+<p><a href="app-api-reference-directives-use-cache.html"><code>&quot;use cache&quot;</code> directive</a>를 사용해 component 단위와 function 단위의 caching을 가능하게 하는 기능입니다. Cache Components를 사용하면 즉시 제공되는 static HTML shell을 prerender하고, dynamic 콘텐츠는 준비되는 대로 stream되게 하여 하나의 route 안에서 static, cached, dynamic 콘텐츠를 섞어 쓸 수 있습니다. <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife()</code></a>로 cache 기간을 설정하고, <a href="app-api-reference-functions-cacheTag.html"><code>cacheTag()</code></a>로 cache된 data에 tag를 붙이며, <a href="app-api-reference-functions-updateTag.html"><code>updateTag()</code></a>로 on-demand invalidate를 할 수 있습니다. 자세한 내용은 <a href="app-getting-started-caching.html">Cache Components 가이드</a>를 참고하세요.</p><div class="en-orig"><p>A feature that enables component and function-level caching using the <a href="app-api-reference-directives-use-cache.html"><code>&quot;use cache&quot;</code> directive</a>. Cache Components allows you to mix static, cached, and dynamic content within a single route by prerendering a static HTML shell that's served immediately, while dynamic content streams in when ready. Configure cache duration with <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife()</code></a>, tag cached data with <a href="app-api-reference-functions-cacheTag.html"><code>cacheTag()</code></a>, and invalidate on-demand with <a href="app-api-reference-functions-updateTag.html"><code>updateTag()</code></a>. Learn more in the <a href="app-getting-started-caching.html">Cache Components guide</a>.</p></div>
+<h2 class="sec" id="catch-all-segments"><a class="anchor" href="#catch-all-segments">Catch-all Segments</a></h2>
+<p><code>[...folder]/page.js</code> 문법을 사용해 여러 URL 부분과 match될 수 있는 dynamic route segment입니다. 이 segment는 남은 모든 URL segment를 capture하며, 문서 사이트나 file browser 같은 기능을 구현할 때 유용합니다. 자세한 내용은 <a href="app-api-reference-file-conventions-dynamic-routes.html#catch-all-segments">Dynamic Route Segments</a>를 참고하세요.</p><div class="en-orig"><p>Dynamic route segments that can match multiple URL parts using the <code>[...folder]/page.js</code> syntax. These segments capture all remaining URL segments and are useful for implementing features like documentation sites or file browsers. Learn more in <a href="app-api-reference-file-conventions-dynamic-routes.html#catch-all-segments">Dynamic Route Segments</a>.</p></div>
+<h2 class="sec" id="client-bundles"><a class="anchor" href="#client-bundles">Client Bundles</a></h2>
+<p>브라우저로 전송되는 JavaScript bundle입니다. Next.js는 초기 payload 크기를 줄이고 각 page에 필요한 코드만 load하기 위해 <a href="#module-graph">module graph</a>를 기반으로 bundle을 자동으로 분할합니다.</p><div class="en-orig"><p>JavaScript bundles sent to the browser. Next.js splits these automatically based on the <a href="#module-graph">module graph</a> to reduce initial payload size and load only the necessary code for each page.</p></div>
+<h2 class="sec" id="client-component"><a class="anchor" href="#client-component">Client Component</a></h2>
+<p>브라우저에서 실행되는 React component입니다. Next.js에서 Client Component는 초기 page 생성 중에 server에서도 render될 수 있습니다. state, effect, event handler, browser API를 사용할 수 있으며, 파일 맨 위의 <a href="#use-client-directive"><code>&quot;use client&quot;</code> directive</a>로 표시합니다. 자세한 내용은 <a href="app-getting-started-server-and-client-components.html">Server and Client Components</a>를 참고하세요.</p><div class="en-orig"><p>A React component that runs in the browser. In Next.js, Client Components can also be rendered on the server during initial page generation. They can use state, effects, event handlers, and browser APIs, and are marked with the <a href="#use-client-directive"><code>&quot;use client&quot;</code> directive</a> at the top of a file. Learn more in <a href="app-getting-started-server-and-client-components.html">Server and Client Components</a>.</p></div>
+<h2 class="sec" id="client-side-navigation"><a class="anchor" href="#client-side-navigation">Client-side navigation</a></h2>
+<p>전체 page를 다시 load하지 않고 page 콘텐츠를 동적으로 업데이트하는 navigation 기법입니다. Next.js는 <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code> component</a>로 client-side navigation을 수행하며, 공유 layout을 interactive 상태로 유지하고 browser state를 보존합니다. 자세한 내용은 <a href="app-getting-started-linking-and-navigating.html#client-side-transitions">Linking and Navigating</a>을 참고하세요.</p><div class="en-orig"><p>A navigation technique where the page content updates dynamically without a full page reload. Next.js uses client-side navigation with the <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code> component</a>, keeping shared layouts interactive and preserving browser state. Learn more in <a href="app-getting-started-linking-and-navigating.html#client-side-transitions">Linking and Navigating</a>.</p></div>
+<h2 class="sec" id="client-cache"><a class="anchor" href="#client-cache">Client Cache</a></h2>
+<p>방문했거나 prefetch된 route의 <a href="#rsc-payload">RSC Payload</a>를 저장하는 브라우저의 in-memory cache입니다. <a href="#client-side-navigation">client-side navigation</a> 중에 Next.js는 cache된 <a href="#layout">layout</a>과 <a href="#loading-ui">loading state</a>를 server request 없이 즉시 제공합니다. page는 기본적으로 cache되지 않지만, 브라우저의 뒤로/앞으로 가기 navigation 중에는 재사용됩니다.</p><div class="en-orig"><p>An in-memory cache in the browser that stores <a href="#rsc-payload">RSC Payload</a> for visited and prefetched routes. During <a href="#client-side-navigation">client-side navigation</a>, Next.js serves cached <a href="#layout">layouts</a> and <a href="#loading-ui">loading states</a> instantly without a server request. Pages are not cached by default but are reused during browser back/forward navigation.</p></div>
+<p>client cache는 page를 새로고침하면 지워집니다. <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>, <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>, <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>, <a href="app-api-reference-functions-use-router.html"><code>router.refresh</code></a>, <a href="app-api-reference-functions-cookies.html"><code>cookies.set</code></a>, <a href="app-api-reference-functions-cookies.html"><code>cookies.delete</code></a>로 프로그래밍 방식으로 invalidate할 수도 있습니다.</p><div class="en-orig"><p>The client cache is cleared on page refresh. It can be invalidated programmatically with <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>, <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>, <a href="app-api-reference-functions-updateTag.html"><code>updateTag</code></a>, <a href="app-api-reference-functions-use-router.html"><code>router.refresh</code></a>, <a href="app-api-reference-functions-cookies.html"><code>cookies.set</code></a>, or <a href="app-api-reference-functions-cookies.html"><code>cookies.delete</code></a>.</p></div>
+<p>client cache 기간은 <a href="app-api-reference-config-next-config-js-staleTimes.html"><code>staleTimes</code></a>로 전역 설정하거나, <a href="app-api-reference-functions-cacheLife.html#client-cache-behavior"><code>cacheLife</code></a>의 <code>stale</code> property로 route별로 설정할 수 있습니다(권장).</p><div class="en-orig"><p>You can configure the client cache duration with <a href="app-api-reference-config-next-config-js-staleTimes.html"><code>staleTimes</code></a> globally, or per-route via the <code>stale</code> property in <a href="app-api-reference-functions-cacheLife.html#client-cache-behavior"><code>cacheLife</code></a> (recommended).</p></div>
+<h2 class="sec" id="code-splitting"><a class="anchor" href="#code-splitting">Code Splitting</a></h2>
+<p>애플리케이션을 route 기준으로 더 작은 JavaScript chunk로 나누는 과정입니다. 모든 코드를 미리 load하는 대신 현재 route에 필요한 코드만 load하므로 초기 load 시간이 줄어듭니다. Next.js는 route를 기준으로 code splitting을 자동으로 수행합니다. 자세한 내용은 <a href="app-guides-package-bundling.html">Package Bundling 가이드</a>를 참고하세요.</p><div class="en-orig"><p>The process of dividing your application into smaller JavaScript chunks based on routes. Instead of loading all code upfront, only the code needed for the current route is loaded, reducing initial load time. Next.js automatically performs code splitting based on routes. Learn more in the <a href="app-guides-package-bundling.html">Package Bundling guide</a>.</p></div>
+<h2 class="sec" id="d"><a class="anchor" href="#d">D</a></h2>
+<h2 class="sec" id="dynamic-rendering"><a class="anchor" href="#dynamic-rendering">Dynamic rendering</a></h2>
+<p>component가 <a href="#build-time">build time</a>이 아니라 request time에 render되는 것을 말합니다. component는 <a href="#request-time-apis">Request-time APIs</a>를 사용하면 dynamic이 됩니다.</p><div class="en-orig"><p>When a component is rendered at request time rather than <a href="#build-time">build time</a>. A component becomes dynamic when it uses <a href="#request-time-apis">Request-time APIs</a>.</p></div>
+<h2 class="sec" id="dynamic-route-segments"><a class="anchor" href="#dynamic-route-segments">Dynamic route segments</a></h2>
+<p>request time에 data로부터 생성되는 <a href="#route-segment">route segment</a>입니다. 폴더 이름을 대괄호로 감싸서(예: <code>[slug]</code>) 만들며, blog post나 product page 같은 dynamic data로 route를 만들 수 있게 해 줍니다. 자세한 내용은 <a href="app-api-reference-file-conventions-dynamic-routes.html">Dynamic Route Segments</a>를 참고하세요.</p><div class="en-orig"><p><a href="#route-segment">Route segments</a> that are generated from data at request time. Created by wrapping a folder name in square brackets (e.g., <code>[slug]</code>), they allow you to create routes from dynamic data like blog posts or product pages. Learn more in <a href="app-api-reference-file-conventions-dynamic-routes.html">Dynamic Route Segments</a>.</p></div>
+<h2 class="sec" id="e"><a class="anchor" href="#e">E</a></h2>
+<h2 class="sec" id="environment-variables"><a class="anchor" href="#environment-variables">Environment Variables</a></h2>
+<p>build time 또는 request time에 접근할 수 있는 configuration 값입니다. Next.js에서 <code>NEXT_PUBLIC_</code> prefix가 붙은 변수는 브라우저에 노출되고, 나머지는 server-side에서만 사용할 수 있습니다. 자세한 내용은 <a href="app-guides-environment-variables.html">Environment Variables</a>를 참고하세요.</p><div class="en-orig"><p>Configuration values accessible at build time or request time. In Next.js, variables prefixed with <code>NEXT_PUBLIC_</code> are exposed to the browser, while others are only available server-side. Learn more in <a href="app-guides-environment-variables.html">Environment Variables</a>.</p></div>
+<h2 class="sec" id="error-boundary"><a class="anchor" href="#error-boundary">Error Boundary</a></h2>
+<p>자식 component tree에서 발생한 JavaScript error를 잡아 fallback UI를 보여 주는 React component입니다. Next.js에서는 <a href="app-api-reference-file-conventions-error.html"><code>error.js</code> 파일</a>을 만들면 route segment를 error boundary로 자동으로 감쌉니다. 자세한 내용은 <a href="app-getting-started-error-handling.html">Error Handling</a>을 참고하세요.</p><div class="en-orig"><p>A React component that catches JavaScript errors in its child component tree and displays a fallback UI. In Next.js, create an <a href="app-api-reference-file-conventions-error.html"><code>error.js</code> file</a> to automatically wrap a route segment in an error boundary. Learn more in <a href="app-getting-started-error-handling.html">Error Handling</a>.</p></div>
+<h2 class="sec" id="f"><a class="anchor" href="#f">F</a></h2>
+<h2 class="sec" id="font-optimization"><a class="anchor" href="#font-optimization">Font Optimization</a></h2>
+<p><a href="app-api-reference-components-font.html"><code>next/font</code></a>를 사용한 자동 font 최적화입니다. Next.js는 font를 self-host하고, layout shift를 없애며, performance를 위한 best practice를 적용합니다. Google Fonts와 local font 파일 모두에서 동작합니다. 자세한 내용은 <a href="app-getting-started-fonts.html">Fonts</a>를 참고하세요.</p><div class="en-orig"><p>Automatic font optimization using <a href="app-api-reference-components-font.html"><code>next/font</code></a>. Next.js self-hosts fonts, eliminates layout shift, and applies best practices for performance. Works with Google Fonts and local font files. Learn more in <a href="app-getting-started-fonts.html">Fonts</a>.</p></div>
+<h2 class="sec" id="file-system-caching"><a class="anchor" href="#file-system-caching">File-system caching</a></h2>
+<p>실행 사이에 compiler artifact를 disk에 저장하는 Turbopack 기능으로, <code>next dev</code>나 <code>next build</code> command 간의 작업을 줄여 compile 시간을 크게 단축합니다. 자세한 내용은 <a href="app-api-reference-config-next-config-js-turbopackFileSystemCache.html">Turbopack FileSystem Caching</a>을 참고하세요.</p><div class="en-orig"><p>A Turbopack feature that stores compiler artifacts on disk between runs, reducing work across <code>next dev</code> or <code>next build</code> commands for significantly faster compile times. Learn more in <a href="app-api-reference-config-next-config-js-turbopackFileSystemCache.html">Turbopack FileSystem Caching</a>.</p></div>
+<h2 class="sec" id="h"><a class="anchor" href="#h">H</a></h2>
+<h2 class="sec" id="hydration"><a class="anchor" href="#hydration">Hydration</a></h2>
+<p>server에서 render된 static HTML을 interactive하게 만들기 위해 React가 DOM에 event handler를 연결하는 과정입니다. hydration 중에 React는 server에서 render된 markup과 client-side JavaScript를 reconcile합니다. 자세한 내용은 <a href="app-getting-started-server-and-client-components.html#how-do-server-and-client-components-work-in-nextjs">Server and Client Components</a>를 참고하세요.</p><div class="en-orig"><p>React's process of attaching event handlers to the DOM to make server-rendered static HTML interactive. During hydration, React reconciles the server-rendered markup with the client-side JavaScript. Learn more in <a href="app-getting-started-server-and-client-components.html#how-do-server-and-client-components-work-in-nextjs">Server and Client Components</a>.</p></div>
+<h2 class="sec" id="i"><a class="anchor" href="#i">I</a></h2>
+<h2 class="sec" id="import-aliases"><a class="anchor" href="#import-aliases">Import Aliases</a></h2>
+<p>자주 쓰는 directory를 짧게 참조할 수 있게 해 주는 custom path mapping입니다. import alias는 relative import의 복잡함을 줄이고 코드를 더 읽기 쉽고 유지보수하기 좋게 만듭니다. 자세한 내용은 <a href="app-getting-started-installation.html#set-up-absolute-imports-and-module-path-aliases">Absolute Imports and Module Path Aliases</a>를 참고하세요.</p><div class="en-orig"><p>Custom path mappings that provide shorthand references for frequently used directories. Import aliases reduce the complexity of relative imports and make code more readable and maintainable. Learn more in <a href="app-getting-started-installation.html#set-up-absolute-imports-and-module-path-aliases">Absolute Imports and Module Path Aliases</a>.</p></div>
+<h2 class="sec" id="incremental-static-regeneration-isr"><a class="anchor" href="#incremental-static-regeneration-isr">Incremental Static Regeneration (ISR)</a></h2>
+<p>전체 사이트를 다시 build하지 않고 static 콘텐츠를 업데이트할 수 있게 해 주는 기법입니다. ISR을 사용하면 page 단위로 static generation을 사용하면서, traffic이 들어올 때 background에서 page를 revalidate할 수 있습니다. 자세한 내용은 <a href="app-guides-incremental-static-regeneration.html">ISR 가이드</a>를, Cache Components를 사용한다면 <a href="app-guides-incremental-static-regeneration-cache-components.html">ISR with Cache Components</a>를 참고하세요.</p><div class="en-orig"><p>A technique that allows you to update static content without rebuilding the entire site. ISR enables you to use static generation on a per-page basis while revalidating pages in the background as traffic comes in. Learn more in the <a href="app-guides-incremental-static-regeneration.html">ISR guide</a> or, when using Cache Components, <a href="app-guides-incremental-static-regeneration-cache-components.html">ISR with Cache Components</a>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Next.js에서 ISR은 <a href="#revalidation">Revalidation</a>이라고도 불립니다.</p><div class="en-orig"><p>In Next.js, ISR is also known as <a href="#revalidation">Revalidation</a>.</p></div></div></div>
+<h2 class="sec" id="intercepting-routes"><a class="anchor" href="#intercepting-routes">Intercepting Routes</a></h2>
+<p>애플리케이션의 다른 부분에 있는 route를 현재 layout 안에서 load할 수 있게 해 주는 routing pattern입니다. URL을 공유 가능한 상태로 유지하면서, 사용자가 context를 전환하지 않고도 콘텐츠(예: modal)를 보여 줄 때 유용합니다. 자세한 내용은 <a href="app-api-reference-file-conventions-intercepting-routes.html">Intercepting Routes</a>를 참고하세요.</p><div class="en-orig"><p>A routing pattern that allows loading a route from another part of your application within the current layout. Useful for displaying content (like modals) without the user switching context, while keeping the URL shareable. Learn more in <a href="app-api-reference-file-conventions-intercepting-routes.html">Intercepting Routes</a>.</p></div>
+<h2 class="sec" id="image-optimization"><a class="anchor" href="#image-optimization">Image Optimization</a></h2>
+<p><a href="app-api-reference-components-image.html"><code>&lt;Image&gt;</code> component</a>를 사용한 자동 이미지 최적화입니다. Next.js는 이미지를 on-demand로 최적화하고, WebP 같은 최신 형식으로 제공하며, lazy loading과 responsive sizing을 자동으로 처리합니다. 자세한 내용은 <a href="app-getting-started-images.html">Images</a>를 참고하세요.</p><div class="en-orig"><p>Automatic image optimization using the <a href="app-api-reference-components-image.html"><code>&lt;Image&gt;</code> component</a>. Next.js optimizes images on-demand, serves them in modern formats like WebP, and automatically handles lazy loading and responsive sizing. Learn more in <a href="app-getting-started-images.html">Images</a>.</p></div>
+<h2 class="sec" id="l"><a class="anchor" href="#l">L</a></h2>
+<h2 class="sec" id="layout"><a class="anchor" href="#layout">Layout</a></h2>
+<p>여러 page가 공유하는 UI입니다. layout은 state를 보존하고, interactive 상태를 유지하며, navigation 시 다시 render되지 않습니다. <a href="app-api-reference-file-conventions-layout.html"><code>layout.js</code> 파일</a>에서 React component를 export해서 정의합니다. 자세한 내용은 <a href="app-getting-started-layouts-and-pages.html">Layouts and Pages</a>를 참고하세요.</p><div class="en-orig"><p>UI that is shared between multiple pages. Layouts preserve state, remain interactive, and do not re-render on navigation. Defined by exporting a React component from a <a href="app-api-reference-file-conventions-layout.html"><code>layout.js</code> file</a>. Learn more in <a href="app-getting-started-layouts-and-pages.html">Layouts and Pages</a>.</p></div>
+<h2 class="sec" id="loading-ui"><a class="anchor" href="#loading-ui">Loading UI</a></h2>
+<p><a href="#route-segment">route segment</a>가 load되는 동안 보여 주는 fallback UI입니다. 폴더에 <a href="app-api-reference-file-conventions-loading.html"><code>loading.js</code> 파일</a>을 추가해서 만들며, 이 파일은 page를 <a href="#suspense-boundary">Suspense boundary</a>로 자동으로 감쌉니다. 자세한 내용은 <a href="app-api-reference-file-conventions-loading.html">Loading UI</a>를 참고하세요.</p><div class="en-orig"><p>Fallback UI shown while a <a href="#route-segment">route segment</a> is loading. Created by adding a <a href="app-api-reference-file-conventions-loading.html"><code>loading.js</code> file</a> to a folder, which automatically wraps the page in a <a href="#suspense-boundary">Suspense boundary</a>. Learn more in <a href="app-api-reference-file-conventions-loading.html">Loading UI</a>.</p></div>
+<h2 class="sec" id="m"><a class="anchor" href="#m">M</a></h2>
+<h2 class="sec" id="module-graph"><a class="anchor" href="#module-graph">Module Graph</a></h2>
+<p>앱의 파일 dependency를 나타내는 graph입니다. 각 파일(module)이 node이고, import/export 관계가 edge를 이룹니다. Next.js는 이 graph를 분석해 최적의 bundling과 code-splitting 전략을 결정합니다. 자세한 내용은 <a href="app-getting-started-server-and-client-components.html#reducing-js-bundle-size">Server and Client Components</a>를 참고하세요.</p><div class="en-orig"><p>A graph of file dependencies in your app. Each file (module) is a node, and import/export relationships form the edges. Next.js analyzes this graph to determine optimal bundling and code-splitting strategies. Learn more in <a href="app-getting-started-server-and-client-components.html#reducing-js-bundle-size">Server and Client Components</a>.</p></div>
+<h2 class="sec" id="metadata"><a class="anchor" href="#metadata">Metadata</a></h2>
+<p>title, description, Open Graph 이미지처럼 브라우저와 검색 엔진이 사용하는 page 정보입니다. Next.js에서는 layout 또는 page 파일에서 <a href="app-api-reference-functions-generate-metadata.html"><code>metadata</code> export</a>나 <a href="app-api-reference-functions-generate-metadata.html"><code>generateMetadata</code> function</a>을 사용해 metadata를 정의합니다. 자세한 내용은 <a href="app-getting-started-metadata-and-og-images.html">Metadata and OG Images</a>를 참고하세요.</p><div class="en-orig"><p>Information about a page used by browsers and search engines, such as title, description, and Open Graph images. In Next.js, define metadata using the <a href="app-api-reference-functions-generate-metadata.html"><code>metadata</code> export</a> or <a href="app-api-reference-functions-generate-metadata.html"><code>generateMetadata</code> function</a> in layout or page files. Learn more in <a href="app-getting-started-metadata-and-og-images.html">Metadata and OG Images</a>.</p></div>
+<h2 class="sec" id="memoization"><a class="anchor" href="#memoization">Memoization</a></h2>
+<p>function의 반환값을 cache해서, 하나의 render pass(request) 동안 같은 function을 여러 번 호출해도 한 번만 실행되게 하는 것입니다. Next.js에서는 URL과 option이 같은 <code>fetch</code> <code>GET</code> request가 Server Component, layout, page, <code>generateMetadata</code>/<code>generateStaticParams</code> 전반에서 자동으로 memoize됩니다(단, <a href="app-api-reference-file-conventions-route.html">Route Handlers</a>는 React component tree의 일부가 아니므로 제외됩니다).</p><div class="en-orig"><p>Caching the return value of a function so that calling the same function multiple times during a render pass (request) only executes it once. In Next.js, <code>fetch</code> <code>GET</code> requests with the same URL and options are automatically memoized across Server Components, layouts, pages, and <code>generateMetadata</code>/<code>generateStaticParams</code> (but not <a href="app-api-reference-file-conventions-route.html">Route Handlers</a> since they are not part of the React component tree).</p></div>
+<p><code>fetch</code>가 아닌 작업에는 React의 <a href="https://react.dev/reference/react/cache" target="_blank" rel="noopener"><code>cache</code></a> function을 사용하세요. 자세한 내용은 <a href="app-api-reference-functions-fetch.html"><code>fetch</code> API reference</a>를 참고하세요.</p><div class="en-orig"><p>For non-<code>fetch</code> operations, use the React <a href="https://react.dev/reference/react/cache" target="_blank" rel="noopener"><code>cache</code></a> function. Learn more in the <a href="app-api-reference-functions-fetch.html"><code>fetch</code> API reference</a>.</p></div>
+<h2 class="sec" id="middleware"><a class="anchor" href="#middleware">Middleware</a></h2>
+<p><a href="#proxy">Proxy</a>를 참고하세요.</p><div class="en-orig"><p>See <a href="#proxy">Proxy</a>.</p></div>
+<h2 class="sec" id="n"><a class="anchor" href="#n">N</a></h2>
+<h2 class="sec" id="navigation-stages"><a class="anchor" href="#navigation-stages">Navigation stages</a></h2>
+<p>client navigation 중에 server에서 render된 작업이 사용 가능해지는 시점들입니다. <a href="#partial-prefetching">Partial Prefetching</a>에서는 이 stage가 <a href="#app-shell">App Shell</a>, per-link prefetch, navigation입니다. 자세한 내용은 <a href="app-api-reference-file-conventions-route-segment-config-ensureStatic.html"><code>ensureStatic</code></a>, <a href="app-api-reference-functions-prefetch.html"><code>prefetch()</code></a>, <a href="app-api-reference-functions-navigation.html"><code>navigation()</code></a> API reference를 참고하세요.</p><div class="en-orig"><p>The points at which server-rendered work becomes available during a client navigation. With <a href="#partial-prefetching">Partial Prefetching</a>, the stages are the <a href="#app-shell">App Shell</a>, a per-link prefetch, and the navigation. Learn more in the <a href="app-api-reference-file-conventions-route-segment-config-ensureStatic.html"><code>ensureStatic</code></a>, <a href="app-api-reference-functions-prefetch.html"><code>prefetch()</code></a>, and <a href="app-api-reference-functions-navigation.html"><code>navigation()</code></a> API references.</p></div>
+<h2 class="sec" id="not-found"><a class="anchor" href="#not-found">Not Found</a></h2>
+<p>route가 존재하지 않거나 <a href="app-api-reference-functions-not-found.html"><code>notFound()</code> function</a>이 호출되었을 때 보여 주는 특별한 component입니다. app directory에 <a href="app-api-reference-file-conventions-not-found.html"><code>not-found.js</code> 파일</a>을 추가해서 만듭니다. 자세한 내용은 <a href="app-getting-started-error-handling.html#not-found">Error Handling</a>을 참고하세요.</p><div class="en-orig"><p>A special component shown when a route doesn't exist or when the <a href="app-api-reference-functions-not-found.html"><code>notFound()</code> function</a> is called. Created by adding a <a href="app-api-reference-file-conventions-not-found.html"><code>not-found.js</code> file</a> to your app directory. Learn more in <a href="app-getting-started-error-handling.html#not-found">Error Handling</a>.</p></div>
+<h2 class="sec" id="p"><a class="anchor" href="#p">P</a></h2>
+<h2 class="sec" id="private-folders"><a class="anchor" href="#private-folders">Private Folders</a></h2>
+<p>underscore prefix가 붙은 폴더(예: <code>_components</code>)로, routing 시스템에서 제외됩니다. 접근 가능한 route를 만들지 않고 코드 정리와 공유 utility를 위해 사용됩니다. 자세한 내용은 <a href="app-getting-started-project-structure.html#private-folders">Private Folders</a>를 참고하세요.</p><div class="en-orig"><p>Folders prefixed with an underscore (e.g., <code>_components</code>) that are excluded from the routing system. These folders are used for code organization and shared utilities without creating accessible routes. Learn more in <a href="app-getting-started-project-structure.html#private-folders">Private Folders</a>.</p></div>
+<h2 class="sec" id="page"><a class="anchor" href="#page">Page</a></h2>
+<p>하나의 route에만 고유한 UI입니다. <code>app</code> directory 안의 <a href="app-api-reference-file-conventions-page.html"><code>page.js</code> 파일</a>에서 React component를 export해서 정의합니다. 자세한 내용은 <a href="app-getting-started-layouts-and-pages.html">Layouts and Pages</a>를 참고하세요.</p><div class="en-orig"><p>UI that is unique to a route. Defined by exporting a React component from a <a href="app-api-reference-file-conventions-page.html"><code>page.js</code> file</a> within the <code>app</code> directory. Learn more in <a href="app-getting-started-layouts-and-pages.html">Layouts and Pages</a>.</p></div>
+<h2 class="sec" id="parallel-routes"><a class="anchor" href="#parallel-routes">Parallel Routes</a></h2>
+<p>같은 layout 안에서 여러 page를 동시에 또는 조건에 따라 render할 수 있게 해 주는 pattern입니다. <code>@folder</code> convention으로 named slot을 만들어 사용하며, dashboard, modal, 복잡한 layout에 유용합니다. 자세한 내용은 <a href="app-api-reference-file-conventions-parallel-routes.html">Parallel Routes</a>를 참고하세요.</p><div class="en-orig"><p>A pattern that allows simultaneously or conditionally rendering multiple pages within the same layout. Created using named slots with the <code>@folder</code> convention, useful for dashboards, modals, and complex layouts. Learn more in <a href="app-api-reference-file-conventions-parallel-routes.html">Parallel Routes</a>.</p></div>
+<h2 class="sec" id="partial-prefetching"><a class="anchor" href="#partial-prefetching">Partial Prefetching</a></h2>
+<p><a href="#cache-components">Cache Components</a> route를 위한 prefetching 전략으로, <code>&lt;Link&gt;</code>가 기본적으로 전체 page 대신 route별 <a href="#app-shell">App Shell</a>을 prefetch합니다. <code>next.config.ts</code>에서 <a href="app-api-reference-config-next-config-js-partialPrefetching.html"><code>partialPrefetching: true</code></a>로 활성화합니다. 자세한 내용은 <a href="app-guides-adopting-partial-prefetching.html">Adopting Partial Prefetching 가이드</a>를 참고하세요.</p><div class="en-orig"><p>A prefetching strategy for <a href="#cache-components">Cache Components</a> routes where a <code>&lt;Link&gt;</code> prefetches a per-route <a href="#app-shell">App Shell</a> by default instead of the full page. Enable it with <a href="app-api-reference-config-next-config-js-partialPrefetching.html"><code>partialPrefetching: true</code></a> in <code>next.config.ts</code>. Learn more in the <a href="app-guides-adopting-partial-prefetching.html">Adopting Partial Prefetching guide</a>.</p></div>
+<h2 class="sec" id="partial-prerendering-ppr"><a class="anchor" href="#partial-prerendering-ppr">Partial Prerendering (PPR)</a></h2>
+<p>하나의 route 안에서 prerendering과 dynamic rendering을 결합하는 rendering 최적화입니다. static shell은 즉시 제공되고 dynamic 콘텐츠는 준비되는 대로 stream되어, 두 rendering 전략의 장점을 모두 얻을 수 있습니다. 자세한 내용은 <a href="app-getting-started-caching.html">Cache Components</a>를 참고하세요.</p><div class="en-orig"><p>A rendering optimization that combines prerendering and dynamic rendering in a single route. The static shell is served immediately while dynamic content streams in when ready, providing the best of both rendering strategies. Learn more in <a href="app-getting-started-caching.html">Cache Components</a>.</p></div>
+<h2 class="sec" id="prefetching"><a class="anchor" href="#prefetching">Prefetching</a></h2>
+<p>사용자가 route로 이동하기 전에 background에서 그 route를 load하는 것입니다. Next.js는 <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code> component</a>로 연결된 route가 viewport에 들어오면 자동으로 prefetch하여, navigation이 즉각적으로 느껴지게 합니다. 자세한 내용은 <a href="app-guides-prefetching.html">Prefetching 가이드</a>를 참고하세요.</p><div class="en-orig"><p>Loading a route in the background before the user navigates to it. Next.js automatically prefetches routes linked with the <a href="app-api-reference-components-link.html"><code>&lt;Link&gt;</code> component</a> when they enter the viewport, making navigation feel instant. Learn more in the <a href="app-guides-prefetching.html">Prefetching guide</a>.</p></div>
+<h2 class="sec" id="prerendering"><a class="anchor" href="#prerendering">Prerendering</a></h2>
+<p>component가 <a href="#build-time">build time</a>에, 또는 <a href="#revalidation">revalidation</a> 중 background에서 render되는 것을 말합니다. 그 결과는 HTML과 <a href="#rsc-payload">RSC Payload</a>이며, cache되어 CDN에서 제공될 수 있습니다. <a href="#request-time-apis">Request-time APIs</a>를 사용하지 않는 component는 기본적으로 prerender됩니다.</p><div class="en-orig"><p>When a component is rendered at <a href="#build-time">build time</a> or in the background during <a href="#revalidation">revalidation</a>. The result is HTML and <a href="#rsc-payload">RSC Payload</a>, which can be cached and served from a CDN. Prerendering is the default for components that don't use <a href="#request-time-apis">Request-time APIs</a>.</p></div>
+<h2 class="sec" id="proxy"><a class="anchor" href="#proxy">Proxy</a></h2>
+<p>request가 완료되기 전에 server에서 코드를 실행하는 파일(<a href="app-api-reference-file-conventions-proxy.html"><code>proxy.js</code></a>)입니다. logging, redirect, rewrite 같은 server-side logic을 구현하는 데 사용됩니다. 이전에는 Middleware라고 불렸습니다. 자세한 내용은 <a href="app-getting-started-proxy.html">Proxy 가이드</a>를 참고하세요.</p><div class="en-orig"><p>A file (<a href="app-api-reference-file-conventions-proxy.html"><code>proxy.js</code></a>) that runs code on the server before request is completed. Used to implement server-side logic like logging, redirects, and rewrites. Formerly known as Middleware. Learn more in the <a href="app-getting-started-proxy.html">Proxy guide</a>.</p></div>
+<h2 class="sec" id="r"><a class="anchor" href="#r">R</a></h2>
+<h2 class="sec" id="redirect"><a class="anchor" href="#redirect">Redirect</a></h2>
+<p>사용자를 한 URL에서 다른 URL로 보내는 것입니다. Next.js에서 redirect는 <a href="app-api-reference-config-next-config-js-redirects.html"><code>next.config.js</code></a>에서 설정하거나, <a href="app-api-reference-file-conventions-proxy.html">Proxy</a>에서 반환하거나, <a href="app-api-reference-functions-redirect.html"><code>redirect()</code> function</a>으로 프로그래밍 방식으로 실행할 수 있습니다. 자세한 내용은 <a href="app-guides-redirecting.html">Redirecting</a>을 참고하세요.</p><div class="en-orig"><p>Sending users from one URL to another. In Next.js, redirects can be configured in <a href="app-api-reference-config-next-config-js-redirects.html"><code>next.config.js</code></a>, returned from <a href="app-api-reference-file-conventions-proxy.html">Proxy</a>, or triggered programmatically with the <a href="app-api-reference-functions-redirect.html"><code>redirect()</code> function</a>. Learn more in <a href="app-guides-redirecting.html">Redirecting</a>.</p></div>
+<h2 class="sec" id="request-time-apis"><a class="anchor" href="#request-time-apis">Request-time APIs</a></h2>
+<p>request별 data에 접근하는 function으로, component가 <a href="#dynamic-rendering">dynamic rendering</a>을 사용하게 만듭니다. 다음이 포함됩니다:</p><div class="en-orig"><p>Functions that access request-specific data, causing a component to opt into <a href="#dynamic-rendering">dynamic rendering</a>. These include:</p></div>
+<ul>
+<li><a href="app-api-reference-functions-cookies.html"><code>cookies()</code></a> - request cookie에 접근</li>
+<li><a href="app-api-reference-functions-headers.html"><code>headers()</code></a> - request header에 접근</li>
+<li><a href="app-api-reference-file-conventions-page.html#searchparams-optional"><code>searchParams</code></a> - URL query parameter에 접근</li>
+<li><a href="app-api-reference-functions-draft-mode.html"><code>draftMode()</code></a> - draft mode 활성화 또는 확인</li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-functions-cookies.html"><code>cookies()</code></a> - Access request cookies</li>
+<li><a href="app-api-reference-functions-headers.html"><code>headers()</code></a> - Access request headers</li>
+<li><a href="app-api-reference-file-conventions-page.html#searchparams-optional"><code>searchParams</code></a> - Access URL query parameters</li>
+<li><a href="app-api-reference-functions-draft-mode.html"><code>draftMode()</code></a> - Enable or check draft mode</li>
+</ul></div>
+<h2 class="sec" id="runtime-rendering"><a class="anchor" href="#runtime-rendering">Runtime rendering</a></h2>
+<p><a href="#dynamic-rendering">Dynamic rendering</a>을 참고하세요.</p><div class="en-orig"><p>See <a href="#dynamic-rendering">Dynamic rendering</a>.</p></div>
+<h2 class="sec" id="revalidation"><a class="anchor" href="#revalidation">Revalidation</a></h2>
+<p>cache된 data를 업데이트하는 과정입니다. time-based(<a href="app-api-reference-functions-cacheLife.html"><code>cacheLife()</code></a>로 cache 기간 설정) 또는 on-demand(<a href="app-api-reference-functions-cacheTag.html"><code>cacheTag()</code></a>로 data에 tag를 붙인 뒤 <a href="app-api-reference-functions-updateTag.html"><code>updateTag()</code></a>로 invalidate) 방식으로 할 수 있습니다. 자세한 내용은 <a href="app-getting-started-caching.html">Caching and Revalidating</a>을 참고하세요.</p><div class="en-orig"><p>The process of updating cached data. Can be time-based (using <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife()</code></a> to set cache duration) or on-demand (using <a href="app-api-reference-functions-cacheTag.html"><code>cacheTag()</code></a> to tag data, then <a href="app-api-reference-functions-updateTag.html"><code>updateTag()</code></a> to invalidate). Learn more in <a href="app-getting-started-caching.html">Caching and Revalidating</a>.</p></div>
+<h2 class="sec" id="rewrite"><a class="anchor" href="#rewrite">Rewrite</a></h2>
+<p>브라우저의 URL은 바꾸지 않고, 들어오는 request path를 다른 destination path로 mapping하는 것입니다. <a href="app-api-reference-config-next-config-js-rewrites.html"><code>next.config.js</code></a>에서 설정하거나 <a href="app-api-reference-file-conventions-proxy.html">Proxy</a>에서 반환합니다. 외부 서비스나 legacy URL로 proxy할 때 유용합니다.</p><div class="en-orig"><p>Mapping an incoming request path to a different destination path without changing the URL in the browser. Configured in <a href="app-api-reference-config-next-config-js-rewrites.html"><code>next.config.js</code></a> or returned from <a href="app-api-reference-file-conventions-proxy.html">Proxy</a>. Useful for proxying to external services or legacy URLs.</p></div>
+<h2 class="sec" id="route-groups"><a class="anchor" href="#route-groups">Route Groups</a></h2>
+<p>URL 구조에 영향을 주지 않고 route를 정리하는 방법입니다. 폴더 이름을 괄호로 감싸서(예: <code>(marketing)</code>) 만들며, route group은 관련된 route를 정리하고 group별 <a href="#layout">layout</a>을 사용할 수 있게 해 줍니다. 자세한 내용은 <a href="app-api-reference-file-conventions-route-groups.html">Route Groups</a>를 참고하세요.</p><div class="en-orig"><p>A way to organize routes without affecting the URL structure. Created by wrapping a folder name in parentheses (e.g., <code>(marketing)</code>), route groups help organize related routes and enable per-group <a href="#layout">layouts</a>. Learn more in <a href="app-api-reference-file-conventions-route-groups.html">Route Groups</a>.</p></div>
+<h2 class="sec" id="route-handler"><a class="anchor" href="#route-handler">Route Handler</a></h2>
+<p>특정 route의 HTTP request를 처리하는 function으로, <a href="app-api-reference-file-conventions-route.html"><code>route.js</code> 파일</a>에 정의합니다. Route Handler는 Web Request와 Response API를 사용하며 <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>, <code>HEAD</code>, <code>OPTIONS</code> method를 처리할 수 있습니다. 자세한 내용은 <a href="app-getting-started-route-handlers.html">Route Handlers</a>를 참고하세요.</p><div class="en-orig"><p>A function that handles HTTP requests for a specific route, defined in a <a href="app-api-reference-file-conventions-route.html"><code>route.js</code> file</a>. Route Handlers use the Web Request and Response APIs and can handle <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code>, <code>DELETE</code>, <code>HEAD</code>, and <code>OPTIONS</code> methods. Learn more in <a href="app-getting-started-route-handlers.html">Route Handlers</a>.</p></div>
+<h2 class="sec" id="route-segment"><a class="anchor" href="#route-segment">Route Segment</a></h2>
+<p><code>app</code> directory의 폴더로 정의되는 URL path의 한 부분(두 slash 사이)입니다. 각 폴더는 URL 구조에서 하나의 segment를 나타냅니다. 자세한 내용은 <a href="app-getting-started-project-structure.html">Project Structure</a>를 참고하세요.</p><div class="en-orig"><p>A part of the URL path (between two slashes) defined by a folder in the <code>app</code> directory. Each folder represents a segment in the URL structure. Learn more in <a href="app-getting-started-project-structure.html">Project Structure</a>.</p></div>
+<h2 class="sec" id="rsc-payload"><a class="anchor" href="#rsc-payload">RSC Payload</a></h2>
+<p>React Server Component Payload는 render된 React Server Components tree를 압축된 binary로 표현한 것입니다. Server Component의 render 결과, Client Component를 위한 placeholder, 그리고 그 사이에 전달되는 props가 들어 있습니다. 자세한 내용은 <a href="app-getting-started-server-and-client-components.html#how-do-server-and-client-components-work-in-nextjs">Server and Client Components</a>를 참고하세요.</p><div class="en-orig"><p>The React Server Component Payload is a compact binary representation of the rendered React Server Components tree. It contains the rendered result of Server Components, placeholders for Client Components, and props passed between them. Learn more in <a href="app-getting-started-server-and-client-components.html#how-do-server-and-client-components-work-in-nextjs">Server and Client Components</a>.</p></div>
+<h2 class="sec" id="s"><a class="anchor" href="#s">S</a></h2>
+<h2 class="sec" id="server-component"><a class="anchor" href="#server-component">Server Component</a></h2>
+<p>App Router의 기본 component type입니다. Server Component는 server에서 render되고, data를 직접 fetch할 수 있으며, client JavaScript bundle에 추가되지 않습니다. state나 browser API는 사용할 수 없습니다. 자세한 내용은 <a href="app-getting-started-server-and-client-components.html">Server and Client Components</a>를 참고하세요.</p><div class="en-orig"><p>The default component type in the App Router. Server Components render on the server, can fetch data directly, and don't add to the client JavaScript bundle. They cannot use state or browser APIs. Learn more in <a href="app-getting-started-server-and-client-components.html">Server and Client Components</a>.</p></div>
+<h2 class="sec" id="server-action"><a class="anchor" href="#server-action">Server Action</a></h2>
+<p>Client Component에 prop으로 전달되거나 form action에 bind된 <a href="#server-function">Server Function</a>입니다. Server Action은 주로 form 제출과 data mutation에 사용됩니다. 자세한 내용은 <a href="app-guides-server-actions.html">Server Actions and Mutations</a>를 참고하세요.</p><div class="en-orig"><p>A <a href="#server-function">Server Function</a> that is passed to a Client Component as a prop or bound to a form action. Server Actions are commonly used for form submissions and data mutations. Learn more in <a href="app-guides-server-actions.html">Server Actions and Mutations</a>.</p></div>
+<h2 class="sec" id="server-function"><a class="anchor" href="#server-function">Server Function</a></h2>
+<p><a href="app-api-reference-directives-use-server.html"><code>&quot;use server&quot;</code> directive</a>로 표시되어 server에서 실행되는 asynchronous function입니다. Server Function은 Client Component에서 호출할 수 있습니다. Client Component에 prop으로 전달되거나 form action에 bind되면 <a href="#server-action">Server Action</a>이라고 부릅니다. 자세한 내용은 <a href="https://react.dev/reference/rsc/server-functions" target="_blank" rel="noopener">React Server Functions</a>를 참고하세요.</p><div class="en-orig"><p>An asynchronous function that runs on the server, marked with the <a href="app-api-reference-directives-use-server.html"><code>&quot;use server&quot;</code> directive</a>. Server Functions can be invoked from Client Components. When passed as a prop to a Client Component or bound to a form action, they are called <a href="#server-action">Server Actions</a>. Learn more in <a href="https://react.dev/reference/rsc/server-functions" target="_blank" rel="noopener">React Server Functions</a>.</p></div>
+<h2 class="sec" id="static-export"><a class="anchor" href="#static-export">Static Export</a></h2>
+<p>HTML, CSS, JavaScript 파일로 이루어진 완전한 static 사이트를 생성하는 deployment mode입니다. <code>next.config.js</code>에서 <code>output: &#x27;export&#x27;</code>를 설정해 활성화합니다. static export는 Node.js server 없이 어떤 static file server에서도 hosting할 수 있습니다. 자세한 내용은 <a href="app-guides-static-exports.html">Static Exports</a>를 참고하세요.</p><div class="en-orig"><p>A deployment mode that generates a fully static site with HTML, CSS, and JavaScript files. Enabled by setting <code>output: &#x27;export&#x27;</code> in <code>next.config.js</code>. Static exports can be hosted on any static file server without a Node.js server. Learn more in <a href="app-guides-static-exports.html">Static Exports</a>.</p></div>
+<h2 class="sec" id="static-rendering"><a class="anchor" href="#static-rendering">Static rendering</a></h2>
+<p><a href="#prerendering">Prerendering</a>을 참고하세요.</p><div class="en-orig"><p>See <a href="#prerendering">Prerendering</a>.</p></div>
+<h2 class="sec" id="static-assets"><a class="anchor" href="#static-assets">Static Assets</a></h2>
+<p>이미지, font, 동영상 및 기타 media처럼 별도 처리 없이 그대로 제공되는 파일입니다. static asset은 보통 <code>public</code> directory에 저장하고 상대 경로로 참조합니다. 자세한 내용은 <a href="app-api-reference-file-conventions-public-folder.html">Static Assets</a>를 참고하세요.</p><div class="en-orig"><p>Files such as images, fonts, videos, and other media that are served directly without processing. Static assets are typically stored in the <code>public</code> directory and referenced by their relative paths. Learn more in <a href="app-api-reference-file-conventions-public-folder.html">Static Assets</a>.</p></div>
+<h2 class="sec" id="static-shell"><a class="anchor" href="#static-shell">Static Shell</a></h2>
+<p>브라우저에 즉시 제공되는, prerender된 page의 HTML 구조입니다. <a href="#partial-prerendering-ppr">Partial Prerendering</a>에서 static shell은 static하게 render 가능한 모든 콘텐츠와, 나중에 stream되는 dynamic 콘텐츠를 위한 <a href="#suspense-boundary">Suspense boundary</a> fallback을 포함합니다.</p><div class="en-orig"><p>The prerendered HTML structure of a page that's served immediately to the browser. With <a href="#partial-prerendering-ppr">Partial Prerendering</a>, the static shell includes all statically renderable content plus <a href="#suspense-boundary">Suspense boundary</a> fallbacks for dynamic content that streams in later.</p></div>
+<h2 class="sec" id="streaming"><a class="anchor" href="#streaming">Streaming</a></h2>
+<p>전체 page가 render될 때까지 기다리지 않고, page의 각 부분이 준비되는 대로 server가 client에 보낼 수 있게 해 주는 기법입니다. <a href="app-api-reference-file-conventions-loading.html"><code>loading.js</code></a>나 직접 작성한 <code>&lt;Suspense&gt;</code> boundary로 자동 활성화됩니다. 자세한 내용은 <a href="app-guides-streaming.html">Streaming 가이드</a>를 참고하세요.</p><div class="en-orig"><p>A technique that allows the server to send parts of a page to the client as they become ready, rather than waiting for the entire page to render. Enabled automatically with <a href="app-api-reference-file-conventions-loading.html"><code>loading.js</code></a> or manual <code>&lt;Suspense&gt;</code> boundaries. Learn more in the <a href="app-guides-streaming.html">Streaming guide</a>.</p></div>
+<h2 class="sec" id="suspense-boundary"><a class="anchor" href="#suspense-boundary">Suspense boundary</a></h2>
+<p>async 콘텐츠를 감싸고, load되는 동안 fallback UI를 보여 주는 React <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> component입니다. Next.js에서 Suspense boundary는 <a href="#static-shell">static shell</a>이 끝나고 <a href="#streaming">streaming</a>이 시작되는 지점을 정의하여 <a href="#partial-prerendering-ppr">Partial Prerendering</a>을 가능하게 합니다.</p><div class="en-orig"><p>A React <a href="https://react.dev/reference/react/Suspense" target="_blank" rel="noopener"><code>&lt;Suspense&gt;</code></a> component that wraps async content and displays fallback UI while it loads. In Next.js, Suspense boundaries define where the <a href="#static-shell">static shell</a> ends and <a href="#streaming">streaming</a> begins, enabling <a href="#partial-prerendering-ppr">Partial Prerendering</a>.</p></div>
+<h2 class="sec" id="t"><a class="anchor" href="#t">T</a></h2>
+<h2 class="sec" id="turbopack"><a class="anchor" href="#turbopack">Turbopack</a></h2>
+<p>Next.js를 위해 만들어진 빠른 Rust 기반 bundler입니다. Turbopack은 <code>next dev</code>의 기본 bundler이며 <code>next build</code>에서도 사용할 수 있습니다. Webpack보다 compile 시간이 훨씬 빠릅니다. 자세한 내용은 <a href="app-api-reference-turbopack.html">Turbopack</a>을 참고하세요.</p><div class="en-orig"><p>A fast, Rust-based bundler built for Next.js. Turbopack is the default bundler for <code>next dev</code> and available for <code>next build</code>. It provides significantly faster compilation times compared to Webpack. Learn more in <a href="app-api-reference-turbopack.html">Turbopack</a>.</p></div>
+<h2 class="sec" id="tree-shaking"><a class="anchor" href="#tree-shaking">Tree Shaking</a></h2>
+<p>build 과정에서 JavaScript bundle의 사용되지 않는 코드를 제거하는 과정입니다. Next.js는 bundle 크기를 줄이기 위해 코드를 자동으로 tree-shake합니다. 자세한 내용은 <a href="app-guides-package-bundling.html">Package Bundling 가이드</a>를 참고하세요.</p><div class="en-orig"><p>The process of removing unused code from your JavaScript bundles during the build process. Next.js automatically tree-shakes your code to reduce bundle sizes. Learn more in the <a href="app-guides-package-bundling.html">Package Bundling guide</a>.</p></div>
+<h2 class="sec" id="u"><a class="anchor" href="#u">U</a></h2>
+<h2 class="sec" id="url-data"><a class="anchor" href="#url-data">URL data</a></h2>
+<p>pathname이나 query parameter처럼 특정 URL을 식별하는 data입니다. App Router에서는 <a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code></a>와 <a href="app-api-reference-file-conventions-page.html#searchparams-optional"><code>searchParams</code></a>, 그리고 이를 읽는 <a href="app-api-reference-functions-use-pathname.html"><code>usePathname</code></a>, <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams</code></a> 같은 client hook을 의미합니다. URL data는 session이 아니라 link마다 달라지므로, 공유되는 <a href="#app-shell">App Shell</a>의 일부가 될 수 없습니다.</p><div class="en-orig"><p>Data that identifies a specific URL, such as the pathname and query parameters. In the App Router this means <a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code></a> and <a href="app-api-reference-file-conventions-page.html#searchparams-optional"><code>searchParams</code></a>, and the client hooks that read them like <a href="app-api-reference-functions-use-pathname.html"><code>usePathname</code></a> and <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams</code></a>. URL data varies per link, not per session, so it can't be part of a shared <a href="#app-shell">App Shell</a>.</p></div>
+<h2 class="sec" id="use-cache-directive"><a class="anchor" href="#use-cache-directive"><code>&quot;use cache&quot;</code> Directive</a></h2>
+<p>component나 function을 cache 가능한 것으로 표시하는 directive입니다. 파일 맨 위에 두면 그 파일의 모든 export가 cache 가능함을 나타내고, function이나 component 맨 위에 inline으로 두면 해당 scope만 cache 가능하도록 표시합니다. 자세한 내용은 <a href="app-api-reference-directives-use-cache.html"><code>&quot;use cache&quot;</code> reference</a>를 참고하세요.</p><div class="en-orig"><p>A directive that marks a component or function as cacheable. It can be placed at the top of a file to indicate that all exports in the file are cacheable, or inline at the top of a function or component to mark that specific scope as cacheable. Learn more in the <a href="app-api-reference-directives-use-cache.html"><code>&quot;use cache&quot;</code> reference</a>.</p></div>
+<h2 class="sec" id="use-client-directive"><a class="anchor" href="#use-client-directive"><code>&quot;use client&quot;</code> Directive</a></h2>
+<p>server 코드와 client 코드의 경계를 표시하는 특별한 React directive입니다. 반드시 파일 맨 위, 모든 import나 다른 코드보다 앞에 두어야 합니다. React Component, helper function, 변수 선언, 그리고 import된 모든 dependency가 <a href="#client-bundles">client bundle</a>에 포함되어야 함을 나타냅니다. 자세한 내용은 <a href="app-api-reference-directives-use-client.html"><code>&quot;use client&quot;</code> reference</a>를 참고하세요.</p><div class="en-orig"><p>A special React directive that marks the boundary between server and client code. It must be placed at the top of a file, before any imports or other code. It indicates that React Components, helper functions, variable declarations, and all imported dependencies should be included in the <a href="#client-bundles">client bundle</a>. Learn more in the <a href="app-api-reference-directives-use-client.html"><code>&quot;use client&quot;</code> reference</a>.</p></div>
+<h2 class="sec" id="use-server-directive"><a class="anchor" href="#use-server-directive"><code>&quot;use server&quot;</code> Directive</a></h2>
+<p>function을 client-side 코드에서 호출할 수 있는 <a href="#server-function">Server Function</a>으로 표시하는 directive입니다. 파일 맨 위에 두면 그 파일의 모든 export가 Server Function임을 나타내고, function 맨 위에 inline으로 두면 해당 function만 표시합니다. 자세한 내용은 <a href="app-api-reference-directives-use-server.html"><code>&quot;use server&quot;</code> reference</a>를 참고하세요.</p><div class="en-orig"><p>A directive that marks a function as a <a href="#server-function">Server Function</a> that can be called from client-side code. It can be placed at the top of a file to indicate that all exports in the file are Server Functions, or inline at the top of a function to mark that specific function. Learn more in the <a href="app-api-reference-directives-use-server.html"><code>&quot;use server&quot;</code> reference</a>.</p></div>
+<h2 class="sec" id="v"><a class="anchor" href="#v">V</a></h2>
+<h2 class="sec" id="version-skew"><a class="anchor" href="#version-skew">Version skew</a></h2>
+<p>애플리케이션의 새 버전이 deploy된 후에도, 여전히 활성 상태인 client는 이전 build의 JavaScript, CSS, data를 참조할 수 있습니다. 이렇게 client와 server 버전이 어긋나는 것을 version skew라고 하며, asset 누락, Server Action error, navigation 실패를 일으킬 수 있습니다. Next.js는 <a href="app-api-reference-config-next-config-js-deploymentId.html"><code>deploymentId</code></a>를 사용해 version skew를 감지하고 처리합니다. 자세한 내용은 <a href="app-guides-self-hosting.html#version-skew">Self-Hosting - Version Skew</a>를 참고하세요.</p><div class="en-orig"><p>After a new version of your application is deployed, clients that are still active may reference JavaScript, CSS, or data from an older build. This mismatch between client and server versions is called version skew, and it can cause missing assets, Server Action errors, and navigation failures. Next.js uses <a href="app-api-reference-config-next-config-js-deploymentId.html"><code>deploymentId</code></a> to detect and handle version skew. Learn more in <a href="app-guides-self-hosting.html#version-skew">Self-Hosting - Version Skew</a>.</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/04-glossary.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/glossary" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-turbopack.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Turbopack</div><div class="ttl-ko">Turbopack</div></a>
+      <a href="architecture.html" class="next"><div class="dir">다음 →</div><div class="ttl">Architecture</div><div class="ttl-ko">아키텍처</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/glossary" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#app-router">App Router</a></li><li class="l2"><a href="#app-shell">App Shell</a></li><li class="l2"><a href="#build-time">Build time</a></li><li class="l2"><a href="#cache-components">Cache Components</a></li><li class="l2"><a href="#catch-all-segments">Catch-all Segments</a></li><li class="l2"><a href="#client-bundles">Client Bundles</a></li><li class="l2"><a href="#client-component">Client Component</a></li><li class="l2"><a href="#client-side-navigation">Client-side navigation</a></li><li class="l2"><a href="#client-cache">Client Cache</a></li><li class="l2"><a href="#code-splitting">Code Splitting</a></li><li class="l2"><a href="#dynamic-rendering">Dynamic rendering</a></li><li class="l2"><a href="#dynamic-route-segments">Dynamic route segments</a></li><li class="l2"><a href="#environment-variables">Environment Variables</a></li><li class="l2"><a href="#error-boundary">Error Boundary</a></li><li class="l2"><a href="#font-optimization">Font Optimization</a></li><li class="l2"><a href="#file-system-caching">File-system caching</a></li><li class="l2"><a href="#hydration">Hydration</a></li><li class="l2"><a href="#import-aliases">Import Aliases</a></li><li class="l2"><a href="#incremental-static-regeneration-isr">Incremental Static Regeneration (ISR)</a></li><li class="l2"><a href="#intercepting-routes">Intercepting Routes</a></li><li class="l2"><a href="#image-optimization">Image Optimization</a></li><li class="l2"><a href="#layout">Layout</a></li><li class="l2"><a href="#loading-ui">Loading UI</a></li><li class="l2"><a href="#module-graph">Module Graph</a></li><li class="l2"><a href="#metadata">Metadata</a></li><li class="l2"><a href="#memoization">Memoization</a></li><li class="l2"><a href="#middleware">Middleware</a></li><li class="l2"><a href="#navigation-stages">Navigation stages</a></li><li class="l2"><a href="#not-found">Not Found</a></li><li class="l2"><a href="#private-folders">Private Folders</a></li><li class="l2"><a href="#page">Page</a></li><li class="l2"><a href="#parallel-routes">Parallel Routes</a></li><li class="l2"><a href="#partial-prefetching">Partial Prefetching</a></li><li class="l2"><a href="#partial-prerendering-ppr">Partial Prerendering (PPR)</a></li><li class="l2"><a href="#prefetching">Prefetching</a></li><li class="l2"><a href="#prerendering">Prerendering</a></li><li class="l2"><a href="#proxy">Proxy</a></li><li class="l2"><a href="#redirect">Redirect</a></li><li class="l2"><a href="#request-time-apis">Request-time APIs</a></li><li class="l2"><a href="#runtime-rendering">Runtime rendering</a></li><li class="l2"><a href="#revalidation">Revalidation</a></li><li class="l2"><a href="#rewrite">Rewrite</a></li><li class="l2"><a href="#route-groups">Route Groups</a></li><li class="l2"><a href="#route-handler">Route Handler</a></li><li class="l2"><a href="#route-segment">Route Segment</a></li><li class="l2"><a href="#rsc-payload">RSC Payload</a></li><li class="l2"><a href="#server-component">Server Component</a></li><li class="l2"><a href="#server-action">Server Action</a></li><li class="l2"><a href="#server-function">Server Function</a></li><li class="l2"><a href="#static-export">Static Export</a></li><li class="l2"><a href="#static-rendering">Static rendering</a></li><li class="l2"><a href="#static-assets">Static Assets</a></li><li class="l2"><a href="#static-shell">Static Shell</a></li><li class="l2"><a href="#streaming">Streaming</a></li><li class="l2"><a href="#suspense-boundary">Suspense boundary</a></li><li class="l2"><a href="#turbopack">Turbopack</a></li><li class="l2"><a href="#tree-shaking">Tree Shaking</a></li><li class="l2"><a href="#url-data">URL data</a></li><li class="l2"><a href="#use-cache-directive"><code>&quot;use cache&quot;</code> Directive</a></li><li class="l2"><a href="#use-client-directive"><code>&quot;use client&quot;</code> Directive</a></li><li class="l2"><a href="#use-server-directive"><code>&quot;use server&quot;</code> Directive</a></li><li class="l2"><a href="#version-skew">Version skew</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+이 용어 사전은 routing, rendering, caching 관련 용어를 포함해 Next.js 문서 전반에서 쓰이는 일반적인 용어를 정의합니다.
+
+# A
+
+## App Router
+
+version 13에서 도입된 Next.js router로, React Server Components 위에 만들어졌습니다. file-system 기반 routing을 사용하며 layout, nested routing, loading state, error handling 등을 지원합니다. 자세한 내용은 [App Router 문서](/docs/app)를 참고하세요.
+
+## App Shell
+
+page에서 URL data에 의존하지 않는 부분을 담은 route별 prerender입니다. cache된 콘텐츠는 [`stale`](/docs/app/api-reference/functions/cacheLife#stale) 시간이 5분 이상일 때 포함됩니다. shell은 수명이 짧은 콘텐츠가 fresh 상태로 유지되는 시간보다 더 오래 재사용되기 때문입니다. `cookies()`나 `headers()`를 읽는 route는 session data까지 포함한 shell을 만들며, 이는 client에서 session별로 cache됩니다. client navigation 중 기본 prefetch payload로, [per-link prefetch](/docs/app/guides/optimizing-prefetching)가 준비되지 않았을 때의 loading state로, 그리고 [ISR with Cache Components](/docs/app/guides/incremental-static-regeneration-cache-components)의 fallback으로 사용됩니다.
+
+# B
+
+## Build time || 빌드 타임
+
+애플리케이션이 compile되는 단계입니다. build time 동안 Next.js는 코드를 production용 최적화 파일로 변환하고, static page를 생성하며, deploy를 위한 asset을 준비합니다. [`next build` CLI reference](/docs/app/api-reference/cli/next#next-build-options)를 참고하세요.
+
+# C
+
+## Cache Components
+
+[`&quot;use cache&quot;` directive](/docs/app/api-reference/directives/use-cache)를 사용해 component 단위와 function 단위의 caching을 가능하게 하는 기능입니다. Cache Components를 사용하면 즉시 제공되는 static HTML shell을 prerender하고, dynamic 콘텐츠는 준비되는 대로 stream되게 하여 하나의 route 안에서 static, cached, dynamic 콘텐츠를 섞어 쓸 수 있습니다. [`cacheLife()`](/docs/app/api-reference/functions/cacheLife)로 cache 기간을 설정하고, [`cacheTag()`](/docs/app/api-reference/functions/cacheTag)로 cache된 data에 tag를 붙이며, [`updateTag()`](/docs/app/api-reference/functions/updateTag)로 on-demand invalidate를 할 수 있습니다. 자세한 내용은 [Cache Components 가이드](/docs/app/getting-started/caching)를 참고하세요.
+
+## Catch-all Segments
+
+`[...folder]/page.js` 문법을 사용해 여러 URL 부분과 match될 수 있는 dynamic route segment입니다. 이 segment는 남은 모든 URL segment를 capture하며, 문서 사이트나 file browser 같은 기능을 구현할 때 유용합니다. 자세한 내용은 [Dynamic Route Segments](/docs/app/api-reference/file-conventions/dynamic-routes#catch-all-segments)를 참고하세요.
+
+## Client Bundles
+
+브라우저로 전송되는 JavaScript bundle입니다. Next.js는 초기 payload 크기를 줄이고 각 page에 필요한 코드만 load하기 위해 [module graph](#module-graph)를 기반으로 bundle을 자동으로 분할합니다.
+
+## Client Component
+
+브라우저에서 실행되는 React component입니다. Next.js에서 Client Component는 초기 page 생성 중에 server에서도 render될 수 있습니다. state, effect, event handler, browser API를 사용할 수 있으며, 파일 맨 위의 [`&quot;use client&quot;` directive](#use-client-directive)로 표시합니다. 자세한 내용은 [Server and Client Components](/docs/app/getting-started/server-and-client-components)를 참고하세요.
+
+## Client-side navigation
+
+전체 page를 다시 load하지 않고 page 콘텐츠를 동적으로 업데이트하는 navigation 기법입니다. Next.js는 [`&lt;Link&gt;` component](/docs/app/api-reference/components/link)로 client-side navigation을 수행하며, 공유 layout을 interactive 상태로 유지하고 browser state를 보존합니다. 자세한 내용은 [Linking and Navigating](/docs/app/getting-started/linking-and-navigating#client-side-transitions)을 참고하세요.
+
+## Client Cache
+
+방문했거나 prefetch된 route의 [RSC Payload](#rsc-payload)를 저장하는 브라우저의 in-memory cache입니다. [client-side navigation](#client-side-navigation) 중에 Next.js는 cache된 [layout](#layout)과 [loading state](#loading-ui)를 server request 없이 즉시 제공합니다. page는 기본적으로 cache되지 않지만, 브라우저의 뒤로/앞으로 가기 navigation 중에는 재사용됩니다.
+
+client cache는 page를 새로고침하면 지워집니다. [`revalidateTag`](/docs/app/api-reference/functions/revalidateTag), [`revalidatePath`](/docs/app/api-reference/functions/revalidatePath), [`updateTag`](/docs/app/api-reference/functions/updateTag), [`router.refresh`](/docs/app/api-reference/functions/use-router), [`cookies.set`](/docs/app/api-reference/functions/cookies), [`cookies.delete`](/docs/app/api-reference/functions/cookies)로 프로그래밍 방식으로 invalidate할 수도 있습니다.
+
+client cache 기간은 [`staleTimes`](/docs/app/api-reference/config/next-config-js/staleTimes)로 전역 설정하거나, [`cacheLife`](/docs/app/api-reference/functions/cacheLife#client-cache-behavior)의 `stale` property로 route별로 설정할 수 있습니다(권장).
+
+## Code Splitting
+
+애플리케이션을 route 기준으로 더 작은 JavaScript chunk로 나누는 과정입니다. 모든 코드를 미리 load하는 대신 현재 route에 필요한 코드만 load하므로 초기 load 시간이 줄어듭니다. Next.js는 route를 기준으로 code splitting을 자동으로 수행합니다. 자세한 내용은 [Package Bundling 가이드](/docs/app/guides/package-bundling)를 참고하세요.
+
+# D
+
+## Dynamic rendering
+
+component가 [build time](#build-time)이 아니라 request time에 render되는 것을 말합니다. component는 [Request-time APIs](#request-time-apis)를 사용하면 dynamic이 됩니다.
+
+## Dynamic route segments
+
+request time에 data로부터 생성되는 [route segment](#route-segment)입니다. 폴더 이름을 대괄호로 감싸서(예: `[slug]`) 만들며, blog post나 product page 같은 dynamic data로 route를 만들 수 있게 해 줍니다. 자세한 내용은 [Dynamic Route Segments](/docs/app/api-reference/file-conventions/dynamic-routes)를 참고하세요.
+
+# E
+
+## Environment Variables
+
+build time 또는 request time에 접근할 수 있는 configuration 값입니다. Next.js에서 `NEXT_PUBLIC_` prefix가 붙은 변수는 브라우저에 노출되고, 나머지는 server-side에서만 사용할 수 있습니다. 자세한 내용은 [Environment Variables](/docs/app/guides/environment-variables)를 참고하세요.
+
+## Error Boundary
+
+자식 component tree에서 발생한 JavaScript error를 잡아 fallback UI를 보여 주는 React component입니다. Next.js에서는 [`error.js` 파일](/docs/app/api-reference/file-conventions/error)을 만들면 route segment를 error boundary로 자동으로 감쌉니다. 자세한 내용은 [Error Handling](/docs/app/getting-started/error-handling)을 참고하세요.
+
+# F
+
+## Font Optimization
+
+[`next/font`](/docs/app/api-reference/components/font)를 사용한 자동 font 최적화입니다. Next.js는 font를 self-host하고, layout shift를 없애며, performance를 위한 best practice를 적용합니다. Google Fonts와 local font 파일 모두에서 동작합니다. 자세한 내용은 [Fonts](/docs/app/getting-started/fonts)를 참고하세요.
+
+## File-system caching
+
+실행 사이에 compiler artifact를 disk에 저장하는 Turbopack 기능으로, `next dev`나 `next build` command 간의 작업을 줄여 compile 시간을 크게 단축합니다. 자세한 내용은 [Turbopack FileSystem Caching](/docs/app/api-reference/config/next-config-js/turbopackFileSystemCache)을 참고하세요.
+
+# H
+
+## Hydration
+
+server에서 render된 static HTML을 interactive하게 만들기 위해 React가 DOM에 event handler를 연결하는 과정입니다. hydration 중에 React는 server에서 render된 markup과 client-side JavaScript를 reconcile합니다. 자세한 내용은 [Server and Client Components](/docs/app/getting-started/server-and-client-components#how-do-server-and-client-components-work-in-nextjs)를 참고하세요.
+
+# I
+
+## Import Aliases
+
+자주 쓰는 directory를 짧게 참조할 수 있게 해 주는 custom path mapping입니다. import alias는 relative import의 복잡함을 줄이고 코드를 더 읽기 쉽고 유지보수하기 좋게 만듭니다. 자세한 내용은 [Absolute Imports and Module Path Aliases](/docs/app/getting-started/installation#set-up-absolute-imports-and-module-path-aliases)를 참고하세요.
+
+## Incremental Static Regeneration (ISR)
+
+전체 사이트를 다시 build하지 않고 static 콘텐츠를 업데이트할 수 있게 해 주는 기법입니다. ISR을 사용하면 page 단위로 static generation을 사용하면서, traffic이 들어올 때 background에서 page를 revalidate할 수 있습니다. 자세한 내용은 [ISR 가이드](/docs/app/guides/incremental-static-regeneration)를, Cache Components를 사용한다면 [ISR with Cache Components](/docs/app/guides/incremental-static-regeneration-cache-components)를 참고하세요.
+
+&gt; **Good to know**: Next.js에서 ISR은 [Revalidation](#revalidation)이라고도 불립니다.
+
+## Intercepting Routes
+
+애플리케이션의 다른 부분에 있는 route를 현재 layout 안에서 load할 수 있게 해 주는 routing pattern입니다. URL을 공유 가능한 상태로 유지하면서, 사용자가 context를 전환하지 않고도 콘텐츠(예: modal)를 보여 줄 때 유용합니다. 자세한 내용은 [Intercepting Routes](/docs/app/api-reference/file-conventions/intercepting-routes)를 참고하세요.
+
+## Image Optimization
+
+[`&lt;Image&gt;` component](/docs/app/api-reference/components/image)를 사용한 자동 이미지 최적화입니다. Next.js는 이미지를 on-demand로 최적화하고, WebP 같은 최신 형식으로 제공하며, lazy loading과 responsive sizing을 자동으로 처리합니다. 자세한 내용은 [Images](/docs/app/getting-started/images)를 참고하세요.
+
+# L
+
+## Layout
+
+여러 page가 공유하는 UI입니다. layout은 state를 보존하고, interactive 상태를 유지하며, navigation 시 다시 render되지 않습니다. [`layout.js` 파일](/docs/app/api-reference/file-conventions/layout)에서 React component를 export해서 정의합니다. 자세한 내용은 [Layouts and Pages](/docs/app/getting-started/layouts-and-pages)를 참고하세요.
+
+## Loading UI
+
+[route segment](#route-segment)가 load되는 동안 보여 주는 fallback UI입니다. 폴더에 [`loading.js` 파일](/docs/app/api-reference/file-conventions/loading)을 추가해서 만들며, 이 파일은 page를 [Suspense boundary](#suspense-boundary)로 자동으로 감쌉니다. 자세한 내용은 [Loading UI](/docs/app/api-reference/file-conventions/loading)를 참고하세요.
+
+# M
+
+## Module Graph
+
+앱의 파일 dependency를 나타내는 graph입니다. 각 파일(module)이 node이고, import/export 관계가 edge를 이룹니다. Next.js는 이 graph를 분석해 최적의 bundling과 code-splitting 전략을 결정합니다. 자세한 내용은 [Server and Client Components](/docs/app/getting-started/server-and-client-components#reducing-js-bundle-size)를 참고하세요.
+
+## Metadata
+
+title, description, Open Graph 이미지처럼 브라우저와 검색 엔진이 사용하는 page 정보입니다. Next.js에서는 layout 또는 page 파일에서 [`metadata` export](/docs/app/api-reference/functions/generate-metadata)나 [`generateMetadata` function](/docs/app/api-reference/functions/generate-metadata)을 사용해 metadata를 정의합니다. 자세한 내용은 [Metadata and OG Images](/docs/app/getting-started/metadata-and-og-images)를 참고하세요.
+
+## Memoization
+
+function의 반환값을 cache해서, 하나의 render pass(request) 동안 같은 function을 여러 번 호출해도 한 번만 실행되게 하는 것입니다. Next.js에서는 URL과 option이 같은 `fetch` `GET` request가 Server Component, layout, page, `generateMetadata`/`generateStaticParams` 전반에서 자동으로 memoize됩니다(단, [Route Handlers](/docs/app/api-reference/file-conventions/route)는 React component tree의 일부가 아니므로 제외됩니다).
+
+`fetch`가 아닌 작업에는 React의 [`cache`](https://react.dev/reference/react/cache) function을 사용하세요. 자세한 내용은 [`fetch` API reference](/docs/app/api-reference/functions/fetch)를 참고하세요.
+
+## Middleware
+
+[Proxy](#proxy)를 참고하세요.
+
+# N
+
+## Navigation stages
+
+client navigation 중에 server에서 render된 작업이 사용 가능해지는 시점들입니다. [Partial Prefetching](#partial-prefetching)에서는 이 stage가 [App Shell](#app-shell), per-link prefetch, navigation입니다. 자세한 내용은 [`ensureStatic`](/docs/app/api-reference/file-conventions/route-segment-config/ensureStatic), [`prefetch()`](/docs/app/api-reference/functions/prefetch), [`navigation()`](/docs/app/api-reference/functions/navigation) API reference를 참고하세요.
+
+## Not Found
+
+route가 존재하지 않거나 [`notFound()` function](/docs/app/api-reference/functions/not-found)이 호출되었을 때 보여 주는 특별한 component입니다. app directory에 [`not-found.js` 파일](/docs/app/api-reference/file-conventions/not-found)을 추가해서 만듭니다. 자세한 내용은 [Error Handling](/docs/app/getting-started/error-handling#not-found)을 참고하세요.
+
+# P
+
+## Private Folders
+
+underscore prefix가 붙은 폴더(예: `_components`)로, routing 시스템에서 제외됩니다. 접근 가능한 route를 만들지 않고 코드 정리와 공유 utility를 위해 사용됩니다. 자세한 내용은 [Private Folders](/docs/app/getting-started/project-structure#private-folders)를 참고하세요.
+
+## Page
+
+하나의 route에만 고유한 UI입니다. `app` directory 안의 [`page.js` 파일](/docs/app/api-reference/file-conventions/page)에서 React component를 export해서 정의합니다. 자세한 내용은 [Layouts and Pages](/docs/app/getting-started/layouts-and-pages)를 참고하세요.
+
+## Parallel Routes
+
+같은 layout 안에서 여러 page를 동시에 또는 조건에 따라 render할 수 있게 해 주는 pattern입니다. `@folder` convention으로 named slot을 만들어 사용하며, dashboard, modal, 복잡한 layout에 유용합니다. 자세한 내용은 [Parallel Routes](/docs/app/api-reference/file-conventions/parallel-routes)를 참고하세요.
+
+## Partial Prefetching
+
+[Cache Components](#cache-components) route를 위한 prefetching 전략으로, `&lt;Link&gt;`가 기본적으로 전체 page 대신 route별 [App Shell](#app-shell)을 prefetch합니다. `next.config.ts`에서 [`partialPrefetching: true`](/docs/app/api-reference/config/next-config-js/partialPrefetching)로 활성화합니다. 자세한 내용은 [Adopting Partial Prefetching 가이드](/docs/app/guides/adopting-partial-prefetching)를 참고하세요.
+
+## Partial Prerendering (PPR)
+
+하나의 route 안에서 prerendering과 dynamic rendering을 결합하는 rendering 최적화입니다. static shell은 즉시 제공되고 dynamic 콘텐츠는 준비되는 대로 stream되어, 두 rendering 전략의 장점을 모두 얻을 수 있습니다. 자세한 내용은 [Cache Components](/docs/app/getting-started/caching)를 참고하세요.
+
+## Prefetching
+
+사용자가 route로 이동하기 전에 background에서 그 route를 load하는 것입니다. Next.js는 [`&lt;Link&gt;` component](/docs/app/api-reference/components/link)로 연결된 route가 viewport에 들어오면 자동으로 prefetch하여, navigation이 즉각적으로 느껴지게 합니다. 자세한 내용은 [Prefetching 가이드](/docs/app/guides/prefetching)를 참고하세요.
+
+## Prerendering
+
+component가 [build time](#build-time)에, 또는 [revalidation](#revalidation) 중 background에서 render되는 것을 말합니다. 그 결과는 HTML과 [RSC Payload](#rsc-payload)이며, cache되어 CDN에서 제공될 수 있습니다. [Request-time APIs](#request-time-apis)를 사용하지 않는 component는 기본적으로 prerender됩니다.
+
+## Proxy
+
+request가 완료되기 전에 server에서 코드를 실행하는 파일([`proxy.js`](/docs/app/api-reference/file-conventions/proxy))입니다. logging, redirect, rewrite 같은 server-side logic을 구현하는 데 사용됩니다. 이전에는 Middleware라고 불렸습니다. 자세한 내용은 [Proxy 가이드](/docs/app/getting-started/proxy)를 참고하세요.
+
+# R
+
+## Redirect
+
+사용자를 한 URL에서 다른 URL로 보내는 것입니다. Next.js에서 redirect는 [`next.config.js`](/docs/app/api-reference/config/next-config-js/redirects)에서 설정하거나, [Proxy](/docs/app/api-reference/file-conventions/proxy)에서 반환하거나, [`redirect()` function](/docs/app/api-reference/functions/redirect)으로 프로그래밍 방식으로 실행할 수 있습니다. 자세한 내용은 [Redirecting](/docs/app/guides/redirecting)을 참고하세요.
+
+## Request-time APIs
+
+request별 data에 접근하는 function으로, component가 [dynamic rendering](#dynamic-rendering)을 사용하게 만듭니다. 다음이 포함됩니다:
+
+- [`cookies()`](/docs/app/api-reference/functions/cookies) - request cookie에 접근
+- [`headers()`](/docs/app/api-reference/functions/headers) - request header에 접근
+- [`searchParams`](/docs/app/api-reference/file-conventions/page#searchparams-optional) - URL query parameter에 접근
+- [`draftMode()`](/docs/app/api-reference/functions/draft-mode) - draft mode 활성화 또는 확인
+
+## Runtime rendering
+
+[Dynamic rendering](#dynamic-rendering)을 참고하세요.
+
+## Revalidation
+
+cache된 data를 업데이트하는 과정입니다. time-based([`cacheLife()`](/docs/app/api-reference/functions/cacheLife)로 cache 기간 설정) 또는 on-demand([`cacheTag()`](/docs/app/api-reference/functions/cacheTag)로 data에 tag를 붙인 뒤 [`updateTag()`](/docs/app/api-reference/functions/updateTag)로 invalidate) 방식으로 할 수 있습니다. 자세한 내용은 [Caching and Revalidating](/docs/app/getting-started/caching)을 참고하세요.
+
+## Rewrite
+
+브라우저의 URL은 바꾸지 않고, 들어오는 request path를 다른 destination path로 mapping하는 것입니다. [`next.config.js`](/docs/app/api-reference/config/next-config-js/rewrites)에서 설정하거나 [Proxy](/docs/app/api-reference/file-conventions/proxy)에서 반환합니다. 외부 서비스나 legacy URL로 proxy할 때 유용합니다.
+
+## Route Groups
+
+URL 구조에 영향을 주지 않고 route를 정리하는 방법입니다. 폴더 이름을 괄호로 감싸서(예: `(marketing)`) 만들며, route group은 관련된 route를 정리하고 group별 [layout](#layout)을 사용할 수 있게 해 줍니다. 자세한 내용은 [Route Groups](/docs/app/api-reference/file-conventions/route-groups)를 참고하세요.
+
+## Route Handler
+
+특정 route의 HTTP request를 처리하는 function으로, [`route.js` 파일](/docs/app/api-reference/file-conventions/route)에 정의합니다. Route Handler는 Web Request와 Response API를 사용하며 `GET`, `POST`, `PUT`, `PATCH`, `DELETE`, `HEAD`, `OPTIONS` method를 처리할 수 있습니다. 자세한 내용은 [Route Handlers](/docs/app/getting-started/route-handlers)를 참고하세요.
+
+## Route Segment
+
+`app` directory의 폴더로 정의되는 URL path의 한 부분(두 slash 사이)입니다. 각 폴더는 URL 구조에서 하나의 segment를 나타냅니다. 자세한 내용은 [Project Structure](/docs/app/getting-started/project-structure)를 참고하세요.
+
+## RSC Payload
+
+React Server Component Payload는 render된 React Server Components tree를 압축된 binary로 표현한 것입니다. Server Component의 render 결과, Client Component를 위한 placeholder, 그리고 그 사이에 전달되는 props가 들어 있습니다. 자세한 내용은 [Server and Client Components](/docs/app/getting-started/server-and-client-components#how-do-server-and-client-components-work-in-nextjs)를 참고하세요.
+
+# S
+
+## Server Component
+
+App Router의 기본 component type입니다. Server Component는 server에서 render되고, data를 직접 fetch할 수 있으며, client JavaScript bundle에 추가되지 않습니다. state나 browser API는 사용할 수 없습니다. 자세한 내용은 [Server and Client Components](/docs/app/getting-started/server-and-client-components)를 참고하세요.
+
+## Server Action
+
+Client Component에 prop으로 전달되거나 form action에 bind된 [Server Function](#server-function)입니다. Server Action은 주로 form 제출과 data mutation에 사용됩니다. 자세한 내용은 [Server Actions and Mutations](/docs/app/guides/server-actions)를 참고하세요.
+
+## Server Function
+
+[`&quot;use server&quot;` directive](/docs/app/api-reference/directives/use-server)로 표시되어 server에서 실행되는 asynchronous function입니다. Server Function은 Client Component에서 호출할 수 있습니다. Client Component에 prop으로 전달되거나 form action에 bind되면 [Server Action](#server-action)이라고 부릅니다. 자세한 내용은 [React Server Functions](https://react.dev/reference/rsc/server-functions)를 참고하세요.
+
+## Static Export
+
+HTML, CSS, JavaScript 파일로 이루어진 완전한 static 사이트를 생성하는 deployment mode입니다. `next.config.js`에서 `output: &#x27;export&#x27;`를 설정해 활성화합니다. static export는 Node.js server 없이 어떤 static file server에서도 hosting할 수 있습니다. 자세한 내용은 [Static Exports](/docs/app/guides/static-exports)를 참고하세요.
+
+## Static rendering
+
+[Prerendering](#prerendering)을 참고하세요.
+
+## Static Assets
+
+이미지, font, 동영상 및 기타 media처럼 별도 처리 없이 그대로 제공되는 파일입니다. static asset은 보통 `public` directory에 저장하고 상대 경로로 참조합니다. 자세한 내용은 [Static Assets](/docs/app/api-reference/file-conventions/public-folder)를 참고하세요.
+
+## Static Shell
+
+브라우저에 즉시 제공되는, prerender된 page의 HTML 구조입니다. [Partial Prerendering](#partial-prerendering-ppr)에서 static shell은 static하게 render 가능한 모든 콘텐츠와, 나중에 stream되는 dynamic 콘텐츠를 위한 [Suspense boundary](#suspense-boundary) fallback을 포함합니다.
+
+## Streaming
+
+전체 page가 render될 때까지 기다리지 않고, page의 각 부분이 준비되는 대로 server가 client에 보낼 수 있게 해 주는 기법입니다. [`loading.js`](/docs/app/api-reference/file-conventions/loading)나 직접 작성한 `&lt;Suspense&gt;` boundary로 자동 활성화됩니다. 자세한 내용은 [Streaming 가이드](/docs/app/guides/streaming)를 참고하세요.
+
+## Suspense boundary
+
+async 콘텐츠를 감싸고, load되는 동안 fallback UI를 보여 주는 React [`&lt;Suspense&gt;`](https://react.dev/reference/react/Suspense) component입니다. Next.js에서 Suspense boundary는 [static shell](#static-shell)이 끝나고 [streaming](#streaming)이 시작되는 지점을 정의하여 [Partial Prerendering](#partial-prerendering-ppr)을 가능하게 합니다.
+
+# T
+
+## Turbopack
+
+Next.js를 위해 만들어진 빠른 Rust 기반 bundler입니다. Turbopack은 `next dev`의 기본 bundler이며 `next build`에서도 사용할 수 있습니다. Webpack보다 compile 시간이 훨씬 빠릅니다. 자세한 내용은 [Turbopack](/docs/app/api-reference/turbopack)을 참고하세요.
+
+## Tree Shaking
+
+build 과정에서 JavaScript bundle의 사용되지 않는 코드를 제거하는 과정입니다. Next.js는 bundle 크기를 줄이기 위해 코드를 자동으로 tree-shake합니다. 자세한 내용은 [Package Bundling 가이드](/docs/app/guides/package-bundling)를 참고하세요.
+
+# U
+
+## URL data
+
+pathname이나 query parameter처럼 특정 URL을 식별하는 data입니다. App Router에서는 [`params`](/docs/app/api-reference/file-conventions/page#params-optional)와 [`searchParams`](/docs/app/api-reference/file-conventions/page#searchparams-optional), 그리고 이를 읽는 [`usePathname`](/docs/app/api-reference/functions/use-pathname), [`useSearchParams`](/docs/app/api-reference/functions/use-search-params) 같은 client hook을 의미합니다. URL data는 session이 아니라 link마다 달라지므로, 공유되는 [App Shell](#app-shell)의 일부가 될 수 없습니다.
+
+## `&quot;use cache&quot;` Directive
+
+component나 function을 cache 가능한 것으로 표시하는 directive입니다. 파일 맨 위에 두면 그 파일의 모든 export가 cache 가능함을 나타내고, function이나 component 맨 위에 inline으로 두면 해당 scope만 cache 가능하도록 표시합니다. 자세한 내용은 [`&quot;use cache&quot;` reference](/docs/app/api-reference/directives/use-cache)를 참고하세요.
+
+## `&quot;use client&quot;` Directive
+
+server 코드와 client 코드의 경계를 표시하는 특별한 React directive입니다. 반드시 파일 맨 위, 모든 import나 다른 코드보다 앞에 두어야 합니다. React Component, helper function, 변수 선언, 그리고 import된 모든 dependency가 [client bundle](#client-bundles)에 포함되어야 함을 나타냅니다. 자세한 내용은 [`&quot;use client&quot;` reference](/docs/app/api-reference/directives/use-client)를 참고하세요.
+
+## `&quot;use server&quot;` Directive
+
+function을 client-side 코드에서 호출할 수 있는 [Server Function](#server-function)으로 표시하는 directive입니다. 파일 맨 위에 두면 그 파일의 모든 export가 Server Function임을 나타내고, function 맨 위에 inline으로 두면 해당 function만 표시합니다. 자세한 내용은 [`&quot;use server&quot;` reference](/docs/app/api-reference/directives/use-server)를 참고하세요.
+
+# V
+
+## Version skew
+
+애플리케이션의 새 버전이 deploy된 후에도, 여전히 활성 상태인 client는 이전 build의 JavaScript, CSS, data를 참조할 수 있습니다. 이렇게 client와 server 버전이 어긋나는 것을 version skew라고 하며, asset 누락, Server Action error, navigation 실패를 일으킬 수 있습니다. Next.js는 [`deploymentId`](/docs/app/api-reference/config/next-config-js/deploymentId)를 사용해 version skew를 감지하고 처리합니다. 자세한 내용은 [Self-Hosting - Version Skew](/docs/app/guides/self-hosting#version-skew)를 참고하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

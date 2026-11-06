@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to optimize third-party libraries (third-party library 최적화하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/guides/third-party-libraries" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/guides/third-party-libraries" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/third-party-libraries.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to optimize third-party libraries<span class="sub">third-party library 최적화하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><strong><code>@next/third-parties</code></strong> library는 Next.js 애플리케이션에서 인기 있는 third-party library를 로드할 때 성능과 개발자 경험을 개선해 주는 component와 utility 모음을 제공합니다.</p><div class="en-orig"><p><strong><code>@next/third-parties</code></strong> is a library that provides a collection of components and utilities that improve the performance and developer experience of loading popular third-party libraries in your Next.js application.</p></div>
+<p><code>@next/third-parties</code>가 제공하는 모든 third-party integration은 성능과 사용 편의성을 위해 최적화되어 있습니다.</p><div class="en-orig"><p>All third-party integrations provided by <code>@next/third-parties</code> have been optimized for performance and ease of use.</p></div>
+<h2 class="sec" id="getting-started"><a class="anchor" href="#getting-started">Getting Started<span class="ko">시작하기</span></a></h2>
+<p>시작하려면 <code>@next/third-parties</code> library를 설치하세요:</p><div class="en-orig"><p>To get started, install the <code>@next/third-parties</code> library:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add @next/third-parties@latest next@latest</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install @next/third-parties@latest next@latest</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add @next/third-parties@latest next@latest</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add @next/third-parties@latest next@latest</code></pre></div></div>
+<p><code>@next/third-parties</code>는 현재 활발히 개발 중인 <strong>experimental</strong> library입니다. third-party integration을 더 추가하는 동안에는 <strong>latest</strong> 또는 <strong>canary</strong> flag로 설치하는 것을 권장합니다.</p><div class="en-orig"><p><code>@next/third-parties</code> is currently an <strong>experimental</strong> library under active development. We recommend installing it with the <strong>latest</strong> or <strong>canary</strong> flags while we work on adding more third-party integrations.</p></div>
+<h2 class="sec" id="google-third-parties"><a class="anchor" href="#google-third-parties">Google Third-Parties<span class="ko">Google third-party</span></a></h2>
+<p>Google에서 지원하는 모든 third-party library는 <code>@next/third-parties/google</code>에서 import할 수 있습니다.</p><div class="en-orig"><p>All supported third-party libraries from Google can be imported from <code>@next/third-parties/google</code>.</p></div>
+<h3 class="sec" id="google-tag-manager"><a class="anchor" href="#google-tag-manager">Google Tag Manager</a></h3>
+<p><code>GoogleTagManager</code> component를 사용하면 페이지에 <a href="https://developers.google.com/tag-platform/tag-manager" target="_blank" rel="noopener">Google Tag Manager</a> container를 instance화할 수 있습니다. 기본적으로 페이지에서 hydration이 일어난 뒤 원래의 inline script를 가져옵니다.</p><div class="en-orig"><p>The <code>GoogleTagManager</code> component can be used to instantiate a <a href="https://developers.google.com/tag-platform/tag-manager" target="_blank" rel="noopener">Google Tag Manager</a> container to your page. By default, it fetches the original inline script after hydration occurs on the page.</p></div>
+<p>모든 route에서 Google Tag Manager를 로드하려면 custom <code>_app</code>에 component를 직접 넣고
+GTM container ID를 전달하세요:</p><div class="en-orig"><p>To load Google Tag Manager for all routes, include the component directly in your custom <code>_app</code> and
+pass in your GTM container ID:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/_app.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { GoogleTagManager } from &#x27;@next/third-parties/google&#x27;
+
+export default function MyApp({ Component, pageProps }) {
+  return (
+    &lt;&gt;
+      &lt;Component {...pageProps} /&gt;
+      &lt;GoogleTagManager gtmId=&quot;GTM-XYZ&quot; /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p>하나의 route에서만 Google Tag Manager를 로드하려면 page 파일에 component를 넣으세요:</p><div class="en-orig"><p>To load Google Tag Manager for a single route, include the component in your page file:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { GoogleTagManager } from &#x27;@next/third-parties/google&#x27;
+
+export default function Page() {
+  return &lt;GoogleTagManager gtmId=&quot;GTM-XYZ&quot; /&gt;
+}</code></pre></div></div>
+<h4 class="sec" id="sending-events"><a class="anchor" href="#sending-events">Sending Events<span class="ko">event 보내기</span></a></h4>
+<p><code>sendGTMEvent</code> function은 <code>dataLayer</code> object를 사용해 event를 보내는 방식으로
+페이지의 사용자 상호작용을 추적하는 데 사용할 수 있습니다. 이 function이 동작하려면 <code>&lt;GoogleTagManager /&gt;</code> component가
+상위 layout, page, component 중 하나에 포함되어 있거나 같은 파일에 직접 포함되어 있어야 합니다.</p><div class="en-orig"><p>The <code>sendGTMEvent</code> function can be used to track user interactions on your page by sending events
+using the <code>dataLayer</code> object. For this function to work, the <code>&lt;GoogleTagManager /&gt;</code> component must be
+included in either a parent layout, page, or component, or directly in the same file.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { sendGTMEvent } from &#x27;@next/third-parties/google&#x27;
+
+export function EventButton() {
+  return (
+    &lt;div&gt;
+      &lt;button
+        onClick={() =&gt; sendGTMEvent({ event: &#x27;buttonClicked&#x27;, value: &#x27;xyz&#x27; })}
+      &gt;
+        Send Event
+      &lt;/button&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>function에 전달할 수 있는 다양한 variable과 event에 대해 알아보려면 Tag Manager <a href="https://developers.google.com/tag-platform/tag-manager/datalayer" target="_blank" rel="noopener">developer
+documentation</a>을
+참고하세요.</p><div class="en-orig"><p>Refer to the Tag Manager <a href="https://developers.google.com/tag-platform/tag-manager/datalayer" target="_blank" rel="noopener">developer
+documentation</a> to learn about the
+different variables and events that can be passed into the function.</p></div>
+<h4 class="sec" id="server-side-tagging"><a class="anchor" href="#server-side-tagging">Server-side Tagging</a></h4>
+<p>server-side tag manager를 사용하면서 tagging server에서 <code>gtm.js</code> script를 제공한다면,
+<code>gtmScriptUrl</code> option으로 script의 URL을 지정할 수 있습니다.</p><div class="en-orig"><p>If you're using a server-side tag manager and serving <code>gtm.js</code> scripts from your tagging server you can
+use <code>gtmScriptUrl</code> option to specify the URL of the script.</p></div>
+<h4 class="sec" id="options"><a class="anchor" href="#options">Options</a></h4>
+<p>Google Tag Manager에 전달할 option입니다. 전체 option 목록은 <a href="https://developers.google.com/tag-platform/tag-manager/datalayer" target="_blank" rel="noopener">Google Tag Manager
+문서</a>를 참고하세요.</p><div class="en-orig"><p>Options to pass to the Google Tag Manager. For a full list of options, read the <a href="https://developers.google.com/tag-platform/tag-manager/datalayer" target="_blank" rel="noopener">Google Tag Manager
+docs</a>.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>gtmId</code></td><td>Required*</td><td>GTM container ID입니다. 보통 <code>GTM-</code>으로 시작합니다.</td></tr>
+<tr><td><code>gtmScriptUrl</code></td><td>Optional*</td><td>GTM script URL입니다. 기본값은 <code>https://www.googletagmanager.com/gtm.js</code>입니다.</td></tr>
+<tr><td><code>dataLayer</code></td><td>Optional</td><td>container를 instance화할 때 사용할 data layer object입니다.</td></tr>
+<tr><td><code>dataLayerName</code></td><td>Optional</td><td>data layer의 이름입니다. 기본값은 <code>dataLayer</code>입니다.</td></tr>
+<tr><td><code>auth</code></td><td>Optional</td><td>environment snippet용 인증 parameter(<code>gtm_auth</code>)의 값입니다.</td></tr>
+<tr><td><code>preview</code></td><td>Optional</td><td>environment snippet용 preview parameter(<code>gtm_preview</code>)의 값입니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>gtmId</code></td><td>Required*</td><td>Your GTM container ID. Usually starts with <code>GTM-</code>.</td></tr>
+<tr><td><code>gtmScriptUrl</code></td><td>Optional*</td><td>GTM script URL. Defaults to <code>https://www.googletagmanager.com/gtm.js</code>.</td></tr>
+<tr><td><code>dataLayer</code></td><td>Optional</td><td>Data layer object to instantiate the container with.</td></tr>
+<tr><td><code>dataLayerName</code></td><td>Optional</td><td>Name of the data layer. Defaults to <code>dataLayer</code>.</td></tr>
+<tr><td><code>auth</code></td><td>Optional</td><td>Value of authentication parameter (<code>gtm_auth</code>) for environment snippets.</td></tr>
+<tr><td><code>preview</code></td><td>Optional</td><td>Value of preview parameter (<code>gtm_preview</code>) for environment snippets.</td></tr>
+</tbody></table></div></div>
+<p>*<a href="https://developers.google.com/tag-platform/tag-manager/gateway/setup-guide?setup=manual" target="_blank" rel="noopener">Google tag gateway for advertisers</a>를 지원하기 위해 <code>gtmScriptUrl</code>을 제공하는 경우에는 <code>gtmId</code>를 생략할 수 있습니다.</p><div class="en-orig"><p>*<code>gtmId</code> can be omitted when <code>gtmScriptUrl</code> is provided to support <a href="https://developers.google.com/tag-platform/tag-manager/gateway/setup-guide?setup=manual" target="_blank" rel="noopener">Google tag gateway for advertisers</a>.</p></div>
+<h3 class="sec" id="google-analytics"><a class="anchor" href="#google-analytics">Google Analytics</a></h3>
+<p><code>GoogleAnalytics</code> component를 사용하면 Google tag(<code>gtag.js</code>)를 통해 페이지에 <a href="https://developers.google.com/analytics/devguides/collection/ga4" target="_blank" rel="noopener">Google Analytics
+4</a>를 포함할 수 있습니다.
+기본적으로 페이지에서 hydration이 일어난 뒤 원래의 script를 가져옵니다.</p><div class="en-orig"><p>The <code>GoogleAnalytics</code> component can be used to include <a href="https://developers.google.com/analytics/devguides/collection/ga4" target="_blank" rel="noopener">Google Analytics
+4</a> to your page via the Google tag
+(<code>gtag.js</code>). By default, it fetches the original scripts after hydration occurs on the page.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Recommendation</div><p>애플리케이션에 이미 Google Tag Manager가 포함되어 있다면,
+Google Analytics를 별도 component로 포함하는 대신 Google Tag Manager를 사용해 Google Analytics를
+직접 설정할 수 있습니다. Tag Manager와 <code>gtag.js</code>의 차이에 대해 더 알아보려면
+<a href="https://developers.google.com/analytics/devguides/collection/ga4/tag-options#what-is-gtm" target="_blank" rel="noopener">문서</a>를
+참고하세요.</p><div class="en-orig"><p>If Google Tag Manager is already included in your application, you can
+configure Google Analytics directly using it, rather than including Google Analytics as a separate
+component. Refer to the
+<a href="https://developers.google.com/analytics/devguides/collection/ga4/tag-options#what-is-gtm" target="_blank" rel="noopener">documentation</a>
+to learn more about the differences between Tag Manager and <code>gtag.js</code>.</p></div></div></div>
+<p>모든 route에서 Google Analytics를 로드하려면 custom <code>_app</code>에 component를 직접 넣고
+measurement ID를 전달하세요:</p><div class="en-orig"><p>To load Google Analytics for all routes, include the component directly in your custom <code>_app</code> and
+pass in your measurement ID:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/_app.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { GoogleAnalytics } from &#x27;@next/third-parties/google&#x27;
+
+export default function MyApp({ Component, pageProps }) {
+  return (
+    &lt;&gt;
+      &lt;Component {...pageProps} /&gt;
+      &lt;GoogleAnalytics gaId=&quot;G-XYZ&quot; /&gt;
+    &lt;/&gt;
+  )
+}</code></pre></div></div>
+<p>하나의 route에서만 Google Analytics를 로드하려면 page 파일에 component를 넣으세요:</p><div class="en-orig"><p>To load Google Analytics for a single route, include the component in your page file:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { GoogleAnalytics } from &#x27;@next/third-parties/google&#x27;
+
+export default function Page() {
+  return &lt;GoogleAnalytics gaId=&quot;G-XYZ&quot; /&gt;
+}</code></pre></div></div>
+<h4 class="sec" id="sending-events-1"><a class="anchor" href="#sending-events-1">Sending Events<span class="ko">event 보내기</span></a></h4>
+<p><code>sendGAEvent</code> function은 <code>dataLayer</code> object를 사용해 event를 보내는 방식으로
+페이지의 사용자 상호작용을 측정하는 데 사용할 수 있습니다. 이 function이 동작하려면 <code>&lt;GoogleAnalytics /&gt;</code> component가
+상위 layout, page, component 중 하나에 포함되어 있거나 같은 파일에 직접 포함되어 있어야 합니다.</p><div class="en-orig"><p>The <code>sendGAEvent</code> function can be used to measure user interactions on your page by sending events
+using the <code>dataLayer</code> object. For this function to work, the <code>&lt;GoogleAnalytics /&gt;</code> component must be
+included in either a parent layout, page, or component, or directly in the same file.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { sendGAEvent } from &#x27;@next/third-parties/google&#x27;
+
+export function EventButton() {
+  return (
+    &lt;div&gt;
+      &lt;button
+        onClick={() =&gt; sendGAEvent(&#x27;event&#x27;, &#x27;buttonClicked&#x27;, { value: &#x27;xyz&#x27; })}
+      &gt;
+        Send Event
+      &lt;/button&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p>event parameter에 대해 더 알아보려면 Google Analytics <a href="https://developers.google.com/analytics/devguides/collection/ga4/event-parameters" target="_blank" rel="noopener">developer
+documentation</a>을
+참고하세요.</p><div class="en-orig"><p>Refer to the Google Analytics <a href="https://developers.google.com/analytics/devguides/collection/ga4/event-parameters" target="_blank" rel="noopener">developer
+documentation</a> to learn
+more about event parameters.</p></div>
+<h4 class="sec" id="tracking-pageviews"><a class="anchor" href="#tracking-pageviews">Tracking Pageviews<span class="ko">pageview 추적하기</span></a></h4>
+<p>Google Analytics는 브라우저 history state가 바뀔 때 pageview를 자동으로 추적합니다. 즉
+Next.js route 간의 client-side navigation은 별도 설정 없이도 pageview 데이터를 보냅니다.</p><div class="en-orig"><p>Google Analytics automatically tracks pageviews when the browser history state changes. This means
+that client-side navigations between Next.js routes will send pageview data without any configuration.</p></div>
+<p>client-side navigation이 올바르게 측정되도록 하려면, Admin 패널에서 <a href="https://support.google.com/analytics/answer/9216061#enable_disable" target="_blank" rel="noopener">_“Enhanced
+Measurement”_</a> 속성이
+활성화되어 있고 <em>“Page changes based on browser history events”</em> checkbox가 선택되어 있는지 확인하세요.</p><div class="en-orig"><p>To ensure that client-side navigations are being measured correctly, verify that the <a href="https://support.google.com/analytics/answer/9216061#enable_disable" target="_blank" rel="noopener">_“Enhanced
+Measurement”_</a> property is
+enabled in your Admin panel and the <em>“Page changes based on browser history events”</em> checkbox is
+selected.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p>pageview event를 수동으로 보내기로 했다면, 데이터가 중복되지 않도록
+기본 pageview 측정을 비활성화하세요. 자세한 내용은 Google Analytics <a href="https://developers.google.com/analytics/devguides/collection/ga4/views?client_type=gtag#manual_pageviews" target="_blank" rel="noopener">developer
+documentation</a>을
+참고하세요.</p><div class="en-orig"><p>If you decide to manually send pageview events, make sure to disable the default
+pageview measurement to avoid having duplicate data. Refer to the Google Analytics <a href="https://developers.google.com/analytics/devguides/collection/ga4/views?client_type=gtag#manual_pageviews" target="_blank" rel="noopener">developer
+documentation</a>
+to learn more.</p></div></div></div>
+<h4 class="sec" id="options-1"><a class="anchor" href="#options-1">Options</a></h4>
+<p><code>&lt;GoogleAnalytics&gt;</code> component에 전달할 option입니다.</p><div class="en-orig"><p>Options to pass to the <code>&lt;GoogleAnalytics&gt;</code> component.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>gaId</code></td><td>Required</td><td><a href="https://support.google.com/analytics/answer/12270356" target="_blank" rel="noopener">measurement ID</a>입니다. 보통 <code>G-</code>로 시작합니다.</td></tr>
+<tr><td><code>dataLayerName</code></td><td>Optional</td><td>data layer의 이름입니다. 기본값은 <code>dataLayer</code>입니다.</td></tr>
+<tr><td><code>debugMode</code></td><td>Optional</td><td>Google Analytics <a href="https://support.google.com/analytics/answer/7201382" target="_blank" rel="noopener">debug mode</a>를 활성화합니다.</td></tr>
+<tr><td><code>nonce</code></td><td>Optional</td><td><a href="app-guides-content-security-policy.html#nonces">nonce</a>입니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>gaId</code></td><td>Required</td><td>Your <a href="https://support.google.com/analytics/answer/12270356" target="_blank" rel="noopener">measurement ID</a>. Usually starts with <code>G-</code>.</td></tr>
+<tr><td><code>dataLayerName</code></td><td>Optional</td><td>Name of the data layer. Defaults to <code>dataLayer</code>.</td></tr>
+<tr><td><code>debugMode</code></td><td>Optional</td><td>Enable Google Analytics <a href="https://support.google.com/analytics/answer/7201382" target="_blank" rel="noopener">debug mode</a>.</td></tr>
+<tr><td><code>nonce</code></td><td>Optional</td><td>A <a href="app-guides-content-security-policy.html#nonces">nonce</a>.</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="google-maps-embed"><a class="anchor" href="#google-maps-embed">Google Maps Embed</a></h3>
+<p><code>GoogleMapsEmbed</code> component를 사용하면 페이지에 <a href="https://developers.google.com/maps/documentation/embed/embedding-map" target="_blank" rel="noopener">Google Maps
+Embed</a>를 추가할 수 있습니다.
+기본적으로 <code>loading</code> attribute를 사용해 화면 아래쪽(below the fold)에 있는 embed를 lazy-load합니다.</p><div class="en-orig"><p>The <code>GoogleMapsEmbed</code> component can be used to add a <a href="https://developers.google.com/maps/documentation/embed/embedding-map" target="_blank" rel="noopener">Google Maps
+Embed</a> to your page. By
+default, it uses the <code>loading</code> attribute to lazy-load the embed below the fold.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { GoogleMapsEmbed } from &#x27;@next/third-parties/google&#x27;
+
+export default function Page() {
+  return (
+    &lt;GoogleMapsEmbed
+      apiKey=&quot;XYZ&quot;
+      height={200}
+      width=&quot;100%&quot;
+      mode=&quot;place&quot;
+      q=&quot;Brooklyn+Bridge,New+York,NY&quot;
+    /&gt;
+  )
+}</code></pre></div></div>
+<h4 class="sec" id="options-2"><a class="anchor" href="#options-2">Options</a></h4>
+<p>Google Maps Embed에 전달할 option입니다. 전체 option 목록은 <a href="https://developers.google.com/maps/documentation/embed/embedding-map" target="_blank" rel="noopener">Google Map Embed
+문서</a>를 참고하세요.</p><div class="en-orig"><p>Options to pass to the Google Maps Embed. For a full list of options, read the <a href="https://developers.google.com/maps/documentation/embed/embedding-map" target="_blank" rel="noopener">Google Map Embed
+docs</a>.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>apiKey</code></td><td>Required</td><td>API key입니다.</td></tr>
+<tr><td><code>mode</code></td><td>Required</td><td><a href="https://developers.google.com/maps/documentation/embed/embedding-map#choosing_map_modes" target="_blank" rel="noopener">Map mode</a></td></tr>
+<tr><td><code>height</code></td><td>Optional</td><td>embed의 높이입니다. 기본값은 <code>auto</code>입니다.</td></tr>
+<tr><td><code>width</code></td><td>Optional</td><td>embed의 너비입니다. 기본값은 <code>auto</code>입니다.</td></tr>
+<tr><td><code>style</code></td><td>Optional</td><td>iframe에 style을 전달합니다.</td></tr>
+<tr><td><code>allowfullscreen</code></td><td>Optional</td><td>지도의 특정 부분을 전체 화면으로 볼 수 있게 하는 속성입니다.</td></tr>
+<tr><td><code>loading</code></td><td>Optional</td><td>기본값은 lazy입니다. embed가 화면 위쪽(above the fold)에 있다는 것을 안다면 변경을 고려하세요.</td></tr>
+<tr><td><code>q</code></td><td>Optional</td><td>지도 marker 위치를 정의합니다. <em>map mode에 따라 필수일 수 있습니다</em>.</td></tr>
+<tr><td><code>center</code></td><td>Optional</td><td>지도 view의 중심을 정의합니다.</td></tr>
+<tr><td><code>zoom</code></td><td>Optional</td><td>지도의 초기 zoom level을 설정합니다.</td></tr>
+<tr><td><code>maptype</code></td><td>Optional</td><td>로드할 map tile의 종류를 정의합니다.</td></tr>
+<tr><td><code>language</code></td><td>Optional</td><td>UI element와 map tile의 label 표시에 사용할 언어를 정의합니다.</td></tr>
+<tr><td><code>region</code></td><td>Optional</td><td>지정학적 민감성을 고려해 표시할 적절한 경계와 label을 정의합니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>apiKey</code></td><td>Required</td><td>Your api key.</td></tr>
+<tr><td><code>mode</code></td><td>Required</td><td><a href="https://developers.google.com/maps/documentation/embed/embedding-map#choosing_map_modes" target="_blank" rel="noopener">Map mode</a></td></tr>
+<tr><td><code>height</code></td><td>Optional</td><td>Height of the embed. Defaults to <code>auto</code>.</td></tr>
+<tr><td><code>width</code></td><td>Optional</td><td>Width of the embed. Defaults to <code>auto</code>.</td></tr>
+<tr><td><code>style</code></td><td>Optional</td><td>Pass styles to the iframe.</td></tr>
+<tr><td><code>allowfullscreen</code></td><td>Optional</td><td>Property to allow certain map parts to go full screen.</td></tr>
+<tr><td><code>loading</code></td><td>Optional</td><td>Defaults to lazy. Consider changing if you know your embed will be above the fold.</td></tr>
+<tr><td><code>q</code></td><td>Optional</td><td>Defines map marker location. <em>This may be required depending on the map mode</em>.</td></tr>
+<tr><td><code>center</code></td><td>Optional</td><td>Defines the center of the map view.</td></tr>
+<tr><td><code>zoom</code></td><td>Optional</td><td>Sets initial zoom level of the map.</td></tr>
+<tr><td><code>maptype</code></td><td>Optional</td><td>Defines type of map tiles to load.</td></tr>
+<tr><td><code>language</code></td><td>Optional</td><td>Defines the language to use for UI elements and for the display of labels on map tiles.</td></tr>
+<tr><td><code>region</code></td><td>Optional</td><td>Defines the appropriate borders and labels to display, based on geo-political sensitivities.</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="youtube-embed"><a class="anchor" href="#youtube-embed">YouTube Embed</a></h3>
+<p><code>YouTubeEmbed</code> component를 사용하면 YouTube embed를 로드하고 표시할 수 있습니다. 이 component는 내부적으로
+<a href="https://github.com/paulirish/lite-youtube-embed" target="_blank" rel="noopener"><code>lite-youtube-embed</code></a>를 사용해
+더 빠르게 로드됩니다.</p><div class="en-orig"><p>The <code>YouTubeEmbed</code> component can be used to load and display a YouTube embed. This component loads
+faster by using <a href="https://github.com/paulirish/lite-youtube-embed" target="_blank" rel="noopener"><code>lite-youtube-embed</code></a> under the
+hood.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/index.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { YouTubeEmbed } from &#x27;@next/third-parties/google&#x27;
+
+export default function Page() {
+  return &lt;YouTubeEmbed videoid=&quot;ogfYd705cRs&quot; height={400} params=&quot;controls=0&quot; /&gt;
+}</code></pre></div></div>
+<h4 class="sec" id="options-3"><a class="anchor" href="#options-3">Options</a></h4>
+<div class="table-wrap"><table>
+<thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>videoid</code></td><td>Required</td><td>YouTube video id입니다.</td></tr>
+<tr><td><code>width</code></td><td>Optional</td><td>video container의 너비입니다. 기본값은 <code>auto</code>입니다</td></tr>
+<tr><td><code>height</code></td><td>Optional</td><td>video container의 높이입니다. 기본값은 <code>auto</code>입니다</td></tr>
+<tr><td><code>playlabel</code></td><td>Optional</td><td>접근성을 위해 재생 버튼에 붙이는, 화면에는 보이지 않는 label입니다.</td></tr>
+<tr><td><code>params</code></td><td>Optional</td><td><a href="https://developers.google.com/youtube/player_parameters#Parameters" target="_blank" rel="noopener">여기</a>에 정의된 video player params입니다. <br/> params는 query param 문자열로 전달됩니다. <br/> 예: <code>params=&quot;controls=0&amp;start=10&amp;end=30&quot;</code></td></tr>
+<tr><td><code>style</code></td><td>Optional</td><td>video container에 style을 적용하는 데 사용합니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>videoid</code></td><td>Required</td><td>YouTube video id.</td></tr>
+<tr><td><code>width</code></td><td>Optional</td><td>Width of the video container. Defaults to <code>auto</code></td></tr>
+<tr><td><code>height</code></td><td>Optional</td><td>Height of the video container. Defaults to <code>auto</code></td></tr>
+<tr><td><code>playlabel</code></td><td>Optional</td><td>A visually hidden label for the play button for accessibility.</td></tr>
+<tr><td><code>params</code></td><td>Optional</td><td>The video player params defined <a href="https://developers.google.com/youtube/player_parameters#Parameters" target="_blank" rel="noopener">here</a>. <br/> Params are passed as a query param string. <br/> Eg: <code>params=&quot;controls=0&amp;start=10&amp;end=30&quot;</code></td></tr>
+<tr><td><code>style</code></td><td>Optional</td><td>Used to apply styles to the video container.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/third-party-libraries.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/guides/third-party-libraries" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-guides-testing-vitest.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Vitest</div><div class="ttl-ko">Next.js에 Vitest 설정하기</div></a>
+      <a href="pages-guides-upgrading.html" class="next"><div class="dir">다음 →</div><div class="ttl">Upgrading</div><div class="ttl-ko">업그레이드</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/guides/third-party-libraries" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#getting-started">Getting Started</a></li><li class="l2"><a href="#google-third-parties">Google Third-Parties</a></li><li class="l3"><a href="#google-tag-manager">Google Tag Manager</a></li><li class="l3"><a href="#google-analytics">Google Analytics</a></li><li class="l3"><a href="#google-maps-embed">Google Maps Embed</a></li><li class="l3"><a href="#youtube-embed">YouTube Embed</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+**`@next/third-parties`** library는 Next.js 애플리케이션에서 인기 있는 third-party library를 로드할 때 성능과 개발자 경험을 개선해 주는 component와 utility 모음을 제공합니다.
+
+`@next/third-parties`가 제공하는 모든 third-party integration은 성능과 사용 편의성을 위해 최적화되어 있습니다.
+
+## Getting Started || 시작하기
+
+시작하려면 `@next/third-parties` library를 설치하세요:
+
+[[CODE 1]]
+
+
+`@next/third-parties`는 현재 활발히 개발 중인 **experimental** library입니다. third-party integration을 더 추가하는 동안에는 **latest** 또는 **canary** flag로 설치하는 것을 권장합니다.
+
+## Google Third-Parties || Google third-party
+
+Google에서 지원하는 모든 third-party library는 `@next/third-parties/google`에서 import할 수 있습니다.
+
+### Google Tag Manager
+
+`GoogleTagManager` component를 사용하면 페이지에 [Google Tag Manager](https://developers.google.com/tag-platform/tag-manager) container를 instance화할 수 있습니다. 기본적으로 페이지에서 hydration이 일어난 뒤 원래의 inline script를 가져옵니다.
+
+
+
+
+
+모든 route에서 Google Tag Manager를 로드하려면 custom `_app`에 component를 직접 넣고
+GTM container ID를 전달하세요:
+
+[[CODE 3]]
+
+
+
+하나의 route에서만 Google Tag Manager를 로드하려면 page 파일에 component를 넣으세요:
+
+
+
+
+
+[[CODE 5]]
+
+
+
+#### Sending Events || event 보내기
+
+`sendGTMEvent` function은 `dataLayer` object를 사용해 event를 보내는 방식으로
+페이지의 사용자 상호작용을 추적하는 데 사용할 수 있습니다. 이 function이 동작하려면 `&lt;GoogleTagManager /&gt;` component가
+상위 layout, page, component 중 하나에 포함되어 있거나 같은 파일에 직접 포함되어 있어야 합니다.
+
+
+
+
+
+[[CODE 7]]
+
+
+
+function에 전달할 수 있는 다양한 variable과 event에 대해 알아보려면 Tag Manager [developer
+documentation](https://developers.google.com/tag-platform/tag-manager/datalayer)을
+참고하세요.
+
+#### Server-side Tagging
+
+server-side tag manager를 사용하면서 tagging server에서 `gtm.js` script를 제공한다면,
+`gtmScriptUrl` option으로 script의 URL을 지정할 수 있습니다.
+
+#### Options
+
+Google Tag Manager에 전달할 option입니다. 전체 option 목록은 [Google Tag Manager
+문서](https://developers.google.com/tag-platform/tag-manager/datalayer)를 참고하세요.
+
+| Name            | Type       | Description                                                              |
+| --------------- | ---------- | ------------------------------------------------------------------------ |
+| `gtmId`         | Required\* | GTM container ID입니다. 보통 `GTM-`으로 시작합니다.                       |
+| `gtmScriptUrl`  | Optional\* | GTM script URL입니다. 기본값은 `https://www.googletagmanager.com/gtm.js`입니다.   |
+| `dataLayer`     | Optional   | container를 instance화할 때 사용할 data layer object입니다.                     |
+| `dataLayerName` | Optional   | data layer의 이름입니다. 기본값은 `dataLayer`입니다.                         |
+| `auth`          | Optional   | environment snippet용 인증 parameter(`gtm_auth`)의 값입니다. |
+| `preview`       | Optional   | environment snippet용 preview parameter(`gtm_preview`)의 값입니다.     |
+
+\*[Google tag gateway for advertisers](https://developers.google.com/tag-platform/tag-manager/gateway/setup-guide?setup=manual)를 지원하기 위해 `gtmScriptUrl`을 제공하는 경우에는 `gtmId`를 생략할 수 있습니다.
+
+### Google Analytics
+
+`GoogleAnalytics` component를 사용하면 Google tag(`gtag.js`)를 통해 페이지에 [Google Analytics
+4](https://developers.google.com/analytics/devguides/collection/ga4)를 포함할 수 있습니다.
+기본적으로 페이지에서 hydration이 일어난 뒤 원래의 script를 가져옵니다.
+
+&gt; **Recommendation**: 애플리케이션에 이미 Google Tag Manager가 포함되어 있다면,
+&gt; Google Analytics를 별도 component로 포함하는 대신 Google Tag Manager를 사용해 Google Analytics를
+&gt; 직접 설정할 수 있습니다. Tag Manager와 `gtag.js`의 차이에 대해 더 알아보려면
+&gt; [문서](https://developers.google.com/analytics/devguides/collection/ga4/tag-options#what-is-gtm)를
+&gt; 참고하세요.
+
+
+
+
+
+모든 route에서 Google Analytics를 로드하려면 custom `_app`에 component를 직접 넣고
+measurement ID를 전달하세요:
+
+[[CODE 9]]
+
+
+
+하나의 route에서만 Google Analytics를 로드하려면 page 파일에 component를 넣으세요:
+
+
+
+
+
+[[CODE 11]]
+
+
+
+#### Sending Events || event 보내기
+
+`sendGAEvent` function은 `dataLayer` object를 사용해 event를 보내는 방식으로
+페이지의 사용자 상호작용을 측정하는 데 사용할 수 있습니다. 이 function이 동작하려면 `&lt;GoogleAnalytics /&gt;` component가
+상위 layout, page, component 중 하나에 포함되어 있거나 같은 파일에 직접 포함되어 있어야 합니다.
+
+
+
+
+
+[[CODE 13]]
+
+
+
+event parameter에 대해 더 알아보려면 Google Analytics [developer
+documentation](https://developers.google.com/analytics/devguides/collection/ga4/event-parameters)을
+참고하세요.
+
+#### Tracking Pageviews || pageview 추적하기
+
+Google Analytics는 브라우저 history state가 바뀔 때 pageview를 자동으로 추적합니다. 즉
+Next.js route 간의 client-side navigation은 별도 설정 없이도 pageview 데이터를 보냅니다.
+
+client-side navigation이 올바르게 측정되도록 하려면, Admin 패널에서 [_“Enhanced
+Measurement”_](https://support.google.com/analytics/answer/9216061#enable_disable) 속성이
+활성화되어 있고 _“Page changes based on browser history events”_ checkbox가 선택되어 있는지 확인하세요.
+
+&gt; **Note**: pageview event를 수동으로 보내기로 했다면, 데이터가 중복되지 않도록
+&gt; 기본 pageview 측정을 비활성화하세요. 자세한 내용은 Google Analytics [developer
+&gt; documentation](https://developers.google.com/analytics/devguides/collection/ga4/views?client_type=gtag#manual_pageviews)을
+&gt; 참고하세요.
+
+#### Options
+
+`&lt;GoogleAnalytics&gt;` component에 전달할 option입니다.
+
+| Name            | Type     | Description                                                                                            |
+| --------------- | -------- | ------------------------------------------------------------------------------------------------------ |
+| `gaId`          | Required | [measurement ID](https://support.google.com/analytics/answer/12270356)입니다. 보통 `G-`로 시작합니다. |
+| `dataLayerName` | Optional | data layer의 이름입니다. 기본값은 `dataLayer`입니다.                                                       |
+| `debugMode`     | Optional | Google Analytics [debug mode](https://support.google.com/analytics/answer/7201382)를 활성화합니다.             |
+| `nonce`         | Optional | [nonce](/docs/app/guides/content-security-policy#nonces)입니다.                                            |
+
+### Google Maps Embed
+
+`GoogleMapsEmbed` component를 사용하면 페이지에 [Google Maps
+Embed](https://developers.google.com/maps/documentation/embed/embedding-map)를 추가할 수 있습니다.
+기본적으로 `loading` attribute를 사용해 화면 아래쪽(below the fold)에 있는 embed를 lazy-load합니다.
+
+
+
+
+
+[[CODE 15]]
+
+
+
+#### Options
+
+Google Maps Embed에 전달할 option입니다. 전체 option 목록은 [Google Map Embed
+문서](https://developers.google.com/maps/documentation/embed/embedding-map)를 참고하세요.
+
+| Name              | Type     | Description                                                                                         |
+| ----------------- | -------- | --------------------------------------------------------------------------------------------------- |
+| `apiKey`          | Required | API key입니다.                                                                                       |
+| `mode`            | Required | [Map mode](https://developers.google.com/maps/documentation/embed/embedding-map#choosing_map_modes) |
+| `height`          | Optional | embed의 높이입니다. 기본값은 `auto`입니다.                                                            |
+| `width`           | Optional | embed의 너비입니다. 기본값은 `auto`입니다.                                                             |
+| `style`           | Optional | iframe에 style을 전달합니다.                                                                          |
+| `allowfullscreen` | Optional | 지도의 특정 부분을 전체 화면으로 볼 수 있게 하는 속성입니다.                                              |
+| `loading`         | Optional | 기본값은 lazy입니다. embed가 화면 위쪽(above the fold)에 있다는 것을 안다면 변경을 고려하세요.                  |
+| `q`               | Optional | 지도 marker 위치를 정의합니다. _map mode에 따라 필수일 수 있습니다_.                      |
+| `center`          | Optional | 지도 view의 중심을 정의합니다.                                                                 |
+| `zoom`            | Optional | 지도의 초기 zoom level을 설정합니다.                                                                 |
+| `maptype`         | Optional | 로드할 map tile의 종류를 정의합니다.                                                                  |
+| `language`        | Optional | UI element와 map tile의 label 표시에 사용할 언어를 정의합니다.             |
+| `region`          | Optional | 지정학적 민감성을 고려해 표시할 적절한 경계와 label을 정의합니다.        |
+
+### YouTube Embed
+
+`YouTubeEmbed` component를 사용하면 YouTube embed를 로드하고 표시할 수 있습니다. 이 component는 내부적으로
+[`lite-youtube-embed`](https://github.com/paulirish/lite-youtube-embed)를 사용해
+더 빠르게 로드됩니다.
+
+
+
+
+
+[[CODE 17]]
+
+
+
+#### Options
+
+| Name        | Type     | Description                                                                                                                                                                                                  |
+| ----------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `videoid`   | Required | YouTube video id입니다.                                                                                                                                                                                            |
+| `width`     | Optional | video container의 너비입니다. 기본값은 `auto`입니다                                                                                                                                                             |
+| `height`    | Optional | video container의 높이입니다. 기본값은 `auto`입니다                                                                                                                                                            |
+| `playlabel` | Optional | 접근성을 위해 재생 버튼에 붙이는, 화면에는 보이지 않는 label입니다.                                                                                                                                               |
+| `params`    | Optional | [여기](https://developers.google.com/youtube/player_parameters#Parameters)에 정의된 video player params입니다. &lt;br/&gt; params는 query param 문자열로 전달됩니다. &lt;br/&gt; 예: `params=&quot;controls=0&amp;start=10&amp;end=30&quot;` |
+| `style`     | Optional | video container에 style을 적용하는 데 사용합니다.                                                                                                                                                                 |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

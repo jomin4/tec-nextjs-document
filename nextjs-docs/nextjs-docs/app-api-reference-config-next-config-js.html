@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>next.config.js (next.config.js) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/config/next-config-js" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/config/next-config-js" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/index.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config.html">Configuration</a></div>
+    <div class="title-row">
+      <h1 class="page-title">next.config.js<span class="sub">next.config.js</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js는 프로젝트 directory의 root(예: <code>package.json</code>이 있는 위치)에 있는 <code>next.config.js</code> 파일에서 default export로 설정할 수 있습니다.</p><div class="en-orig"><p>Next.js can be configured through a <code>next.config.js</code> file in the root of your project directory (for example, by <code>package.json</code>) with a default export.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// @ts-check
+
+/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  /* config options here */
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<h2 class="sec" id="ecmascript-modules"><a class="anchor" href="#ecmascript-modules">ECMAScript Modules</a></h2>
+<p><code>next.config.js</code>는 JSON 파일이 아니라 일반적인 Node.js module입니다. Next.js server와 build 단계에서 사용되며, 브라우저 build에는 포함되지 않습니다.</p><div class="en-orig"><p><code>next.config.js</code> is a regular Node.js module, not a JSON file. It gets used by the Next.js server and build phases, and it's not included in the browser build.</p></div>
+<p><a href="https://nodejs.org/api/esm.html" target="_blank" rel="noopener">ECMAScript modules</a>가 필요하다면 <code>next.config.mjs</code>를 사용할 수 있습니다:</p><div class="en-orig"><p>If you need <a href="https://nodejs.org/api/esm.html" target="_blank" rel="noopener">ECMAScript modules</a>, you can use <code>next.config.mjs</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// @ts-check
+
+/**
+ * @type {import(&#x27;next&#x27;).NextConfig}
+ */
+const nextConfig = {
+  /* config options here */
+}
+
+export default nextConfig</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>.cjs</code> 또는 <code>.cts</code> 확장자를 가진 <code>next.config</code>는 현재 <strong>지원되지 않습니다</strong>.</p><div class="en-orig"><p><code>next.config</code> with the <code>.cjs</code> or <code>.cts</code> extensions are currently <strong>not</strong> supported.</p></div></div></div>
+<h2 class="sec" id="configuration-as-a-function"><a class="anchor" href="#configuration-as-a-function">Configuration as a Function<span class="ko">Function으로 설정하기</span></a></h2>
+<p>function을 사용할 수도 있습니다:</p><div class="en-orig"><p>You can also use a function:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// @ts-check
+
+export default (phase, { defaultConfig }) =&gt; {
+  /**
+   * @type {import(&#x27;next&#x27;).NextConfig}
+   */
+  const nextConfig = {
+    /* config options here */
+  }
+  return nextConfig
+}</code></pre></div></div>
+<h3 class="sec" id="async-configuration"><a class="anchor" href="#async-configuration">Async Configuration<span class="ko">Async 설정</span></a></h3>
+<p>Next.js 12.1.0부터는 async function을 사용할 수 있습니다:</p><div class="en-orig"><p>Since Next.js 12.1.0, you can use an async function:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// @ts-check
+
+module.exports = async (phase, { defaultConfig }) =&gt; {
+  /**
+   * @type {import(&#x27;next&#x27;).NextConfig}
+   */
+  const nextConfig = {
+    /* config options here */
+  }
+  return nextConfig
+}</code></pre></div></div>
+<h3 class="sec" id="phase"><a class="anchor" href="#phase">Phase</a></h3>
+<p><code>phase</code>는 configuration이 로드되는 현재 context입니다. <a href="https://github.com/vercel/next.js/blob/5e6b008b561caf2710ab7be63320a3d549474a5b/packages/next/shared/lib/constants.ts#L19-L23" target="_blank" rel="noopener">사용 가능한 phase</a>를 확인할 수 있습니다. phase는 <code>next/constants</code>에서 import할 수 있습니다:</p><div class="en-orig"><p><code>phase</code> is the current context in which the configuration is loaded. You can see the <a href="https://github.com/vercel/next.js/blob/5e6b008b561caf2710ab7be63320a3d549474a5b/packages/next/shared/lib/constants.ts#L19-L23" target="_blank" rel="noopener">available phases</a>. Phases can be imported from <code>next/constants</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">// @ts-check
+
+const { PHASE_DEVELOPMENT_SERVER } = require(&#x27;next/constants&#x27;)
+
+module.exports = (phase, { defaultConfig }) =&gt; {
+  if (phase === PHASE_DEVELOPMENT_SERVER) {
+    return {
+      /* development only config options here */
+    }
+  }
+
+  return {
+    /* config options for all phases except development here */
+  }
+}</code></pre></div></div>
+<h2 class="sec" id="typescript"><a class="anchor" href="#typescript">TypeScript</a></h2>
+<p>프로젝트에서 TypeScript를 사용한다면 <code>next.config.ts</code>를 사용해 configuration에서 TypeScript를 쓸 수 있습니다:</p><div class="en-orig"><p>If you are using TypeScript in your project, you can use <code>next.config.ts</code> to use TypeScript in your configuration:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  /* config options here */
+}
+
+export default nextConfig</code></pre></div></div>
+<p>주석 처리된 줄은 <code>next.config.js</code>에서 허용되는 config를 넣을 수 있는 위치이며, 이 config들은 <a href="https://github.com/vercel/next.js/blob/canary/packages/next/src/server/config-shared.ts" target="_blank" rel="noopener">이 파일에 정의되어 있습니다</a>.</p><div class="en-orig"><p>The commented lines are the place where you can put the configs allowed by <code>next.config.js</code>, which are <a href="https://github.com/vercel/next.js/blob/canary/packages/next/src/server/config-shared.ts" target="_blank" rel="noopener">defined in this file</a>.</p></div>
+<p>하지만 어떤 config도 필수는 아니며, 각 config가 무엇을 하는지 모두 이해할 필요도 없습니다. 대신 이 섹션에서 활성화하거나 수정해야 하는 기능을 검색하면 무엇을 해야 하는지 안내해 줍니다.</p><div class="en-orig"><p>However, none of the configs are required, and it's not necessary to understand what each config does. Instead, search for the features you need to enable or modify in this section and they will show you what to do.</p></div>
+<blockquote><p>target Node.js 버전에서 사용할 수 없는 새로운 JavaScript 기능은 사용하지 마세요. <code>next.config.js</code>는 Webpack이나 Babel로 parse되지 않습니다.</p><div class="en-orig"><p>Avoid using new JavaScript features not available in your target Node.js version. <code>next.config.js</code> will not be parsed by Webpack or Babel.</p></div></blockquote>
+<p>이 페이지는 사용 가능한 모든 configuration option을 문서화합니다:</p><div class="en-orig"><p>This page documents all the available configuration options:</p></div>
+<h2 class="sec" id="unit-testing-experimental"><a class="anchor" href="#unit-testing-experimental">Unit Testing (experimental)<span class="ko">Unit Testing (실험적 기능)</span></a></h2>
+<p>Next.js 15.1부터 <code>next/experimental/testing/server</code> package에는 <code>next.config.js</code> 파일을 unit test하는 데 도움이 되는 utility가 포함되어 있습니다.</p><div class="en-orig"><p>Starting in Next.js 15.1, the <code>next/experimental/testing/server</code> package contains utilities to help unit test <code>next.config.js</code> files.</p></div>
+<p><code>unstable_getResponseFromNextConfig</code> 함수는 제공된 request 정보로 <code>next.config.js</code>의 <a href="app-api-reference-config-next-config-js-headers.html"><code>headers</code></a>, <a href="app-api-reference-config-next-config-js-redirects.html"><code>redirects</code></a>, <a href="app-api-reference-config-next-config-js-rewrites.html"><code>rewrites</code></a> function을 실행하고, routing 결과가 담긴 <code>NextResponse</code>를 반환합니다.</p><div class="en-orig"><p>The <code>unstable_getResponseFromNextConfig</code> function runs the <a href="app-api-reference-config-next-config-js-headers.html"><code>headers</code></a>, <a href="app-api-reference-config-next-config-js-redirects.html"><code>redirects</code></a>, and <a href="app-api-reference-config-next-config-js-rewrites.html"><code>rewrites</code></a> functions from <code>next.config.js</code> with the provided request information and returns <code>NextResponse</code> with the results of the routing.</p></div>
+<blockquote><p><code>unstable_getResponseFromNextConfig</code>의 response는 <code>next.config.js</code> field만 고려하며 proxy나 filesystem route는 고려하지 않으므로, production에서의 결과는 unit test와 다를 수 있습니다.</p><div class="en-orig"><p>The response from <code>unstable_getResponseFromNextConfig</code> only considers <code>next.config.js</code> fields and does not consider proxy or filesystem routes, so the result in production may be different than the unit test.</p></div></blockquote>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">import {
+  getRedirectUrl,
+  unstable_getResponseFromNextConfig,
+} from &#x27;next/experimental/testing/server&#x27;
+
+const response = await unstable_getResponseFromNextConfig({
+  url: &#x27;https://nextjs.org/test&#x27;,
+  nextConfig: {
+    async redirects() {
+      return [{ source: &#x27;/test&#x27;, destination: &#x27;/test2&#x27;, permanent: false }]
+    },
+  },
+})
+expect(response.status).toEqual(307)
+expect(getRedirectUrl(response)).toEqual(&#x27;https://nextjs.org/test2&#x27;)</code></pre></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/index.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/config/next-config-js" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-config.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Configuration</div><div class="ttl-ko">설정</div></a>
+      <a href="app-api-reference-config-next-config-js-adapterPath.html" class="next"><div class="dir">다음 →</div><div class="ttl">adapterPath</div><div class="ttl-ko">adapterPath</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/config/next-config-js" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#ecmascript-modules">ECMAScript Modules</a></li><li class="l2"><a href="#configuration-as-a-function">Configuration as a Function</a></li><li class="l3"><a href="#async-configuration">Async Configuration</a></li><li class="l3"><a href="#phase">Phase</a></li><li class="l2"><a href="#typescript">TypeScript</a></li><li class="l2"><a href="#unit-testing-experimental">Unit Testing (experimental)</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js는 프로젝트 directory의 root(예: `package.json`이 있는 위치)에 있는 `next.config.js` 파일에서 default export로 설정할 수 있습니다.
+
+[[CODE 1]]
+
+## ECMAScript Modules
+
+`next.config.js`는 JSON 파일이 아니라 일반적인 Node.js module입니다. Next.js server와 build 단계에서 사용되며, 브라우저 build에는 포함되지 않습니다.
+
+[ECMAScript modules](https://nodejs.org/api/esm.html)가 필요하다면 `next.config.mjs`를 사용할 수 있습니다:
+
+[[CODE 2]]
+
+&gt; **Good to know**: `.cjs` 또는 `.cts` 확장자를 가진 `next.config`는 현재 **지원되지 않습니다**.
+
+## Configuration as a Function || Function으로 설정하기
+
+function을 사용할 수도 있습니다:
+
+[[CODE 3]]
+
+### Async Configuration || Async 설정
+
+Next.js 12.1.0부터는 async function을 사용할 수 있습니다:
+
+[[CODE 4]]
+
+### Phase
+
+`phase`는 configuration이 로드되는 현재 context입니다. [사용 가능한 phase](https://github.com/vercel/next.js/blob/5e6b008b561caf2710ab7be63320a3d549474a5b/packages/next/shared/lib/constants.ts#L19-L23)를 확인할 수 있습니다. phase는 `next/constants`에서 import할 수 있습니다:
+
+[[CODE 5]]
+
+## TypeScript
+
+프로젝트에서 TypeScript를 사용한다면 `next.config.ts`를 사용해 configuration에서 TypeScript를 쓸 수 있습니다:
+
+[[CODE 6]]
+
+주석 처리된 줄은 `next.config.js`에서 허용되는 config를 넣을 수 있는 위치이며, 이 config들은 [이 파일에 정의되어 있습니다](https://github.com/vercel/next.js/blob/canary/packages/next/src/server/config-shared.ts).
+
+하지만 어떤 config도 필수는 아니며, 각 config가 무엇을 하는지 모두 이해할 필요도 없습니다. 대신 이 섹션에서 활성화하거나 수정해야 하는 기능을 검색하면 무엇을 해야 하는지 안내해 줍니다.
+
+&gt; target Node.js 버전에서 사용할 수 없는 새로운 JavaScript 기능은 사용하지 마세요. `next.config.js`는 Webpack이나 Babel로 parse되지 않습니다.
+
+이 페이지는 사용 가능한 모든 configuration option을 문서화합니다:
+
+## Unit Testing (experimental) || Unit Testing (실험적 기능)
+
+Next.js 15.1부터 `next/experimental/testing/server` package에는 `next.config.js` 파일을 unit test하는 데 도움이 되는 utility가 포함되어 있습니다.
+
+`unstable_getResponseFromNextConfig` 함수는 제공된 request 정보로 `next.config.js`의 [`headers`](/docs/app/api-reference/config/next-config-js/headers), [`redirects`](/docs/app/api-reference/config/next-config-js/redirects), [`rewrites`](/docs/app/api-reference/config/next-config-js/rewrites) function을 실행하고, routing 결과가 담긴 `NextResponse`를 반환합니다.
+
+&gt; `unstable_getResponseFromNextConfig`의 response는 `next.config.js` field만 고려하며 proxy나 filesystem route는 고려하지 않으므로, production에서의 결과는 unit test와 다를 수 있습니다.
+
+[[CODE 7]]
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

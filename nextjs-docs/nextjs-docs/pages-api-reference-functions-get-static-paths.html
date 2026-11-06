@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>getStaticPaths (getStaticPaths) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/api-reference/functions/get-static-paths" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/api-reference/functions/get-static-paths" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/04-api-reference/03-functions/get-static-paths.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference-functions.html">Functions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">getStaticPaths<span class="sub">getStaticPaths</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><a href="pages-building-your-application-routing-dynamic-routes.html">Dynamic Routes</a>를 사용하는 page에서 <code>getStaticPaths</code>라는 함수를 export하면, Next.js는 <code>getStaticPaths</code>에 지정된 모든 path를 static하게 prerender합니다.</p><div class="en-orig"><p>When exporting a function called <code>getStaticPaths</code> from a page that uses <a href="pages-building-your-application-routing-dynamic-routes.html">Dynamic Routes</a>, Next.js will statically prerender all the paths specified by <code>getStaticPaths</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/repo/[name].tsx" data-js="pages/repo/[name].js">pages/repo/[name].tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type {
+  InferGetStaticPropsType,
+  GetStaticProps,
+  GetStaticPaths,
+} from &#x27;next&#x27;
+
+type Repo = {
+  name: string
+  stargazers_count: number
+}
+
+export const getStaticPaths = (async () =&gt; {
+  return {
+    paths: [
+      {
+        params: {
+          name: &#x27;next.js&#x27;,
+        },
+      }, // See the &quot;paths&quot; section below
+    ],
+    fallback: true, // false or &quot;blocking&quot;
+  }
+}) satisfies GetStaticPaths
+
+export const getStaticProps = (async (context) =&gt; {
+  const res = await fetch(&#x27;https://api.github.com/repos/vercel/next.js&#x27;)
+  const repo = await res.json()
+  return { props: { repo } }
+}) satisfies GetStaticProps&lt;{
+  repo: Repo
+}&gt;
+
+export default function Page({
+  repo,
+}: InferGetStaticPropsType&lt;typeof getStaticProps&gt;) {
+  return repo.stargazers_count
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function getStaticPaths() {
+  return {
+    paths: [
+      {
+        params: {
+          name: &#x27;next.js&#x27;,
+        },
+      }, // See the &quot;paths&quot; section below
+    ],
+    fallback: true, // false or &quot;blocking&quot;
+  }
+}
+
+export async function getStaticProps() {
+  const res = await fetch(&#x27;https://api.github.com/repos/vercel/next.js&#x27;)
+  const repo = await res.json()
+  return { props: { repo } }
+}
+
+export default function Page({ repo }) {
+  return repo.stargazers_count
+}</code></pre></div></div>
+<h2 class="sec" id="getstaticpaths-return-values"><a class="anchor" href="#getstaticpaths-return-values">getStaticPaths return values<span class="ko">getStaticPaths 반환 값</span></a></h2>
+<p><code>getStaticPaths</code> 함수는 다음 <strong>필수</strong> property를 가진 object를 반환해야 합니다:</p><div class="en-orig"><p>The <code>getStaticPaths</code> function should return an object with the following <strong>required</strong> properties:</p></div>
+<h3 class="sec" id="paths"><a class="anchor" href="#paths"><code>paths</code></a></h3>
+<p><code>paths</code> key는 어떤 path를 prerender할지 결정합니다. 예를 들어 <code>pages/posts/[id].js</code>라는 <a href="pages-building-your-application-routing-dynamic-routes.html">Dynamic Routes</a>를 사용하는 page가 있다고 가정해 봅시다. 이 page에서 <code>getStaticPaths</code>를 export하고 <code>paths</code>로 다음을 반환하면:</p><div class="en-orig"><p>The <code>paths</code> key determines which paths will be prerendered. For example, suppose that you have a page that uses <a href="pages-building-your-application-routing-dynamic-routes.html">Dynamic Routes</a> named <code>pages/posts/[id].js</code>. If you export <code>getStaticPaths</code> from this page and return the following for <code>paths</code>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">return {
+  paths: [
+    { params: { id: &#x27;1&#x27; }},
+    {
+      params: { id: &#x27;2&#x27; },
+      // with i18n configured the locale for the path can be returned as well
+      locale: &quot;en&quot;,
+    },
+  ],
+  fallback: ...
+}</code></pre></div></div>
+<p>Next.js는 <code>pages/posts/[id].js</code>의 page component를 사용해 <code>next build</code> 중에 <code>/posts/1</code>과 <code>/posts/2</code>를 static하게 생성합니다.</p><div class="en-orig"><p>Then, Next.js will statically generate <code>/posts/1</code> and <code>/posts/2</code> during <code>next build</code> using the page component in <code>pages/posts/[id].js</code>.</p></div>
+<p>각 <code>params</code> object의 값은 page 이름에 사용된 parameter와 일치해야 합니다:</p><div class="en-orig"><p>The value for each <code>params</code> object must match the parameters used in the page name:</p></div>
+<ul>
+<li>page 이름이 <code>pages/posts/[postId]/[commentId]</code>라면 <code>params</code>에는 <code>postId</code>와 <code>commentId</code>가 있어야 합니다.</li>
+<li>page 이름이 <code>pages/[...slug]</code>처럼 <a href="pages-building-your-application-routing-dynamic-routes.html#catch-all-segments">catch-all route</a>를 사용한다면 <code>params</code>에는 (배열인) <code>slug</code>가 있어야 합니다. 이 배열이 <code>[&#x27;hello&#x27;, &#x27;world&#x27;]</code>라면 Next.js는 <code>/hello/world</code>에 page를 static하게 생성합니다.</li>
+<li>page가 <a href="pages-building-your-application-routing-dynamic-routes.html#optional-catch-all-segments">optional catch-all route</a>를 사용한다면 <code>null</code>, <code>[]</code>, <code>undefined</code>, <code>false</code>를 사용해 가장 root의 route를 render합니다. 예를 들어 <code>pages/[[...slug]]</code>에 <code>slug: false</code>를 지정하면 Next.js는 <code>/</code> page를 static하게 생성합니다.</li>
+</ul><div class="en-orig"><ul>
+<li>If the page name is <code>pages/posts/[postId]/[commentId]</code>, then <code>params</code> should contain <code>postId</code> and <code>commentId</code>.</li>
+<li>If the page name uses <a href="pages-building-your-application-routing-dynamic-routes.html#catch-all-segments">catch-all routes</a> like <code>pages/[...slug]</code>, then <code>params</code> should contain <code>slug</code> (which is an array). If this array is <code>[&#x27;hello&#x27;, &#x27;world&#x27;]</code>, then Next.js will statically generate the page at <code>/hello/world</code>.</li>
+<li>If the page uses an <a href="pages-building-your-application-routing-dynamic-routes.html#optional-catch-all-segments">optional catch-all route</a>, use <code>null</code>, <code>[]</code>, <code>undefined</code> or <code>false</code> to render the root-most route. For example, if you supply <code>slug: false</code> for <code>pages/[[...slug]]</code>, Next.js will statically generate the page <code>/</code>.</li>
+</ul></div>
+<p><code>params</code> 문자열은 대소문자를 구분하는 <strong>case-sensitive</strong> 값이므로, path가 올바르게 생성되도록 정규화하는 것이 좋습니다. 예를 들어 param으로 <code>WoRLD</code>가 반환되면, 실제로 방문한 path가 <code>WoRLD</code>일 때만 일치하고 <code>world</code>나 <code>World</code>와는 일치하지 않습니다.</p><div class="en-orig"><p>The <code>params</code> strings are <strong>case-sensitive</strong> and ideally should be normalized to ensure the paths are generated correctly. For example, if <code>WoRLD</code> is returned for a param it will only match if <code>WoRLD</code> is the actual path visited, not <code>world</code> or <code>World</code>.</p></div>
+<p><code>params</code> object와 별도로, <a href="pages-guides-internationalization.html">i18n이 설정된 경우</a> <code>locale</code> field를 반환할 수 있으며, 이 field는 생성되는 path의 locale을 설정합니다.</p><div class="en-orig"><p>Separate of the <code>params</code> object a <code>locale</code> field can be returned when <a href="pages-guides-internationalization.html">i18n is configured</a>, which configures the locale for the path being generated.</p></div>
+<h3 class="sec" id="fallback-false"><a class="anchor" href="#fallback-false"><code>fallback: false</code></a></h3>
+<p><code>fallback</code>이 <code>false</code>이면, <code>getStaticPaths</code>가 반환하지 않은 모든 path는 <strong>404 page</strong>가 됩니다.</p><div class="en-orig"><p>If <code>fallback</code> is <code>false</code>, then any paths not returned by <code>getStaticPaths</code> will result in a <strong>404 page</strong>.</p></div>
+<p><code>next build</code>가 실행되면 Next.js는 <code>getStaticPaths</code>가 <code>fallback: false</code>를 반환했는지 확인하고, <code>getStaticPaths</code>가 반환한 path<strong>만</strong> build합니다. 이 option은 생성할 path 수가 적거나 새 page data가 자주 추가되지 않을 때 유용합니다. path를 더 추가해야 하는데 <code>fallback: false</code>를 사용하고 있다면, 새 path가 생성되도록 <code>next build</code>를 다시 실행해야 합니다.</p><div class="en-orig"><p>When <code>next build</code> is run, Next.js will check if <code>getStaticPaths</code> returned <code>fallback: false</code>, it will then build <strong>only</strong> the paths returned by <code>getStaticPaths</code>. This option is useful if you have a small number of paths to create, or new page data is not added often. If you find that you need to add more paths, and you have <code>fallback: false</code>, you will need to run <code>next build</code> again so that the new paths can be generated.</p></div>
+<p>다음 예제는 <code>pages/posts/[id].js</code>라는 page에서 page당 하나의 blog post를 prerender합니다. blog post 목록은 CMS에서 fetch되어 <code>getStaticPaths</code>가 반환합니다. 그다음 각 page에서 <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a>를 사용해 CMS에서 post data를 fetch합니다.</p><div class="en-orig"><p>The following example prerenders one blog post per page called <code>pages/posts/[id].js</code>. The list of blog posts will be fetched from a CMS and returned by <code>getStaticPaths</code>. Then, for each page, it fetches the post data from a CMS using <a href="pages-building-your-application-data-fetching-get-static-props.html"><code>getStaticProps</code></a>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/posts/[id].js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">function Post({ post }) {
+  // Render post...
+}
+
+// This function gets called at build time
+export async function getStaticPaths() {
+  // Call an external API endpoint to get posts
+  const res = await fetch(&#x27;https://.../posts&#x27;)
+  const posts = await res.json()
+
+  // Get the paths we want to prerender based on posts
+  const paths = posts.map((post) =&gt; ({
+    params: { id: post.id },
+  }))
+
+  // We&#x27;ll prerender only these paths at build time.
+  // { fallback: false } means other routes should 404.
+  return { paths, fallback: false }
+}
+
+// This also gets called at build time
+export async function getStaticProps({ params }) {
+  // params contains the post `id`.
+  // If the route is like /posts/1, then params.id is 1
+  const res = await fetch(`https://.../posts/${params.id}`)
+  const post = await res.json()
+
+  // Pass post data to the page via props
+  return { props: { post } }
+}
+
+export default Post</code></pre></div></div>
+<h3 class="sec" id="fallback-true"><a class="anchor" href="#fallback-true"><code>fallback: true</code></a></h3>
+<details><summary>예제</summary><div class="details-body"><ul>
+<li><a href="https://react-tweet.vercel.app/" target="_blank" rel="noopener">많은 수의 page를 static하게 생성하기</a></li>
+</ul></div></details>
+<p><code>fallback</code>이 <code>true</code>이면 <code>getStaticProps</code>의 동작이 다음과 같이 바뀝니다:</p><div class="en-orig"><p>If <code>fallback</code> is <code>true</code>, then the behavior of <code>getStaticProps</code> changes in the following ways:</p></div>
+<ul>
+<li><code>getStaticPaths</code>가 반환한 path는 build time에 <code>getStaticProps</code>에 의해 <code>HTML</code>로 render됩니다.</li>
+<li>build time에 생성되지 않은 path는 404 page가 되지 <strong>않습니다</strong>. 대신 Next.js는 그런 path에 대한 첫 request에 page의 <a href="#fallback-pages">"fallback"</a> 버전을 제공합니다. Google 같은 web crawler에는 fallback이 제공되지 않고, 대신 해당 path가 <a href="#fallback-blocking"><code>fallback: &#x27;blocking&#x27;</code></a>처럼 동작합니다.</li>
+<li><code>fallback: true</code>인 page로 <code>next/link</code>나 <code>next/router</code>를 통해 (client-side에서) 이동하면 Next.js는 fallback을 제공하지 <em>않고</em>, 대신 page가 <a href="#fallback-blocking"><code>fallback: &#x27;blocking&#x27;</code></a>처럼 동작합니다.</li>
+<li>background에서 Next.js는 요청된 path의 <code>HTML</code>과 <code>JSON</code>을 static하게 생성합니다. 여기에는 <code>getStaticProps</code> 실행이 포함됩니다.</li>
+<li>완료되면 브라우저는 생성된 path의 <code>JSON</code>을 받습니다. 이 JSON은 필요한 props로 page를 자동으로 render하는 데 사용됩니다. 사용자 입장에서는 page가 fallback page에서 전체 page로 바뀌게 됩니다.</li>
+<li>동시에 Next.js는 이 path를 prerender된 page 목록에 추가합니다. 같은 path에 대한 이후 request에는 build time에 prerender된 다른 page처럼 생성된 page가 제공됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The paths returned from <code>getStaticPaths</code> will be rendered to <code>HTML</code> at build time by <code>getStaticProps</code>.</li>
+<li>The paths that have not been generated at build time will <strong>not</strong> result in a 404 page. Instead, Next.js will serve a <a href="#fallback-pages">“fallback”</a> version of the page on the first request to such a path. Web crawlers, such as Google, won't be served a fallback and instead the path will behave as in <a href="#fallback-blocking"><code>fallback: &#x27;blocking&#x27;</code></a>.</li>
+<li>When a page with <code>fallback: true</code> is navigated to through <code>next/link</code> or <code>next/router</code> (client-side) Next.js will <em>not</em> serve a fallback and instead the page will behave as <a href="#fallback-blocking"><code>fallback: &#x27;blocking&#x27;</code></a>.</li>
+<li>In the background, Next.js will statically generate the requested path <code>HTML</code> and <code>JSON</code>. This includes running <code>getStaticProps</code>.</li>
+<li>When complete, the browser receives the <code>JSON</code> for the generated path. This will be used to automatically render the page with the required props. From the user’s perspective, the page will be swapped from the fallback page to the full page.</li>
+<li>At the same time, Next.js adds this path to the list of prerendered pages. Subsequent requests to the same path will serve the generated page, like other pages prerendered at build time.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>fallback: true</code>는 <a href="pages-guides-static-exports.html"><code>output: &#x27;export&#x27;</code></a>를 사용할 때는 지원되지 않습니다.</p><div class="en-orig"><p><code>fallback: true</code> is not supported when using <a href="pages-guides-static-exports.html"><code>output: &#x27;export&#x27;</code></a>.</p></div></div></div>
+<h4 class="sec" id="when-is-fallback-true-useful"><a class="anchor" href="#when-is-fallback-true-useful">When is <code>fallback: true</code> useful?<span class="ko"><code>fallback: true</code>는 언제 유용한가요?</span></a></h4>
+<p><code>fallback: true</code>는 앱에 data에 의존하는 static page가 매우 많을 때(예: 아주 큰 e-commerce 사이트) 유용합니다. 모든 상품 page를 prerender하려고 하면 build에 매우 오랜 시간이 걸립니다.</p><div class="en-orig"><p><code>fallback: true</code> is useful if your app has a very large number of static pages that depend on data (such as a very large e-commerce site). If you want to prerender all product pages, the builds would take a very long time.</p></div>
+<p>대신 일부 page만 static하게 생성하고 나머지에는 <code>fallback: true</code>를 사용할 수 있습니다. 누군가 아직 생성되지 않은 page를 요청하면, 사용자는 loading indicator나 skeleton component가 있는 page를 보게 됩니다.</p><div class="en-orig"><p>Instead, you may statically generate a small subset of pages and use <code>fallback: true</code> for the rest. When someone requests a page that is not generated yet, the user will see the page with a loading indicator or skeleton component.</p></div>
+<p>잠시 후 <code>getStaticProps</code>가 끝나면 page가 요청된 data로 render됩니다. 이제부터 같은 page를 요청하는 모든 사람은 static하게 prerender된 page를 받게 됩니다.</p><div class="en-orig"><p>Shortly after, <code>getStaticProps</code> finishes and the page will be rendered with the requested data. From now on, everyone who requests the same page will get the statically prerendered page.</p></div>
+<p>이렇게 하면 빠른 build와 Static Generation의 이점을 유지하면서도 사용자가 항상 빠른 경험을 할 수 있습니다.</p><div class="en-orig"><p>This ensures that users always have a fast experience while preserving fast builds and the benefits of Static Generation.</p></div>
+<p><code>fallback: true</code>는 생성된 page를 _업데이트_하지 않습니다. 업데이트가 필요하다면 <a href="pages-guides-incremental-static-regeneration.html">Incremental Static Regeneration</a>을 살펴보세요.</p><div class="en-orig"><p><code>fallback: true</code> will not <em>update</em> generated pages, for that take a look at <a href="pages-guides-incremental-static-regeneration.html">Incremental Static Regeneration</a>.</p></div>
+<h3 class="sec" id="fallback-blocking"><a class="anchor" href="#fallback-blocking"><code>fallback: &#x27;blocking&#x27;</code></a></h3>
+<p><code>fallback</code>이 <code>&#x27;blocking&#x27;</code>이면, <code>getStaticPaths</code>가 반환하지 않은 새 path는 SSR과 동일하게 <code>HTML</code>이 생성될 때까지 기다리고(그래서 _blocking_입니다), 이후 request를 위해 cache되어 path당 한 번만 생성됩니다.</p><div class="en-orig"><p>If <code>fallback</code> is <code>&#x27;blocking&#x27;</code>, new paths not returned by <code>getStaticPaths</code> will wait for the <code>HTML</code> to be generated, identical to SSR (hence why <em>blocking</em>), and then be cached for future requests so it only happens once per path.</p></div>
+<p><code>getStaticProps</code>는 다음과 같이 동작합니다:</p><div class="en-orig"><p><code>getStaticProps</code> will behave as follows:</p></div>
+<ul>
+<li><code>getStaticPaths</code>가 반환한 path는 build time에 <code>getStaticProps</code>에 의해 <code>HTML</code>로 render됩니다.</li>
+<li>build time에 생성되지 않은 path는 404 page가 되지 <strong>않습니다</strong>. 대신 Next.js는 첫 request에서 SSR을 수행하고 생성된 <code>HTML</code>을 반환합니다.</li>
+<li>완료되면 브라우저는 생성된 path의 <code>HTML</code>을 받습니다. 사용자 입장에서는 "브라우저가 page를 요청하는 중" 상태에서 "전체 page가 로드됨" 상태로 넘어갑니다. loading/fallback state가 깜빡이는 일은 없습니다.</li>
+<li>동시에 Next.js는 이 path를 prerender된 page 목록에 추가합니다. 같은 path에 대한 이후 request에는 build time에 prerender된 다른 page처럼 생성된 page가 제공됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The paths returned from <code>getStaticPaths</code> will be rendered to <code>HTML</code> at build time by <code>getStaticProps</code>.</li>
+<li>The paths that have not been generated at build time will <strong>not</strong> result in a 404 page. Instead, Next.js will SSR on the first request and return the generated <code>HTML</code>.</li>
+<li>When complete, the browser receives the <code>HTML</code> for the generated path. From the user’s perspective, it will transition from "the browser is requesting the page" to "the full page is loaded". There is no flash of loading/fallback state.</li>
+<li>At the same time, Next.js adds this path to the list of prerendered pages. Subsequent requests to the same path will serve the generated page, like other pages prerendered at build time.</li>
+</ul></div>
+<p><code>fallback: &#x27;blocking&#x27;</code>은 기본적으로 생성된 page를 _업데이트_하지 않습니다. 생성된 page를 업데이트하려면 <code>fallback: &#x27;blocking&#x27;</code>과 함께 <a href="pages-guides-incremental-static-regeneration.html">Incremental Static Regeneration</a>을 사용하세요.</p><div class="en-orig"><p><code>fallback: &#x27;blocking&#x27;</code> will not <em>update</em> generated pages by default. To update generated pages, use <a href="pages-guides-incremental-static-regeneration.html">Incremental Static Regeneration</a> in conjunction with <code>fallback: &#x27;blocking&#x27;</code>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>fallback: &#x27;blocking&#x27;</code>은 <a href="pages-guides-static-exports.html"><code>output: &#x27;export&#x27;</code></a>를 사용할 때는 지원되지 않습니다.</p><div class="en-orig"><p><code>fallback: &#x27;blocking&#x27;</code> is not supported when using <a href="pages-guides-static-exports.html"><code>output: &#x27;export&#x27;</code></a>.</p></div></div></div>
+<h3 class="sec" id="fallback-pages"><a class="anchor" href="#fallback-pages">Fallback pages<span class="ko">Fallback page</span></a></h3>
+<p>page의 "fallback" 버전에서는:</p><div class="en-orig"><p>In the “fallback” version of a page:</p></div>
+<ul>
+<li>page의 props가 비어 있습니다.</li>
+<li><a href="pages-api-reference-functions-use-router.html">router</a>를 사용해 fallback이 render되고 있는지 감지할 수 있으며, 이때 <code>router.isFallback</code>은 <code>true</code>가 됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The page’s props will be empty.</li>
+<li>Using the <a href="pages-api-reference-functions-use-router.html">router</a>, you can detect if the fallback is being rendered, <code>router.isFallback</code> will be <code>true</code>.</li>
+</ul></div>
+<p>다음 예제는 <code>isFallback</code> 사용법을 보여 줍니다:</p><div class="en-orig"><p>The following example showcases using <code>isFallback</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">pages/posts/[id].js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { useRouter } from &#x27;next/router&#x27;
+
+function Post({ post }) {
+  const router = useRouter()
+
+  // If the page is not yet generated, this will be displayed
+  // initially until getStaticProps() finishes running
+  if (router.isFallback) {
+    return &lt;div&gt;Loading...&lt;/div&gt;
+  }
+
+  // Render post...
+}
+
+// This function gets called at build time
+export async function getStaticPaths() {
+  return {
+    // Only `/posts/1` and `/posts/2` are generated at build time
+    paths: [{ params: { id: &#x27;1&#x27; } }, { params: { id: &#x27;2&#x27; } }],
+    // Enable statically generating additional pages
+    // For example: `/posts/3`
+    fallback: true,
+  }
+}
+
+// This also gets called at build time
+export async function getStaticProps({ params }) {
+  // params contains the post `id`.
+  // If the route is like /posts/1, then params.id is 1
+  const res = await fetch(`https://.../posts/${params.id}`)
+  const post = await res.json()
+
+  // Pass post data to the page via props
+  return {
+    props: { post },
+    // Re-generate the post at most once per second
+    // if a request comes in
+    revalidate: 1,
+  }
+}
+
+export default Post</code></pre></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v13.4.0</code></td><td><a href="app-getting-started-fetching-data.html">App Router</a>가 <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams()</code></a>를 포함한 단순화된 data fetching과 함께 stable이 되었습니다</td></tr>
+<tr><td><code>v12.2.0</code></td><td><a href="pages-guides-incremental-static-regeneration.html#on-demand-revalidation-with-revalidatepath">On-Demand Incremental Static Regeneration</a>이 stable이 되었습니다.</td></tr>
+<tr><td><code>v12.1.0</code></td><td><a href="pages-guides-incremental-static-regeneration.html#on-demand-revalidation-with-revalidatepath">On-Demand Incremental Static Regeneration</a>이 추가되었습니다(beta).</td></tr>
+<tr><td><code>v9.5.0</code></td><td><a href="pages-guides-incremental-static-regeneration.html">Incremental Static Regeneration</a>이 stable이 되었습니다</td></tr>
+<tr><td><code>v9.3.0</code></td><td><code>getStaticPaths</code>가 도입되었습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v13.4.0</code></td><td><a href="app-getting-started-fetching-data.html">App Router</a> is now stable with simplified data fetching, including <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams()</code></a></td></tr>
+<tr><td><code>v12.2.0</code></td><td><a href="pages-guides-incremental-static-regeneration.html#on-demand-revalidation-with-revalidatepath">On-Demand Incremental Static Regeneration</a> is stable.</td></tr>
+<tr><td><code>v12.1.0</code></td><td><a href="pages-guides-incremental-static-regeneration.html#on-demand-revalidation-with-revalidatepath">On-Demand Incremental Static Regeneration</a> added (beta).</td></tr>
+<tr><td><code>v9.5.0</code></td><td>Stable <a href="pages-guides-incremental-static-regeneration.html">Incremental Static Regeneration</a></td></tr>
+<tr><td><code>v9.3.0</code></td><td><code>getStaticPaths</code> introduced.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/04-api-reference/03-functions/get-static-paths.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/api-reference/functions/get-static-paths" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-api-reference-functions-get-server-side-props.html" class="prev"><div class="dir">← 이전</div><div class="ttl">getServerSideProps</div><div class="ttl-ko">getServerSideProps</div></a>
+      <a href="pages-api-reference-functions-get-static-props.html" class="next"><div class="dir">다음 →</div><div class="ttl">getStaticProps</div><div class="ttl-ko">getStaticProps</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/api-reference/functions/get-static-paths" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#getstaticpaths-return-values">getStaticPaths return values</a></li><li class="l3"><a href="#paths"><code>paths</code></a></li><li class="l3"><a href="#fallback-false"><code>fallback: false</code></a></li><li class="l3"><a href="#fallback-true"><code>fallback: true</code></a></li><li class="l3"><a href="#fallback-blocking"><code>fallback: &#x27;blocking&#x27;</code></a></li><li class="l3"><a href="#fallback-pages">Fallback pages</a></li><li class="l2"><a href="#version-history">Version History</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+[Dynamic Routes](/docs/pages/building-your-application/routing/dynamic-routes)를 사용하는 page에서 `getStaticPaths`라는 함수를 export하면, Next.js는 `getStaticPaths`에 지정된 모든 path를 static하게 prerender합니다.
+
+[[CODE 1]]
+
+## getStaticPaths return values || getStaticPaths 반환 값
+
+`getStaticPaths` 함수는 다음 **필수** property를 가진 object를 반환해야 합니다:
+
+### `paths`
+
+`paths` key는 어떤 path를 prerender할지 결정합니다. 예를 들어 `pages/posts/[id].js`라는 [Dynamic Routes](/docs/pages/building-your-application/routing/dynamic-routes)를 사용하는 page가 있다고 가정해 봅시다. 이 page에서 `getStaticPaths`를 export하고 `paths`로 다음을 반환하면:
+
+[[CODE 2]]
+
+Next.js는 `pages/posts/[id].js`의 page component를 사용해 `next build` 중에 `/posts/1`과 `/posts/2`를 static하게 생성합니다.
+
+각 `params` object의 값은 page 이름에 사용된 parameter와 일치해야 합니다:
+
+- page 이름이 `pages/posts/[postId]/[commentId]`라면 `params`에는 `postId`와 `commentId`가 있어야 합니다.
+- page 이름이 `pages/[...slug]`처럼 [catch-all route](/docs/pages/building-your-application/routing/dynamic-routes#catch-all-segments)를 사용한다면 `params`에는 (배열인) `slug`가 있어야 합니다. 이 배열이 `[&#x27;hello&#x27;, &#x27;world&#x27;]`라면 Next.js는 `/hello/world`에 page를 static하게 생성합니다.
+- page가 [optional catch-all route](/docs/pages/building-your-application/routing/dynamic-routes#optional-catch-all-segments)를 사용한다면 `null`, `[]`, `undefined`, `false`를 사용해 가장 root의 route를 render합니다. 예를 들어 `pages/[[...slug]]`에 `slug: false`를 지정하면 Next.js는 `/` page를 static하게 생성합니다.
+
+`params` 문자열은 대소문자를 구분하는 **case-sensitive** 값이므로, path가 올바르게 생성되도록 정규화하는 것이 좋습니다. 예를 들어 param으로 `WoRLD`가 반환되면, 실제로 방문한 path가 `WoRLD`일 때만 일치하고 `world`나 `World`와는 일치하지 않습니다.
+
+`params` object와 별도로, [i18n이 설정된 경우](/docs/pages/guides/internationalization) `locale` field를 반환할 수 있으며, 이 field는 생성되는 path의 locale을 설정합니다.
+
+### `fallback: false`
+
+`fallback`이 `false`이면, `getStaticPaths`가 반환하지 않은 모든 path는 **404 page**가 됩니다.
+
+`next build`가 실행되면 Next.js는 `getStaticPaths`가 `fallback: false`를 반환했는지 확인하고, `getStaticPaths`가 반환한 path**만** build합니다. 이 option은 생성할 path 수가 적거나 새 page data가 자주 추가되지 않을 때 유용합니다. path를 더 추가해야 하는데 `fallback: false`를 사용하고 있다면, 새 path가 생성되도록 `next build`를 다시 실행해야 합니다.
+
+다음 예제는 `pages/posts/[id].js`라는 page에서 page당 하나의 blog post를 prerender합니다. blog post 목록은 CMS에서 fetch되어 `getStaticPaths`가 반환합니다. 그다음 각 page에서 [`getStaticProps`](/docs/pages/building-your-application/data-fetching/get-static-props)를 사용해 CMS에서 post data를 fetch합니다.
+
+[[CODE 3]]
+
+### `fallback: true`
+
+&lt;details&gt;
+  &lt;summary&gt;예제&lt;/summary&gt;
+
+- [많은 수의 page를 static하게 생성하기](https://react-tweet.vercel.app/)
+
+&lt;/details&gt;
+
+`fallback`이 `true`이면 `getStaticProps`의 동작이 다음과 같이 바뀝니다:
+
+- `getStaticPaths`가 반환한 path는 build time에 `getStaticProps`에 의해 `HTML`로 render됩니다.
+- build time에 생성되지 않은 path는 404 page가 되지 **않습니다**. 대신 Next.js는 그런 path에 대한 첫 request에 page의 [&quot;fallback&quot;](#fallback-pages) 버전을 제공합니다. Google 같은 web crawler에는 fallback이 제공되지 않고, 대신 해당 path가 [`fallback: &#x27;blocking&#x27;`](#fallback-blocking)처럼 동작합니다.
+- `fallback: true`인 page로 `next/link`나 `next/router`를 통해 (client-side에서) 이동하면 Next.js는 fallback을 제공하지 _않고_, 대신 page가 [`fallback: &#x27;blocking&#x27;`](#fallback-blocking)처럼 동작합니다.
+- background에서 Next.js는 요청된 path의 `HTML`과 `JSON`을 static하게 생성합니다. 여기에는 `getStaticProps` 실행이 포함됩니다.
+- 완료되면 브라우저는 생성된 path의 `JSON`을 받습니다. 이 JSON은 필요한 props로 page를 자동으로 render하는 데 사용됩니다. 사용자 입장에서는 page가 fallback page에서 전체 page로 바뀌게 됩니다.
+- 동시에 Next.js는 이 path를 prerender된 page 목록에 추가합니다. 같은 path에 대한 이후 request에는 build time에 prerender된 다른 page처럼 생성된 page가 제공됩니다.
+
+&gt; **Good to know**: `fallback: true`는 [`output: &#x27;export&#x27;`](/docs/pages/guides/static-exports)를 사용할 때는 지원되지 않습니다.
+
+#### When is `fallback: true` useful? || `fallback: true`는 언제 유용한가요?
+
+`fallback: true`는 앱에 data에 의존하는 static page가 매우 많을 때(예: 아주 큰 e-commerce 사이트) 유용합니다. 모든 상품 page를 prerender하려고 하면 build에 매우 오랜 시간이 걸립니다.
+
+대신 일부 page만 static하게 생성하고 나머지에는 `fallback: true`를 사용할 수 있습니다. 누군가 아직 생성되지 않은 page를 요청하면, 사용자는 loading indicator나 skeleton component가 있는 page를 보게 됩니다.
+
+잠시 후 `getStaticProps`가 끝나면 page가 요청된 data로 render됩니다. 이제부터 같은 page를 요청하는 모든 사람은 static하게 prerender된 page를 받게 됩니다.
+
+이렇게 하면 빠른 build와 Static Generation의 이점을 유지하면서도 사용자가 항상 빠른 경험을 할 수 있습니다.
+
+`fallback: true`는 생성된 page를 _업데이트_하지 않습니다. 업데이트가 필요하다면 [Incremental Static Regeneration](/docs/pages/guides/incremental-static-regeneration)을 살펴보세요.
+
+### `fallback: &#x27;blocking&#x27;`
+
+`fallback`이 `&#x27;blocking&#x27;`이면, `getStaticPaths`가 반환하지 않은 새 path는 SSR과 동일하게 `HTML`이 생성될 때까지 기다리고(그래서 _blocking_입니다), 이후 request를 위해 cache되어 path당 한 번만 생성됩니다.
+
+`getStaticProps`는 다음과 같이 동작합니다:
+
+- `getStaticPaths`가 반환한 path는 build time에 `getStaticProps`에 의해 `HTML`로 render됩니다.
+- build time에 생성되지 않은 path는 404 page가 되지 **않습니다**. 대신 Next.js는 첫 request에서 SSR을 수행하고 생성된 `HTML`을 반환합니다.
+- 완료되면 브라우저는 생성된 path의 `HTML`을 받습니다. 사용자 입장에서는 &quot;브라우저가 page를 요청하는 중&quot; 상태에서 &quot;전체 page가 로드됨&quot; 상태로 넘어갑니다. loading/fallback state가 깜빡이는 일은 없습니다.
+- 동시에 Next.js는 이 path를 prerender된 page 목록에 추가합니다. 같은 path에 대한 이후 request에는 build time에 prerender된 다른 page처럼 생성된 page가 제공됩니다.
+
+`fallback: &#x27;blocking&#x27;`은 기본적으로 생성된 page를 _업데이트_하지 않습니다. 생성된 page를 업데이트하려면 `fallback: &#x27;blocking&#x27;`과 함께 [Incremental Static Regeneration](/docs/pages/guides/incremental-static-regeneration)을 사용하세요.
+
+&gt; **Good to know**: `fallback: &#x27;blocking&#x27;`은 [`output: &#x27;export&#x27;`](/docs/pages/guides/static-exports)를 사용할 때는 지원되지 않습니다.
+
+### Fallback pages || Fallback page
+
+page의 &quot;fallback&quot; 버전에서는:
+
+- page의 props가 비어 있습니다.
+- [router](/docs/pages/api-reference/functions/use-router)를 사용해 fallback이 render되고 있는지 감지할 수 있으며, 이때 `router.isFallback`은 `true`가 됩니다.
+
+다음 예제는 `isFallback` 사용법을 보여 줍니다:
+
+[[CODE 4]]
+
+## Version History || 버전 기록
+
+| Version | Changes |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `v13.4.0` | [App Router](/docs/app/getting-started/fetching-data)가 [`generateStaticParams()`](/docs/app/api-reference/functions/generate-static-params)를 포함한 단순화된 data fetching과 함께 stable이 되었습니다 |
+| `v12.2.0` | [On-Demand Incremental Static Regeneration](/docs/pages/guides/incremental-static-regeneration#on-demand-revalidation-with-revalidatepath)이 stable이 되었습니다. |
+| `v12.1.0` | [On-Demand Incremental Static Regeneration](/docs/pages/guides/incremental-static-regeneration#on-demand-revalidation-with-revalidatepath)이 추가되었습니다(beta). |
+| `v9.5.0` | [Incremental Static Regeneration](/docs/pages/guides/incremental-static-regeneration)이 stable이 되었습니다 |
+| `v9.3.0` | `getStaticPaths`가 도입되었습니다. |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

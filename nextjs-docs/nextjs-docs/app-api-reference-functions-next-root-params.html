@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>next/root-params (next/root-params) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/functions/next-root-params" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/functions/next-root-params" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/next-root-params.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-functions.html">Functions</a></div>
+    <div class="title-row">
+      <h1 class="page-title">next/root-params<span class="sub">next/root-params</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>next/root-params</code> module은 <a href="app-glossary.html#server-component"><strong>Server Components</strong></a>에서 root 수준 <a href="app-api-reference-file-conventions-dynamic-routes.html">parameter</a>에 접근하기 위한 getter 함수를 제공합니다. 각 root parameter는 현재 route의 parameter 값으로 resolve되는 async 함수로 export됩니다.</p><div class="en-orig"><p>The <code>next/root-params</code> module provides getter functions for accessing root-level <a href="app-api-reference-file-conventions-dynamic-routes.html">parameters</a> in <a href="app-glossary.html#server-component"><strong>Server Components</strong></a>. Each root parameter is exported as an async function that resolves to the parameter value for the current route.</p></div>
+<p>export 이름은 dynamic segment 폴더 이름에서 생성됩니다. 예를 들어 root layout이 <code>app/[locale]</code> 안에 있다면 <code>next/root-params</code>에서 <code>locale</code>을 import합니다.</p><div class="en-orig"><p>The export names are generated from your dynamic segment folder names. For example, if your root layout is inside <code>app/[locale]</code>, you import <code>locale</code> from <code>next/root-params</code>.</p></div>
+<p>이는 언어나 locale segment처럼 애플리케이션 전반, 예를 들어 공유 utility, layout, 깊이 중첩된 component 등에서 props로 내려 주지 않고 접근해야 하는 값에 유용합니다.</p><div class="en-orig"><p>This is useful for values like a language or locale segment that need to be accessed across your application, for example in shared utilities, layouts, and deeply nested components, without passing them down as props.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[lang]/layout.tsx" data-js="app/[lang]/layout.js">app/[lang]/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { lang } from &#x27;next/root-params&#x27;
+
+export default async function RootLayout(props: LayoutProps&lt;&#x27;/[lang]&#x27;&gt;) {
+  return (
+    &lt;html lang={await lang()}&gt;
+      &lt;body&gt;{props.children}&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { lang } from &#x27;next/root-params&#x27;
+
+export default async function RootLayout({ children }) {
+  return (
+    &lt;html lang={await lang()}&gt;
+      &lt;body&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<p>root parameter는 <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a> 앞에 나타나는 <a href="app-api-reference-file-conventions-dynamic-routes.html">dynamic segment</a>입니다. 일반 <a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code> prop</a>과 달리, root parameter getter는 prop drilling 없이 애플리케이션의 어떤 Server Component에서든 호출할 수 있습니다. 자세한 내용은 <a href="#why-root-parameters-are-special">Why root parameters are special</a>을 참고하세요.</p><div class="en-orig"><p>Root parameters are the <a href="app-api-reference-file-conventions-dynamic-routes.html">dynamic segments</a> that appear before the <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a>. Unlike the regular <a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code> prop</a>, root parameter getters can be called from any Server Component in your application without prop drilling. See <a href="#why-root-parameters-are-special">Why root parameters are special</a> for more details.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>root parameter 이름은 유효한 JavaScript 함수 identifier여야 합니다. kebab-case segment 이름(예: <code>[post-slug]</code>)은 지원되지 않으며, dev 중이나 build 중에 error가 발생합니다.</li>
+<li><code>next/root-params</code>는 Server Component에서 사용할 수 있습니다. Client Component, Server Action, <a href="app-api-reference-file-conventions-route.html">Route Handler</a>에서는 사용할 수 없습니다. Route Handler 지원은 향후 release에서 계획되어 있습니다.</li>
+<li><code>next/root-params</code> export의 type은 <a href="app-api-reference-config-typescript.html#route-aware-type-helpers"><code>PageProps</code>와 <code>LayoutProps</code></a>와 마찬가지로 <code>next dev</code>, <code>next build</code>, 또는 <a href="app-api-reference-cli-next.html#next-typegen-options"><code>next typegen</code></a> 중에 생성됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Root parameter names must be valid JavaScript function identifiers. Kebab-cased segment names (e.g. <code>[post-slug]</code>) are not supported and will cause an error at dev time or during build.</li>
+<li><code>next/root-params</code> can be used in Server Components. It cannot be used in Client Components, Server Actions, or <a href="app-api-reference-file-conventions-route.html">Route Handlers</a>. Support for Route Handlers is planned for a future release.</li>
+<li>Types for the <code>next/root-params</code> exports are generated during <code>next dev</code>, <code>next build</code>, or <a href="app-api-reference-cli-next.html#next-typegen-options"><code>next typegen</code></a>, the same as <a href="app-api-reference-config-typescript.html#route-aware-type-helpers"><code>PageProps</code> and <code>LayoutProps</code></a>.</li>
+</ul></div></div></div>
+<h2 class="sec" id="root-parameters-and-generatestaticparams"><a class="anchor" href="#root-parameters-and-generatestaticparams">Root parameters and <code>generateStaticParams</code><span class="ko">Root parameter와 <code>generateStaticParams</code></span></a></h2>
+<p>root parameter는 이를 정의하는 route를 만드는 즉시 사용할 수 있습니다. <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a> 함수는 <a href="app-api-reference-config-next-config-js-cacheComponents.html">Cache Components</a>를 사용할 때만 필요하며, 이 경우 각 root parameter에 최소 하나의 값이 있어야 하고 그렇지 않으면 build가 실패합니다.</p><div class="en-orig"><p>Root parameters are available as soon as you create the routes that define them. A <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a> function is only required with <a href="app-api-reference-config-next-config-js-cacheComponents.html">Cache Components</a>, where each root parameter must have at least one value or the build fails.</p></div>
+<p>root parameter가 하나인 경우:</p><div class="en-orig"><p>With a single root parameter:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[lang]/layout.tsx" data-js="app/[lang]/layout.js">app/[lang]/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { lang } from &#x27;next/root-params&#x27;
+
+export default async function RootLayout(props: LayoutProps&lt;&#x27;/[lang]&#x27;&gt;) {
+  return (
+    &lt;html lang={await lang()}&gt;
+      &lt;body&gt;{props.children}&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}
+
+export async function generateStaticParams() {
+  return [{ lang: &#x27;en&#x27; }, { lang: &#x27;fr&#x27; }]
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { lang } from &#x27;next/root-params&#x27;
+
+export default async function RootLayout({ children }) {
+  return (
+    &lt;html lang={await lang()}&gt;
+      &lt;body&gt;{children}&lt;/body&gt;
+    &lt;/html&gt;
+  )
+}
+
+export async function generateStaticParams() {
+  return [{ lang: &#x27;en&#x27; }, { lang: &#x27;fr&#x27; }]
+}</code></pre></div></div>
+<p>root parameter가 여러 개인 경우, 각각에 대한 값을 반환하세요:</p><div class="en-orig"><p>With multiple root parameters, return a value for each:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[lang]/[locale]/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">export async function generateStaticParams() {
+  return [
+    { lang: &#x27;en&#x27;, locale: &#x27;us&#x27; },
+    { lang: &#x27;en&#x27;, locale: &#x27;uk&#x27; },
+  ]
+}</code></pre></div></div>
+<h3 class="sec" id="reading-root-parameters-in-a-nested-generatestaticparams"><a class="anchor" href="#reading-root-parameters-in-a-nested-generatestaticparams">Reading root parameters in a nested <code>generateStaticParams</code><span class="ko">중첩된 <code>generateStaticParams</code>에서 root parameter 읽기</span></a></h3>
+<p>중첩된 segment의 <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a> 안에서는 <code>params</code> 인자에서 destructuring하는 대신 getter로 root parameter를 직접 읽을 수 있습니다:</p><div class="en-orig"><p>Inside a nested segment's <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>, you can read a root parameter directly with its getter, instead of destructuring it from the <code>params</code> argument:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[lang]/posts/[slug]/page.tsx" data-js="app/[lang]/posts/[slug]/page.js">app/[lang]/posts/[slug]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { lang } from &#x27;next/root-params&#x27;
+
+export async function generateStaticParams() {
+  const language = await lang()
+  const posts = await fetch(
+    `https://api.example.com/posts?lang=${language}`
+  ).then((res) =&gt; res.json())
+  return posts.map((post) =&gt; ({ slug: post.slug }))
+}
+
+export default async function Page() {
+  // ...
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { lang } from &#x27;next/root-params&#x27;
+
+export async function generateStaticParams() {
+  const language = await lang()
+  const posts = await fetch(
+    `https://api.example.com/posts?lang=${language}`
+  ).then((res) =&gt; res.json())
+  return posts.map((post) =&gt; ({ slug: post.slug }))
+}
+
+export default async function Page() {
+  // ...
+}</code></pre></div></div>
+<h2 class="sec" id="root-parameters-and-other-route-parameters"><a class="anchor" href="#root-parameters-and-other-route-parameters">Root parameters and other route parameters<span class="ko">Root parameter와 다른 route parameter</span></a></h2>
+<p>root parameter는 root layout 파일까지의 경로에 나타나는 <a href="app-glossary.html#dynamic-route-segments">dynamic segment</a>의 route parameter입니다. route tree에서 더 깊은 곳의 다른 route parameter는 <a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code> prop</a>을 통해 접근합니다.</p><div class="en-orig"><p>Root parameters are the route parameters from <a href="app-glossary.html#dynamic-route-segments">dynamic segments</a> that appear in the path up to the root layout file. Other route parameters deeper in the route tree are accessed through the <a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code> prop</a>.</p></div>
+<p>다음과 같은 파일 구조가 있다고 해 봅시다:</p><div class="en-orig"><p>Given this file structure:</p></div>
+<ul>
+<li><code>app/[lang]/layout.tsx</code> (root layout)</li>
+<li><code>app/[lang]/posts/[slug]/page.tsx</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>app/[lang]/layout.tsx</code> (root layout)</li>
+<li><code>app/[lang]/posts/[slug]/page.tsx</code></li>
+</ul></div>
+<p><code>lang</code>만 root parameter입니다. <code>slug</code>는 일반 route parameter입니다:</p><div class="en-orig"><p>Only <code>lang</code> is a root parameter. <code>slug</code> is a regular route parameter:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[lang]/posts/[slug]/page.tsx" data-js="app/[lang]/posts/[slug]/page.js">app/[lang]/posts/[slug]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { lang } from &#x27;next/root-params&#x27;
+
+export default async function PostPage(
+  props: PageProps&lt;&#x27;/[lang]/posts/[slug]&#x27;&gt;
+) {
+  const { slug } = await props.params
+  const language = await lang()
+
+  return (
+    &lt;article&gt;
+      &lt;p&gt;Language: {language}&lt;/p&gt;
+      &lt;p&gt;Post: {slug}&lt;/p&gt;
+    &lt;/article&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { lang } from &#x27;next/root-params&#x27;
+
+export default async function PostPage({ params }) {
+  const { slug } = await params
+  const language = await lang()
+
+  return (
+    &lt;article&gt;
+      &lt;p&gt;Language: {language}&lt;/p&gt;
+      &lt;p&gt;Post: {slug}&lt;/p&gt;
+    &lt;/article&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="accessing-root-parameters-in-shared-code"><a class="anchor" href="#accessing-root-parameters-in-shared-code">Accessing root parameters in shared code<span class="ko">공유 코드에서 root parameter 접근하기</span></a></h2>
+<p>root parameter getter는 module import이므로, layout과 page뿐 아니라 어떤 Server Component나 server-side utility에서도 호출할 수 있습니다:</p><div class="en-orig"><p>Root parameter getters are module imports, they can be called from any Server Component or server-side utility, not just layouts and pages:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">lib/get-translations.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { lang } from &#x27;next/root-params&#x27;
+
+export async function getTranslations() {
+  const language = await lang()
+  // Load translations based on the root language parameter
+  return import(`@/locales/${language}.json`)
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>next/root-params</code>를 사용하는 파일에 <code>import &#x27;server-only&#x27;</code>를 추가할 필요가 없습니다. Client Component에서 사용하면 이미 build 시점에 import가 실패합니다.</p><div class="en-orig"><p>You do not need to add <code>import &#x27;server-only&#x27;</code> to files that use <code>next/root-params</code>. The import already fails at build time if used in a Client Component.</p></div></div></div>
+<h2 class="sec" id="behavior-with-caching-directives"><a class="anchor" href="#behavior-with-caching-directives">Behavior with caching directives<span class="ko">Caching directive와 함께 쓸 때의 동작</span></a></h2>
+<p>root parameter getter는 import된 함수이므로, Next.js는 <a href="app-api-reference-directives-use-cache.html">cache된</a> 함수가 어떤 getter를 사용하는지 추적할 수 있습니다. 그 root parameter만 <a href="app-api-reference-directives-use-cache.html#cache-keys">cache key</a>의 일부가 되므로, 관련 없는 parameter 값 때문에 cache entry가 나뉘지 않습니다.</p><div class="en-orig"><p>Because root parameter getters are imported functions, Next.js can track which ones a <a href="app-api-reference-directives-use-cache.html">cached</a> function uses. Only those root parameters become part of the <a href="app-api-reference-directives-use-cache.html#cache-keys">cache key</a>, so cache entries are not split across unrelated parameter values.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[lang]/components/cached-nav.tsx" data-js="app/[lang]/components/cached-nav.js">app/[lang]/components/cached-nav.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { lang } from &#x27;next/root-params&#x27;
+
+// The cache key for this function only includes `lang`,
+// not every dynamic segment in the route.
+async function getNavigation() {
+  &#x27;use cache&#x27;
+  const language = await lang()
+  const res = await fetch(`https://api.example.com/nav?lang=${language}`)
+  return res.json()
+}
+
+export default async function CachedNav() {
+  const nav = await getNavigation()
+  return &lt;nav&gt;{/* render nav items */}&lt;/nav&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { lang } from &#x27;next/root-params&#x27;
+
+// The cache key for this function only includes `lang`,
+// not every dynamic segment in the route.
+async function getNavigation() {
+  &#x27;use cache&#x27;
+  const language = await lang()
+  const res = await fetch(`https://api.example.com/nav?lang=${language}`)
+  return res.json()
+}
+
+export default async function CachedNav() {
+  const nav = await getNavigation()
+  return &lt;nav&gt;{/* render nav items */}&lt;/nav&gt;
+}</code></pre></div></div>
+<p>일반 <code>params</code> prop을 사용하면 cache된 함수 밖에서 <code>await params</code>를 하고 그 값을 인자로 넘겨야 합니다:</p><div class="en-orig"><p>With the regular <code>params</code> prop, you would need to <code>await params</code> outside the cached function and pass the value in as an argument:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[lang]/page.tsx" data-js="app/[lang]/page.js">app/[lang]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { lang } from &#x27;next/root-params&#x27;
+
+// With root params: call directly inside the cached function
+async function getDataWithRootParams() {
+  &#x27;use cache&#x27;
+  const language = await lang()
+  return fetch(`https://api.example.com/data?lang=${language}`)
+}
+
+// Without root params: await params outside, pass as argument
+async function getDataWithParams(language: string) {
+  &#x27;use cache&#x27;
+  return fetch(`https://api.example.com/data?lang=${language}`)
+}
+
+export default async function Page(props: PageProps&lt;&#x27;/[lang]&#x27;&gt;) {
+  const { lang: language } = await props.params
+  const data = await getDataWithParams(language)
+  // ...
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { lang } from &#x27;next/root-params&#x27;
+
+// With root params: call directly inside the cached function
+async function getDataWithRootParams() {
+  &#x27;use cache&#x27;
+  const language = await lang()
+  return fetch(`https://api.example.com/data?lang=${language}`)
+}
+
+// Without root params: await params outside, pass as argument
+async function getDataWithParams(language) {
+  &#x27;use cache&#x27;
+  return fetch(`https://api.example.com/data?lang=${language}`)
+}
+
+export default async function Page({ params }) {
+  const { lang: language } = await params
+  const data = await getDataWithParams(language)
+  // ...
+}</code></pre></div></div>
+<h2 class="sec" id="multiple-root-layouts"><a class="anchor" href="#multiple-root-layouts">Multiple root layouts<span class="ko">여러 개의 root layout</span></a></h2>
+<p>애플리케이션에 서로 다른 parameter를 가진 root layout이 여러 개 있으면, getter 함수는 가능한 모든 route 중 어디에서든 사용될 수 있다는 점을 고려해 type이 지정됩니다. 모든 root layout에 존재하지는 않는 parameter는 <code>string | undefined</code> type을 가집니다.</p><div class="en-orig"><p>When an application has multiple root layouts with different parameters, getter functions are typed to account for usage in any of all possible routes. A parameter that does not exist in every root layout has the type <code>string | undefined</code>.</p></div>
+<p>다음과 같은 파일 구조가 있다고 해 봅시다:</p><div class="en-orig"><p>Given this file structure:</p></div>
+<ul>
+<li><code>app/dashboard/[id]/layout.tsx</code> (<code>id</code>가 있는 root layout)</li>
+<li><code>app/marketing/layout.tsx</code> (<code>id</code>가 없는 root layout)</li>
+</ul><div class="en-orig"><ul>
+<li><code>app/dashboard/[id]/layout.tsx</code> (root layout with <code>id</code>)</li>
+<li><code>app/marketing/layout.tsx</code> (root layout without <code>id</code>)</li>
+</ul></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/dashboard/[id]/page.tsx" data-js="app/dashboard/[id]/page.js">app/dashboard/[id]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { id } from &#x27;next/root-params&#x27;
+
+export default async function DashboardPage() {
+  const dashboardId = await id() // string | undefined
+  return &lt;div&gt;Dashboard: {dashboardId}&lt;/div&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { id } from &#x27;next/root-params&#x27;
+
+export default async function DashboardPage() {
+  const dashboardId = await id() // string | undefined
+  return &lt;div&gt;Dashboard: {dashboardId}&lt;/div&gt;
+}</code></pre></div></div>
+<p>marketing root layout에는 <code>id</code>가 없으므로, marketing route에서 접근하면 <code>await id()</code>는 <code>undefined</code>를 반환합니다.</p><div class="en-orig"><p>Since <code>id</code> does not exist in the marketing root layout, <code>await id()</code> returns <code>undefined</code> when accessed from marketing routes.</p></div>
+<h2 class="sec" id="catch-all-and-optional-catch-all-segments"><a class="anchor" href="#catch-all-and-optional-catch-all-segments">Catch-all and optional catch-all segments<span class="ko">Catch-all 및 optional catch-all segment</span></a></h2>
+<p>root parameter는 <a href="app-api-reference-file-conventions-dynamic-routes.html#catch-all-segments">catch-all 및 optional catch-all</a> segment에서도 동작합니다:</p><div class="en-orig"><p>Root parameters work with <a href="app-api-reference-file-conventions-dynamic-routes.html#catch-all-segments">catch-all and optional catch-all</a> segments:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/docs/[...path]/layout.tsx" data-js="app/docs/[...path]/layout.js">app/docs/[...path]/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { path } from &#x27;next/root-params&#x27;
+
+export default async function DocsLayout(
+  props: LayoutProps&lt;&#x27;/docs/[...path]&#x27;&gt;
+) {
+  const segments = await path() // string[] | undefined
+  return (
+    &lt;div&gt;
+      &lt;nav&gt;Path: {segments?.join(&#x27; / &#x27;)}&lt;/nav&gt;
+      {props.children}
+    &lt;/div&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { path } from &#x27;next/root-params&#x27;
+
+export default async function DocsLayout({ children }) {
+  const segments = await path() // string[] | undefined
+  return (
+    &lt;div&gt;
+      &lt;nav&gt;Path: {segments?.join(&#x27; / &#x27;)}&lt;/nav&gt;
+      {children}
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="returns"><a class="anchor" href="#returns">Returns</a></h2>
+<p>각 root parameter getter는 다음 중 하나로 resolve되는 <code>Promise</code>를 반환합니다:</p><div class="en-orig"><p>Each root parameter getter returns a <code>Promise</code> that resolves to one of the following:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Segment type</th><th>Example</th><th>Return type</th></tr></thead>
+<tbody>
+<tr><td>Dynamic</td><td><code>[id]</code></td><td><code>string</code></td></tr>
+<tr><td>Catch-all</td><td><code>[...path]</code></td><td><code>string[]</code></td></tr>
+<tr><td>Optional catch-all</td><td><code>[[...path]]</code></td><td><code>string[] | undefined</code></td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Segment type</th><th>Example</th><th>Return type</th></tr></thead>
+<tbody>
+<tr><td>Dynamic</td><td><code>[id]</code></td><td><code>string</code></td></tr>
+<tr><td>Catch-all</td><td><code>[...path]</code></td><td><code>string[]</code></td></tr>
+<tr><td>Optional catch-all</td><td><code>[[...path]]</code></td><td><code>string[] | undefined</code></td></tr>
+</tbody></table></div></div>
+<p>현재 route의 root layout에 parameter가 존재하지 않으면(<a href="#multiple-root-layouts">Multiple root layouts</a> 참고), return type에 <code>undefined</code>가 포함됩니다.</p><div class="en-orig"><p>If the parameter does not exist in the current route's root layout (see <a href="#multiple-root-layouts">Multiple root layouts</a>), the return type includes <code>undefined</code>.</p></div>
+<h2 class="sec" id="restrictions"><a class="anchor" href="#restrictions">Restrictions<span class="ko">제한 사항</span></a></h2>
+<p>이 중 대부분은 root parameter의 동작 방식에서 오는 영구적인 제약입니다. 예외는 <a href="app-api-reference-file-conventions-route.html">Route Handler</a>로, 아직 지원되지 않지만 향후 release에서 지원될 예정입니다.</p><div class="en-orig"><p>Most of these are permanent constraints of how root parameters work. The exception is <a href="app-api-reference-file-conventions-route.html">Route Handlers</a>, which are not supported yet but are planned for a future release.</p></div>
+<h3 class="sec" id="server-components-only"><a class="anchor" href="#server-components-only">Server Components only<span class="ko">Server Component 전용</span></a></h3>
+<p>root parameter getter는 Server Component에서만 사용할 수 있습니다:</p><div class="en-orig"><p>Root parameter getters can only be used in Server Components:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">// This will cause a build error
+&#x27;use client&#x27;
+
+import { lang } from &#x27;next/root-params&#x27; // Error: Cannot import in Client Component</code></pre></div></div>
+<h3 class="sec" id="not-available-in-unstable_cache"><a class="anchor" href="#not-available-in-unstable_cache">Not available in <code>unstable_cache</code><span class="ko"><code>unstable_cache</code>에서는 사용 불가</span></a></h3>
+<p><code>unstable_cache</code> 안에서 root parameter getter를 호출하면 runtime error가 발생합니다. 대신 <a href="app-api-reference-directives-use-cache.html"><code>&quot;use cache&quot;</code></a>를 사용하세요.</p><div class="en-orig"><p>Calling a root parameter getter inside <code>unstable_cache</code> will throw a runtime error. Use <a href="app-api-reference-directives-use-cache.html"><code>&quot;use cache&quot;</code></a> instead.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { lang } from &#x27;next/root-params&#x27;
+import { unstable_cache } from &#x27;next/cache&#x27;
+
+const getCachedData = unstable_cache(async () =&gt; {
+  const language = await lang() // Error: Not supported inside unstable_cache
+  return fetch(`https://api.example.com/data?lang=${language}`)
+})</code></pre></div></div>
+<h3 class="sec" id="not-available-in-server-actions"><a class="anchor" href="#not-available-in-server-actions">Not available in Server Actions<span class="ko">Server Action에서는 사용 불가</span></a></h3>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import { lang } from &#x27;next/root-params&#x27;
+
+async function submitForm() {
+  &#x27;use server&#x27;
+  const language = await lang() // Error: Not supported in Server Actions
+}</code></pre></div></div>
+<h2 class="sec" id="why-root-parameters-are-special"><a class="anchor" href="#why-root-parameters-are-special">Why root parameters are special<span class="ko">root parameter가 특별한 이유</span></a></h2>
+<p><a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a>은 최상위 rendering boundary입니다. 그 앞의 route parameter는 해당 root layout 아래의 모든 route가 공유하며, 이 덕분에 그 tree의 어떤 Server Component에서든 안전하게 접근할 수 있습니다. route에서 더 깊은 곳의 route parameter는 어떤 child page가 render되느냐에 따라 달라지므로, 이를 정의하는 page나 layout의 <a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code> prop</a>을 통해서만 사용할 수 있습니다.</p><div class="en-orig"><p>The <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a> is the top-level rendering boundary. The route parameters before it are shared by all routes under that root layout, which is what makes them safe to access from any Server Component in that tree. Route parameters deeper in the route vary depending on which child page is being rendered, so they are only available through the <a href="app-api-reference-file-conventions-page.html#params-optional"><code>params</code> prop</a> in the page or layout that defines them.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-plaintext">app/
+  [lang]/              ← root parameter (shared by all routes below)
+    layout.tsx         ← root layout
+    page.tsx           ← has no slug, doesn&#x27;t know about blog or store
+    blog/
+      [slug]/          ← route parameter
+        page.tsx
+    store/
+      [...slug]/       ← catch-all route parameter with the same name
+        page.tsx</code></pre></div></div>
+<p>이 예시에서 root parameter는 <code>lang</code> 하나뿐입니다. root layout 바로 아래의 <code>page.tsx</code>에는 <code>slug</code>가 전혀 없습니다. blog와 store branch는 둘 다 <code>slug</code>를 정의하지만, segment type이 서로 다릅니다(<code>[slug]</code> vs <code>[...slug]</code>). 각 route는 자기 자신의 route parameter만 압니다. 같은 이름이라도 route에 따라 type이 다르거나, 의미가 다르거나, 아예 존재하지 않을 수 있습니다. 이것이 root layout 아래의 route parameter를 global getter가 아니라 <code>params</code> prop으로 접근하는 이유입니다.</p><div class="en-orig"><p>In this example, <code>lang</code> is the only root parameter. The <code>page.tsx</code> directly under the root layout has no <code>slug</code> at all. The blog and store branches both define <code>slug</code>, but with different segment types (<code>[slug]</code> vs <code>[...slug]</code>). Each route only knows about its own route parameters. The same name can have different types, different meanings, or not exist at all depending on the route. This is why route parameters below the root layout are accessed through the <code>params</code> prop rather than as global getters.</p></div>
+<p>예외는 <a href="#multiple-root-layouts">여러 개의 root layout</a>입니다. 서로 다른 root layout이 서로 다른 route parameter를 정의하면, getter 함수는 특정 parameter가 존재하지 않을 수 있는 route를 고려해 return type에 <code>undefined</code>를 포함합니다.</p><div class="en-orig"><p>The exception is <a href="#multiple-root-layouts">multiple root layouts</a>. When different root layouts define different route parameters, the getter functions include <code>undefined</code> in their return type to account for routes where a given parameter may not exist.</p></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.3.0</code></td><td><code>next/root-params</code>가 도입되었습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.3.0</code></td><td><code>next/root-params</code> introduced.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><p>관련 API reference와 convention입니다.</p><div class="rgrid"><a class="rcard" href="app-api-reference-file-conventions-layout.html"><div class="rt">layout.js</div><div class="rk">layout.js</div><div class="rd">layout.js 파일에 대한 API reference입니다.</div></a><a class="rcard" href="app-api-reference-functions-generate-static-params.html"><div class="rt">generateStaticParams</div><div class="rk">generateStaticParams</div><div class="rd">generateStaticParams 함수에 대한 API reference입니다.</div></a><a class="rcard" href="app-api-reference-directives-use-cache.html"><div class="rt">use cache</div><div class="rk">use cache</div><div class="rd">\"use cache\" directive로 Next.js 애플리케이션의 데이터를 cache하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-file-conventions-dynamic-routes.html"><div class="rt">Dynamic Route Segments</div><div class="rk">Dynamic Route Segment</div><div class="rd">Dynamic Segment를 사용해 URL path param을 읽고 dynamic data로부터 route를 생성하는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/04-functions/next-root-params.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/functions/next-root-params" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-functions-next-response.html" class="prev"><div class="dir">← 이전</div><div class="ttl">NextResponse</div><div class="ttl-ko">NextResponse</div></a>
+      <a href="app-api-reference-functions-not-found.html" class="next"><div class="dir">다음 →</div><div class="ttl">notFound</div><div class="ttl-ko">notFound</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/functions/next-root-params" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#root-parameters-and-generatestaticparams">Root parameters and <code>generateStaticParams</code></a></li><li class="l3"><a href="#reading-root-parameters-in-a-nested-generatestaticparams">Reading root parameters in a nested <code>generateStaticParams</code></a></li><li class="l2"><a href="#root-parameters-and-other-route-parameters">Root parameters and other route parameters</a></li><li class="l2"><a href="#accessing-root-parameters-in-shared-code">Accessing root parameters in shared code</a></li><li class="l2"><a href="#behavior-with-caching-directives">Behavior with caching directives</a></li><li class="l2"><a href="#multiple-root-layouts">Multiple root layouts</a></li><li class="l2"><a href="#catch-all-and-optional-catch-all-segments">Catch-all and optional catch-all segments</a></li><li class="l2"><a href="#returns">Returns</a></li><li class="l2"><a href="#restrictions">Restrictions</a></li><li class="l3"><a href="#server-components-only">Server Components only</a></li><li class="l3"><a href="#not-available-in-unstable_cache">Not available in <code>unstable_cache</code></a></li><li class="l3"><a href="#not-available-in-server-actions">Not available in Server Actions</a></li><li class="l2"><a href="#why-root-parameters-are-special">Why root parameters are special</a></li><li class="l2"><a href="#version-history">Version History</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`next/root-params` module은 [**Server Components**](/docs/app/glossary#server-component)에서 root 수준 [parameter](/docs/app/api-reference/file-conventions/dynamic-routes)에 접근하기 위한 getter 함수를 제공합니다. 각 root parameter는 현재 route의 parameter 값으로 resolve되는 async 함수로 export됩니다.
+
+export 이름은 dynamic segment 폴더 이름에서 생성됩니다. 예를 들어 root layout이 `app/[locale]` 안에 있다면 `next/root-params`에서 `locale`을 import합니다.
+
+이는 언어나 locale segment처럼 애플리케이션 전반, 예를 들어 공유 utility, layout, 깊이 중첩된 component 등에서 props로 내려 주지 않고 접근해야 하는 값에 유용합니다.
+
+[[CODE 1]]
+
+root parameter는 [root layout](/docs/app/api-reference/file-conventions/layout#root-layout) 앞에 나타나는 [dynamic segment](/docs/app/api-reference/file-conventions/dynamic-routes)입니다. 일반 [`params` prop](/docs/app/api-reference/file-conventions/page#params-optional)과 달리, root parameter getter는 prop drilling 없이 애플리케이션의 어떤 Server Component에서든 호출할 수 있습니다. 자세한 내용은 [Why root parameters are special](#why-root-parameters-are-special)을 참고하세요.
+
+&gt; **Good to know:**
+&gt;
+&gt; - root parameter 이름은 유효한 JavaScript 함수 identifier여야 합니다. kebab-case segment 이름(예: `[post-slug]`)은 지원되지 않으며, dev 중이나 build 중에 error가 발생합니다.
+&gt; - `next/root-params`는 Server Component에서 사용할 수 있습니다. Client Component, Server Action, [Route Handler](/docs/app/api-reference/file-conventions/route)에서는 사용할 수 없습니다. Route Handler 지원은 향후 release에서 계획되어 있습니다.
+&gt; - `next/root-params` export의 type은 [`PageProps`와 `LayoutProps`](/docs/app/api-reference/config/typescript#route-aware-type-helpers)와 마찬가지로 `next dev`, `next build`, 또는 [`next typegen`](/docs/app/api-reference/cli/next#next-typegen-options) 중에 생성됩니다.
+
+## Root parameters and `generateStaticParams` || Root parameter와 `generateStaticParams`
+
+root parameter는 이를 정의하는 route를 만드는 즉시 사용할 수 있습니다. [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params) 함수는 [Cache Components](/docs/app/api-reference/config/next-config-js/cacheComponents)를 사용할 때만 필요하며, 이 경우 각 root parameter에 최소 하나의 값이 있어야 하고 그렇지 않으면 build가 실패합니다.
+
+root parameter가 하나인 경우:
+
+[[CODE 2]]
+
+root parameter가 여러 개인 경우, 각각에 대한 값을 반환하세요:
+
+[[CODE 3]]
+
+### Reading root parameters in a nested `generateStaticParams` || 중첩된 `generateStaticParams`에서 root parameter 읽기
+
+중첩된 segment의 [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params) 안에서는 `params` 인자에서 destructuring하는 대신 getter로 root parameter를 직접 읽을 수 있습니다:
+
+[[CODE 4]]
+
+## Root parameters and other route parameters || Root parameter와 다른 route parameter
+
+root parameter는 root layout 파일까지의 경로에 나타나는 [dynamic segment](/docs/app/glossary#dynamic-route-segments)의 route parameter입니다. route tree에서 더 깊은 곳의 다른 route parameter는 [`params` prop](/docs/app/api-reference/file-conventions/page#params-optional)을 통해 접근합니다.
+
+다음과 같은 파일 구조가 있다고 해 봅시다:
+
+- `app/[lang]/layout.tsx` (root layout)
+- `app/[lang]/posts/[slug]/page.tsx`
+
+`lang`만 root parameter입니다. `slug`는 일반 route parameter입니다:
+
+[[CODE 5]]
+
+## Accessing root parameters in shared code || 공유 코드에서 root parameter 접근하기
+
+root parameter getter는 module import이므로, layout과 page뿐 아니라 어떤 Server Component나 server-side utility에서도 호출할 수 있습니다:
+
+[[CODE 6]]
+
+&gt; **Good to know:** `next/root-params`를 사용하는 파일에 `import &#x27;server-only&#x27;`를 추가할 필요가 없습니다. Client Component에서 사용하면 이미 build 시점에 import가 실패합니다.
+
+## Behavior with caching directives || Caching directive와 함께 쓸 때의 동작
+
+root parameter getter는 import된 함수이므로, Next.js는 [cache된](/docs/app/api-reference/directives/use-cache) 함수가 어떤 getter를 사용하는지 추적할 수 있습니다. 그 root parameter만 [cache key](/docs/app/api-reference/directives/use-cache#cache-keys)의 일부가 되므로, 관련 없는 parameter 값 때문에 cache entry가 나뉘지 않습니다.
+
+[[CODE 7]]
+
+일반 `params` prop을 사용하면 cache된 함수 밖에서 `await params`를 하고 그 값을 인자로 넘겨야 합니다:
+
+[[CODE 8]]
+
+## Multiple root layouts || 여러 개의 root layout
+
+애플리케이션에 서로 다른 parameter를 가진 root layout이 여러 개 있으면, getter 함수는 가능한 모든 route 중 어디에서든 사용될 수 있다는 점을 고려해 type이 지정됩니다. 모든 root layout에 존재하지는 않는 parameter는 `string | undefined` type을 가집니다.
+
+다음과 같은 파일 구조가 있다고 해 봅시다:
+
+- `app/dashboard/[id]/layout.tsx` (`id`가 있는 root layout)
+- `app/marketing/layout.tsx` (`id`가 없는 root layout)
+
+[[CODE 9]]
+
+marketing root layout에는 `id`가 없으므로, marketing route에서 접근하면 `await id()`는 `undefined`를 반환합니다.
+
+## Catch-all and optional catch-all segments || Catch-all 및 optional catch-all segment
+
+root parameter는 [catch-all 및 optional catch-all](/docs/app/api-reference/file-conventions/dynamic-routes#catch-all-segments) segment에서도 동작합니다:
+
+[[CODE 10]]
+
+## Returns
+
+각 root parameter getter는 다음 중 하나로 resolve되는 `Promise`를 반환합니다:
+
+| Segment type | Example | Return type |
+| --- | --- | --- |
+| Dynamic | `[id]` | `string` |
+| Catch-all | `[...path]` | `string[]` |
+| Optional catch-all | `[[...path]]` | `string[] \| undefined` |
+
+현재 route의 root layout에 parameter가 존재하지 않으면([Multiple root layouts](#multiple-root-layouts) 참고), return type에 `undefined`가 포함됩니다.
+
+## Restrictions || 제한 사항
+
+이 중 대부분은 root parameter의 동작 방식에서 오는 영구적인 제약입니다. 예외는 [Route Handler](/docs/app/api-reference/file-conventions/route)로, 아직 지원되지 않지만 향후 release에서 지원될 예정입니다.
+
+### Server Components only || Server Component 전용
+
+root parameter getter는 Server Component에서만 사용할 수 있습니다:
+
+[[CODE 11]]
+
+### Not available in `unstable_cache` || `unstable_cache`에서는 사용 불가
+
+`unstable_cache` 안에서 root parameter getter를 호출하면 runtime error가 발생합니다. 대신 [`&quot;use cache&quot;`](/docs/app/api-reference/directives/use-cache)를 사용하세요.
+
+[[CODE 12]]
+
+### Not available in Server Actions || Server Action에서는 사용 불가
+
+[[CODE 13]]
+
+## Why root parameters are special || root parameter가 특별한 이유
+
+[root layout](/docs/app/api-reference/file-conventions/layout#root-layout)은 최상위 rendering boundary입니다. 그 앞의 route parameter는 해당 root layout 아래의 모든 route가 공유하며, 이 덕분에 그 tree의 어떤 Server Component에서든 안전하게 접근할 수 있습니다. route에서 더 깊은 곳의 route parameter는 어떤 child page가 render되느냐에 따라 달라지므로, 이를 정의하는 page나 layout의 [`params` prop](/docs/app/api-reference/file-conventions/page#params-optional)을 통해서만 사용할 수 있습니다.
+
+[[CODE 14]]
+
+이 예시에서 root parameter는 `lang` 하나뿐입니다. root layout 바로 아래의 `page.tsx`에는 `slug`가 전혀 없습니다. blog와 store branch는 둘 다 `slug`를 정의하지만, segment type이 서로 다릅니다(`[slug]` vs `[...slug]`). 각 route는 자기 자신의 route parameter만 압니다. 같은 이름이라도 route에 따라 type이 다르거나, 의미가 다르거나, 아예 존재하지 않을 수 있습니다. 이것이 root layout 아래의 route parameter를 global getter가 아니라 `params` prop으로 접근하는 이유입니다.
+
+예외는 [여러 개의 root layout](#multiple-root-layouts)입니다. 서로 다른 root layout이 서로 다른 route parameter를 정의하면, getter 함수는 특정 parameter가 존재하지 않을 수 있는 route를 고려해 return type에 `undefined`를 포함합니다.
+
+## Version History || 버전 기록
+
+| Version | Changes |
+| --- | --- |
+| `v16.3.0` | `next/root-params`가 도입되었습니다. |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

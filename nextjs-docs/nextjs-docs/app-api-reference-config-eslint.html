@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ESLint Plugin (ESLint 플러그인) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/config/eslint" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/config/eslint" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/03-eslint.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config.html">Configuration</a></div>
+    <div class="title-row">
+      <h1 class="page-title">ESLint Plugin<span class="sub">ESLint 플러그인</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js는 애플리케이션에서 흔히 발생하는 이슈를 쉽게 잡아낼 수 있도록 ESLint configuration package인 <a href="https://www.npmjs.com/package/eslint-config-next" target="_blank" rel="noopener"><code>eslint-config-next</code></a>를 제공합니다. 여기에는 <a href="https://www.npmjs.com/package/@next/eslint-plugin-next" target="_blank" rel="noopener"><code>@next/eslint-plugin-next</code></a> plugin과 함께 <a href="https://www.npmjs.com/package/eslint-plugin-react" target="_blank" rel="noopener"><code>eslint-plugin-react</code></a>, <a href="https://www.npmjs.com/package/eslint-plugin-react-hooks" target="_blank" rel="noopener"><code>eslint-plugin-react-hooks</code></a>의 권장 rule-set이 포함되어 있습니다.</p><div class="en-orig"><p>Next.js provides an ESLint configuration package, <a href="https://www.npmjs.com/package/eslint-config-next" target="_blank" rel="noopener"><code>eslint-config-next</code></a>, that makes it easy to catch common issues in your application. It includes the <a href="https://www.npmjs.com/package/@next/eslint-plugin-next" target="_blank" rel="noopener"><code>@next/eslint-plugin-next</code></a> plugin along with recommended rule-sets from <a href="https://www.npmjs.com/package/eslint-plugin-react" target="_blank" rel="noopener"><code>eslint-plugin-react</code></a> and <a href="https://www.npmjs.com/package/eslint-plugin-react-hooks" target="_blank" rel="noopener"><code>eslint-plugin-react-hooks</code></a>.</p></div>
+<p>이 package는 두 가지 주요 configuration을 제공합니다:</p><div class="en-orig"><p>The package provides two main configurations:</p></div>
+<ul>
+<li><strong><code>eslint-config-next</code></strong>: Next.js, React, React Hooks rule이 들어간 기본 configuration입니다. JavaScript와 TypeScript 파일을 모두 지원합니다.</li>
+<li><strong><code>eslint-config-next/core-web-vitals</code></strong>: 기본 config의 모든 내용을 포함하며, <a href="https://web.dev/vitals/" target="_blank" rel="noopener">Core Web Vitals</a>에 영향을 주는 rule을 warning에서 error로 격상합니다. 대부분의 프로젝트에 권장됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>eslint-config-next</code></strong>: Base configuration with Next.js, React, and React Hooks rules. Supports both JavaScript and TypeScript files.</li>
+<li><strong><code>eslint-config-next/core-web-vitals</code></strong>: Includes everything from the base config, plus upgrades rules that impact <a href="https://web.dev/vitals/" target="_blank" rel="noopener">Core Web Vitals</a> from warnings to errors. Recommended for most projects.</li>
+</ul></div>
+<p>또한 TypeScript 프로젝트를 위해 다음이 제공됩니다:</p><div class="en-orig"><p>Additionally, for TypeScript projects:</p></div>
+<ul>
+<li><strong><code>eslint-config-next/typescript</code></strong>: <a href="https://typescript-eslint.io/" target="_blank" rel="noopener"><code>typescript-eslint</code></a>의 TypeScript 전용 linting rule을 추가합니다. 기본 config 또는 core-web-vitals config와 함께 사용하세요.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>eslint-config-next/typescript</code></strong>: Adds TypeScript-specific linting rules from <a href="https://typescript-eslint.io/" target="_blank" rel="noopener"><code>typescript-eslint</code></a>. Use this alongside the base or core-web-vitals config.</li>
+</ul></div>
+<h2 class="sec" id="setup-eslint"><a class="anchor" href="#setup-eslint">Setup ESLint<span class="ko">ESLint 설정하기</span></a></h2>
+<p>ESLint CLI(flat config)로 빠르게 linting을 시작하세요:</p><div class="en-orig"><p>Get linting working quickly with the ESLint CLI (flat config):</p></div>
+<ol>
+<li><p>ESLint와 Next.js config를 설치합니다:</p>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add -D eslint eslint-config-next</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm i -D eslint eslint-config-next</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add --dev eslint eslint-config-next</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add -d eslint eslint-config-next</code></pre></div></div></li>
+<li><p>Next.js config로 <code>eslint.config.mjs</code>를 만듭니다:</p>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">eslint.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { defineConfig, globalIgnores } from &#x27;eslint/config&#x27;
+import nextVitals from &#x27;eslint-config-next/core-web-vitals&#x27;
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    &#x27;.next/**&#x27;,
+    &#x27;out/**&#x27;,
+    &#x27;build/**&#x27;,
+    &#x27;next-env.d.ts&#x27;,
+  ]),
+])
+
+export default eslintConfig</code></pre></div></div></li>
+<li><p>ESLint를 실행합니다:</p>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm exec eslint .</code></pre><pre class="pm-npm" hidden><code class="language-bash">npx eslint .</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn eslint .</code></pre><pre class="pm-bun" hidden><code class="language-bash">bunx eslint .</code></pre></div></div></li>
+</ol><div class="en-orig"><ol>
+<li><p>Install ESLint and the Next.js config:</p>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add -D eslint eslint-config-next</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm i -D eslint eslint-config-next</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add --dev eslint eslint-config-next</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add -d eslint eslint-config-next</code></pre></div></div></li>
+<li><p>Create <code>eslint.config.mjs</code> with the Next.js config:</p>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">eslint.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { defineConfig, globalIgnores } from &#x27;eslint/config&#x27;
+import nextVitals from &#x27;eslint-config-next/core-web-vitals&#x27;
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    &#x27;.next/**&#x27;,
+    &#x27;out/**&#x27;,
+    &#x27;build/**&#x27;,
+    &#x27;next-env.d.ts&#x27;,
+  ]),
+])
+
+export default eslintConfig</code></pre></div></div></li>
+<li><p>Run ESLint:</p>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm exec eslint .</code></pre><pre class="pm-npm" hidden><code class="language-bash">npx eslint .</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn eslint .</code></pre><pre class="pm-bun" hidden><code class="language-bash">bunx eslint .</code></pre></div></div></li>
+</ol></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>eslint-config-next</code>는 ESLint 9와 ESLint 10을 지원합니다. ESLint 10에는 Node.js <code>^20.19.0</code>, <code>^22.13.0</code>, 또는 <code>&gt;=24</code>가 필요합니다.</li>
+<li><code>eslint-config-next@16.4.0</code>부터 기본 React 버전 감지가 ESLint 10에서 동작합니다. <code>context.getFilename</code> error를 우회하기 위해 추가했던 <code>settings.react.version</code> override는 제거해도 됩니다.</li>
+<li><code>eslint-config-next</code>에 포함된 일부 plugin은 아직 peer dependency에 ESLint 10을 명시하지 않았기 때문에, package manager가 peer dependency warning을 표시하거나 strict peer dependency가 활성화된 경우 실패할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>eslint-config-next</code> supports ESLint 9 and ESLint 10. ESLint 10 requires Node.js <code>^20.19.0</code>, <code>^22.13.0</code>, or <code>&gt;=24</code>.</li>
+<li>Starting with <code>eslint-config-next@16.4.0</code>, the default React version detection works with ESLint 10. You can remove a <code>settings.react.version</code> override added as a workaround for a <code>context.getFilename</code> error.</li>
+<li>Some of the plugins included in <code>eslint-config-next</code> don't list ESLint 10 in their peer dependencies yet, so your package manager may show peer dependency warnings, or fail when strict peer dependencies are enabled.</li>
+</ul></div></div></div>
+<h2 class="sec" id="reference"><a class="anchor" href="#reference">Reference<span class="ko">레퍼런스</span></a></h2>
+<p><code>eslint-config-next</code> package에는 다음 ESLint plugin의 <code>recommended</code> rule-set이 포함되어 있습니다:</p><div class="en-orig"><p>The <code>eslint-config-next</code> package includes the <code>recommended</code> rule-sets from the following ESLint plugins:</p></div>
+<ul>
+<li><a href="https://www.npmjs.com/package/eslint-plugin-react" target="_blank" rel="noopener"><code>eslint-plugin-react</code></a></li>
+<li><a href="https://www.npmjs.com/package/eslint-plugin-react-hooks" target="_blank" rel="noopener"><code>eslint-plugin-react-hooks</code></a></li>
+<li><a href="https://www.npmjs.com/package/@next/eslint-plugin-next" target="_blank" rel="noopener"><code>@next/eslint-plugin-next</code></a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://www.npmjs.com/package/eslint-plugin-react" target="_blank" rel="noopener"><code>eslint-plugin-react</code></a></li>
+<li><a href="https://www.npmjs.com/package/eslint-plugin-react-hooks" target="_blank" rel="noopener"><code>eslint-plugin-react-hooks</code></a></li>
+<li><a href="https://www.npmjs.com/package/@next/eslint-plugin-next" target="_blank" rel="noopener"><code>@next/eslint-plugin-next</code></a></li>
+</ul></div>
+<h3 class="sec" id="rules"><a class="anchor" href="#rules">Rules</a></h3>
+<p>포함된 <code>@next/eslint-plugin-next</code> rule은 다음과 같습니다:</p><div class="en-orig"><p>The <code>@next/eslint-plugin-next</code> rules included are:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>recommended config에서 활성화</th><th>Rule</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/google-font-display" target="_blank" rel="noopener">@next/next/google-font-display</a></td><td>Google Fonts에서 font-display 동작을 강제합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/google-font-preconnect" target="_blank" rel="noopener">@next/next/google-font-preconnect</a></td><td>Google Fonts와 함께 <code>preconnect</code>가 사용되도록 합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/inline-script-id" target="_blank" rel="noopener">@next/next/inline-script-id</a></td><td>inline content가 있는 <code>next/script</code> component에 <code>id</code> attribute를 강제합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/next-script-for-ga" target="_blank" rel="noopener">@next/next/next-script-for-ga</a></td><td>Google Analytics용 inline script를 사용할 때 <code>next/script</code> component를 권장합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-assign-module-variable" target="_blank" rel="noopener">@next/next/no-assign-module-variable</a></td><td><code>module</code> 변수에 값을 할당하지 못하게 합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-async-client-component" target="_blank" rel="noopener">@next/next/no-async-client-component</a></td><td>Client Component가 async 함수가 되지 않도록 합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-before-interactive-script-outside-document" target="_blank" rel="noopener">@next/next/no-before-interactive-script-outside-document</a></td><td><code>pages/_document.js</code> 밖에서 <code>next/script</code>의 <code>beforeInteractive</code> strategy를 사용하지 못하게 합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-css-tags" target="_blank" rel="noopener">@next/next/no-css-tags</a></td><td>stylesheet tag를 직접 작성하지 못하게 합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-document-import-in-page" target="_blank" rel="noopener">@next/next/no-document-import-in-page</a></td><td><code>pages/_document.js</code> 밖에서 <code>next/document</code>를 import하지 못하게 합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-duplicate-head" target="_blank" rel="noopener">@next/next/no-duplicate-head</a></td><td><code>pages/_document.js</code>에서 <code>&lt;Head&gt;</code>를 중복 사용하지 못하게 합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-head-element" target="_blank" rel="noopener">@next/next/no-head-element</a></td><td><code>&lt;head&gt;</code> element를 사용하지 못하게 합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-head-import-in-document" target="_blank" rel="noopener">@next/next/no-head-import-in-document</a></td><td><code>pages/_document.js</code>에서 <code>next/head</code>를 사용하지 못하게 합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-html-link-for-pages" target="_blank" rel="noopener">@next/next/no-html-link-for-pages</a></td><td>내부 Next.js page로 이동할 때 <code>&lt;a&gt;</code> element를 사용하지 못하게 합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-img-element" target="_blank" rel="noopener">@next/next/no-img-element</a></td><td>LCP가 느려지고 bandwidth가 늘어나므로 <code>&lt;img&gt;</code> element를 사용하지 못하게 합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-page-custom-font" target="_blank" rel="noopener">@next/next/no-page-custom-font</a></td><td>특정 page에서만 쓰는 custom font를 막습니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-script-component-in-head" target="_blank" rel="noopener">@next/next/no-script-component-in-head</a></td><td><code>next/head</code> component 안에서 <code>next/script</code>를 사용하지 못하게 합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-styled-jsx-in-document" target="_blank" rel="noopener">@next/next/no-styled-jsx-in-document</a></td><td><code>pages/_document.js</code>에서 <code>styled-jsx</code>를 사용하지 못하게 합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-sync-scripts" target="_blank" rel="noopener">@next/next/no-sync-scripts</a></td><td>동기(synchronous) script를 막습니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-title-in-document-head" target="_blank" rel="noopener">@next/next/no-title-in-document-head</a></td><td><code>next/document</code>의 <code>Head</code> component와 함께 <code>&lt;title&gt;</code>을 사용하지 못하게 합니다.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td>@next/next/no-typos</td><td><a href="pages-building-your-application-data-fetching.html">Next.js의 data fetching 함수</a>에서 흔한 오타를 막습니다</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-unwanted-polyfillio" target="_blank" rel="noopener">@next/next/no-unwanted-polyfillio</a></td><td>Polyfill.io의 중복 polyfill을 막습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Enabled in recommended config</th><th>Rule</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/google-font-display" target="_blank" rel="noopener">@next/next/google-font-display</a></td><td>Enforce font-display behavior with Google Fonts.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/google-font-preconnect" target="_blank" rel="noopener">@next/next/google-font-preconnect</a></td><td>Ensure <code>preconnect</code> is used with Google Fonts.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/inline-script-id" target="_blank" rel="noopener">@next/next/inline-script-id</a></td><td>Enforce <code>id</code> attribute on <code>next/script</code> components with inline content.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/next-script-for-ga" target="_blank" rel="noopener">@next/next/next-script-for-ga</a></td><td>Prefer <code>next/script</code> component when using the inline script for Google Analytics.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-assign-module-variable" target="_blank" rel="noopener">@next/next/no-assign-module-variable</a></td><td>Prevent assignment to the <code>module</code> variable.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-async-client-component" target="_blank" rel="noopener">@next/next/no-async-client-component</a></td><td>Prevent Client Components from being async functions.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-before-interactive-script-outside-document" target="_blank" rel="noopener">@next/next/no-before-interactive-script-outside-document</a></td><td>Prevent usage of <code>next/script</code>'s <code>beforeInteractive</code> strategy outside of <code>pages/_document.js</code>.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-css-tags" target="_blank" rel="noopener">@next/next/no-css-tags</a></td><td>Prevent manual stylesheet tags.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-document-import-in-page" target="_blank" rel="noopener">@next/next/no-document-import-in-page</a></td><td>Prevent importing <code>next/document</code> outside of <code>pages/_document.js</code>.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-duplicate-head" target="_blank" rel="noopener">@next/next/no-duplicate-head</a></td><td>Prevent duplicate usage of <code>&lt;Head&gt;</code> in <code>pages/_document.js</code>.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-head-element" target="_blank" rel="noopener">@next/next/no-head-element</a></td><td>Prevent usage of <code>&lt;head&gt;</code> element.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-head-import-in-document" target="_blank" rel="noopener">@next/next/no-head-import-in-document</a></td><td>Prevent usage of <code>next/head</code> in <code>pages/_document.js</code>.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-html-link-for-pages" target="_blank" rel="noopener">@next/next/no-html-link-for-pages</a></td><td>Prevent usage of <code>&lt;a&gt;</code> elements to navigate to internal Next.js pages.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-img-element" target="_blank" rel="noopener">@next/next/no-img-element</a></td><td>Prevent usage of <code>&lt;img&gt;</code> element due to slower LCP and higher bandwidth.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-page-custom-font" target="_blank" rel="noopener">@next/next/no-page-custom-font</a></td><td>Prevent page-only custom fonts.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-script-component-in-head" target="_blank" rel="noopener">@next/next/no-script-component-in-head</a></td><td>Prevent usage of <code>next/script</code> in <code>next/head</code> component.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-styled-jsx-in-document" target="_blank" rel="noopener">@next/next/no-styled-jsx-in-document</a></td><td>Prevent usage of <code>styled-jsx</code> in <code>pages/_document.js</code>.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-sync-scripts" target="_blank" rel="noopener">@next/next/no-sync-scripts</a></td><td>Prevent synchronous scripts.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-title-in-document-head" target="_blank" rel="noopener">@next/next/no-title-in-document-head</a></td><td>Prevent usage of <code>&lt;title&gt;</code> with <code>Head</code> component from <code>next/document</code>.</td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td>@next/next/no-typos</td><td>Prevent common typos in <a href="pages-building-your-application-data-fetching.html">Next.js's data fetching functions</a></td></tr>
+<tr><td><span class="ic ic-check">✓</span></td><td><a href="https://nextjs.org/docs/messages/no-unwanted-polyfillio" target="_blank" rel="noopener">@next/next/no-unwanted-polyfillio</a></td><td>Prevent duplicate polyfills from Polyfill.io.</td></tr>
+</tbody></table></div></div>
+<p>development 중에 code editor에서 warning과 error를 바로 확인할 수 있도록 적절한 <a href="https://eslint.org/docs/user-guide/integrations#editors" target="_blank" rel="noopener">integration</a>을 사용하는 것을 권장합니다.</p><div class="en-orig"><p>We recommend using an appropriate <a href="https://eslint.org/docs/user-guide/integrations#editors" target="_blank" rel="noopener">integration</a> to view warnings and errors directly in your code editor during development.</p></div>
+<details><summary><code>next lint</code> 제거</summary><div class="details-body"><p>Next.js 16부터 <code>next lint</code>가 제거되었습니다.</p>
+<p>이 제거에 따라 Next config 파일의 <code>eslint</code> option도 더 이상 필요 없으며 안전하게 제거할 수 있습니다.</p></div></details>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예제</span></a></h2>
+<h3 class="sec" id="specifying-a-root-directory-within-a-monorepo"><a class="anchor" href="#specifying-a-root-directory-within-a-monorepo">Specifying a root directory within a monorepo<span class="ko">monorepo에서 root directory 지정하기</span></a></h3>
+<p>Next.js가 root directory에 설치되어 있지 않은 프로젝트(예: monorepo)에서 <code>@next/eslint-plugin-next</code>를 사용한다면, <code>eslint.config.mjs</code>의 <code>settings</code> property로 <code>@next/eslint-plugin-next</code>에 Next.js 애플리케이션의 위치를 알려 줄 수 있습니다:</p><div class="en-orig"><p>If you're using <code>@next/eslint-plugin-next</code> in a project where Next.js isn't installed in your root directory (such as a monorepo), you can tell <code>@next/eslint-plugin-next</code> where to find your Next.js application using the <code>settings</code> property in your <code>eslint.config.mjs</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">eslint.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { defineConfig } from &#x27;eslint/config&#x27;
+import eslintNextPlugin from &#x27;@next/eslint-plugin-next&#x27;
+
+const eslintConfig = defineConfig([
+  {
+    files: [&#x27;**/*.{js,jsx,ts,tsx}&#x27;],
+    plugins: {
+      &#x27;@next/next&#x27;: eslintNextPlugin,
+    },
+    settings: {
+      next: {
+        rootDir: &#x27;packages/my-app/&#x27;,
+      },
+    },
+  },
+])
+
+export default eslintConfig</code></pre></div></div>
+<p><code>rootDir</code>은 경로(상대 또는 절대), glob(예: <code>&quot;packages/*/&quot;</code>), 또는 경로와 glob의 배열일 수 있습니다.</p><div class="en-orig"><p><code>rootDir</code> can be a path (relative or absolute), a glob (i.e. <code>&quot;packages/*/&quot;</code>), or an array of paths and/or globs.</p></div>
+<h3 class="sec" id="disabling-rules"><a class="anchor" href="#disabling-rules">Disabling rules<span class="ko">rule 비활성화하기</span></a></h3>
+<p>지원되는 plugin(<code>react</code>, <code>react-hooks</code>, <code>next</code>)이 제공하는 rule을 수정하거나 비활성화하려면, <code>eslint.config.mjs</code>의 <code>rules</code> property로 직접 변경할 수 있습니다:</p><div class="en-orig"><p>If you would like to modify or disable any rules provided by the supported plugins (<code>react</code>, <code>react-hooks</code>, <code>next</code>), you can directly change them using the <code>rules</code> property in your <code>eslint.config.mjs</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">eslint.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { defineConfig, globalIgnores } from &#x27;eslint/config&#x27;
+import nextVitals from &#x27;eslint-config-next/core-web-vitals&#x27;
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  {
+    rules: {
+      &#x27;react/no-unescaped-entities&#x27;: &#x27;off&#x27;,
+      &#x27;@next/next/no-page-custom-font&#x27;: &#x27;off&#x27;,
+    },
+  },
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    &#x27;.next/**&#x27;,
+    &#x27;out/**&#x27;,
+    &#x27;build/**&#x27;,
+    &#x27;next-env.d.ts&#x27;,
+  ]),
+])
+
+export default eslintConfig</code></pre></div></div>
+<h3 class="sec" id="with-core-web-vitals"><a class="anchor" href="#with-core-web-vitals">With Core Web Vitals<span class="ko">Core Web Vitals와 함께 사용하기</span></a></h3>
+<p>ESLint config에서 <code>eslint-config-next/core-web-vitals</code> configuration을 활성화하세요.</p><div class="en-orig"><p>Enable the <code>eslint-config-next/core-web-vitals</code> configuration in your ESLint config.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">eslint.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { defineConfig, globalIgnores } from &#x27;eslint/config&#x27;
+import nextVitals from &#x27;eslint-config-next/core-web-vitals&#x27;
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    &#x27;.next/**&#x27;,
+    &#x27;out/**&#x27;,
+    &#x27;build/**&#x27;,
+    &#x27;next-env.d.ts&#x27;,
+  ]),
+])
+
+export default eslintConfig</code></pre></div></div>
+<p><code>eslint-config-next/core-web-vitals</code>는 <a href="https://web.dev/vitals/" target="_blank" rel="noopener">Core Web Vitals</a> metric 개선에 도움이 되도록 <code>@next/eslint-plugin-next</code>의 특정 lint rule을 warning에서 error로 격상합니다.</p><div class="en-orig"><p><code>eslint-config-next/core-web-vitals</code> upgrades certain lint rules in <code>@next/eslint-plugin-next</code> from warnings to errors to help improve your <a href="https://web.dev/vitals/" target="_blank" rel="noopener">Core Web Vitals</a> metrics.</p></div>
+<blockquote><p><code>eslint-config-next/core-web-vitals</code> configuration은 <a href="app-api-reference-cli-create-next-app.html">Create Next App</a>으로 만든 새 애플리케이션에 자동으로 포함됩니다.</p><div class="en-orig"><p>The <code>eslint-config-next/core-web-vitals</code> configuration is automatically included for new applications built with <a href="app-api-reference-cli-create-next-app.html">Create Next App</a>.</p></div></blockquote>
+<h3 class="sec" id="with-typescript"><a class="anchor" href="#with-typescript">With TypeScript<span class="ko">TypeScript와 함께 사용하기</span></a></h3>
+<p>Next.js ESLint rule 외에도, <code>create-next-app --typescript</code>는 <code>eslint-config-next/typescript</code>로 TypeScript 전용 lint rule도 config에 추가합니다:</p><div class="en-orig"><p>In addition to the Next.js ESLint rules, <code>create-next-app --typescript</code> will also add TypeScript-specific lint rules with <code>eslint-config-next/typescript</code> to your config:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">eslint.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { defineConfig, globalIgnores } from &#x27;eslint/config&#x27;
+import nextVitals from &#x27;eslint-config-next/core-web-vitals&#x27;
+import nextTs from &#x27;eslint-config-next/typescript&#x27;
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    &#x27;.next/**&#x27;,
+    &#x27;out/**&#x27;,
+    &#x27;build/**&#x27;,
+    &#x27;next-env.d.ts&#x27;,
+  ]),
+])
+
+export default eslintConfig</code></pre></div></div>
+<p>이 rule들은 <a href="https://typescript-eslint.io/linting/configs#recommended" target="_blank" rel="noopener"><code>plugin:@typescript-eslint/recommended</code></a>를 기반으로 합니다.
+자세한 내용은 <a href="https://typescript-eslint.io/linting/configs" target="_blank" rel="noopener">typescript-eslint &gt; Configs</a>를 참고하세요.</p><div class="en-orig"><p>Those rules are based on <a href="https://typescript-eslint.io/linting/configs#recommended" target="_blank" rel="noopener"><code>plugin:@typescript-eslint/recommended</code></a>.
+See <a href="https://typescript-eslint.io/linting/configs" target="_blank" rel="noopener">typescript-eslint &gt; Configs</a> for more details.</p></div>
+<h3 class="sec" id="with-prettier"><a class="anchor" href="#with-prettier">With Prettier<span class="ko">Prettier와 함께 사용하기</span></a></h3>
+<p>ESLint에는 code formatting rule도 들어 있어서 기존 <a href="https://prettier.io/" target="_blank" rel="noopener">Prettier</a> setup과 충돌할 수 있습니다. ESLint와 Prettier가 함께 동작하도록 ESLint config에 <a href="https://github.com/prettier/eslint-config-prettier" target="_blank" rel="noopener">eslint-config-prettier</a>를 포함하는 것을 권장합니다.</p><div class="en-orig"><p>ESLint also contains code formatting rules, which can conflict with your existing <a href="https://prettier.io/" target="_blank" rel="noopener">Prettier</a> setup. We recommend including <a href="https://github.com/prettier/eslint-config-prettier" target="_blank" rel="noopener">eslint-config-prettier</a> in your ESLint config to make ESLint and Prettier work together.</p></div>
+<p>먼저 dependency를 설치하세요:</p><div class="en-orig"><p>First, install the dependency:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add -D eslint-config-prettier</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm i -D eslint-config-prettier</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add --dev eslint-config-prettier</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add -d eslint-config-prettier</code></pre></div></div>
+<p>그런 다음 기존 ESLint config에 <code>prettier</code>를 추가하세요:</p><div class="en-orig"><p>Then, add <code>prettier</code> to your existing ESLint config:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">eslint.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { defineConfig, globalIgnores } from &#x27;eslint/config&#x27;
+import nextVitals from &#x27;eslint-config-next/core-web-vitals&#x27;
+import prettier from &#x27;eslint-config-prettier/flat&#x27;
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  prettier,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    &#x27;.next/**&#x27;,
+    &#x27;out/**&#x27;,
+    &#x27;build/**&#x27;,
+    &#x27;next-env.d.ts&#x27;,
+  ]),
+])
+
+export default eslintConfig</code></pre></div></div>
+<h3 class="sec" id="running-lint-on-staged-files"><a class="anchor" href="#running-lint-on-staged-files">Running lint on staged files<span class="ko">staged 파일에 lint 실행하기</span></a></h3>
+<p><a href="https://github.com/okonet/lint-staged" target="_blank" rel="noopener">lint-staged</a>와 함께 ESLint를 사용해 staged git 파일에 linter를 실행하려면, 프로젝트 root의 <code>.lintstagedrc.js</code> 파일에 다음을 추가하세요:</p><div class="en-orig"><p>If you would like to use ESLint with <a href="https://github.com/okonet/lint-staged" target="_blank" rel="noopener">lint-staged</a> to run the linter on staged git files, add the following to the <code>.lintstagedrc.js</code> file in the root of your project:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">.lintstagedrc.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">const path = require(&#x27;path&#x27;)
+
+const buildEslintCommand = (filenames) =&gt;
+  `eslint --fix ${filenames
+    .map((f) =&gt; `&quot;${path.relative(process.cwd(), f)}&quot;`)
+    .join(&#x27; &#x27;)}`
+
+module.exports = {
+  &#x27;*.{js,jsx,ts,tsx}&#x27;: [buildEslintCommand],
+}</code></pre></div></div>
+<h2 class="sec" id="migrating-existing-config"><a class="anchor" href="#migrating-existing-config">Migrating existing config<span class="ko">기존 config migrate하기</span></a></h2>
+<p>애플리케이션에 이미 ESLint가 설정되어 있다면, setup에 따라 Next.js linting rule을 통합하는 두 가지 방법이 있습니다.</p><div class="en-orig"><p>If you already have ESLint configured in your application, there are two approaches to integrate Next.js linting rules, depending on your setup.</p></div>
+<h4 class="sec" id="using-the-plugin-directly"><a class="anchor" href="#using-the-plugin-directly">Using the plugin directly<span class="ko">plugin 직접 사용하기</span></a></h4>
+<p>다음 중 하나라도 이미 설정되어 있다면 <code>@next/eslint-plugin-next</code>를 직접 사용하세요:</p><div class="en-orig"><p>Use <code>@next/eslint-plugin-next</code> directly if you have any of the following already configured:</p></div>
+<ul>
+<li>별도로 설치했거나 다른 config(<code>airbnb</code>, <code>react-app</code> 등)를 통해 설치된 충돌 가능한 plugin:<ul>
+<li><code>react</code></li>
+<li><code>react-hooks</code></li>
+<li><code>jsx-a11y</code></li>
+<li><code>import</code></li>
+</ul></li>
+<li>Next.js 기본값과 다른 custom <code>parserOptions</code>(<a href="pages-guides-babel.html">Babel configuration을 customize한</a> 경우에만 해당)</li>
+<li>custom Node.js 및/또는 TypeScript <a href="https://github.com/benmosher/eslint-plugin-import#resolvers" target="_blank" rel="noopener">resolver</a>를 사용하는 <code>eslint-plugin-import</code></li>
+</ul><div class="en-orig"><ul>
+<li>Conflicting plugins installed separately or through another config (such as <code>airbnb</code> or <code>react-app</code>):<ul>
+<li><code>react</code></li>
+<li><code>react-hooks</code></li>
+<li><code>jsx-a11y</code></li>
+<li><code>import</code></li>
+</ul></li>
+<li>Custom <code>parserOptions</code> different from Next.js defaults (only if you have <a href="pages-guides-babel.html">customized your Babel configuration</a>)</li>
+<li><code>eslint-plugin-import</code> with custom Node.js and/or TypeScript <a href="https://github.com/benmosher/eslint-plugin-import#resolvers" target="_blank" rel="noopener">resolvers</a></li>
+</ul></div>
+<p>이런 경우에는 충돌을 피하기 위해 <code>@next/eslint-plugin-next</code>를 직접 사용하세요:</p><div class="en-orig"><p>In these cases, use <code>@next/eslint-plugin-next</code> directly to avoid conflicts:</p></div>
+<p>먼저 plugin을 설치하세요:</p><div class="en-orig"><p>First, install the plugin:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add -D @next/eslint-plugin-next</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm i -D @next/eslint-plugin-next</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add --dev @next/eslint-plugin-next</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add -d @next/eslint-plugin-next</code></pre></div></div>
+<p>그런 다음 ESLint config에 추가하세요:</p><div class="en-orig"><p>Then add it to your ESLint config:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">eslint.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import { defineConfig } from &#x27;eslint/config&#x27;
+import nextPlugin from &#x27;@next/eslint-plugin-next&#x27;
+
+const eslintConfig = defineConfig([
+  // Your other configurations...
+  {
+    files: [&#x27;**/*.{js,jsx,ts,tsx}&#x27;],
+    plugins: {
+      &#x27;@next/next&#x27;: nextPlugin,
+    },
+    rules: {
+      ...nextPlugin.configs.recommended.rules,
+    },
+  },
+])
+
+export default eslintConfig</code></pre></div></div>
+<p>이 방법을 사용하면 같은 plugin이나 parser가 여러 configuration에서 import될 때 생길 수 있는 충돌이나 error의 위험이 없어집니다.</p><div class="en-orig"><p>This approach eliminates the risk of collisions or errors that can occur when the same plugins or parsers are imported across multiple configurations.</p></div>
+<h4 class="sec" id="adding-to-existing-config"><a class="anchor" href="#adding-to-existing-config">Adding to existing config<span class="ko">기존 config에 추가하기</span></a></h4>
+<p>기존 ESLint setup에 Next.js를 추가하는 경우, Next.js config를 배열 안에 spread하세요:</p><div class="en-orig"><p>If you're adding Next.js to an existing ESLint setup, spread the Next.js config into your array:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">eslint.config.mjs</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import nextConfig from &#x27;eslint-config-next/core-web-vitals&#x27;
+// Your other config imports...
+
+const eslintConfig = [
+  // Your other configurations...
+  ...nextConfig,
+]
+
+export default eslintConfig</code></pre></div></div>
+<p><code>...nextConfig</code>를 spread하면 file pattern, plugin, rule, ignore, parser 설정을 포함한 여러 config object가 추가됩니다. ESLint는 config를 순서대로 적용하므로, 일치하는 파일에 대해서는 뒤의 rule이 앞의 rule을 override할 수 있습니다.</p><div class="en-orig"><p>When you spread <code>...nextConfig</code>, you're adding multiple config objects that include file patterns, plugins, rules, ignores, and parser settings. ESLint applies configs in order, so later rules can override earlier ones for matching files.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 방법은 단순한 setup에 잘 맞습니다. 특정 file pattern이나 plugin 설정이 충돌하는 복잡한 기존 config가 있다면, 더 세밀하게 제어할 수 있도록 (위에서 설명한 대로) plugin을 직접 사용하는 것을 고려하세요.</p><div class="en-orig"><p>This approach works well for straightforward setups. If you have a complex existing config with specific file patterns or plugin configurations that conflict, consider using the plugin directly (as shown above) for more granular control.</p></div></div></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.4.0</code></td><td><code>eslint-config-next</code>에 기본 React 버전 감지 지원을 포함한 ESLint 10 호환성이 추가되었습니다.</td></tr>
+<tr><td><code>v16.0.0</code></td><td>ESLint CLI로 대체되면서 <code>next lint</code>와 <code>eslint</code> next.config.js option이 제거되었습니다. migrate를 돕는 <a href="app-guides-upgrading-codemods.html#migrate-from-next-lint-to-eslint-cli">codemod</a>를 사용할 수 있습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.4.0</code></td><td><code>eslint-config-next</code> added ESLint 10 compatibility, including support for default React version detection.</td></tr>
+<tr><td><code>v16.0.0</code></td><td><code>next lint</code> and the <code>eslint</code> next.config.js option were removed in favor of the ESLint CLI. A <a href="app-guides-upgrading-codemods.html#migrate-from-next-lint-to-eslint-cli">codemod</a> is available to help you migrate.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/03-eslint.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/config/eslint" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-config-typescript.html" class="prev"><div class="dir">← 이전</div><div class="ttl">TypeScript</div><div class="ttl-ko">TypeScript</div></a>
+      <a href="app-api-reference-cli.html" class="next"><div class="dir">다음 →</div><div class="ttl">CLI</div><div class="ttl-ko">CLI</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/config/eslint" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#setup-eslint">Setup ESLint</a></li><li class="l2"><a href="#reference">Reference</a></li><li class="l3"><a href="#rules">Rules</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#specifying-a-root-directory-within-a-monorepo">Specifying a root directory within a monorepo</a></li><li class="l3"><a href="#disabling-rules">Disabling rules</a></li><li class="l3"><a href="#with-core-web-vitals">With Core Web Vitals</a></li><li class="l3"><a href="#with-typescript">With TypeScript</a></li><li class="l3"><a href="#with-prettier">With Prettier</a></li><li class="l3"><a href="#running-lint-on-staged-files">Running lint on staged files</a></li><li class="l2"><a href="#migrating-existing-config">Migrating existing config</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js는 애플리케이션에서 흔히 발생하는 이슈를 쉽게 잡아낼 수 있도록 ESLint configuration package인 [`eslint-config-next`](https://www.npmjs.com/package/eslint-config-next)를 제공합니다. 여기에는 [`@next/eslint-plugin-next`](https://www.npmjs.com/package/@next/eslint-plugin-next) plugin과 함께 [`eslint-plugin-react`](https://www.npmjs.com/package/eslint-plugin-react), [`eslint-plugin-react-hooks`](https://www.npmjs.com/package/eslint-plugin-react-hooks)의 권장 rule-set이 포함되어 있습니다.
+
+이 package는 두 가지 주요 configuration을 제공합니다:
+
+- **`eslint-config-next`**: Next.js, React, React Hooks rule이 들어간 기본 configuration입니다. JavaScript와 TypeScript 파일을 모두 지원합니다.
+- **`eslint-config-next/core-web-vitals`**: 기본 config의 모든 내용을 포함하며, [Core Web Vitals](https://web.dev/vitals/)에 영향을 주는 rule을 warning에서 error로 격상합니다. 대부분의 프로젝트에 권장됩니다.
+
+또한 TypeScript 프로젝트를 위해 다음이 제공됩니다:
+
+- **`eslint-config-next/typescript`**: [`typescript-eslint`](https://typescript-eslint.io/)의 TypeScript 전용 linting rule을 추가합니다. 기본 config 또는 core-web-vitals config와 함께 사용하세요.
+
+## Setup ESLint || ESLint 설정하기
+
+ESLint CLI(flat config)로 빠르게 linting을 시작하세요:
+
+1. ESLint와 Next.js config를 설치합니다:
+
+   [[CODE 1]]
+
+2. Next.js config로 `eslint.config.mjs`를 만듭니다:
+
+   [[CODE 2]]
+
+3. ESLint를 실행합니다:
+
+   [[CODE 3]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - `eslint-config-next`는 ESLint 9와 ESLint 10을 지원합니다. ESLint 10에는 Node.js `^20.19.0`, `^22.13.0`, 또는 `&gt;=24`가 필요합니다.
+&gt; - `eslint-config-next@16.4.0`부터 기본 React 버전 감지가 ESLint 10에서 동작합니다. `context.getFilename` error를 우회하기 위해 추가했던 `settings.react.version` override는 제거해도 됩니다.
+&gt; - `eslint-config-next`에 포함된 일부 plugin은 아직 peer dependency에 ESLint 10을 명시하지 않았기 때문에, package manager가 peer dependency warning을 표시하거나 strict peer dependency가 활성화된 경우 실패할 수 있습니다.
+
+## Reference || 레퍼런스
+
+`eslint-config-next` package에는 다음 ESLint plugin의 `recommended` rule-set이 포함되어 있습니다:
+
+- [`eslint-plugin-react`](https://www.npmjs.com/package/eslint-plugin-react)
+- [`eslint-plugin-react-hooks`](https://www.npmjs.com/package/eslint-plugin-react-hooks)
+- [`@next/eslint-plugin-next`](https://www.npmjs.com/package/@next/eslint-plugin-next)
+
+### Rules
+
+포함된 `@next/eslint-plugin-next` rule은 다음과 같습니다:
+
+| recommended config에서 활성화 | Rule                                                                                                                     | Description                                                                                                      |
+| :---------------------------: | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+|      &lt;Check size={18} /&gt;      | [@next/next/google-font-display](/docs/messages/google-font-display)                                                     | Google Fonts에서 font-display 동작을 강제합니다.                                                                 |
+|      &lt;Check size={18} /&gt;      | [@next/next/google-font-preconnect](/docs/messages/google-font-preconnect)                                               | Google Fonts와 함께 `preconnect`가 사용되도록 합니다.                                                                   |
+|      &lt;Check size={18} /&gt;      | [@next/next/inline-script-id](/docs/messages/inline-script-id)                                                           | inline content가 있는 `next/script` component에 `id` attribute를 강제합니다.                                          |
+|      &lt;Check size={18} /&gt;      | [@next/next/next-script-for-ga](/docs/messages/next-script-for-ga)                                                       | Google Analytics용 inline script를 사용할 때 `next/script` component를 권장합니다.                                |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-assign-module-variable](/docs/messages/no-assign-module-variable)                                         | `module` 변수에 값을 할당하지 못하게 합니다.                                                                     |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-async-client-component](/docs/messages/no-async-client-component)                                         | Client Component가 async 함수가 되지 않도록 합니다.                                                            |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-before-interactive-script-outside-document](/docs/messages/no-before-interactive-script-outside-document) | `pages/_document.js` 밖에서 `next/script`의 `beforeInteractive` strategy를 사용하지 못하게 합니다.                   |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-css-tags](/docs/messages/no-css-tags)                                                                     | stylesheet tag를 직접 작성하지 못하게 합니다.                                                                                  |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-document-import-in-page](/docs/messages/no-document-import-in-page)                                       | `pages/_document.js` 밖에서 `next/document`를 import하지 못하게 합니다.                                               |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-duplicate-head](/docs/messages/no-duplicate-head)                                                         | `pages/_document.js`에서 `&lt;Head&gt;`를 중복 사용하지 못하게 합니다.                                                     |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-head-element](/docs/messages/no-head-element)                                                             | `&lt;head&gt;` element를 사용하지 못하게 합니다.                                                                               |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-head-import-in-document](/docs/messages/no-head-import-in-document)                                       | `pages/_document.js`에서 `next/head`를 사용하지 못하게 합니다.                                                            |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-html-link-for-pages](/docs/messages/no-html-link-for-pages)                                               | 내부 Next.js page로 이동할 때 `&lt;a&gt;` element를 사용하지 못하게 합니다.                                           |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-img-element](/docs/messages/no-img-element)                                                               | LCP가 느려지고 bandwidth가 늘어나므로 `&lt;img&gt;` element를 사용하지 못하게 합니다.                                         |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-page-custom-font](/docs/messages/no-page-custom-font)                                                     | 특정 page에서만 쓰는 custom font를 막습니다.                                                                                  |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-script-component-in-head](/docs/messages/no-script-component-in-head)                                     | `next/head` component 안에서 `next/script`를 사용하지 못하게 합니다.                                                         |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-styled-jsx-in-document](/docs/messages/no-styled-jsx-in-document)                                         | `pages/_document.js`에서 `styled-jsx`를 사용하지 못하게 합니다.                                                           |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-sync-scripts](/docs/messages/no-sync-scripts)                                                             | 동기(synchronous) script를 막습니다.                                                                                     |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-title-in-document-head](/docs/messages/no-title-in-document-head)                                         | `next/document`의 `Head` component와 함께 `&lt;title&gt;`을 사용하지 못하게 합니다.                                           |
+|      &lt;Check size={18} /&gt;      | @next/next/no-typos                                                                                                      | [Next.js의 data fetching 함수](/docs/pages/building-your-application/data-fetching)에서 흔한 오타를 막습니다 |
+|      &lt;Check size={18} /&gt;      | [@next/next/no-unwanted-polyfillio](/docs/messages/no-unwanted-polyfillio)                                               | Polyfill.io의 중복 polyfill을 막습니다.                                                                    |
+
+development 중에 code editor에서 warning과 error를 바로 확인할 수 있도록 적절한 [integration](https://eslint.org/docs/user-guide/integrations#editors)을 사용하는 것을 권장합니다.
+
+&lt;details&gt;
+  &lt;summary&gt;`next lint` 제거&lt;/summary&gt;
+
+Next.js 16부터 `next lint`가 제거되었습니다.
+
+이 제거에 따라 Next config 파일의 `eslint` option도 더 이상 필요 없으며 안전하게 제거할 수 있습니다.
+
+&lt;/details&gt;
+
+## Examples || 예제
+
+### Specifying a root directory within a monorepo || monorepo에서 root directory 지정하기
+
+Next.js가 root directory에 설치되어 있지 않은 프로젝트(예: monorepo)에서 `@next/eslint-plugin-next`를 사용한다면, `eslint.config.mjs`의 `settings` property로 `@next/eslint-plugin-next`에 Next.js 애플리케이션의 위치를 알려 줄 수 있습니다:
+
+[[CODE 4]]
+
+`rootDir`은 경로(상대 또는 절대), glob(예: `&quot;packages/*/&quot;`), 또는 경로와 glob의 배열일 수 있습니다.
+
+### Disabling rules || rule 비활성화하기
+
+지원되는 plugin(`react`, `react-hooks`, `next`)이 제공하는 rule을 수정하거나 비활성화하려면, `eslint.config.mjs`의 `rules` property로 직접 변경할 수 있습니다:
+
+[[CODE 5]]
+
+### With Core Web Vitals || Core Web Vitals와 함께 사용하기
+
+ESLint config에서 `eslint-config-next/core-web-vitals` configuration을 활성화하세요.
+
+[[CODE 6]]
+
+`eslint-config-next/core-web-vitals`는 [Core Web Vitals](https://web.dev/vitals/) metric 개선에 도움이 되도록 `@next/eslint-plugin-next`의 특정 lint rule을 warning에서 error로 격상합니다.
+
+&gt; `eslint-config-next/core-web-vitals` configuration은 [Create Next App](/docs/app/api-reference/cli/create-next-app)으로 만든 새 애플리케이션에 자동으로 포함됩니다.
+
+### With TypeScript || TypeScript와 함께 사용하기
+
+Next.js ESLint rule 외에도, `create-next-app --typescript`는 `eslint-config-next/typescript`로 TypeScript 전용 lint rule도 config에 추가합니다:
+
+[[CODE 7]]
+
+이 rule들은 [`plugin:@typescript-eslint/recommended`](https://typescript-eslint.io/linting/configs#recommended)를 기반으로 합니다.
+자세한 내용은 [typescript-eslint &gt; Configs](https://typescript-eslint.io/linting/configs)를 참고하세요.
+
+### With Prettier || Prettier와 함께 사용하기
+
+ESLint에는 code formatting rule도 들어 있어서 기존 [Prettier](https://prettier.io/) setup과 충돌할 수 있습니다. ESLint와 Prettier가 함께 동작하도록 ESLint config에 [eslint-config-prettier](https://github.com/prettier/eslint-config-prettier)를 포함하는 것을 권장합니다.
+
+먼저 dependency를 설치하세요:
+
+[[CODE 8]]
+
+그런 다음 기존 ESLint config에 `prettier`를 추가하세요:
+
+[[CODE 9]]
+
+### Running lint on staged files || staged 파일에 lint 실행하기
+
+[lint-staged](https://github.com/okonet/lint-staged)와 함께 ESLint를 사용해 staged git 파일에 linter를 실행하려면, 프로젝트 root의 `.lintstagedrc.js` 파일에 다음을 추가하세요:
+
+[[CODE 10]]
+
+## Migrating existing config || 기존 config migrate하기
+
+애플리케이션에 이미 ESLint가 설정되어 있다면, setup에 따라 Next.js linting rule을 통합하는 두 가지 방법이 있습니다.
+
+#### Using the plugin directly || plugin 직접 사용하기
+
+다음 중 하나라도 이미 설정되어 있다면 `@next/eslint-plugin-next`를 직접 사용하세요:
+
+- 별도로 설치했거나 다른 config(`airbnb`, `react-app` 등)를 통해 설치된 충돌 가능한 plugin:
+  - `react`
+  - `react-hooks`
+  - `jsx-a11y`
+  - `import`
+- Next.js 기본값과 다른 custom `parserOptions`([Babel configuration을 customize한](/docs/pages/guides/babel) 경우에만 해당)
+- custom Node.js 및/또는 TypeScript [resolver](https://github.com/benmosher/eslint-plugin-import#resolvers)를 사용하는 `eslint-plugin-import`
+
+이런 경우에는 충돌을 피하기 위해 `@next/eslint-plugin-next`를 직접 사용하세요:
+
+먼저 plugin을 설치하세요:
+
+[[CODE 11]]
+
+그런 다음 ESLint config에 추가하세요:
+
+[[CODE 12]]
+
+이 방법을 사용하면 같은 plugin이나 parser가 여러 configuration에서 import될 때 생길 수 있는 충돌이나 error의 위험이 없어집니다.
+
+#### Adding to existing config || 기존 config에 추가하기
+
+기존 ESLint setup에 Next.js를 추가하는 경우, Next.js config를 배열 안에 spread하세요:
+
+[[CODE 13]]
+
+`...nextConfig`를 spread하면 file pattern, plugin, rule, ignore, parser 설정을 포함한 여러 config object가 추가됩니다. ESLint는 config를 순서대로 적용하므로, 일치하는 파일에 대해서는 뒤의 rule이 앞의 rule을 override할 수 있습니다.
+
+&gt; **Good to know:** 이 방법은 단순한 setup에 잘 맞습니다. 특정 file pattern이나 plugin 설정이 충돌하는 복잡한 기존 config가 있다면, 더 세밀하게 제어할 수 있도록 (위에서 설명한 대로) plugin을 직접 사용하는 것을 고려하세요.
+
+| Version   | Changes                                                                                                                                                                                                             |
+| --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `v16.4.0` | `eslint-config-next`에 기본 React 버전 감지 지원을 포함한 ESLint 10 호환성이 추가되었습니다.                                                                                                          |
+| `v16.0.0` | ESLint CLI로 대체되면서 `next lint`와 `eslint` next.config.js option이 제거되었습니다. migrate를 돕는 [codemod](/docs/app/guides/upgrading/codemods#migrate-from-next-lint-to-eslint-cli)를 사용할 수 있습니다. |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

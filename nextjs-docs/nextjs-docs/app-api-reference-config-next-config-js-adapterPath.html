@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>adapterPath (adapterPath) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/config/next-config-js/adapterPath" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/config/next-config-js/adapterPath" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/adapterPath.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config.html">Configuration</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config-next-config-js.html">next.config.js</a></div>
+    <div class="title-row">
+      <h1 class="page-title">adapterPath<span class="sub">adapterPath</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js는 built-in adapters API를 제공합니다. 이 API를 사용하면 deployment platform이나 build system이 Next.js build process와 통합될 수 있습니다.</p><div class="en-orig"><p>Next.js provides a built-in adapters API. It allows deployment platforms or build systems to integrate with the Next.js build process.</p></div>
+<p>전체 reference 구현은 <a href="https://github.com/nextjs/adapter-vercel" target="_blank" rel="noopener"><code>nextjs/adapter-vercel</code></a> adapter를 참고하세요.</p><div class="en-orig"><p>For a full reference implementation, see the <a href="https://github.com/nextjs/adapter-vercel" target="_blank" rel="noopener"><code>nextjs/adapter-vercel</code></a> adapter.</p></div>
+<h2 class="sec" id="configuration"><a class="anchor" href="#configuration">Configuration<span class="ko">설정</span></a></h2>
+<p>adapter를 사용하려면 <code>adapterPath</code>에 adapter module의 경로를 지정하세요:</p><div class="en-orig"><p>To use an adapter, specify the path to your adapter module in <code>adapterPath</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  adapterPath: require.resolve(&#x27;./my-adapter.js&#x27;),
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p>또는 <code>NEXT_ADAPTER_PATH</code>를 설정하여 deployment platform에서 zero-config로 사용할 수 있습니다.</p><div class="en-orig"><p>Alternatively <code>NEXT_ADAPTER_PATH</code> can be set to enable zero-config usage in deployment platforms.</p></div>
+<h2 class="sec" id="adapters"><a class="anchor" href="#adapters">Adapters</a></h2>
+<p>adapter 구현에 대한 자세한 내용은 전용 Adapters 섹션을 참고하세요:</p><div class="en-orig"><p>For full adapter implementation details, use the dedicated Adapters section:</p></div>
+<ul>
+<li><a href="app-api-reference-adapters-configuration.html">Configuration</a></li>
+<li><a href="app-api-reference-adapters-creating-an-adapter.html">Creating an Adapter</a></li>
+<li><a href="app-api-reference-adapters-api-reference.html">API Reference</a></li>
+<li><a href="app-api-reference-adapters-testing-adapters.html">Testing Adapters</a></li>
+<li><a href="app-api-reference-adapters-routing-with-next-routing.html">Routing with <code>@next/routing</code></a></li>
+<li><a href="app-api-reference-adapters-implementing-ppr-in-an-adapter.html">Implementing PPR in an Adapter</a></li>
+<li><a href="app-api-reference-adapters-runtime-integration.html">Runtime Integration</a></li>
+<li><a href="app-api-reference-adapters-invoking-entrypoints.html">Invoking Entrypoints</a></li>
+<li><a href="app-api-reference-adapters-output-types.html">Output Types</a></li>
+<li><a href="app-api-reference-adapters-routing-information.html">Routing Information</a></li>
+<li><a href="app-api-reference-adapters-use-cases.html">Use Cases</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-adapters-configuration.html">Configuration</a></li>
+<li><a href="app-api-reference-adapters-creating-an-adapter.html">Creating an Adapter</a></li>
+<li><a href="app-api-reference-adapters-api-reference.html">API Reference</a></li>
+<li><a href="app-api-reference-adapters-testing-adapters.html">Testing Adapters</a></li>
+<li><a href="app-api-reference-adapters-routing-with-next-routing.html">Routing with <code>@next/routing</code></a></li>
+<li><a href="app-api-reference-adapters-implementing-ppr-in-an-adapter.html">Implementing PPR in an Adapter</a></li>
+<li><a href="app-api-reference-adapters-runtime-integration.html">Runtime Integration</a></li>
+<li><a href="app-api-reference-adapters-invoking-entrypoints.html">Invoking Entrypoints</a></li>
+<li><a href="app-api-reference-adapters-output-types.html">Output Types</a></li>
+<li><a href="app-api-reference-adapters-routing-information.html">Routing Information</a></li>
+<li><a href="app-api-reference-adapters-use-cases.html">Use Cases</a></li>
+</ul></div>
+<h2 class="sec" id="creating-an-adapter"><a class="anchor" href="#creating-an-adapter">Creating an Adapter<span class="ko">Adapter 만들기</span></a></h2>
+<p><a href="app-api-reference-adapters-creating-an-adapter.html">Creating an Adapter</a>를 참고하세요.</p><div class="en-orig"><p>See <a href="app-api-reference-adapters-creating-an-adapter.html">Creating an Adapter</a>.</p></div>
+<h2 class="sec" id="api-reference"><a class="anchor" href="#api-reference">API Reference</a></h2>
+<p><a href="app-api-reference-adapters-api-reference.html">API Reference</a>를 참고하세요.</p><div class="en-orig"><p>See <a href="app-api-reference-adapters-api-reference.html">API Reference</a>.</p></div>
+<h2 class="sec" id="testing-adapters"><a class="anchor" href="#testing-adapters">Testing Adapters<span class="ko">Adapter 테스트</span></a></h2>
+<p><a href="app-api-reference-adapters-testing-adapters.html">Testing Adapters</a>를 참고하세요.</p><div class="en-orig"><p>See <a href="app-api-reference-adapters-testing-adapters.html">Testing Adapters</a>.</p></div>
+<h2 class="sec" id="routing-with-nextrouting"><a class="anchor" href="#routing-with-nextrouting">Routing with <code>@next/routing</code><span class="ko"><code>@next/routing</code>으로 routing하기</span></a></h2>
+<p><a href="app-api-reference-adapters-routing-with-next-routing.html">Routing with <code>@next/routing</code></a>을 참고하세요.</p><div class="en-orig"><p>See <a href="app-api-reference-adapters-routing-with-next-routing.html">Routing with <code>@next/routing</code></a>.</p></div>
+<h2 class="sec" id="implementing-ppr-in-an-adapter"><a class="anchor" href="#implementing-ppr-in-an-adapter">Implementing PPR in an Adapter<span class="ko">Adapter에서 PPR 구현하기</span></a></h2>
+<p><a href="app-api-reference-adapters-implementing-ppr-in-an-adapter.html">Implementing PPR in an Adapter</a>를 참고하세요.</p><div class="en-orig"><p>See <a href="app-api-reference-adapters-implementing-ppr-in-an-adapter.html">Implementing PPR in an Adapter</a>.</p></div>
+<h2 class="sec" id="runtime-integration"><a class="anchor" href="#runtime-integration">Runtime Integration<span class="ko">Runtime 통합</span></a></h2>
+<p><a href="app-api-reference-adapters-runtime-integration.html">Runtime Integration</a>을 참고하세요.</p><div class="en-orig"><p>See <a href="app-api-reference-adapters-runtime-integration.html">Runtime Integration</a>.</p></div>
+<h2 class="sec" id="invoking-entrypoints"><a class="anchor" href="#invoking-entrypoints">Invoking Entrypoints<span class="ko">Entrypoint 호출</span></a></h2>
+<p><a href="app-api-reference-adapters-invoking-entrypoints.html">Invoking Entrypoints</a>를 참고하세요.</p><div class="en-orig"><p>See <a href="app-api-reference-adapters-invoking-entrypoints.html">Invoking Entrypoints</a>.</p></div>
+<h2 class="sec" id="output-types"><a class="anchor" href="#output-types">Output Types<span class="ko">Output 유형</span></a></h2>
+<p><a href="app-api-reference-adapters-output-types.html">Output Types</a>를 참고하세요.</p><div class="en-orig"><p>See <a href="app-api-reference-adapters-output-types.html">Output Types</a>.</p></div>
+<h2 class="sec" id="routing-information"><a class="anchor" href="#routing-information">Routing Information<span class="ko">Routing 정보</span></a></h2>
+<p><a href="app-api-reference-adapters-routing-information.html">Routing Information</a>을 참고하세요.</p><div class="en-orig"><p>See <a href="app-api-reference-adapters-routing-information.html">Routing Information</a>.</p></div>
+<h2 class="sec" id="use-cases"><a class="anchor" href="#use-cases">Use Cases<span class="ko">사용 사례</span></a></h2>
+<p><a href="app-api-reference-adapters-use-cases.html">Use Cases</a>를 참고하세요.</p><div class="en-orig"><p>See <a href="app-api-reference-adapters-use-cases.html">Use Cases</a>.</p></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.2.0</code></td><td><code>adapterPath</code>가 stable이 되었고 <code>experimental.adapterPath</code>에서 top-level <code>adapterPath</code> option으로 이동했습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.2.0</code></td><td><code>adapterPath</code> stabilized and moved from <code>experimental.adapterPath</code> to the top-level <code>adapterPath</code> option.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/adapterPath.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/adapterPath" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-config-next-config-js.html" class="prev"><div class="dir">← 이전</div><div class="ttl">next.config.js</div><div class="ttl-ko">next.config.js</div></a>
+      <a href="app-api-reference-config-next-config-js-agentFeedback.html" class="next"><div class="dir">다음 →</div><div class="ttl">agentFeedback</div><div class="ttl-ko">agentFeedback</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/adapterPath" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#configuration">Configuration</a></li><li class="l2"><a href="#adapters">Adapters</a></li><li class="l2"><a href="#creating-an-adapter">Creating an Adapter</a></li><li class="l2"><a href="#api-reference">API Reference</a></li><li class="l2"><a href="#testing-adapters">Testing Adapters</a></li><li class="l2"><a href="#routing-with-nextrouting">Routing with <code>@next/routing</code></a></li><li class="l2"><a href="#implementing-ppr-in-an-adapter">Implementing PPR in an Adapter</a></li><li class="l2"><a href="#runtime-integration">Runtime Integration</a></li><li class="l2"><a href="#invoking-entrypoints">Invoking Entrypoints</a></li><li class="l2"><a href="#output-types">Output Types</a></li><li class="l2"><a href="#routing-information">Routing Information</a></li><li class="l2"><a href="#use-cases">Use Cases</a></li><li class="l2"><a href="#version-history">Version History</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js는 built-in adapters API를 제공합니다. 이 API를 사용하면 deployment platform이나 build system이 Next.js build process와 통합될 수 있습니다.
+
+전체 reference 구현은 [`nextjs/adapter-vercel`](https://github.com/nextjs/adapter-vercel) adapter를 참고하세요.
+
+## Configuration || 설정
+
+adapter를 사용하려면 `adapterPath`에 adapter module의 경로를 지정하세요:
+
+[[CODE 1]]
+
+또는 `NEXT_ADAPTER_PATH`를 설정하여 deployment platform에서 zero-config로 사용할 수 있습니다.
+
+## Adapters
+
+adapter 구현에 대한 자세한 내용은 전용 Adapters 섹션을 참고하세요:
+
+- [Configuration](/docs/app/api-reference/adapters/configuration)
+- [Creating an Adapter](/docs/app/api-reference/adapters/creating-an-adapter)
+- [API Reference](/docs/app/api-reference/adapters/api-reference)
+- [Testing Adapters](/docs/app/api-reference/adapters/testing-adapters)
+- [Routing with `@next/routing`](/docs/app/api-reference/adapters/routing-with-next-routing)
+- [Implementing PPR in an Adapter](/docs/app/api-reference/adapters/implementing-ppr-in-an-adapter)
+- [Runtime Integration](/docs/app/api-reference/adapters/runtime-integration)
+- [Invoking Entrypoints](/docs/app/api-reference/adapters/invoking-entrypoints)
+- [Output Types](/docs/app/api-reference/adapters/output-types)
+- [Routing Information](/docs/app/api-reference/adapters/routing-information)
+- [Use Cases](/docs/app/api-reference/adapters/use-cases)
+
+## Creating an Adapter || Adapter 만들기
+
+[Creating an Adapter](/docs/app/api-reference/adapters/creating-an-adapter)를 참고하세요.
+
+## API Reference
+
+[API Reference](/docs/app/api-reference/adapters/api-reference)를 참고하세요.
+
+## Testing Adapters || Adapter 테스트
+
+[Testing Adapters](/docs/app/api-reference/adapters/testing-adapters)를 참고하세요.
+
+## Routing with `@next/routing` || `@next/routing`으로 routing하기
+
+[Routing with `@next/routing`](/docs/app/api-reference/adapters/routing-with-next-routing)을 참고하세요.
+
+## Implementing PPR in an Adapter || Adapter에서 PPR 구현하기
+
+[Implementing PPR in an Adapter](/docs/app/api-reference/adapters/implementing-ppr-in-an-adapter)를 참고하세요.
+
+## Runtime Integration || Runtime 통합
+
+[Runtime Integration](/docs/app/api-reference/adapters/runtime-integration)을 참고하세요.
+
+## Invoking Entrypoints || Entrypoint 호출
+
+[Invoking Entrypoints](/docs/app/api-reference/adapters/invoking-entrypoints)를 참고하세요.
+
+## Output Types || Output 유형
+
+[Output Types](/docs/app/api-reference/adapters/output-types)를 참고하세요.
+
+## Routing Information || Routing 정보
+
+[Routing Information](/docs/app/api-reference/adapters/routing-information)을 참고하세요.
+
+## Use Cases || 사용 사례
+
+[Use Cases](/docs/app/api-reference/adapters/use-cases)를 참고하세요.
+
+## Version History || 버전 기록
+
+| Version   | Changes                                                                                                   |
+| --------- | --------------------------------------------------------------------------------------------------------- |
+| `v16.2.0` | `adapterPath`가 stable이 되었고 `experimental.adapterPath`에서 top-level `adapterPath` option으로 이동했습니다. |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

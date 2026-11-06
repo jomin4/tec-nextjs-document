@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Routes (API Route) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/building-your-application/routing/api-routes" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/building-your-application/routing/api-routes" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/03-building-your-application/01-routing/07-api-routes.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-building-your-application.html">Building Your Application</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-building-your-application-routing.html">Routing</a></div>
+    <div class="title-row">
+      <h1 class="page-title">API Routes<span class="sub">API Route</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<details><summary>예시</summary><div class="details-body"><ul>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/api-routes-proxy" target="_blank" rel="noopener">API Routes Request Helpers</a></li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/api-routes-graphql" target="_blank" rel="noopener">API Routes with GraphQL</a></li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/api-routes-rest" target="_blank" rel="noopener">API Routes with REST</a></li>
+<li><a href="https://github.com/vercel/next.js/tree/canary/examples/api-routes-cors" target="_blank" rel="noopener">API Routes with CORS</a></li>
+</ul></div></details>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>App Router를 사용한다면 API Route 대신 <a href="app-getting-started-server-and-client-components.html">Server Components</a>나 <a href="app-api-reference-file-conventions-route.html">Route Handlers</a>를 사용할 수 있습니다.</p><div class="en-orig"><p>If you are using the App Router, you can use <a href="app-getting-started-server-and-client-components.html">Server Components</a> or <a href="app-api-reference-file-conventions-route.html">Route Handlers</a> instead of API Routes.</p></div></div></div>
+<p>API route는 Next.js로 <strong>public API</strong>를 만드는 방법을 제공합니다.</p><div class="en-orig"><p>API routes provide a solution to build a <strong>public API</strong> with Next.js.</p></div>
+<p><code>pages/api</code> 폴더 안의 모든 파일은 <code>/api/*</code>에 mapping되며, <code>page</code>가 아니라 API endpoint로 취급됩니다. 이 파일들은 server-side 전용 bundle이므로 client-side bundle 크기를 늘리지 않습니다.</p><div class="en-orig"><p>Any file inside the folder <code>pages/api</code> is mapped to <code>/api/*</code> and will be treated as an API endpoint instead of a <code>page</code>. They are server-side only bundles and won't increase your client-side bundle size.</p></div>
+<p>예를 들어 다음 API route는 status code <code>200</code>과 함께 JSON response를 반환합니다:</p><div class="en-orig"><p>For example, the following API route returns a JSON response with a status code of <code>200</code>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/api/hello.ts" data-js="pages/api/hello.js">pages/api/hello.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextApiRequest, NextApiResponse } from &#x27;next&#x27;
+
+type ResponseData = {
+  message: string
+}
+
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse&lt;ResponseData&gt;
+) {
+  res.status(200).json({ message: &#x27;Hello from Next.js!&#x27; })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function handler(req, res) {
+  res.status(200).json({ message: &#x27;Hello from Next.js!&#x27; })
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>API Route는 <a href="https://developer.mozilla.org/docs/Web/HTTP/CORS" target="_blank" rel="noopener">CORS header를 지정하지 않습니다</a>. 즉, 기본적으로 <strong>same-origin 전용</strong>입니다. request handler를 <a href="https://github.com/vercel/next.js/tree/canary/examples/api-routes-cors" target="_blank" rel="noopener">CORS request helper</a>로 감싸 이 동작을 customize할 수 있습니다.</li>
+<li>API Route는 <a href="pages-guides-static-exports.html">static export</a>와 함께 사용할 수 없습니다. 하지만 App Router의 <a href="app-api-reference-file-conventions-route.html">Route Handlers</a>는 사용할 수 있습니다.</li>
+<li>API Route는 <code>next.config.js</code>의 <a href="pages-api-reference-config-next-config-js-pageExtensions.html"><code>pageExtensions</code> configuration</a>의 영향을 받습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>API Routes <a href="https://developer.mozilla.org/docs/Web/HTTP/CORS" target="_blank" rel="noopener">do not specify CORS headers</a>, meaning they are <strong>same-origin only</strong> by default. You can customize such behavior by wrapping the request handler with the <a href="https://github.com/vercel/next.js/tree/canary/examples/api-routes-cors" target="_blank" rel="noopener">CORS request helpers</a>.</li>
+<li>API Routes can't be used with <a href="pages-guides-static-exports.html">static exports</a>. However, <a href="app-api-reference-file-conventions-route.html">Route Handlers</a> in the App Router can.</li>
+<li>API Routes will be affected by <a href="pages-api-reference-config-next-config-js-pageExtensions.html"><code>pageExtensions</code> configuration</a> in <code>next.config.js</code>.</li>
+</ul></div></div></div>
+<h2 class="sec" id="parameters"><a class="anchor" href="#parameters">Parameters</a></h2>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  // ...
+}</code></pre></div></div>
+<ul>
+<li><code>req</code>: <a href="https://nodejs.org/api/http.html#class-httpincomingmessage" target="_blank" rel="noopener">http.IncomingMessage</a>의 instance</li>
+<li><code>res</code>: <a href="https://nodejs.org/api/http.html#class-httpserverresponse" target="_blank" rel="noopener">http.ServerResponse</a>의 instance</li>
+</ul><div class="en-orig"><ul>
+<li><code>req</code>: An instance of <a href="https://nodejs.org/api/http.html#class-httpincomingmessage" target="_blank" rel="noopener">http.IncomingMessage</a></li>
+<li><code>res</code>: An instance of <a href="https://nodejs.org/api/http.html#class-httpserverresponse" target="_blank" rel="noopener">http.ServerResponse</a></li>
+</ul></div>
+<h2 class="sec" id="http-methods"><a class="anchor" href="#http-methods">HTTP Methods<span class="ko">HTTP Method</span></a></h2>
+<p>API route에서 서로 다른 HTTP method를 처리하려면 request handler에서 다음과 같이 <code>req.method</code>를 사용할 수 있습니다:</p><div class="en-orig"><p>To handle different HTTP methods in an API route, you can use <code>req.method</code> in your request handler, like so:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/api/hello.ts" data-js="pages/api/hello.js">pages/api/hello.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextApiRequest, NextApiResponse } from &#x27;next&#x27;
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  if (req.method === &#x27;POST&#x27;) {
+    // Process a POST request
+  } else {
+    // Handle any other HTTP method
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function handler(req, res) {
+  if (req.method === &#x27;POST&#x27;) {
+    // Process a POST request
+  } else {
+    // Handle any other HTTP method
+  }
+}</code></pre></div></div>
+<h2 class="sec" id="request-helpers"><a class="anchor" href="#request-helpers">Request Helpers<span class="ko">Request Helper</span></a></h2>
+<p>API Route는 들어오는 request(<code>req</code>)를 parse하는 기본 제공 request helper를 제공합니다:</p><div class="en-orig"><p>API Routes provide built-in request helpers which parse the incoming request (<code>req</code>):</p></div>
+<ul>
+<li><code>req.cookies</code> - request가 보낸 cookie를 담은 object입니다. 기본값은 <code>{}</code></li>
+<li><code>req.query</code> - <a href="https://en.wikipedia.org/wiki/Query_string" target="_blank" rel="noopener">query string</a>을 담은 object입니다. 기본값은 <code>{}</code></li>
+<li><code>req.body</code> - <code>content-type</code>에 따라 parse된 body를 담은 object이며, body가 전송되지 않았다면 <code>null</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>req.cookies</code> - An object containing the cookies sent by the request. Defaults to <code>{}</code></li>
+<li><code>req.query</code> - An object containing the <a href="https://en.wikipedia.org/wiki/Query_string" target="_blank" rel="noopener">query string</a>. Defaults to <code>{}</code></li>
+<li><code>req.body</code> - An object containing the body parsed by <code>content-type</code>, or <code>null</code> if no body was sent</li>
+</ul></div>
+<h3 class="sec" id="custom-config"><a class="anchor" href="#custom-config">Custom config</a></h3>
+<p>모든 API Route는 <code>config</code> object를 export해 기본 configuration을 바꿀 수 있습니다. 기본 configuration은 다음과 같습니다:</p><div class="en-orig"><p>Every API Route can export a <code>config</code> object to change the default configuration, which is the following:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: &#x27;1mb&#x27;,
+    },
+  },
+  // Specifies the maximum allowed duration for this function to execute (in seconds)
+  maxDuration: 5,
+}</code></pre></div></div>
+<p><code>bodyParser</code>는 자동으로 활성화됩니다. body를 <code>Stream</code>으로 사용하거나 <a href="https://www.npmjs.com/package/raw-body" target="_blank" rel="noopener"><code>raw-body</code></a>로 사용하고 싶다면 이를 <code>false</code>로 설정할 수 있습니다.</p><div class="en-orig"><p><code>bodyParser</code> is automatically enabled. If you want to consume the body as a <code>Stream</code> or with <a href="https://www.npmjs.com/package/raw-body" target="_blank" rel="noopener"><code>raw-body</code></a>, you can set this to <code>false</code>.</p></div>
+<p>자동 <code>bodyParser</code>를 비활성화하는 사용 사례 중 하나는 <a href="https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks#validating-payloads-from-github" target="_blank" rel="noopener">GitHub에서 오는</a> 것과 같은 <strong>webhook</strong> request의 raw body를 검증하는 것입니다.</p><div class="en-orig"><p>One use case for disabling the automatic <code>bodyParser</code> is to allow you to verify the raw body of a <strong>webhook</strong> request, for example <a href="https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks#validating-payloads-from-github" target="_blank" rel="noopener">from GitHub</a>.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export const config = {
+  api: {
+    bodyParser: false,
+  },
+}</code></pre></div></div>
+<p><code>bodyParser.sizeLimit</code>은 parse된 body에 허용되는 최대 크기이며, 다음처럼 <a href="https://github.com/visionmedia/bytes.js" target="_blank" rel="noopener">bytes</a>가 지원하는 모든 형식으로 지정할 수 있습니다:</p><div class="en-orig"><p><code>bodyParser.sizeLimit</code> is the maximum size allowed for the parsed body, in any format supported by <a href="https://github.com/visionmedia/bytes.js" target="_blank" rel="noopener">bytes</a>, like so:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: &#x27;500kb&#x27;,
+    },
+  },
+}</code></pre></div></div>
+<p><code>externalResolver</code>는 이 route가 <em>express_나 _connect</em> 같은 외부 resolver에 의해 처리되고 있음을 server에 알리는 명시적 flag입니다. 이 option을 활성화하면 해결되지 않은(unresolved) request에 대한 경고가 표시되지 않습니다.</p><div class="en-orig"><p><code>externalResolver</code> is an explicit flag that tells the server that this route is being handled by an external resolver like <em>express</em> or <em>connect</em>. Enabling this option disables warnings for unresolved requests.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export const config = {
+  api: {
+    externalResolver: true,
+  },
+}</code></pre></div></div>
+<p><code>responseLimit</code>은 자동으로 활성화되며, API Route의 response body가 4MB를 넘으면 경고합니다.</p><div class="en-orig"><p><code>responseLimit</code> is automatically enabled, warning when an API Routes' response body is over 4MB.</p></div>
+<p>serverless 환경에서 Next.js를 사용하지 않고, CDN이나 전용 media host를 사용하지 않을 때의 performance 영향을 이해하고 있다면 이 limit을 <code>false</code>로 설정할 수 있습니다.</p><div class="en-orig"><p>If you are not using Next.js in a serverless environment, and understand the performance implications of not using a CDN or dedicated media host, you can set this limit to <code>false</code>.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export const config = {
+  api: {
+    responseLimit: false,
+  },
+}</code></pre></div></div>
+<p><code>responseLimit</code>에는 byte 수나 <code>bytes</code>가 지원하는 문자열 형식(예: <code>1000</code>, <code>&#x27;500kb&#x27;</code>, <code>&#x27;3mb&#x27;</code>)도 지정할 수 있습니다.
+이 값은 경고가 표시되기 전까지의 최대 response 크기가 됩니다. 기본값은 4MB입니다. (위 참고)</p><div class="en-orig"><p><code>responseLimit</code> can also take the number of bytes or any string format supported by <code>bytes</code>, for example <code>1000</code>, <code>&#x27;500kb&#x27;</code> or <code>&#x27;3mb&#x27;</code>.
+This value will be the maximum response size before a warning is displayed. Default is 4MB. (see above)</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">export const config = {
+  api: {
+    responseLimit: &#x27;8mb&#x27;,
+  },
+}</code></pre></div></div>
+<h2 class="sec" id="response-helpers"><a class="anchor" href="#response-helpers">Response Helpers<span class="ko">Response Helper</span></a></h2>
+<p><a href="https://nodejs.org/api/http.html#http_class_http_serverresponse" target="_blank" rel="noopener">Server Response object</a>(흔히 <code>res</code>로 줄여 씀)에는 개발자 경험을 개선하고 새 API endpoint를 만드는 속도를 높여 주는 Express.js 스타일의 helper method가 포함되어 있습니다.</p><div class="en-orig"><p>The <a href="https://nodejs.org/api/http.html#http_class_http_serverresponse" target="_blank" rel="noopener">Server Response object</a>, (often abbreviated as <code>res</code>) includes a set of Express.js-like helper methods to improve the developer experience and increase the speed of creating new API endpoints.</p></div>
+<p>포함된 helper는 다음과 같습니다:</p><div class="en-orig"><p>The included helpers are:</p></div>
+<ul>
+<li><code>res.status(code)</code> - status code를 설정하는 함수입니다. <code>code</code>는 유효한 <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank" rel="noopener">HTTP status code</a>여야 합니다</li>
+<li><code>res.json(body)</code> - JSON response를 보냅니다. <code>body</code>는 <a href="https://developer.mozilla.org/docs/Glossary/Serialization" target="_blank" rel="noopener">serializable object</a>여야 합니다</li>
+<li><code>res.send(body)</code> - HTTP response를 보냅니다. <code>body</code>는 <code>string</code>, <code>object</code>, <code>Buffer</code> 중 하나일 수 있습니다</li>
+<li><code>res.redirect([status,] path)</code> - 지정한 path나 URL로 redirect합니다. <code>status</code>는 유효한 <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank" rel="noopener">HTTP status code</a>여야 합니다. 지정하지 않으면 <code>status</code>의 기본값은 "307" "Temporary redirect"입니다.</li>
+<li><code>res.revalidate(urlPath)</code> - <code>getStaticProps</code>를 사용해 <a href="pages-guides-incremental-static-regeneration.html#on-demand-revalidation-with-revalidatepath">page를 on-demand로 revalidate</a>합니다. <code>urlPath</code>는 <code>string</code>이어야 합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>res.status(code)</code> - A function to set the status code. <code>code</code> must be a valid <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank" rel="noopener">HTTP status code</a></li>
+<li><code>res.json(body)</code> - Sends a JSON response. <code>body</code> must be a <a href="https://developer.mozilla.org/docs/Glossary/Serialization" target="_blank" rel="noopener">serializable object</a></li>
+<li><code>res.send(body)</code> - Sends the HTTP response. <code>body</code> can be a <code>string</code>, an <code>object</code> or a <code>Buffer</code></li>
+<li><code>res.redirect([status,] path)</code> - Redirects to a specified path or URL. <code>status</code> must be a valid <a href="https://en.wikipedia.org/wiki/List_of_HTTP_status_codes" target="_blank" rel="noopener">HTTP status code</a>. If not specified, <code>status</code> defaults to "307" "Temporary redirect".</li>
+<li><code>res.revalidate(urlPath)</code> - <a href="pages-guides-incremental-static-regeneration.html#on-demand-revalidation-with-revalidatepath">Revalidate a page on demand</a> using <code>getStaticProps</code>. <code>urlPath</code> must be a <code>string</code>.</li>
+</ul></div>
+<h3 class="sec" id="setting-the-status-code-of-a-response"><a class="anchor" href="#setting-the-status-code-of-a-response">Setting the status code of a response<span class="ko">response의 status code 설정하기</span></a></h3>
+<p>client에 response를 돌려보낼 때 response의 status code를 설정할 수 있습니다.</p><div class="en-orig"><p>When sending a response back to the client, you can set the status code of the response.</p></div>
+<p>다음 예시는 response의 status code를 <code>200</code>(<code>OK</code>)으로 설정하고, 값이 <code>Hello from Next.js!</code>인 <code>message</code> property를 JSON response로 반환합니다:</p><div class="en-orig"><p>The following example sets the status code of the response to <code>200</code> (<code>OK</code>) and returns a <code>message</code> property with the value of <code>Hello from Next.js!</code> as a JSON response:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/api/hello.ts" data-js="pages/api/hello.js">pages/api/hello.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextApiRequest, NextApiResponse } from &#x27;next&#x27;
+
+type ResponseData = {
+  message: string
+}
+
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse&lt;ResponseData&gt;
+) {
+  res.status(200).json({ message: &#x27;Hello from Next.js!&#x27; })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function handler(req, res) {
+  res.status(200).json({ message: &#x27;Hello from Next.js!&#x27; })
+}</code></pre></div></div>
+<h3 class="sec" id="sending-a-json-response"><a class="anchor" href="#sending-a-json-response">Sending a JSON response<span class="ko">JSON response 보내기</span></a></h3>
+<p>client에 response를 돌려보낼 때 JSON response를 보낼 수 있으며, 이는 <a href="https://developer.mozilla.org/docs/Glossary/Serialization" target="_blank" rel="noopener">serializable object</a>여야 합니다.
+실제 애플리케이션에서는 요청한 endpoint의 결과에 따라 client에게 request의 상태를 알려 주고 싶을 수 있습니다.</p><div class="en-orig"><p>When sending a response back to the client you can send a JSON response, this must be a <a href="https://developer.mozilla.org/docs/Glossary/Serialization" target="_blank" rel="noopener">serializable object</a>.
+In a real world application you might want to let the client know the status of the request depending on the result of the requested endpoint.</p></div>
+<p>다음 예시는 status code <code>200</code>(<code>OK</code>)과 async 작업의 결과를 담은 JSON response를 보냅니다. 발생할 수 있는 error를 처리하기 위해 try catch block 안에 들어 있으며, 적절한 status code와 catch한 error message를 client에 돌려보냅니다:</p><div class="en-orig"><p>The following example sends a JSON response with the status code <code>200</code> (<code>OK</code>) and the result of the async operation. It's contained in a try catch block to handle any errors that may occur, with the appropriate status code and error message caught and sent back to the client:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/api/hello.ts" data-js="pages/api/hello.js">pages/api/hello.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextApiRequest, NextApiResponse } from &#x27;next&#x27;
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  try {
+    const result = await someAsyncOperation()
+    res.status(200).json({ result })
+  } catch (err) {
+    res.status(500).json({ error: &#x27;failed to load data&#x27; })
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function handler(req, res) {
+  try {
+    const result = await someAsyncOperation()
+    res.status(200).json({ result })
+  } catch (err) {
+    res.status(500).json({ error: &#x27;failed to load data&#x27; })
+  }
+}</code></pre></div></div>
+<h3 class="sec" id="sending-an-http-response"><a class="anchor" href="#sending-an-http-response">Sending an HTTP response<span class="ko">HTTP response 보내기</span></a></h3>
+<p>HTTP response를 보내는 방법은 JSON response를 보낼 때와 같습니다. 유일한 차이점은 response body가 <code>string</code>, <code>object</code>, <code>Buffer</code> 중 하나일 수 있다는 것입니다.</p><div class="en-orig"><p>Sending an HTTP response works the same way as when sending a JSON response. The only difference is that the response body can be a <code>string</code>, an <code>object</code> or a <code>Buffer</code>.</p></div>
+<p>다음 예시는 status code <code>200</code>(<code>OK</code>)과 async 작업의 결과를 담은 HTTP response를 보냅니다.</p><div class="en-orig"><p>The following example sends an HTTP response with the status code <code>200</code> (<code>OK</code>) and the result of the async operation.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/api/hello.ts" data-js="pages/api/hello.js">pages/api/hello.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextApiRequest, NextApiResponse } from &#x27;next&#x27;
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  try {
+    const result = await someAsyncOperation()
+    res.status(200).send({ result })
+  } catch (err) {
+    res.status(500).send({ error: &#x27;failed to fetch data&#x27; })
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function handler(req, res) {
+  try {
+    const result = await someAsyncOperation()
+    res.status(200).send({ result })
+  } catch (err) {
+    res.status(500).send({ error: &#x27;failed to fetch data&#x27; })
+  }
+}</code></pre></div></div>
+<h3 class="sec" id="redirects-to-a-specified-path-or-url"><a class="anchor" href="#redirects-to-a-specified-path-or-url">Redirects to a specified path or URL<span class="ko">지정한 path나 URL로 redirect하기</span></a></h3>
+<p>form을 예로 들면, client가 form을 제출한 뒤 지정한 path나 URL로 redirect하고 싶을 수 있습니다.</p><div class="en-orig"><p>Taking a form as an example, you may want to redirect your client to a specified path or URL once they have submitted the form.</p></div>
+<p>다음 예시는 form이 성공적으로 제출되면 client를 <code>/</code> path로 redirect합니다:</p><div class="en-orig"><p>The following example redirects the client to the <code>/</code> path if the form is successfully submitted:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/api/hello.ts" data-js="pages/api/hello.js">pages/api/hello.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextApiRequest, NextApiResponse } from &#x27;next&#x27;
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  const { name, message } = req.body
+
+  try {
+    await handleFormInputAsync({ name, message })
+    res.redirect(307, &#x27;/&#x27;)
+  } catch (err) {
+    res.status(500).send({ error: &#x27;Failed to fetch data&#x27; })
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function handler(req, res) {
+  const { name, message } = req.body
+
+  try {
+    await handleFormInputAsync({ name, message })
+    res.redirect(307, &#x27;/&#x27;)
+  } catch (err) {
+    res.status(500).send({ error: &#x27;failed to fetch data&#x27; })
+  }
+}</code></pre></div></div>
+<h3 class="sec" id="adding-typescript-types"><a class="anchor" href="#adding-typescript-types">Adding TypeScript types<span class="ko">TypeScript type 추가하기</span></a></h3>
+<p><code>next</code>에서 <code>NextApiRequest</code>와 <code>NextApiResponse</code> type을 import하면 API Route를 더 type-safe하게 만들 수 있으며, 이와 함께 response data에도 type을 지정할 수 있습니다:</p><div class="en-orig"><p>You can make your API Routes more type-safe by importing the <code>NextApiRequest</code> and <code>NextApiResponse</code> types from <code>next</code>, in addition to those, you can also type your response data:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import type { NextApiRequest, NextApiResponse } from &#x27;next&#x27;
+
+type ResponseData = {
+  message: string
+}
+
+export default function handler(
+  req: NextApiRequest,
+  res: NextApiResponse&lt;ResponseData&gt;
+) {
+  res.status(200).json({ message: &#x27;Hello from Next.js!&#x27; })
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>client가 어떤 payload든 포함할 수 있으므로 <code>NextApiRequest</code>의 body는 <code>any</code>입니다. body를 사용하기 전에 runtime에서 body의 type/형태를 검증해야 합니다.</p><div class="en-orig"><p>The body of <code>NextApiRequest</code> is <code>any</code> because the client may include any payload. You should validate the type/shape of the body at runtime before using it.</p></div></div></div>
+<h2 class="sec" id="dynamic-api-routes"><a class="anchor" href="#dynamic-api-routes">Dynamic API Routes<span class="ko">Dynamic API Route</span></a></h2>
+<p>API Route는 <a href="pages-building-your-application-routing-dynamic-routes.html">dynamic route</a>를 지원하며, <code>pages/</code>에서 사용하는 것과 같은 파일 이름 규칙을 따릅니다.</p><div class="en-orig"><p>API Routes support <a href="pages-building-your-application-routing-dynamic-routes.html">dynamic routes</a>, and follow the same file naming rules used for <code>pages/</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/api/post/[pid].ts" data-js="pages/api/post/[pid].js">pages/api/post/[pid].ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextApiRequest, NextApiResponse } from &#x27;next&#x27;
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { pid } = req.query
+  res.end(`Post: ${pid}`)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function handler(req, res) {
+  const { pid } = req.query
+  res.end(`Post: ${pid}`)
+}</code></pre></div></div>
+<p>이제 <code>/api/post/abc</code>로 request를 보내면 <code>Post: abc</code>라는 텍스트로 응답합니다.</p><div class="en-orig"><p>Now, a request to <code>/api/post/abc</code> will respond with the text: <code>Post: abc</code>.</p></div>
+<h3 class="sec" id="catch-all-api-routes"><a class="anchor" href="#catch-all-api-routes">Catch all API routes<span class="ko">Catch all API route</span></a></h3>
+<p>대괄호 안에 점 세 개(<code>...</code>)를 추가하면 API Route를 확장해 모든 path를 catch할 수 있습니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>API Routes can be extended to catch all paths by adding three dots (<code>...</code>) inside the brackets. For example:</p></div>
+<ul>
+<li><code>pages/api/post/[...slug].js</code>는 <code>/api/post/a</code>뿐 아니라 <code>/api/post/a/b</code>, <code>/api/post/a/b/c</code> 등에도 match됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>pages/api/post/[...slug].js</code> matches <code>/api/post/a</code>, but also <code>/api/post/a/b</code>, <code>/api/post/a/b/c</code> and so on.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>[...param]</code>처럼 <code>slug</code> 외의 다른 이름도 사용할 수 있습니다</p><div class="en-orig"><p>You can use names other than <code>slug</code>, such as: <code>[...param]</code></p></div></div></div>
+<p>match된 parameter는 query parameter(예시에서는 <code>slug</code>)로 page에 전달되며, 항상 array입니다. 따라서 path <code>/api/post/a</code>는 다음 <code>query</code> object를 갖습니다:</p><div class="en-orig"><p>Matched parameters will be sent as a query parameter (<code>slug</code> in the example) to the page, and it will always be an array, so, the path <code>/api/post/a</code> will have the following <code>query</code> object:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-json">{ &quot;slug&quot;: [&quot;a&quot;] }</code></pre></div></div>
+<p>그리고 <code>/api/post/a/b</code>나 그 밖에 match되는 path의 경우, 다음처럼 새 parameter가 array에 추가됩니다:</p><div class="en-orig"><p>And in the case of <code>/api/post/a/b</code>, and any other matching path, new parameters will be added to the array, like so:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-json">{ &quot;slug&quot;: [&quot;a&quot;, &quot;b&quot;] }</code></pre></div></div>
+<p>예를 들면 다음과 같습니다:</p><div class="en-orig"><p>For example:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/api/post/[...slug].ts" data-js="pages/api/post/[...slug].js">pages/api/post/[...slug].ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextApiRequest, NextApiResponse } from &#x27;next&#x27;
+
+export default function handler(req: NextApiRequest, res: NextApiResponse) {
+  const { slug } = req.query
+  res.end(`Post: ${slug.join(&#x27;, &#x27;)}`)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function handler(req, res) {
+  const { slug } = req.query
+  res.end(`Post: ${slug.join(&#x27;, &#x27;)}`)
+}</code></pre></div></div>
+<p>이제 <code>/api/post/a/b/c</code>로 request를 보내면 <code>Post: a, b, c</code>라는 텍스트로 응답합니다.</p><div class="en-orig"><p>Now, a request to <code>/api/post/a/b/c</code> will respond with the text: <code>Post: a, b, c</code>.</p></div>
+<h3 class="sec" id="optional-catch-all-api-routes"><a class="anchor" href="#optional-catch-all-api-routes">Optional catch all API routes<span class="ko">Optional catch all API route</span></a></h3>
+<p>parameter를 이중 대괄호(<code>[[...slug]]</code>)로 감싸면 catch all route를 optional로 만들 수 있습니다.</p><div class="en-orig"><p>Catch all routes can be made optional by including the parameter in double brackets (<code>[[...slug]]</code>).</p></div>
+<p>예를 들어 <code>pages/api/post/[[...slug]].js</code>는 <code>/api/post</code>, <code>/api/post/a</code>, <code>/api/post/a/b</code> 등에 match됩니다.</p><div class="en-orig"><p>For example, <code>pages/api/post/[[...slug]].js</code> will match <code>/api/post</code>, <code>/api/post/a</code>, <code>/api/post/a/b</code>, and so on.</p></div>
+<p>catch all route와 optional catch all route의 주요 차이점은, optional의 경우 parameter가 없는 route(위 예시의 <code>/api/post</code>)도 match된다는 것입니다.</p><div class="en-orig"><p>The main difference between catch all and optional catch all routes is that with optional, the route without the parameter is also matched (<code>/api/post</code> in the example above).</p></div>
+<p><code>query</code> object는 다음과 같습니다:</p><div class="en-orig"><p>The <code>query</code> objects are as follows:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-json">{ } // GET `/api/post` (empty object)
+{ &quot;slug&quot;: [&quot;a&quot;] } // `GET /api/post/a` (single-element array)
+{ &quot;slug&quot;: [&quot;a&quot;, &quot;b&quot;] } // `GET /api/post/a/b` (multi-element array)</code></pre></div></div>
+<h3 class="sec" id="caveats"><a class="anchor" href="#caveats">Caveats<span class="ko">주의 사항</span></a></h3>
+<ul>
+<li>미리 정의된 API route가 dynamic API route보다 우선하고, dynamic API route가 catch all API route보다 우선합니다. 다음 예시를 살펴보세요:<ul>
+<li><code>pages/api/post/create.js</code> - <code>/api/post/create</code>에 match됩니다</li>
+<li><code>pages/api/post/[pid].js</code> - <code>/api/post/1</code>, <code>/api/post/abc</code> 등에 match됩니다. 하지만 <code>/api/post/create</code>에는 match되지 않습니다</li>
+<li><code>pages/api/post/[...slug].js</code> - <code>/api/post/1/2</code>, <code>/api/post/a/b/c</code> 등에 match됩니다. 하지만 <code>/api/post/create</code>, <code>/api/post/abc</code>에는 match되지 않습니다</li>
+</ul></li>
+</ul><div class="en-orig"><ul>
+<li>Predefined API routes take precedence over dynamic API routes, and dynamic API routes over catch all API routes. Take a look at the following examples:<ul>
+<li><code>pages/api/post/create.js</code> - Will match <code>/api/post/create</code></li>
+<li><code>pages/api/post/[pid].js</code> - Will match <code>/api/post/1</code>, <code>/api/post/abc</code>, etc. But not <code>/api/post/create</code></li>
+<li><code>pages/api/post/[...slug].js</code> - Will match <code>/api/post/1/2</code>, <code>/api/post/a/b/c</code>, etc. But not <code>/api/post/create</code>, <code>/api/post/abc</code></li>
+</ul></li>
+</ul></div>
+<h2 class="sec" id="streaming-responses"><a class="anchor" href="#streaming-responses">Streaming responses<span class="ko">Streaming response</span></a></h2>
+<p>Pages Router도 API Route에서 streaming response를 지원하지만, Next.js 14+를 사용한다면 App Router를 점진적으로 도입하고 <a href="app-api-reference-file-conventions-route.html">Route Handlers</a>를 사용하는 것을 권장합니다.</p><div class="en-orig"><p>While the Pages Router does support streaming responses with API Routes, we recommend incrementally adopting the App Router and using <a href="app-api-reference-file-conventions-route.html">Route Handlers</a> if you are on Next.js 14+.</p></div>
+<p>다음은 <code>writeHead</code>로 API Route에서 response를 stream하는 방법입니다:</p><div class="en-orig"><p>Here's how you can stream a response from an API Route with <code>writeHead</code>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="pages/api/hello.ts" data-js="pages/api/hello.js">pages/api/hello.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { NextApiRequest, NextApiResponse } from &#x27;next&#x27;
+
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  res.writeHead(200, {
+    &#x27;Content-Type&#x27;: &#x27;text/event-stream&#x27;,
+    &#x27;Cache-Control&#x27;: &#x27;no-store&#x27;,
+  })
+  let i = 0
+  while (i &lt; 10) {
+    res.write(`data: ${i}\n\n`)
+    i++
+    await new Promise((resolve) =&gt; setTimeout(resolve, 1000))
+  }
+  res.end()
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function handler(req, res) {
+  res.writeHead(200, {
+    &#x27;Content-Type&#x27;: &#x27;text/event-stream&#x27;,
+    &#x27;Cache-Control&#x27;: &#x27;no-store&#x27;,
+  })
+  let i = 0
+  while (i &lt; 10) {
+    res.write(`data: ${i}\n\n`)
+    i++
+    await new Promise((resolve) =&gt; setTimeout(resolve, 1000))
+  }
+  res.end()
+}</code></pre></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/02-pages/03-building-your-application/01-routing/07-api-routes.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/building-your-application/routing/api-routes" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-building-your-application-routing-custom-document.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Custom Document</div><div class="ttl-ko">Custom Document</div></a>
+      <a href="pages-building-your-application-routing-custom-error.html" class="next"><div class="dir">다음 →</div><div class="ttl">Custom Errors</div><div class="ttl-ko">Custom Error</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/building-your-application/routing/api-routes" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#parameters">Parameters</a></li><li class="l2"><a href="#http-methods">HTTP Methods</a></li><li class="l2"><a href="#request-helpers">Request Helpers</a></li><li class="l3"><a href="#custom-config">Custom config</a></li><li class="l2"><a href="#response-helpers">Response Helpers</a></li><li class="l3"><a href="#setting-the-status-code-of-a-response">Setting the status code of a response</a></li><li class="l3"><a href="#sending-a-json-response">Sending a JSON response</a></li><li class="l3"><a href="#sending-an-http-response">Sending an HTTP response</a></li><li class="l3"><a href="#redirects-to-a-specified-path-or-url">Redirects to a specified path or URL</a></li><li class="l3"><a href="#adding-typescript-types">Adding TypeScript types</a></li><li class="l2"><a href="#dynamic-api-routes">Dynamic API Routes</a></li><li class="l3"><a href="#catch-all-api-routes">Catch all API routes</a></li><li class="l3"><a href="#optional-catch-all-api-routes">Optional catch all API routes</a></li><li class="l3"><a href="#caveats">Caveats</a></li><li class="l2"><a href="#streaming-responses">Streaming responses</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+&lt;details&gt;
+  &lt;summary&gt;예시&lt;/summary&gt;
+
+- [API Routes Request Helpers](https://github.com/vercel/next.js/tree/canary/examples/api-routes-proxy)
+- [API Routes with GraphQL](https://github.com/vercel/next.js/tree/canary/examples/api-routes-graphql)
+- [API Routes with REST](https://github.com/vercel/next.js/tree/canary/examples/api-routes-rest)
+- [API Routes with CORS](https://github.com/vercel/next.js/tree/canary/examples/api-routes-cors)
+
+&lt;/details&gt;
+
+&gt; **Good to know**: App Router를 사용한다면 API Route 대신 [Server Components](/docs/app/getting-started/server-and-client-components)나 [Route Handlers](/docs/app/api-reference/file-conventions/route)를 사용할 수 있습니다.
+
+API route는 Next.js로 **public API**를 만드는 방법을 제공합니다.
+
+`pages/api` 폴더 안의 모든 파일은 `/api/*`에 mapping되며, `page`가 아니라 API endpoint로 취급됩니다. 이 파일들은 server-side 전용 bundle이므로 client-side bundle 크기를 늘리지 않습니다.
+
+예를 들어 다음 API route는 status code `200`과 함께 JSON response를 반환합니다:
+
+[[CODE 1]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - API Route는 [CORS header를 지정하지 않습니다](https://developer.mozilla.org/docs/Web/HTTP/CORS). 즉, 기본적으로 **same-origin 전용**입니다. request handler를 [CORS request helper](https://github.com/vercel/next.js/tree/canary/examples/api-routes-cors)로 감싸 이 동작을 customize할 수 있습니다.
+&gt; - API Route는 [static export](/docs/pages/guides/static-exports)와 함께 사용할 수 없습니다. 하지만 App Router의 [Route Handlers](/docs/app/api-reference/file-conventions/route)는 사용할 수 있습니다.
+&gt; - API Route는 `next.config.js`의 [`pageExtensions` configuration](/docs/pages/api-reference/config/next-config-js/pageExtensions)의 영향을 받습니다.
+
+## Parameters
+
+[[CODE 2]]
+
+- `req`: [http.IncomingMessage](https://nodejs.org/api/http.html#class-httpincomingmessage)의 instance
+- `res`: [http.ServerResponse](https://nodejs.org/api/http.html#class-httpserverresponse)의 instance
+
+## HTTP Methods || HTTP Method
+
+API route에서 서로 다른 HTTP method를 처리하려면 request handler에서 다음과 같이 `req.method`를 사용할 수 있습니다:
+
+[[CODE 3]]
+
+## Request Helpers || Request Helper
+
+API Route는 들어오는 request(`req`)를 parse하는 기본 제공 request helper를 제공합니다:
+
+- `req.cookies` - request가 보낸 cookie를 담은 object입니다. 기본값은 `{}`
+- `req.query` - [query string](https://en.wikipedia.org/wiki/Query_string)을 담은 object입니다. 기본값은 `{}`
+- `req.body` - `content-type`에 따라 parse된 body를 담은 object이며, body가 전송되지 않았다면 `null`
+
+### Custom config || Custom config
+
+모든 API Route는 `config` object를 export해 기본 configuration을 바꿀 수 있습니다. 기본 configuration은 다음과 같습니다:
+
+[[CODE 4]]
+
+`bodyParser`는 자동으로 활성화됩니다. body를 `Stream`으로 사용하거나 [`raw-body`](https://www.npmjs.com/package/raw-body)로 사용하고 싶다면 이를 `false`로 설정할 수 있습니다.
+
+자동 `bodyParser`를 비활성화하는 사용 사례 중 하나는 [GitHub에서 오는](https://docs.github.com/en/developers/webhooks-and-events/webhooks/securing-your-webhooks#validating-payloads-from-github) 것과 같은 **webhook** request의 raw body를 검증하는 것입니다.
+
+[[CODE 5]]
+
+`bodyParser.sizeLimit`은 parse된 body에 허용되는 최대 크기이며, 다음처럼 [bytes](https://github.com/visionmedia/bytes.js)가 지원하는 모든 형식으로 지정할 수 있습니다:
+
+[[CODE 6]]
+
+`externalResolver`는 이 route가 _express_나 _connect_ 같은 외부 resolver에 의해 처리되고 있음을 server에 알리는 명시적 flag입니다. 이 option을 활성화하면 해결되지 않은(unresolved) request에 대한 경고가 표시되지 않습니다.
+
+[[CODE 7]]
+
+`responseLimit`은 자동으로 활성화되며, API Route의 response body가 4MB를 넘으면 경고합니다.
+
+serverless 환경에서 Next.js를 사용하지 않고, CDN이나 전용 media host를 사용하지 않을 때의 performance 영향을 이해하고 있다면 이 limit을 `false`로 설정할 수 있습니다.
+
+[[CODE 8]]
+
+`responseLimit`에는 byte 수나 `bytes`가 지원하는 문자열 형식(예: `1000`, `&#x27;500kb&#x27;`, `&#x27;3mb&#x27;`)도 지정할 수 있습니다.
+이 값은 경고가 표시되기 전까지의 최대 response 크기가 됩니다. 기본값은 4MB입니다. (위 참고)
+
+[[CODE 9]]
+
+## Response Helpers || Response Helper
+
+[Server Response object](https://nodejs.org/api/http.html#http_class_http_serverresponse)(흔히 `res`로 줄여 씀)에는 개발자 경험을 개선하고 새 API endpoint를 만드는 속도를 높여 주는 Express.js 스타일의 helper method가 포함되어 있습니다.
+
+포함된 helper는 다음과 같습니다:
+
+- `res.status(code)` - status code를 설정하는 함수입니다. `code`는 유효한 [HTTP status code](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)여야 합니다
+- `res.json(body)` - JSON response를 보냅니다. `body`는 [serializable object](https://developer.mozilla.org/docs/Glossary/Serialization)여야 합니다
+- `res.send(body)` - HTTP response를 보냅니다. `body`는 `string`, `object`, `Buffer` 중 하나일 수 있습니다
+- `res.redirect([status,] path)` - 지정한 path나 URL로 redirect합니다. `status`는 유효한 [HTTP status code](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)여야 합니다. 지정하지 않으면 `status`의 기본값은 &quot;307&quot; &quot;Temporary redirect&quot;입니다.
+- `res.revalidate(urlPath)` - `getStaticProps`를 사용해 [page를 on-demand로 revalidate](/docs/pages/guides/incremental-static-regeneration#on-demand-revalidation-with-revalidatepath)합니다. `urlPath`는 `string`이어야 합니다.
+
+### Setting the status code of a response || response의 status code 설정하기
+
+client에 response를 돌려보낼 때 response의 status code를 설정할 수 있습니다.
+
+다음 예시는 response의 status code를 `200`(`OK`)으로 설정하고, 값이 `Hello from Next.js!`인 `message` property를 JSON response로 반환합니다:
+
+[[CODE 10]]
+
+### Sending a JSON response || JSON response 보내기
+
+client에 response를 돌려보낼 때 JSON response를 보낼 수 있으며, 이는 [serializable object](https://developer.mozilla.org/docs/Glossary/Serialization)여야 합니다.
+실제 애플리케이션에서는 요청한 endpoint의 결과에 따라 client에게 request의 상태를 알려 주고 싶을 수 있습니다.
+
+다음 예시는 status code `200`(`OK`)과 async 작업의 결과를 담은 JSON response를 보냅니다. 발생할 수 있는 error를 처리하기 위해 try catch block 안에 들어 있으며, 적절한 status code와 catch한 error message를 client에 돌려보냅니다:
+
+[[CODE 11]]
+
+### Sending an HTTP response || HTTP response 보내기
+
+HTTP response를 보내는 방법은 JSON response를 보낼 때와 같습니다. 유일한 차이점은 response body가 `string`, `object`, `Buffer` 중 하나일 수 있다는 것입니다.
+
+다음 예시는 status code `200`(`OK`)과 async 작업의 결과를 담은 HTTP response를 보냅니다.
+
+[[CODE 12]]
+
+### Redirects to a specified path or URL || 지정한 path나 URL로 redirect하기
+
+form을 예로 들면, client가 form을 제출한 뒤 지정한 path나 URL로 redirect하고 싶을 수 있습니다.
+
+다음 예시는 form이 성공적으로 제출되면 client를 `/` path로 redirect합니다:
+
+[[CODE 13]]
+
+### Adding TypeScript types || TypeScript type 추가하기
+
+`next`에서 `NextApiRequest`와 `NextApiResponse` type을 import하면 API Route를 더 type-safe하게 만들 수 있으며, 이와 함께 response data에도 type을 지정할 수 있습니다:
+
+[[CODE 14]]
+
+&gt; **Good to know**: client가 어떤 payload든 포함할 수 있으므로 `NextApiRequest`의 body는 `any`입니다. body를 사용하기 전에 runtime에서 body의 type/형태를 검증해야 합니다.
+
+## Dynamic API Routes || Dynamic API Route
+
+API Route는 [dynamic route](/docs/pages/building-your-application/routing/dynamic-routes)를 지원하며, `pages/`에서 사용하는 것과 같은 파일 이름 규칙을 따릅니다.
+
+[[CODE 15]]
+
+이제 `/api/post/abc`로 request를 보내면 `Post: abc`라는 텍스트로 응답합니다.
+
+### Catch all API routes || Catch all API route
+
+대괄호 안에 점 세 개(`...`)를 추가하면 API Route를 확장해 모든 path를 catch할 수 있습니다. 예를 들면 다음과 같습니다:
+
+- `pages/api/post/[...slug].js`는 `/api/post/a`뿐 아니라 `/api/post/a/b`, `/api/post/a/b/c` 등에도 match됩니다.
+
+&gt; **Good to know**: `[...param]`처럼 `slug` 외의 다른 이름도 사용할 수 있습니다
+
+match된 parameter는 query parameter(예시에서는 `slug`)로 page에 전달되며, 항상 array입니다. 따라서 path `/api/post/a`는 다음 `query` object를 갖습니다:
+
+[[CODE 16]]
+
+그리고 `/api/post/a/b`나 그 밖에 match되는 path의 경우, 다음처럼 새 parameter가 array에 추가됩니다:
+
+[[CODE 17]]
+
+예를 들면 다음과 같습니다:
+
+[[CODE 18]]
+
+이제 `/api/post/a/b/c`로 request를 보내면 `Post: a, b, c`라는 텍스트로 응답합니다.
+
+### Optional catch all API routes || Optional catch all API route
+
+parameter를 이중 대괄호(`[[...slug]]`)로 감싸면 catch all route를 optional로 만들 수 있습니다.
+
+예를 들어 `pages/api/post/[[...slug]].js`는 `/api/post`, `/api/post/a`, `/api/post/a/b` 등에 match됩니다.
+
+catch all route와 optional catch all route의 주요 차이점은, optional의 경우 parameter가 없는 route(위 예시의 `/api/post`)도 match된다는 것입니다.
+
+`query` object는 다음과 같습니다:
+
+[[CODE 19]]
+
+### Caveats || 주의 사항
+
+- 미리 정의된 API route가 dynamic API route보다 우선하고, dynamic API route가 catch all API route보다 우선합니다. 다음 예시를 살펴보세요:
+  - `pages/api/post/create.js` - `/api/post/create`에 match됩니다
+  - `pages/api/post/[pid].js` - `/api/post/1`, `/api/post/abc` 등에 match됩니다. 하지만 `/api/post/create`에는 match되지 않습니다
+  - `pages/api/post/[...slug].js` - `/api/post/1/2`, `/api/post/a/b/c` 등에 match됩니다. 하지만 `/api/post/create`, `/api/post/abc`에는 match되지 않습니다
+
+## Streaming responses || Streaming response
+
+Pages Router도 API Route에서 streaming response를 지원하지만, Next.js 14+를 사용한다면 App Router를 점진적으로 도입하고 [Route Handlers](/docs/app/api-reference/file-conventions/route)를 사용하는 것을 권장합니다.
+
+다음은 `writeHead`로 API Route에서 response를 stream하는 방법입니다:
+
+[[CODE 20]]
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

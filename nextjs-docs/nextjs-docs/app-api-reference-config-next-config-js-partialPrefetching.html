@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>partialPrefetching (partialPrefetching) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/config/next-config-js/partialPrefetching" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/config/next-config-js/partialPrefetching" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/partialPrefetching.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config.html">Configuration</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config-next-config-js.html">next.config.js</a></div>
+    <div class="title-row">
+      <h1 class="page-title">partialPrefetching<span class="sub">partialPrefetching</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>partialPrefetching</code>은 앱 수준에서 Partial Prefetching을 활성화합니다. framework는 기본적으로 각 route의 static 부분을 prefetch합니다. 더 많이 fetch하려면 개별 link에 <code>prefetch={true}</code>를 설정해 <a href="app-guides-optimizing-prefetching.html">link별 prefetching</a>을 사용하세요.</p><div class="en-orig"><p><code>partialPrefetching</code> enables Partial Prefetching at the app level. The framework prefetches the static parts of each route by default; set <code>prefetch={true}</code> on individual links to use <a href="app-guides-optimizing-prefetching.html">per-link prefetching</a> and fetch more.</p></div>
+<h2 class="sec" id="usage"><a class="anchor" href="#usage">Usage<span class="ko">사용법</span></a></h2>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+  partialPrefetching: true,
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">module.exports = {
+  cacheComponents: true,
+  partialPrefetching: true,
+}</code></pre></div></div>
+<p><code>partialPrefetching</code>에는 <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a>가 필요합니다. 이것이 없으면 <code>next dev</code>와 <code>next build</code>가 config 검증 단계에서 error를 throw합니다.</p><div class="en-orig"><p><code>partialPrefetching</code> requires <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a>. Without it, <code>next dev</code> and <code>next build</code> throw at config validation.</p></div>
+<h2 class="sec" id="reference"><a class="anchor" href="#reference">Reference<span class="ko">레퍼런스</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>값</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>true</code></td><td>앱 전체에서 Partial Prefetching을 활성화합니다.</td></tr>
+<tr><td><code>false</code></td><td>Partial Prefetching이 나오기 전에 Cache Components를 도입한 앱을 위해 이전 prefetch 동작을 유지합니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Value</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>true</code></td><td>Enables Partial Prefetching across the app.</td></tr>
+<tr><td><code>false</code></td><td>Keeps the previous prefetch behavior, for apps that adopted Cache Components before Partial Prefetching was available.</td></tr>
+</tbody></table></div></div>
+<p>option을 설정하지 않으면 <code>false</code>처럼 동작하며, <code>cacheComponents</code>가 활성화되어 있을 때 warning을 log합니다. 다음 major release에서는 두 기능이 모든 곳에서 활성화되고 이 option들은 제거됩니다.</p><div class="en-orig"><p>Leaving the option unset behaves like <code>false</code> and logs a warning when <code>cacheComponents</code> is enabled. Both features will be enabled everywhere in the next major release, and the options will be removed.</p></div>
+<h2 class="sec" id="how-prefetches-resolve"><a class="anchor" href="#how-prefetches-resolve">How prefetches resolve<span class="ko">prefetch가 resolve되는 방식</span></a></h2>
+<p>Partial Prefetching 이전에는 Next.js가 보이는 link마다 prefetch했습니다. N개의 route로 가는 N개의 link가 있는 page는 그 link들이 viewport에 들어올 때 약 N개의 route prefetch를 만들었습니다.</p><div class="en-orig"><p>Before Partial Prefetching, Next.js prefetched per visible link: a page with N links to N routes produced ~N route prefetches as those links entered the viewport.</p></div>
+<p><code>partialPrefetching: true</code>를 사용하면 Next.js는 대신 route마다 재사용 가능한 <a href="app-glossary.html#app-shell">App Shell</a> 하나를 prefetch합니다. App Shell에는 link의 URL에 의존하지 않는 render 결과가 들어 있습니다. <code>params</code>나 <code>searchParams</code>에 의존하는 콘텐츠를 포함한 URL별 콘텐츠는 기본적으로 navigation 후에 resolve됩니다. App Shell은 client에 cache되므로, 같은 route로 가는 link들은 하나의 prefetch를 재사용합니다.</p><div class="en-orig"><p>With <code>partialPrefetching: true</code>, Next.js prefetches one reusable <a href="app-glossary.html#app-shell">App Shell</a> per route instead. The App Shell contains rendered output that does not depend on a link's URL. URL-specific content, including content that depends on <code>params</code> or <code>searchParams</code>, resolves after navigation by default. App Shells are cached on the client, so links to the same route reuse one prefetch.</p></div>
+<p>이 pattern은 single-page app의 route별 code splitting과 비슷합니다. route마다 하나의 artifact가 있고, 그 route를 가리키는 모든 link가 이를 공유합니다.</p><div class="en-orig"><p>The pattern is similar to per-route code splitting in single-page apps: one artifact per route, shared by every link that points to it.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>cookies()</code>나 <code>headers()</code>를 읽는 route는 session data를 포함하는 App Shell을 만듭니다. framework가 이를 자동으로 감지해 client에서 session별로 shell을 cache합니다.</p><div class="en-orig"><p>Routes that read <code>cookies()</code> or <code>headers()</code> produce an App Shell that includes session data. The framework auto-detects this and caches the shell per session on the client.</p></div></div></div>
+<p>link는 <a href="app-api-reference-components-link.html#prefetch"><code>&lt;Link prefetch={true}&gt;</code></a>로 App Shell보다 더 많은 것을 요청할 수 있습니다. 이 prefetch는 <code>params</code>, <code>searchParams</code>, 전체 URL 같은 URL data와 그 뒤의 cache된 콘텐츠까지 resolve합니다. <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching</a>을 참고하세요.</p><div class="en-orig"><p>A link can ask for more than the App Shell with <a href="app-api-reference-components-link.html#prefetch"><code>&lt;Link prefetch={true}&gt;</code></a>. The prefetch also resolves URL data like <code>params</code>, <code>searchParams</code>, and the full URL, and the cached content behind it. See <a href="app-guides-optimizing-prefetching.html">Optimizing prefetching</a>.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Partial Prefetching을 opt-in하지 않은 route로 <code>&lt;Link prefetch={true}&gt;</code>를 사용하면, dev console error가 앱 전체에 <code>partialPrefetching</code>을 활성화하거나 segment에 <code>prefetch = &#x27;partial&#x27;</code>을 설정하라고 제안합니다. <a href="https://nextjs.org/docs/messages/instant-link-prefetch-partial" target="_blank" rel="noopener">dev warning Insight</a>에서 각 해결 방법을 자세히 다룹니다.</p><div class="en-orig"><p>If you use <code>&lt;Link prefetch={true}&gt;</code> to a route that hasn't opted into Partial Prefetching, a dev console error suggests enabling <code>partialPrefetching</code> app-wide or <code>prefetch = &#x27;partial&#x27;</code> on the segment. The <a href="https://nextjs.org/docs/messages/instant-link-prefetch-partial" target="_blank" rel="noopener">dev warning Insight</a> covers each fix in detail.</p></div></div></div>
+<h2 class="sec" id="per-segment-overrides"><a class="anchor" href="#per-segment-overrides">Per-segment overrides<span class="ko">segment별 override</span></a></h2>
+<p>명시적인 <a href="app-api-reference-file-conventions-route-segment-config-prefetch.html"><code>prefetch</code></a> 값을 export하는 segment는 해당 route에 대해 앱 수준 기본값을 override합니다.</p><div class="en-orig"><p>A segment that exports an explicit <a href="app-api-reference-file-conventions-route-segment-config-prefetch.html"><code>prefetch</code></a> value overrides the app-level default for that route.</p></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>버전</th><th>변경 사항</th></tr></thead>
+<tbody>
+<tr><td>16.3.0</td><td><code>partialPrefetching</code> 도입. <code>cacheComponents</code>가 활성화되어 있어야 합니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Change</th></tr></thead>
+<tbody>
+<tr><td>16.3.0</td><td><code>partialPrefetching</code> introduced. Requires <code>cacheComponents</code> to be enabled.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">관련 문서</h2><p>관련 API reference와 가이드를 확인하세요.</p><div class="rgrid"><a class="rcard" href="app-api-reference-config-next-config-js-cacheComponents.html"><div class="rt">cacheComponents</div><div class="rk">cacheComponents</div><div class="rd">Next.js에서 cacheComponents flag를 활성화하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-file-conventions-route-segment-config-prefetch.html"><div class="rt">prefetch</div><div class="rk">prefetch</div><div class="rd">client navigation 중에 route segment가 prefetch되는 방식을 설정합니다.</div></a><a class="rcard" href="app-api-reference-components-link.html"><div class="rt">Link Component</div><div class="rk">Link 컴포넌트</div><div class="rd">내장 <code>next/link</code> component로 빠른 client-side navigation을 활성화합니다.</div></a><a class="rcard" href="app-guides-optimizing-prefetching.html"><div class="rt">Optimizing prefetching</div><div class="rk">prefetching 최적화</div><div class="rd">link별 URL data를 resolve하거나, session data를 App Shell에 포함하거나, 비용이 큰 작업을 이후 navigation 단계로 미루는 방법을 알아봅니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/partialPrefetching.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/partialPrefetching" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-config-next-config-js-pageExtensions.html" class="prev"><div class="dir">← 이전</div><div class="ttl">pageExtensions</div><div class="ttl-ko">pageExtensions</div></a>
+      <a href="app-api-reference-config-next-config-js-poweredByHeader.html" class="next"><div class="dir">다음 →</div><div class="ttl">poweredByHeader</div><div class="ttl-ko">poweredByHeader</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/partialPrefetching" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#usage">Usage</a></li><li class="l2"><a href="#reference">Reference</a></li><li class="l2"><a href="#how-prefetches-resolve">How prefetches resolve</a></li><li class="l2"><a href="#per-segment-overrides">Per-segment overrides</a></li><li class="l2"><a href="#version-history">Version History</a></li><li class="l2"><a href="#next-steps">관련 문서</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`partialPrefetching`은 앱 수준에서 Partial Prefetching을 활성화합니다. framework는 기본적으로 각 route의 static 부분을 prefetch합니다. 더 많이 fetch하려면 개별 link에 `prefetch={true}`를 설정해 [link별 prefetching](/docs/app/guides/optimizing-prefetching)을 사용하세요.
+
+## Usage || 사용법
+
+[[CODE 1]]
+
+`partialPrefetching`에는 [`cacheComponents`](/docs/app/api-reference/config/next-config-js/cacheComponents)가 필요합니다. 이것이 없으면 `next dev`와 `next build`가 config 검증 단계에서 error를 throw합니다.
+
+## Reference || 레퍼런스
+
+| 값   | 설명                                                                                                            |
+| ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `true`  | 앱 전체에서 Partial Prefetching을 활성화합니다.                                                                            |
+| `false` | Partial Prefetching이 나오기 전에 Cache Components를 도입한 앱을 위해 이전 prefetch 동작을 유지합니다. |
+
+option을 설정하지 않으면 `false`처럼 동작하며, `cacheComponents`가 활성화되어 있을 때 warning을 log합니다. 다음 major release에서는 두 기능이 모든 곳에서 활성화되고 이 option들은 제거됩니다.
+
+## How prefetches resolve || prefetch가 resolve되는 방식
+
+Partial Prefetching 이전에는 Next.js가 보이는 link마다 prefetch했습니다. N개의 route로 가는 N개의 link가 있는 page는 그 link들이 viewport에 들어올 때 약 N개의 route prefetch를 만들었습니다.
+
+`partialPrefetching: true`를 사용하면 Next.js는 대신 route마다 재사용 가능한 [App Shell](/docs/app/glossary#app-shell) 하나를 prefetch합니다. App Shell에는 link의 URL에 의존하지 않는 render 결과가 들어 있습니다. `params`나 `searchParams`에 의존하는 콘텐츠를 포함한 URL별 콘텐츠는 기본적으로 navigation 후에 resolve됩니다. App Shell은 client에 cache되므로, 같은 route로 가는 link들은 하나의 prefetch를 재사용합니다.
+
+이 pattern은 single-page app의 route별 code splitting과 비슷합니다. route마다 하나의 artifact가 있고, 그 route를 가리키는 모든 link가 이를 공유합니다.
+
+&gt; **Good to know**: `cookies()`나 `headers()`를 읽는 route는 session data를 포함하는 App Shell을 만듭니다. framework가 이를 자동으로 감지해 client에서 session별로 shell을 cache합니다.
+
+link는 [`&lt;Link prefetch={true}&gt;`](/docs/app/api-reference/components/link#prefetch)로 App Shell보다 더 많은 것을 요청할 수 있습니다. 이 prefetch는 `params`, `searchParams`, 전체 URL 같은 URL data와 그 뒤의 cache된 콘텐츠까지 resolve합니다. [Optimizing prefetching](/docs/app/guides/optimizing-prefetching)을 참고하세요.
+
+&gt; **Good to know**: Partial Prefetching을 opt-in하지 않은 route로 `&lt;Link prefetch={true}&gt;`를 사용하면, dev console error가 앱 전체에 `partialPrefetching`을 활성화하거나 segment에 `prefetch = &#x27;partial&#x27;`을 설정하라고 제안합니다. [dev warning Insight](/docs/messages/instant-link-prefetch-partial)에서 각 해결 방법을 자세히 다룹니다.
+
+## Per-segment overrides || segment별 override
+
+명시적인 [`prefetch`](/docs/app/api-reference/file-conventions/route-segment-config/prefetch) 값을 export하는 segment는 해당 route에 대해 앱 수준 기본값을 override합니다.
+
+## Version History || 버전 기록
+
+| 버전 | 변경 사항                                                                     |
+| ------- | -------------------------------------------------------------------------- |
+| 16.3.0  | `partialPrefetching` 도입. `cacheComponents`가 활성화되어 있어야 합니다. |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

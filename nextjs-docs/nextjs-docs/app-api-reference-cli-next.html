@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>next CLI (next CLI) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/cli/next" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/cli/next" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/06-cli/next.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-cli.html">CLI</a></div>
+    <div class="title-row">
+      <h1 class="page-title">next CLI<span class="sub">next CLI</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js CLI를 사용하면 애플리케이션을 개발(develop), build, start하는 등 다양한 작업을 할 수 있습니다.</p><div class="en-orig"><p>The Next.js CLI allows you to develop, build, start your application, and more.</p></div>
+<p>기본 사용법:</p><div class="en-orig"><p>Basic usage:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm next [command] [options]</code></pre><pre class="pm-npm" hidden><code class="language-bash">npx next [command] [options]</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn next [command] [options]</code></pre><pre class="pm-bun" hidden><code class="language-bash">bunx next [command] [options]</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>npm run</code>을 사용할 때는 CLI flag 앞에 <code>--</code>를 붙여야 npm이 flag를 <code>next</code>로 전달합니다. <code>pnpm</code>, <code>yarn</code>, <code>bun</code>에서는 필요하지 않습니다.</p><div class="en-orig"><p>With <code>npm run</code>, use <code>--</code> before CLI flags so npm forwards them to <code>next</code>. This is not required for <code>pnpm</code>, <code>yarn</code>, or <code>bun</code>.</p></div></div></div>
+<h2 class="sec" id="reference"><a class="anchor" href="#reference">Reference</a></h2>
+<p>다음 option을 사용할 수 있습니다:</p><div class="en-orig"><p>The following options are available:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Options</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>-h</code> 또는 <code>--help</code></td><td>사용 가능한 모든 option을 보여줍니다</td></tr>
+<tr><td><code>-v</code> 또는 <code>--version</code></td><td>Next.js 버전 번호를 출력합니다</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Options</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>-h</code> or <code>--help</code></td><td>Shows all available options</td></tr>
+<tr><td><code>-v</code> or <code>--version</code></td><td>Outputs the Next.js version number</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="commands"><a class="anchor" href="#commands">Commands</a></h3>
+<p>다음 command를 사용할 수 있습니다:</p><div class="en-orig"><p>The following commands are available:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Command</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><a href="#next-dev-options"><code>dev</code></a></td><td>Hot Module Reloading, error reporting 등을 갖춘 development mode로 Next.js를 시작합니다.</td></tr>
+<tr><td><a href="#next-build-options"><code>build</code></a></td><td>애플리케이션의 최적화된 production build를 생성합니다. 각 route에 대한 정보를 표시합니다.</td></tr>
+<tr><td><a href="#next-start-options"><code>start</code></a></td><td>Next.js를 production mode로 시작합니다. 애플리케이션은 먼저 <code>next build</code>로 compile되어 있어야 합니다.</td></tr>
+<tr><td><a href="#next-info-options"><code>info</code></a></td><td>Next.js bug를 보고할 때 사용할 수 있는 현재 시스템 관련 정보를 출력합니다.</td></tr>
+<tr><td><a href="#next-telemetry-options"><code>telemetry</code></a></td><td>Next.js의 완전히 익명인 telemetry 수집을 활성화하거나 비활성화할 수 있습니다.</td></tr>
+<tr><td><a href="#next-typegen-options"><code>typegen</code></a></td><td>전체 build를 실행하지 않고 route, page, layout, route handler에 대한 TypeScript 정의를 생성합니다.</td></tr>
+<tr><td><a href="#next-upgrade-options"><code>upgrade</code></a></td><td>Next.js 애플리케이션을 최신 버전으로 upgrade합니다.</td></tr>
+<tr><td><a href="#next-analyze-options"><code>analyze</code></a></td><td>Turbopack을 사용해 bundle output을 분석합니다. build artifact는 생성하지 않습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Command</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><a href="#next-dev-options"><code>dev</code></a></td><td>Starts Next.js in development mode with Hot Module Reloading, error reporting, and more.</td></tr>
+<tr><td><a href="#next-build-options"><code>build</code></a></td><td>Creates an optimized production build of your application. Displaying information about each route.</td></tr>
+<tr><td><a href="#next-start-options"><code>start</code></a></td><td>Starts Next.js in production mode. The application should be compiled with <code>next build</code> first.</td></tr>
+<tr><td><a href="#next-info-options"><code>info</code></a></td><td>Prints relevant details about the current system which can be used to report Next.js bugs.</td></tr>
+<tr><td><a href="#next-telemetry-options"><code>telemetry</code></a></td><td>Allows you to enable or disable Next.js' completely anonymous telemetry collection.</td></tr>
+<tr><td><a href="#next-typegen-options"><code>typegen</code></a></td><td>Generates TypeScript definitions for routes, pages, layouts, and route handlers without running a full build.</td></tr>
+<tr><td><a href="#next-upgrade-options"><code>upgrade</code></a></td><td>Upgrades your Next.js application to the latest version.</td></tr>
+<tr><td><a href="#next-analyze-options"><code>analyze</code></a></td><td>Analyzes bundle output using Turbopack. Does not produce build artifacts.</td></tr>
+</tbody></table></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>command 없이 <code>next</code>를 실행하면 <code>next dev</code>의 alias로 동작합니다.</p><div class="en-orig"><p>Running <code>next</code> without a command is an alias for <code>next dev</code>.</p></div></div></div>
+<h3 class="sec" id="next-dev-options"><a class="anchor" href="#next-dev-options"><code>next dev</code> options<span class="ko"><code>next dev</code> 옵션</span></a></h3>
+<p><code>next dev</code>는 Hot Module Reloading(HMR), error reporting 등을 갖춘 development mode로 애플리케이션을 시작합니다.</p><div class="en-orig"><p><code>next dev</code> starts the application in development mode with Hot Module Reloading (HMR), error reporting, and more.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>development build는 <code>.next</code> 대신 <code>.next/dev</code>에 출력됩니다. 덕분에 <code>next dev</code>와 <code>next build</code>를 충돌 없이 동시에 실행할 수 있습니다.</p><div class="en-orig"><p>Development builds output to <code>.next/dev</code> instead of <code>.next</code>. This allows you to run <code>next dev</code> and <code>next build</code> concurrently without conflicts.</p></div></div></div>
+<p><code>next dev</code>를 실행할 때 다음 option을 사용할 수 있습니다:</p><div class="en-orig"><p>The following options are available when running <code>next dev</code>:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>-h, --help</code></td><td>사용 가능한 모든 option을 보여줍니다.</td></tr>
+<tr><td><code>[directory]</code></td><td>애플리케이션을 build할 directory입니다. 지정하지 않으면 현재 directory를 사용합니다.</td></tr>
+<tr><td><code>--turbopack</code></td><td><a href="app-api-reference-turbopack.html">Turbopack</a>을 강제로 활성화합니다(기본으로 활성화됨). <code>--turbo</code>로도 사용할 수 있습니다.</td></tr>
+<tr><td><code>--webpack</code></td><td>development에서 기본 <a href="app-api-reference-turbopack.html">Turbopack</a> bundler 대신 내장된(bundled) Webpack을 사용합니다.</td></tr>
+<tr><td><code>--custom-webpack</code></td><td>development에서 <a href="app-guides-custom-webpack.html">프로젝트에 설치된 webpack</a>을 사용합니다.</td></tr>
+<tr><td><code>-p</code> 또는 <code>--port &lt;port&gt;</code></td><td>애플리케이션을 시작할 port 번호를 지정합니다. 기본값: 3000, env: PORT</td></tr>
+<tr><td><code>-H</code> 또는 <code>--hostname &lt;hostname&gt;</code></td><td>애플리케이션을 시작할 hostname을 지정합니다. 네트워크의 다른 기기에서 애플리케이션에 접근할 수 있게 할 때 유용합니다. 기본값: 0.0.0.0</td></tr>
+<tr><td><code>--experimental-https</code></td><td>HTTPS로 server를 시작하고 self-signed certificate를 생성합니다.</td></tr>
+<tr><td><code>--experimental-https-key &lt;path&gt;</code></td><td>HTTPS key 파일의 경로입니다.</td></tr>
+<tr><td><code>--experimental-https-cert &lt;path&gt;</code></td><td>HTTPS certificate 파일의 경로입니다.</td></tr>
+<tr><td><code>--experimental-https-ca &lt;path&gt;</code></td><td>HTTPS certificate authority 파일의 경로입니다.</td></tr>
+<tr><td><code>--experimental-upload-trace &lt;traceUrl&gt;</code></td><td>debugging trace의 일부를 원격 HTTP URL로 보고합니다.</td></tr>
+<tr><td><code>--experimental-cpu-prof</code></td><td>V8의 inspector를 사용해 CPU profiling을 활성화합니다. profile은 종료 시 <code>.next-profiles/</code>에 저장됩니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>-h, --help</code></td><td>Show all available options.</td></tr>
+<tr><td><code>[directory]</code></td><td>A directory in which to build the application. If not provided, current directory is used.</td></tr>
+<tr><td><code>--turbopack</code></td><td>Force enable <a href="app-api-reference-turbopack.html">Turbopack</a> (enabled by default). Also available as <code>--turbo</code>.</td></tr>
+<tr><td><code>--webpack</code></td><td>Use the bundled Webpack instead of the default <a href="app-api-reference-turbopack.html">Turbopack</a> bundler for development.</td></tr>
+<tr><td><code>--custom-webpack</code></td><td>Use <a href="app-guides-custom-webpack.html">project-installed webpack</a> for development.</td></tr>
+<tr><td><code>-p</code> or <code>--port &lt;port&gt;</code></td><td>Specify a port number on which to start the application. Default: 3000, env: PORT</td></tr>
+<tr><td><code>-H</code> or <code>--hostname &lt;hostname&gt;</code></td><td>Specify a hostname on which to start the application. Useful for making the application available for other devices on the network. Default: 0.0.0.0</td></tr>
+<tr><td><code>--experimental-https</code></td><td>Starts the server with HTTPS and generates a self-signed certificate.</td></tr>
+<tr><td><code>--experimental-https-key &lt;path&gt;</code></td><td>Path to a HTTPS key file.</td></tr>
+<tr><td><code>--experimental-https-cert &lt;path&gt;</code></td><td>Path to a HTTPS certificate file.</td></tr>
+<tr><td><code>--experimental-https-ca &lt;path&gt;</code></td><td>Path to a HTTPS certificate authority file.</td></tr>
+<tr><td><code>--experimental-upload-trace &lt;traceUrl&gt;</code></td><td>Reports a subset of the debugging trace to a remote HTTP URL.</td></tr>
+<tr><td><code>--experimental-cpu-prof</code></td><td>Enables CPU profiling using V8's inspector. Profiles are saved to <code>.next-profiles/</code> on exit.</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="next-build-options"><a class="anchor" href="#next-build-options"><code>next build</code> options<span class="ko"><code>next build</code> 옵션</span></a></h3>
+<p><code>next build</code>는 애플리케이션의 최적화된 production build를 생성합니다. output에는 각 route에 대한 정보가 표시됩니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p><code>next build</code> creates an optimized production build of your application. The output displays information about each route. For example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">Route (app)
+┌ ○ /_not-found
+└ ƒ /products/[id]
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand</code></pre></div></div>
+<p>output을 읽는 방법, dynamic route를 prerender하는 방법, build error를 debug하는 방법은 <a href="app-guides-building.html">Building 가이드</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-guides-building.html">Building guide</a> to learn how to read the output, prerender dynamic routes, and debug build errors.</p></div>
+<p><code>next build</code> command에서 다음 option을 사용할 수 있습니다:</p><div class="en-orig"><p>The following options are available for the <code>next build</code> command:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>-h, --help</code></td><td>사용 가능한 모든 option을 보여줍니다.</td></tr>
+<tr><td><code>[directory]</code></td><td>애플리케이션을 build할 directory입니다. 지정하지 않으면 현재 directory를 사용합니다.</td></tr>
+<tr><td><code>--turbopack</code></td><td><a href="app-api-reference-turbopack.html">Turbopack</a>을 강제로 활성화합니다(기본으로 활성화됨). <code>--turbo</code>로도 사용할 수 있습니다.</td></tr>
+<tr><td><code>--webpack</code></td><td>내장된(bundled) Webpack으로 build합니다.</td></tr>
+<tr><td><code>--custom-webpack</code></td><td><a href="app-guides-custom-webpack.html">프로젝트에 설치된 webpack</a>으로 build합니다.</td></tr>
+<tr><td><code>--analyze</code></td><td>Turbopack build 중에 interactive analyzer용 bundle 분석 데이터를 생성합니다.</td></tr>
+<tr><td><code>-d</code> 또는 <code>--debug</code></td><td>더 자세한(verbose) build output을 활성화합니다. 이 flag를 켜면 rewrites, redirects, headers 같은 추가 build output이 표시됩니다.</td></tr>
+<tr><td><code>--profile</code></td><td>production <a href="https://react.dev/reference/react/Profiler" target="_blank" rel="noopener">React profiling</a>을 활성화합니다.</td></tr>
+<tr><td><code>--no-mangling</code></td><td><a href="https://en.wikipedia.org/wiki/Name_mangling" target="_blank" rel="noopener">mangling</a>을 비활성화합니다. performance에 영향을 줄 수 있으므로 debugging 목적으로만 사용해야 합니다.</td></tr>
+<tr><td><code>--experimental-app-only</code></td><td>App Router route만 build합니다.</td></tr>
+<tr><td><code>--experimental-build-mode [mode]</code></td><td>experimental build mode를 사용합니다. (선택지: "compile", "generate", 기본값: "default")</td></tr>
+<tr><td><code>--debug-prerender</code></td><td>development에서 prerender error를 debug합니다.</td></tr>
+<tr><td><code>--debug-build-paths=&lt;patterns&gt;</code></td><td>debugging을 위해 특정 route만 build합니다.</td></tr>
+<tr><td><code>--experimental-cpu-prof</code></td><td>V8의 inspector를 사용해 CPU profiling을 활성화합니다. profile은 종료 시 <code>.next-profiles/</code>에 저장됩니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>-h, --help</code></td><td>Show all available options.</td></tr>
+<tr><td><code>[directory]</code></td><td>A directory on which to build the application. If not provided, the current directory will be used.</td></tr>
+<tr><td><code>--turbopack</code></td><td>Force enable <a href="app-api-reference-turbopack.html">Turbopack</a> (enabled by default). Also available as <code>--turbo</code>.</td></tr>
+<tr><td><code>--webpack</code></td><td>Build using the bundled Webpack.</td></tr>
+<tr><td><code>--custom-webpack</code></td><td>Build using <a href="app-guides-custom-webpack.html">project-installed webpack</a>.</td></tr>
+<tr><td><code>--analyze</code></td><td>Generate bundle analysis data for the interactive analyzer during a Turbopack build.</td></tr>
+<tr><td><code>-d</code> or <code>--debug</code></td><td>Enables a more verbose build output. With this flag enabled additional build output like rewrites, redirects, and headers will be shown.</td></tr>
+<tr><td><code>--profile</code></td><td>Enables production <a href="https://react.dev/reference/react/Profiler" target="_blank" rel="noopener">profiling for React</a>.</td></tr>
+<tr><td><code>--no-mangling</code></td><td>Disables <a href="https://en.wikipedia.org/wiki/Name_mangling" target="_blank" rel="noopener">mangling</a>. This may affect performance and should only be used for debugging purposes.</td></tr>
+<tr><td><code>--experimental-app-only</code></td><td>Builds only App Router routes.</td></tr>
+<tr><td><code>--experimental-build-mode [mode]</code></td><td>Uses an experimental build mode. (choices: "compile", "generate", default: "default")</td></tr>
+<tr><td><code>--debug-prerender</code></td><td>Debug prerender errors in development.</td></tr>
+<tr><td><code>--debug-build-paths=&lt;patterns&gt;</code></td><td>Build only specific routes for debugging.</td></tr>
+<tr><td><code>--experimental-cpu-prof</code></td><td>Enables CPU profiling using V8's inspector. Profiles are saved to <code>.next-profiles/</code> on exit.</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="next-start-options"><a class="anchor" href="#next-start-options"><code>next start</code> options<span class="ko"><code>next start</code> 옵션</span></a></h3>
+<p><code>next start</code>는 애플리케이션을 production mode로 시작합니다. 애플리케이션은 먼저 <a href="#next-build-options"><code>next build</code></a>로 compile되어 있어야 합니다.</p><div class="en-orig"><p><code>next start</code> starts the application in production mode. The application should be compiled with <a href="#next-build-options"><code>next build</code></a> first.</p></div>
+<p><code>next start</code> command에서 다음 option을 사용할 수 있습니다:</p><div class="en-orig"><p>The following options are available for the <code>next start</code> command:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>-h</code> 또는 <code>--help</code></td><td>사용 가능한 모든 option을 보여줍니다.</td></tr>
+<tr><td><code>[directory]</code></td><td>애플리케이션을 시작할 directory입니다. directory를 지정하지 않으면 현재 directory를 사용합니다.</td></tr>
+<tr><td><code>-p</code> 또는 <code>--port &lt;port&gt;</code></td><td>애플리케이션을 시작할 port 번호를 지정합니다. (기본값: 3000, env: PORT)</td></tr>
+<tr><td><code>-H</code> 또는 <code>--hostname &lt;hostname&gt;</code></td><td>애플리케이션을 시작할 hostname을 지정합니다 (기본값: 0.0.0.0).</td></tr>
+<tr><td><code>--keepAliveTimeout &lt;keepAliveTimeout&gt;</code></td><td>비활성 connection을 닫기 전까지 기다릴 최대 시간(millisecond)을 지정합니다.</td></tr>
+<tr><td><code>--experimental-cpu-prof</code></td><td>V8의 inspector를 사용해 CPU profiling을 활성화합니다. profile은 종료 시 <code>.next-profiles/</code>에 저장됩니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>-h</code> or <code>--help</code></td><td>Show all available options.</td></tr>
+<tr><td><code>[directory]</code></td><td>A directory on which to start the application. If no directory is provided, the current directory will be used.</td></tr>
+<tr><td><code>-p</code> or <code>--port &lt;port&gt;</code></td><td>Specify a port number on which to start the application. (default: 3000, env: PORT)</td></tr>
+<tr><td><code>-H</code> or <code>--hostname &lt;hostname&gt;</code></td><td>Specify a hostname on which to start the application (default: 0.0.0.0).</td></tr>
+<tr><td><code>--keepAliveTimeout &lt;keepAliveTimeout&gt;</code></td><td>Specify the maximum amount of milliseconds to wait before closing the inactive connections.</td></tr>
+<tr><td><code>--experimental-cpu-prof</code></td><td>Enables CPU profiling using V8's inspector. Profiles are saved to <code>.next-profiles/</code> on exit.</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="next-info-options"><a class="anchor" href="#next-info-options"><code>next info</code> options<span class="ko"><code>next info</code> 옵션</span></a></h3>
+<p><code>next info</code>는 <a href="https://github.com/vercel/next.js/issues" target="_blank" rel="noopener">GitHub issue</a>를 열어 Next.js bug를 보고할 때 사용할 수 있는 현재 시스템 관련 정보를 출력합니다. 이 정보에는 운영체제 platform/arch/version, Binaries(Node.js, npm, Yarn, pnpm), package 버전(<code>next</code>, <code>react</code>, <code>react-dom</code>) 등이 포함됩니다.</p><div class="en-orig"><p><code>next info</code> prints relevant details about the current system which can be used to report Next.js bugs when opening a <a href="https://github.com/vercel/next.js/issues" target="_blank" rel="noopener">GitHub issue</a>. This information includes Operating System platform/arch/version, Binaries (Node.js, npm, Yarn, pnpm), package versions (<code>next</code>, <code>react</code>, <code>react-dom</code>), and more.</p></div>
+<p>output은 다음과 같은 형태입니다:</p><div class="en-orig"><p>The output should look like this:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">Operating System:
+  Platform: darwin
+  Arch: arm64
+  Version: Darwin Kernel Version 23.6.0
+  Available memory (MB): 65536
+  Available CPU cores: 10
+Binaries:
+  Node: 20.12.0
+  npm: 10.5.0
+  Yarn: 1.22.19
+  pnpm: 9.6.0
+Relevant Packages:
+  next: 15.0.0-canary.115 // Latest available version is detected (15.0.0-canary.115).
+  eslint-config-next: 14.2.5
+  react: 19.0.0-rc
+  react-dom: 19.0.0
+  typescript: 5.5.4
+Next.js Config:
+  output: N/A</code></pre></div></div>
+<p><code>next info</code> command에서 다음 option을 사용할 수 있습니다:</p><div class="en-orig"><p>The following options are available for the <code>next info</code> command:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>-h</code> 또는 <code>--help</code></td><td>사용 가능한 모든 option을 보여줍니다</td></tr>
+<tr><td><code>--verbose</code></td><td>debugging을 위한 추가 정보를 수집합니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>-h</code> or <code>--help</code></td><td>Show all available options</td></tr>
+<tr><td><code>--verbose</code></td><td>Collects additional information for debugging.</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="next-telemetry-options"><a class="anchor" href="#next-telemetry-options"><code>next telemetry</code> options<span class="ko"><code>next telemetry</code> 옵션</span></a></h3>
+<p>Next.js는 일반적인 사용 현황에 대해 <strong>완전히 익명인</strong> telemetry 데이터를 수집합니다. 이 익명 프로그램 참여는 선택 사항이며, 정보를 공유하고 싶지 않다면 opt-out할 수 있습니다.</p><div class="en-orig"><p>Next.js collects <strong>completely anonymous</strong> telemetry data about general usage. Participation in this anonymous program is optional, and you can opt-out if you prefer not to share information.</p></div>
+<p><code>next telemetry</code> command에서 다음 option을 사용할 수 있습니다:</p><div class="en-orig"><p>The following options are available for the <code>next telemetry</code> command:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>-h, --help</code></td><td>사용 가능한 모든 option을 보여줍니다.</td></tr>
+<tr><td><code>--enable</code></td><td>Next.js의 telemetry 수집을 활성화합니다.</td></tr>
+<tr><td><code>--disable</code></td><td>Next.js의 telemetry 수집을 비활성화합니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>-h, --help</code></td><td>Show all available options.</td></tr>
+<tr><td><code>--enable</code></td><td>Enables Next.js' telemetry collection.</td></tr>
+<tr><td><code>--disable</code></td><td>Disables Next.js' telemetry collection.</td></tr>
+</tbody></table></div></div>
+<p><a href="https://nextjs.org/telemetry" target="_blank" rel="noopener">Telemetry</a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about <a href="https://nextjs.org/telemetry" target="_blank" rel="noopener">Telemetry</a>.</p></div>
+<h3 class="sec" id="next-typegen-options"><a class="anchor" href="#next-typegen-options"><code>next typegen</code> options<span class="ko"><code>next typegen</code> 옵션</span></a></h3>
+<p><code>next typegen</code>은 전체 build를 수행하지 않고 애플리케이션의 route에 대한 TypeScript 정의를 생성합니다. IDE autocomplete와 route 사용에 대한 CI type-checking에 유용합니다.</p><div class="en-orig"><p><code>next typegen</code> generates TypeScript definitions for your application's routes without performing a full build. This is useful for IDE autocomplete and CI type-checking of route usage.</p></div>
+<p>이전에는 route type이 <code>next dev</code>나 <code>next build</code> 중에만 생성되었기 때문에, <code>tsc --noEmit</code>을 직접 실행하면 route type이 검증되지 않았습니다. 이제는 type을 독립적으로 생성하고 외부에서 검증할 수 있습니다:</p><div class="en-orig"><p>Previously, route types were only generated during <code>next dev</code> or <code>next build</code>, which meant running <code>tsc --noEmit</code> directly wouldn't validate your route types. Now you can generate types independently and validate them externally:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash"># Generate route types first, then validate with TypeScript
+next typegen &amp;&amp; tsc --noEmit
+
+# Or in CI workflows for type checking without building
+next typegen &amp;&amp; npm run type-check</code></pre></div></div>
+<p><code>next typegen</code> command에서 다음 option을 사용할 수 있습니다:</p><div class="en-orig"><p>The following options are available for the <code>next typegen</code> command:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>-h, --help</code></td><td>사용 가능한 모든 option을 보여줍니다.</td></tr>
+<tr><td><code>[directory]</code></td><td>type을 생성할 directory입니다. 지정하지 않으면 현재 directory를 사용합니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>-h, --help</code></td><td>Show all available options.</td></tr>
+<tr><td><code>[directory]</code></td><td>A directory on which to generate types. If not provided, the current directory will be used.</td></tr>
+</tbody></table></div></div>
+<p>output 파일은 <code>&lt;distDir&gt;/types</code>에 작성됩니다(보통 development에서는 <code>.next/dev/types</code>, production에서는 <code>.next/types</code>):</p><div class="en-orig"><p>Output files are written to <code>&lt;distDir&gt;/types</code> (typically: <code>.next/dev/types</code> in development or <code>.next/types</code> in production):</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">next typegen
+# or for a specific app
+next typegen ./apps/web</code></pre></div></div>
+<p>또한 <code>next typegen</code>은 <code>next-env.d.ts</code> 파일을 생성합니다. <code>next-env.d.ts</code>는 <code>.gitignore</code> 파일에 추가하는 것을 권장합니다.</p><div class="en-orig"><p>Additionally, <code>next typegen</code> generates a <code>next-env.d.ts</code> file. We recommend adding <code>next-env.d.ts</code> to your <code>.gitignore</code> file.</p></div>
+<p><code>next-env.d.ts</code> 파일은 <code>tsconfig.json</code> 파일에 포함되어, 프로젝트에서 Next.js type을 사용할 수 있게 해 줍니다.</p><div class="en-orig"><p>The <code>next-env.d.ts</code> file is included into your <code>tsconfig.json</code> file, to make Next.js types available to your project.</p></div>
+<p>type-checking 전에 <code>next-env.d.ts</code>가 존재하도록 하려면 <code>next typegen</code>을 실행하세요. <code>next dev</code>와 <code>next build</code> command도 <code>next-env.d.ts</code> 파일을 생성하지만, CI/CD 환경처럼 type-check만을 위해 이 command들을 실행하는 것은 바람직하지 않은 경우가 많습니다.</p><div class="en-orig"><p>To ensure <code>next-env.d.ts</code> is present before type-checking run <code>next typegen</code>. The commands <code>next dev</code> and <code>next build</code> also generate the <code>next-env.d.ts</code> file, but it is often undesirable to run these just to type-check, for example in CI/CD environments.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>next typegen</code>은 production build phase를 사용해 Next.js config(<code>next.config.js</code>, <code>next.config.mjs</code>, 또는 <code>next.config.ts</code>)를 load합니다. config가 올바르게 load될 수 있도록 필요한 environment variable과 dependency가 모두 준비되어 있는지 확인하세요.</p><div class="en-orig"><p><code>next typegen</code> loads your Next.js config (<code>next.config.js</code>, <code>next.config.mjs</code>, or <code>next.config.ts</code>) using the production build phase. Ensure any required environment variables and dependencies are available so the config can load correctly.</p></div></div></div>
+<h3 class="sec" id="next-upgrade-options"><a class="anchor" href="#next-upgrade-options"><code>next upgrade</code> options<span class="ko"><code>next upgrade</code> 옵션</span></a></h3>
+<p><code>next upgrade</code>는 Next.js 애플리케이션을 최신 버전으로 upgrade합니다.</p><div class="en-orig"><p><code>next upgrade</code> upgrades your Next.js application to the latest version.</p></div>
+<p><code>next upgrade</code> command에서 다음 option을 사용할 수 있습니다:</p><div class="en-orig"><p>The following options are available for the <code>next upgrade</code> command:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>-h, --help</code></td><td>사용 가능한 모든 option을 보여줍니다.</td></tr>
+<tr><td><code>[directory]</code></td><td>upgrade할 Next.js 애플리케이션이 있는 directory입니다. 지정하지 않으면 현재 directory를 사용합니다.</td></tr>
+<tr><td><code>--revision &lt;revision&gt;</code></td><td>upgrade할 Next.js 버전 또는 tag를 지정합니다(예: <code>latest</code>, <code>canary</code>, <code>15.0.0</code>). 기본값은 현재 설치된 release channel입니다.</td></tr>
+<tr><td><code>--verbose</code></td><td>upgrade 과정에서 자세한(verbose) output을 보여줍니다.</td></tr>
+<tr><td><code>--agent [type]</code></td><td><code>security</code>, <code>latest</code>, 또는 <code>experimental-future</code>를 사용해 <a href="app-guides-upgrading-agent-upgrade.html">coding agent로 upgrade</a>합니다. 기본값은 <a href="app-api-reference-config-next-config-js-agentUpgrade.html"><code>experimental.agentUpgrade</code></a>, 또는 <code>security</code>입니다. <code>--revision</code>과 함께 사용할 수 없습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>-h, --help</code></td><td>Show all available options.</td></tr>
+<tr><td><code>[directory]</code></td><td>A directory with the Next.js application to upgrade. If not provided, the current directory will be used.</td></tr>
+<tr><td><code>--revision &lt;revision&gt;</code></td><td>Specify a Next.js version or tag to upgrade to (e.g., <code>latest</code>, <code>canary</code>, <code>15.0.0</code>). Defaults to the release channel you have currently installed.</td></tr>
+<tr><td><code>--verbose</code></td><td>Show verbose output during the upgrade process.</td></tr>
+<tr><td><code>--agent [type]</code></td><td><a href="app-guides-upgrading-agent-upgrade.html">Upgrade with a coding agent</a> using <code>security</code>, <code>latest</code>, or <code>experimental-future</code>. Defaults to <a href="app-api-reference-config-next-config-js-agentUpgrade.html"><code>experimental.agentUpgrade</code></a>, or <code>security</code>. Cannot be combined with <code>--revision</code>.</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="next-analyze-options"><a class="anchor" href="#next-analyze-options"><code>next analyze</code> options<span class="ko"><code>next analyze</code> 옵션</span></a></h3>
+<p><code>next analyze</code>는 <a href="app-api-reference-turbopack.html">Turbopack</a>을 사용해 애플리케이션의 bundle output을 분석합니다. 이 command는 JavaScript, CSS 및 기타 asset을 포함해 bundle의 크기와 구성을 이해하는 데 도움이 됩니다. 이 command는 애플리케이션 build를 생성하지 않습니다.</p><div class="en-orig"><p><code>next analyze</code> analyzes your application's bundle output using <a href="app-api-reference-turbopack.html">Turbopack</a>. This command helps you understand the size and composition of your bundles, including JavaScript, CSS, and other assets. This command doesn't produce an application build.</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm next analyze</code></pre><pre class="pm-npm" hidden><code class="language-bash">npx next analyze</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn next analyze</code></pre><pre class="pm-bun" hidden><code class="language-bash">bunx next analyze</code></pre></div></div>
+<p>기본적으로 이 command는 분석이 끝나면 로컬 server를 시작해, 브라우저에서 bundle 구성을 살펴볼 수 있게 해 줍니다. analyzer로 다음을 할 수 있습니다:</p><div class="en-orig"><p>By default, the command starts a local server after analysis completes, allowing you to explore your bundle composition in the browser. The analyzer lets you:</p></div>
+<ul>
+<li>route별로 bundle을 filter하고 client view와 server view 사이를 전환</li>
+<li>module이 왜 포함되었는지 보여주는 전체 import chain 확인</li>
+<li>server-to-client component 경계와 dynamic import를 가로지르는 import 추적</li>
+</ul><div class="en-orig"><ul>
+<li>Filter bundles by route and switch between client and server views</li>
+<li>View the full import chain showing why a module is included</li>
+<li>Trace imports across server-to-client component boundaries and dynamic imports</li>
+</ul></div>
+<p>최적화 전략은 <a href="app-guides-package-bundling.html#optimizing-large-bundles">Package Bundling</a>을 참고하세요.</p><div class="en-orig"><p>See <a href="app-guides-package-bundling.html#optimizing-large-bundles">Package Bundling</a> for optimization strategies.</p></div>
+<p>server를 시작하지 않고 분석 output을 디스크에 쓰려면 <code>--output</code>을 사용하세요. snapshot과 interactive UI 파일은 <code>&lt;distDir&gt;/diagnostics/analyze</code>(보통 <code>.next/diagnostics/analyze</code>)에 작성됩니다.</p><div class="en-orig"><p>To write the analysis output to disk without starting the server, use <code>--output</code>. Snapshot and interactive UI files are written to <code>&lt;distDir&gt;/diagnostics/analyze</code> (normally <code>.next/diagnostics/analyze</code>).</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash"># Build and save a snapshot without starting the UI server
+npx next analyze --output --snapshot audit-1
+
+# Stream that saved graph as one JSON object per line, without rebuilding
+npx next analyze export --snapshot audit-1 &gt; graph.jsonl</code></pre></div></div>
+<p><code>next analyze</code> command에서 다음 option을 사용할 수 있습니다:</p><div class="en-orig"><p>The following options are available for the <code>next analyze</code> command:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>-h, --help</code></td><td>사용 가능한 모든 option을 보여줍니다.</td></tr>
+<tr><td><code>[directory]</code></td><td>애플리케이션을 분석할 directory입니다. 지정하지 않으면 현재 directory를 사용합니다.</td></tr>
+<tr><td><code>--no-mangling</code></td><td><a href="https://en.wikipedia.org/wiki/Name_mangling" target="_blank" rel="noopener">mangling</a>을 비활성화합니다. performance에 영향을 줄 수 있으므로 debugging 목적으로만 사용해야 합니다.</td></tr>
+<tr><td><code>--profile</code></td><td>production <a href="https://react.dev/reference/react/Profiler" target="_blank" rel="noopener">React profiling</a>을 활성화합니다. performance에 영향을 줄 수 있습니다.</td></tr>
+<tr><td><code>-o, --output</code></td><td>serve하지 않고 binary analyzer 데이터와 UI 파일을 build해 <code>&lt;distDir&gt;/diagnostics/analyze</code>에 저장합니다.</td></tr>
+<tr><td><code>--snapshot &lt;name&gt;</code></td><td>이름이 지정된 snapshot을 저장하며, 같은 이름의 이전 capture를 대체합니다.</td></tr>
+<tr><td><code>--port &lt;port&gt;</code></td><td>analyzer를 serve할 port 번호를 지정합니다. (기본값: 4000, env: PORT)</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>-h, --help</code></td><td>Show all available options.</td></tr>
+<tr><td><code>[directory]</code></td><td>A directory on which to analyze the application. If not provided, the current directory will be used.</td></tr>
+<tr><td><code>--no-mangling</code></td><td>Disables <a href="https://en.wikipedia.org/wiki/Name_mangling" target="_blank" rel="noopener">mangling</a>. This may affect performance and should only be used for debugging purposes.</td></tr>
+<tr><td><code>--profile</code></td><td>Enables production <a href="https://react.dev/reference/react/Profiler" target="_blank" rel="noopener">profiling for React</a>. This may affect performance.</td></tr>
+<tr><td><code>-o, --output</code></td><td>Build and save binary analyzer data and UI files to <code>&lt;distDir&gt;/diagnostics/analyze</code> without serving.</td></tr>
+<tr><td><code>--snapshot &lt;name&gt;</code></td><td>Save a named snapshot, replacing an earlier capture with the same name.</td></tr>
+<tr><td><code>--port &lt;port&gt;</code></td><td>Specify a port number to serve the analyzer on. (default: 4000, env: PORT)</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="next-analyze-export-options"><a class="anchor" href="#next-analyze-export-options"><code>next analyze export</code> options<span class="ko"><code>next analyze export</code> 옵션</span></a></h3>
+<p><code>export</code> subcommand는 기존 snapshot을 일련의 JSON Lines로 stream합니다. 자체적으로 분석을 실행하거나 web UI를 시작하지는 않습니다.</p><div class="en-orig"><p>The <code>export</code> subcommand streams an existing snapshot as a series of JSON Lines. It does not run analysis itself or start the web UI.</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>설명</th></tr></thead>
+<tbody>
+<tr><td><code>-h, --help</code></td><td>사용 가능한 모든 export option을 보여줍니다.</td></tr>
+<tr><td><code>[directory]</code></td><td>저장된 분석 결과가 있는 애플리케이션 directory입니다. 기본값은 현재 directory입니다.</td></tr>
+<tr><td><code>--snapshot &lt;name&gt;</code></td><td>저장된 snapshot을 이름으로 선택합니다. 기본값은 보존된 snapshot 중 가장 최신 것입니다.</td></tr>
+<tr><td><code>--route &lt;route&gt;</code></td><td>export를 하나의 route로 제한합니다(전체 module graph는 여전히 포함됨).</td></tr>
+<tr><td><code>--dist-dir &lt;directory&gt;</code></td><td><code>next.config</code>를 읽지 않고 명시적인 상대 또는 절대 build directory를 선택합니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Option</th><th>Description</th></tr></thead>
+<tbody>
+<tr><td><code>-h, --help</code></td><td>Show all available export options.</td></tr>
+<tr><td><code>[directory]</code></td><td>The application directory containing the saved analysis. Defaults to the current directory.</td></tr>
+<tr><td><code>--snapshot &lt;name&gt;</code></td><td>Select a saved snapshot by name. Defaults to the newest retained snapshot.</td></tr>
+<tr><td><code>--route &lt;route&gt;</code></td><td>Restrict export to one route (still includes the full module graph).</td></tr>
+<tr><td><code>--dist-dir &lt;directory&gt;</code></td><td>Select an explicit relative or absolute build directory without reading <code>next.config</code>.</td></tr>
+</tbody></table></div></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예제</span></a></h2>
+<h3 class="sec" id="debugging-prerender-errors"><a class="anchor" href="#debugging-prerender-errors">Debugging prerender errors<span class="ko">prerender error 디버깅</span></a></h3>
+<p><code>next build</code> 중에 prerendering error가 발생하면 <code>--debug-prerender</code> flag를 전달해 더 자세한 output을 얻을 수 있습니다:</p><div class="en-orig"><p>If you encounter prerendering errors during <code>next build</code>, you can pass the <code>--debug-prerender</code> flag to get more detailed output:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">next build --debug-prerender</code></pre></div></div>
+<p>이 flag는 debugging을 쉽게 하기 위해 여러 experimental option을 활성화합니다:</p><div class="en-orig"><p>This enables several experimental options to make debugging easier:</p></div>
+<ul>
+<li>server 코드 minification을 비활성화합니다:<ul>
+<li><code>experimental.serverMinification = false</code></li>
+<li><code>experimental.turbopackMinify = false</code></li>
+</ul></li>
+<li>server bundle에 대한 source map을 생성합니다:<ul>
+<li><code>experimental.serverSourceMaps = true</code></li>
+</ul></li>
+<li>첫 번째 prerender error가 발생한 뒤에도 build를 계속 진행해, 모든 문제를 한 번에 볼 수 있게 합니다:<ul>
+<li><code>experimental.prerenderEarlyExit = false</code></li>
+</ul></li>
+</ul><div class="en-orig"><ul>
+<li>Disables server code minification:<ul>
+<li><code>experimental.serverMinification = false</code></li>
+<li><code>experimental.turbopackMinify = false</code></li>
+</ul></li>
+<li>Generates source maps for server bundles:<ul>
+<li><code>experimental.serverSourceMaps = true</code></li>
+</ul></li>
+<li>Continues building even after the first prerender error, so you can see all issues at once:<ul>
+<li><code>experimental.prerenderEarlyExit = false</code></li>
+</ul></li>
+</ul></div>
+<p>이렇게 하면 build output에서 더 읽기 쉬운 stack trace와 code frame을 확인할 수 있습니다.</p><div class="en-orig"><p>This helps surface more readable stack traces and code frames in the build output.</p></div>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Warning</div><p><code>--debug-prerender</code>는 development에서 debugging할 때만 사용하세요. <code>--debug-prerender</code>로 생성한 build는 performance에 영향을 줄 수 있으므로 production에 deploy하지 마세요.</p><div class="en-orig"><p><code>--debug-prerender</code> is for debugging in development only. Do not deploy builds generated with <code>--debug-prerender</code> to production, as it may impact performance.</p></div></div></div>
+<h3 class="sec" id="building-specific-routes"><a class="anchor" href="#building-specific-routes">Building specific routes<span class="ko">특정 route만 build하기</span></a></h3>
+<p><code>--debug-build-paths</code> option을 사용하면 App Router와 Pages Router에서 특정 route만 build할 수 있습니다. 대규모 애플리케이션에서 작업할 때 더 빠르게 debugging하는 데 유용합니다. <code>--debug-build-paths</code> option은 쉼표로 구분된 파일 경로를 받으며, glob pattern을 지원하고, <code>!</code>로 시작하는 경로는 제외합니다:</p><div class="en-orig"><p>You can build only specific routes in the App and Pages Routers using the <code>--debug-build-paths</code> option. This is useful for faster debugging when working with large applications. The <code>--debug-build-paths</code> option accepts comma-separated file paths, supports glob patterns, and excludes any path prefixed with <code>!</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash"># Build a specific route
+next build --debug-build-paths=&quot;app/page.tsx&quot;
+
+# Build more than one route
+next build --debug-build-paths=&quot;app/page.tsx,pages/index.tsx&quot;
+
+# Include route group folders in the path
+next build --debug-build-paths=&quot;app/(marketing)/about/page.tsx&quot;
+
+# Use glob patterns
+next build --debug-build-paths=&quot;app/**/page.tsx&quot;
+next build --debug-build-paths=&quot;pages/*.tsx&quot;
+
+# Exclude routes with a ! prefix
+next build --debug-build-paths=&quot;app/**/page.tsx,!app/admin/**&quot;</code></pre></div></div>
+<p>더 자세한 prerender 진단을 위해 <code>--debug-build-paths</code>를 <code>--debug-prerender</code>와 함께 사용할 수 있습니다.</p><div class="en-orig"><p>You can combine <code>--debug-build-paths</code> with <code>--debug-prerender</code> for more detailed prerender diagnostics.</p></div>
+<p>route를 <code>src/</code> 아래에 두는 프로젝트에서는 <code>src/</code> prefix가 있든 없든 경로가 resolve되므로, <code>app/page.tsx</code>와 <code>src/app/page.tsx</code>는 모두 같은 route와 일치합니다.</p><div class="en-orig"><p>In projects that keep routes under <code>src/</code>, paths resolve with or without the <code>src/</code> prefix, so both <code>app/page.tsx</code> and <code>src/app/page.tsx</code> match the same route.</p></div>
+<p>일치하는 route만 route table에 나타납니다. App Router route를 선택하면 Next.js는 내장 <code>/_not-found</code> route도 함께 포함합니다.</p><div class="en-orig"><p>Only matching routes appear in the route table. When you select an App Router route, Next.js also includes the built-in <code>/_not-found</code> route.</p></div>
+<h3 class="sec" id="changing-the-default-port"><a class="anchor" href="#changing-the-default-port">Changing the default port<span class="ko">기본 port 변경하기</span></a></h3>
+<p>기본적으로 Next.js는 development 중과 <code>next start</code>에서 <code>http://localhost:3000</code>을 사용합니다. 기본 port는 다음과 같이 <code>-p</code> option으로 변경할 수 있습니다:</p><div class="en-orig"><p>By default, Next.js uses <code>http://localhost:3000</code> during development and with <code>next start</code>. The default port can be changed with the <code>-p</code> option, like so:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">next dev -p 4000</code></pre></div></div>
+<p>또는 <code>PORT</code> environment variable을 사용할 수 있습니다:</p><div class="en-orig"><p>Or using the <code>PORT</code> environment variable:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">PORT=4000 next dev</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>HTTP server 부팅은 다른 어떤 코드보다 먼저 초기화되므로 <code>PORT</code>는 <code>.env</code>에서 설정할 수 없습니다.</p><div class="en-orig"><p><code>PORT</code> cannot be set in <code>.env</code> as booting up the HTTP server happens before any other code is initialized.</p></div></div></div>
+<h3 class="sec" id="using-https-during-development"><a class="anchor" href="#using-https-during-development">Using HTTPS during development<span class="ko">development 중에 HTTPS 사용하기</span></a></h3>
+<p>webhook이나 authentication 같은 특정 use case에서는 <a href="https://developer.mozilla.org/en-US/docs/Glossary/HTTPS" target="_blank" rel="noopener">HTTPS</a>를 사용해 <code>localhost</code>에서 안전한 환경을 만들 수 있습니다. Next.js는 <code>--experimental-https</code> flag를 사용해 <code>next dev</code>로 self-signed certificate를 생성할 수 있습니다:</p><div class="en-orig"><p>For certain use cases like webhooks or authentication, you can use <a href="https://developer.mozilla.org/en-US/docs/Glossary/HTTPS" target="_blank" rel="noopener">HTTPS</a> to have a secure environment on <code>localhost</code>. Next.js can generate a self-signed certificate with <code>next dev</code> using the <code>--experimental-https</code> flag:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">next dev --experimental-https</code></pre></div></div>
+<p>생성된 certificate를 사용하면 Next.js development server는 <code>https://localhost:3000</code>에서 실행됩니다. <code>-p</code>, <code>--port</code>, 또는 <code>PORT</code>로 port를 지정하지 않으면 기본 port <code>3000</code>이 사용됩니다.</p><div class="en-orig"><p>With the generated certificate, the Next.js development server will exist at <code>https://localhost:3000</code>. The default port <code>3000</code> is used unless a port is specified with <code>-p</code>, <code>--port</code>, or <code>PORT</code>.</p></div>
+<p><code>--experimental-https-key</code>와 <code>--experimental-https-cert</code>로 custom certificate와 key를 제공할 수도 있습니다. 선택적으로 <code>--experimental-https-ca</code>로 custom CA certificate도 제공할 수 있습니다.</p><div class="en-orig"><p>You can also provide a custom certificate and key with <code>--experimental-https-key</code> and <code>--experimental-https-cert</code>. Optionally, you can provide a custom CA certificate with <code>--experimental-https-ca</code> as well.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">next dev --experimental-https --experimental-https-key ./certificates/localhost-key.pem --experimental-https-cert ./certificates/localhost.pem</code></pre></div></div>
+<p><code>next dev --experimental-https</code>는 development 용도로만 만들어졌으며, <a href="https://github.com/FiloSottile/mkcert" target="_blank" rel="noopener"><code>mkcert</code></a>로 로컬에서 신뢰되는 certificate를 생성합니다. production에서는 신뢰할 수 있는 기관에서 정식으로 발급한 certificate를 사용하세요.</p><div class="en-orig"><p><code>next dev --experimental-https</code> is only intended for development and creates a locally trusted certificate with <a href="https://github.com/FiloSottile/mkcert" target="_blank" rel="noopener"><code>mkcert</code></a>. In production, use properly issued certificates from trusted authorities.</p></div>
+<h3 class="sec" id="configuring-a-timeout-for-downstream-proxies"><a class="anchor" href="#configuring-a-timeout-for-downstream-proxies">Configuring a timeout for downstream proxies<span class="ko">downstream proxy를 위한 timeout 설정하기</span></a></h3>
+<p>downstream proxy(예: AWS ELB/ALB 같은 load-balancer) 뒤에 Next.js를 deploy할 때는, Next의 내부 HTTP server에 downstream proxy의 timeout보다 <em>더 큰</em> <a href="https://nodejs.org/api/http.html#http_server_keepalivetimeout" target="_blank" rel="noopener">keep-alive timeout</a>을 설정하는 것이 중요합니다. 그렇지 않으면 특정 TCP connection에서 keep-alive timeout에 도달했을 때 Node.js가 downstream proxy에 알리지 않고 즉시 그 connection을 종료합니다. 그 결과 proxy가 Node.js에서 이미 종료한 connection을 재사용하려고 할 때마다 proxy error가 발생합니다.</p><div class="en-orig"><p>When deploying Next.js behind a downstream proxy (e.g. a load-balancer like AWS ELB/ALB), it's important to configure Next's underlying HTTP server with <a href="https://nodejs.org/api/http.html#http_server_keepalivetimeout" target="_blank" rel="noopener">keep-alive timeouts</a> that are <em>larger</em> than the downstream proxy's timeouts. Otherwise, once a keep-alive timeout is reached for a given TCP connection, Node.js will immediately terminate that connection without notifying the downstream proxy. This results in a proxy error whenever it attempts to reuse a connection that Node.js has already terminated.</p></div>
+<p>production Next.js server의 timeout 값을 설정하려면 다음과 같이 <code>next start</code>에 <code>--keepAliveTimeout</code>(millisecond 단위)을 전달하세요:</p><div class="en-orig"><p>To configure the timeout values for the production Next.js server, pass <code>--keepAliveTimeout</code> (in milliseconds) to <code>next start</code>, like so:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">next start --keepAliveTimeout 70000</code></pre></div></div>
+<h3 class="sec" id="passing-nodejs-arguments"><a class="anchor" href="#passing-nodejs-arguments">Passing Node.js arguments<span class="ko">Node.js argument 전달하기</span></a></h3>
+<p><code>next</code> command에는 어떤 <a href="https://nodejs.org/api/cli.html#cli_node_options_options" target="_blank" rel="noopener">node argument</a>든 전달할 수 있습니다. 예를 들면 다음과 같습니다:</p><div class="en-orig"><p>You can pass any <a href="https://nodejs.org/api/cli.html#cli_node_options_options" target="_blank" rel="noopener">node arguments</a> to <code>next</code> commands. For example:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash">NODE_OPTIONS=&#x27;--throw-deprecation&#x27; next
+NODE_OPTIONS=&#x27;-r esm&#x27; next
+NODE_OPTIONS=&#x27;--inspect&#x27; next</code></pre></div></div>
+<h3 class="sec" id="cpu-profiling"><a class="anchor" href="#cpu-profiling">CPU profiling</a></h3>
+<p>CPU profile을 capture해 Next.js 애플리케이션의 performance bottleneck을 분석할 수 있습니다. <code>--experimental-cpu-prof</code> flag는 V8에 내장된 CPU profiler를 활성화하고, process가 종료될 때 profile을 <code>.next-profiles/</code>에 저장합니다:</p><div class="en-orig"><p>You can capture CPU profiles to analyze performance bottlenecks in your Next.js application. The <code>--experimental-cpu-prof</code> flag enables V8's built-in CPU profiler and saves profiles to <code>.next-profiles/</code> when the process exits:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">Terminal</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-bash"># Profile the build process
+next build --experimental-cpu-prof
+
+# Profile the dev server (profile saved on Ctrl+C or SIGTERM)
+next dev --experimental-cpu-prof
+
+# Profile the production server
+next start --experimental-cpu-prof</code></pre></div></div>
+<p>생성된 <code>.cpuprofile</code> 파일은 Chrome DevTools(Performance tab → Load profile)나 다른 V8 호환 profiling 도구에서 열 수 있습니다.</p><div class="en-orig"><p>The generated <code>.cpuprofile</code> files can be opened in Chrome DevTools (Performance tab → Load profile) or other V8-compatible profiling tools.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>profile 파일 이름에는 설명적인 prefix와 timestamp가 붙습니다. 생성되는 profile은 command에 따라 다릅니다:</p>
+<p><strong><code>next dev</code>:</strong></p>
+<ul>
+<li><code>dev-main-*</code> - 부모 process (dev server orchestration)</li>
+<li><code>dev-server-*</code> - 자식 server process (request 처리와 rendering) - 보통 분석하고 싶은 것은 이것입니다</li>
+</ul>
+<p><strong><code>next build</code> (Turbopack):</strong></p>
+<ul>
+<li><code>build-main-*</code> - 메인 build orchestration process</li>
+<li><code>build-turbopack-*</code> - Turbopack compilation worker</li>
+</ul>
+<p><strong><code>next build</code> (Webpack):</strong></p>
+<ul>
+<li><code>build-main-*</code> - 메인 build orchestration process</li>
+<li><code>build-webpack-client-*</code> - Client bundle compilation worker</li>
+<li><code>build-webpack-server-*</code> - Server bundle compilation worker</li>
+<li><code>build-webpack-edge-server-*</code> - Edge runtime compilation worker</li>
+</ul>
+<p><strong><code>next start</code>:</strong></p>
+<ul>
+<li><code>start-main-*</code> - Production server process</li>
+</ul><div class="en-orig"><p>Profile files are named with a descriptive prefix and timestamp. The profiles generated depend on the command:</p>
+<p><strong><code>next dev</code>:</strong></p>
+<ul>
+<li><code>dev-main-*</code> - Parent process (dev server orchestration)</li>
+<li><code>dev-server-*</code> - Child server process (request handling and rendering) - this is typically what you want to analyze</li>
+</ul>
+<p><strong><code>next build</code> (Turbopack):</strong></p>
+<ul>
+<li><code>build-main-*</code> - Main build orchestration process</li>
+<li><code>build-turbopack-*</code> - Turbopack compilation worker</li>
+</ul>
+<p><strong><code>next build</code> (Webpack):</strong></p>
+<ul>
+<li><code>build-main-*</code> - Main build orchestration process</li>
+<li><code>build-webpack-client-*</code> - Client bundle compilation worker</li>
+<li><code>build-webpack-server-*</code> - Server bundle compilation worker</li>
+<li><code>build-webpack-edge-server-*</code> - Edge runtime compilation worker</li>
+</ul>
+<p><strong><code>next start</code>:</strong></p>
+<ul>
+<li><code>start-main-*</code> - Production server process</li>
+</ul></div></div></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.4.0</code></td><td><code>next analyze export</code> command 추가.</td></tr>
+<tr><td><code>v16.1.0</code></td><td><code>next upgrade</code> command 추가</td></tr>
+<tr><td><code>v16.1.0</code></td><td><code>next experimental-analyze</code> command 추가</td></tr>
+<tr><td><code>v16.0.0</code></td><td><code>next build</code>에서 JS bundle size 지표 제거</td></tr>
+<tr><td><code>v15.5.0</code></td><td><code>next typegen</code> command 추가</td></tr>
+<tr><td><code>v15.4.0</code></td><td>prerender error debugging을 돕는 <code>next build</code>의 <code>--debug-prerender</code> option 추가.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.4.0</code></td><td>Add the <code>next analyze export</code> command.</td></tr>
+<tr><td><code>v16.1.0</code></td><td>Add the <code>next upgrade</code> command</td></tr>
+<tr><td><code>v16.1.0</code></td><td>Add the <code>next experimental-analyze</code> command</td></tr>
+<tr><td><code>v16.0.0</code></td><td>The JS bundle size metrics have been removed from <code>next build</code></td></tr>
+<tr><td><code>v15.5.0</code></td><td>Add the <code>next typegen</code> command</td></tr>
+<tr><td><code>v15.4.0</code></td><td>Add <code>--debug-prerender</code> option for <code>next build</code> to help debug prerender errors.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/06-cli/next.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/cli/next" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-cli-create-next-app.html" class="prev"><div class="dir">← 이전</div><div class="ttl">create-next-app</div><div class="ttl-ko">create-next-app</div></a>
+      <a href="app-api-reference-adapters.html" class="next"><div class="dir">다음 →</div><div class="ttl">Adapters</div><div class="ttl-ko">Adapters</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/cli/next" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#reference">Reference</a></li><li class="l3"><a href="#commands">Commands</a></li><li class="l3"><a href="#next-dev-options"><code>next dev</code> options</a></li><li class="l3"><a href="#next-build-options"><code>next build</code> options</a></li><li class="l3"><a href="#next-start-options"><code>next start</code> options</a></li><li class="l3"><a href="#next-info-options"><code>next info</code> options</a></li><li class="l3"><a href="#next-telemetry-options"><code>next telemetry</code> options</a></li><li class="l3"><a href="#next-typegen-options"><code>next typegen</code> options</a></li><li class="l3"><a href="#next-upgrade-options"><code>next upgrade</code> options</a></li><li class="l3"><a href="#next-analyze-options"><code>next analyze</code> options</a></li><li class="l3"><a href="#next-analyze-export-options"><code>next analyze export</code> options</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#debugging-prerender-errors">Debugging prerender errors</a></li><li class="l3"><a href="#building-specific-routes">Building specific routes</a></li><li class="l3"><a href="#changing-the-default-port">Changing the default port</a></li><li class="l3"><a href="#using-https-during-development">Using HTTPS during development</a></li><li class="l3"><a href="#configuring-a-timeout-for-downstream-proxies">Configuring a timeout for downstream proxies</a></li><li class="l3"><a href="#passing-nodejs-arguments">Passing Node.js arguments</a></li><li class="l3"><a href="#cpu-profiling">CPU profiling</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js CLI를 사용하면 애플리케이션을 개발(develop), build, start하는 등 다양한 작업을 할 수 있습니다.
+
+기본 사용법:
+
+[[CODE 1]]
+
+&gt; **Good to know**: `npm run`을 사용할 때는 CLI flag 앞에 `--`를 붙여야 npm이 flag를 `next`로 전달합니다. `pnpm`, `yarn`, `bun`에서는 필요하지 않습니다.
+
+## Reference
+
+다음 option을 사용할 수 있습니다:
+
+| Options             | 설명                        |
+| ------------------- | ---------------------------------- |
+| `-h` 또는 `--help`    | 사용 가능한 모든 option을 보여줍니다        |
+| `-v` 또는 `--version` | Next.js 버전 번호를 출력합니다 |
+
+### Commands
+
+다음 command를 사용할 수 있습니다:
+
+| Command                                | 설명                                                                                                   |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| [`dev`](#next-dev-options)             | Hot Module Reloading, error reporting 등을 갖춘 development mode로 Next.js를 시작합니다.                      |
+| [`build`](#next-build-options)         | 애플리케이션의 최적화된 production build를 생성합니다. 각 route에 대한 정보를 표시합니다.           |
+| [`start`](#next-start-options)         | Next.js를 production mode로 시작합니다. 애플리케이션은 먼저 `next build`로 compile되어 있어야 합니다.                |
+| [`info`](#next-info-options)           | Next.js bug를 보고할 때 사용할 수 있는 현재 시스템 관련 정보를 출력합니다.                    |
+| [`telemetry`](#next-telemetry-options) | Next.js의 완전히 익명인 telemetry 수집을 활성화하거나 비활성화할 수 있습니다.                           |
+| [`typegen`](#next-typegen-options)     | 전체 build를 실행하지 않고 route, page, layout, route handler에 대한 TypeScript 정의를 생성합니다. |
+| [`upgrade`](#next-upgrade-options)     | Next.js 애플리케이션을 최신 버전으로 upgrade합니다.                                                      |
+| [`analyze`](#next-analyze-options)     | Turbopack을 사용해 bundle output을 분석합니다. build artifact는 생성하지 않습니다.                                     |
+
+&gt; **Good to know**: command 없이 `next`를 실행하면 `next dev`의 alias로 동작합니다.
+
+### `next dev` options || `next dev` 옵션
+
+`next dev`는 Hot Module Reloading(HMR), error reporting 등을 갖춘 development mode로 애플리케이션을 시작합니다.
+
+&gt; **Good to know**: development build는 `.next` 대신 `.next/dev`에 출력됩니다. 덕분에 `next dev`와 `next build`를 충돌 없이 동시에 실행할 수 있습니다.
+
+`next dev`를 실행할 때 다음 option을 사용할 수 있습니다:
+
+| Option                                   | 설명                                                                                                                                          |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `-h, --help`                             | 사용 가능한 모든 option을 보여줍니다.                                                                                                                          |
+| `[directory]`                            | 애플리케이션을 build할 directory입니다. 지정하지 않으면 현재 directory를 사용합니다.                                                           |
+| `--turbopack`                            | [Turbopack](/docs/app/api-reference/turbopack)을 강제로 활성화합니다(기본으로 활성화됨). `--turbo`로도 사용할 수 있습니다.                                       |
+| `--webpack`                              | development에서 기본 [Turbopack](/docs/app/api-reference/turbopack) bundler 대신 내장된(bundled) Webpack을 사용합니다.                               |
+| `--custom-webpack`                       | development에서 [프로젝트에 설치된 webpack](/docs/app/guides/custom-webpack)을 사용합니다.                                                                    |
+| `-p` 또는 `--port &lt;port&gt;`                  | 애플리케이션을 시작할 port 번호를 지정합니다. 기본값: 3000, env: PORT                                                                    |
+| `-H` 또는 `--hostname &lt;hostname&gt;`          | 애플리케이션을 시작할 hostname을 지정합니다. 네트워크의 다른 기기에서 애플리케이션에 접근할 수 있게 할 때 유용합니다. 기본값: 0.0.0.0 |
+| `--experimental-https`                   | HTTPS로 server를 시작하고 self-signed certificate를 생성합니다.                                                                                |
+| `--experimental-https-key &lt;path&gt;`        | HTTPS key 파일의 경로입니다.                                                                                                                            |
+| `--experimental-https-cert &lt;path&gt;`       | HTTPS certificate 파일의 경로입니다.                                                                                                                    |
+| `--experimental-https-ca &lt;path&gt;`         | HTTPS certificate authority 파일의 경로입니다.                                                                                                          |
+| `--experimental-upload-trace &lt;traceUrl&gt;` | debugging trace의 일부를 원격 HTTP URL로 보고합니다.                                                                                        |
+| `--experimental-cpu-prof`                | V8의 inspector를 사용해 CPU profiling을 활성화합니다. profile은 종료 시 `.next-profiles/`에 저장됩니다.                                                         |
+
+### `next build` options || `next build` 옵션
+
+`next build`는 애플리케이션의 최적화된 production build를 생성합니다. output에는 각 route에 대한 정보가 표시됩니다. 예를 들면 다음과 같습니다:
+
+[[CODE 2]]
+
+output을 읽는 방법, dynamic route를 prerender하는 방법, build error를 debug하는 방법은 [Building 가이드](/docs/app/guides/building)를 참고하세요.
+
+`next build` command에서 다음 option을 사용할 수 있습니다:
+
+| Option                             | 설명                                                                                                                                   |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `-h, --help`                       | 사용 가능한 모든 option을 보여줍니다.                                                                                                                   |
+| `[directory]`                      | 애플리케이션을 build할 directory입니다. 지정하지 않으면 현재 directory를 사용합니다.                                           |
+| `--turbopack`                      | [Turbopack](/docs/app/api-reference/turbopack)을 강제로 활성화합니다(기본으로 활성화됨). `--turbo`로도 사용할 수 있습니다.                                |
+| `--webpack`                        | 내장된(bundled) Webpack으로 build합니다.                                                                                                              |
+| `--custom-webpack`                 | [프로젝트에 설치된 webpack](/docs/app/guides/custom-webpack)으로 build합니다.                                                                     |
+| `--analyze`                        | Turbopack build 중에 interactive analyzer용 bundle 분석 데이터를 생성합니다.                                                          |
+| `-d` 또는 `--debug`                  | 더 자세한(verbose) build output을 활성화합니다. 이 flag를 켜면 rewrites, redirects, headers 같은 추가 build output이 표시됩니다.      |
+| `--profile`                        | production [React profiling](https://react.dev/reference/react/Profiler)을 활성화합니다.                                                         |
+| `--no-mangling`                    | [mangling](https://en.wikipedia.org/wiki/Name_mangling)을 비활성화합니다. performance에 영향을 줄 수 있으므로 debugging 목적으로만 사용해야 합니다. |
+| `--experimental-app-only`          | App Router route만 build합니다.                                                                                                                |
+| `--experimental-build-mode [mode]` | experimental build mode를 사용합니다. (선택지: &quot;compile&quot;, &quot;generate&quot;, 기본값: &quot;default&quot;)                                                         |
+| `--debug-prerender`                | development에서 prerender error를 debug합니다.                                                                                                        |
+| `--debug-build-paths=&lt;patterns&gt;`   | debugging을 위해 특정 route만 build합니다.                                                                                                     |
+| `--experimental-cpu-prof`          | V8의 inspector를 사용해 CPU profiling을 활성화합니다. profile은 종료 시 `.next-profiles/`에 저장됩니다.                                                  |
+
+### `next start` options || `next start` 옵션
+
+`next start`는 애플리케이션을 production mode로 시작합니다. 애플리케이션은 먼저 [`next build`](#next-build-options)로 compile되어 있어야 합니다.
+
+`next start` command에서 다음 option을 사용할 수 있습니다:
+
+| Option                                  | 설명                                                                                                     |
+| --------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `-h` 또는 `--help`                        | 사용 가능한 모든 option을 보여줍니다.                                                                                     |
+| `[directory]`                           | 애플리케이션을 시작할 directory입니다. directory를 지정하지 않으면 현재 directory를 사용합니다. |
+| `-p` 또는 `--port &lt;port&gt;`                 | 애플리케이션을 시작할 port 번호를 지정합니다. (기본값: 3000, env: PORT)                             |
+| `-H` 또는 `--hostname &lt;hostname&gt;`         | 애플리케이션을 시작할 hostname을 지정합니다 (기본값: 0.0.0.0).                                        |
+| `--keepAliveTimeout &lt;keepAliveTimeout&gt;` | 비활성 connection을 닫기 전까지 기다릴 최대 시간(millisecond)을 지정합니다.                     |
+| `--experimental-cpu-prof`               | V8의 inspector를 사용해 CPU profiling을 활성화합니다. profile은 종료 시 `.next-profiles/`에 저장됩니다.                    |
+
+### `next info` options || `next info` 옵션
+
+`next info`는 [GitHub issue](https://github.com/vercel/next.js/issues)를 열어 Next.js bug를 보고할 때 사용할 수 있는 현재 시스템 관련 정보를 출력합니다. 이 정보에는 운영체제 platform/arch/version, Binaries(Node.js, npm, Yarn, pnpm), package 버전(`next`, `react`, `react-dom`) 등이 포함됩니다.
+
+output은 다음과 같은 형태입니다:
+
+[[CODE 3]]
+
+`next info` command에서 다음 option을 사용할 수 있습니다:
+
+| Option           | 설명                                    |
+| ---------------- | ---------------------------------------------- |
+| `-h` 또는 `--help` | 사용 가능한 모든 option을 보여줍니다                     |
+| `--verbose`      | debugging을 위한 추가 정보를 수집합니다. |
+
+### `next telemetry` options || `next telemetry` 옵션
+
+Next.js는 일반적인 사용 현황에 대해 **완전히 익명인** telemetry 데이터를 수집합니다. 이 익명 프로그램 참여는 선택 사항이며, 정보를 공유하고 싶지 않다면 opt-out할 수 있습니다.
+
+`next telemetry` command에서 다음 option을 사용할 수 있습니다:
+
+| Option       | 설명                             |
+| ------------ | --------------------------------------- |
+| `-h, --help` | 사용 가능한 모든 option을 보여줍니다.             |
+| `--enable`   | Next.js의 telemetry 수집을 활성화합니다.  |
+| `--disable`  | Next.js의 telemetry 수집을 비활성화합니다. |
+
+[Telemetry](/telemetry)에 대해 더 알아보세요.
+
+### `next typegen` options || `next typegen` 옵션
+
+`next typegen`은 전체 build를 수행하지 않고 애플리케이션의 route에 대한 TypeScript 정의를 생성합니다. IDE autocomplete와 route 사용에 대한 CI type-checking에 유용합니다.
+
+이전에는 route type이 `next dev`나 `next build` 중에만 생성되었기 때문에, `tsc --noEmit`을 직접 실행하면 route type이 검증되지 않았습니다. 이제는 type을 독립적으로 생성하고 외부에서 검증할 수 있습니다:
+
+[[CODE 4]]
+
+`next typegen` command에서 다음 option을 사용할 수 있습니다:
+
+| Option        | 설명                                                                                  |
+| ------------- | -------------------------------------------------------------------------------------------- |
+| `-h, --help`  | 사용 가능한 모든 option을 보여줍니다.                                                                  |
+| `[directory]` | type을 생성할 directory입니다. 지정하지 않으면 현재 directory를 사용합니다. |
+
+output 파일은 `&lt;distDir&gt;/types`에 작성됩니다(보통 development에서는 `.next/dev/types`, production에서는 `.next/types`):
+
+[[CODE 5]]
+
+또한 `next typegen`은 `next-env.d.ts` 파일을 생성합니다. `next-env.d.ts`는 `.gitignore` 파일에 추가하는 것을 권장합니다.
+
+`next-env.d.ts` 파일은 `tsconfig.json` 파일에 포함되어, 프로젝트에서 Next.js type을 사용할 수 있게 해 줍니다.
+
+type-checking 전에 `next-env.d.ts`가 존재하도록 하려면 `next typegen`을 실행하세요. `next dev`와 `next build` command도 `next-env.d.ts` 파일을 생성하지만, CI/CD 환경처럼 type-check만을 위해 이 command들을 실행하는 것은 바람직하지 않은 경우가 많습니다.
+
+&gt; **Good to know**: `next typegen`은 production build phase를 사용해 Next.js config(`next.config.js`, `next.config.mjs`, 또는 `next.config.ts`)를 load합니다. config가 올바르게 load될 수 있도록 필요한 environment variable과 dependency가 모두 준비되어 있는지 확인하세요.
+
+### `next upgrade` options || `next upgrade` 옵션
+
+`next upgrade`는 Next.js 애플리케이션을 최신 버전으로 upgrade합니다.
+
+`next upgrade` command에서 다음 option을 사용할 수 있습니다:
+
+| Option                  | 설명                                                                                                                                                                                                                                                                               |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `-h, --help`            | 사용 가능한 모든 option을 보여줍니다.                                                                                                                                                                                                                                                               |
+| `[directory]`           | upgrade할 Next.js 애플리케이션이 있는 directory입니다. 지정하지 않으면 현재 directory를 사용합니다.                                                                                                                                                                                 |
+| `--revision &lt;revision&gt;` | upgrade할 Next.js 버전 또는 tag를 지정합니다(예: `latest`, `canary`, `15.0.0`). 기본값은 현재 설치된 release channel입니다.                                                                                                                                        |
+| `--verbose`             | upgrade 과정에서 자세한(verbose) output을 보여줍니다.                                                                                                                                                                                                                                           |
+| `--agent [type]`        | `security`, `latest`, 또는 `experimental-future`를 사용해 [coding agent로 upgrade](/docs/app/guides/upgrading/agent-upgrade)합니다. 기본값은 [`experimental.agentUpgrade`](/docs/app/api-reference/config/next-config-js/agentUpgrade), 또는 `security`입니다. `--revision`과 함께 사용할 수 없습니다. |
+
+### `next analyze` options || `next analyze` 옵션
+
+`next analyze`는 [Turbopack](/docs/app/api-reference/turbopack)을 사용해 애플리케이션의 bundle output을 분석합니다. 이 command는 JavaScript, CSS 및 기타 asset을 포함해 bundle의 크기와 구성을 이해하는 데 도움이 됩니다. 이 command는 애플리케이션 build를 생성하지 않습니다.
+
+[[CODE 6]]
+
+기본적으로 이 command는 분석이 끝나면 로컬 server를 시작해, 브라우저에서 bundle 구성을 살펴볼 수 있게 해 줍니다. analyzer로 다음을 할 수 있습니다:
+
+- route별로 bundle을 filter하고 client view와 server view 사이를 전환
+- module이 왜 포함되었는지 보여주는 전체 import chain 확인
+- server-to-client component 경계와 dynamic import를 가로지르는 import 추적
+
+최적화 전략은 [Package Bundling](/docs/app/guides/package-bundling#optimizing-large-bundles)을 참고하세요.
+
+server를 시작하지 않고 분석 output을 디스크에 쓰려면 `--output`을 사용하세요. snapshot과 interactive UI 파일은 `&lt;distDir&gt;/diagnostics/analyze`(보통 `.next/diagnostics/analyze`)에 작성됩니다.
+
+[[CODE 7]]
+
+`next analyze` command에서 다음 option을 사용할 수 있습니다:
+
+| Option              | 설명                                                                                                                                   |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `-h, --help`        | 사용 가능한 모든 option을 보여줍니다.                                                                                                                   |
+| `[directory]`       | 애플리케이션을 분석할 directory입니다. 지정하지 않으면 현재 directory를 사용합니다.                                         |
+| `--no-mangling`     | [mangling](https://en.wikipedia.org/wiki/Name_mangling)을 비활성화합니다. performance에 영향을 줄 수 있으므로 debugging 목적으로만 사용해야 합니다. |
+| `--profile`         | production [React profiling](https://react.dev/reference/react/Profiler)을 활성화합니다. performance에 영향을 줄 수 있습니다.                            |
+| `-o, --output`      | serve하지 않고 binary analyzer 데이터와 UI 파일을 build해 `&lt;distDir&gt;/diagnostics/analyze`에 저장합니다.                                          |
+| `--snapshot &lt;name&gt;` | 이름이 지정된 snapshot을 저장하며, 같은 이름의 이전 capture를 대체합니다.                                                                       |
+| `--port &lt;port&gt;`     | analyzer를 serve할 port 번호를 지정합니다. (기본값: 4000, env: PORT)                                                                    |
+
+### `next analyze export` options || `next analyze export` 옵션
+
+`export` subcommand는 기존 snapshot을 일련의 JSON Lines로 stream합니다. 자체적으로 분석을 실행하거나 web UI를 시작하지는 않습니다.
+
+| Option                   | 설명                                                                                 |
+| ------------------------ | ------------------------------------------------------------------------------------------- |
+| `-h, --help`             | 사용 가능한 모든 export option을 보여줍니다.                                                          |
+| `[directory]`            | 저장된 분석 결과가 있는 애플리케이션 directory입니다. 기본값은 현재 directory입니다. |
+| `--snapshot &lt;name&gt;`      | 저장된 snapshot을 이름으로 선택합니다. 기본값은 보존된 snapshot 중 가장 최신 것입니다.                  |
+| `--route &lt;route&gt;`        | export를 하나의 route로 제한합니다(전체 module graph는 여전히 포함됨).                        |
+| `--dist-dir &lt;directory&gt;` | `next.config`를 읽지 않고 명시적인 상대 또는 절대 build directory를 선택합니다.      |
+
+## Examples || 예제
+
+### Debugging prerender errors || prerender error 디버깅
+
+`next build` 중에 prerendering error가 발생하면 `--debug-prerender` flag를 전달해 더 자세한 output을 얻을 수 있습니다:
+
+[[CODE 8]]
+
+이 flag는 debugging을 쉽게 하기 위해 여러 experimental option을 활성화합니다:
+
+- server 코드 minification을 비활성화합니다:
+  - `experimental.serverMinification = false`
+  - `experimental.turbopackMinify = false`
+- server bundle에 대한 source map을 생성합니다:
+  - `experimental.serverSourceMaps = true`
+- 첫 번째 prerender error가 발생한 뒤에도 build를 계속 진행해, 모든 문제를 한 번에 볼 수 있게 합니다:
+  - `experimental.prerenderEarlyExit = false`
+
+이렇게 하면 build output에서 더 읽기 쉬운 stack trace와 code frame을 확인할 수 있습니다.
+
+&gt; **Warning**: `--debug-prerender`는 development에서 debugging할 때만 사용하세요. `--debug-prerender`로 생성한 build는 performance에 영향을 줄 수 있으므로 production에 deploy하지 마세요.
+
+### Building specific routes || 특정 route만 build하기
+
+`--debug-build-paths` option을 사용하면 App Router와 Pages Router에서 특정 route만 build할 수 있습니다. 대규모 애플리케이션에서 작업할 때 더 빠르게 debugging하는 데 유용합니다. `--debug-build-paths` option은 쉼표로 구분된 파일 경로를 받으며, glob pattern을 지원하고, `!`로 시작하는 경로는 제외합니다:
+
+[[CODE 9]]
+
+더 자세한 prerender 진단을 위해 `--debug-build-paths`를 `--debug-prerender`와 함께 사용할 수 있습니다.
+
+route를 `src/` 아래에 두는 프로젝트에서는 `src/` prefix가 있든 없든 경로가 resolve되므로, `app/page.tsx`와 `src/app/page.tsx`는 모두 같은 route와 일치합니다.
+
+일치하는 route만 route table에 나타납니다. App Router route를 선택하면 Next.js는 내장 `/_not-found` route도 함께 포함합니다.
+
+### Changing the default port || 기본 port 변경하기
+
+기본적으로 Next.js는 development 중과 `next start`에서 `http://localhost:3000`을 사용합니다. 기본 port는 다음과 같이 `-p` option으로 변경할 수 있습니다:
+
+[[CODE 10]]
+
+또는 `PORT` environment variable을 사용할 수 있습니다:
+
+[[CODE 11]]
+
+&gt; **Good to know**: HTTP server 부팅은 다른 어떤 코드보다 먼저 초기화되므로 `PORT`는 `.env`에서 설정할 수 없습니다.
+
+### Using HTTPS during development || development 중에 HTTPS 사용하기
+
+webhook이나 authentication 같은 특정 use case에서는 [HTTPS](https://developer.mozilla.org/en-US/docs/Glossary/HTTPS)를 사용해 `localhost`에서 안전한 환경을 만들 수 있습니다. Next.js는 `--experimental-https` flag를 사용해 `next dev`로 self-signed certificate를 생성할 수 있습니다:
+
+[[CODE 12]]
+
+생성된 certificate를 사용하면 Next.js development server는 `https://localhost:3000`에서 실행됩니다. `-p`, `--port`, 또는 `PORT`로 port를 지정하지 않으면 기본 port `3000`이 사용됩니다.
+
+`--experimental-https-key`와 `--experimental-https-cert`로 custom certificate와 key를 제공할 수도 있습니다. 선택적으로 `--experimental-https-ca`로 custom CA certificate도 제공할 수 있습니다.
+
+[[CODE 13]]
+
+`next dev --experimental-https`는 development 용도로만 만들어졌으며, [`mkcert`](https://github.com/FiloSottile/mkcert)로 로컬에서 신뢰되는 certificate를 생성합니다. production에서는 신뢰할 수 있는 기관에서 정식으로 발급한 certificate를 사용하세요.
+
+### Configuring a timeout for downstream proxies || downstream proxy를 위한 timeout 설정하기
+
+downstream proxy(예: AWS ELB/ALB 같은 load-balancer) 뒤에 Next.js를 deploy할 때는, Next의 내부 HTTP server에 downstream proxy의 timeout보다 _더 큰_ [keep-alive timeout](https://nodejs.org/api/http.html#http_server_keepalivetimeout)을 설정하는 것이 중요합니다. 그렇지 않으면 특정 TCP connection에서 keep-alive timeout에 도달했을 때 Node.js가 downstream proxy에 알리지 않고 즉시 그 connection을 종료합니다. 그 결과 proxy가 Node.js에서 이미 종료한 connection을 재사용하려고 할 때마다 proxy error가 발생합니다.
+
+production Next.js server의 timeout 값을 설정하려면 다음과 같이 `next start`에 `--keepAliveTimeout`(millisecond 단위)을 전달하세요:
+
+[[CODE 14]]
+
+### Passing Node.js arguments || Node.js argument 전달하기
+
+`next` command에는 어떤 [node argument](https://nodejs.org/api/cli.html#cli_node_options_options)든 전달할 수 있습니다. 예를 들면 다음과 같습니다:
+
+[[CODE 15]]
+
+### CPU profiling
+
+CPU profile을 capture해 Next.js 애플리케이션의 performance bottleneck을 분석할 수 있습니다. `--experimental-cpu-prof` flag는 V8에 내장된 CPU profiler를 활성화하고, process가 종료될 때 profile을 `.next-profiles/`에 저장합니다:
+
+[[CODE 16]]
+
+생성된 `.cpuprofile` 파일은 Chrome DevTools(Performance tab → Load profile)나 다른 V8 호환 profiling 도구에서 열 수 있습니다.
+
+&gt; **Good to know**: profile 파일 이름에는 설명적인 prefix와 timestamp가 붙습니다. 생성되는 profile은 command에 따라 다릅니다:
+&gt;
+&gt; **`next dev`:**
+&gt;
+&gt; - `dev-main-*` - 부모 process (dev server orchestration)
+&gt; - `dev-server-*` - 자식 server process (request 처리와 rendering) - 보통 분석하고 싶은 것은 이것입니다
+&gt;
+&gt; **`next build` (Turbopack):**
+&gt;
+&gt; - `build-main-*` - 메인 build orchestration process
+&gt; - `build-turbopack-*` - Turbopack compilation worker
+&gt;
+&gt; **`next build` (Webpack):**
+&gt;
+&gt; - `build-main-*` - 메인 build orchestration process
+&gt; - `build-webpack-client-*` - Client bundle compilation worker
+&gt; - `build-webpack-server-*` - Server bundle compilation worker
+&gt; - `build-webpack-edge-server-*` - Edge runtime compilation worker
+&gt;
+&gt; **`next start`:**
+&gt;
+&gt; - `start-main-*` - Production server process
+
+| Version   | Changes                                                                         |
+| --------- | ------------------------------------------------------------------------------- |
+| `v16.4.0` | `next analyze export` command 추가.                                          |
+| `v16.1.0` | `next upgrade` command 추가                                                  |
+| `v16.1.0` | `next experimental-analyze` command 추가                                     |
+| `v16.0.0` | `next build`에서 JS bundle size 지표 제거                  |
+| `v15.5.0` | `next typegen` command 추가                                                  |
+| `v15.4.0` | prerender error debugging을 돕는 `next build`의 `--debug-prerender` option 추가. |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

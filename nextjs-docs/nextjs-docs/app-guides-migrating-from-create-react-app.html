@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to migrate from Create React App to Next.js (Create React App에서 Next.js로 migrate하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/migrating/from-create-react-app" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/migrating/from-create-react-app" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/migrating/from-create-react-app.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides-migrating.html">Migrating</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to migrate from Create React App to Next.js<span class="sub">Create React App에서 Next.js로 migrate하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>이 가이드는 기존 Create React App(CRA) 사이트를 Next.js로 migrate하는 과정을 안내합니다.</p><div class="en-orig"><p>This guide will help you migrate an existing Create React App (CRA) site to Next.js.</p></div>
+<h2 class="sec" id="why-switch"><a class="anchor" href="#why-switch">Why Switch?<span class="ko">왜 전환해야 할까?</span></a></h2>
+<p>Create React App에서 Next.js로 전환하고 싶은 이유는 여러 가지가 있습니다:</p><div class="en-orig"><p>There are several reasons why you might want to switch from Create React App to Next.js:</p></div>
+<h3 class="sec" id="slow-initial-page-loading-time"><a class="anchor" href="#slow-initial-page-loading-time">Slow initial page loading time<span class="ko">느린 초기 page loading 시간</span></a></h3>
+<p>Create React App은 순수하게 client-side rendering만 사용합니다. <a href="app-guides-single-page-applications.html">single-page application(SPA)</a>이라고도 불리는 client-side 전용 애플리케이션은 초기 page loading 시간이 느린 경우가 많습니다. 그 이유는 다음과 같습니다:</p><div class="en-orig"><p>Create React App uses purely client-side rendering. Client-side only applications, also known as <a href="app-guides-single-page-applications.html">single-page applications (SPAs)</a>, often experience slow initial page loading time. This happens due to a couple of reasons:</p></div>
+<ol>
+<li>코드가 data를 불러오는 request를 보내기 전에, 브라우저는 React 코드와 애플리케이션 bundle 전체가 다운로드되고 실행될 때까지 기다려야 합니다.</li>
+<li>새 기능과 dependency를 추가할 때마다 애플리케이션 코드가 커집니다.</li>
+</ol><div class="en-orig"><ol>
+<li>The browser needs to wait for the React code and your entire application bundle to download and run before your code is able to send requests to load data.</li>
+<li>Your application code grows with every new feature and dependency you add.</li>
+</ol></div>
+<h3 class="sec" id="no-automatic-code-splitting"><a class="anchor" href="#no-automatic-code-splitting">No automatic code splitting<span class="ko">자동 code splitting 없음</span></a></h3>
+<p>앞에서 말한 느린 loading 시간 문제는 code splitting으로 어느 정도 완화할 수 있습니다. 하지만 code splitting을 직접 하려고 하면 의도치 않게 network waterfall이 생길 수 있습니다. Next.js는 router와 build pipeline에 자동 code splitting과 tree-shaking이 내장되어 있습니다.</p><div class="en-orig"><p>The previous issue of slow loading times can be somewhat mitigated with code splitting. However, if you try to do code splitting manually, you can inadvertently introduce network waterfalls. Next.js provides automatic code splitting and tree-shaking built into its router and build pipeline.</p></div>
+<h3 class="sec" id="network-waterfalls"><a class="anchor" href="#network-waterfalls">Network waterfalls<span class="ko">Network waterfall</span></a></h3>
+<p>performance가 나빠지는 흔한 원인은 애플리케이션이 data를 fetch하기 위해 client-server request를 순차적으로 보내는 경우입니다. <a href="app-guides-single-page-applications.html">SPA</a>에서 data를 fetch하는 한 가지 pattern은 placeholder를 render한 뒤 component가 mount된 다음에 data를 fetch하는 것입니다. 안타깝게도 child component는 parent가 자신의 data를 다 불러온 뒤에야 data fetching을 시작할 수 있어서, request의 "waterfall"이 생깁니다.</p><div class="en-orig"><p>A common cause of poor performance occurs when applications make sequential client-server requests to fetch data. One pattern for data fetching in a <a href="app-guides-single-page-applications.html">SPA</a> is to render a placeholder, and then fetch data after the component has mounted. Unfortunately, a child component can only begin fetching data after its parent has finished loading its own data, resulting in a “waterfall” of requests.</p></div>
+<p>Next.js에서도 client-side data fetching을 지원하지만, Next.js에서는 data fetching을 server로 옮길 수도 있습니다. 이렇게 하면 client-server waterfall이 아예 사라지는 경우가 많습니다.</p><div class="en-orig"><p>While client-side data fetching is supported in Next.js, Next.js also lets you move data fetching to the server. This often eliminates client-server waterfalls altogether.</p></div>
+<h3 class="sec" id="fast-and-intentional-loading-states"><a class="anchor" href="#fast-and-intentional-loading-states">Fast and intentional loading states<span class="ko">빠르고 의도된 loading state</span></a></h3>
+<p><a href="app-getting-started-linking-and-navigating.html#streaming">React Suspense를 통한 streaming</a>이 기본 지원되므로, network waterfall을 만들지 않고도 UI의 어떤 부분을 먼저, 어떤 순서로 load할지 정의할 수 있습니다.</p><div class="en-orig"><p>With built-in support for <a href="app-getting-started-linking-and-navigating.html#streaming">streaming through React Suspense</a>, you can define which parts of your UI load first and in what order, without creating network waterfalls.</p></div>
+<p>이를 통해 더 빠르게 load되는 page를 만들고 <a href="https://vercel.com/blog/how-core-web-vitals-affect-seo" target="_blank" rel="noopener">layout shift</a>를 없앨 수 있습니다.</p><div class="en-orig"><p>This enables you to build pages that are faster to load and eliminate <a href="https://vercel.com/blog/how-core-web-vitals-affect-seo" target="_blank" rel="noopener">layout shifts</a>.</p></div>
+<h3 class="sec" id="choose-the-data-fetching-strategy"><a class="anchor" href="#choose-the-data-fetching-strategy">Choose the data fetching strategy<span class="ko">data fetching strategy 선택</span></a></h3>
+<p>Next.js에서는 필요에 따라 page나 component 단위로 data fetching strategy를 선택할 수 있습니다. 예를 들어 빠른 load 속도를 위해 build 시점에 CMS에서 data를 fetch해 블로그 글을 render(SSG)하거나, 필요할 때는 request 시점에 data를 fetch(SSR)할 수 있습니다.</p><div class="en-orig"><p>Depending on your needs, Next.js allows you to choose your data fetching strategy on a page or component-level basis. For example, you could fetch data from your CMS and render blog posts at build time (SSG) for quick load speeds, or fetch data at request time (SSR) when necessary.</p></div>
+<h3 class="sec" id="proxy"><a class="anchor" href="#proxy">Proxy</a></h3>
+<p><a href="app-api-reference-file-conventions-proxy.html">Next.js Proxy</a>를 사용하면 request가 완료되기 전에 server에서 코드를 실행할 수 있습니다. 예를 들어 인증된 사용자 전용 page에서는 proxy에서 사용자를 login page로 redirect해, 인증되지 않은 콘텐츠가 잠깐 보이는 현상을 막을 수 있습니다. A/B testing, 실험(experimentation), <a href="app-guides-internationalization.html">internationalization</a> 같은 기능에도 사용할 수 있습니다.</p><div class="en-orig"><p><a href="app-api-reference-file-conventions-proxy.html">Next.js Proxy</a> allows you to run code on the server before a request is completed. For instance, you can avoid a flash of unauthenticated content by redirecting a user to a login page in the proxy for authenticated-only pages. You can also use it for features like A/B testing, experimentation, and <a href="app-guides-internationalization.html">internationalization</a>.</p></div>
+<h3 class="sec" id="built-in-optimizations"><a class="anchor" href="#built-in-optimizations">Built-in Optimizations<span class="ko">내장 최적화</span></a></h3>
+<p><a href="app-api-reference-components-image.html">Image</a>, <a href="app-api-reference-components-font.html">font</a>, <a href="app-guides-scripts.html">third-party script</a>는 애플리케이션 performance에 큰 영향을 주는 경우가 많습니다. Next.js에는 이를 자동으로 최적화해 주는 전용 component와 API가 포함되어 있습니다.</p><div class="en-orig"><p><a href="app-api-reference-components-image.html">Images</a>, <a href="app-api-reference-components-font.html">fonts</a>, and <a href="app-guides-scripts.html">third-party scripts</a> often have a large impact on an application’s performance. Next.js includes specialized components and APIs that automatically optimize them for you.</p></div>
+<h2 class="sec" id="migration-steps"><a class="anchor" href="#migration-steps">Migration Steps<span class="ko">Migration 단계</span></a></h2>
+<p>목표는 동작하는 Next.js 애플리케이션을 최대한 빨리 만들어서, 그다음 Next.js 기능을 점진적으로 도입할 수 있게 하는 것입니다. 우선은 기존 router를 바로 교체하지 않고 애플리케이션을 순수한 client-side 애플리케이션(<a href="app-guides-single-page-applications.html">SPA</a>)으로 취급합니다. 이렇게 하면 복잡도와 merge conflict가 줄어듭니다.</p><div class="en-orig"><p>Our goal is to get a working Next.js application as quickly as possible so that you can then adopt Next.js features incrementally. To begin with, we’ll treat your application as a purely client-side application (<a href="app-guides-single-page-applications.html">SPA</a>) without immediately replacing your existing router. This reduces complexity and merge conflicts.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p><code>package.json</code>의 custom <code>homepage</code> field, custom service worker, 특정 Babel/webpack 조정 같은 고급 CRA configuration을 사용하고 있다면, 이 가이드 끝의 <strong>Additional Considerations</strong> 섹션에서 이런 기능을 Next.js에서 재현하거나 조정하는 팁을 참고하세요.</p><div class="en-orig"><p>If you are using advanced CRA configurations such as a custom <code>homepage</code> field in your <code>package.json</code>, a custom service worker, or specific Babel/webpack tweaks, please see the <strong>Additional Considerations</strong> section at the end of this guide for tips on replicating or adapting these features in Next.js.</p></div></div></div>
+<h3 class="sec" id="step-1-install-the-nextjs-dependency"><a class="anchor" href="#step-1-install-the-nextjs-dependency">Step 1: Install the Next.js Dependency<span class="ko">1단계: Next.js dependency 설치하기</span></a></h3>
+<p>기존 프로젝트에 Next.js를 설치하세요:</p><div class="en-orig"><p>Install Next.js in your existing project:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm add next@latest</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm install next@latest</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn add next@latest</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun add next@latest</code></pre></div></div>
+<h3 class="sec" id="step-2-create-the-nextjs-configuration-file"><a class="anchor" href="#step-2-create-the-nextjs-configuration-file">Step 2: Create the Next.js Configuration File<span class="ko">2단계: Next.js configuration 파일 만들기</span></a></h3>
+<p>프로젝트 root(<code>package.json</code>과 같은 위치)에 <code>next.config.ts</code>를 만드세요. 이 파일에는 <a href="app-api-reference-config-next-config-js.html">Next.js configuration option</a>이 들어갑니다.</p><div class="en-orig"><p>Create a <code>next.config.ts</code> at the root of your project (same level as your <code>package.json</code>). This file holds your <a href="app-api-reference-config-next-config-js.html">Next.js configuration options</a>.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  output: &#x27;export&#x27;, // Outputs a Single-Page Application (SPA)
+  distDir: &#x27;build&#x27;, // Changes the build output directory to `build`
+}
+
+export default nextConfig</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p><code>output: &#x27;export&#x27;</code>를 사용하면 static export를 하게 됩니다. SSR이나 API 같은 server-side 기능은 사용할 수 <strong>없습니다</strong>. Next.js server 기능을 활용하려면 이 줄을 제거하면 됩니다.</p><div class="en-orig"><p>Using <code>output: &#x27;export&#x27;</code> means you’re doing a static export. You will <strong>not</strong> have access to server-side features like SSR or APIs. You can remove this line to leverage Next.js server features.</p></div></div></div>
+<h3 class="sec" id="step-3-create-the-root-layout"><a class="anchor" href="#step-3-create-the-root-layout">Step 3: Create the Root Layout<span class="ko">3단계: Root Layout 만들기</span></a></h3>
+<p>Next.js <a href="app.html">App Router</a> 애플리케이션에는 <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a> 파일이 반드시 있어야 합니다. 이 파일은 모든 page를 감싸는 <a href="app-getting-started-server-and-client-components.html">React Server Component</a>입니다.</p><div class="en-orig"><p>A Next.js <a href="app.html">App Router</a> application must include a <a href="app-api-reference-file-conventions-layout.html#root-layout">root layout</a> file, which is a <a href="app-getting-started-server-and-client-components.html">React Server Component</a> that will wrap all your pages.</p></div>
+<p>CRA 애플리케이션에서 root layout 파일에 가장 가까운 것은 <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, <code>&lt;body&gt;</code> tag가 들어 있는 <code>public/index.html</code>입니다.</p><div class="en-orig"><p>The closest equivalent of the root layout file in a CRA application is <code>public/index.html</code>, which includes your <code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, and <code>&lt;body&gt;</code> tags.</p></div>
+<ol>
+<li><code>src</code> 폴더 안에(또는 <code>app</code>을 root에 두고 싶다면 프로젝트 root에) 새 <code>app</code> directory를 만드세요.</li>
+<li><code>app</code> directory 안에 <code>layout.tsx</code>(또는 <code>layout.js</code>) 파일을 만드세요:</li>
+</ol><div class="en-orig"><ol>
+<li>Create a new <code>app</code> directory inside your <code>src</code> folder (or at your project root if you prefer <code>app</code> at the root).</li>
+<li>Inside the <code>app</code> directory, create a <code>layout.tsx</code> (or <code>layout.js</code>) file:</li>
+</ol></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return &#x27;...&#x27;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function RootLayout({ children }) {
+  return &#x27;...&#x27;
+}</code></pre></div></div>
+<p>이제 기존 <code>index.html</code>의 내용을 이 <code>&lt;RootLayout&gt;</code> component에 복사하세요. <code>body div#root</code>(와 <code>body noscript</code>)를 <code>&lt;div id=&quot;root&quot;&gt;{children}&lt;/div&gt;</code>로 바꾸세요.</p><div class="en-orig"><p>Now copy the content of your old <code>index.html</code> into this <code>&lt;RootLayout&gt;</code> component. Replace <code>body div#root</code> (and <code>body noscript</code>) with <code>&lt;div id=&quot;root&quot;&gt;{children}&lt;/div&gt;</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;head&gt;
+        &lt;meta charSet=&quot;UTF-8&quot; /&gt;
+        &lt;link rel=&quot;icon&quot; href=&quot;%PUBLIC_URL%/favicon.ico&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;title&gt;React App&lt;/title&gt;
+        &lt;meta name=&quot;description&quot; content=&quot;Web site created...&quot; /&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;div id=&quot;root&quot;&gt;{children}&lt;/div&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function RootLayout({ children }) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;head&gt;
+        &lt;meta charset=&quot;UTF-8&quot; /&gt;
+        &lt;link rel=&quot;icon&quot; href=&quot;%PUBLIC_URL%/favicon.ico&quot; /&gt;
+        &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;
+        &lt;title&gt;React App&lt;/title&gt;
+        &lt;meta name=&quot;description&quot; content=&quot;Web site created...&quot; /&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;div id=&quot;root&quot;&gt;{children}&lt;/div&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Next.js는 기본적으로 CRA의 <code>public/manifest.json</code>, 추가 icon 이미지, <a href="app-guides-testing.html">testing configuration</a>을 무시합니다. 이것들이 필요하다면 Next.js의 <a href="app-getting-started-metadata-and-og-images.html">Metadata API</a>와 <a href="app-guides-testing.html">Testing</a> setup으로 지원받을 수 있습니다.</p><div class="en-orig"><p>Next.js ignores CRA’s <code>public/manifest.json</code>, additional iconography, and <a href="app-guides-testing.html">testing configuration</a> by default. If you need these, Next.js has support with its <a href="app-getting-started-metadata-and-og-images.html">Metadata API</a> and <a href="app-guides-testing.html">Testing</a> setup.</p></div></div></div>
+<h3 class="sec" id="step-4-metadata"><a class="anchor" href="#step-4-metadata">Step 4: Metadata<span class="ko">4단계: Metadata</span></a></h3>
+<p>Next.js는 <code>&lt;meta charset=&quot;UTF-8&quot; /&gt;</code>와 <code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;</code> tag를 자동으로 포함하므로, <code>&lt;head&gt;</code>에서 이 tag들을 제거해도 됩니다:</p><div class="en-orig"><p>Next.js automatically includes the <code>&lt;meta charset=&quot;UTF-8&quot; /&gt;</code> and <code>&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;</code> tags, so you can remove them from <code>&lt;head&gt;</code>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;head&gt;
+        &lt;link rel=&quot;icon&quot; href=&quot;%PUBLIC_URL%/favicon.ico&quot; /&gt;
+        &lt;title&gt;React App&lt;/title&gt;
+        &lt;meta name=&quot;description&quot; content=&quot;Web site created...&quot; /&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;div id=&quot;root&quot;&gt;{children}&lt;/div&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function RootLayout({ children }) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;head&gt;
+        &lt;link rel=&quot;icon&quot; href=&quot;%PUBLIC_URL%/favicon.ico&quot; /&gt;
+        &lt;title&gt;React App&lt;/title&gt;
+        &lt;meta name=&quot;description&quot; content=&quot;Web site created...&quot; /&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;div id=&quot;root&quot;&gt;{children}&lt;/div&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<p><code>favicon.ico</code>, <code>icon.png</code>, <code>robots.txt</code> 같은 <a href="app-getting-started-metadata-and-og-images.html#file-based-metadata">metadata file</a>은 <code>app</code> directory의 최상위에 두기만 하면 애플리케이션의 <code>&lt;head&gt;</code> tag에 자동으로 추가됩니다. <a href="app-getting-started-metadata-and-og-images.html#file-based-metadata">지원되는 모든 파일</a>을 <code>app</code> directory로 옮긴 뒤에는 해당 <code>&lt;link&gt;</code> tag를 안전하게 삭제할 수 있습니다:</p><div class="en-orig"><p>Any <a href="app-getting-started-metadata-and-og-images.html#file-based-metadata">metadata files</a> such as <code>favicon.ico</code>, <code>icon.png</code>, <code>robots.txt</code> are automatically added to the application <code>&lt;head&gt;</code> tag as long as you have them placed into the top level of the <code>app</code> directory. After moving <a href="app-getting-started-metadata-and-og-images.html#file-based-metadata">all supported files</a> into the <code>app</code> directory you can safely delete their <code>&lt;link&gt;</code> tags:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;head&gt;
+        &lt;title&gt;React App&lt;/title&gt;
+        &lt;meta name=&quot;description&quot; content=&quot;Web site created...&quot; /&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;div id=&quot;root&quot;&gt;{children}&lt;/div&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default function RootLayout({ children }) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;head&gt;
+        &lt;title&gt;React App&lt;/title&gt;
+        &lt;meta name=&quot;description&quot; content=&quot;Web site created...&quot; /&gt;
+      &lt;/head&gt;
+      &lt;body&gt;
+        &lt;div id=&quot;root&quot;&gt;{children}&lt;/div&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<p>마지막으로 Next.js는 <a href="app-getting-started-metadata-and-og-images.html">Metadata API</a>로 남은 <code>&lt;head&gt;</code> tag를 관리할 수 있습니다. 남은 metadata 정보를 export된 <a href="app-api-reference-functions-generate-metadata.html#metadata-object"><code>metadata</code> object</a>로 옮기세요:</p><div class="en-orig"><p>Finally, Next.js can manage your last <code>&lt;head&gt;</code> tags with the <a href="app-getting-started-metadata-and-og-images.html">Metadata API</a>. Move your final metadata info into an exported <a href="app-api-reference-functions-generate-metadata.html#metadata-object"><code>metadata</code> object</a>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/layout.tsx" data-js="app/layout.js">app/layout.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { Metadata } from &#x27;next&#x27;
+
+export const metadata: Metadata = {
+  title: &#x27;React App&#x27;,
+  description: &#x27;Web site created with Next.js.&#x27;,
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;body&gt;
+        &lt;div id=&quot;root&quot;&gt;{children}&lt;/div&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export const metadata = {
+  title: &#x27;React App&#x27;,
+  description: &#x27;Web site created with Next.js.&#x27;,
+}
+
+export default function RootLayout({ children }) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;body&gt;
+        &lt;div id=&quot;root&quot;&gt;{children}&lt;/div&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<p>위와 같이 변경하면 <code>index.html</code>에 모든 것을 선언하던 방식에서 framework에 내장된 Next.js의 convention 기반 접근 방식(<a href="app-getting-started-metadata-and-og-images.html">Metadata API</a>)으로 바뀝니다. 이 접근 방식을 사용하면 page의 SEO와 웹 공유성(shareability)을 더 쉽게 개선할 수 있습니다.</p><div class="en-orig"><p>With the above changes, you shifted from declaring everything in your <code>index.html</code> to using Next.js' convention-based approach built into the framework (<a href="app-getting-started-metadata-and-og-images.html">Metadata API</a>). This approach enables you to more easily improve your SEO and web shareability of your pages.</p></div>
+<h3 class="sec" id="step-5-styles"><a class="anchor" href="#step-5-styles">Step 5: Styles<span class="ko">5단계: Style</span></a></h3>
+<p>CRA와 마찬가지로 Next.js도 별도 설정 없이 <a href="app-getting-started-css.html#css-modules">CSS Modules</a>를 지원합니다. <a href="app-getting-started-css.html#global-css">global CSS import</a>도 지원합니다.</p><div class="en-orig"><p>Like CRA, Next.js supports <a href="app-getting-started-css.html#css-modules">CSS Modules</a> out of the box. It also supports <a href="app-getting-started-css.html#global-css">global CSS imports</a>.</p></div>
+<p>global CSS 파일이 있다면 <code>app/layout.tsx</code>에서 import하세요:</p><div class="en-orig"><p>If you have a global CSS file, import it into your <code>app/layout.tsx</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import &#x27;../index.css&#x27;
+
+export const metadata = {
+  title: &#x27;React App&#x27;,
+  description: &#x27;Web site created with Next.js.&#x27;,
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    &lt;html lang=&quot;en&quot;&gt;
+      &lt;body&gt;
+        &lt;div id=&quot;root&quot;&gt;{children}&lt;/div&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}</code></pre></div></div>
+<p>Tailwind CSS를 사용한다면 <a href="app-getting-started-css.html#tailwind-css">설치 문서</a>를 참고하세요.</p><div class="en-orig"><p>If you're using Tailwind CSS, see our <a href="app-getting-started-css.html#tailwind-css">installation docs</a>.</p></div>
+<h3 class="sec" id="step-6-create-the-entrypoint-page"><a class="anchor" href="#step-6-create-the-entrypoint-page">Step 6: Create the Entrypoint Page<span class="ko">6단계: Entrypoint Page 만들기</span></a></h3>
+<p>Create React App은 <code>src/index.tsx</code>(또는 <code>index.js</code>)를 entry point로 사용합니다. Next.js(App Router)에서는 <code>app</code> directory 안의 각 폴더가 하나의 route에 대응하며, 각 폴더에는 <code>page.tsx</code>가 있어야 합니다.</p><div class="en-orig"><p>Create React App uses <code>src/index.tsx</code> (or <code>index.js</code>) as the entry point. In Next.js (App Router), each folder inside the <code>app</code> directory corresponds to a route, and each folder should have a <code>page.tsx</code>.</p></div>
+<p>지금은 앱을 SPA로 유지하면서 <strong>모든</strong> route를 가로채고 싶으므로 <a href="app-api-reference-file-conventions-dynamic-routes.html#optional-catch-all-segments">optional catch-all route</a>를 사용합니다.</p><div class="en-orig"><p>Since we want to keep the app as an SPA for now and intercept <strong>all</strong> routes, we’ll use an <a href="app-api-reference-file-conventions-dynamic-routes.html#optional-catch-all-segments">optional catch-all route</a>.</p></div>
+<ol>
+<li><strong><code>app</code> 안에 <code>[[...slug]]</code> directory를 만드세요.</strong></li>
+</ol><div class="en-orig"><ol>
+<li><strong>Create a <code>[[...slug]]</code> directory inside <code>app</code>.</strong></li>
+</ol></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-bash">app
+ ┣ [[...slug]]
+ ┃ ┗ page.tsx
+ ┣ layout.tsx</code></pre></div></div>
+<ol start="2">
+<li><strong><code>page.tsx</code>에 다음 내용을 추가하세요</strong>:</li>
+</ol><div class="en-orig"><ol start="2">
+<li><strong>Add the following to <code>page.tsx</code></strong>:</li>
+</ol></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[[...slug]]/page.tsx" data-js="app/[[...slug]]/page.js">app/[[...slug]]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export function generateStaticParams() {
+  return [{ slug: [&#x27;&#x27;] }]
+}
+
+export default function Page() {
+  return &#x27;...&#x27; // We&#x27;ll update this
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export function generateStaticParams() {
+  return [{ slug: [&#x27;&#x27;] }]
+}
+
+export default function Page() {
+  return &#x27;...&#x27; // We&#x27;ll update this
+}</code></pre></div></div>
+<p>이렇게 하면 Next.js가 빈 slug(<code>/</code>)에 대해 하나의 route만 생성하므로, 사실상 <strong>모든</strong> route가 같은 page로 mapping됩니다. 이 page는 static HTML로 prerender되는 <a href="app-getting-started-server-and-client-components.html">Server Component</a>입니다.</p><div class="en-orig"><p>This tells Next.js to generate a single route for the empty slug (<code>/</code>), effectively mapping <strong>all</strong> routes to the same page. This page is a <a href="app-getting-started-server-and-client-components.html">Server Component</a>, prerendered into static HTML.</p></div>
+<h3 class="sec" id="step-7-add-a-client-only-entrypoint"><a class="anchor" href="#step-7-add-a-client-only-entrypoint">Step 7: Add a Client-Only Entrypoint<span class="ko">7단계: Client 전용 Entrypoint 추가하기</span></a></h3>
+<p>다음으로 CRA의 root App component를 <a href="app-getting-started-server-and-client-components.html">Client Component</a> 안에 넣어 모든 로직이 client-side에 남도록 합니다. Next.js를 처음 사용한다면, Client Component도 (기본적으로) server에서 prerender된다는 점을 알아 두면 좋습니다. Client Component는 client-side JavaScript를 실행하는 능력이 추가된 component라고 생각하면 됩니다.</p><div class="en-orig"><p>Next, we’ll embed your CRA’s root App component inside a <a href="app-getting-started-server-and-client-components.html">Client Component</a> so that all logic remains client-side. If this is your first time using Next.js, it's worth knowing that Client Components (by default) are still prerendered on the server. You can think about them as having the additional capability of running client-side JavaScript.</p></div>
+<p><code>app/[[...slug]]/</code>에 <code>client.tsx</code>(또는 <code>client.js</code>)를 만드세요:</p><div class="en-orig"><p>Create a <code>client.tsx</code> (or <code>client.js</code>) in <code>app/[[...slug]]/</code>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[[...slug]]/client.tsx" data-js="app/[[...slug]]/client.js">app/[[...slug]]/client.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">&#x27;use client&#x27;
+
+import dynamic from &#x27;next/dynamic&#x27;
+
+const App = dynamic(() =&gt; import(&#x27;../../App&#x27;), { ssr: false })
+
+export function ClientOnly() {
+  return &lt;App /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">&#x27;use client&#x27;
+
+import dynamic from &#x27;next/dynamic&#x27;
+
+const App = dynamic(() =&gt; import(&#x27;../../App&#x27;), { ssr: false })
+
+export function ClientOnly() {
+  return &lt;App /&gt;
+}</code></pre></div></div>
+<ul>
+<li><code>&#x27;use client&#x27;</code> directive가 있으면 이 파일은 <strong>Client Component</strong> 파일이 됩니다.</li>
+<li><code>ssr: false</code>를 지정한 <code>dynamic</code> import는 <code>&lt;App /&gt;</code> component의 server-side rendering을 비활성화해, 완전한 client 전용(SPA)으로 만듭니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The <code>&#x27;use client&#x27;</code> directive makes this file a <strong>Client Component</strong>.</li>
+<li>The <code>dynamic</code> import with <code>ssr: false</code> disables server-side rendering for the <code>&lt;App /&gt;</code> component, making it truly client-only (SPA).</li>
+</ul></div>
+<p>이제 새 component를 사용하도록 <code>page.tsx</code>(또는 <code>page.js</code>)를 업데이트하세요:</p><div class="en-orig"><p>Now update your <code>page.tsx</code> (or <code>page.js</code>) to use your new component:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/[[...slug]]/page.tsx" data-js="app/[[...slug]]/page.js">app/[[...slug]]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { ClientOnly } from &#x27;./client&#x27;
+
+export function generateStaticParams() {
+  return [{ slug: [&#x27;&#x27;] }]
+}
+
+export default function Page() {
+  return &lt;ClientOnly /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { ClientOnly } from &#x27;./client&#x27;
+
+export function generateStaticParams() {
+  return [{ slug: [&#x27;&#x27;] }]
+}
+
+export default function Page() {
+  return &lt;ClientOnly /&gt;
+}</code></pre></div></div>
+<h3 class="sec" id="step-8-update-static-image-imports"><a class="anchor" href="#step-8-update-static-image-imports">Step 8: Update Static Image Imports<span class="ko">8단계: Static Image Import 업데이트하기</span></a></h3>
+<p>CRA에서는 image 파일을 import하면 그 public URL이 string으로 반환됩니다:</p><div class="en-orig"><p>In CRA, importing an image file returns its public URL as a string:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">import image from &#x27;./img.png&#x27;
+
+export default function App() {
+  return &lt;img src={image} /&gt;
+}</code></pre></div></div>
+<p>Next.js에서는 static image import가 object를 반환합니다. 이 object는 Next.js <a href="app-api-reference-components-image.html"><code>&lt;Image&gt;</code> component</a>에 바로 사용할 수도 있고, object의 <code>src</code> property를 기존 <code>&lt;img&gt;</code> tag에 사용할 수도 있습니다.</p><div class="en-orig"><p>With Next.js, static image imports return an object. The object can then be used directly with the Next.js <a href="app-api-reference-components-image.html"><code>&lt;Image&gt;</code> component</a>, or you can use the object's <code>src</code> property with your existing <code>&lt;img&gt;</code> tag.</p></div>
+<p><code>&lt;Image&gt;</code> component에는 <a href="app-api-reference-components-image.html">자동 image 최적화</a>라는 추가 장점이 있습니다. <code>&lt;Image&gt;</code> component는 image의 크기를 바탕으로 결과 <code>&lt;img&gt;</code>의 <code>width</code>와 <code>height</code> attribute를 자동으로 설정합니다. 이렇게 하면 image가 load될 때 layout shift가 생기지 않습니다. 하지만 앱에 가로·세로 중 한쪽 크기에만 style이 지정되고 다른 쪽은 <code>auto</code>로 지정되지 않은 image가 있다면 문제가 생길 수 있습니다. <code>auto</code>로 지정되지 않은 쪽 크기는 <code>&lt;img&gt;</code>의 크기 attribute 값을 기본값으로 쓰기 때문에 image가 찌그러져 보일 수 있습니다.</p><div class="en-orig"><p>The <code>&lt;Image&gt;</code> component has the added benefits of <a href="app-api-reference-components-image.html">automatic image optimization</a>. The <code>&lt;Image&gt;</code> component automatically sets the <code>width</code> and <code>height</code> attributes of the resulting <code>&lt;img&gt;</code> based on the image's dimensions. This prevents layout shifts when the image loads. However, this can cause issues if your app contains images with only one of their dimensions being styled without the other styled to <code>auto</code>. When not styled to <code>auto</code>, the dimension will default to the <code>&lt;img&gt;</code> dimension attribute's value, which can cause the image to appear distorted.</p></div>
+<p><code>&lt;img&gt;</code> tag를 그대로 유지하면 애플리케이션의 변경량을 줄이고 위 문제를 막을 수 있습니다. 그런 다음 원한다면 나중에 <code>&lt;Image&gt;</code> component로 migrate해서 <a href="app-api-reference-components-image.html#loader">loader를 설정</a>하거나 자동 image 최적화가 있는 기본 Next.js server로 옮겨 image 최적화의 이점을 누릴 수 있습니다.</p><div class="en-orig"><p>Keeping the <code>&lt;img&gt;</code> tag will reduce the amount of changes in your application and prevent the above issues. You can then optionally later migrate to the <code>&lt;Image&gt;</code> component to take advantage of optimizing images by <a href="app-api-reference-components-image.html#loader">configuring a loader</a>, or moving to the default Next.js server which has automatic image optimization.</p></div>
+<p><strong><code>/public</code>에서 import한 image의 absolute import path를 relative import로 바꾸세요:</strong></p><div class="en-orig"><p><strong>Convert absolute import paths for images imported from <code>/public</code> into relative imports:</strong></p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">// Before
+import logo from &#x27;/logo.png&#x27;
+
+// After
+import logo from &#x27;../public/logo.png&#x27;</code></pre></div></div>
+<p><strong>image object 전체 대신 image의 <code>src</code> property를 <code>&lt;img&gt;</code> tag에 전달하세요:</strong></p><div class="en-orig"><p><strong>Pass the image <code>src</code> property instead of the whole image object to your <code>&lt;img&gt;</code> tag:</strong></p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">// Before
+&lt;img src={logo} /&gt;
+
+// After
+&lt;img src={logo.src} /&gt;</code></pre></div></div>
+<p>또는 파일 이름을 바탕으로 image asset의 public URL을 참조할 수도 있습니다. 예를 들어 <code>public/logo.png</code>는 애플리케이션에서 <code>/logo.png</code>로 제공되며, 이것이 <code>src</code> 값이 됩니다.</p><div class="en-orig"><p>Alternatively, you can reference the public URL for the image asset based on the filename. For example, <code>public/logo.png</code> will serve the image at <code>/logo.png</code> for your application, which would be the <code>src</code> value.</p></div>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Warning</div><p>TypeScript를 사용한다면 <code>src</code> property에 접근할 때 type error가 발생할 수 있습니다. 이를 해결하려면 <code>tsconfig.json</code> 파일의 <a href="https://www.typescriptlang.org/tsconfig#include" target="_blank" rel="noopener"><code>include</code> array</a>에 <code>next-env.d.ts</code>를 추가해야 합니다. 9단계에서 애플리케이션을 실행하면 Next.js가 이 파일을 자동으로 생성합니다.</p><div class="en-orig"><p>If you're using TypeScript, you might encounter type errors when accessing the <code>src</code> property. To fix them, you need to add <code>next-env.d.ts</code> to the <a href="https://www.typescriptlang.org/tsconfig#include" target="_blank" rel="noopener"><code>include</code> array</a> of your <code>tsconfig.json</code> file. Next.js will automatically generate this file when you run your application on step 9.</p></div></div></div>
+<h3 class="sec" id="step-9-migrate-environment-variables"><a class="anchor" href="#step-9-migrate-environment-variables">Step 9: Migrate Environment Variables<span class="ko">9단계: Environment Variable migrate하기</span></a></h3>
+<p>Next.js는 CRA와 비슷하게 <a href="app-guides-environment-variables.html">environment variable</a>을 지원하지만, 브라우저에 노출하려는 variable에는 반드시 <code>NEXT_PUBLIC_</code> 접두사가 <strong>필요합니다</strong>.</p><div class="en-orig"><p>Next.js supports <a href="app-guides-environment-variables.html">environment variables</a> similarly to CRA but <strong>requires</strong> a <code>NEXT_PUBLIC_</code> prefix for any variable you want to expose in the browser.</p></div>
+<p>가장 큰 차이는 client-side에 environment variable을 노출할 때 쓰는 접두사입니다. <code>REACT_APP_</code> 접두사가 붙은 모든 environment variable을 <code>NEXT_PUBLIC_</code>으로 바꾸세요.</p><div class="en-orig"><p>The main difference is the prefix used to expose environment variables on the client-side. Change all environment variables with the <code>REACT_APP_</code> prefix to <code>NEXT_PUBLIC_</code>.</p></div>
+<h3 class="sec" id="step-10-update-scripts-in-packagejson"><a class="anchor" href="#step-10-update-scripts-in-packagejson">Step 10: Update Scripts in <code>package.json</code><span class="ko">10단계: <code>package.json</code>의 script 업데이트하기</span></a></h3>
+<p>Next.js command를 사용하도록 <code>package.json</code> script를 업데이트하세요. 또한 <code>.gitignore</code>에 <code>.next</code>와 <code>next-env.d.ts</code>를 추가하세요:</p><div class="en-orig"><p>Update your <code>package.json</code> scripts to use Next.js commands. Also, add <code>.next</code> and <code>next-env.d.ts</code> to your <code>.gitignore</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge doc"></span><span class="fname">package.json</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-json">{
+  &quot;scripts&quot;: {
+    &quot;dev&quot;: &quot;next dev&quot;,
+    &quot;build&quot;: &quot;next build&quot;,
+    &quot;start&quot;: &quot;npx serve@latest ./build&quot;
+  }
+}</code></pre></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge sh">&gt;_</span><span class="fname">.gitignore</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-plaintext"># ...
+.next
+next-env.d.ts</code></pre></div></div>
+<p>이제 다음을 실행할 수 있습니다:</p><div class="en-orig"><p>Now you can run:</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm dev</code></pre><pre class="pm-npm" hidden><code class="language-bash">npm run dev</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn dev</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun dev</code></pre></div></div>
+<p><a href="http://localhost:3000" target="_blank" rel="noopener">http://localhost:3000</a>을 여세요. 이제 애플리케이션이 Next.js 위에서 (SPA 모드로) 실행되는 것을 확인할 수 있습니다.</p><div class="en-orig"><p>Open <a href="http://localhost:3000" target="_blank" rel="noopener">http://localhost:3000</a>. You should see your application now running on Next.js (in SPA mode).</p></div>
+<h3 class="sec" id="step-11-clean-up"><a class="anchor" href="#step-11-clean-up">Step 11: Clean Up<span class="ko">11단계: 정리하기</span></a></h3>
+<p>이제 Create React App에만 해당하는 파일들을 제거할 수 있습니다:</p><div class="en-orig"><p>You can now remove artifacts that are specific to Create React App:</p></div>
+<ul>
+<li><code>public/index.html</code></li>
+<li><code>src/index.tsx</code></li>
+<li><code>src/react-app-env.d.ts</code></li>
+<li><code>reportWebVitals</code> setup</li>
+<li><code>react-scripts</code> dependency(<code>package.json</code>에서 uninstall하세요)</li>
+</ul><div class="en-orig"><ul>
+<li><code>public/index.html</code></li>
+<li><code>src/index.tsx</code></li>
+<li><code>src/react-app-env.d.ts</code></li>
+<li>The <code>reportWebVitals</code> setup</li>
+<li>The <code>react-scripts</code> dependency (uninstall it from <code>package.json</code>)</li>
+</ul></div>
+<h2 class="sec" id="additional-considerations"><a class="anchor" href="#additional-considerations">Additional Considerations<span class="ko">추가 고려 사항</span></a></h2>
+<h3 class="sec" id="using-a-custom-homepage-in-cra"><a class="anchor" href="#using-a-custom-homepage-in-cra">Using a Custom <code>homepage</code> in CRA<span class="ko">CRA에서 custom <code>homepage</code> 사용하기</span></a></h3>
+<p>CRA <code>package.json</code>의 <code>homepage</code> field를 사용해 특정 subpath 아래에서 앱을 제공했다면, <code>next.config.ts</code>의 <a href="app-api-reference-config-next-config-js-basePath.html"><code>basePath</code> configuration</a>으로 Next.js에서 같은 동작을 재현할 수 있습니다:</p><div class="en-orig"><p>If you used the <code>homepage</code> field in your CRA <code>package.json</code> to serve the app under a specific subpath, you can replicate that in Next.js using the <a href="app-api-reference-config-next-config-js-basePath.html"><code>basePath</code> configuration</a> in <code>next.config.ts</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  basePath: &#x27;/my-subpath&#x27;,
+  // ...
+}
+
+export default nextConfig</code></pre></div></div>
+<h3 class="sec" id="handling-a-custom-service-worker"><a class="anchor" href="#handling-a-custom-service-worker">Handling a Custom <code>Service Worker</code><span class="ko">custom <code>Service Worker</code> 처리하기</span></a></h3>
+<p>CRA의 service worker(예: <code>create-react-app</code>의 <code>serviceWorker.js</code>)를 사용했다면, 다음 문법으로 이 service worker를 등록할 수 있습니다:</p><div class="en-orig"><p>If you used CRA’s service worker (e.g., <code>serviceWorker.js</code> from <code>create-react-app</code>), you can register this service worker using the following syntax:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">await navigator.serviceWorker.register(new URL(&#x27;../serviceWorker.js&#x27;, import.meta.url), ...)</code></pre></div></div>
+<p>Next.js로 <a href="app-guides-progressive-web-apps.html">Progressive Web Application(PWA)</a>을 만드는 방법에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about how to create <a href="app-guides-progressive-web-apps.html">Progressive Web Applications (PWAs)</a> with Next.js.</p></div>
+<h3 class="sec" id="proxying-api-requests"><a class="anchor" href="#proxying-api-requests">Proxying API Requests<span class="ko">API Request proxy하기</span></a></h3>
+<p>CRA 앱에서 <code>package.json</code>의 <code>proxy</code> field를 사용해 request를 backend server로 전달했다면, <code>next.config.ts</code>의 <a href="app-api-reference-config-next-config-js-rewrites.html">Next.js rewrites</a>로 같은 동작을 재현할 수 있습니다:</p><div class="en-orig"><p>If your CRA app used the <code>proxy</code> field in <code>package.json</code> to forward requests to a backend server, you can replicate this with <a href="app-api-reference-config-next-config-js-rewrites.html">Next.js rewrites</a> in <code>next.config.ts</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: &#x27;/api/:path*&#x27;,
+        destination: &#x27;https://your-backend.com/:path*&#x27;,
+      },
+    ]
+  },
+}</code></pre></div></div>
+<h3 class="sec" id="custom-webpack"><a class="anchor" href="#custom-webpack">Custom Webpack</a></h3>
+<p>CRA에서 custom webpack이나 Babel configuration을 사용했다면 <code>next.config.ts</code>에서 Next.js의 config를 확장할 수 있습니다:</p><div class="en-orig"><p>If you had a custom webpack or Babel configuration in CRA, you can extend Next.js’s config in <code>next.config.ts</code>:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  webpack: (config, { isServer }) =&gt; {
+    // Modify the webpack config here
+    return config
+  },
+}
+
+export default nextConfig</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p>이렇게 하려면 <code>dev</code> script에 <code>--webpack</code>을 추가해 Webpack을 사용해야 합니다.</p><div class="en-orig"><p>This will require using Webpack by adding <code>--webpack</code> to your <code>dev</code> script.</p></div></div></div>
+<h3 class="sec" id="typescript-setup"><a class="anchor" href="#typescript-setup">TypeScript Setup<span class="ko">TypeScript 설정</span></a></h3>
+<p><code>tsconfig.json</code>이 있으면 Next.js가 TypeScript를 자동으로 설정합니다. <code>tsconfig.json</code>의 <code>include</code> array에 <code>next-env.d.ts</code>가 들어 있는지 확인하세요:</p><div class="en-orig"><p>Next.js automatically sets up TypeScript if you have a <code>tsconfig.json</code>. Make sure <code>next-env.d.ts</code> is listed in your <code>tsconfig.json</code> <code>include</code> array:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-json">{
+  &quot;include&quot;: [&quot;next-env.d.ts&quot;, &quot;app/**/*&quot;, &quot;src/**/*&quot;]
+}</code></pre></div></div>
+<h2 class="sec" id="bundler-compatibility"><a class="anchor" href="#bundler-compatibility">Bundler Compatibility<span class="ko">Bundler 호환성</span></a></h2>
+<p>Create React App은 bundling에 webpack을 사용합니다. Next.js는 이제 더 빠른 로컬 개발을 위해 기본적으로 <a href="app-api-reference-config-next-config-js-turbopack.html">Turbopack</a>을 사용합니다:</p><div class="en-orig"><p>Create React App uses webpack for bundling. Next.js now defaults to <a href="app-api-reference-config-next-config-js-turbopack.html">Turbopack</a> for faster local development:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-bash">next dev  # Uses Turbopack by default</code></pre></div></div>
+<p>대신 (CRA와 비슷하게) Webpack을 사용하려면:</p><div class="en-orig"><p>To use Webpack instead (similar to CRA):</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-bash">next dev --webpack</code></pre></div></div>
+<p>CRA의 고급 webpack 설정을 migrate해야 한다면 여전히 <a href="app-api-reference-config-next-config-js-webpack.html">custom webpack configuration</a>을 제공할 수 있습니다.</p><div class="en-orig"><p>You can still provide a <a href="app-api-reference-config-next-config-js-webpack.html">custom webpack configuration</a> if you need to migrate advanced webpack settings from CRA.</p></div>
+<h2 class="sec" id="next-steps"><a class="anchor" href="#next-steps">Next Steps<span class="ko">다음 단계</span></a></h2>
+<p>모든 것이 잘 동작했다면 이제 single-page application으로 실행되는, 제대로 동작하는 Next.js 애플리케이션이 생겼습니다. 아직 server-side rendering이나 file-based routing 같은 Next.js 기능은 활용하지 않고 있지만, 이제 점진적으로 도입할 수 있습니다:</p><div class="en-orig"><p>If everything worked, you now have a functioning Next.js application running as a single-page application. You aren’t yet leveraging Next.js features like server-side rendering or file-based routing, but you can now do so incrementally:</p></div>
+<ul>
+<li>다음을 위해 <strong>React Router에서</strong> <a href="app.html">Next.js App Router</a>로 <strong>migrate하기</strong>:<ul>
+<li>자동 code splitting</li>
+<li><a href="app-api-reference-file-conventions-loading.html">Streaming server rendering</a></li>
+<li><a href="app-getting-started-server-and-client-components.html">React Server Components</a></li>
+</ul></li>
+<li><a href="app-api-reference-components-image.html"><code>&lt;Image&gt;</code> component</a>로 <strong>image 최적화하기</strong></li>
+<li><a href="app-api-reference-components-font.html"><code>next/font</code></a>로 <strong>font 최적화하기</strong></li>
+<li><a href="app-guides-scripts.html"><code>&lt;Script&gt;</code> component</a>로 <strong>third-party script 최적화하기</strong></li>
+<li>Next.js <a href="app-api-reference-config-eslint.html#setup-eslint">권장 rule</a>로 <strong>ESLint 활성화하기</strong></li>
+</ul><div class="en-orig"><ul>
+<li><strong>Migrate from React Router</strong> to the <a href="app.html">Next.js App Router</a> for:<ul>
+<li>Automatic code splitting</li>
+<li><a href="app-api-reference-file-conventions-loading.html">Streaming server rendering</a></li>
+<li><a href="app-getting-started-server-and-client-components.html">React Server Components</a></li>
+</ul></li>
+<li><strong>Optimize images</strong> with the <a href="app-api-reference-components-image.html"><code>&lt;Image&gt;</code> component</a></li>
+<li><strong>Optimize fonts</strong> with <a href="app-api-reference-components-font.html"><code>next/font</code></a></li>
+<li><strong>Optimize third-party scripts</strong> with the <a href="app-guides-scripts.html"><code>&lt;Script&gt;</code> component</a></li>
+<li><strong>Enable ESLint</strong> with Next.js <a href="app-api-reference-config-eslint.html#setup-eslint">recommended rules</a></li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Note</div><p>static export(<code>output: &#x27;export&#x27;</code>)를 사용하면 현재 <code>useParams</code> hook이나 다른 server 기능을 <a href="https://github.com/vercel/next.js/issues/54393" target="_blank" rel="noopener">지원하지 않습니다</a>. Next.js의 모든 기능을 사용하려면 <code>next.config.ts</code>에서 <code>output: &#x27;export&#x27;</code>를 제거하세요.</p><div class="en-orig"><p>Using a static export (<code>output: &#x27;export&#x27;</code>) <a href="https://github.com/vercel/next.js/issues/54393" target="_blank" rel="noopener">does not currently support</a> the <code>useParams</code> hook or other server features. To use all Next.js features, remove <code>output: &#x27;export&#x27;</code> from your <code>next.config.ts</code>.</p></div></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/migrating/from-create-react-app.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/migrating/from-create-react-app" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-migrating-app-router-migration.html" class="prev"><div class="dir">← 이전</div><div class="ttl">App Router</div><div class="ttl-ko">Pages Router에서 App Router로 migrate하기</div></a>
+      <a href="app-guides-migrating-from-vite.html" class="next"><div class="dir">다음 →</div><div class="ttl">Vite</div><div class="ttl-ko">Vite에서 Next.js로 migrate하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/migrating/from-create-react-app" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#why-switch">Why Switch?</a></li><li class="l3"><a href="#slow-initial-page-loading-time">Slow initial page loading time</a></li><li class="l3"><a href="#no-automatic-code-splitting">No automatic code splitting</a></li><li class="l3"><a href="#network-waterfalls">Network waterfalls</a></li><li class="l3"><a href="#fast-and-intentional-loading-states">Fast and intentional loading states</a></li><li class="l3"><a href="#choose-the-data-fetching-strategy">Choose the data fetching strategy</a></li><li class="l3"><a href="#proxy">Proxy</a></li><li class="l3"><a href="#built-in-optimizations">Built-in Optimizations</a></li><li class="l2"><a href="#migration-steps">Migration Steps</a></li><li class="l3"><a href="#step-1-install-the-nextjs-dependency">Step 1: Install the Next.js Dependency</a></li><li class="l3"><a href="#step-2-create-the-nextjs-configuration-file">Step 2: Create the Next.js Configuration File</a></li><li class="l3"><a href="#step-3-create-the-root-layout">Step 3: Create the Root Layout</a></li><li class="l3"><a href="#step-4-metadata">Step 4: Metadata</a></li><li class="l3"><a href="#step-5-styles">Step 5: Styles</a></li><li class="l3"><a href="#step-6-create-the-entrypoint-page">Step 6: Create the Entrypoint Page</a></li><li class="l3"><a href="#step-7-add-a-client-only-entrypoint">Step 7: Add a Client-Only Entrypoint</a></li><li class="l3"><a href="#step-8-update-static-image-imports">Step 8: Update Static Image Imports</a></li><li class="l3"><a href="#step-9-migrate-environment-variables">Step 9: Migrate Environment Variables</a></li><li class="l3"><a href="#step-10-update-scripts-in-packagejson">Step 10: Update Scripts in <code>package.json</code></a></li><li class="l3"><a href="#step-11-clean-up">Step 11: Clean Up</a></li><li class="l2"><a href="#additional-considerations">Additional Considerations</a></li><li class="l3"><a href="#using-a-custom-homepage-in-cra">Using a Custom <code>homepage</code> in CRA</a></li><li class="l3"><a href="#handling-a-custom-service-worker">Handling a Custom <code>Service Worker</code></a></li><li class="l3"><a href="#proxying-api-requests">Proxying API Requests</a></li><li class="l3"><a href="#custom-webpack">Custom Webpack</a></li><li class="l3"><a href="#typescript-setup">TypeScript Setup</a></li><li class="l2"><a href="#bundler-compatibility">Bundler Compatibility</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+이 가이드는 기존 Create React App(CRA) 사이트를 Next.js로 migrate하는 과정을 안내합니다.
+
+## Why Switch? || 왜 전환해야 할까?
+
+Create React App에서 Next.js로 전환하고 싶은 이유는 여러 가지가 있습니다:
+
+### Slow initial page loading time || 느린 초기 page loading 시간
+
+Create React App은 순수하게 client-side rendering만 사용합니다. [single-page application(SPA)](/docs/app/guides/single-page-applications)이라고도 불리는 client-side 전용 애플리케이션은 초기 page loading 시간이 느린 경우가 많습니다. 그 이유는 다음과 같습니다:
+
+1. 코드가 data를 불러오는 request를 보내기 전에, 브라우저는 React 코드와 애플리케이션 bundle 전체가 다운로드되고 실행될 때까지 기다려야 합니다.
+2. 새 기능과 dependency를 추가할 때마다 애플리케이션 코드가 커집니다.
+
+### No automatic code splitting || 자동 code splitting 없음
+
+앞에서 말한 느린 loading 시간 문제는 code splitting으로 어느 정도 완화할 수 있습니다. 하지만 code splitting을 직접 하려고 하면 의도치 않게 network waterfall이 생길 수 있습니다. Next.js는 router와 build pipeline에 자동 code splitting과 tree-shaking이 내장되어 있습니다.
+
+### Network waterfalls || Network waterfall
+
+performance가 나빠지는 흔한 원인은 애플리케이션이 data를 fetch하기 위해 client-server request를 순차적으로 보내는 경우입니다. [SPA](/docs/app/guides/single-page-applications)에서 data를 fetch하는 한 가지 pattern은 placeholder를 render한 뒤 component가 mount된 다음에 data를 fetch하는 것입니다. 안타깝게도 child component는 parent가 자신의 data를 다 불러온 뒤에야 data fetching을 시작할 수 있어서, request의 &quot;waterfall&quot;이 생깁니다.
+
+Next.js에서도 client-side data fetching을 지원하지만, Next.js에서는 data fetching을 server로 옮길 수도 있습니다. 이렇게 하면 client-server waterfall이 아예 사라지는 경우가 많습니다.
+
+### Fast and intentional loading states || 빠르고 의도된 loading state
+
+[React Suspense를 통한 streaming](/docs/app/getting-started/linking-and-navigating#streaming)이 기본 지원되므로, network waterfall을 만들지 않고도 UI의 어떤 부분을 먼저, 어떤 순서로 load할지 정의할 수 있습니다.
+
+이를 통해 더 빠르게 load되는 page를 만들고 [layout shift](https://vercel.com/blog/how-core-web-vitals-affect-seo)를 없앨 수 있습니다.
+
+### Choose the data fetching strategy || data fetching strategy 선택
+
+Next.js에서는 필요에 따라 page나 component 단위로 data fetching strategy를 선택할 수 있습니다. 예를 들어 빠른 load 속도를 위해 build 시점에 CMS에서 data를 fetch해 블로그 글을 render(SSG)하거나, 필요할 때는 request 시점에 data를 fetch(SSR)할 수 있습니다.
+
+### Proxy
+
+[Next.js Proxy](/docs/app/api-reference/file-conventions/proxy)를 사용하면 request가 완료되기 전에 server에서 코드를 실행할 수 있습니다. 예를 들어 인증된 사용자 전용 page에서는 proxy에서 사용자를 login page로 redirect해, 인증되지 않은 콘텐츠가 잠깐 보이는 현상을 막을 수 있습니다. A/B testing, 실험(experimentation), [internationalization](/docs/app/guides/internationalization) 같은 기능에도 사용할 수 있습니다.
+
+### Built-in Optimizations || 내장 최적화
+
+[Image](/docs/app/api-reference/components/image), [font](/docs/app/api-reference/components/font), [third-party script](/docs/app/guides/scripts)는 애플리케이션 performance에 큰 영향을 주는 경우가 많습니다. Next.js에는 이를 자동으로 최적화해 주는 전용 component와 API가 포함되어 있습니다.
+
+## Migration Steps || Migration 단계
+
+목표는 동작하는 Next.js 애플리케이션을 최대한 빨리 만들어서, 그다음 Next.js 기능을 점진적으로 도입할 수 있게 하는 것입니다. 우선은 기존 router를 바로 교체하지 않고 애플리케이션을 순수한 client-side 애플리케이션([SPA](/docs/app/guides/single-page-applications))으로 취급합니다. 이렇게 하면 복잡도와 merge conflict가 줄어듭니다.
+
+&gt; **Note**: `package.json`의 custom `homepage` field, custom service worker, 특정 Babel/webpack 조정 같은 고급 CRA configuration을 사용하고 있다면, 이 가이드 끝의 **Additional Considerations** 섹션에서 이런 기능을 Next.js에서 재현하거나 조정하는 팁을 참고하세요.
+
+### Step 1: Install the Next.js Dependency || 1단계: Next.js dependency 설치하기
+
+기존 프로젝트에 Next.js를 설치하세요:
+
+[[CODE 1]]
+
+### Step 2: Create the Next.js Configuration File || 2단계: Next.js configuration 파일 만들기
+
+프로젝트 root(`package.json`과 같은 위치)에 `next.config.ts`를 만드세요. 이 파일에는 [Next.js configuration option](/docs/app/api-reference/config/next-config-js)이 들어갑니다.
+
+[[CODE 2]]
+
+&gt; **Note**: `output: &#x27;export&#x27;`를 사용하면 static export를 하게 됩니다. SSR이나 API 같은 server-side 기능은 사용할 수 **없습니다**. Next.js server 기능을 활용하려면 이 줄을 제거하면 됩니다.
+
+### Step 3: Create the Root Layout || 3단계: Root Layout 만들기
+
+Next.js [App Router](/docs/app) 애플리케이션에는 [root layout](/docs/app/api-reference/file-conventions/layout#root-layout) 파일이 반드시 있어야 합니다. 이 파일은 모든 page를 감싸는 [React Server Component](/docs/app/getting-started/server-and-client-components)입니다.
+
+CRA 애플리케이션에서 root layout 파일에 가장 가까운 것은 `&lt;html&gt;`, `&lt;head&gt;`, `&lt;body&gt;` tag가 들어 있는 `public/index.html`입니다.
+
+1. `src` 폴더 안에(또는 `app`을 root에 두고 싶다면 프로젝트 root에) 새 `app` directory를 만드세요.
+2. `app` directory 안에 `layout.tsx`(또는 `layout.js`) 파일을 만드세요:
+
+[[CODE 3]]
+
+이제 기존 `index.html`의 내용을 이 `&lt;RootLayout&gt;` component에 복사하세요. `body div#root`(와 `body noscript`)를 `&lt;div id=&quot;root&quot;&gt;{children}&lt;/div&gt;`로 바꾸세요.
+
+[[CODE 4]]
+
+&gt; **Good to know**: Next.js는 기본적으로 CRA의 `public/manifest.json`, 추가 icon 이미지, [testing configuration](/docs/app/guides/testing)을 무시합니다. 이것들이 필요하다면 Next.js의 [Metadata API](/docs/app/getting-started/metadata-and-og-images)와 [Testing](/docs/app/guides/testing) setup으로 지원받을 수 있습니다.
+
+### Step 4: Metadata || 4단계: Metadata
+
+Next.js는 `&lt;meta charset=&quot;UTF-8&quot; /&gt;`와 `&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot; /&gt;` tag를 자동으로 포함하므로, `&lt;head&gt;`에서 이 tag들을 제거해도 됩니다:
+
+[[CODE 5]]
+
+`favicon.ico`, `icon.png`, `robots.txt` 같은 [metadata file](/docs/app/getting-started/metadata-and-og-images#file-based-metadata)은 `app` directory의 최상위에 두기만 하면 애플리케이션의 `&lt;head&gt;` tag에 자동으로 추가됩니다. [지원되는 모든 파일](/docs/app/getting-started/metadata-and-og-images#file-based-metadata)을 `app` directory로 옮긴 뒤에는 해당 `&lt;link&gt;` tag를 안전하게 삭제할 수 있습니다:
+
+[[CODE 6]]
+
+마지막으로 Next.js는 [Metadata API](/docs/app/getting-started/metadata-and-og-images)로 남은 `&lt;head&gt;` tag를 관리할 수 있습니다. 남은 metadata 정보를 export된 [`metadata` object](/docs/app/api-reference/functions/generate-metadata#metadata-object)로 옮기세요:
+
+[[CODE 7]]
+
+위와 같이 변경하면 `index.html`에 모든 것을 선언하던 방식에서 framework에 내장된 Next.js의 convention 기반 접근 방식([Metadata API](/docs/app/getting-started/metadata-and-og-images))으로 바뀝니다. 이 접근 방식을 사용하면 page의 SEO와 웹 공유성(shareability)을 더 쉽게 개선할 수 있습니다.
+
+### Step 5: Styles || 5단계: Style
+
+CRA와 마찬가지로 Next.js도 별도 설정 없이 [CSS Modules](/docs/app/getting-started/css#css-modules)를 지원합니다. [global CSS import](/docs/app/getting-started/css#global-css)도 지원합니다.
+
+global CSS 파일이 있다면 `app/layout.tsx`에서 import하세요:
+
+[[CODE 8]]
+
+Tailwind CSS를 사용한다면 [설치 문서](/docs/app/getting-started/css#tailwind-css)를 참고하세요.
+
+### Step 6: Create the Entrypoint Page || 6단계: Entrypoint Page 만들기
+
+Create React App은 `src/index.tsx`(또는 `index.js`)를 entry point로 사용합니다. Next.js(App Router)에서는 `app` directory 안의 각 폴더가 하나의 route에 대응하며, 각 폴더에는 `page.tsx`가 있어야 합니다.
+
+지금은 앱을 SPA로 유지하면서 **모든** route를 가로채고 싶으므로 [optional catch-all route](/docs/app/api-reference/file-conventions/dynamic-routes#optional-catch-all-segments)를 사용합니다.
+
+1. **`app` 안에 `[[...slug]]` directory를 만드세요.**
+
+[[CODE 9]]
+
+2. **`page.tsx`에 다음 내용을 추가하세요**:
+
+[[CODE 10]]
+
+이렇게 하면 Next.js가 빈 slug(`/`)에 대해 하나의 route만 생성하므로, 사실상 **모든** route가 같은 page로 mapping됩니다. 이 page는 static HTML로 prerender되는 [Server Component](/docs/app/getting-started/server-and-client-components)입니다.
+
+### Step 7: Add a Client-Only Entrypoint || 7단계: Client 전용 Entrypoint 추가하기
+
+다음으로 CRA의 root App component를 [Client Component](/docs/app/getting-started/server-and-client-components) 안에 넣어 모든 로직이 client-side에 남도록 합니다. Next.js를 처음 사용한다면, Client Component도 (기본적으로) server에서 prerender된다는 점을 알아 두면 좋습니다. Client Component는 client-side JavaScript를 실행하는 능력이 추가된 component라고 생각하면 됩니다.
+
+`app/[[...slug]]/`에 `client.tsx`(또는 `client.js`)를 만드세요:
+
+[[CODE 11]]
+
+- `&#x27;use client&#x27;` directive가 있으면 이 파일은 **Client Component** 파일이 됩니다.
+- `ssr: false`를 지정한 `dynamic` import는 `&lt;App /&gt;` component의 server-side rendering을 비활성화해, 완전한 client 전용(SPA)으로 만듭니다.
+
+이제 새 component를 사용하도록 `page.tsx`(또는 `page.js`)를 업데이트하세요:
+
+[[CODE 12]]
+
+### Step 8: Update Static Image Imports || 8단계: Static Image Import 업데이트하기
+
+CRA에서는 image 파일을 import하면 그 public URL이 string으로 반환됩니다:
+
+[[CODE 13]]
+
+Next.js에서는 static image import가 object를 반환합니다. 이 object는 Next.js [`&lt;Image&gt;` component](/docs/app/api-reference/components/image)에 바로 사용할 수도 있고, object의 `src` property를 기존 `&lt;img&gt;` tag에 사용할 수도 있습니다.
+
+`&lt;Image&gt;` component에는 [자동 image 최적화](/docs/app/api-reference/components/image)라는 추가 장점이 있습니다. `&lt;Image&gt;` component는 image의 크기를 바탕으로 결과 `&lt;img&gt;`의 `width`와 `height` attribute를 자동으로 설정합니다. 이렇게 하면 image가 load될 때 layout shift가 생기지 않습니다. 하지만 앱에 가로·세로 중 한쪽 크기에만 style이 지정되고 다른 쪽은 `auto`로 지정되지 않은 image가 있다면 문제가 생길 수 있습니다. `auto`로 지정되지 않은 쪽 크기는 `&lt;img&gt;`의 크기 attribute 값을 기본값으로 쓰기 때문에 image가 찌그러져 보일 수 있습니다.
+
+`&lt;img&gt;` tag를 그대로 유지하면 애플리케이션의 변경량을 줄이고 위 문제를 막을 수 있습니다. 그런 다음 원한다면 나중에 `&lt;Image&gt;` component로 migrate해서 [loader를 설정](/docs/app/api-reference/components/image#loader)하거나 자동 image 최적화가 있는 기본 Next.js server로 옮겨 image 최적화의 이점을 누릴 수 있습니다.
+
+**`/public`에서 import한 image의 absolute import path를 relative import로 바꾸세요:**
+
+[[CODE 14]]
+
+**image object 전체 대신 image의 `src` property를 `&lt;img&gt;` tag에 전달하세요:**
+
+[[CODE 15]]
+
+또는 파일 이름을 바탕으로 image asset의 public URL을 참조할 수도 있습니다. 예를 들어 `public/logo.png`는 애플리케이션에서 `/logo.png`로 제공되며, 이것이 `src` 값이 됩니다.
+
+&gt; **Warning:** TypeScript를 사용한다면 `src` property에 접근할 때 type error가 발생할 수 있습니다. 이를 해결하려면 `tsconfig.json` 파일의 [`include` array](https://www.typescriptlang.org/tsconfig#include)에 `next-env.d.ts`를 추가해야 합니다. 9단계에서 애플리케이션을 실행하면 Next.js가 이 파일을 자동으로 생성합니다.
+
+### Step 9: Migrate Environment Variables || 9단계: Environment Variable migrate하기
+
+Next.js는 CRA와 비슷하게 [environment variable](/docs/app/guides/environment-variables)을 지원하지만, 브라우저에 노출하려는 variable에는 반드시 `NEXT_PUBLIC_` 접두사가 **필요합니다**.
+
+가장 큰 차이는 client-side에 environment variable을 노출할 때 쓰는 접두사입니다. `REACT_APP_` 접두사가 붙은 모든 environment variable을 `NEXT_PUBLIC_`으로 바꾸세요.
+
+### Step 10: Update Scripts in `package.json` || 10단계: `package.json`의 script 업데이트하기
+
+Next.js command를 사용하도록 `package.json` script를 업데이트하세요. 또한 `.gitignore`에 `.next`와 `next-env.d.ts`를 추가하세요:
+
+[[CODE 16]]
+
+[[CODE 17]]
+
+이제 다음을 실행할 수 있습니다:
+
+[[CODE 18]]
+
+[http://localhost:3000](http://localhost:3000)을 여세요. 이제 애플리케이션이 Next.js 위에서 (SPA 모드로) 실행되는 것을 확인할 수 있습니다.
+
+### Step 11: Clean Up || 11단계: 정리하기
+
+이제 Create React App에만 해당하는 파일들을 제거할 수 있습니다:
+
+- `public/index.html`
+- `src/index.tsx`
+- `src/react-app-env.d.ts`
+- `reportWebVitals` setup
+- `react-scripts` dependency(`package.json`에서 uninstall하세요)
+
+## Additional Considerations || 추가 고려 사항
+
+### Using a Custom `homepage` in CRA || CRA에서 custom `homepage` 사용하기
+
+CRA `package.json`의 `homepage` field를 사용해 특정 subpath 아래에서 앱을 제공했다면, `next.config.ts`의 [`basePath` configuration](/docs/app/api-reference/config/next-config-js/basePath)으로 Next.js에서 같은 동작을 재현할 수 있습니다:
+
+[[CODE 19]]
+
+### Handling a Custom `Service Worker` || custom `Service Worker` 처리하기
+
+CRA의 service worker(예: `create-react-app`의 `serviceWorker.js`)를 사용했다면, 다음 문법으로 이 service worker를 등록할 수 있습니다:
+
+[[CODE 20]]
+
+Next.js로 [Progressive Web Application(PWA)](/docs/app/guides/progressive-web-apps)을 만드는 방법에 대해 더 알아보세요.
+
+### Proxying API Requests || API Request proxy하기
+
+CRA 앱에서 `package.json`의 `proxy` field를 사용해 request를 backend server로 전달했다면, `next.config.ts`의 [Next.js rewrites](/docs/app/api-reference/config/next-config-js/rewrites)로 같은 동작을 재현할 수 있습니다:
+
+[[CODE 21]]
+
+### Custom Webpack
+
+CRA에서 custom webpack이나 Babel configuration을 사용했다면 `next.config.ts`에서 Next.js의 config를 확장할 수 있습니다:
+
+[[CODE 22]]
+
+&gt; **Note**: 이렇게 하려면 `dev` script에 `--webpack`을 추가해 Webpack을 사용해야 합니다.
+
+### TypeScript Setup || TypeScript 설정
+
+`tsconfig.json`이 있으면 Next.js가 TypeScript를 자동으로 설정합니다. `tsconfig.json`의 `include` array에 `next-env.d.ts`가 들어 있는지 확인하세요:
+
+[[CODE 23]]
+
+## Bundler Compatibility || Bundler 호환성
+
+Create React App은 bundling에 webpack을 사용합니다. Next.js는 이제 더 빠른 로컬 개발을 위해 기본적으로 [Turbopack](/docs/app/api-reference/config/next-config-js/turbopack)을 사용합니다:
+
+[[CODE 24]]
+
+대신 (CRA와 비슷하게) Webpack을 사용하려면:
+
+[[CODE 25]]
+
+CRA의 고급 webpack 설정을 migrate해야 한다면 여전히 [custom webpack configuration](/docs/app/api-reference/config/next-config-js/webpack)을 제공할 수 있습니다.
+
+## Next Steps || 다음 단계
+
+모든 것이 잘 동작했다면 이제 single-page application으로 실행되는, 제대로 동작하는 Next.js 애플리케이션이 생겼습니다. 아직 server-side rendering이나 file-based routing 같은 Next.js 기능은 활용하지 않고 있지만, 이제 점진적으로 도입할 수 있습니다:
+
+- 다음을 위해 **React Router에서** [Next.js App Router](/docs/app)로 **migrate하기**:
+  - 자동 code splitting
+  - [Streaming server rendering](/docs/app/api-reference/file-conventions/loading)
+  - [React Server Components](/docs/app/getting-started/server-and-client-components)
+- [`&lt;Image&gt;` component](/docs/app/api-reference/components/image)로 **image 최적화하기**
+- [`next/font`](/docs/app/api-reference/components/font)로 **font 최적화하기**
+- [`&lt;Script&gt;` component](/docs/app/guides/scripts)로 **third-party script 최적화하기**
+- Next.js [권장 rule](/docs/app/api-reference/config/eslint#setup-eslint)로 **ESLint 활성화하기**
+
+&gt; **Note**: static export(`output: &#x27;export&#x27;`)를 사용하면 현재 `useParams` hook이나 다른 server 기능을 [지원하지 않습니다](https://github.com/vercel/next.js/issues/54393). Next.js의 모든 기능을 사용하려면 `next.config.ts`에서 `output: &#x27;export&#x27;`를 제거하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

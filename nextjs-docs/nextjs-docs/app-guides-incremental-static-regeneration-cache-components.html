@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Incremental Static Regeneration with Cache Components (Cache Components와 함께 쓰는 ISR) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/incremental-static-regeneration-cache-components" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/incremental-static-regeneration-cache-components" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/incremental-static-regeneration-cache-components.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Incremental Static Regeneration with Cache Components<span class="sub">Cache Components와 함께 쓰는 ISR</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a>와 <a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a>을 함께 사용하는 <a href="app-glossary.html#incremental-static-regeneration-isr">Incremental Static Regeneration (ISR)</a>은 build에 포함되지 않은 URL이라도 모든 route에서 즉각적인 첫 방문을 제공합니다.</p><div class="en-orig"><p><a href="app-glossary.html#incremental-static-regeneration-isr">Incremental Static Regeneration (ISR)</a> with <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a> and <a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a> gives every route an instant first visit, even for URLs that weren't included in the build.</p></div>
+<p>build 중에 Partial Prerendering은 각 render를 두 부분으로 나눕니다:</p><div class="en-orig"><p>During build, Partial Prerendering splits each render into two parts:</p></div>
+<ul>
+<li><strong>App Shell</strong>: URL 데이터에 의존하지 않는, 페이지의 범용적이고 재사용 가능한 부분</li>
+<li>나머지 정적으로 render할 수 있는 콘텐츠: <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>에 나열한 URL에 대한 param별 prerender 결과</li>
+</ul><div class="en-orig"><ul>
+<li>The <strong>App Shell</strong>: the generic, reusable part of the page that doesn't depend on URL data</li>
+<li>The rest of the statically renderable content: the param-specific prerenders for the URLs you list in <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a></li>
+</ul></div>
+<p><code>generateStaticParams</code>에 param이 포함된 URL에 방문하면 Next.js는 완전히 prerender된 페이지를 cache에서 제공합니다. param이 포함되지 않은 URL에 방문하면 Next.js는 App Shell을 즉시 제공한 다음, 이제 알게 된 param으로 background에서 이를 upgrade합니다. 이후 같은 URL에 방문하면 App Shell을 완전히 건너뛰고 cache에서 upgrade된 결과를 받습니다.</p><div class="en-orig"><p>For a visit to a URL whose params were included in <code>generateStaticParams</code>, Next.js serves the fully prerendered page from the cache. For a visit to a URL whose params weren't, Next.js serves the App Shell instantly, then upgrades it in the background with the now-known params. Subsequent visits to that URL get the upgraded result from the cache, skipping the App Shell entirely.</p></div>
+<p>Pages Router에서 <a href="app-guides-incremental-static-regeneration.html">ISR</a>이나 <a href="pages-api-reference-functions-get-static-paths.html#fallback-true"><code>fallback: true</code></a>를 사용해 봤다면, 이것이 그에 해당하는 Cache Components 방식입니다.</p><div class="en-orig"><p>If you have used <a href="app-guides-incremental-static-regeneration.html">ISR</a> or <a href="pages-api-reference-functions-get-static-paths.html#fallback-true"><code>fallback: true</code></a> in the Pages Router, this is the Cache Components equivalent.</p></div>
+<p><a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a>와 <a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a>을 모두 활성화하세요.</p><div class="en-orig"><p>Enable both <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a> and <a href="app-api-reference-config-next-config-js-partialPrefetching.html">Partial Prefetching</a>.</p></div>
+<p>Cache Components는 fallback UI를 포함할 수 있는 static shell을 prerender합니다. <code>generateStaticParams</code>가 반환하지 않은 경로에 대해서는 Next.js가 해당 경로를 on demand로 render하고, 완성된 결과를 ISR cache에 저장할 수 있습니다.</p><div class="en-orig"><p>Cache Components prerenders a static shell that can include fallback UI. For paths not returned by <code>generateStaticParams</code>, Next.js can render the path on demand and store the completed result in the ISR cache.</p></div>
+<p>Partial Prefetching은 URL별 render가 완료되기 전에 fallback을 제공할지 여부를 결정합니다:</p><div class="en-orig"><p>Partial Prefetching determines whether the fallback is served before the URL-specific render completes:</p></div>
+<ul>
+<li><strong>With Partial Prefetching:</strong> <code>&lt;Suspense&gt;</code> 안에서 <code>params</code>를 await할 수 있습니다. Next.js는 나열되지 않은 경로에 대해 fallback을 즉시 제공하고, URL별 콘텐츠를 render한 뒤, 완성된 결과를 ISR cache에 저장할 수 있습니다.</li>
+<li><strong>Without Partial Prefetching:</strong> 나열되지 않은 경로에 대한 첫 request는 URL별 render가 완료될 때까지 기다려야 합니다. <a href="app-api-reference-file-conventions-loading.html"><code>loading.tsx</code></a>가 만드는 boundary를 포함해 모든 <code>&lt;Suspense&gt;</code> boundary 바깥에서 <code>params</code>를 await하세요. 그래야 Next.js가 해당 URL에 대한 ISR entry를 만듭니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>With Partial Prefetching:</strong> You can await <code>params</code> inside <code>&lt;Suspense&gt;</code>. Next.js can immediately serve the fallback for an unlisted path, render the URL-specific content, and store the completed result in the ISR cache.</li>
+<li><strong>Without Partial Prefetching:</strong> The first request for an unlisted path must wait for the URL-specific render to complete. Await <code>params</code> outside any <code>&lt;Suspense&gt;</code> boundary, including one created by <a href="app-api-reference-file-conventions-loading.html"><code>loading.tsx</code></a>, so Next.js creates an ISR entry for that URL.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Partial Prefetching 없이 <code>&lt;Suspense&gt;</code> 안에서 <code>params</code>를 await하면, Next.js는 URL별 ISR entry를 만드는 대신 공유 fallback을 계속 제공합니다. route가 fetch한 데이터는 여전히 독립적으로 cache될 수 있습니다.</p><div class="en-orig"><p>Without Partial Prefetching, awaiting <code>params</code> inside <code>&lt;Suspense&gt;</code> causes Next.js to keep serving the shared fallback instead of creating a URL-specific ISR entry. Data fetched by the route can still be cached independently.</p></div></div></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">next.config.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+  partialPrefetching: true,
+}
+
+export default nextConfig</code></pre></div></div>
+<h2 class="sec" id="example"><a class="anchor" href="#example">Example<span class="ko">예제</span></a></h2>
+<p><a href="https://next-recipe-api.vercel.dev/" target="_blank" rel="noopener">Recipe API</a>를 사용해 category layout과 product 상세 페이지가 있는 product catalog를 만들어 보겠습니다. 이 예제에서 사용한 리소스는 다음에서 확인할 수 있습니다:</p><div class="en-orig"><p>We'll build a product catalog with category layouts and product detail pages using the <a href="https://next-recipe-api.vercel.dev/" target="_blank" rel="noopener">Recipe API</a>. You can find the resources used in this example here:</p></div>
+<ul>
+<li><a href="https://partial-fallbacks.labs.vercel.dev/" target="_blank" rel="noopener">Demo</a></li>
+<li><a href="https://github.com/nextjs/partial-fallbacks" target="_blank" rel="noopener">Code</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://partial-fallbacks.labs.vercel.dev/" target="_blank" rel="noopener">Demo</a></li>
+<li><a href="https://github.com/nextjs/partial-fallbacks" target="_blank" rel="noopener">Code</a></li>
+</ul></div>
+<h3 class="sec" id="prepare-your-routes"><a class="anchor" href="#prepare-your-routes">Prepare your routes<span class="ko">route 준비하기</span></a></h3>
+<p><a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>를 사용해 어떤 param 값을 prerender할지 정의하세요. 이 route들을 render할 때는 build 시점에 param 값을 알 수 있습니다. prerender 과정은 <a href="app-glossary.html#request-time-apis">Request-time API</a>나 cache되지 않은 데이터에 도달할 때까지 static shell을 만듭니다. 자세한 내용은 <a href="app-getting-started-caching.html#prerendering">Prerendering</a>을 참고하세요.</p><div class="en-orig"><p>Use <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a> to define which param values to prerender. When rendering these routes, the param values are known at build time. The prerender process builds a static shell until it reaches a <a href="app-glossary.html#request-time-apis">Request-time API</a> or uncached data. See <a href="app-getting-started-caching.html#prerendering">Prerendering</a> for more details.</p></div>
+<p>category layout은 두 개의 category를 prerender합니다:</p><div class="en-orig"><p>The category layout prerenders two categories:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[category]/layout.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import Link from &#x27;next/link&#x27;
+import { Suspense } from &#x27;react&#x27;
+import { getCategory, getTopCategories } from &#x27;../lib/data&#x27;
+
+export async function generateStaticParams() {
+  const categories = await getTopCategories()
+  return categories.map((c) =&gt; ({ category: c.slug }))
+}
+
+async function CategoryHeader({
+  params,
+}: Pick&lt;LayoutProps&lt;&#x27;/[category]&#x27;&gt;, &#x27;params&#x27;&gt;) {
+  const { category } = await params
+  const data = await getCategory(category)
+
+  return (
+    &lt;div&gt;
+      &lt;Link href=&quot;/&quot;&gt;&amp;larr; All categories&lt;/Link&gt;
+      &lt;h1&gt;{data?.name ?? &#x27;Category&#x27;}&lt;/h1&gt;
+      {data?.description &amp;&amp; &lt;p&gt;{data.description}&lt;/p&gt;}
+    &lt;/div&gt;
+  )
+}
+
+export default function CategoryLayout(props: LayoutProps&lt;&#x27;/[category]&#x27;&gt;) {
+  return (
+    &lt;div&gt;
+      &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+        &lt;CategoryHeader params={props.params} /&gt;
+      &lt;/Suspense&gt;
+      {props.children}
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<p><code>CategoryLayout</code>이 <code>props.params</code>를 직접 <code>await</code>하지 않는다는 점에 주목하세요. 대신 <code>params</code> promise를 <code>&lt;Suspense&gt;</code> 안의 <code>CategoryHeader</code>에 전달합니다. <code>await</code>가 boundary 안에서 일어나므로, 알 수 없는 category에 대해서도 Next.js는 App Shell을 생성할 수 있습니다. <code>generateStaticParams</code>가 다루는 category에 대해서도 읽기는 boundary 안에 두세요. 정적으로 알려진 param이라도 여전히 하나의 URL에 속하므로, Suspense boundary 위에서 await하면 이 layout의 App Shell이 그 URL에 묶이게 됩니다. route를 이런 방식으로 구성하는 방법은 <a href="app-guides-instant-navigation.html">Instant navigation</a>을 참고하세요.</p><div class="en-orig"><p>Notice that <code>CategoryLayout</code> does not <code>await props.params</code> itself. Instead, it passes the <code>params</code> promise to <code>CategoryHeader</code> inside <code>&lt;Suspense&gt;</code>. The <code>await</code> happens inside the boundary, so for unknown categories Next.js can still generate the App Shell. Keep the read inside the boundary even for the categories <code>generateStaticParams</code> covers. A statically known param still belongs to one URL, so awaiting it above the Suspense boundary would tie this layout's App Shell to that URL. See <a href="app-guides-instant-navigation.html">Instant navigation</a> for structuring routes this way.</p></div>
+<p>product page는 category마다 product 하나를 prerender합니다. <code>generateStaticParams</code>는 상위 <code>category</code> param을 받습니다:</p><div class="en-orig"><p>The product page prerenders one product per category. <code>generateStaticParams</code> receives the parent <code>category</code> param:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/[category]/[product]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import Link from &#x27;next/link&#x27;
+import { getProduct, getPopularProducts } from &#x27;../../lib/data&#x27;
+
+export async function generateStaticParams({
+  params,
+}: {
+  params: { category: string }
+}) {
+  const products = await getPopularProducts(params.category)
+  return products.map((p) =&gt; ({ product: p.slug }))
+}
+
+async function ProductDetails(props: PageProps&lt;&#x27;/[category]/[product]&#x27;&gt;) {
+  const { category, product } = await props.params
+  const data = await getProduct(category, product)
+
+  if (!data) {
+    return &lt;p&gt;Product not found.&lt;/p&gt;
+  }
+
+  return (
+    &lt;&gt;
+      &lt;Link href={`/${category}`} prefetch={true}&gt;
+        &amp;larr; Back to products
+      &lt;/Link&gt;
+      &lt;h2&gt;{data.name}&lt;/h2&gt;
+      &lt;p&gt;${data.price}&lt;/p&gt;
+      &lt;p&gt;{data.description}&lt;/p&gt;
+    &lt;/&gt;
+  )
+}
+
+export default function ProductPage(props: PageProps&lt;&#x27;/[category]/[product]&#x27;&gt;) {
+  return (
+    &lt;div&gt;
+      &lt;Suspense fallback={&lt;div&gt;Loading product...&lt;/div&gt;}&gt;
+        &lt;ProductDetails {...props} /&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>JSX의 <code>&lt;Suspense&gt;</code> 대신 <a href="app-api-reference-file-conventions-loading.html"><code>loading.tsx</code></a> 파일을 사용할 수도 있습니다. <code>loading.tsx</code>는 boundary를 segment 경계에 두고, inline <code>&lt;Suspense&gt;</code>는 tree의 어디에든 boundary를 둘 수 있게 해 줍니다.</p><div class="en-orig"><p>You can also use <a href="app-api-reference-file-conventions-loading.html"><code>loading.tsx</code></a> files instead of <code>&lt;Suspense&gt;</code> in JSX. <code>loading.tsx</code> puts the boundary at the segment edge, while inline <code>&lt;Suspense&gt;</code> lets you place it anywhere in the tree.</p></div></div></div>
+<p>데이터 helper는 module 수준에서 <code>&#x27;use cache&#x27;</code>를 사용하므로 export된 모든 함수가 cache됩니다. 덕분에 그 결과를 static shell에 포함할 수 있습니다:</p><div class="en-orig"><p>The data helpers use <code>&#x27;use cache&#x27;</code> at the module level so all exported functions are cached. This lets their results be included in the static shell:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/lib/data.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">&#x27;use cache&#x27;
+
+const API = &#x27;https://next-recipe-api.vercel.dev&#x27;
+
+export async function getCategory(slug: string) {
+  const res = await fetch(`${API}/categories/${slug}`)
+  if (!res.ok) return null
+  return res.json()
+}
+
+export async function getProduct(category: string, slug: string) {
+  const res = await fetch(`${API}/products/${category}/${slug}`)
+  if (!res.ok) return null
+  return res.json()
+}
+
+export async function getTopCategories() {
+  const res = await fetch(`${API}/categories`)
+  const categories = await res.json()
+  return categories.slice(0, 2)
+}
+
+export async function getPopularProducts(category: string) {
+  const res = await fetch(`${API}/products?category=${category}`)
+  const products = await res.json()
+  return products.slice(0, 1)
+}</code></pre></div></div>
+<p>component가 <code>cookies()</code>나 <code>headers()</code> 같은 Request-time API에 접근한다면 <code>&lt;Suspense&gt;</code>로 감싸세요. prerender 중에 Next.js는 가장 가까운 fallback을 static shell에 포함합니다. 해당 component를 <code>&lt;Link prefetch={true}&gt;</code>에서도 제외하려면, request-time 접근 전에 <a href="app-api-reference-functions-navigation.html"><code>navigation()</code></a>을 await하세요. <a href="app-guides-optimizing-prefetching.html#keep-the-prefetch-static">Keep the prefetch static</a>을 참고하세요.</p><div class="en-orig"><p>If a component accesses a Request-time API such as <code>cookies()</code> or <code>headers()</code>, wrap it in <code>&lt;Suspense&gt;</code>. During prerendering, Next.js includes the nearest fallback in the static shell. To keep the component out of a <code>&lt;Link prefetch={true}&gt;</code> as well, await <a href="app-api-reference-functions-navigation.html"><code>navigation()</code></a> before the request-time access. See <a href="app-guides-optimizing-prefetching.html#keep-the-prefetch-static">Keep the prefetch static</a>.</p></div>
+<h3 class="sec" id="at-build-time"><a class="anchor" href="#at-build-time">At build time<span class="ko">build 시점</span></a></h3>
+<p><code>next build</code>를 실행하면 Next.js는 알려진 각 category(<code>tops</code>, <code>shorts</code>)의 layout을 prerender하고, 여기에 <code>await params</code>가 suspend되는 render를 하나 더 수행해 <code>[category]</code>의 App Shell을 만듭니다.</p><div class="en-orig"><p>When you run <code>next build</code>, Next.js prerenders the layout for each known category (<code>tops</code>, <code>shorts</code>), plus one render where <code>await params</code> suspends, producing the App Shell for <code>[category]</code>.</p></div>
+<p>또한 각 category 아래의 알려진 product(<code>tops</code> 아래의 <code>tee</code>, <code>shorts</code> 아래의 <code>joggers</code>)에 대한 page를 prerender하고, 여기에 <code>await params</code>가 suspend되는 render를 하나 더 수행해 <code>[product]</code>의 App Shell을 만듭니다.</p><div class="en-orig"><p>It also prerenders the page for each known product under each category (<code>tee</code> under <code>tops</code>, <code>joggers</code> under <code>shorts</code>), plus one render where <code>await params</code> suspends, producing the App Shell for <code>[product]</code>.</p></div>
+<p>이것들이 다음과 같이 조합됩니다:</p><div class="en-orig"><p>These are combined into:</p></div>
+<ul>
+<li><code>/tops/tee</code>, <code>/shorts/joggers</code>: 두 param을 모두 아는, 완전히 static한 페이지</li>
+<li><code>/tops/[product]</code>, <code>/shorts/[product]</code>: category header는 render되고, product는 fallback을 표시</li>
+<li><code>/[category]/[product]</code>: 둘 다 fallback을 표시</li>
+</ul><div class="en-orig"><ul>
+<li><code>/tops/tee</code>, <code>/shorts/joggers</code>: fully static pages, both params known</li>
+<li><code>/tops/[product]</code>, <code>/shorts/[product]</code>: category header rendered, product shows fallback</li>
+<li><code>/[category]/[product]</code>: both show fallback</li>
+</ul></div>
+<h3 class="sec" id="at-runtime"><a class="anchor" href="#at-runtime">At runtime<span class="ko">runtime 시점</span></a></h3>
+<p>방문자가 <code>/tops/tee</code>로 이동합니다. 두 param 모두 prerender되어 있었습니다. 방문자는 완전히 static한 페이지를 받습니다.</p><div class="en-orig"><p>A visitor navigates to <code>/tops/tee</code>. Both params were prerendered. They get a fully static page.</p></div>
+<p><code>/tops/overshirt</code>에 처음 방문하는 경우입니다. product <code>overshirt</code>는 알려지지 않았지만 category <code>tops</code>는 prerender되어 있었습니다. Next.js는 category header가 이미 render된 <code>/tops/[product]</code>의 App Shell을 제공합니다. product는 stream되어 들어옵니다.</p><div class="en-orig"><p>The first visit to <code>/tops/overshirt</code>. The product <code>overshirt</code> is unknown, but the category <code>tops</code> was prerendered. Next.js serves the App Shell for <code>/tops/[product]</code> with the category header already rendered. The product streams in.</p></div>
+<p><code>/shoes/basketball-shoes</code>에 처음 방문하는 경우입니다. 어느 param도 prerender되지 않았습니다. Next.js는 <code>/[category]/[product]</code>의 범용 App Shell을 제공합니다. category와 product 모두 stream되어 들어옵니다.</p><div class="en-orig"><p>The first visit to <code>/shoes/basketball-shoes</code>. Neither param was prerendered. Next.js serves the generic App Shell for <code>/[category]/[product]</code>. Both the category and the product stream in.</p></div>
+<p>첫 방문 이후 Next.js는 이제 알게 된 param으로 이 route들을 background에서 render합니다. 같은 URL의 다음 방문자는 upgrade된 결과를 받습니다.</p><div class="en-orig"><p>After the first visit, Next.js renders these routes in the background with the now-known params. The next visitor to the same URLs gets the upgraded result.</p></div>
+<p>나열되지 않은 URL을 가리키는 <a href="app-api-reference-components-link.html#prefetch"><code>&lt;Link prefetch={true}&gt;</code></a>가 viewport에 들어오면, Next.js는 첫 방문 때와 마찬가지로 클릭 전에 background upgrade를 시작하므로 navigation은 upgrade된 결과에 도착합니다.</p><div class="en-orig"><p>When a <a href="app-api-reference-components-link.html#prefetch"><code>&lt;Link prefetch={true}&gt;</code></a> to an unlisted URL enters the viewport, Next.js starts the background upgrade before the click, just as a first visit would, so navigation lands on the upgraded result.</p></div>
+<p>이 페이지들로 가는 link에는 <code>prefetch={true}</code>가 필요합니다. 기본 <code>&lt;Link&gt;</code>는 App Shell만 prefetch하며, 같은 route로 가는 link들은 이 App Shell을 공유합니다.</p><div class="en-orig"><p>Links to these pages need <code>prefetch={true}</code>. A default <code>&lt;Link&gt;</code> prefetches only the App Shell, which links to the same route share.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>나열되지 않은 param에 대한 App Shell 제공은 Next.js 16.3부터 지원됩니다. 이전 버전은 response를 보내기 전에 전체 server render를 기다립니다.</p><div class="en-orig"><p>The App Shell for unlisted params is served from Next.js 16.3. Earlier versions wait for a full server render before sending the response.</p></div></div></div>
+<h3 class="sec" id="wait-for-complete-static-output"><a class="anchor" href="#wait-for-complete-static-output">Wait for complete static output<span class="ko">완전한 static 출력 기다리기</span></a></h3>
+<p>나열되지 않은 parameter의 경우 <a href="app-api-reference-file-conventions-route-segment-config-ensureStatic.html#navigation"><code>ensureStatic = &#x27;navigation&#x27;</code></a>을 사용하면 첫 request가 완전한 static page를 기다리게 됩니다. 이 요구 사항이 없으면 Next.js는 background에서 페이지를 생성하는 동안 prerender된 fallback을 반환할 수 있습니다. Next.js는 완성된 페이지를 이후 request를 위해 저장합니다.</p><div class="en-orig"><p>For an unlisted parameter, <a href="app-api-reference-file-conventions-route-segment-config-ensureStatic.html#navigation"><code>ensureStatic = &#x27;navigation&#x27;</code></a> makes the first request wait for the complete static page. Without this requirement, Next.js can return a prerendered fallback while it generates the page in the background. Next.js stores the completed page for later requests.</p></div>
+<h3 class="sec" id="what-the-upgrade-produces"><a class="anchor" href="#what-the-upgrade-produces">What the upgrade produces<span class="ko">upgrade의 결과물</span></a></h3>
+<p>첫 방문 이후 Next.js는 알려진 param으로 background에서 페이지를 render하고, static boundary를 component tree에서 가능한 한 아래쪽까지 밀어 내리려고 합니다:</p><div class="en-orig"><p>After the first visit, Next.js renders the page in the background with the known params and tries to push the static boundary as far down the component tree as possible:</p></div>
+<ul>
+<li>모든 데이터 접근이 cache되고 모든 param이 resolve되면, upgrade 결과는 <strong>완전히 static한 페이지</strong>입니다.</li>
+<li>모든 param이 resolve되었지만 render가 여전히 <code>&lt;Suspense&gt;</code> boundary로 감싼 cache되지 않은 데이터나 Request-time API(<code>cookies()</code>, <code>headers()</code>)에 도달하면, upgrade 결과는 <strong>해당 fallback을 포함한 cache된 페이지</strong>입니다. cache되지 않았거나 request에 특화된 부분은 request 시점에 stream되어 들어옵니다.</li>
+<li>param은 route 순서대로 resolve됩니다. <code>generateStaticParams</code>가 반환하지 않은 param 값은 resolve되지 않은 상태로 남고, 그보다 더 깊은 param의 upgrade도 막습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>If every data access is cached and all params are resolved, the upgrade produces a <strong>fully static page</strong>.</li>
+<li>If all params are resolved but the render still reaches uncached data or Request-time APIs (<code>cookies()</code>, <code>headers()</code>) wrapped in <code>&lt;Suspense&gt;</code> boundaries, the upgrade produces a <strong>cached page with those fallbacks</strong>. The uncached or request-specific parts stream in at request time.</li>
+<li>Params are resolved in route order. A param value not returned by <code>generateStaticParams</code> stays unresolved and prevents any deeper params from upgrading.</li>
+</ul></div>
+<h2 class="sec" id="choosing-what-to-prerender"><a class="anchor" href="#choosing-what-to-prerender">Choosing what to prerender<span class="ko">무엇을 prerender할지 선택하기</span></a></h2>
+<p>모든 route를 prerender할 필요는 없습니다. prerender하는 페이지가 늘어날수록 build 작업이 늘어나고, 저장하고 deploy해야 할 출력물도 생깁니다. 상당수의 route는 다음 deploy 전까지 한 번도 방문되지 않을 수 있으므로, 그 작업은 불필요해집니다.</p><div class="en-orig"><p>Not every route needs to be prerendered. Every page you prerender increases build work and produces output that has to be stored and deployed. Many routes may never be visited before your next deployment, making that work unnecessary.</p></div>
+<p>대신 <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>를 사용해 인기 페이지나 예측 가능한 콘텐츠처럼 미리 준비해 두면 가장 이득이 큰 route를 prerender하세요. 방문 빈도가 낮은 route는 on demand로 생성되고 첫 방문 이후 upgrade되므로, 한 번도 request되지 않을 수 있는 페이지에 build 시간과 저장 공간을 쓰지 않아도 됩니다.</p><div class="en-orig"><p>Instead, use <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a> to prerender the routes that benefit most from being ready ahead of time, such as popular pages or predictable content. Less frequently visited routes are generated on demand and upgraded after their first visit, so you don't spend build time and storage on pages that may never be requested.</p></div>
+<h2 class="sec" id="coming-from-the-pages-router"><a class="anchor" href="#coming-from-the-pages-router">Coming from the Pages Router<span class="ko">Pages Router에서 넘어오는 경우</span></a></h2>
+<p>Pages Router에서 migrate하는 경우:</p><div class="en-orig"><p>If you are migrating from the Pages Router:</p></div>
+<ul>
+<li><code>getStaticPaths</code>의 <code>fallback: true</code>는 Partial Prefetching을 사용하는 Cache Components에 해당합니다. 방문자는 <code>&lt;Suspense&gt;</code> fallback을 즉시 받고, Next.js는 완성된 route를 이후 방문을 위해 저장합니다.</li>
+<li><a href="pages-api-reference-functions-get-static-paths.html#fallback-blocking"><code>fallback: &#x27;blocking&#x27;</code></a>은 Partial Prefetching을 사용하지 않는 Cache Components에 해당합니다. <code>&lt;Suspense&gt;</code> 바깥에서 <code>params</code>를 await하면 첫 request가 완성된 route를 기다리고, Next.js는 이를 이후 방문을 위해 저장합니다.</li>
+<li><code>router.isFallback</code>은 필요하지 않습니다. prerender 단계에서 static shell이 생성되며, <code>&#x27;use cache&#x27;</code>로 이를 더 키울 수 있습니다.</li>
+<li><code>revalidate</code>를 사용하는 <code>getStaticProps</code>는 <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a>와 함께 쓰는 <code>&#x27;use cache&#x27;</code>에 해당합니다.</li>
+<li><code>getStaticPaths</code>는 <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>에 해당합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><code>fallback: true</code> in <code>getStaticPaths</code> maps to Cache Components with Partial Prefetching. Visitors get a <code>&lt;Suspense&gt;</code> fallback instantly, and Next.js stores the completed route for subsequent visits.</li>
+<li><a href="pages-api-reference-functions-get-static-paths.html#fallback-blocking"><code>fallback: &#x27;blocking&#x27;</code></a> maps to Cache Components without Partial Prefetching. Await <code>params</code> outside <code>&lt;Suspense&gt;</code> so the first request waits for the completed route, which Next.js then stores for subsequent visits.</li>
+<li><code>router.isFallback</code> is not needed. The prerendering step generates a static shell, and you can grow it further with <code>&#x27;use cache&#x27;</code>.</li>
+<li><code>getStaticProps</code> with <code>revalidate</code> maps to <code>&#x27;use cache&#x27;</code> with <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code></a>.</li>
+<li><code>getStaticPaths</code> maps to <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>.</li>
+</ul></div>
+<h2 class="sec" id="next-steps"><a class="anchor" href="#next-steps">Next steps<span class="ko">다음 단계</span></a></h2>
+<ul>
+<li>전체 caching model은 <a href="app-getting-started-caching.html">Caching with Cache Components</a>를 참고하세요</li>
+<li>어떤 param 조합을 prerender할지 제어하려면 <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>를 참고하세요</li>
+<li>App Shell에 skeleton UI를 제공하려면 <a href="app-api-reference-file-conventions-loading.html"><code>loading.tsx</code></a>를 참고하세요</li>
+<li>데이터가 준비되는 대로 UI를 점진적으로 render하는 방법은 <a href="app-guides-streaming.html">Streaming</a>에서 알아보세요</li>
+<li><code>&#x27;use cache&#x27;</code>용 <a href="app-api-reference-config-next-config-js-cacheHandlers.html"><code>cacheHandlers</code></a>와 함께 기존 ISR <a href="app-api-reference-config-next-config-js-incrementalCacheHandlerPath.html"><code>cacheHandler</code></a>를 유지하려면 <a href="app-guides-self-hosting.html#caching-and-isr">Self-hosting</a>을 참고하세요</li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-getting-started-caching.html">Caching with Cache Components</a> for the full caching model</li>
+<li><a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a> for controlling which param combinations are prerendered</li>
+<li><a href="app-api-reference-file-conventions-loading.html"><code>loading.tsx</code></a> for providing skeleton UI in App Shells</li>
+<li><a href="app-guides-streaming.html">Streaming</a> to learn how to progressively render UI as data becomes available</li>
+<li><a href="app-guides-self-hosting.html#caching-and-isr">Self-hosting</a> to keep an existing ISR <a href="app-api-reference-config-next-config-js-incrementalCacheHandlerPath.html"><code>cacheHandler</code></a> alongside <a href="app-api-reference-config-next-config-js-cacheHandlers.html"><code>cacheHandlers</code></a> for <code>&#x27;use cache&#x27;</code></li>
+</ul></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">Next Steps</h2><div class="rgrid"><a class="rcard" href="app-api-reference-config-next-config-js-cacheComponents.html"><div class="rt">cacheComponents</div><div class="rk">cacheComponents</div><div class="rd">Next.js에서 cacheComponents flag를 활성화하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-functions-generate-static-params.html"><div class="rt">generateStaticParams</div><div class="rk">generateStaticParams</div><div class="rd">generateStaticParams 함수에 대한 API reference입니다.</div></a><a class="rcard" href="app-api-reference-file-conventions-loading.html"><div class="rt">loading.js</div><div class="rk">loading.js</div><div class="rd">loading.js 파일에 대한 API reference입니다.</div></a><a class="rcard" href="app-getting-started-caching.html"><div class="rt">Caching</div><div class="rk">캐싱</div><div class="rd">Next.js에서 데이터와 UI를 cache하는 방법을 알아봅니다</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/incremental-static-regeneration-cache-components.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/incremental-static-regeneration-cache-components" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-how-revalidation-works.html" class="prev"><div class="dir">← 이전</div><div class="ttl">How Revalidation Works</div><div class="ttl-ko">Next.js에서 revalidation이 동작하는 방식</div></a>
+      <a href="app-guides-incremental-static-regeneration.html" class="next"><div class="dir">다음 →</div><div class="ttl">ISR</div><div class="ttl-ko">Incremental Static Regeneration (ISR) 구현하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/incremental-static-regeneration-cache-components" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#example">Example</a></li><li class="l3"><a href="#prepare-your-routes">Prepare your routes</a></li><li class="l3"><a href="#at-build-time">At build time</a></li><li class="l3"><a href="#at-runtime">At runtime</a></li><li class="l3"><a href="#wait-for-complete-static-output">Wait for complete static output</a></li><li class="l3"><a href="#what-the-upgrade-produces">What the upgrade produces</a></li><li class="l2"><a href="#choosing-what-to-prerender">Choosing what to prerender</a></li><li class="l2"><a href="#coming-from-the-pages-router">Coming from the Pages Router</a></li><li class="l2"><a href="#next-steps">Next steps</a></li><li class="l2"><a href="#next-steps">Next Steps</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+[`cacheComponents`](/docs/app/api-reference/config/next-config-js/cacheComponents)와 [Partial Prefetching](/docs/app/api-reference/config/next-config-js/partialPrefetching)을 함께 사용하는 [Incremental Static Regeneration (ISR)](/docs/app/glossary#incremental-static-regeneration-isr)은 build에 포함되지 않은 URL이라도 모든 route에서 즉각적인 첫 방문을 제공합니다.
+
+build 중에 Partial Prerendering은 각 render를 두 부분으로 나눕니다:
+
+- **App Shell**: URL 데이터에 의존하지 않는, 페이지의 범용적이고 재사용 가능한 부분
+- 나머지 정적으로 render할 수 있는 콘텐츠: [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)에 나열한 URL에 대한 param별 prerender 결과
+
+`generateStaticParams`에 param이 포함된 URL에 방문하면 Next.js는 완전히 prerender된 페이지를 cache에서 제공합니다. param이 포함되지 않은 URL에 방문하면 Next.js는 App Shell을 즉시 제공한 다음, 이제 알게 된 param으로 background에서 이를 upgrade합니다. 이후 같은 URL에 방문하면 App Shell을 완전히 건너뛰고 cache에서 upgrade된 결과를 받습니다.
+
+Pages Router에서 [ISR](/docs/app/guides/incremental-static-regeneration)이나 [`fallback: true`](https://nextjs.org/docs/pages/api-reference/functions/get-static-paths#fallback-true)를 사용해 봤다면, 이것이 그에 해당하는 Cache Components 방식입니다.
+
+[`cacheComponents`](/docs/app/api-reference/config/next-config-js/cacheComponents)와 [Partial Prefetching](/docs/app/api-reference/config/next-config-js/partialPrefetching)을 모두 활성화하세요.
+
+Cache Components는 fallback UI를 포함할 수 있는 static shell을 prerender합니다. `generateStaticParams`가 반환하지 않은 경로에 대해서는 Next.js가 해당 경로를 on demand로 render하고, 완성된 결과를 ISR cache에 저장할 수 있습니다.
+
+Partial Prefetching은 URL별 render가 완료되기 전에 fallback을 제공할지 여부를 결정합니다:
+
+- **With Partial Prefetching:** `&lt;Suspense&gt;` 안에서 `params`를 await할 수 있습니다. Next.js는 나열되지 않은 경로에 대해 fallback을 즉시 제공하고, URL별 콘텐츠를 render한 뒤, 완성된 결과를 ISR cache에 저장할 수 있습니다.
+- **Without Partial Prefetching:** 나열되지 않은 경로에 대한 첫 request는 URL별 render가 완료될 때까지 기다려야 합니다. [`loading.tsx`](/docs/app/api-reference/file-conventions/loading)가 만드는 boundary를 포함해 모든 `&lt;Suspense&gt;` boundary 바깥에서 `params`를 await하세요. 그래야 Next.js가 해당 URL에 대한 ISR entry를 만듭니다.
+
+&gt; **Good to know:** Partial Prefetching 없이 `&lt;Suspense&gt;` 안에서 `params`를 await하면, Next.js는 URL별 ISR entry를 만드는 대신 공유 fallback을 계속 제공합니다. route가 fetch한 데이터는 여전히 독립적으로 cache될 수 있습니다.
+
+[[CODE 1]]
+
+## Example || 예제
+
+[Recipe API](https://next-recipe-api.vercel.dev/)를 사용해 category layout과 product 상세 페이지가 있는 product catalog를 만들어 보겠습니다. 이 예제에서 사용한 리소스는 다음에서 확인할 수 있습니다:
+
+- [Demo](https://partial-fallbacks.labs.vercel.dev/)
+- [Code](https://github.com/nextjs/partial-fallbacks)
+
+### Prepare your routes || route 준비하기
+
+[`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)를 사용해 어떤 param 값을 prerender할지 정의하세요. 이 route들을 render할 때는 build 시점에 param 값을 알 수 있습니다. prerender 과정은 [Request-time API](/docs/app/glossary#request-time-apis)나 cache되지 않은 데이터에 도달할 때까지 static shell을 만듭니다. 자세한 내용은 [Prerendering](/docs/app/getting-started/caching#prerendering)을 참고하세요.
+
+category layout은 두 개의 category를 prerender합니다:
+
+[[CODE 2]]
+
+`CategoryLayout`이 `props.params`를 직접 `await`하지 않는다는 점에 주목하세요. 대신 `params` promise를 `&lt;Suspense&gt;` 안의 `CategoryHeader`에 전달합니다. `await`가 boundary 안에서 일어나므로, 알 수 없는 category에 대해서도 Next.js는 App Shell을 생성할 수 있습니다. `generateStaticParams`가 다루는 category에 대해서도 읽기는 boundary 안에 두세요. 정적으로 알려진 param이라도 여전히 하나의 URL에 속하므로, Suspense boundary 위에서 await하면 이 layout의 App Shell이 그 URL에 묶이게 됩니다. route를 이런 방식으로 구성하는 방법은 [Instant navigation](/docs/app/guides/instant-navigation)을 참고하세요.
+
+product page는 category마다 product 하나를 prerender합니다. `generateStaticParams`는 상위 `category` param을 받습니다:
+
+[[CODE 3]]
+
+&gt; **Good to know:** JSX의 `&lt;Suspense&gt;` 대신 [`loading.tsx`](/docs/app/api-reference/file-conventions/loading) 파일을 사용할 수도 있습니다. `loading.tsx`는 boundary를 segment 경계에 두고, inline `&lt;Suspense&gt;`는 tree의 어디에든 boundary를 둘 수 있게 해 줍니다.
+
+데이터 helper는 module 수준에서 `&#x27;use cache&#x27;`를 사용하므로 export된 모든 함수가 cache됩니다. 덕분에 그 결과를 static shell에 포함할 수 있습니다:
+
+[[CODE 4]]
+
+component가 `cookies()`나 `headers()` 같은 Request-time API에 접근한다면 `&lt;Suspense&gt;`로 감싸세요. prerender 중에 Next.js는 가장 가까운 fallback을 static shell에 포함합니다. 해당 component를 `&lt;Link prefetch={true}&gt;`에서도 제외하려면, request-time 접근 전에 [`navigation()`](/docs/app/api-reference/functions/navigation)을 await하세요. [Keep the prefetch static](/docs/app/guides/optimizing-prefetching#keep-the-prefetch-static)을 참고하세요.
+
+### At build time || build 시점
+
+`next build`를 실행하면 Next.js는 알려진 각 category(`tops`, `shorts`)의 layout을 prerender하고, 여기에 `await params`가 suspend되는 render를 하나 더 수행해 `[category]`의 App Shell을 만듭니다.
+
+또한 각 category 아래의 알려진 product(`tops` 아래의 `tee`, `shorts` 아래의 `joggers`)에 대한 page를 prerender하고, 여기에 `await params`가 suspend되는 render를 하나 더 수행해 `[product]`의 App Shell을 만듭니다.
+
+이것들이 다음과 같이 조합됩니다:
+
+- `/tops/tee`, `/shorts/joggers`: 두 param을 모두 아는, 완전히 static한 페이지
+- `/tops/[product]`, `/shorts/[product]`: category header는 render되고, product는 fallback을 표시
+- `/[category]/[product]`: 둘 다 fallback을 표시
+
+### At runtime || runtime 시점
+
+방문자가 `/tops/tee`로 이동합니다. 두 param 모두 prerender되어 있었습니다. 방문자는 완전히 static한 페이지를 받습니다.
+
+`/tops/overshirt`에 처음 방문하는 경우입니다. product `overshirt`는 알려지지 않았지만 category `tops`는 prerender되어 있었습니다. Next.js는 category header가 이미 render된 `/tops/[product]`의 App Shell을 제공합니다. product는 stream되어 들어옵니다.
+
+`/shoes/basketball-shoes`에 처음 방문하는 경우입니다. 어느 param도 prerender되지 않았습니다. Next.js는 `/[category]/[product]`의 범용 App Shell을 제공합니다. category와 product 모두 stream되어 들어옵니다.
+
+첫 방문 이후 Next.js는 이제 알게 된 param으로 이 route들을 background에서 render합니다. 같은 URL의 다음 방문자는 upgrade된 결과를 받습니다.
+
+나열되지 않은 URL을 가리키는 [`&lt;Link prefetch={true}&gt;`](/docs/app/api-reference/components/link#prefetch)가 viewport에 들어오면, Next.js는 첫 방문 때와 마찬가지로 클릭 전에 background upgrade를 시작하므로 navigation은 upgrade된 결과에 도착합니다.
+
+이 페이지들로 가는 link에는 `prefetch={true}`가 필요합니다. 기본 `&lt;Link&gt;`는 App Shell만 prefetch하며, 같은 route로 가는 link들은 이 App Shell을 공유합니다.
+
+&gt; **Good to know**: 나열되지 않은 param에 대한 App Shell 제공은 Next.js 16.3부터 지원됩니다. 이전 버전은 response를 보내기 전에 전체 server render를 기다립니다.
+
+### Wait for complete static output || 완전한 static 출력 기다리기
+
+나열되지 않은 parameter의 경우 [`ensureStatic = &#x27;navigation&#x27;`](/docs/app/api-reference/file-conventions/route-segment-config/ensureStatic#navigation)을 사용하면 첫 request가 완전한 static page를 기다리게 됩니다. 이 요구 사항이 없으면 Next.js는 background에서 페이지를 생성하는 동안 prerender된 fallback을 반환할 수 있습니다. Next.js는 완성된 페이지를 이후 request를 위해 저장합니다.
+
+### What the upgrade produces || upgrade의 결과물
+
+첫 방문 이후 Next.js는 알려진 param으로 background에서 페이지를 render하고, static boundary를 component tree에서 가능한 한 아래쪽까지 밀어 내리려고 합니다:
+
+- 모든 데이터 접근이 cache되고 모든 param이 resolve되면, upgrade 결과는 **완전히 static한 페이지**입니다.
+- 모든 param이 resolve되었지만 render가 여전히 `&lt;Suspense&gt;` boundary로 감싼 cache되지 않은 데이터나 Request-time API(`cookies()`, `headers()`)에 도달하면, upgrade 결과는 **해당 fallback을 포함한 cache된 페이지**입니다. cache되지 않았거나 request에 특화된 부분은 request 시점에 stream되어 들어옵니다.
+- param은 route 순서대로 resolve됩니다. `generateStaticParams`가 반환하지 않은 param 값은 resolve되지 않은 상태로 남고, 그보다 더 깊은 param의 upgrade도 막습니다.
+
+## Choosing what to prerender || 무엇을 prerender할지 선택하기
+
+모든 route를 prerender할 필요는 없습니다. prerender하는 페이지가 늘어날수록 build 작업이 늘어나고, 저장하고 deploy해야 할 출력물도 생깁니다. 상당수의 route는 다음 deploy 전까지 한 번도 방문되지 않을 수 있으므로, 그 작업은 불필요해집니다.
+
+대신 [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)를 사용해 인기 페이지나 예측 가능한 콘텐츠처럼 미리 준비해 두면 가장 이득이 큰 route를 prerender하세요. 방문 빈도가 낮은 route는 on demand로 생성되고 첫 방문 이후 upgrade되므로, 한 번도 request되지 않을 수 있는 페이지에 build 시간과 저장 공간을 쓰지 않아도 됩니다.
+
+## Coming from the Pages Router || Pages Router에서 넘어오는 경우
+
+Pages Router에서 migrate하는 경우:
+
+
+- `getStaticPaths`의 `fallback: true`는 Partial Prefetching을 사용하는 Cache Components에 해당합니다. 방문자는 `&lt;Suspense&gt;` fallback을 즉시 받고, Next.js는 완성된 route를 이후 방문을 위해 저장합니다.
+- [`fallback: &#x27;blocking&#x27;`](https://nextjs.org/docs/pages/api-reference/functions/get-static-paths#fallback-blocking)은 Partial Prefetching을 사용하지 않는 Cache Components에 해당합니다. `&lt;Suspense&gt;` 바깥에서 `params`를 await하면 첫 request가 완성된 route를 기다리고, Next.js는 이를 이후 방문을 위해 저장합니다.
+- `router.isFallback`은 필요하지 않습니다. prerender 단계에서 static shell이 생성되며, `&#x27;use cache&#x27;`로 이를 더 키울 수 있습니다.
+- `revalidate`를 사용하는 `getStaticProps`는 [`cacheLife`](/docs/app/api-reference/functions/cacheLife)와 함께 쓰는 `&#x27;use cache&#x27;`에 해당합니다.
+- `getStaticPaths`는 [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)에 해당합니다.
+
+## Next steps || 다음 단계
+
+- 전체 caching model은 [Caching with Cache Components](/docs/app/getting-started/caching)를 참고하세요
+- 어떤 param 조합을 prerender할지 제어하려면 [`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)를 참고하세요
+- App Shell에 skeleton UI를 제공하려면 [`loading.tsx`](/docs/app/api-reference/file-conventions/loading)를 참고하세요
+- 데이터가 준비되는 대로 UI를 점진적으로 render하는 방법은 [Streaming](/docs/app/guides/streaming)에서 알아보세요
+- `&#x27;use cache&#x27;`용 [`cacheHandlers`](/docs/app/api-reference/config/next-config-js/cacheHandlers)와 함께 기존 ISR [`cacheHandler`](/docs/app/api-reference/config/next-config-js/incrementalCacheHandlerPath)를 유지하려면 [Self-hosting](/docs/app/guides/self-hosting#caching-and-isr)을 참고하세요
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form (Form Component) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/pages/api-reference/components/form" data-router="pages">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/pages/api-reference/components/form" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/02-components/form.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>Pages Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="pages-api-reference-components.html">Components</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Form<span class="sub">Form Component</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>&lt;Form&gt;</code> component는 HTML <code>&lt;form&gt;</code> element를 확장해  제출 시 <strong>client-side navigation</strong>, 그리고 <strong>progressive enhancement</strong>를 제공합니다.</p><div class="en-orig"><p>The <code>&lt;Form&gt;</code> component extends the HTML <code>&lt;form&gt;</code> element to provide  <strong>client-side navigation</strong> on submission, and <strong>progressive enhancement</strong>.</p></div>
+<p>위 기능을 구현하는 데 필요한 boilerplate 코드를 줄여 주므로, URL search params를 업데이트하는 form에 유용합니다.</p><div class="en-orig"><p>It's useful for forms that update URL search params as it reduces the boilerplate code needed to achieve the above.</p></div>
+<p>기본 사용법:</p><div class="en-orig"><p>Basic usage:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="/ui/search.js" data-js="/ui/search.js">/ui/search.js</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import Form from &#x27;next/form&#x27;
+
+export default function Page() {
+  return (
+    &lt;Form action=&quot;/search&quot;&gt;
+      {/* On submission, the input value will be appended to
+          the URL, e.g. /search?query=abc */}
+      &lt;input name=&quot;query&quot; /&gt;
+      &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+    &lt;/Form&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import Form from &#x27;next/form&#x27;
+
+export default function Search() {
+  return (
+    &lt;Form action=&quot;/search&quot;&gt;
+      {/* On submission, the input value will be appended to
+          the URL, e.g. /search?query=abc */}
+      &lt;input name=&quot;query&quot; /&gt;
+      &lt;button type=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+    &lt;/Form&gt;
+  )
+}</code></pre></div></div>
+<h2 class="sec" id="reference"><a class="anchor" href="#reference">Reference<span class="ko">참고</span></a></h2>
+<p><code>&lt;Form&gt;</code> component의 동작은 <code>action</code> prop에 <code>string</code>을 전달하는지 <code>function</code>을 전달하는지에 따라 달라집니다.</p><div class="en-orig"><p>The behavior of the <code>&lt;Form&gt;</code> component depends on whether the <code>action</code> prop is passed a <code>string</code> or <code>function</code>.</p></div>
+<ul>
+<li><code>action</code>이 <strong>string</strong>이면 <code>&lt;Form&gt;</code>은 <strong><code>GET</code></strong> method를 사용하는 native HTML form처럼 동작합니다. form data는 search params로 URL에 encode되고, form을 제출하면 지정한 URL로 navigate합니다. 또한 Next.js는 다음을 수행합니다:<ul>
+<li>form을 제출하면 전체 page reload 대신 <a href="app-getting-started-linking-and-navigating.html#client-side-transitions">client-side navigation</a>을 수행합니다. 이렇게 하면 공유 UI와 client-side state가 유지됩니다.</li>
+</ul></li>
+</ul><div class="en-orig"><ul>
+<li>When <code>action</code> is a <strong>string</strong>, the <code>&lt;Form&gt;</code> behaves like a native HTML form that uses a <strong><code>GET</code></strong> method. The form data is encoded into the URL as search params, and when the form is submitted, it navigates to the specified URL. In addition, Next.js:<ul>
+<li>Performs a <a href="app-getting-started-linking-and-navigating.html#client-side-transitions">client-side navigation</a> instead of a full page reload when the form is submitted. This retains shared UI and client-side state.</li>
+</ul></li>
+</ul></div>
+<h3 class="sec" id="action-string-props"><a class="anchor" href="#action-string-props"><code>action</code> (string) Props</a></h3>
+<p><code>action</code>이 string이면 <code>&lt;Form&gt;</code> component는 다음 props를 지원합니다:</p><div class="en-orig"><p>When <code>action</code> is a string, the <code>&lt;Form&gt;</code> component supports the following props:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>Prop</th><th>Example</th><th>Type</th><th>Required</th></tr></thead>
+<tbody>
+<tr><td><code>action</code></td><td><code>action=&quot;/search&quot;</code></td><td><code>string</code> (URL 또는 상대 경로)</td><td>필수</td></tr>
+<tr><td><code>replace</code></td><td><code>replace={false}</code></td><td><code>boolean</code></td><td>-</td></tr>
+<tr><td><code>scroll</code></td><td><code>scroll={true}</code></td><td><code>boolean</code></td><td>-</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Prop</th><th>Example</th><th>Type</th><th>Required</th></tr></thead>
+<tbody>
+<tr><td><code>action</code></td><td><code>action=&quot;/search&quot;</code></td><td><code>string</code> (URL or relative path)</td><td>Yes</td></tr>
+<tr><td><code>replace</code></td><td><code>replace={false}</code></td><td><code>boolean</code></td><td>-</td></tr>
+<tr><td><code>scroll</code></td><td><code>scroll={true}</code></td><td><code>boolean</code></td><td>-</td></tr>
+</tbody></table></div></div>
+<ul>
+<li><strong><code>action</code></strong>: form을 제출할 때 navigate할 URL 또는 경로입니다.<ul>
+<li>빈 문자열 <code>&quot;&quot;</code>이면 업데이트된 search params와 함께 같은 route로 navigate합니다.</li>
+</ul></li>
+<li><strong><code>replace</code></strong>: <a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API" target="_blank" rel="noopener">browser history</a> stack에 새 history state를 push하는 대신 현재 history state를 대체합니다. 기본값은 <code>false</code>입니다.</li>
+<li><strong><code>scroll</code></strong>: navigation 중 scroll 동작을 제어합니다. 기본값은 <code>true</code>이며, 이는 새 route의 맨 위로 scroll하고 뒤로/앞으로 navigation할 때는 scroll 위치를 유지한다는 뜻입니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>action</code></strong>: The URL or path to navigate to when the form is submitted.<ul>
+<li>An empty string <code>&quot;&quot;</code> will navigate to the same route with updated search params.</li>
+</ul></li>
+<li><strong><code>replace</code></strong>: Replaces the current history state instead of pushing a new one to the <a href="https://developer.mozilla.org/en-US/docs/Web/API/History_API" target="_blank" rel="noopener">browser's history</a> stack. Default is <code>false</code>.</li>
+<li><strong><code>scroll</code></strong>: Controls the scroll behavior during navigation. Defaults to <code>true</code>, this means it will scroll to the top of the new route, and maintain the scroll position for backwards and forwards navigation.</li>
+</ul></div>
+<h3 class="sec" id="caveats"><a class="anchor" href="#caveats">Caveats<span class="ko">주의 사항</span></a></h3>
+<ul>
+<li><strong><code>onSubmit</code></strong>: form 제출 로직을 처리하는 데 사용할 수 있습니다. 하지만 <code>event.preventDefault()</code>를 호출하면 지정한 URL로 navigate하는 것 같은 <code>&lt;Form&gt;</code> 동작이 override됩니다.</li>
+<li><strong><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#method" target="_blank" rel="noopener"><code>method</code></a>, <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#enctype" target="_blank" rel="noopener"><code>encType</code></a>, <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#target" target="_blank" rel="noopener"><code>target</code></a></strong>: <code>&lt;Form&gt;</code> 동작을 override하므로 지원되지 않습니다.<ul>
+<li>마찬가지로 <code>formMethod</code>, <code>formEncType</code>, <code>formTarget</code>을 사용해 각각 <code>method</code>, <code>encType</code>, <code>target</code> props를 override할 수 있으며, 이를 사용하면 native 브라우저 동작으로 fallback됩니다.</li>
+<li>이 props를 사용해야 한다면 HTML <code>&lt;form&gt;</code> element를 대신 사용하세요.</li>
+</ul></li>
+<li><strong><code>&lt;input type=&quot;file&quot;&gt;</code></strong>: <code>action</code>이 string일 때 이 input type을 사용하면, 브라우저 동작과 동일하게 file object 대신 파일 이름이 제출됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>onSubmit</code></strong>: Can be used to handle form submission logic. However, calling <code>event.preventDefault()</code> will override <code>&lt;Form&gt;</code> behavior such as navigating to the specified URL.</li>
+<li><strong><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#method" target="_blank" rel="noopener"><code>method</code></a>, <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#enctype" target="_blank" rel="noopener"><code>encType</code></a>, <a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#target" target="_blank" rel="noopener"><code>target</code></a></strong>: Are not supported as they override <code>&lt;Form&gt;</code> behavior.<ul>
+<li>Similarly, <code>formMethod</code>, <code>formEncType</code>, and <code>formTarget</code> can be used to override the <code>method</code>, <code>encType</code>, and <code>target</code> props respectively, and using them will fallback to native browser behavior.</li>
+<li>If you need to use these props, use the HTML <code>&lt;form&gt;</code> element instead.</li>
+</ul></li>
+<li><strong><code>&lt;input type=&quot;file&quot;&gt;</code></strong>: Using this input type when the <code>action</code> is a string will match browser behavior by submitting the filename instead of the file object.</li>
+</ul></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/02-components/form.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/pages/api-reference/components/form" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="pages-api-reference-components-font.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Font</div><div class="ttl-ko">Font Module</div></a>
+      <a href="pages-api-reference-components-head.html" class="next"><div class="dir">다음 →</div><div class="ttl">Head</div><div class="ttl-ko">Head</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/pages/api-reference/components/form" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#reference">Reference</a></li><li class="l3"><a href="#action-string-props"><code>action</code> (string) Props</a></li><li class="l3"><a href="#caveats">Caveats</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`&lt;Form&gt;` component는 HTML `&lt;form&gt;` element를 확장해  제출 시 **client-side navigation**, 그리고 **progressive enhancement**를 제공합니다.
+
+위 기능을 구현하는 데 필요한 boilerplate 코드를 줄여 주므로, URL search params를 업데이트하는 form에 유용합니다.
+
+기본 사용법:
+
+
+
+
+
+[[CODE 2]]
+
+
+
+## Reference || 참고
+
+`&lt;Form&gt;` component의 동작은 `action` prop에 `string`을 전달하는지 `function`을 전달하는지에 따라 달라집니다.
+
+
+
+
+
+- `action`이 **string**이면 `&lt;Form&gt;`은 **`GET`** method를 사용하는 native HTML form처럼 동작합니다. form data는 search params로 URL에 encode되고, form을 제출하면 지정한 URL로 navigate합니다. 또한 Next.js는 다음을 수행합니다:
+  - form을 제출하면 전체 page reload 대신 [client-side navigation](/docs/app/getting-started/linking-and-navigating#client-side-transitions)을 수행합니다. 이렇게 하면 공유 UI와 client-side state가 유지됩니다.
+
+
+
+### `action` (string) Props
+
+
+
+`action`이 string이면 `&lt;Form&gt;` component는 다음 props를 지원합니다:
+
+| Prop      | Example            | Type                            | Required |
+| --------- | ------------------ | ------------------------------- | -------- |
+| `action`  | `action=&quot;/search&quot;` | `string` (URL 또는 상대 경로)   | 필수     |
+| `replace` | `replace={false}`  | `boolean`                       | -        |
+| `scroll`  | `scroll={true}`    | `boolean`                       | -        |
+
+- **`action`**: form을 제출할 때 navigate할 URL 또는 경로입니다.
+  - 빈 문자열 `&quot;&quot;`이면 업데이트된 search params와 함께 같은 route로 navigate합니다.
+- **`replace`**: [browser history](https://developer.mozilla.org/en-US/docs/Web/API/History_API) stack에 새 history state를 push하는 대신 현재 history state를 대체합니다. 기본값은 `false`입니다.
+- **`scroll`**: navigation 중 scroll 동작을 제어합니다. 기본값은 `true`이며, 이는 새 route의 맨 위로 scroll하고 뒤로/앞으로 navigation할 때는 scroll 위치를 유지한다는 뜻입니다.
+
+
+
+
+
+### Caveats || 주의 사항
+
+
+
+- **`onSubmit`**: form 제출 로직을 처리하는 데 사용할 수 있습니다. 하지만 `event.preventDefault()`를 호출하면 지정한 URL로 navigate하는 것 같은 `&lt;Form&gt;` 동작이 override됩니다.
+- **[`method`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#method), [`encType`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#enctype), [`target`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form#target)**: `&lt;Form&gt;` 동작을 override하므로 지원되지 않습니다.
+  - 마찬가지로 `formMethod`, `formEncType`, `formTarget`을 사용해 각각 `method`, `encType`, `target` props를 override할 수 있으며, 이를 사용하면 native 브라우저 동작으로 fallback됩니다.
+  - 이 props를 사용해야 한다면 HTML `&lt;form&gt;` element를 대신 사용하세요.
+- **`&lt;input type=&quot;file&quot;&gt;`**: `action`이 string일 때 이 input type을 사용하면, 브라우저 동작과 동일하게 file object 대신 파일 이름이 제출됩니다.
+
+
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

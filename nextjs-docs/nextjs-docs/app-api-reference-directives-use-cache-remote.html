@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>use cache: remote (use cache: remote) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/directives/use-cache-remote" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/directives/use-cache-remote" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/01-directives/use-cache-remote.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-directives.html">Directives</a></div>
+    <div class="title-row">
+      <h1 class="page-title">use cache: remote<span class="sub">use cache: remote</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p><code>use cache</code> directive는 대부분의 애플리케이션 요구에 충분하지만, cache된 작업이 예상보다 자주 다시 실행되거나 upstream 서비스(CMS, 데이터베이스, 외부 API)가 예상보다 많은 요청을 받는다는 것을 알아차릴 수 있습니다. 이는 <code>use cache</code>가 항목을 메모리(in-memory)에 저장하기 때문에 생길 수 있으며, 여기에는 본질적인 한계가 있습니다:</p><div class="en-orig"><p>While the <code>use cache</code> directive is sufficient for most application needs, you might notice that cached operations are re-running more often than expected, or that your upstream services (CMS, databases, external APIs) are getting more hits than you'd expect. This can happen because <code>use cache</code> stores entries in-memory, which has inherent limitations:</p></div>
+<ul>
+<li>새 항목을 위한 공간을 만들기 위해 cache 항목이 제거(evict)됨</li>
+<li>deploy 환경의 메모리 제약</li>
+<li>cache가 request나 서버 재시작 간에 유지되지 않음</li>
+</ul><div class="en-orig"><ul>
+<li>Cache entries being evicted to make room for new ones</li>
+<li>Memory constraints in your deployment environment</li>
+<li>Cache not persisting across requests or server restarts</li>
+</ul></div>
+<p><code>use cache</code>는 server-side caching 외에도 여전히 가치를 제공한다는 점에 유의하세요: Next.js에게 무엇을 prefetch할 수 있는지 알려 주고, client-side navigation의 stale time을 정의합니다.</p><div class="en-orig"><p>Note that <code>use cache</code> still provides value beyond server-side caching: it informs Next.js what can be prefetched and defines stale times for client-side navigation.</p></div>
+<p><code>&#x27;use cache: remote&#x27;</code> directive를 사용하면 cache된 출력을 메모리 대신 remote cache에 저장하도록 선언적으로 지정할 수 있어, 모든 서버 instance가 공유하는 내구성 있는 caching을 제공합니다. 여기에는 trade-off가 따릅니다: 인프라 비용과 cache 조회 시의 네트워크 지연입니다.</p><div class="en-orig"><p>The <code>&#x27;use cache: remote&#x27;</code> directive lets you declaratively specify that a cached output should be stored in a remote cache instead of in-memory, providing durable caching shared across all server instances. This comes with tradeoffs: infrastructure cost and network latency during cache lookups.</p></div>
+<h2 class="sec" id="usage"><a class="anchor" href="#usage">Usage<span class="ko">사용법</span></a></h2>
+<p><code>&#x27;use cache: remote&#x27;</code>를 사용하려면 <code>next.config.ts</code> 파일에서 <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a> flag를 활성화하세요:</p><div class="en-orig"><p>To use <code>&#x27;use cache: remote&#x27;</code>, enable the <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code></a> flag in your <code>next.config.ts</code> file:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  cacheComponents: true,
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  cacheComponents: true,
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<p>그런 다음 remote caching이 정당하다고 판단한 함수나 component에 <code>&#x27;use cache: remote&#x27;</code>를 추가하세요. handler 구현은 <a href="app-api-reference-config-next-config-js-cacheHandlers.html"><code>cacheHandlers</code></a>로 설정하지만, 보통은 호스팅 제공자가 이를 자동으로 제공합니다. self-hosting하는 경우 <code>cacheHandlers</code> 설정 reference를 참고해 cache 스토리지를 구성하세요.</p><div class="en-orig"><p>Then add <code>&#x27;use cache: remote&#x27;</code> to the functions or components where you've determined remote caching is justified. The handler implementation is configured via <a href="app-api-reference-config-next-config-js-cacheHandlers.html"><code>cacheHandlers</code></a>, though hosting providers should typically provide this automatically. If you're self-hosting, see the <code>cacheHandlers</code> configuration reference to set up your cache storage.</p></div>
+<h3 class="sec" id="when-to-avoid-remote-caching"><a class="anchor" href="#when-to-avoid-remote-caching">When to avoid remote caching<span class="ko">Remote caching을 피해야 할 때</span></a></h3>
+<ul>
+<li>데이터 레이어를 감싸는 server-side cache key-value store가 이미 있다면, 또 다른 caching 레이어를 추가하지 않아도 <code>use cache</code>만으로 데이터를 static shell에 포함하기에 충분할 수 있습니다</li>
+<li>가까운 위치나 로컬 접근 덕분에 작업이 이미 빠르다면(&lt; 50ms), remote cache 조회가 성능을 개선하지 못할 수 있습니다</li>
+<li>cache key가 request마다 대부분 고유한 값(검색 filter, 가격 범위, 사용자별 parameter)을 가진다면, cache 활용도는 거의 0에 가깝습니다</li>
+<li>데이터가 자주(수 초에서 수 분 단위로) 바뀐다면, cache hit이 금방 stale해져 miss가 잦아지고 upstream revalidation을 기다리게 됩니다</li>
+</ul><div class="en-orig"><ul>
+<li>If you already have a server-side cache key-value store wrapping your data layer, <code>use cache</code> may be sufficient to include data in the static shell without adding another caching layer</li>
+<li>If operations are already fast (&lt; 50ms) due to proximity or local access, the remote cache lookup might not improve performance</li>
+<li>If cache keys have mostly unique values per request (search filters, price ranges, user-specific parameters), cache utilization will be near-zero</li>
+<li>If data changes frequently (seconds to minutes), cache hits will quickly go stale, leading to frequent misses and waiting for upstream revalidation</li>
+</ul></div>
+<h3 class="sec" id="when-remote-caching-makes-sense"><a class="anchor" href="#when-remote-caching-makes-sense">When remote caching makes sense<span class="ko">Remote caching이 적합한 경우</span></a></h3>
+<p>Remote caching은 콘텐츠가 request time으로 미뤄질 때(static shell 밖) 가장 큰 가치를 제공합니다. 이는 보통 component가 <a href="app-api-reference-functions-cookies.html"><code>cookies()</code></a>, <a href="app-api-reference-functions-headers.html"><code>headers()</code></a>, <a href="app-api-reference-file-conventions-page.html#searchparams-optional"><code>searchParams</code></a> 같은 request 값에 접근해 Suspense boundary 안에 놓일 때 발생합니다. 이런 상황에서는:</p><div class="en-orig"><p>Remote caching provides the most value when content is deferred to request time (outside the static shell). This typically happens when a component accesses request values like <a href="app-api-reference-functions-cookies.html"><code>cookies()</code></a>, <a href="app-api-reference-functions-headers.html"><code>headers()</code></a>, or <a href="app-api-reference-file-conventions-page.html#searchparams-optional"><code>searchParams</code></a>, placing it inside a Suspense boundary. In this context:</p></div>
+<ul>
+<li>각 request가 component를 실행하고 cache를 조회합니다</li>
+<li>serverless 환경에서는 각 instance가 자체적인 임시(ephemeral) 메모리를 가지므로 cache hit rate가 낮습니다</li>
+<li>Remote caching은 모든 instance가 공유하는 cache를 제공해 hit rate를 높이고 backend 부하를 줄입니다</li>
+</ul><div class="en-orig"><ul>
+<li>Each request executes the component and looks up the cache</li>
+<li>In serverless environments, each instance has its own ephemeral memory with low cache hit rates</li>
+<li>Remote caching provides a shared cache across all instances, improving hit rates and reducing backend load</li>
+</ul></div>
+<p><code>&#x27;use cache: remote&#x27;</code>가 특히 유용한 시나리오:</p><div class="en-orig"><p>Compelling scenarios for <code>&#x27;use cache: remote&#x27;</code>:</p></div>
+<ul>
+<li><strong>Rate-limited APIs</strong>: upstream 서비스에 도달할 위험이 있는 rate limit이나 request 할당량이 있는 경우</li>
+<li><strong>Protecting slow backends</strong>: 트래픽이 많을 때 데이터베이스나 API가 병목이 되는 경우</li>
+<li><strong>Expensive operations</strong>: 반복 실행 비용이 큰 데이터베이스 query나 연산</li>
+<li><strong>Flaky or unreliable services</strong>: 가끔 실패하거나 가용성 문제가 있는 외부 서비스</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Rate-limited APIs</strong>: Your upstream service has rate limits or request quotas that you risk hitting</li>
+<li><strong>Protecting slow backends</strong>: Your database or API becomes a bottleneck under high traffic</li>
+<li><strong>Expensive operations</strong>: Database queries or computations that are costly to run repeatedly</li>
+<li><strong>Flaky or unreliable services</strong>: External services that occasionally fail or have availability issues</li>
+</ul></div>
+<p>이런 경우에는 더 나쁜 결과(rate limit error, backend 과부하, 높은 컴퓨팅 비용, 저하된 사용자 경험)를 피할 수 있으므로 remote caching의 비용과 지연이 정당화됩니다.</p><div class="en-orig"><p>In these cases, the cost and latency of remote caching is justified by avoiding worse outcomes (rate limit errors, backend overload, high compute bills, or degraded user experience).</p></div>
+<p>static shell 콘텐츠에는 보통 <code>use cache</code>로 충분합니다. upstream source가 동시 revalidation request를 감당할 수 없다면(rate limit이 있는 CMS 등), <code>use cache: remote</code>가 공유 cache 레이어 역할을 합니다. 이는 데이터베이스 앞에 key-value store를 두는 것과 같은 패턴이지만, 코드에서 선언한다는 점이 다릅니다.</p><div class="en-orig"><p>For static shell content, <code>use cache</code> is usually sufficient. If your upstream source can't handle concurrent revalidation requests (like a rate-limited CMS), <code>use cache: remote</code> acts as a shared cache layer. This is the same pattern as putting a key-value store in front of a database, but declared in code.</p></div>
+<h3 class="sec" id="how-use-cache-remote-differs-from-use-cache-and-use-cache-private"><a class="anchor" href="#how-use-cache-remote-differs-from-use-cache-and-use-cache-private">How <code>use cache: remote</code> differs from <code>use cache</code> and <code>use cache: private</code><span class="ko"><code>use cache: remote</code>와 <code>use cache</code>, <code>use cache: private</code>의 차이</span></a></h3>
+<p>Next.js는 서로 다른 사용 사례를 위해 설계된 세 가지 caching directive를 제공합니다:</p><div class="en-orig"><p>Next.js provides three caching directives, each designed for different use cases:</p></div>
+<div class="table-wrap"><table>
+<thead><tr><th>기능</th><th><code>use cache</code></th><th><code>&#x27;use cache: remote&#x27;</code></th><th><code>&#x27;use cache: private&#x27;</code></th></tr></thead>
+<tbody>
+<tr><td><strong>Server-side caching</strong></td><td>In-memory 또는 cache handler</td><td>Remote cache handler</td><td>없음</td></tr>
+<tr><td><strong>Cache scope</strong></td><td>모든 사용자가 공유</td><td>모든 사용자가 공유</td><td>client(브라우저)별</td></tr>
+<tr><td><strong>Can access cookies/headers directly</strong></td><td>아니요(인자로 전달해야 함)</td><td>아니요(인자로 전달해야 함)</td><td>예</td></tr>
+<tr><td><strong>Server cache utilization</strong></td><td>static shell 밖에서는 낮을 수 있음</td><td>높음(instance 간 공유)</td><td>해당 없음</td></tr>
+<tr><td><strong>Additional costs</strong></td><td>없음</td><td>인프라(스토리지, 네트워크)</td><td>없음</td></tr>
+<tr><td><strong>Latency impact</strong></td><td>없음</td><td>Cache handler 조회</td><td>없음</td></tr>
+<tr><td><strong>Persists across deploys</strong></td><td>아니요</td><td>아니요</td><td>해당 없음</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Feature</th><th><code>use cache</code></th><th><code>&#x27;use cache: remote&#x27;</code></th><th><code>&#x27;use cache: private&#x27;</code></th></tr></thead>
+<tbody>
+<tr><td><strong>Server-side caching</strong></td><td>In-memory or cache handler</td><td>Remote cache handler</td><td>None</td></tr>
+<tr><td><strong>Cache scope</strong></td><td>Shared across all users</td><td>Shared across all users</td><td>Per-client (browser)</td></tr>
+<tr><td><strong>Can access cookies/headers directly</strong></td><td>No (must pass as arguments)</td><td>No (must pass as arguments)</td><td>Yes</td></tr>
+<tr><td><strong>Server cache utilization</strong></td><td>May be low outside static shell</td><td>High (shared across instances)</td><td>N/A</td></tr>
+<tr><td><strong>Additional costs</strong></td><td>None</td><td>Infrastructure (storage, network)</td><td>None</td></tr>
+<tr><td><strong>Latency impact</strong></td><td>None</td><td>Cache handler lookup</td><td>None</td></tr>
+<tr><td><strong>Persists across deploys</strong></td><td>No</td><td>No</td><td>N/A</td></tr>
+</tbody></table></div></div>
+<h3 class="sec" id="persistence-across-deploys"><a class="anchor" href="#persistence-across-deploys">Persistence across deploys<span class="ko">Deploy 간 지속성</span></a></h3>
+<p>Remote cache 항목은 deploy 간에 유지되지 않습니다. cache key에는 (설정된 경우) <code>deploymentId</code> 또는 <code>buildId</code>가 포함되므로, 새 build는 새 key를 만들고 이전 build의 항목에는 더 이상 접근할 수 없습니다. 전체 key 구성은 <a href="app-api-reference-directives-use-cache.html#cache-keys">Cache keys</a>를 참고하세요.</p><div class="en-orig"><p>Remote cache entries do not persist across deploys. The cache key includes the <code>deploymentId</code> (when configured) or the <code>buildId</code>, so a new build produces new keys and the previous build's entries are no longer reachable. See <a href="app-api-reference-directives-use-cache.html#cache-keys">Cache keys</a> for the full key composition.</p></div>
+<p>이는 의도된 동작입니다. build 사이에 함수의 identity hash나 반환값의 형태가 바뀔 수 있습니다. CMS client를 업그레이드하거나, cache된 함수를 refactoring하거나, dependency를 바꾸면 이전 호출자가 기대하는 것과 맞지 않는 값이 만들어질 수 있으므로, deploy 간에 항목을 재사용하면 오래되었거나 잘못된 형식의 데이터를 제공할 위험이 있습니다.</p><div class="en-orig"><p>This is intentional. Between builds, the function's identity hash or the shape of its return value can change. Upgrading a CMS client, refactoring a cached function, or changing a dependency could produce a value that doesn't match what older callers expect, so reusing entries across deploys risks serving stale or malformed data.</p></div>
+<p>deploy 간에 유지되는 항목이 필요하다면, <code>fetch</code>가 아닌 함수에는 <a href="app-api-reference-functions-unstable_cache.html"><code>unstable_cache</code></a>를 사용하거나 <a href="app-api-reference-functions-fetch.html"><code>fetch</code></a> cache에 의존하세요.</p><div class="en-orig"><p>If you need entries that persist across deploys, use <a href="app-api-reference-functions-unstable_cache.html"><code>unstable_cache</code></a> for non-<code>fetch</code> functions, or rely on the <a href="app-api-reference-functions-fetch.html"><code>fetch</code></a> cache.</p></div>
+<h3 class="sec" id="caching-with-runtime-data"><a class="anchor" href="#caching-with-runtime-data">Caching with runtime data<span class="ko">Runtime 데이터와 함께 caching하기</span></a></h3>
+<p><code>use cache</code>와 <code>&#x27;use cache: remote&#x27;</code> 모두 cookie나 search param 같은 runtime 값에 직접 접근할 수 없습니다. 이런 값을 추출해 cache된 함수에 인자로 전달할 수 있습니다. 이 패턴은 <a href="app-getting-started-caching.html#working-with-runtime-apis">with runtime data</a>를 참고하세요.</p><div class="en-orig"><p>Both <code>use cache</code> and <code>&#x27;use cache: remote&#x27;</code> can't access runtime values like cookies or search params directly. You can extract these values and pass them as arguments to cached functions. See <a href="app-getting-started-caching.html#working-with-runtime-apis">with runtime data</a> for this pattern.</p></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p><code>use cache</code>는 항목을 메모리에 저장합니다. serverless 환경에서는 메모리가 instance 간에 공유되지 않고 보통 request를 처리한 뒤 파기되므로, runtime caching에서 cache miss가 자주 발생합니다.</p><div class="en-orig"><p><code>use cache</code> stores entries in-memory. In serverless environments, memory is not shared between instances and is typically destroyed after serving a request, leading to frequent cache misses for runtime caching.</p></div></div></div>
+<h3 class="sec" id="cache-key-considerations"><a class="anchor" href="#cache-key-considerations">Cache key considerations<span class="ko">Cache key 고려 사항</span></a></h3>
+<p>cache key에 어떤 값을 포함할지 신중하게 결정하세요. 고유한 값마다 별도의 cache 항목이 만들어져 cache 활용도가 떨어집니다. 검색 filter를 사용하는 다음 예시를 살펴보세요:</p><div class="en-orig"><p>Be thoughtful about which values you include in cache keys. Each unique value creates a separate cache entry, reducing cache utilization. Consider this example with search filters:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/products/[category]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+
+export default async function ProductsPage({
+  params,
+  searchParams,
+}: {
+  params: Promise&lt;{ category: string }&gt;
+  searchParams: Promise&lt;{ minPrice?: string }&gt;
+}) {
+  return (
+    &lt;Suspense fallback={&lt;div&gt;Loading...&lt;/div&gt;}&gt;
+      &lt;ProductList params={params} searchParams={searchParams} /&gt;
+    &lt;/Suspense&gt;
+  )
+}
+
+async function ProductList({
+  params,
+  searchParams,
+}: {
+  params: Promise&lt;{ category: string }&gt;
+  searchParams: Promise&lt;{ minPrice?: string }&gt;
+}) {
+  const { category } = await params
+
+  const { minPrice } = await searchParams
+
+  // Cache only on category (few unique values)
+  // Don&#x27;t include price filter (many unique values)
+  const products = await getProductsByCategory(category)
+
+  // Filter price in memory instead of creating cache entries
+  // for every price value
+  const filtered = minPrice
+    ? products.filter((p) =&gt; p.price &gt;= parseFloat(minPrice))
+    : products
+
+  return &lt;div&gt;{/* render filtered products */}&lt;/div&gt;
+}
+
+async function getProductsByCategory(category: string) {
+  &#x27;use cache: remote&#x27;
+  // Only category is part of the cache key
+  // Much better utilization than caching every price filter value
+  return db.products.findByCategory(category)
+}</code></pre></div></div>
+<p>이 예시에서 remote handler는 더 나은 cache hit rate를 얻기 위해 cache 항목마다 더 많은 데이터(한 카테고리의 모든 상품)를 저장합니다. cache miss의 비용(backend 호출)이 더 큰 항목의 스토리지 비용보다 클 때 그럴 가치가 있습니다.</p><div class="en-orig"><p>In this example, the remote handler stores more data per cache entry (all products in a category) to achieve better cache hit rates. This is worth it when the cost of cache misses (hitting your backend) outweighs the storage cost of larger entries.</p></div>
+<p>같은 원칙이 사용자별 데이터에도 적용됩니다. 사용자별 데이터를 직접 cache하는 대신, 사용자 preference를 사용해 어떤 공유 데이터를 cache할지 결정하세요.</p><div class="en-orig"><p>The same principle applies to user-specific data. Rather than caching per-user data directly, use user preferences to determine what shared data to cache.</p></div>
+<p>예를 들어 사용자가 session에 언어 preference를 가지고 있다면, 그 preference를 추출해 공유 콘텐츠를 cache하는 데 사용하세요:</p><div class="en-orig"><p>For example, if users have a language preference in their session, extract that preference and use it to cache shared content:</p></div>
+<ul>
+<li>사용자마다 항목 하나를 만드는 <code>getUserProfile(sessionID)</code>를 remote caching하는 대신</li>
+<li>언어마다 항목 하나를 만드는 <code>getCMSContent(language)</code>를 remote cache하세요</li>
+</ul><div class="en-orig"><ul>
+<li>Instead of remote caching <code>getUserProfile(sessionID)</code>, which creates one entry per user</li>
+<li>Remote cache <code>getCMSContent(language)</code> to create one entry per language</li>
+</ul></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/components/welcome-message.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { cookies } from &#x27;next/headers&#x27;
+import { cacheLife } from &#x27;next/cache&#x27;
+
+export async function WelcomeMessage() {
+  // Extract the language preference (not unique per user)
+  const language = (await cookies()).get(&#x27;language&#x27;)?.value || &#x27;en&#x27;
+
+  // Cache based on language (few unique values: en, es, fr, de, etc.)
+  // All users who prefer &#x27;en&#x27; share the same cache entry
+  const content = await getCMSContent(language)
+
+  return &lt;div&gt;{content.welcomeMessage}&lt;/div&gt;
+}
+
+async function getCMSContent(language: string) {
+  &#x27;use cache: remote&#x27;
+  cacheLife({ expire: 3600 })
+  // Creates ~10-50 cache entries (one per language)
+  // instead of thousands (one per user)
+  return cms.getHomeContent(language)
+}</code></pre></div></div>
+<p>이렇게 하면 같은 언어를 선호하는 모든 사용자가 하나의 cache 항목을 공유하므로 cache 활용도가 높아지고 CMS 부하가 줄어듭니다.</p><div class="en-orig"><p>This way all users who prefer the same language share a cache entry, improving cache utilization and reducing load on your CMS.</p></div>
+<p>두 예시의 패턴은 같습니다: 고유한 값이 더 적은 차원(카테고리 vs. 가격, 언어 vs. 사용자 ID)을 찾아 그 차원으로 cache하고, 나머지는 메모리에서 filter하거나 선택합니다.</p><div class="en-orig"><p>The pattern is the same in both examples: find the dimension with fewer unique values (category vs. price, language vs. user ID), cache on that dimension, and filter or select the rest in memory.</p></div>
+<p><code>getUserProfile</code>이 사용하는 서비스가 frontend 부하에 맞춰 확장될 수 없다면, 짧은 <code>cacheLife</code>와 함께 <code>use cache</code> directive를 사용해 in-memory caching을 여전히 활용할 수 있습니다. 하지만 대부분의 사용자 데이터는 source에서 직접 fetch하는 것이 좋습니다(위 가이드라인에서 언급했듯이 source가 이미 key/value store로 감싸져 있을 수도 있습니다).</p><div class="en-orig"><p>If the service used by <code>getUserProfile</code> cannot scale with your frontend load, you may still be able to use the <code>use cache</code> directive with a short <code>cacheLife</code> for in-memory caching. However, for most user data, you likely want to fetch directly from the source (which might already be wrapped in a key/value store as mentioned in the guidelines above).</p></div>
+<p>compliance 요구 사항이 있거나 runtime 데이터를 인자로 전달하도록 refactoring할 수 없는 경우에만 <a href="app-api-reference-directives-use-cache-private.html"><code>&#x27;use cache: private&#x27;</code></a>를 사용하세요.</p><div class="en-orig"><p>Only use <a href="app-api-reference-directives-use-cache-private.html"><code>&#x27;use cache: private&#x27;</code></a> if you have compliance requirements or can't refactor to pass runtime data as arguments.</p></div>
+<h3 class="sec" id="nesting-rules"><a class="anchor" href="#nesting-rules">Nesting rules<span class="ko">중첩 규칙</span></a></h3>
+<p>Remote cache에는 특정한 중첩 규칙이 있습니다:</p><div class="en-orig"><p>Remote caches have specific nesting rules:</p></div>
+<ul>
+<li>Remote cache는 다른 remote cache(<code>&#x27;use cache: remote&#x27;</code>) 안에 중첩<strong>할 수 있습니다</strong></li>
+<li>Remote cache는 일반 cache(<code>&#x27;use cache&#x27;</code>) 안에 중첩<strong>할 수 있습니다</strong></li>
+<li>Remote cache는 private cache(<code>&#x27;use cache: private&#x27;</code>) 안에 중첩<strong>할 수 없습니다</strong></li>
+<li>Private cache는 remote cache 안에 중첩<strong>할 수 없습니다</strong></li>
+</ul><div class="en-orig"><ul>
+<li>Remote caches <strong>can</strong> be nested inside other remote caches (<code>&#x27;use cache: remote&#x27;</code>)</li>
+<li>Remote caches <strong>can</strong> be nested inside regular caches (<code>&#x27;use cache&#x27;</code>)</li>
+<li>Remote caches <strong>cannot</strong> be nested inside private caches (<code>&#x27;use cache: private&#x27;</code>)</li>
+<li>Private caches <strong>cannot</strong> be nested inside remote caches</li>
+</ul></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">// VALID: Remote inside remote
+async function outerRemote() {
+  &#x27;use cache: remote&#x27;
+  const result = await innerRemote()
+  return result
+}
+
+async function innerRemote() {
+  &#x27;use cache: remote&#x27;
+  return getData()
+}
+
+// VALID: Remote inside regular cache
+async function outerCache() {
+  &#x27;use cache&#x27;
+  // The inner remote cache will work when deferred to request time
+  const result = await innerRemote()
+  return result
+}
+
+async function innerRemote() {
+  &#x27;use cache: remote&#x27;
+  return getData()
+}
+
+// INVALID: Remote inside private
+async function outerPrivate() {
+  &#x27;use cache: private&#x27;
+  const result = await innerRemote() // Error!
+  return result
+}
+
+async function innerRemote() {
+  &#x27;use cache: remote&#x27;
+  return getData()
+}
+
+// INVALID: Private inside remote
+async function outerRemote() {
+  &#x27;use cache: remote&#x27;
+  const result = await innerPrivate() // Error!
+  return result
+}
+
+async function innerPrivate() {
+  &#x27;use cache: private&#x27;
+  return getData()
+}</code></pre></div></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<p>다음 예시는 <code>&#x27;use cache: remote&#x27;</code>를 사용하는 일반적인 패턴을 보여 줍니다. <code>cacheLife</code> parameter(<code>stale</code>, <code>revalidate</code>, <code>expire</code>)에 대한 자세한 내용은 <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code> API reference</a>를 참고하세요.</p><div class="en-orig"><p>The following examples demonstrate common patterns for using <code>&#x27;use cache: remote&#x27;</code>. For details about <code>cacheLife</code> parameters (<code>stale</code>, <code>revalidate</code>, <code>expire</code>), see the <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife</code> API reference</a>.</p></div>
+<h3 class="sec" id="with-user-preferences"><a class="anchor" href="#with-user-preferences">With user preferences<span class="ko">사용자 preference와 함께 사용하기</span></a></h3>
+<p>사용자의 통화 preference를 기준으로 상품 가격을 cache합니다. 통화가 cookie에 저장되어 있으므로 이 component는 request time에 render됩니다. 같은 통화를 쓰는 모든 사용자가 cache된 가격을 공유하고, serverless 환경에서는 모든 instance가 같은 remote cache를 공유하므로 여기서 remote caching이 유용합니다.</p><div class="en-orig"><p>Cache product pricing based on the user's currency preference. Since the currency is stored in a cookie, this component renders at request time. Remote caching is valuable here because all users with the same currency share the cached price, and in serverless environments, all instances share the same remote cache.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/product/[id]/page.tsx" data-js="app/product/[id]/page.js">app/product/[id]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+import { cacheTag, cacheLife } from &#x27;next/cache&#x27;
+
+export async function generateStaticParams() {
+  return [{ id: &#x27;1&#x27; }, { id: &#x27;2&#x27; }, { id: &#x27;3&#x27; }]
+}
+
+export default async function ProductPage({
+  params,
+}: {
+  params: Promise&lt;{ id: string }&gt;
+}) {
+  const { id } = await params
+
+  return (
+    &lt;div&gt;
+      &lt;ProductDetails id={id} /&gt;
+      &lt;Suspense fallback={&lt;div&gt;Loading price...&lt;/div&gt;}&gt;
+        &lt;ProductPrice productId={id} /&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}
+
+function ProductDetails({ id }: { id: string }) {
+  return &lt;div&gt;Product: {id}&lt;/div&gt;
+}
+
+async function ProductPrice({ productId }: { productId: string }) {
+  // Reading cookies defers this component to request time
+  const currency = (await cookies()).get(&#x27;currency&#x27;)?.value ?? &#x27;USD&#x27;
+
+  // Cache the price per product and currency combination
+  // All users with the same currency share this cache entry
+  const price = await getProductPrice(productId, currency)
+
+  return (
+    &lt;div&gt;
+      Price: {price} {currency}
+    &lt;/div&gt;
+  )
+}
+
+async function getProductPrice(productId: string, currency: string) {
+  &#x27;use cache: remote&#x27;
+  cacheTag(`product-price-${productId}`)
+  cacheLife({ expire: 3600 }) // 1 hour
+
+  // Cached per (productId, currency) - few currencies means high cache utilization
+  return db.products.getPrice(productId, currency)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { Suspense } from &#x27;react&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+import { cacheTag, cacheLife } from &#x27;next/cache&#x27;
+
+export async function generateStaticParams() {
+  return [{ id: &#x27;1&#x27; }, { id: &#x27;2&#x27; }, { id: &#x27;3&#x27; }]
+}
+
+export default async function ProductPage({ params }) {
+  const { id } = await params
+
+  return (
+    &lt;div&gt;
+      &lt;ProductDetails id={id} /&gt;
+      &lt;Suspense fallback={&lt;div&gt;Loading price...&lt;/div&gt;}&gt;
+        &lt;ProductPrice productId={id} /&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}
+
+function ProductDetails({ id }) {
+  return &lt;div&gt;Product: {id}&lt;/div&gt;
+}
+
+async function ProductPrice({ productId }) {
+  // Reading cookies defers this component to request time
+  const currency = (await cookies()).get(&#x27;currency&#x27;)?.value ?? &#x27;USD&#x27;
+
+  // Cache the price per product and currency combination
+  // All users with the same currency share this cache entry
+  const price = await getProductPrice(productId, currency)
+
+  return (
+    &lt;div&gt;
+      Price: {price} {currency}
+    &lt;/div&gt;
+  )
+}
+
+async function getProductPrice(productId, currency) {
+  &#x27;use cache: remote&#x27;
+  cacheTag(`product-price-${productId}`)
+  cacheLife({ expire: 3600 }) // 1 hour
+
+  // Cached per (productId, currency) - few currencies means high cache utilization
+  return db.products.getPrice(productId, currency)
+}</code></pre></div></div>
+<h3 class="sec" id="reducing-database-load"><a class="anchor" href="#reducing-database-load">Reducing database load<span class="ko">데이터베이스 부하 줄이기</span></a></h3>
+<p>비용이 큰 데이터베이스 query를 cache해 데이터베이스 부하를 줄입니다. 이 예시에서는 <code>cookies()</code>, <code>headers()</code>, <code>searchParams</code>에 접근하지 않습니다. 이 통계를 static shell에 포함하지 않아야 하는 요구 사항이 있다면, <a href="app-api-reference-functions-connection.html"><code>connection()</code></a>을 사용해 명시적으로 request time으로 미룰 수 있습니다:</p><div class="en-orig"><p>Cache expensive database queries, reducing load on your database. In this example, we don't access <code>cookies()</code>, <code>headers()</code>, or <code>searchParams</code>. If we had a requirement to not include these stats in the static shell, we could use <a href="app-api-reference-functions-connection.html"><code>connection()</code></a> to explicitly defer to request time:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/dashboard/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { connection } from &#x27;next/server&#x27;
+import { cacheLife, cacheTag } from &#x27;next/cache&#x27;
+
+export default function DashboardPage() {
+  return (
+    &lt;Suspense fallback={&lt;div&gt;Loading stats...&lt;/div&gt;}&gt;
+      &lt;DashboardStats /&gt;
+    &lt;/Suspense&gt;
+  )
+}
+
+async function DashboardStats() {
+  // Defer to request time
+  await connection()
+
+  const stats = await getGlobalStats()
+
+  return &lt;StatsDisplay stats={stats} /&gt;
+}
+
+async function getGlobalStats() {
+  &#x27;use cache: remote&#x27;
+  cacheTag(&#x27;global-stats&#x27;)
+  cacheLife({ expire: 60 }) // 1 minute
+
+  // This expensive database query is cached and shared across all users,
+  // reducing load on your database
+  const stats = await db.analytics.aggregate({
+    total_users: &#x27;count&#x27;,
+    active_sessions: &#x27;count&#x27;,
+    revenue: &#x27;sum&#x27;,
+  })
+
+  return stats
+}</code></pre></div></div>
+<p>이렇게 설정하면 대시보드를 방문하는 사용자 수와 관계없이 upstream 데이터베이스는 분당 최대 한 번의 request만 받습니다.</p><div class="en-orig"><p>With this setup, your upstream database sees at most one request per minute, regardless of how many users visit the dashboard.</p></div>
+<h3 class="sec" id="api-responses-in-streaming-contexts"><a class="anchor" href="#api-responses-in-streaming-contexts">API responses in streaming contexts<span class="ko">Streaming 상황의 API response</span></a></h3>
+<p>streaming 중이나 dynamic 작업 이후에 fetch되는 API response를 cache합니다:</p><div class="en-orig"><p>Cache API responses that are fetched during streaming or after dynamic operations:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/feed/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { connection } from &#x27;next/server&#x27;
+import { cacheLife, cacheTag } from &#x27;next/cache&#x27;
+
+export default async function FeedPage() {
+  return (
+    &lt;div&gt;
+      &lt;Suspense fallback={&lt;Skeleton /&gt;}&gt;
+        &lt;FeedItems /&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}
+
+async function FeedItems() {
+  // Defer to request time
+  await connection()
+
+  const items = await getFeedItems()
+
+  return items.map((item) =&gt; &lt;FeedItem key={item.id} item={item} /&gt;)
+}
+
+async function getFeedItems() {
+  &#x27;use cache: remote&#x27;
+  cacheTag(&#x27;feed-items&#x27;)
+  cacheLife({ expire: 120 }) // 2 minutes
+
+  // This API call is cached, reducing requests to your external service
+  const response = await fetch(&#x27;https://api.example.com/feed&#x27;)
+  return response.json()
+}</code></pre></div></div>
+<h3 class="sec" id="computed-data-after-dynamic-checks"><a class="anchor" href="#computed-data-after-dynamic-checks">Computed data after dynamic checks<span class="ko">Dynamic 검사 이후의 계산된 데이터</span></a></h3>
+<p>dynamic 보안 검사나 기능 검사 이후에 일어나는 비용이 큰 연산을 cache합니다:</p><div class="en-orig"><p>Cache expensive computations that occur after dynamic security or feature checks:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/reports/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { connection } from &#x27;next/server&#x27;
+import { cacheLife } from &#x27;next/cache&#x27;
+
+export default async function ReportsPage() {
+  // Defer to request time (for security check)
+  await connection()
+
+  const report = await generateReport()
+
+  return &lt;ReportViewer report={report} /&gt;
+}
+
+async function generateReport() {
+  &#x27;use cache: remote&#x27;
+  cacheLife({ expire: 3600 }) // 1 hour
+
+  // This expensive computation is cached and shared across all authorized users,
+  // avoiding repeated calculations
+  const data = await db.transactions.findMany()
+
+  return {
+    totalRevenue: calculateRevenue(data),
+    topProducts: analyzeProducts(data),
+    trends: calculateTrends(data),
+  }
+}</code></pre></div></div>
+<h3 class="sec" id="mixed-caching-strategies"><a class="anchor" href="#mixed-caching-strategies">Mixed caching strategies<span class="ko">혼합 caching 전략</span></a></h3>
+<p>최적의 성능을 위해 static, remote, private caching을 조합합니다:</p><div class="en-orig"><p>Combine static, remote, and private caching for optimal performance:</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">app/product/[id]/page.tsx</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { Suspense } from &#x27;react&#x27;
+import { connection } from &#x27;next/server&#x27;
+import { cookies } from &#x27;next/headers&#x27;
+import { cacheLife, cacheTag } from &#x27;next/cache&#x27;
+
+// Static product data - prerendered at build time
+async function getProduct(id: string) {
+  &#x27;use cache&#x27;
+  cacheTag(`product-${id}`)
+
+  // This is cached at build time and shared across all users
+  return db.products.find({ where: { id } })
+}
+
+// Shared pricing data - cached at runtime in remote handler
+async function getProductPrice(id: string) {
+  &#x27;use cache: remote&#x27;
+  cacheTag(`product-price-${id}`)
+  cacheLife({ expire: 300 }) // 5 minutes
+
+  // This is cached at runtime and shared across all users
+  return db.products.getPrice({ where: { id } })
+}
+
+// User-specific recommendations - private cache per user
+async function getRecommendations(productId: string) {
+  &#x27;use cache: private&#x27;
+  cacheLife({ expire: 60 }) // 1 minute
+
+  const sessionId = (await cookies()).get(&#x27;session-id&#x27;)?.value
+
+  // This is cached per-user and never shared
+  return db.recommendations.findMany({
+    where: { productId, sessionId },
+  })
+}
+
+export default async function ProductPage({ params }) {
+  const { id } = await params
+
+  // Static product data
+  const product = await getProduct(id)
+
+  return (
+    &lt;div&gt;
+      &lt;ProductDetails product={product} /&gt;
+
+      {/* Dynamic shared price */}
+      &lt;Suspense fallback={&lt;PriceSkeleton /&gt;}&gt;
+        &lt;ProductPriceComponent productId={id} /&gt;
+      &lt;/Suspense&gt;
+
+      {/* Dynamic personalized recommendations */}
+      &lt;Suspense fallback={&lt;RecommendationsSkeleton /&gt;}&gt;
+        &lt;ProductRecommendations productId={id} /&gt;
+      &lt;/Suspense&gt;
+    &lt;/div&gt;
+  )
+}
+
+function ProductDetails({ product }) {
+  return (
+    &lt;div&gt;
+      &lt;h1&gt;{product.name}&lt;/h1&gt;
+      &lt;p&gt;{product.description}&lt;/p&gt;
+    &lt;/div&gt;
+  )
+}
+
+async function ProductPriceComponent({ productId }) {
+  // Defer to request time
+  await connection()
+
+  const price = await getProductPrice(productId)
+  return &lt;div&gt;Price: ${price}&lt;/div&gt;
+}
+
+async function ProductRecommendations({ productId }) {
+  const recommendations = await getRecommendations(productId)
+  return &lt;RecommendationsList items={recommendations} /&gt;
+}
+
+function PriceSkeleton() {
+  return &lt;div&gt;Loading price...&lt;/div&gt;
+}
+
+function RecommendationsSkeleton() {
+  return &lt;div&gt;Loading recommendations...&lt;/div&gt;
+}
+
+function RecommendationsList({ items }) {
+  return (
+    &lt;ul&gt;
+      {items.map((item) =&gt; (
+        &lt;li key={item.id}&gt;{item.name}&lt;/li&gt;
+      ))}
+    &lt;/ul&gt;
+  )
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>Remote cache는 server-side cache handler에 저장되며 모든 사용자가 공유합니다</li>
+<li><code>&#x27;use cache: remote&#x27;</code>는 <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a>가 server-side cache hit을 제공하지 못할 수 있는 static shell 밖에서도 동작합니다</li>
+<li><a href="app-api-reference-functions-cacheTag.html"><code>cacheTag()</code></a>와 <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag()</code></a>를 사용해 remote cache를 on-demand로 무효화하세요</li>
+<li><a href="app-api-reference-functions-cacheLife.html"><code>cacheLife()</code></a>를 사용해 cache 만료를 설정하세요</li>
+<li>사용자별 데이터에는 <code>&#x27;use cache: remote&#x27;</code> 대신 <a href="app-api-reference-directives-use-cache-private.html"><code>&#x27;use cache: private&#x27;</code></a>를 사용하세요</li>
+<li>Remote cache는 계산하거나 fetch한 데이터를 서버 측에 저장해 origin 부하를 줄입니다</li>
+</ul><div class="en-orig"><ul>
+<li>Remote caches are stored in server-side cache handlers and shared across all users</li>
+<li><code>&#x27;use cache: remote&#x27;</code> works outside the static shell where <a href="app-api-reference-directives-use-cache.html"><code>use cache</code></a> may not provide server-side cache hits</li>
+<li>Use <a href="app-api-reference-functions-cacheTag.html"><code>cacheTag()</code></a> and <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag()</code></a> to invalidate remote caches on-demand</li>
+<li>Use <a href="app-api-reference-functions-cacheLife.html"><code>cacheLife()</code></a> to configure cache expiration</li>
+<li>For user-specific data, use <a href="app-api-reference-directives-use-cache-private.html"><code>&#x27;use cache: private&#x27;</code></a> instead of <code>&#x27;use cache: remote&#x27;</code></li>
+<li>Remote caches reduce origin load by storing computed or fetched data server-side</li>
+</ul></div></div></div>
+<h2 class="sec" id="platform-support"><a class="anchor" href="#platform-support">Platform Support<span class="ko">플랫폼 지원</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>Deployment Option</th><th>지원 여부</th></tr></thead>
+<tbody>
+<tr><td><a href="app-getting-started-deploying.html#nodejs-server">Node.js server</a></td><td>예</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#docker">Docker container</a></td><td>예</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#static-export">Static export</a></td><td>아니요</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#adapters">Adapters</a></td><td>예</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Deployment Option</th><th>Supported</th></tr></thead>
+<tbody>
+<tr><td><a href="app-getting-started-deploying.html#nodejs-server">Node.js server</a></td><td>Yes</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#docker">Docker container</a></td><td>Yes</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#static-export">Static export</a></td><td>No</td></tr>
+<tr><td><a href="app-getting-started-deploying.html#adapters">Adapters</a></td><td>Yes</td></tr>
+</tbody></table></div></div>
+<h2 class="sec" id="version-history"><a class="anchor" href="#version-history">Version History<span class="ko">버전 기록</span></a></h2>
+<div class="table-wrap"><table>
+<thead><tr><th>버전</th><th>변경 사항</th></tr></thead>
+<tbody>
+<tr><td><code>v16.0.0</code></td><td>Cache Components 기능과 함께 <code>&quot;use cache: remote&quot;</code>가 활성화되었습니다.</td></tr>
+</tbody></table></div><div class="en-orig"><div class="table-wrap"><table>
+<thead><tr><th>Version</th><th>Changes</th></tr></thead>
+<tbody>
+<tr><td><code>v16.0.0</code></td><td><code>&quot;use cache: remote&quot;</code> is enabled with the Cache Components feature.</td></tr>
+</tbody></table></div></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">관련 문서</h2><p>관련 API reference를 확인하세요.</p><div class="rgrid"><a class="rcard" href="app-api-reference-directives-use-cache.html"><div class="rt">use cache</div><div class="rk">use cache</div><div class="rd">\"use cache\" directive로 Next.js 애플리케이션의 데이터를 cache하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-directives-use-cache-private.html"><div class="rt">use cache: private</div><div class="rk">use cache: private</div><div class="rd">\"use cache: private\" directive로 runtime request API에 접근하는 함수를 cache하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-config-next-config-js-cacheComponents.html"><div class="rt">cacheComponents</div><div class="rk">cacheComponents</div><div class="rd">Next.js에서 cacheComponents flag를 활성화하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-config-next-config-js-cacheHandlers.html"><div class="rt">cacheHandlers</div><div class="rk">cacheHandlers</div><div class="rd">Next.js에서 use cache directive에 사용할 custom cache handler를 설정합니다.</div></a><a class="rcard" href="app-api-reference-functions-cacheLife.html"><div class="rt">cacheLife</div><div class="rk">cacheLife</div><div class="rd">cacheLife 함수를 사용해 cache된 함수나 component의 cache 만료 시간을 설정하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-functions-cacheTag.html"><div class="rt">cacheTag</div><div class="rk">cacheTag</div><div class="rd">cacheTag 함수를 사용해 Next.js 애플리케이션의 cache 무효화(invalidation)를 관리하는 방법을 알아봅니다.</div></a><a class="rcard" href="app-api-reference-functions-connection.html"><div class="rt">connection</div><div class="rk">connection</div><div class="rd">connection 함수에 대한 API Reference입니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/01-directives/use-cache-remote.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/directives/use-cache-remote" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-directives-use-cache-private.html" class="prev"><div class="dir">← 이전</div><div class="ttl">use cache: private</div><div class="ttl-ko">use cache: private</div></a>
+      <a href="app-api-reference-directives-use-cache.html" class="next"><div class="dir">다음 →</div><div class="ttl">use cache</div><div class="ttl-ko">use cache</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/directives/use-cache-remote" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#usage">Usage</a></li><li class="l3"><a href="#when-to-avoid-remote-caching">When to avoid remote caching</a></li><li class="l3"><a href="#when-remote-caching-makes-sense">When remote caching makes sense</a></li><li class="l3"><a href="#how-use-cache-remote-differs-from-use-cache-and-use-cache-private">How <code>use cache: remote</code> differs from <code>use cache</code> and <code>use cache: private</code></a></li><li class="l3"><a href="#persistence-across-deploys">Persistence across deploys</a></li><li class="l3"><a href="#caching-with-runtime-data">Caching with runtime data</a></li><li class="l3"><a href="#cache-key-considerations">Cache key considerations</a></li><li class="l3"><a href="#nesting-rules">Nesting rules</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#with-user-preferences">With user preferences</a></li><li class="l3"><a href="#reducing-database-load">Reducing database load</a></li><li class="l3"><a href="#api-responses-in-streaming-contexts">API responses in streaming contexts</a></li><li class="l3"><a href="#computed-data-after-dynamic-checks">Computed data after dynamic checks</a></li><li class="l3"><a href="#mixed-caching-strategies">Mixed caching strategies</a></li><li class="l2"><a href="#platform-support">Platform Support</a></li><li class="l2"><a href="#version-history">Version History</a></li><li class="l2"><a href="#next-steps">관련 문서</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+`use cache` directive는 대부분의 애플리케이션 요구에 충분하지만, cache된 작업이 예상보다 자주 다시 실행되거나 upstream 서비스(CMS, 데이터베이스, 외부 API)가 예상보다 많은 요청을 받는다는 것을 알아차릴 수 있습니다. 이는 `use cache`가 항목을 메모리(in-memory)에 저장하기 때문에 생길 수 있으며, 여기에는 본질적인 한계가 있습니다:
+
+- 새 항목을 위한 공간을 만들기 위해 cache 항목이 제거(evict)됨
+- deploy 환경의 메모리 제약
+- cache가 request나 서버 재시작 간에 유지되지 않음
+
+`use cache`는 server-side caching 외에도 여전히 가치를 제공한다는 점에 유의하세요: Next.js에게 무엇을 prefetch할 수 있는지 알려 주고, client-side navigation의 stale time을 정의합니다.
+
+`&#x27;use cache: remote&#x27;` directive를 사용하면 cache된 출력을 메모리 대신 remote cache에 저장하도록 선언적으로 지정할 수 있어, 모든 서버 instance가 공유하는 내구성 있는 caching을 제공합니다. 여기에는 trade-off가 따릅니다: 인프라 비용과 cache 조회 시의 네트워크 지연입니다.
+
+## Usage || 사용법
+
+`&#x27;use cache: remote&#x27;`를 사용하려면 `next.config.ts` 파일에서 [`cacheComponents`](/docs/app/api-reference/config/next-config-js/cacheComponents) flag를 활성화하세요:
+
+[[CODE 1]]
+
+그런 다음 remote caching이 정당하다고 판단한 함수나 component에 `&#x27;use cache: remote&#x27;`를 추가하세요. handler 구현은 [`cacheHandlers`](/docs/app/api-reference/config/next-config-js/cacheHandlers)로 설정하지만, 보통은 호스팅 제공자가 이를 자동으로 제공합니다. self-hosting하는 경우 `cacheHandlers` 설정 reference를 참고해 cache 스토리지를 구성하세요.
+
+### When to avoid remote caching || Remote caching을 피해야 할 때
+
+- 데이터 레이어를 감싸는 server-side cache key-value store가 이미 있다면, 또 다른 caching 레이어를 추가하지 않아도 `use cache`만으로 데이터를 static shell에 포함하기에 충분할 수 있습니다
+- 가까운 위치나 로컬 접근 덕분에 작업이 이미 빠르다면(&lt; 50ms), remote cache 조회가 성능을 개선하지 못할 수 있습니다
+- cache key가 request마다 대부분 고유한 값(검색 filter, 가격 범위, 사용자별 parameter)을 가진다면, cache 활용도는 거의 0에 가깝습니다
+- 데이터가 자주(수 초에서 수 분 단위로) 바뀐다면, cache hit이 금방 stale해져 miss가 잦아지고 upstream revalidation을 기다리게 됩니다
+
+### When remote caching makes sense || Remote caching이 적합한 경우
+
+Remote caching은 콘텐츠가 request time으로 미뤄질 때(static shell 밖) 가장 큰 가치를 제공합니다. 이는 보통 component가 [`cookies()`](/docs/app/api-reference/functions/cookies), [`headers()`](/docs/app/api-reference/functions/headers), [`searchParams`](/docs/app/api-reference/file-conventions/page#searchparams-optional) 같은 request 값에 접근해 Suspense boundary 안에 놓일 때 발생합니다. 이런 상황에서는:
+
+- 각 request가 component를 실행하고 cache를 조회합니다
+- serverless 환경에서는 각 instance가 자체적인 임시(ephemeral) 메모리를 가지므로 cache hit rate가 낮습니다
+- Remote caching은 모든 instance가 공유하는 cache를 제공해 hit rate를 높이고 backend 부하를 줄입니다
+
+`&#x27;use cache: remote&#x27;`가 특히 유용한 시나리오:
+
+- **Rate-limited APIs**: upstream 서비스에 도달할 위험이 있는 rate limit이나 request 할당량이 있는 경우
+- **Protecting slow backends**: 트래픽이 많을 때 데이터베이스나 API가 병목이 되는 경우
+- **Expensive operations**: 반복 실행 비용이 큰 데이터베이스 query나 연산
+- **Flaky or unreliable services**: 가끔 실패하거나 가용성 문제가 있는 외부 서비스
+
+이런 경우에는 더 나쁜 결과(rate limit error, backend 과부하, 높은 컴퓨팅 비용, 저하된 사용자 경험)를 피할 수 있으므로 remote caching의 비용과 지연이 정당화됩니다.
+
+static shell 콘텐츠에는 보통 `use cache`로 충분합니다. upstream source가 동시 revalidation request를 감당할 수 없다면(rate limit이 있는 CMS 등), `use cache: remote`가 공유 cache 레이어 역할을 합니다. 이는 데이터베이스 앞에 key-value store를 두는 것과 같은 패턴이지만, 코드에서 선언한다는 점이 다릅니다.
+
+### How `use cache: remote` differs from `use cache` and `use cache: private` || `use cache: remote`와 `use cache`, `use cache: private`의 차이
+
+Next.js는 서로 다른 사용 사례를 위해 설계된 세 가지 caching directive를 제공합니다:
+
+| 기능                                 | `use cache`                     | `&#x27;use cache: remote&#x27;`             | `&#x27;use cache: private&#x27;` |
+| --------------------------------------- | ------------------------------- | --------------------------------- | ---------------------- |
+| **Server-side caching**                 | In-memory 또는 cache handler      | Remote cache handler              | 없음                   |
+| **Cache scope**                         | 모든 사용자가 공유         | 모든 사용자가 공유           | client(브라우저)별   |
+| **Can access cookies/headers directly** | 아니요(인자로 전달해야 함)     | 아니요(인자로 전달해야 함)       | 예                    |
+| **Server cache utilization**            | static shell 밖에서는 낮을 수 있음 | 높음(instance 간 공유)    | 해당 없음                    |
+| **Additional costs**                    | 없음                            | 인프라(스토리지, 네트워크) | 없음                   |
+| **Latency impact**                      | 없음                            | Cache handler 조회              | 없음                   |
+| **Persists across deploys**             | 아니요                              | 아니요                                | 해당 없음                    |
+
+### Persistence across deploys || Deploy 간 지속성
+
+Remote cache 항목은 deploy 간에 유지되지 않습니다. cache key에는 (설정된 경우) `deploymentId` 또는 `buildId`가 포함되므로, 새 build는 새 key를 만들고 이전 build의 항목에는 더 이상 접근할 수 없습니다. 전체 key 구성은 [Cache keys](/docs/app/api-reference/directives/use-cache#cache-keys)를 참고하세요.
+
+이는 의도된 동작입니다. build 사이에 함수의 identity hash나 반환값의 형태가 바뀔 수 있습니다. CMS client를 업그레이드하거나, cache된 함수를 refactoring하거나, dependency를 바꾸면 이전 호출자가 기대하는 것과 맞지 않는 값이 만들어질 수 있으므로, deploy 간에 항목을 재사용하면 오래되었거나 잘못된 형식의 데이터를 제공할 위험이 있습니다.
+
+deploy 간에 유지되는 항목이 필요하다면, `fetch`가 아닌 함수에는 [`unstable_cache`](/docs/app/api-reference/functions/unstable_cache)를 사용하거나 [`fetch`](/docs/app/api-reference/functions/fetch) cache에 의존하세요.
+
+### Caching with runtime data || Runtime 데이터와 함께 caching하기
+
+`use cache`와 `&#x27;use cache: remote&#x27;` 모두 cookie나 search param 같은 runtime 값에 직접 접근할 수 없습니다. 이런 값을 추출해 cache된 함수에 인자로 전달할 수 있습니다. 이 패턴은 [with runtime data](/docs/app/getting-started/caching#working-with-runtime-apis)를 참고하세요.
+
+&gt; **Good to know**: `use cache`는 항목을 메모리에 저장합니다. serverless 환경에서는 메모리가 instance 간에 공유되지 않고 보통 request를 처리한 뒤 파기되므로, runtime caching에서 cache miss가 자주 발생합니다.
+
+### Cache key considerations || Cache key 고려 사항
+
+cache key에 어떤 값을 포함할지 신중하게 결정하세요. 고유한 값마다 별도의 cache 항목이 만들어져 cache 활용도가 떨어집니다. 검색 filter를 사용하는 다음 예시를 살펴보세요:
+
+[[CODE 2]]
+
+이 예시에서 remote handler는 더 나은 cache hit rate를 얻기 위해 cache 항목마다 더 많은 데이터(한 카테고리의 모든 상품)를 저장합니다. cache miss의 비용(backend 호출)이 더 큰 항목의 스토리지 비용보다 클 때 그럴 가치가 있습니다.
+
+같은 원칙이 사용자별 데이터에도 적용됩니다. 사용자별 데이터를 직접 cache하는 대신, 사용자 preference를 사용해 어떤 공유 데이터를 cache할지 결정하세요.
+
+예를 들어 사용자가 session에 언어 preference를 가지고 있다면, 그 preference를 추출해 공유 콘텐츠를 cache하는 데 사용하세요:
+
+- 사용자마다 항목 하나를 만드는 `getUserProfile(sessionID)`를 remote caching하는 대신
+- 언어마다 항목 하나를 만드는 `getCMSContent(language)`를 remote cache하세요
+
+[[CODE 3]]
+
+이렇게 하면 같은 언어를 선호하는 모든 사용자가 하나의 cache 항목을 공유하므로 cache 활용도가 높아지고 CMS 부하가 줄어듭니다.
+
+두 예시의 패턴은 같습니다: 고유한 값이 더 적은 차원(카테고리 vs. 가격, 언어 vs. 사용자 ID)을 찾아 그 차원으로 cache하고, 나머지는 메모리에서 filter하거나 선택합니다.
+
+`getUserProfile`이 사용하는 서비스가 frontend 부하에 맞춰 확장될 수 없다면, 짧은 `cacheLife`와 함께 `use cache` directive를 사용해 in-memory caching을 여전히 활용할 수 있습니다. 하지만 대부분의 사용자 데이터는 source에서 직접 fetch하는 것이 좋습니다(위 가이드라인에서 언급했듯이 source가 이미 key/value store로 감싸져 있을 수도 있습니다).
+
+compliance 요구 사항이 있거나 runtime 데이터를 인자로 전달하도록 refactoring할 수 없는 경우에만 [`&#x27;use cache: private&#x27;`](/docs/app/api-reference/directives/use-cache-private)를 사용하세요.
+
+### Nesting rules || 중첩 규칙
+
+Remote cache에는 특정한 중첩 규칙이 있습니다:
+
+- Remote cache는 다른 remote cache(`&#x27;use cache: remote&#x27;`) 안에 중첩**할 수 있습니다**
+- Remote cache는 일반 cache(`&#x27;use cache&#x27;`) 안에 중첩**할 수 있습니다**
+- Remote cache는 private cache(`&#x27;use cache: private&#x27;`) 안에 중첩**할 수 없습니다**
+- Private cache는 remote cache 안에 중첩**할 수 없습니다**
+
+[[CODE 4]]
+
+## Examples || 예시
+
+다음 예시는 `&#x27;use cache: remote&#x27;`를 사용하는 일반적인 패턴을 보여 줍니다. `cacheLife` parameter(`stale`, `revalidate`, `expire`)에 대한 자세한 내용은 [`cacheLife` API reference](/docs/app/api-reference/functions/cacheLife)를 참고하세요.
+
+### With user preferences || 사용자 preference와 함께 사용하기
+
+사용자의 통화 preference를 기준으로 상품 가격을 cache합니다. 통화가 cookie에 저장되어 있으므로 이 component는 request time에 render됩니다. 같은 통화를 쓰는 모든 사용자가 cache된 가격을 공유하고, serverless 환경에서는 모든 instance가 같은 remote cache를 공유하므로 여기서 remote caching이 유용합니다.
+
+[[CODE 5]]
+
+### Reducing database load || 데이터베이스 부하 줄이기
+
+비용이 큰 데이터베이스 query를 cache해 데이터베이스 부하를 줄입니다. 이 예시에서는 `cookies()`, `headers()`, `searchParams`에 접근하지 않습니다. 이 통계를 static shell에 포함하지 않아야 하는 요구 사항이 있다면, [`connection()`](/docs/app/api-reference/functions/connection)을 사용해 명시적으로 request time으로 미룰 수 있습니다:
+
+[[CODE 6]]
+
+이렇게 설정하면 대시보드를 방문하는 사용자 수와 관계없이 upstream 데이터베이스는 분당 최대 한 번의 request만 받습니다.
+
+### API responses in streaming contexts || Streaming 상황의 API response
+
+streaming 중이나 dynamic 작업 이후에 fetch되는 API response를 cache합니다:
+
+[[CODE 7]]
+
+### Computed data after dynamic checks || Dynamic 검사 이후의 계산된 데이터
+
+dynamic 보안 검사나 기능 검사 이후에 일어나는 비용이 큰 연산을 cache합니다:
+
+[[CODE 8]]
+
+### Mixed caching strategies || 혼합 caching 전략
+
+최적의 성능을 위해 static, remote, private caching을 조합합니다:
+
+[[CODE 9]]
+
+&gt; **Good to know**:
+&gt;
+&gt; - Remote cache는 server-side cache handler에 저장되며 모든 사용자가 공유합니다
+&gt; - `&#x27;use cache: remote&#x27;`는 [`use cache`](/docs/app/api-reference/directives/use-cache)가 server-side cache hit을 제공하지 못할 수 있는 static shell 밖에서도 동작합니다
+&gt; - [`cacheTag()`](/docs/app/api-reference/functions/cacheTag)와 [`revalidateTag()`](/docs/app/api-reference/functions/revalidateTag)를 사용해 remote cache를 on-demand로 무효화하세요
+&gt; - [`cacheLife()`](/docs/app/api-reference/functions/cacheLife)를 사용해 cache 만료를 설정하세요
+&gt; - 사용자별 데이터에는 `&#x27;use cache: remote&#x27;` 대신 [`&#x27;use cache: private&#x27;`](/docs/app/api-reference/directives/use-cache-private)를 사용하세요
+&gt; - Remote cache는 계산하거나 fetch한 데이터를 서버 측에 저장해 origin 부하를 줄입니다
+
+## Platform Support || 플랫폼 지원
+
+| Deployment Option                                                   | 지원 여부 |
+| ------------------------------------------------------------------- | --------- |
+| [Node.js server](/docs/app/getting-started/deploying#nodejs-server) | 예       |
+| [Docker container](/docs/app/getting-started/deploying#docker)      | 예       |
+| [Static export](/docs/app/getting-started/deploying#static-export)  | 아니요        |
+| [Adapters](/docs/app/getting-started/deploying#adapters)            | 예       |
+
+## Version History || 버전 기록
+
+| 버전   | 변경 사항                                                             |
+| --------- | ------------------------------------------------------------------- |
+| `v16.0.0` | Cache Components 기능과 함께 `&quot;use cache: remote&quot;`가 활성화되었습니다. |
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

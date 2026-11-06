@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Caching and Revalidating (Previous Model) (Caching과 Revalidating (이전 모델)) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/caching-without-cache-components" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/caching-without-cache-components" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/caching-without-cache-components.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">Caching and Revalidating (Previous Model)<span class="sub">Caching과 Revalidating (이전 모델)</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<blockquote><p>이 가이드는 버전 16에서 <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code> flag</a>로 도입된 <a href="app-getting-started-caching.html">Cache Components</a>를 <strong>사용하지 않는</strong> 경우를 전제로 합니다.</p><div class="en-orig"><p>This guide assumes you are <strong>not</strong> using <a href="app-getting-started-caching.html">Cache Components</a> which was introduced in version 16 under the <a href="app-api-reference-config-next-config-js-cacheComponents.html"><code>cacheComponents</code> flag</a>.</p></div></blockquote>
+<h2 class="sec" id="caching-fetch-requests"><a class="anchor" href="#caching-fetch-requests">Caching <code>fetch</code> requests<span class="ko"><code>fetch</code> request caching</span></a></h2>
+<p>기본적으로 <a href="app-api-reference-functions-fetch.html"><code>fetch</code></a> request는 cache되지 않습니다. <code>cache</code> option을 <code>&#x27;force-cache&#x27;</code>로 설정하면 개별 request를 cache할 수 있습니다.</p><div class="en-orig"><p>By default, <a href="app-api-reference-functions-fetch.html"><code>fetch</code></a> requests are not cached. You can cache individual requests by setting the <code>cache</code> option to <code>&#x27;force-cache&#x27;</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.jsx">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default async function Page() {
+  const data = await fetch(&#x27;https://...&#x27;, { cache: &#x27;force-cache&#x27; })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function Page() {
+  const data = await fetch(&#x27;https://...&#x27;, { cache: &#x27;force-cache&#x27; })
+}</code></pre></div></div>
+<p>자세한 내용은 <a href="app-api-reference-functions-fetch.html"><code>fetch</code> API reference</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-api-reference-functions-fetch.html"><code>fetch</code> API reference</a> to learn more.</p></div>
+<h3 class="sec" id="unstable_cache-for-non-fetch-functions"><a class="anchor" href="#unstable_cache-for-non-fetch-functions"><code>unstable_cache</code> for non-<code>fetch</code> functions<span class="ko"><code>fetch</code>가 아닌 함수를 위한 <code>unstable_cache</code></span></a></h3>
+<p><code>unstable_cache</code>를 사용하면 database query나 <code>fetch</code>를 사용하지 않는 다른 async 함수의 결과를 cache할 수 있습니다. 함수를 <code>unstable_cache</code>로 감싸세요:</p><div class="en-orig"><p><code>unstable_cache</code> allows you to cache the result of database queries and other async functions that don't use <code>fetch</code>. Wrap <code>unstable_cache</code> around the function:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/lib/data.ts" data-js="app/lib/data.js">app/lib/data.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { unstable_cache } from &#x27;next/cache&#x27;
+import { db } from &#x27;@/lib/db&#x27;
+
+export const getCachedUser = unstable_cache(
+  async (id: string) =&gt; {
+    return db
+      .select()
+      .from(users)
+      .where(eq(users.id, id))
+      .then((res) =&gt; res[0])
+  },
+  [&#x27;user&#x27;], // cache key prefix
+  {
+    tags: [&#x27;user&#x27;],
+    revalidate: 3600,
+  }
+)</code></pre><pre class="v-js" hidden><code class="language-javascript">import { unstable_cache } from &#x27;next/cache&#x27;
+import { db } from &#x27;@/lib/db&#x27;
+
+export const getCachedUser = unstable_cache(
+  async (id) =&gt; {
+    return db
+      .select()
+      .from(users)
+      .where(eq(users.id, id))
+      .then((res) =&gt; res[0])
+  },
+  [&#x27;user&#x27;], // cache key prefix
+  {
+    tags: [&#x27;user&#x27;],
+    revalidate: 3600,
+  }
+)</code></pre></div></div>
+<p>세 번째 인자는 다음을 받습니다:</p><div class="en-orig"><p>The third argument accepts:</p></div>
+<ul>
+<li><code>tags</code>: <code>revalidateTag</code>로 on-demand revalidation을 하기 위한 tag 배열.</li>
+<li><code>revalidate</code>: cache가 revalidate되기까지의 시간(초).</li>
+</ul><div class="en-orig"><ul>
+<li><code>tags</code>: an array of tags for on-demand revalidation with <code>revalidateTag</code>.</li>
+<li><code>revalidate</code>: the number of seconds before the cache is revalidated.</li>
+</ul></div>
+<p>자세한 내용은 <a href="app-api-reference-functions-unstable_cache.html"><code>unstable_cache</code> API reference</a>를 참고하세요.</p><div class="en-orig"><p>See the <a href="app-api-reference-functions-unstable_cache.html"><code>unstable_cache</code> API reference</a> to learn more.</p></div>
+<h3 class="sec" id="route-segment-config"><a class="anchor" href="#route-segment-config">Route segment config</a></h3>
+<p><a href="app-api-reference-file-conventions-page.html">Page</a>, <a href="app-api-reference-file-conventions-layout.html">Layout</a>, <a href="app-api-reference-file-conventions-route.html">Route Handler</a>에서 config option을 export하면 route 수준에서 caching 동작을 설정할 수 있습니다.</p><div class="en-orig"><p>You can configure caching behavior at the route level by exporting config options from a <a href="app-api-reference-file-conventions-page.html">Page</a>, <a href="app-api-reference-file-conventions-layout.html">Layout</a>, or <a href="app-api-reference-file-conventions-route.html">Route Handler</a>.</p></div>
+<h4 class="sec" id="dynamic"><a class="anchor" href="#dynamic"><code>dynamic</code></a></h4>
+<p>layout이나 page의 dynamic 동작을 완전한 static 또는 완전한 dynamic으로 바꿉니다.</p><div class="en-orig"><p>Change the dynamic behavior of a layout or page to fully static or fully dynamic.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="layout.tsx | page.tsx | route.ts" data-js="layout.js | page.js | route.js">layout.tsx | page.tsx | route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export const dynamic = &#x27;auto&#x27;
+// &#x27;auto&#x27; | &#x27;force-dynamic&#x27; | &#x27;error&#x27; | &#x27;force-static&#x27;</code></pre><pre class="v-js" hidden><code class="language-javascript">export const dynamic = &#x27;auto&#x27;
+// &#x27;auto&#x27; | &#x27;force-dynamic&#x27; | &#x27;error&#x27; | &#x27;force-static&#x27;</code></pre></div></div>
+<ul>
+<li><strong><code>&#x27;auto&#x27;</code></strong> (default): 어떤 component도 dynamic 동작을 opt-in하지 못하게 막지 않으면서 가능한 한 많이 cache하는 기본 option입니다.</li>
+<li><strong><code>&#x27;force-dynamic&#x27;</code></strong>: <a href="app-glossary.html#dynamic-rendering">dynamic rendering</a>을 강제하며, 그 결과 route가 request 시점에 사용자마다 render됩니다. 이 option은 다음과 동일합니다:<ul>
+<li>layout이나 page 안의 모든 <code>fetch()</code> request option을 <code>{ cache: &#x27;no-store&#x27;, next: { revalidate: 0 } }</code>로 설정하기.</li>
+<li>segment config를 <code>export const fetchCache = &#x27;force-no-store&#x27;</code>로 설정하기</li>
+</ul></li>
+<li><strong><code>&#x27;error&#x27;</code></strong>: component 중 하나라도 Request-time API나 cache되지 않은 데이터를 사용하면 error를 발생시켜, layout이나 page의 prerendering과 데이터 caching을 강제합니다. 이 option은 다음과 동일합니다:<ul>
+<li><code>pages</code> directory의 <code>getStaticProps()</code>.</li>
+<li>layout이나 page 안의 모든 <code>fetch()</code> request option을 <code>{ cache: &#x27;force-cache&#x27; }</code>로 설정하기.</li>
+<li>segment config를 <code>fetchCache = &#x27;only-cache&#x27;</code>로 설정하기.</li>
+</ul></li>
+<li><strong><code>&#x27;force-static&#x27;</code></strong>: <a href="app-api-reference-functions-cookies.html"><code>cookies</code></a>, <a href="app-api-reference-functions-headers.html"><code>headers()</code></a>, <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams()</code></a>가 빈 값을 반환하도록 강제해, layout이나 page의 prerendering과 데이터 caching을 강제합니다. <code>force-static</code>으로 render되는 page나 layout에서도 <a href="#route-segment-config-revalidate"><code>revalidate</code></a>, <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>, <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>를 사용할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>&#x27;auto&#x27;</code></strong> (default): The default option to cache as much as possible without preventing any components from opting into dynamic behavior.</li>
+<li><strong><code>&#x27;force-dynamic&#x27;</code></strong>: Force <a href="app-glossary.html#dynamic-rendering">dynamic rendering</a>, which will result in routes being rendered for each user at request time. This option is equivalent to:<ul>
+<li>Setting the option of every <code>fetch()</code> request in a layout or page to <code>{ cache: &#x27;no-store&#x27;, next: { revalidate: 0 } }</code>.</li>
+<li>Setting the segment config to <code>export const fetchCache = &#x27;force-no-store&#x27;</code></li>
+</ul></li>
+<li><strong><code>&#x27;error&#x27;</code></strong>: Force prerendering and cache the data of a layout or page by causing an error if any components use Request-time APIs or uncached data. This option is equivalent to:<ul>
+<li><code>getStaticProps()</code> in the <code>pages</code> directory.</li>
+<li>Setting the option of every <code>fetch()</code> request in a layout or page to <code>{ cache: &#x27;force-cache&#x27; }</code>.</li>
+<li>Setting the segment config to <code>fetchCache = &#x27;only-cache&#x27;</code>.</li>
+</ul></li>
+<li><strong><code>&#x27;force-static&#x27;</code></strong>: Force prerendering and cache the data of a layout or page by forcing <a href="app-api-reference-functions-cookies.html"><code>cookies</code></a>, <a href="app-api-reference-functions-headers.html"><code>headers()</code></a> and <a href="app-api-reference-functions-use-search-params.html"><code>useSearchParams()</code></a> to return empty values. It is possible to <a href="#route-segment-config-revalidate"><code>revalidate</code></a>, <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>, or <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>, in pages or layouts rendered with <code>force-static</code>.</li>
+</ul></div>
+<h4 class="sec" id="fetchcache"><a class="anchor" href="#fetchcache"><code>fetchCache</code></a></h4>
+<details><summary>기본 동작을 꼭 override해야 하는 경우에만 사용해야 하는 고급 option입니다.</summary><div class="details-body"><p><code>cache</code> option을 설정하지 않은 <code>fetch</code> request는 Request-time API가 사용되기 <strong>전에</strong> 도달할 수 있다면 <code>next build</code> 중에 한 번 fetch됩니다. route가 그 지점까지 prerender되기 때문입니다. Request-time API <strong>이후에</strong> 발견된 request는 매 request마다 실행됩니다.</p>
+<p><code>fetchCache</code>를 사용하면 layout이나 page 안의 모든 <code>fetch</code> request의 기본 <code>cache</code> option을 override할 수 있습니다.</p>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="layout.tsx | page.tsx | route.ts" data-js="layout.js | page.js | route.js">layout.tsx | page.tsx | route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export const fetchCache = &#x27;auto&#x27;
+// &#x27;auto&#x27; | &#x27;default-cache&#x27; | &#x27;only-cache&#x27;
+// &#x27;force-cache&#x27; | &#x27;force-no-store&#x27; | &#x27;default-no-store&#x27; | &#x27;only-no-store&#x27;</code></pre><pre class="v-js" hidden><code class="language-javascript">export const fetchCache = &#x27;auto&#x27;
+// &#x27;auto&#x27; | &#x27;default-cache&#x27; | &#x27;only-cache&#x27;
+// &#x27;force-cache&#x27; | &#x27;force-no-store&#x27; | &#x27;default-no-store&#x27; | &#x27;only-no-store&#x27;</code></pre></div></div>
+<ul>
+<li><strong><code>&#x27;auto&#x27;</code></strong> (default): Request-time API 이전의 <code>fetch</code> request는 각자 지정한 <code>cache</code> option으로 cache하고, Request-time API 이후의 <code>fetch</code> request는 cache하지 않는 기본 option입니다.</li>
+<li><strong><code>&#x27;default-cache&#x27;</code></strong>: <code>fetch</code>에 어떤 <code>cache</code> option이든 전달할 수 있게 허용하되, option이 없으면 <code>cache</code> option을 <code>&#x27;force-cache&#x27;</code>로 설정합니다. 즉, Request-time API 이후의 <code>fetch</code> request도 static으로 간주됩니다.</li>
+<li><strong><code>&#x27;only-cache&#x27;</code></strong>: option이 없으면 기본값을 <code>cache: &#x27;force-cache&#x27;</code>로 바꾸고, <code>cache: &#x27;no-store&#x27;</code>를 사용하는 <code>fetch</code> request가 있으면 error를 발생시켜 모든 <code>fetch</code> request가 caching을 opt-in하도록 보장합니다.</li>
+<li><strong><code>&#x27;force-cache&#x27;</code></strong>: 모든 <code>fetch</code> request의 <code>cache</code> option을 <code>&#x27;force-cache&#x27;</code>로 설정해 모든 <code>fetch</code> request가 caching을 opt-in하도록 보장합니다.</li>
+<li><strong><code>&#x27;default-no-store&#x27;</code></strong>: <code>fetch</code>에 어떤 <code>cache</code> option이든 전달할 수 있게 허용하되, option이 없으면 <code>cache</code> option을 <code>&#x27;no-store&#x27;</code>로 설정합니다. 즉, Request-time API 이전의 <code>fetch</code> request도 dynamic으로 간주됩니다.</li>
+<li><strong><code>&#x27;only-no-store&#x27;</code></strong>: option이 없으면 기본값을 <code>cache: &#x27;no-store&#x27;</code>로 바꾸고, <code>cache: &#x27;force-cache&#x27;</code>를 사용하는 <code>fetch</code> request가 있으면 error를 발생시켜 모든 <code>fetch</code> request가 caching을 opt-out하도록 보장합니다</li>
+<li><strong><code>&#x27;force-no-store&#x27;</code></strong>: 모든 <code>fetch</code> request의 <code>cache</code> option을 <code>&#x27;no-store&#x27;</code>로 설정해 모든 <code>fetch</code> request가 caching을 opt-out하도록 보장합니다. 이렇게 하면 <code>&#x27;force-cache&#x27;</code> option을 지정한 경우에도 모든 <code>fetch</code> request가 매 request마다 다시 fetch됩니다.</li>
+</ul>
+<p><strong>Cross-route segment behavior </strong></p>
+<ul>
+<li>하나의 route에 속한 각 layout과 page에 설정한 option은 서로 호환되어야 합니다.<ul>
+<li><code>&#x27;only-cache&#x27;</code>와 <code>&#x27;force-cache&#x27;</code>가 모두 지정되면 <code>&#x27;force-cache&#x27;</code>가 우선합니다. <code>&#x27;only-no-store&#x27;</code>와 <code>&#x27;force-no-store&#x27;</code>가 모두 지정되면 <code>&#x27;force-no-store&#x27;</code>가 우선합니다. force option은 route 전체의 동작을 바꾸므로, <code>&#x27;force-*&#x27;</code>를 가진 segment 하나만 있어도 <code>&#x27;only-*&#x27;</code>로 인한 error가 발생하지 않습니다.</li>
+<li><code>&#x27;only-*&#x27;</code>와 <code>&#x27;force-*&#x27;</code> option의 목적은 route 전체가 완전한 static이거나 완전한 dynamic임을 보장하는 것입니다. 즉:<ul>
+<li>하나의 route 안에서 <code>&#x27;only-cache&#x27;</code>와 <code>&#x27;only-no-store&#x27;</code>를 함께 쓰는 것은 허용되지 않습니다.</li>
+<li>하나의 route 안에서 <code>&#x27;force-cache&#x27;</code>와 <code>&#x27;force-no-store&#x27;</code>를 함께 쓰는 것은 허용되지 않습니다.</li>
+</ul></li>
+<li>child가 <code>&#x27;auto&#x27;</code>나 <code>&#x27;*-cache&#x27;</code>를 지정하면 parent는 <code>&#x27;default-no-store&#x27;</code>를 지정할 수 없습니다. 같은 fetch가 서로 다르게 동작할 수 있기 때문입니다.</li>
+</ul></li>
+<li>일반적으로 공유되는 parent layout은 <code>&#x27;auto&#x27;</code>로 두고, child segment가 달라지는 지점에서 option을 customize하는 것을 권장합니다.</li>
+</ul></div></details>
+<h2 class="sec" id="time-based-revalidation"><a class="anchor" href="#time-based-revalidation">Time-based revalidation<span class="ko">시간 기반 revalidation</span></a></h2>
+<p><code>fetch</code>의 <code>next.revalidate</code> option을 사용하면 지정한 시간(초)이 지난 뒤 데이터를 revalidate합니다:</p><div class="en-orig"><p>Use the <code>next.revalidate</code> option on <code>fetch</code> to revalidate data after a specified number of seconds:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/page.tsx" data-js="app/page.jsx">app/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export default async function Page() {
+  const data = await fetch(&#x27;https://...&#x27;, { next: { revalidate: 3600 } })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export default async function Page() {
+  const data = await fetch(&#x27;https://...&#x27;, { next: { revalidate: 3600 } })
+}</code></pre></div></div>
+<p><code>fetch</code>가 아닌 함수의 경우 <code>unstable_cache</code>가 configuration에서 <code>revalidate</code> option을 받습니다(<a href="#unstable_cache-for-non-fetch-functions">위 예시</a> 참고).</p><div class="en-orig"><p>For non-<code>fetch</code> functions, <code>unstable_cache</code> accepts a <code>revalidate</code> option in its configuration (see <a href="#unstable_cache-for-non-fetch-functions">example above</a>).</p></div>
+<h3 class="sec" id="route-segment-config-revalidate"><a class="anchor" href="#route-segment-config-revalidate">Route segment config <code>revalidate</code></a></h3>
+<p>layout이나 page의 기본 revalidation 시간을 설정합니다. 이 option은 개별 <code>fetch</code> request에 설정된 <code>revalidate</code> 값을 override하지 않습니다.</p><div class="en-orig"><p>Set the default revalidation time for a layout or page. This option does not override the <code>revalidate</code> value set by individual <code>fetch</code> requests.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="layout.tsx | page.tsx | route.ts" data-js="layout.js | page.js | route.js">layout.tsx | page.tsx | route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export const revalidate = false
+// false | 0 | number</code></pre><pre class="v-js" hidden><code class="language-javascript">export const revalidate = false
+// false | 0 | number</code></pre></div></div>
+<ul>
+<li><strong><code>false</code></strong> (default): <code>cache</code> option을 <code>&#x27;force-cache&#x27;</code>로 설정했거나 Request-time API가 사용되기 전에 발견된 모든 <code>fetch</code> request를 cache하는 기본 heuristic입니다. 의미상 <code>revalidate: Infinity</code>와 같으며, 사실상 resource를 무기한 cache해야 한다는 뜻입니다. 그래도 개별 <code>fetch</code> request는 <code>cache: &#x27;no-store&#x27;</code>나 <code>revalidate: 0</code>을 사용해 cache되지 않게 하고 route를 dynamic하게 render되도록 만들 수 있습니다. 또는 <code>revalidate</code>를 route 기본값보다 작은 양수로 설정해 route의 revalidation 빈도를 높일 수도 있습니다.</li>
+<li><strong><code>0</code></strong>: Request-time API나 cache되지 않은 data fetch가 발견되지 않더라도 layout이나 page가 항상 dynamic하게 render되도록 보장합니다. 이 option은 <code>cache</code> option을 설정하지 않은 <code>fetch</code> request의 기본값을 <code>&#x27;no-store&#x27;</code>로 바꾸지만, <code>&#x27;force-cache&#x27;</code>를 opt-in했거나 양수 <code>revalidate</code>를 사용하는 <code>fetch</code> request는 그대로 둡니다.</li>
+<li><strong><code>number</code></strong>: (초 단위) layout이나 page의 기본 revalidation 빈도를 <code>n</code>초로 설정합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong><code>false</code></strong> (default): The default heuristic to cache any <code>fetch</code> requests that set their <code>cache</code> option to <code>&#x27;force-cache&#x27;</code> or are discovered before a Request-time API is used. Semantically equivalent to <code>revalidate: Infinity</code> which effectively means the resource should be cached indefinitely. It is still possible for individual <code>fetch</code> requests to use <code>cache: &#x27;no-store&#x27;</code> or <code>revalidate: 0</code> to avoid being cached and make the route dynamically rendered. Or set <code>revalidate</code> to a positive number lower than the route default to increase the revalidation frequency of a route.</li>
+<li><strong><code>0</code></strong>: Ensure a layout or page is always dynamically rendered even if no Request-time APIs or uncached data fetches are discovered. This option changes the default of <code>fetch</code> requests that do not set a <code>cache</code> option to <code>&#x27;no-store&#x27;</code> but leaves <code>fetch</code> requests that opt into <code>&#x27;force-cache&#x27;</code> or use a positive <code>revalidate</code> as is.</li>
+<li><strong><code>number</code></strong>: (in seconds) Set the default revalidation frequency of a layout or page to <code>n</code> seconds.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li>revalidate 값은 정적으로 분석 가능해야 합니다. 예를 들어 <code>revalidate = 600</code>은 유효하지만 <code>revalidate = 60 * 10</code>은 유효하지 않습니다.</li>
+<li>deprecated된 <code>runtime = &#x27;edge&#x27;</code>를 사용할 때는 revalidate 값을 사용할 수 없습니다.</li>
+<li>Development 환경에서 Page는 <em>항상</em> on-demand로 render되며 절대 cache되지 않습니다. 덕분에 revalidation 기간이 지나기를 기다리지 않고 변경 사항을 바로 확인할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The revalidate value needs to be statically analyzable. For example <code>revalidate = 600</code> is valid, but <code>revalidate = 60 * 10</code> is not.</li>
+<li>The revalidate value is not available when using the deprecated <code>runtime = &#x27;edge&#x27;</code>.</li>
+<li>In Development, Pages are <em>always</em> rendered on-demand and are never cached. This allows you to see changes immediately without waiting for a revalidation period to pass.</li>
+</ul></div></div></div>
+<h4 class="sec" id="revalidation-frequency"><a class="anchor" href="#revalidation-frequency">Revalidation frequency<span class="ko">Revalidation 빈도</span></a></h4>
+<ul>
+<li>하나의 route에 속한 각 layout과 page 중 가장 낮은 <code>revalidate</code> 값이 route _전체_의 revalidation 빈도를 결정합니다. 이렇게 해서 child page가 parent layout만큼 자주 revalidate되도록 보장합니다.</li>
+<li>개별 <code>fetch</code> request는 route의 기본 <code>revalidate</code>보다 낮은 <code>revalidate</code>를 설정해 route 전체의 revalidation 빈도를 높일 수 있습니다. 이를 통해 특정 기준에 따라 일부 route만 더 잦은 revalidation을 dynamic하게 opt-in할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The lowest <code>revalidate</code> across each layout and page of a single route will determine the revalidation frequency of the <em>entire</em> route. This ensures that child pages are revalidated as frequently as their parent layouts.</li>
+<li>Individual <code>fetch</code> requests can set a lower <code>revalidate</code> than the route's default <code>revalidate</code> to increase the revalidation frequency of the entire route. This allows you to dynamically opt-in to more frequent revalidation for certain routes based on some criteria.</li>
+</ul></div>
+<h2 class="sec" id="on-demand-revalidation"><a class="anchor" href="#on-demand-revalidation">On-demand revalidation</a></h2>
+<p>이벤트가 발생한 뒤 cache된 데이터를 revalidate하려면 <a href="app-getting-started-mutating-data.html">Server Action</a>이나 <a href="app-api-reference-file-conventions-route.html">Route Handler</a>에서 <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a> 또는 <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>를 사용하세요.</p><div class="en-orig"><p>To revalidate cached data after an event, use <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a> or <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a> in a <a href="app-getting-started-mutating-data.html">Server Action</a> or <a href="app-api-reference-file-conventions-route.html">Route Handler</a>.</p></div>
+<h3 class="sec" id="tagging-cached-data"><a class="anchor" href="#tagging-cached-data">Tagging cached data<span class="ko">cache된 데이터에 tag 붙이기</span></a></h3>
+<p><code>fetch</code> request에 <code>next.tags</code>로 tag를 붙이면 on-demand cache invalidation을 사용할 수 있습니다:</p><div class="en-orig"><p>Tag <code>fetch</code> requests with <code>next.tags</code> to enable on-demand cache invalidation:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/lib/data.ts" data-js="app/lib/data.js">app/lib/data.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function getUserById(id: string) {
+  const data = await fetch(`https://...`, {
+    next: { tags: [&#x27;user&#x27;] },
+  })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function getUserById(id) {
+  const data = await fetch(`https://...`, {
+    next: { tags: [&#x27;user&#x27;] },
+  })
+}</code></pre></div></div>
+<p><code>fetch</code>가 아닌 함수의 경우 <code>unstable_cache</code>도 <code>tags</code> option을 받습니다(<a href="#unstable_cache-for-non-fetch-functions">위 예시</a> 참고).</p><div class="en-orig"><p>For non-<code>fetch</code> functions, <code>unstable_cache</code> also accepts a <code>tags</code> option (see <a href="#unstable_cache-for-non-fetch-functions">example above</a>).</p></div>
+<h3 class="sec" id="revalidatetag"><a class="anchor" href="#revalidatetag"><code>revalidateTag</code></a></h3>
+<p><a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>를 사용해 tag 기준으로 cache된 데이터를 invalidate합니다:</p><div class="en-orig"><p>Invalidate cached data by tag using <a href="app-api-reference-functions-revalidateTag.html"><code>revalidateTag</code></a>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/lib/actions.ts" data-js="app/lib/actions.js">app/lib/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { revalidateTag } from &#x27;next/cache&#x27;
+
+export async function updateUser(id: string) {
+  // Mutate data
+  revalidateTag(&#x27;user&#x27;, &#x27;max&#x27;)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { revalidateTag } from &#x27;next/cache&#x27;
+
+export async function updateUser(id) {
+  // Mutate data
+  revalidateTag(&#x27;user&#x27;, &#x27;max&#x27;)
+}</code></pre></div></div>
+<h3 class="sec" id="revalidatepath"><a class="anchor" href="#revalidatepath"><code>revalidatePath</code></a></h3>
+<p><a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>를 사용해 특정 route path의 cache된 데이터를 모두 invalidate합니다:</p><div class="en-orig"><p>Invalidate all cached data for a specific route path using <a href="app-api-reference-functions-revalidatePath.html"><code>revalidatePath</code></a>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/lib/actions.ts" data-js="app/lib/actions.js">app/lib/actions.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { revalidatePath } from &#x27;next/cache&#x27;
+
+export async function updateUser(id: string) {
+  // Mutate data
+  revalidatePath(&#x27;/profile&#x27;)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { revalidatePath } from &#x27;next/cache&#x27;
+
+export async function updateUser(id) {
+  // Mutate data
+  revalidatePath(&#x27;/profile&#x27;)
+}</code></pre></div></div>
+<h2 class="sec" id="deduplicating-requests"><a class="anchor" href="#deduplicating-requests">Deduplicating requests<span class="ko">Request 중복 제거</span></a></h2>
+<p><code>fetch</code>(<a href="app-api-reference-functions-fetch.html#memoization">자동으로 memoize됨</a>)를 사용하지 않고 ORM이나 database를 직접 사용한다면, data access를 <a href="https://react.dev/reference/react/cache" target="_blank" rel="noopener">React <code>cache</code></a> 함수로 감싸 한 번의 render pass 안에서 request 중복을 제거할 수 있습니다:</p><div class="en-orig"><p>If you are not using <code>fetch</code> (which is <a href="app-api-reference-functions-fetch.html#memoization">automatically memoized</a>), and instead using an ORM or database directly, you can wrap your data access with the <a href="https://react.dev/reference/react/cache" target="_blank" rel="noopener">React <code>cache</code></a> function to deduplicate requests within a single render pass:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/lib/data.ts" data-js="app/lib/data.js">app/lib/data.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { cache } from &#x27;react&#x27;
+import { db, posts, eq } from &#x27;@/lib/db&#x27;
+
+export const getPost = cache(async (id: string) =&gt; {
+  const post = await db.query.posts.findFirst({
+    where: eq(posts.id, parseInt(id)),
+  })
+})</code></pre><pre class="v-js" hidden><code class="language-javascript">import { cache } from &#x27;react&#x27;
+import { db, posts, eq } from &#x27;@/lib/db&#x27;
+
+export const getPost = cache(async (id) =&gt; {
+  const post = await db.query.posts.findFirst({
+    where: eq(posts.id, parseInt(id)),
+  })
+})</code></pre></div></div>
+<h2 class="sec" id="preloading-data"><a class="anchor" href="#preloading-data">Preloading data<span class="ko">데이터 preload하기</span></a></h2>
+<p>blocking request보다 먼저 미리 호출하는 utility 함수를 만들어 데이터를 preload할 수 있습니다. 이렇게 하면 data fetching을 일찍 시작할 수 있어서, component가 render될 때쯤에는 데이터가 이미 준비되어 있습니다.</p><div class="en-orig"><p>You can preload data by creating a utility function that you eagerly call above blocking requests. This lets you initiate data fetching early, so the data is already available by the time the component renders.</p></div>
+<p><a href="https://www.npmjs.com/package/server-only" target="_blank" rel="noopener"><code>server-only</code> package</a>와 React의 <a href="https://react.dev/reference/react/cache" target="_blank" rel="noopener"><code>cache</code></a>를 결합해 재사용 가능한 preload utility를 만드세요:</p><div class="en-orig"><p>Combine the <a href="https://www.npmjs.com/package/server-only" target="_blank" rel="noopener"><code>server-only</code> package</a> with React's <a href="https://react.dev/reference/react/cache" target="_blank" rel="noopener"><code>cache</code></a> to create a reusable preload utility:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="utils/get-item.ts" data-js="utils/get-item.js">utils/get-item.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { cache } from &#x27;react&#x27;
+import &#x27;server-only&#x27;
+
+export const getItem = cache(async (id: string) =&gt; {
+  // ...
+})
+
+export const preload = (id: string) =&gt; {
+  void getItem(id)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { cache } from &#x27;react&#x27;
+import &#x27;server-only&#x27;
+
+export const getItem = cache(async (id) =&gt; {
+  // ...
+})
+
+export const preload = (id) =&gt; {
+  void getItem(id)
+}</code></pre></div></div>
+<p>그런 다음 blocking 작업보다 먼저 <code>preload()</code>를 호출해 데이터 로딩이 바로 시작되게 합니다:</p><div class="en-orig"><p>Then call <code>preload()</code> before any blocking work so the data starts loading immediately:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/item/[id]/page.tsx" data-js="app/item/[id]/page.js">app/item/[id]/page.tsx</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { getItem, preload, checkIsAvailable } from &#x27;@/lib/data&#x27;
+
+export default async function Page({
+  params,
+}: {
+  params: Promise&lt;{ id: string }&gt;
+}) {
+  const { id } = await params
+  // Start loading item data
+  preload(id)
+  // Perform another asynchronous task
+  const isAvailable = await checkIsAvailable()
+
+  return isAvailable ? &lt;Item id={id} /&gt; : null
+}
+
+async function Item({ id }: { id: string }) {
+  const result = await getItem(id)
+  // ...
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { getItem, preload, checkIsAvailable } from &#x27;@/lib/data&#x27;
+
+export default async function Page({ params }) {
+  const { id } = await params
+  // Start loading item data
+  preload(id)
+  // Perform another asynchronous task
+  const isAvailable = await checkIsAvailable()
+
+  return isAvailable ? &lt;Item id={id} /&gt; : null
+}
+
+async function Item({ id }) {
+  const result = await getItem(id)
+  // ...
+}</code></pre></div></div>
+<h2 class="sec" id="statically-generating-dynamic-routes"><a class="anchor" href="#statically-generating-dynamic-routes">Statically generating dynamic routes<span class="ko">Dynamic route를 static하게 생성하기</span></a></h2>
+<p><a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a>로 dynamic route를 prerender하고 시간이 지나면서 revalidate하는 방법은 <a href="app-guides-incremental-static-regeneration.html">Incremental Static Regeneration</a> 가이드를 참고하세요.</p><div class="en-orig"><p>To prerender dynamic routes with <a href="app-api-reference-functions-generate-static-params.html"><code>generateStaticParams</code></a> and revalidate them over time, see the <a href="app-guides-incremental-static-regeneration.html">Incremental Static Regeneration</a> guide.</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/caching-without-cache-components.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/caching-without-cache-components" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-building.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Building</div><div class="ttl-ko">애플리케이션 build하기</div></a>
+      <a href="app-guides-cdn-caching.html" class="next"><div class="dir">다음 →</div><div class="ttl">CDN Caching</div><div class="ttl-ko">Next.js에서 CDN 사용하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/caching-without-cache-components" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#caching-fetch-requests">Caching <code>fetch</code> requests</a></li><li class="l3"><a href="#unstable_cache-for-non-fetch-functions"><code>unstable_cache</code> for non-<code>fetch</code> functions</a></li><li class="l3"><a href="#route-segment-config">Route segment config</a></li><li class="l2"><a href="#time-based-revalidation">Time-based revalidation</a></li><li class="l3"><a href="#route-segment-config-revalidate">Route segment config <code>revalidate</code></a></li><li class="l2"><a href="#on-demand-revalidation">On-demand revalidation</a></li><li class="l3"><a href="#tagging-cached-data">Tagging cached data</a></li><li class="l3"><a href="#revalidatetag"><code>revalidateTag</code></a></li><li class="l3"><a href="#revalidatepath"><code>revalidatePath</code></a></li><li class="l2"><a href="#deduplicating-requests">Deduplicating requests</a></li><li class="l2"><a href="#preloading-data">Preloading data</a></li><li class="l2"><a href="#statically-generating-dynamic-routes">Statically generating dynamic routes</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+&gt; 이 가이드는 버전 16에서 [`cacheComponents` flag](/docs/app/api-reference/config/next-config-js/cacheComponents)로 도입된 [Cache Components](/docs/app/getting-started/caching)를 **사용하지 않는** 경우를 전제로 합니다.
+
+## Caching `fetch` requests || `fetch` request caching
+
+기본적으로 [`fetch`](/docs/app/api-reference/functions/fetch) request는 cache되지 않습니다. `cache` option을 `&#x27;force-cache&#x27;`로 설정하면 개별 request를 cache할 수 있습니다.
+
+[[CODE 1]]
+
+자세한 내용은 [`fetch` API reference](/docs/app/api-reference/functions/fetch)를 참고하세요.
+
+### `unstable_cache` for non-`fetch` functions || `fetch`가 아닌 함수를 위한 `unstable_cache`
+
+`unstable_cache`를 사용하면 database query나 `fetch`를 사용하지 않는 다른 async 함수의 결과를 cache할 수 있습니다. 함수를 `unstable_cache`로 감싸세요:
+
+[[CODE 2]]
+
+세 번째 인자는 다음을 받습니다:
+
+- `tags`: `revalidateTag`로 on-demand revalidation을 하기 위한 tag 배열.
+- `revalidate`: cache가 revalidate되기까지의 시간(초).
+
+자세한 내용은 [`unstable_cache` API reference](/docs/app/api-reference/functions/unstable_cache)를 참고하세요.
+
+### Route segment config
+
+[Page](/docs/app/api-reference/file-conventions/page), [Layout](/docs/app/api-reference/file-conventions/layout), [Route Handler](/docs/app/api-reference/file-conventions/route)에서 config option을 export하면 route 수준에서 caching 동작을 설정할 수 있습니다.
+
+#### `dynamic`
+
+layout이나 page의 dynamic 동작을 완전한 static 또는 완전한 dynamic으로 바꿉니다.
+
+[[CODE 3]]
+
+- **`&#x27;auto&#x27;`** (default): 어떤 component도 dynamic 동작을 opt-in하지 못하게 막지 않으면서 가능한 한 많이 cache하는 기본 option입니다.
+- **`&#x27;force-dynamic&#x27;`**: [dynamic rendering](/docs/app/glossary#dynamic-rendering)을 강제하며, 그 결과 route가 request 시점에 사용자마다 render됩니다. 이 option은 다음과 동일합니다:
+  - layout이나 page 안의 모든 `fetch()` request option을 `{ cache: &#x27;no-store&#x27;, next: { revalidate: 0 } }`로 설정하기.
+  - segment config를 `export const fetchCache = &#x27;force-no-store&#x27;`로 설정하기
+- **`&#x27;error&#x27;`**: component 중 하나라도 Request-time API나 cache되지 않은 데이터를 사용하면 error를 발생시켜, layout이나 page의 prerendering과 데이터 caching을 강제합니다. 이 option은 다음과 동일합니다:
+  - `pages` directory의 `getStaticProps()`.
+  - layout이나 page 안의 모든 `fetch()` request option을 `{ cache: &#x27;force-cache&#x27; }`로 설정하기.
+  - segment config를 `fetchCache = &#x27;only-cache&#x27;`로 설정하기.
+- **`&#x27;force-static&#x27;`**: [`cookies`](/docs/app/api-reference/functions/cookies), [`headers()`](/docs/app/api-reference/functions/headers), [`useSearchParams()`](/docs/app/api-reference/functions/use-search-params)가 빈 값을 반환하도록 강제해, layout이나 page의 prerendering과 데이터 caching을 강제합니다. `force-static`으로 render되는 page나 layout에서도 [`revalidate`](#route-segment-config-revalidate), [`revalidatePath`](/docs/app/api-reference/functions/revalidatePath), [`revalidateTag`](/docs/app/api-reference/functions/revalidateTag)를 사용할 수 있습니다.
+
+#### `fetchCache`
+
+&lt;details&gt;
+  &lt;summary&gt;기본 동작을 꼭 override해야 하는 경우에만 사용해야 하는 고급 option입니다.&lt;/summary&gt;
+
+`cache` option을 설정하지 않은 `fetch` request는 Request-time API가 사용되기 **전에** 도달할 수 있다면 `next build` 중에 한 번 fetch됩니다. route가 그 지점까지 prerender되기 때문입니다. Request-time API **이후에** 발견된 request는 매 request마다 실행됩니다.
+
+`fetchCache`를 사용하면 layout이나 page 안의 모든 `fetch` request의 기본 `cache` option을 override할 수 있습니다.
+
+[[CODE 4]]
+
+- **`&#x27;auto&#x27;`** (default): Request-time API 이전의 `fetch` request는 각자 지정한 `cache` option으로 cache하고, Request-time API 이후의 `fetch` request는 cache하지 않는 기본 option입니다.
+- **`&#x27;default-cache&#x27;`**: `fetch`에 어떤 `cache` option이든 전달할 수 있게 허용하되, option이 없으면 `cache` option을 `&#x27;force-cache&#x27;`로 설정합니다. 즉, Request-time API 이후의 `fetch` request도 static으로 간주됩니다.
+- **`&#x27;only-cache&#x27;`**: option이 없으면 기본값을 `cache: &#x27;force-cache&#x27;`로 바꾸고, `cache: &#x27;no-store&#x27;`를 사용하는 `fetch` request가 있으면 error를 발생시켜 모든 `fetch` request가 caching을 opt-in하도록 보장합니다.
+- **`&#x27;force-cache&#x27;`**: 모든 `fetch` request의 `cache` option을 `&#x27;force-cache&#x27;`로 설정해 모든 `fetch` request가 caching을 opt-in하도록 보장합니다.
+- **`&#x27;default-no-store&#x27;`**: `fetch`에 어떤 `cache` option이든 전달할 수 있게 허용하되, option이 없으면 `cache` option을 `&#x27;no-store&#x27;`로 설정합니다. 즉, Request-time API 이전의 `fetch` request도 dynamic으로 간주됩니다.
+- **`&#x27;only-no-store&#x27;`**: option이 없으면 기본값을 `cache: &#x27;no-store&#x27;`로 바꾸고, `cache: &#x27;force-cache&#x27;`를 사용하는 `fetch` request가 있으면 error를 발생시켜 모든 `fetch` request가 caching을 opt-out하도록 보장합니다
+- **`&#x27;force-no-store&#x27;`**: 모든 `fetch` request의 `cache` option을 `&#x27;no-store&#x27;`로 설정해 모든 `fetch` request가 caching을 opt-out하도록 보장합니다. 이렇게 하면 `&#x27;force-cache&#x27;` option을 지정한 경우에도 모든 `fetch` request가 매 request마다 다시 fetch됩니다.
+
+##### Cross-route segment behavior || 여러 route segment에 걸친 동작
+
+- 하나의 route에 속한 각 layout과 page에 설정한 option은 서로 호환되어야 합니다.
+  - `&#x27;only-cache&#x27;`와 `&#x27;force-cache&#x27;`가 모두 지정되면 `&#x27;force-cache&#x27;`가 우선합니다. `&#x27;only-no-store&#x27;`와 `&#x27;force-no-store&#x27;`가 모두 지정되면 `&#x27;force-no-store&#x27;`가 우선합니다. force option은 route 전체의 동작을 바꾸므로, `&#x27;force-*&#x27;`를 가진 segment 하나만 있어도 `&#x27;only-*&#x27;`로 인한 error가 발생하지 않습니다.
+  - `&#x27;only-*&#x27;`와 `&#x27;force-*&#x27;` option의 목적은 route 전체가 완전한 static이거나 완전한 dynamic임을 보장하는 것입니다. 즉:
+    - 하나의 route 안에서 `&#x27;only-cache&#x27;`와 `&#x27;only-no-store&#x27;`를 함께 쓰는 것은 허용되지 않습니다.
+    - 하나의 route 안에서 `&#x27;force-cache&#x27;`와 `&#x27;force-no-store&#x27;`를 함께 쓰는 것은 허용되지 않습니다.
+  - child가 `&#x27;auto&#x27;`나 `&#x27;*-cache&#x27;`를 지정하면 parent는 `&#x27;default-no-store&#x27;`를 지정할 수 없습니다. 같은 fetch가 서로 다르게 동작할 수 있기 때문입니다.
+- 일반적으로 공유되는 parent layout은 `&#x27;auto&#x27;`로 두고, child segment가 달라지는 지점에서 option을 customize하는 것을 권장합니다.
+
+&lt;/details&gt;
+
+## Time-based revalidation || 시간 기반 revalidation
+
+`fetch`의 `next.revalidate` option을 사용하면 지정한 시간(초)이 지난 뒤 데이터를 revalidate합니다:
+
+[[CODE 5]]
+
+`fetch`가 아닌 함수의 경우 `unstable_cache`가 configuration에서 `revalidate` option을 받습니다([위 예시](#unstable_cache-for-non-fetch-functions) 참고).
+
+### Route segment config `revalidate`
+
+layout이나 page의 기본 revalidation 시간을 설정합니다. 이 option은 개별 `fetch` request에 설정된 `revalidate` 값을 override하지 않습니다.
+
+[[CODE 6]]
+
+- **`false`** (default): `cache` option을 `&#x27;force-cache&#x27;`로 설정했거나 Request-time API가 사용되기 전에 발견된 모든 `fetch` request를 cache하는 기본 heuristic입니다. 의미상 `revalidate: Infinity`와 같으며, 사실상 resource를 무기한 cache해야 한다는 뜻입니다. 그래도 개별 `fetch` request는 `cache: &#x27;no-store&#x27;`나 `revalidate: 0`을 사용해 cache되지 않게 하고 route를 dynamic하게 render되도록 만들 수 있습니다. 또는 `revalidate`를 route 기본값보다 작은 양수로 설정해 route의 revalidation 빈도를 높일 수도 있습니다.
+- **`0`**: Request-time API나 cache되지 않은 data fetch가 발견되지 않더라도 layout이나 page가 항상 dynamic하게 render되도록 보장합니다. 이 option은 `cache` option을 설정하지 않은 `fetch` request의 기본값을 `&#x27;no-store&#x27;`로 바꾸지만, `&#x27;force-cache&#x27;`를 opt-in했거나 양수 `revalidate`를 사용하는 `fetch` request는 그대로 둡니다.
+- **`number`**: (초 단위) layout이나 page의 기본 revalidation 빈도를 `n`초로 설정합니다.
+
+&gt; **Good to know**:
+&gt;
+&gt; - revalidate 값은 정적으로 분석 가능해야 합니다. 예를 들어 `revalidate = 600`은 유효하지만 `revalidate = 60 * 10`은 유효하지 않습니다.
+&gt; - deprecated된 `runtime = &#x27;edge&#x27;`를 사용할 때는 revalidate 값을 사용할 수 없습니다.
+&gt; - Development 환경에서 Page는 _항상_ on-demand로 render되며 절대 cache되지 않습니다. 덕분에 revalidation 기간이 지나기를 기다리지 않고 변경 사항을 바로 확인할 수 있습니다.
+
+#### Revalidation frequency || Revalidation 빈도
+
+- 하나의 route에 속한 각 layout과 page 중 가장 낮은 `revalidate` 값이 route _전체_의 revalidation 빈도를 결정합니다. 이렇게 해서 child page가 parent layout만큼 자주 revalidate되도록 보장합니다.
+- 개별 `fetch` request는 route의 기본 `revalidate`보다 낮은 `revalidate`를 설정해 route 전체의 revalidation 빈도를 높일 수 있습니다. 이를 통해 특정 기준에 따라 일부 route만 더 잦은 revalidation을 dynamic하게 opt-in할 수 있습니다.
+
+## On-demand revalidation
+
+이벤트가 발생한 뒤 cache된 데이터를 revalidate하려면 [Server Action](/docs/app/getting-started/mutating-data)이나 [Route Handler](/docs/app/api-reference/file-conventions/route)에서 [`revalidateTag`](/docs/app/api-reference/functions/revalidateTag) 또는 [`revalidatePath`](/docs/app/api-reference/functions/revalidatePath)를 사용하세요.
+
+### Tagging cached data || cache된 데이터에 tag 붙이기
+
+`fetch` request에 `next.tags`로 tag를 붙이면 on-demand cache invalidation을 사용할 수 있습니다:
+
+[[CODE 7]]
+
+`fetch`가 아닌 함수의 경우 `unstable_cache`도 `tags` option을 받습니다([위 예시](#unstable_cache-for-non-fetch-functions) 참고).
+
+### `revalidateTag`
+
+[`revalidateTag`](/docs/app/api-reference/functions/revalidateTag)를 사용해 tag 기준으로 cache된 데이터를 invalidate합니다:
+
+[[CODE 8]]
+
+### `revalidatePath`
+
+[`revalidatePath`](/docs/app/api-reference/functions/revalidatePath)를 사용해 특정 route path의 cache된 데이터를 모두 invalidate합니다:
+
+[[CODE 9]]
+
+## Deduplicating requests || Request 중복 제거
+
+`fetch`([자동으로 memoize됨](/docs/app/api-reference/functions/fetch#memoization))를 사용하지 않고 ORM이나 database를 직접 사용한다면, data access를 [React `cache`](https://react.dev/reference/react/cache) 함수로 감싸 한 번의 render pass 안에서 request 중복을 제거할 수 있습니다:
+
+[[CODE 10]]
+
+## Preloading data || 데이터 preload하기
+
+blocking request보다 먼저 미리 호출하는 utility 함수를 만들어 데이터를 preload할 수 있습니다. 이렇게 하면 data fetching을 일찍 시작할 수 있어서, component가 render될 때쯤에는 데이터가 이미 준비되어 있습니다.
+
+[`server-only` package](https://www.npmjs.com/package/server-only)와 React의 [`cache`](https://react.dev/reference/react/cache)를 결합해 재사용 가능한 preload utility를 만드세요:
+
+[[CODE 11]]
+
+그런 다음 blocking 작업보다 먼저 `preload()`를 호출해 데이터 로딩이 바로 시작되게 합니다:
+
+[[CODE 12]]
+
+## Statically generating dynamic routes || Dynamic route를 static하게 생성하기
+
+[`generateStaticParams`](/docs/app/api-reference/functions/generate-static-params)로 dynamic route를 prerender하고 시간이 지나면서 revalidate하는 방법은 [Incremental Static Regeneration](/docs/app/guides/incremental-static-regeneration) 가이드를 참고하세요.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

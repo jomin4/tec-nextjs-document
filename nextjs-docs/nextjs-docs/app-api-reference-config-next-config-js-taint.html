@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>taint (taint) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/api-reference/config/next-config-js/taint" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/api-reference/config/next-config-js/taint" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/taint.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference.html">API Reference</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config.html">Configuration</a><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-api-reference-config-next-config-js.html">next.config.js</a></div>
+    <div class="title-row">
+      <h1 class="page-title">taint<span class="vbadge">experimental</span><span class="sub">taint</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<h2 class="sec" id="usage"><a class="anchor" href="#usage">Usage<span class="ko">사용법</span></a></h2>
+<p><code>taint</code> option은 객체와 값을 taint하는 experimental React API 지원을 활성화합니다. 이 기능은 민감한 데이터가 실수로 client에 전달되는 것을 막는 데 도움이 됩니다. 활성화하면 다음을 사용할 수 있습니다:</p><div class="en-orig"><p>The <code>taint</code> option enables support for experimental React APIs for tainting objects and values. This feature helps prevent sensitive data from being accidentally passed to the client. When enabled, you can use:</p></div>
+<ul>
+<li><a href="https://react.dev/reference/react/experimental_taintObjectReference" target="_blank" rel="noopener"><code>experimental_taintObjectReference</code></a>로 객체 reference를 taint합니다.</li>
+<li><a href="https://react.dev/reference/react/experimental_taintUniqueValue" target="_blank" rel="noopener"><code>experimental_taintUniqueValue</code></a>로 고유한 값을 taint합니다.</li>
+</ul><div class="en-orig"><ul>
+<li><a href="https://react.dev/reference/react/experimental_taintObjectReference" target="_blank" rel="noopener"><code>experimental_taintObjectReference</code></a> taint objects references.</li>
+<li><a href="https://react.dev/reference/react/experimental_taintUniqueValue" target="_blank" rel="noopener"><code>experimental_taintUniqueValue</code></a> to taint unique values.</li>
+</ul></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 flag를 활성화하면 <code>app</code> directory에 대해 React <code>experimental</code> channel도 활성화되고, <code>process.env</code>가 taint되어 Client Component에 통째로 전달할 수 없게 됩니다.</p><div class="en-orig"><p>Activating this flag also enables the React <code>experimental</code> channel for <code>app</code> directory, and taints <code>process.env</code> so it cannot be passed whole to a Client Component.</p></div></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="next.config.ts" data-js="next.config.js">next.config.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import type { NextConfig } from &#x27;next&#x27;
+
+const nextConfig: NextConfig = {
+  experimental: {
+    taint: true,
+  },
+}
+
+export default nextConfig</code></pre><pre class="v-js" hidden><code class="language-javascript">/** @type {import(&#x27;next&#x27;).NextConfig} */
+const nextConfig = {
+  experimental: {
+    taint: true,
+  },
+}
+
+module.exports = nextConfig</code></pre></div></div>
+<div class="callout warning"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 2.2 14.3 13H1.7z" stroke-linejoin="round"/><path d="M8 6.5v3M8 11.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Warning</div><p>민감한 데이터가 client에 노출되는 것을 막는 유일한 수단으로 taint API에 의존하지 마세요. <a href="https://nextjs.org/blog/security-nextjs-server-components-actions" target="_blank" rel="noopener">security 권장 사항</a>을 참고하세요.</p><div class="en-orig"><p>Do not rely on the taint API as your only mechanism to prevent exposing sensitive data to the client. See our <a href="https://nextjs.org/blog/security-nextjs-server-components-actions" target="_blank" rel="noopener">security recommendations</a>.</p></div></div></div>
+<p>taint API를 사용하면 Server-Client boundary를 통과해서는 안 되는 데이터를 선언적이고 명시적으로 표시해 방어적으로 대응할 수 있습니다. 객체나 값이 Server-Client boundary를 통과하면 React가 error를 throw합니다.</p><div class="en-orig"><p>The taint APIs allows you to be defensive, by declaratively and explicitly marking data that is not allowed to pass through the Server-Client boundary. When an object or value, is passed through the Server-Client boundary, React throws an error.</p></div>
+<p>이는 다음과 같은 경우에 유용합니다:</p><div class="en-orig"><p>This is helpful for cases where:</p></div>
+<ul>
+<li>데이터를 읽는 method를 직접 제어할 수 없는 경우</li>
+<li>직접 정의하지 않은 민감한 데이터 형태를 다뤄야 하는 경우</li>
+<li>Server Component rendering 중에 민감한 데이터에 접근하는 경우</li>
+</ul><div class="en-orig"><ul>
+<li>The methods to read data are out of your control</li>
+<li>You have to work with sensitive data shapes not defined by you</li>
+<li>Sensitive data is accessed during Server Component rendering</li>
+</ul></div>
+<p>민감한 데이터가 필요하지 않은 context로 반환되지 않도록 데이터와 API를 설계하는 것을 권장합니다.</p><div class="en-orig"><p>It is recommended to model your data and APIs so that sensitive data is not returned to contexts where it is not needed.</p></div>
+<h2 class="sec" id="caveats"><a class="anchor" href="#caveats">Caveats<span class="ko">주의 사항</span></a></h2>
+<ul>
+<li>Tainting은 reference로만 객체를 추적할 수 있습니다. 객체를 복사하면 taint되지 않은 버전이 만들어지고, API가 제공하는 모든 보장을 잃게 됩니다. 복사본도 taint해야 합니다.</li>
+<li>기본으로 적용되는 <code>process.env</code> taint는 객체 reference에만 적용됩니다. <code>process.env.MY_VAR</code>처럼 개별 변수를 읽어 그 결과 문자열을 Client Component에 전달하는 것은 영향을 받지 않으며, <code>{ ...process.env }</code> 같은 복사본을 전달하는 것도 마찬가지입니다.</li>
+<li>Tainting은 taint된 값에서 파생된 데이터를 추적할 수 없습니다. 파생된 값도 taint해야 합니다.</li>
+<li>값은 lifetime reference가 scope 안에 있는 동안 taint 상태로 유지됩니다. 자세한 내용은 <a href="https://react.dev/reference/react/experimental_taintUniqueValue#parameters" target="_blank" rel="noopener"><code>experimental_taintUniqueValue</code> parameter reference</a>를 참고하세요.</li>
+</ul><div class="en-orig"><ul>
+<li>Tainting can only keep track of objects by reference. Copying an object creates an untainted version, which loses all guarantees given by the API. You'll need to taint the copy.</li>
+<li>The built-in <code>process.env</code> taint applies to the object reference only. Reading individual variables such as <code>process.env.MY_VAR</code> and passing the resulting string to a Client Component is unaffected, as is passing a copy like <code>{ ...process.env }</code>.</li>
+<li>Tainting cannot keep track of data derived from a tainted value. You also need to taint the derived value.</li>
+<li>Values are tainted for as long as their lifetime reference is within scope. See the <a href="https://react.dev/reference/react/experimental_taintUniqueValue#parameters" target="_blank" rel="noopener"><code>experimental_taintUniqueValue</code> parameters reference</a>, for more information.</li>
+</ul></div>
+<h2 class="sec" id="examples"><a class="anchor" href="#examples">Examples<span class="ko">예시</span></a></h2>
+<h3 class="sec" id="tainting-an-object-reference"><a class="anchor" href="#tainting-an-object-reference">Tainting an object reference<span class="ko">객체 reference taint하기</span></a></h3>
+<p>이 예시에서 <code>getUserDetails</code> 함수는 특정 사용자에 대한 데이터를 반환합니다. user 객체 reference를 taint해서 Server-Client boundary를 넘지 못하게 합니다. 예를 들어 <code>UserCard</code>가 Client Component라고 가정합니다.</p><div class="en-orig"><p>In this case, the <code>getUserDetails</code> function returns data about a given user. We taint the user object reference, so that it cannot cross a Server-Client boundary. For example, assuming <code>UserCard</code> is a Client Component.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="" data-js=""></span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { experimental_taintObjectReference } from &#x27;react&#x27;
+
+async function getUserDetails(id: string): Promise&lt;UserDetails&gt; {
+  const user = await db.queryUserById(id)
+
+  experimental_taintObjectReference(
+    &#x27;Do not use the entire user info object. Instead, select only the fields you need.&#x27;,
+    user
+  )
+
+  return user
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { experimental_taintObjectReference } from &#x27;react&#x27;
+
+async function getUserDetails(id) {
+  const user = await db.queryUserById(id)
+
+  experimental_taintObjectReference(
+    &#x27;Do not use the entire user info object. Instead, select only the fields you need.&#x27;,
+    user
+  )
+
+  return user
+}</code></pre></div></div>
+<p>taint된 <code>userDetails</code> 객체의 개별 field에는 여전히 접근할 수 있습니다.</p><div class="en-orig"><p>We can still access individual fields from the tainted <code>userDetails</code> object.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="" data-js=""></span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function ContactPage({
+  params,
+}: {
+  params: Promise&lt;{ id: string }&gt;
+}) {
+  const { id } = await params
+  const userDetails = await getUserDetails(id)
+
+  return (
+    &lt;UserCard
+      firstName={userDetails.firstName}
+      lastName={userDetails.lastName}
+    /&gt;
+  )
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function ContactPage({ params }) {
+  const { id } = await params
+  const userDetails = await getUserDetails(id)
+
+  return (
+    &lt;UserCard
+      firstName={userDetails.firstName}
+      lastName={userDetails.lastName}
+    /&gt;
+  )
+}</code></pre></div></div>
+<p>이제 객체 전체를 Client Component에 전달하면 error가 발생합니다.</p><div class="en-orig"><p>Now, passing the entire object to the Client Component will throw an error.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="" data-js=""></span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function ContactPage({
+  params,
+}: {
+  params: Promise&lt;{ id: string }&gt;
+}) {
+  const userDetails = await getUserDetails(id)
+
+  // Throws an error
+  return &lt;UserCard user={userDetails} /&gt;
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function ContactPage({ params }) {
+  const { id } = await params
+  const userDetails = await getUserDetails(id)
+
+  // Throws an error
+  return &lt;UserCard user={userDetails} /&gt;
+}</code></pre></div></div>
+<h3 class="sec" id="tainting-a-unique-value"><a class="anchor" href="#tainting-a-unique-value">Tainting a unique value<span class="ko">고유한 값 taint하기</span></a></h3>
+<p>이 예시에서는 <code>configService.getConfigDetails</code> 호출을 await해서 server configuration에 접근할 수 있습니다. 하지만 system configuration에는 client에 노출하고 싶지 않은 <code>SERVICE_API_KEY</code>가 들어 있습니다.</p><div class="en-orig"><p>In this case, we can access the server configuration by awaiting calls to <code>configService.getConfigDetails</code>. However, the system configuration contains the <code>SERVICE_API_KEY</code> that we don't want to expose to clients.</p></div>
+<p><code>config.SERVICE_API_KEY</code> 값을 taint할 수 있습니다.</p><div class="en-orig"><p>We can taint the <code>config.SERVICE_API_KEY</code> value.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="" data-js=""></span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { experimental_taintUniqueValue } from &#x27;react&#x27;
+
+async function getSystemConfig(): Promise&lt;SystemConfig&gt; {
+  const config = await configService.getConfigDetails()
+
+  experimental_taintUniqueValue(
+    &#x27;Do not pass configuration tokens to the client&#x27;,
+    config,
+    config.SERVICE_API_KEY
+  )
+
+  return config
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { experimental_taintUniqueValue } from &#x27;react&#x27;
+
+async function getSystemConfig() {
+  const config = await configService.getConfigDetails()
+
+  experimental_taintUniqueValue(
+    &#x27;Do not pass configuration tokens to the client&#x27;,
+    config,
+    config.SERVICE_API_KEY
+  )
+
+  return config
+}</code></pre></div></div>
+<p><code>systemConfig</code> 객체의 다른 property에는 여전히 접근할 수 있습니다.</p><div class="en-orig"><p>We can still access other properties of the <code>systemConfig</code> object.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">export async function Dashboard() {
+  const systemConfig = await getSystemConfig()
+
+  return &lt;ClientDashboard version={systemConfig.SERVICE_API_VERSION} /&gt;
+}</code></pre></div></div>
+<p>하지만 <code>SERVICE_API_KEY</code>를 <code>ClientDashboard</code>에 전달하면 error가 발생합니다.</p><div class="en-orig"><p>However, passing <code>SERVICE_API_KEY</code> to <code>ClientDashboard</code> throws an error.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">export async function Dashboard() {
+  const systemConfig = await getSystemConfig()
+  // Someone makes a mistake in a PR
+  const version = systemConfig.SERVICE_API_KEY
+
+  return &lt;ClientDashboard version={version} /&gt;
+}</code></pre></div></div>
+<p><code>systemConfig.SERVICE_API_KEY</code>를 새 변수에 다시 할당하더라도, 그것을 Client Component에 전달하면 여전히 error가 발생한다는 점에 유의하세요.</p><div class="en-orig"><p>Note that, even though, <code>systemConfig.SERVICE_API_KEY</code> is reassigned to a new variable. Passing it to a Client Component still throws an error.</p></div>
+<p>반면 taint된 고유한 값에서 파생된 값은 client에 노출됩니다.</p><div class="en-orig"><p>Whereas, a value derived from a tainted unique value, will be exposed to the client.</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-typescript">export async function Dashboard() {
+  const systemConfig = await getSystemConfig()
+  // Someone makes a mistake in a PR
+  const version = `version::${systemConfig.SERVICE_API_KEY}`
+
+  return &lt;ClientDashboard version={version} /&gt;
+}</code></pre></div></div>
+<p>더 나은 방법은 <code>getSystemConfig</code>가 반환하는 데이터에서 <code>SERVICE_API_KEY</code>를 제거하는 것입니다.</p><div class="en-orig"><p>A better approach is to remove <code>SERVICE_API_KEY</code> from the data returned by <code>getSystemConfig</code>.</p></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/03-api-reference/05-config/01-next-config-js/taint.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/taint" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-api-reference-config-next-config-js-supportsImmutableAssets.html" class="prev"><div class="dir">← 이전</div><div class="ttl">supportsImmutableAssets</div><div class="ttl-ko">supportsImmutableAssets</div></a>
+      <a href="app-api-reference-config-next-config-js-trailingSlash.html" class="next"><div class="dir">다음 →</div><div class="ttl">trailingSlash</div><div class="ttl-ko">trailingSlash</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/api-reference/config/next-config-js/taint" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#usage">Usage</a></li><li class="l2"><a href="#caveats">Caveats</a></li><li class="l2"><a href="#examples">Examples</a></li><li class="l3"><a href="#tainting-an-object-reference">Tainting an object reference</a></li><li class="l3"><a href="#tainting-a-unique-value">Tainting a unique value</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+## Usage || 사용법
+
+`taint` option은 객체와 값을 taint하는 experimental React API 지원을 활성화합니다. 이 기능은 민감한 데이터가 실수로 client에 전달되는 것을 막는 데 도움이 됩니다. 활성화하면 다음을 사용할 수 있습니다:
+
+- [`experimental_taintObjectReference`](https://react.dev/reference/react/experimental_taintObjectReference)로 객체 reference를 taint합니다.
+- [`experimental_taintUniqueValue`](https://react.dev/reference/react/experimental_taintUniqueValue)로 고유한 값을 taint합니다.
+
+&gt; **Good to know**: 이 flag를 활성화하면 `app` directory에 대해 React `experimental` channel도 활성화되고, `process.env`가 taint되어 Client Component에 통째로 전달할 수 없게 됩니다.
+
+[[CODE 1]]
+
+&gt; **Warning:** 민감한 데이터가 client에 노출되는 것을 막는 유일한 수단으로 taint API에 의존하지 마세요. [security 권장 사항](/blog/security-nextjs-server-components-actions)을 참고하세요.
+
+taint API를 사용하면 Server-Client boundary를 통과해서는 안 되는 데이터를 선언적이고 명시적으로 표시해 방어적으로 대응할 수 있습니다. 객체나 값이 Server-Client boundary를 통과하면 React가 error를 throw합니다.
+
+이는 다음과 같은 경우에 유용합니다:
+
+- 데이터를 읽는 method를 직접 제어할 수 없는 경우
+- 직접 정의하지 않은 민감한 데이터 형태를 다뤄야 하는 경우
+- Server Component rendering 중에 민감한 데이터에 접근하는 경우
+
+민감한 데이터가 필요하지 않은 context로 반환되지 않도록 데이터와 API를 설계하는 것을 권장합니다.
+
+## Caveats || 주의 사항
+
+- Tainting은 reference로만 객체를 추적할 수 있습니다. 객체를 복사하면 taint되지 않은 버전이 만들어지고, API가 제공하는 모든 보장을 잃게 됩니다. 복사본도 taint해야 합니다.
+- 기본으로 적용되는 `process.env` taint는 객체 reference에만 적용됩니다. `process.env.MY_VAR`처럼 개별 변수를 읽어 그 결과 문자열을 Client Component에 전달하는 것은 영향을 받지 않으며, `{ ...process.env }` 같은 복사본을 전달하는 것도 마찬가지입니다.
+- Tainting은 taint된 값에서 파생된 데이터를 추적할 수 없습니다. 파생된 값도 taint해야 합니다.
+- 값은 lifetime reference가 scope 안에 있는 동안 taint 상태로 유지됩니다. 자세한 내용은 [`experimental_taintUniqueValue` parameter reference](https://react.dev/reference/react/experimental_taintUniqueValue#parameters)를 참고하세요.
+
+## Examples || 예시
+
+### Tainting an object reference || 객체 reference taint하기
+
+이 예시에서 `getUserDetails` 함수는 특정 사용자에 대한 데이터를 반환합니다. user 객체 reference를 taint해서 Server-Client boundary를 넘지 못하게 합니다. 예를 들어 `UserCard`가 Client Component라고 가정합니다.
+
+[[CODE 2]]
+
+taint된 `userDetails` 객체의 개별 field에는 여전히 접근할 수 있습니다.
+
+[[CODE 3]]
+
+이제 객체 전체를 Client Component에 전달하면 error가 발생합니다.
+
+[[CODE 4]]
+
+### Tainting a unique value || 고유한 값 taint하기
+
+이 예시에서는 `configService.getConfigDetails` 호출을 await해서 server configuration에 접근할 수 있습니다. 하지만 system configuration에는 client에 노출하고 싶지 않은 `SERVICE_API_KEY`가 들어 있습니다.
+
+`config.SERVICE_API_KEY` 값을 taint할 수 있습니다.
+
+[[CODE 5]]
+
+`systemConfig` 객체의 다른 property에는 여전히 접근할 수 있습니다.
+
+[[CODE 6]]
+
+하지만 `SERVICE_API_KEY`를 `ClientDashboard`에 전달하면 error가 발생합니다.
+
+[[CODE 7]]
+
+`systemConfig.SERVICE_API_KEY`를 새 변수에 다시 할당하더라도, 그것을 Client Component에 전달하면 여전히 error가 발생한다는 점에 유의하세요.
+
+반면 taint된 고유한 값에서 파생된 값은 client에 노출됩니다.
+
+[[CODE 8]]
+
+더 나은 방법은 `getSystemConfig`가 반환하는 데이터에서 `SERVICE_API_KEY`를 제거하는 것입니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

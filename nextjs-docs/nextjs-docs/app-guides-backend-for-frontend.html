@@ -1,0 +1,1102 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to use Next.js as a backend for your frontend (Next.js를 frontend용 backend로 사용하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/backend-for-frontend" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/backend-for-frontend" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/backend-for-frontend.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to use Next.js as a backend for your frontend<span class="sub">Next.js를 frontend용 backend로 사용하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>Next.js는 "Backend for Frontend" 패턴을 지원합니다. 이를 통해 HTTP request를 처리하고 HTML뿐 아니라 어떤 content type이든 반환하는 public endpoint를 만들 수 있습니다. 또한 데이터 source에 접근하고 원격 데이터를 업데이트하는 것 같은 side effect를 수행할 수도 있습니다.</p><div class="en-orig"><p>Next.js supports the "Backend for Frontend" pattern. This lets you create public endpoints to handle HTTP requests and return any content type—not just HTML. You can also access data sources and perform side effects like updating remote data.</p></div>
+<p>새 프로젝트를 시작한다면 <code>create-next-app</code>에 <code>--api</code> flag를 사용하세요. 그러면 새 프로젝트의 <code>app/</code> 폴더에 API endpoint를 만드는 방법을 보여 주는 예제 <code>route.ts</code>가 자동으로 포함됩니다.</p><div class="en-orig"><p>If you are starting a new project, using <code>create-next-app</code> with the <code>--api</code> flag automatically includes an example <code>route.ts</code> in your new project's <code>app/</code> folder, demonstrating how to create an API endpoint.</p></div>
+<div class="code pm"><div class="pm-tabs"><button class="pm-tab on" data-pm="pnpm">pnpm</button><button class="pm-tab" data-pm="npm">npm</button><button class="pm-tab" data-pm="yarn">yarn</button><button class="pm-tab" data-pm="bun">bun</button></div><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class="pm-pnpm"><code class="language-bash">pnpm create next-app --api</code></pre><pre class="pm-npm" hidden><code class="language-bash">npx create-next-app@latest --api</code></pre><pre class="pm-yarn" hidden><code class="language-bash">yarn create next-app --api</code></pre><pre class="pm-bun" hidden><code class="language-bash">bun create next-app --api</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>Next.js의 backend 기능은 완전한 backend를 대체하지 않습니다. 이는 다음과 같은 API layer 역할을 합니다:</p>
+<ul>
+<li>외부에서 공개적으로 접근 가능하고</li>
+<li>모든 HTTP request를 처리하며</li>
+<li>어떤 content type이든 반환할 수 있습니다</li>
+</ul><div class="en-orig"><p>Next.js backend capabilities are not a full backend replacement. They serve as an API layer that:</p>
+<ul>
+<li>is publicly reachable</li>
+<li>handles any HTTP request</li>
+<li>can return any content type</li>
+</ul></div></div></div>
+<p>이 패턴을 구현하려면 다음을 사용하세요:</p><div class="en-orig"><p>To implement this pattern, use:</p></div>
+<ul>
+<li><a href="app-api-reference-file-conventions-route.html">Route Handlers</a></li>
+<li><a href="app-api-reference-file-conventions-proxy.html"><code>proxy</code></a></li>
+<li>Pages Router에서는 <a href="pages-building-your-application-routing-api-routes.html">API Routes</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-file-conventions-route.html">Route Handlers</a></li>
+<li><a href="app-api-reference-file-conventions-proxy.html"><code>proxy</code></a></li>
+<li>In Pages Router, <a href="pages-building-your-application-routing-api-routes.html">API Routes</a></li>
+</ul></div>
+<h2 class="sec" id="public-endpoints"><a class="anchor" href="#public-endpoints">Public Endpoints<span class="ko">Public endpoint</span></a></h2>
+<p>Route Handler는 public HTTP endpoint입니다. 어떤 client든 접근할 수 있습니다.</p><div class="en-orig"><p>Route Handlers are public HTTP endpoints. Any client can access them.</p></div>
+<p><code>route.ts</code> 또는 <code>route.js</code> file convention을 사용해 Route Handler를 만드세요:</p><div class="en-orig"><p>Create a Route Handler using the <code>route.ts</code> or <code>route.js</code> file convention:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="/app/api/route.ts" data-js="/app/api/route.js">/app/api/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export function GET(request: Request) {}</code></pre><pre class="v-js" hidden><code class="language-javascript">export function GET(request) {}</code></pre></div></div>
+<p>이는 <code>/api</code>로 보낸 <code>GET</code> request를 처리합니다.</p><div class="en-orig"><p>This handles <code>GET</code> requests sent to <code>/api</code>.</p></div>
+<p>exception을 throw할 수 있는 작업에는 <code>try/catch</code> block을 사용하세요:</p><div class="en-orig"><p>Use <code>try/catch</code> blocks for operations that may throw an exception:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="/app/api/route.ts" data-js="/app/api/route.js">/app/api/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { submit } from &#x27;@/lib/submit&#x27;
+
+export async function POST(request: Request) {
+  try {
+    await submit(request)
+    return new Response(null, { status: 204 })
+  } catch (reason) {
+    const message =
+      reason instanceof Error ? reason.message : &#x27;Unexpected error&#x27;
+
+    return new Response(message, { status: 500 })
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { submit } from &#x27;@/lib/submit&#x27;
+
+export async function POST(request) {
+  try {
+    await submit(request)
+    return new Response(null, { status: 204 })
+  } catch (reason) {
+    const message =
+      reason instanceof Error ? reason.message : &#x27;Unexpected error&#x27;
+
+    return new Response(message, { status: 500 })
+  }
+}</code></pre></div></div>
+<p>client로 보내는 error message에 민감한 정보를 노출하지 마세요.</p><div class="en-orig"><p>Avoid exposing sensitive information in error messages sent to the client.</p></div>
+<p>접근을 제한하려면 authentication과 authorization을 구현하세요. <a href="app-guides-authentication.html">Authentication</a>을 참고하세요.</p><div class="en-orig"><p>To restrict access, implement authentication and authorization. See <a href="app-guides-authentication.html">Authentication</a>.</p></div>
+<h2 class="sec" id="content-types"><a class="anchor" href="#content-types">Content types</a></h2>
+<p>Route Handler를 사용하면 JSON, XML, 이미지, 파일, plain text 등 UI가 아닌 response를 제공할 수 있습니다.</p><div class="en-orig"><p>Route Handlers let you serve non-UI responses, including JSON, XML, images, files, and plain text.</p></div>
+<p>Next.js는 흔히 쓰이는 endpoint에 대해 file convention을 사용합니다:</p><div class="en-orig"><p>Next.js uses file conventions for common endpoints:</p></div>
+<ul>
+<li><a href="app-api-reference-file-conventions-metadata-sitemap.html"><code>sitemap.xml</code></a></li>
+<li><a href="app-api-reference-file-conventions-metadata-opengraph-image.html"><code>opengraph-image.jpg</code>, <code>twitter-image</code></a></li>
+<li><a href="app-api-reference-file-conventions-metadata-app-icons.html">favicon, app icon, apple-icon</a></li>
+<li><a href="app-api-reference-file-conventions-metadata-manifest.html"><code>manifest.json</code></a></li>
+<li><a href="app-api-reference-file-conventions-metadata-robots.html"><code>robots.txt</code></a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-file-conventions-metadata-sitemap.html"><code>sitemap.xml</code></a></li>
+<li><a href="app-api-reference-file-conventions-metadata-opengraph-image.html"><code>opengraph-image.jpg</code>, <code>twitter-image</code></a></li>
+<li><a href="app-api-reference-file-conventions-metadata-app-icons.html">favicon, app icon, and apple-icon</a></li>
+<li><a href="app-api-reference-file-conventions-metadata-manifest.html"><code>manifest.json</code></a></li>
+<li><a href="app-api-reference-file-conventions-metadata-robots.html"><code>robots.txt</code></a></li>
+</ul></div>
+<p>다음과 같은 custom endpoint를 정의할 수도 있습니다:</p><div class="en-orig"><p>You can also define custom ones, such as:</p></div>
+<ul>
+<li><code>llms.txt</code></li>
+<li><code>rss.xml</code></li>
+<li><code>.well-known</code></li>
+</ul><div class="en-orig"><ul>
+<li><code>llms.txt</code></li>
+<li><code>rss.xml</code></li>
+<li><code>.well-known</code></li>
+</ul></div>
+<p>예를 들어 <code>app/rss.xml/route.ts</code>는 <code>rss.xml</code>에 대한 Route Handler를 만듭니다.</p><div class="en-orig"><p>For example, <code>app/rss.xml/route.ts</code> creates a Route Handler for <code>rss.xml</code>.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="/app/rss.xml/route.ts" data-js="/app/rss.xml/route.js">/app/rss.xml/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function GET(request: Request) {
+  const rssResponse = await fetch(/* rss endpoint */)
+  const rssData = await rssResponse.json()
+
+  const rssFeed = `&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;rss version=&quot;2.0&quot;&gt;
+&lt;channel&gt;
+ &lt;title&gt;${rssData.title}&lt;/title&gt;
+ &lt;description&gt;${rssData.description}&lt;/description&gt;
+ &lt;link&gt;${rssData.link}&lt;/link&gt;
+ &lt;copyright&gt;${rssData.copyright}&lt;/copyright&gt;
+ ${rssData.items.map((item) =&gt; {
+   return `&lt;item&gt;
+    &lt;title&gt;${item.title}&lt;/title&gt;
+    &lt;description&gt;${item.description}&lt;/description&gt;
+    &lt;link&gt;${item.link}&lt;/link&gt;
+    &lt;pubDate&gt;${item.publishDate}&lt;/pubDate&gt;
+    &lt;guid isPermaLink=&quot;false&quot;&gt;${item.guid}&lt;/guid&gt;
+ &lt;/item&gt;`
+ })}
+&lt;/channel&gt;
+&lt;/rss&gt;`
+
+  const headers = new Headers({ &#x27;content-type&#x27;: &#x27;application/xml&#x27; })
+
+  return new Response(rssFeed, { headers })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function GET(request) {
+  const rssResponse = await fetch(/* rss endpoint */)
+  const rssData = await rssResponse.json()
+
+  const rssFeed = `&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
+&lt;rss version=&quot;2.0&quot;&gt;
+&lt;channel&gt;
+ &lt;title&gt;${rssData.title}&lt;/title&gt;
+ &lt;description&gt;${rssData.description}&lt;/description&gt;
+ &lt;link&gt;${rssData.link}&lt;/link&gt;
+ &lt;copyright&gt;${rssData.copyright}&lt;/copyright&gt;
+ ${rssData.items.map((item) =&gt; {
+   return `&lt;item&gt;
+    &lt;title&gt;${item.title}&lt;/title&gt;
+    &lt;description&gt;${item.description}&lt;/description&gt;
+    &lt;link&gt;${item.link}&lt;/link&gt;
+    &lt;pubDate&gt;${item.publishDate}&lt;/pubDate&gt;
+    &lt;guid isPermaLink=&quot;false&quot;&gt;${item.guid}&lt;/guid&gt;
+ &lt;/item&gt;`
+ })}
+&lt;/channel&gt;
+&lt;/rss&gt;`
+
+  const headers = new Headers({ &#x27;content-type&#x27;: &#x27;application/xml&#x27; })
+
+  return new Response(rssFeed, { headers })
+}</code></pre></div></div>
+<p>markup을 생성하는 데 사용하는 입력은 모두 sanitize하세요.</p><div class="en-orig"><p>Sanitize any input used to generate markup.</p></div>
+<h3 class="sec" id="content-negotiation"><a class="anchor" href="#content-negotiation">Content negotiation</a></h3>
+<p>header matching과 함께 <a href="app-api-reference-config-next-config-js-rewrites.html">rewrites</a>를 사용하면 request의 <code>Accept</code> header에 따라 같은 URL에서 서로 다른 content type을 제공할 수 있습니다. 이를 <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation" target="_blank" rel="noopener">content negotiation</a>이라고 합니다.</p><div class="en-orig"><p>You can use <a href="app-api-reference-config-next-config-js-rewrites.html">rewrites</a> with header matching to serve different content types from the same URL based on the request's <code>Accept</code> header. This is known as <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation" target="_blank" rel="noopener">content negotiation</a>.</p></div>
+<p>예를 들어 문서 사이트는 같은 <code>/docs/…</code> URL에서 브라우저에는 HTML 페이지를, AI agent에는 raw Markdown을 제공할 수 있습니다.</p><div class="en-orig"><p>For example, a documentation site might serve HTML pages to browsers and raw Markdown to AI agents from the same <code>/docs/…</code> URLs.</p></div>
+<p><strong>1. <code>Accept</code> header와 match되는 rewrite 설정하기:</strong></p><div class="en-orig"><p><strong>1. Configure a rewrite that matches the <code>Accept</code> header:</strong></p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">next.config.js</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">module.exports = {
+  async rewrites() {
+    return [
+      {
+        source: &#x27;/docs/:slug*&#x27;,
+        destination: &#x27;/docs/md/:slug*&#x27;,
+        has: [
+          {
+            type: &#x27;header&#x27;,
+            key: &#x27;accept&#x27;,
+            value: &#x27;(.*)text/markdown(.*)&#x27;,
+          },
+        ],
+      },
+    ]
+  },
+}</code></pre></div></div>
+<p><code>/docs/getting-started</code>로 가는 request에 <code>Accept: text/markdown</code>이 포함되어 있으면, rewrite가 이를 <code>/docs/md/getting-started</code>로 route합니다. 해당 경로의 Route Handler가 Markdown response를 반환합니다. <code>Accept</code> header에 <code>text/markdown</code>을 보내지 않는 client는 계속 일반 HTML 페이지를 받습니다.</p><div class="en-orig"><p>When a request to <code>/docs/getting-started</code> includes <code>Accept: text/markdown</code>, the rewrite routes it to <code>/docs/md/getting-started</code>. A Route Handler at that path returns the Markdown response. Clients that do not send <code>text/markdown</code> in their <code>Accept</code> header continue to receive the normal HTML page.</p></div>
+<p><strong>2. Markdown response를 위한 Route Handler 만들기:</strong></p><div class="en-orig"><p><strong>2. Create a Route Handler for the Markdown response:</strong></p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/docs/md/[...slug]/route.ts" data-js="app/docs/md/[...slug]/route.js">app/docs/md/[...slug]/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { getDocsMd, generateDocsStaticParams } from &#x27;@/lib/docs&#x27;
+
+export async function generateStaticParams() {
+  return generateDocsStaticParams()
+}
+
+export async function GET(_: Request, ctx: RouteContext&lt;&#x27;/docs/md/[...slug]&#x27;&gt;) {
+  const { slug } = await ctx.params
+  const mdDoc = await getDocsMd({ slug })
+
+  if (mdDoc == null) {
+    return new Response(null, { status: 404 })
+  }
+
+  return new Response(mdDoc, {
+    headers: {
+      &#x27;Content-Type&#x27;: &#x27;text/markdown; charset=utf-8&#x27;,
+      Vary: &#x27;Accept&#x27;,
+    },
+  })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { getDocsMd, generateDocsStaticParams } from &#x27;@/lib/docs&#x27;
+
+export async function generateStaticParams() {
+  return generateDocsStaticParams()
+}
+
+export async function GET(_, { params }) {
+  const { slug } = await params
+  const mdDoc = await getDocsMd({ slug })
+
+  if (mdDoc == null) {
+    return new Response(null, { status: 404 })
+  }
+
+  return new Response(mdDoc, {
+    headers: {
+      &#x27;Content-Type&#x27;: &#x27;text/markdown; charset=utf-8&#x27;,
+      Vary: &#x27;Accept&#x27;,
+    },
+  })
+}</code></pre></div></div>
+<p><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary" target="_blank" rel="noopener"><code>Vary: Accept</code></a> response header는 response body가 <code>Accept</code> request header에 따라 달라진다는 것을 cache에 알려 줍니다. 이 header가 없으면 공유 cache가 cache된 Markdown response를 브라우저에 제공할 수 있습니다(반대의 경우도 마찬가지입니다). 대부분의 hosting provider는 이미 <code>Accept</code> header를 cache key에 포함하지만, <code>Vary</code>를 명시적으로 설정하면 모든 CDN과 proxy cache에서 올바르게 동작하도록 보장할 수 있습니다.</p><div class="en-orig"><p>The <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary" target="_blank" rel="noopener"><code>Vary: Accept</code></a> response header tells caches that the response body depends on the <code>Accept</code> request header. Without it, a shared cache could serve a cached Markdown response to a browser (or vice versa). Most hosting providers already include the <code>Accept</code> header in their cache key, but setting <code>Vary</code> explicitly ensures correct behavior across all CDNs and proxy caches.</p></div>
+<p><code>generateStaticParams</code>를 사용하면 build 시점에 Markdown 버전을 pre-render할 수 있어서, request마다 origin server에 가지 않고 edge에서 제공할 수 있습니다.</p><div class="en-orig"><p><code>generateStaticParams</code> lets you pre-render the Markdown variants at build time so they can be served from the edge without hitting the origin server on every request.</p></div>
+<p><strong>3. <code>curl</code>로 테스트하기:</strong></p><div class="en-orig"><p><strong>3. Test it with <code>curl</code>:</strong></p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-bash"># Returns Markdown
+curl -H &quot;Accept: text/markdown&quot; https://example.com/docs/getting-started
+
+# Returns the normal HTML page
+curl https://example.com/docs/getting-started</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><ul>
+<li><code>/docs/md/...</code> route는 rewrite 없이도 여전히 직접 접근할 수 있습니다. rewrite를 통해서만 제공되도록 제한하려면 <a href="app-api-reference-file-conventions-proxy.html"><code>proxy</code></a>를 사용해 예상한 <code>Accept</code> header가 없는 직접 request를 차단하세요.</li>
+<li>더 고급 negotiation 로직이 필요하다면, 더 유연하게 rewrites 대신 <a href="app-api-reference-file-conventions-proxy.html"><code>proxy</code></a>를 사용할 수 있습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>The <code>/docs/md/...</code> route is still directly accessible without the rewrite. If you want to restrict it to only serve via the rewrite, use <a href="app-api-reference-file-conventions-proxy.html"><code>proxy</code></a> to block direct requests that don't include the expected <code>Accept</code> header.</li>
+<li>For more advanced negotiation logic, you can use <a href="app-api-reference-file-conventions-proxy.html"><code>proxy</code></a> instead of rewrites for more flexibility.</li>
+</ul></div></div></div>
+<h3 class="sec" id="consuming-request-payloads"><a class="anchor" href="#consuming-request-payloads">Consuming request payloads<span class="ko">request payload 사용하기</span></a></h3>
+<p>request body에 접근하려면 <code>.json()</code>, <code>.formData()</code>, <code>.text()</code> 같은 Request <a href="https://developer.mozilla.org/en-US/docs/Web/API/Request#instance_methods" target="_blank" rel="noopener">instance method</a>를 사용하세요.</p><div class="en-orig"><p>Use Request <a href="https://developer.mozilla.org/en-US/docs/Web/API/Request#instance_methods" target="_blank" rel="noopener">instance methods</a> like <code>.json()</code>, <code>.formData()</code>, or <code>.text()</code> to access the request body.</p></div>
+<p><code>GET</code>과 <code>HEAD</code> request에는 body가 없습니다.</p><div class="en-orig"><p><code>GET</code> and <code>HEAD</code> requests don’t carry a body.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="/app/api/echo-body/route.ts" data-js="/app/api/echo-body/route.js">/app/api/echo-body/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function POST(request: Request) {
+  const res = await request.json()
+  return Response.json({ res })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function POST(request) {
+  const res = await request.json()
+  return Response.json({ res })
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>데이터를 다른 시스템에 전달하기 전에 검증하세요</p><div class="en-orig"><p>Validate data before passing it to other systems</p></div></div></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="/app/api/send-email/route.ts" data-js="/app/api/send-email/route.js">/app/api/send-email/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { sendMail, validateInputs } from &#x27;@/lib/email-transporter&#x27;
+
+export async function POST(request: Request) {
+  const formData = await request.formData()
+  const email = formData.get(&#x27;email&#x27;)
+  const contents = formData.get(&#x27;contents&#x27;)
+
+  try {
+    await validateInputs({ email, contents })
+    const info = await sendMail({ email, contents })
+
+    return Response.json({ messageId: info.messageId })
+  } catch (reason) {
+    const message =
+      reason instanceof Error ? reason.message : &#x27;Unexpected exception&#x27;
+
+    return new Response(message, { status: 500 })
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { sendMail, validateInputs } from &#x27;@/lib/email-transporter&#x27;
+
+export async function POST(request) {
+  const formData = await request.formData()
+  const email = formData.get(&#x27;email&#x27;)
+  const contents = formData.get(&#x27;contents&#x27;)
+
+  try {
+    await validateInputs({ email, contents })
+    const info = await sendMail({ email, contents })
+
+    return Response.json({ messageId: info.messageId })
+  } catch (reason) {
+    const message =
+      reason instanceof Error ? reason.message : &#x27;Unexpected exception&#x27;
+
+    return new Response(message, { status: 500 })
+  }
+}</code></pre></div></div>
+<p>request body는 한 번만 읽을 수 있습니다. 다시 읽어야 한다면 request를 clone하세요:</p><div class="en-orig"><p>You can only read the request body once. Clone the request if you need to read it again:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="/app/api/clone/route.ts" data-js="/app/api/clone/route.js">/app/api/clone/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">export async function POST(request: Request) {
+  try {
+    const clonedRequest = request.clone()
+
+    await request.text()
+    await clonedRequest.text()
+    await request.text() // Throws error
+
+    return new Response(null, { status: 204 })
+  } catch {
+    return new Response(null, { status: 500 })
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">export async function POST(request) {
+  try {
+    const clonedRequest = request.clone()
+
+    await request.text()
+    await clonedRequest.text()
+    await request.text() // Throws error
+
+    return new Response(null, { status: 204 })
+  } catch {
+    return new Response(null, { status: 500 })
+  }
+}</code></pre></div></div>
+<h2 class="sec" id="manipulating-data"><a class="anchor" href="#manipulating-data">Manipulating data<span class="ko">데이터 가공하기</span></a></h2>
+<p>Route Handler는 하나 이상의 source에서 가져온 데이터를 변환, 필터링, 집계할 수 있습니다. 이렇게 하면 로직을 frontend 밖에 두고 내부 시스템이 노출되는 것을 피할 수 있습니다.</p><div class="en-orig"><p>Route Handlers can transform, filter, and aggregate data from one or more sources. This keeps logic out of the frontend and avoids exposing internal systems.</p></div>
+<p>무거운 연산을 server로 넘겨 client의 배터리와 데이터 사용량을 줄일 수도 있습니다.</p><div class="en-orig"><p>You can also offload heavy computations to the server and reduce client battery and data usage.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="" data-js=""></span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { parseWeatherData } from &#x27;@/lib/weather&#x27;
+
+export async function POST(request: Request) {
+  const body = await request.json()
+  const searchParams = new URLSearchParams({ lat: body.lat, lng: body.lng })
+
+  try {
+    const weatherResponse = await fetch(`${weatherEndpoint}?${searchParams}`)
+
+    if (!weatherResponse.ok) {
+      /* handle error */
+    }
+
+    const weatherData = await weatherResponse.text()
+    const payload = parseWeatherData.asJSON(weatherData)
+
+    return new Response(payload, { status: 200 })
+  } catch (reason) {
+    const message =
+      reason instanceof Error ? reason.message : &#x27;Unexpected exception&#x27;
+
+    return new Response(message, { status: 500 })
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { parseWeatherData } from &#x27;@/lib/weather&#x27;
+
+export async function POST(request) {
+  const body = await request.json()
+  const searchParams = new URLSearchParams({ lat: body.lat, lng: body.lng })
+
+  try {
+    const weatherResponse = await fetch(`${weatherEndpoint}?${searchParams}`)
+
+    if (!weatherResponse.ok) {
+      /* handle error */
+    }
+
+    const weatherData = await weatherResponse.text()
+    const payload = parseWeatherData.asJSON(weatherData)
+
+    return new Response(payload, { status: 200 })
+  } catch (reason) {
+    const message =
+      reason instanceof Error ? reason.message : &#x27;Unexpected exception&#x27;
+
+    return new Response(message, { status: 500 })
+  }
+}</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>이 예제는 URL에 위치 정보 데이터를 넣지 않기 위해 <code>POST</code>를 사용합니다. <code>GET</code> request는 cache되거나 log에 남을 수 있어서 민감한 정보가 노출될 수 있습니다.</p><div class="en-orig"><p>This example uses <code>POST</code> to avoid putting geo-location data in the URL. <code>GET</code> requests may be cached or logged, which could expose sensitive info.</p></div></div></div>
+<h2 class="sec" id="proxying-to-a-backend"><a class="anchor" href="#proxying-to-a-backend">Proxying to a backend<span class="ko">backend로 proxy하기</span></a></h2>
+<p>Route Handler를 다른 backend에 대한 <code>proxy</code>로 사용할 수 있습니다. request를 전달하기 전에 validation 로직을 추가하세요.</p><div class="en-orig"><p>You can use a Route Handler as a <code>proxy</code> to another backend. Add validation logic before forwarding the request.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="/app/api/[...slug]/route.ts" data-js="/app/api/[...slug]/route.js">/app/api/[...slug]/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { isValidRequest } from &#x27;@/lib/utils&#x27;
+
+export async function POST(request: Request, { params }) {
+  const clonedRequest = request.clone()
+  const isValid = await isValidRequest(clonedRequest)
+
+  if (!isValid) {
+    return new Response(null, { status: 400, statusText: &#x27;Bad Request&#x27; })
+  }
+
+  const { slug } = await params
+  const pathname = slug.join(&#x27;/&#x27;)
+  const proxyURL = new URL(pathname, &#x27;https://nextjs.org&#x27;)
+  const proxyRequest = new Request(proxyURL, request)
+
+  try {
+    return fetch(proxyRequest)
+  } catch (reason) {
+    const message =
+      reason instanceof Error ? reason.message : &#x27;Unexpected exception&#x27;
+
+    return new Response(message, { status: 500 })
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { isValidRequest } from &#x27;@/lib/utils&#x27;
+
+export async function POST(request, { params }) {
+  const clonedRequest = request.clone()
+  const isValid = await isValidRequest(clonedRequest)
+
+  if (!isValid) {
+    return new Response(null, { status: 400, statusText: &#x27;Bad Request&#x27; })
+  }
+
+  const { slug } = await params
+  const pathname = slug.join(&#x27;/&#x27;)
+  const proxyURL = new URL(pathname, &#x27;https://nextjs.org&#x27;)
+  const proxyRequest = new Request(proxyURL, request)
+
+  try {
+    return fetch(proxyRequest)
+  } catch (reason) {
+    const message =
+      reason instanceof Error ? reason.message : &#x27;Unexpected exception&#x27;
+
+    return new Response(message, { status: 500 })
+  }
+}</code></pre></div></div>
+<p>또는 다음을 사용하세요:</p><div class="en-orig"><p>Or use:</p></div>
+<ul>
+<li><code>proxy</code> <a href="#proxy">rewrites</a></li>
+<li><code>next.config.js</code>의 <a href="app-api-reference-config-next-config-js-rewrites.html"><code>rewrites</code></a>.</li>
+</ul><div class="en-orig"><ul>
+<li><code>proxy</code> <a href="#proxy">rewrites</a></li>
+<li><a href="app-api-reference-config-next-config-js-rewrites.html"><code>rewrites</code></a> in <code>next.config.js</code>.</li>
+</ul></div>
+<h2 class="sec" id="nextrequest-and-nextresponse"><a class="anchor" href="#nextrequest-and-nextresponse">NextRequest and NextResponse<span class="ko">NextRequest와 NextResponse</span></a></h2>
+<p>Next.js는 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Request" target="_blank" rel="noopener"><code>Request</code></a>와 <a href="https://developer.mozilla.org/en-US/docs/Web/API/Response" target="_blank" rel="noopener"><code>Response</code></a> Web API를 확장해 흔한 작업을 단순화하는 method를 제공합니다. 이 확장 기능은 Route Handler와 Proxy 모두에서 사용할 수 있습니다.</p><div class="en-orig"><p>Next.js extends the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Request" target="_blank" rel="noopener"><code>Request</code></a> and <a href="https://developer.mozilla.org/en-US/docs/Web/API/Response" target="_blank" rel="noopener"><code>Response</code></a> Web APIs with methods that simplify common operations. These extensions are available in both Route Handlers and Proxy.</p></div>
+<p>둘 다 cookie를 읽고 조작하는 method를 제공합니다.</p><div class="en-orig"><p>Both provide methods for reading and manipulating cookies.</p></div>
+<p><code>NextRequest</code>에는 <a href="app-api-reference-functions-next-request.html#nexturl"><code>nextUrl</code></a> property가 있어 들어오는 request에서 parse된 값을 노출합니다. 예를 들어 request pathname과 search params에 더 쉽게 접근할 수 있습니다.</p><div class="en-orig"><p><code>NextRequest</code> includes the <a href="app-api-reference-functions-next-request.html#nexturl"><code>nextUrl</code></a> property, which exposes parsed values from the incoming request, for example, it makes it easier to access request pathname and search params.</p></div>
+<p><code>NextResponse</code>는 <code>next()</code>, <code>json()</code>, <code>redirect()</code>, <code>rewrite()</code> 같은 helper를 제공합니다.</p><div class="en-orig"><p><code>NextResponse</code> provides helpers like <code>next()</code>, <code>json()</code>, <code>redirect()</code>, and <code>rewrite()</code>.</p></div>
+<p><code>Request</code>를 기대하는 어떤 함수에든 <code>NextRequest</code>를 전달할 수 있습니다. 마찬가지로 <code>Response</code>가 기대되는 곳에서 <code>NextResponse</code>를 반환할 수 있습니다.</p><div class="en-orig"><p>You can pass <code>NextRequest</code> to any function expecting <code>Request</code>. Likewise, you can return <code>NextResponse</code> where a <code>Response</code> is expected.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="/app/echo-pathname/route.ts" data-js="/app/echo-pathname/route.js">/app/echo-pathname/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { type NextRequest, NextResponse } from &#x27;next/server&#x27;
+
+export async function GET(request: NextRequest) {
+  const nextUrl = request.nextUrl
+
+  if (nextUrl.searchParams.get(&#x27;redirect&#x27;)) {
+    return NextResponse.redirect(new URL(&#x27;/&#x27;, request.url))
+  }
+
+  if (nextUrl.searchParams.get(&#x27;rewrite&#x27;)) {
+    return NextResponse.rewrite(new URL(&#x27;/&#x27;, request.url))
+  }
+
+  return NextResponse.json({ pathname: nextUrl.pathname })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { NextResponse } from &#x27;next/server&#x27;
+
+export async function GET(request) {
+  const nextUrl = request.nextUrl
+
+  if (nextUrl.searchParams.get(&#x27;redirect&#x27;)) {
+    return NextResponse.redirect(new URL(&#x27;/&#x27;, request.url))
+  }
+
+  if (nextUrl.searchParams.get(&#x27;rewrite&#x27;)) {
+    return NextResponse.rewrite(new URL(&#x27;/&#x27;, request.url))
+  }
+
+  return NextResponse.json({ pathname: nextUrl.pathname })
+}</code></pre></div></div>
+<p><a href="app-api-reference-functions-next-request.html"><code>NextRequest</code></a>와 <a href="app-api-reference-functions-next-response.html"><code>NextResponse</code></a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Learn more about <a href="app-api-reference-functions-next-request.html"><code>NextRequest</code></a> and <a href="app-api-reference-functions-next-response.html"><code>NextResponse</code></a>.</p></div>
+<h2 class="sec" id="webhooks-and-callback-urls"><a class="anchor" href="#webhooks-and-callback-urls">Webhooks and callback URLs<span class="ko">Webhook과 callback URL</span></a></h2>
+<p>Route Handler를 사용해 third-party 애플리케이션으로부터 event 알림을 받으세요.</p><div class="en-orig"><p>Use Route Handlers to receive event notifications from third-party applications.</p></div>
+<p>예를 들어 CMS에서 콘텐츠가 바뀌면 route를 revalidate할 수 있습니다. 변경이 있을 때 특정 endpoint를 호출하도록 CMS를 설정하세요.</p><div class="en-orig"><p>For example, revalidate a route when content changes in a CMS. Configure the CMS to call a specific endpoint on changes.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="/app/webhook/route.ts" data-js="/app/webhook/route.js">/app/webhook/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { type NextRequest, NextResponse } from &#x27;next/server&#x27;
+
+export async function GET(request: NextRequest) {
+  const token = request.nextUrl.searchParams.get(&#x27;token&#x27;)
+
+  if (token !== process.env.REVALIDATE_SECRET_TOKEN) {
+    return NextResponse.json({ success: false }, { status: 401 })
+  }
+
+  const tag = request.nextUrl.searchParams.get(&#x27;tag&#x27;)
+
+  if (!tag) {
+    return NextResponse.json({ success: false }, { status: 400 })
+  }
+
+  revalidateTag(tag, &#x27;max&#x27;)
+
+  return NextResponse.json({ success: true })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { NextResponse } from &#x27;next/server&#x27;
+
+export async function GET(request) {
+  const token = request.nextUrl.searchParams.get(&#x27;token&#x27;)
+
+  if (token !== process.env.REVALIDATE_SECRET_TOKEN) {
+    return NextResponse.json({ success: false }, { status: 401 })
+  }
+
+  const tag = request.nextUrl.searchParams.get(&#x27;tag&#x27;)
+
+  if (!tag) {
+    return NextResponse.json({ success: false }, { status: 400 })
+  }
+
+  revalidateTag(tag, &#x27;max&#x27;)
+
+  return NextResponse.json({ success: true })
+}</code></pre></div></div>
+<p>callback URL도 또 다른 use case입니다. 사용자가 third-party 흐름을 완료하면, third party는 사용자를 callback URL로 보냅니다. Route Handler를 사용해 response를 검증하고 사용자를 어디로 redirect할지 결정하세요.</p><div class="en-orig"><p>Callback URLs are another use case. When a user completes a third-party flow, the third party sends them to a callback URL. Use a Route Handler to verify the response and decide where to redirect the user.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="/app/auth/callback/route.ts" data-js="/app/auth/callback/route.js">/app/auth/callback/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { type NextRequest, NextResponse } from &#x27;next/server&#x27;
+
+export async function GET(request: NextRequest) {
+  const token = request.nextUrl.searchParams.get(&#x27;session_token&#x27;)
+  const redirectUrl = request.nextUrl.searchParams.get(&#x27;redirect_url&#x27;)
+
+  const destination = new URL(redirectUrl ?? &#x27;/&#x27;, request.url)
+  // Prevent open redirects: only allow same-origin destinations
+  if (destination.origin !== request.nextUrl.origin) {
+    return new Response(&#x27;Invalid redirect&#x27;, { status: 400 })
+  }
+
+  const response = NextResponse.redirect(destination)
+
+  response.cookies.set({
+    value: token,
+    name: &#x27;_token&#x27;,
+    path: &#x27;/&#x27;,
+    secure: true,
+    httpOnly: true,
+    expires: undefined, // session cookie
+  })
+
+  return response
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { NextResponse } from &#x27;next/server&#x27;
+
+export async function GET(request) {
+  const token = request.nextUrl.searchParams.get(&#x27;session_token&#x27;)
+  const redirectUrl = request.nextUrl.searchParams.get(&#x27;redirect_url&#x27;)
+
+  const destination = new URL(redirectUrl ?? &#x27;/&#x27;, request.url)
+  // Prevent open redirects: only allow same-origin destinations
+  if (destination.origin !== request.nextUrl.origin) {
+    return new Response(&#x27;Invalid redirect&#x27;, { status: 400 })
+  }
+
+  const response = NextResponse.redirect(destination)
+
+  response.cookies.set({
+    value: token,
+    name: &#x27;_token&#x27;,
+    path: &#x27;/&#x27;,
+    secure: true,
+    httpOnly: true,
+    expires: undefined, // session cookie
+  })
+
+  return response
+}</code></pre></div></div>
+<h2 class="sec" id="redirects"><a class="anchor" href="#redirects">Redirects</a></h2>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="app/api/route.ts" data-js="app/api/route.js">app/api/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { redirect } from &#x27;next/navigation&#x27;
+
+export async function GET(request: Request) {
+  redirect(&#x27;https://nextjs.org/&#x27;)
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { redirect } from &#x27;next/navigation&#x27;
+
+export async function GET(request) {
+  redirect(&#x27;https://nextjs.org/&#x27;)
+}</code></pre></div></div>
+<p>redirect에 대해서는 <a href="app-api-reference-functions-redirect.html"><code>redirect</code></a>와 <a href="app-api-reference-functions-permanentRedirect.html"><code>permanentRedirect</code></a>에서 더 알아보세요</p><div class="en-orig"><p>Learn more about redirects in <a href="app-api-reference-functions-redirect.html"><code>redirect</code></a> and <a href="app-api-reference-functions-permanentRedirect.html"><code>permanentRedirect</code></a></p></div>
+<h2 class="sec" id="proxy"><a class="anchor" href="#proxy">Proxy</a></h2>
+<p>프로젝트당 <code>proxy</code> 파일은 하나만 허용됩니다. 특정 경로를 대상으로 하려면 <code>config.matcher</code>를 사용하세요. <a href="app-api-reference-file-conventions-proxy.html"><code>proxy</code></a>에 대해 더 알아보세요.</p><div class="en-orig"><p>Only one <code>proxy</code> file is allowed per project. Use <code>config.matcher</code> to target specific paths. Learn more about <a href="app-api-reference-file-conventions-proxy.html"><code>proxy</code></a>.</p></div>
+<p>request가 route 경로에 도달하기 전에 response를 생성하려면 <code>proxy</code>를 사용하세요.</p><div class="en-orig"><p>Use <code>proxy</code> to generate a response before the request reaches a route path.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { isAuthenticated } from &#x27;@lib/auth&#x27;
+
+export const config = {
+  matcher: &#x27;/api/:function*&#x27;,
+}
+
+export function proxy(request: Request) {
+  if (!isAuthenticated(request)) {
+    return Response.json(
+      { success: false, message: &#x27;authentication failed&#x27; },
+      { status: 401 }
+    )
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { isAuthenticated } from &#x27;@lib/auth&#x27;
+
+export const config = {
+  matcher: &#x27;/api/:function*&#x27;,
+}
+
+export function proxy(request) {
+  if (!isAuthenticated(request)) {
+    return Response.json(
+      { success: false, message: &#x27;authentication failed&#x27; },
+      { status: 401 }
+    )
+  }
+}</code></pre></div></div>
+<p><code>proxy</code>를 사용해 request를 proxy할 수도 있습니다. 이 예제는 <code>request.nextUrl</code>을 읽으므로 <code>request</code>의 type은 <a href="#nextrequest-and-nextresponse"><code>NextRequest</code></a>입니다:</p><div class="en-orig"><p>You can also proxy requests using <code>proxy</code>. This example reads <code>request.nextUrl</code>, so <code>request</code> is typed as <a href="#nextrequest-and-nextresponse"><code>NextRequest</code></a>:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { type NextRequest, NextResponse } from &#x27;next/server&#x27;
+
+export function proxy(request: NextRequest) {
+  if (request.nextUrl.pathname === &#x27;/proxy-this-path&#x27;) {
+    const rewriteUrl = new URL(&#x27;https://nextjs.org&#x27;)
+    return NextResponse.rewrite(rewriteUrl)
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { NextResponse } from &#x27;next/server&#x27;
+
+export function proxy(request) {
+  if (request.nextUrl.pathname === &#x27;/proxy-this-path&#x27;) {
+    const rewriteUrl = new URL(&#x27;https://nextjs.org&#x27;)
+    return NextResponse.rewrite(rewriteUrl)
+  }
+}</code></pre></div></div>
+<p><code>proxy</code>가 만들어 낼 수 있는 또 다른 response 유형은 redirect입니다:</p><div class="en-orig"><p>Another type of response <code>proxy</code> can produce are redirects:</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="proxy.ts" data-js="proxy.js">proxy.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { type NextRequest, NextResponse } from &#x27;next/server&#x27;
+
+export function proxy(request: NextRequest) {
+  if (request.nextUrl.pathname === &#x27;/v1/docs&#x27;) {
+    request.nextUrl.pathname = &#x27;/v2/docs&#x27;
+    return NextResponse.redirect(request.nextUrl)
+  }
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { NextResponse } from &#x27;next/server&#x27;
+
+export function proxy(request) {
+  if (request.nextUrl.pathname === &#x27;/v1/docs&#x27;) {
+    request.nextUrl.pathname = &#x27;/v2/docs&#x27;
+    return NextResponse.redirect(request.nextUrl)
+  }
+}</code></pre></div></div>
+<h2 class="sec" id="security"><a class="anchor" href="#security">Security<span class="ko">보안</span></a></h2>
+<h3 class="sec" id="working-with-headers"><a class="anchor" href="#working-with-headers">Working with headers<span class="ko">header 다루기</span></a></h3>
+<p>header가 어디로 가는지 신중하게 다루고, 들어오는 request header를 나가는 response에 그대로 전달하지 마세요.</p><div class="en-orig"><p>Be deliberate about where headers go, and avoid directly passing incoming request headers to the outgoing response.</p></div>
+<ul>
+<li><strong>Upstream request headers</strong>: Proxy에서 <code>NextResponse.next({ request: { headers } })</code>는 server가 받는 header를 수정하며, 이를 client에 노출하지 않습니다.</li>
+<li><strong>Response headers</strong>: <code>new Response(..., { headers })</code>, <code>NextResponse.json(..., { headers })</code>, <code>NextResponse.next({ headers })</code>, <code>response.headers.set(...)</code>은 header를 client로 돌려보냅니다. 이런 header에 민감한 값이 추가되었다면 client에게 보이게 됩니다.</li>
+</ul><div class="en-orig"><ul>
+<li><strong>Upstream request headers</strong>: In Proxy, <code>NextResponse.next({ request: { headers } })</code> modifies the headers your server receives and does not expose them to the client.</li>
+<li><strong>Response headers</strong>: <code>new Response(..., { headers })</code>, <code>NextResponse.json(..., { headers })</code>, <code>NextResponse.next({ headers })</code>, or <code>response.headers.set(...)</code> send headers back to the client. If sensitive values were appended to these headers, they will be visible to clients.</li>
+</ul></div>
+<p>자세한 내용은 <a href="app-api-reference-functions-next-response.html#next">NextResponse headers in Proxy</a>를 참고하세요.</p><div class="en-orig"><p>Learn more in <a href="app-api-reference-functions-next-response.html#next">NextResponse headers in Proxy</a>.</p></div>
+<h3 class="sec" id="rate-limiting"><a class="anchor" href="#rate-limiting">Rate limiting</a></h3>
+<p>Next.js backend에서 rate limiting을 구현할 수 있습니다. 코드 기반 check 외에도, host가 제공하는 rate limiting 기능이 있다면 활성화하세요.</p><div class="en-orig"><p>You can implement rate limiting in your Next.js backend. In addition to code-based checks, enable any rate limiting features provided by your host.</p></div>
+<div class="code sw"><div class="code-box"><div class="code-head"><span class="fb-ts"><span class="fbadge ts">TS</span></span><span class="fb-js" hidden><span class="fbadge js">JS</span></span><span class="fname" data-ts="/app/resource/route.ts" data-js="/app/resource/route.js">/app/resource/route.ts</span><button class="lang-sel" title="TypeScript / JavaScript 전환"><span>TypeScript</span><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m4 6 4 4 4-4"/></svg></button><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class="v-ts"><code class="language-typescript">import { NextResponse } from &#x27;next/server&#x27;
+import { checkRateLimit } from &#x27;@/lib/rate-limit&#x27;
+
+export async function POST(request: Request) {
+  const { rateLimited } = await checkRateLimit(request)
+
+  if (rateLimited) {
+    return NextResponse.json({ error: &#x27;Rate limit exceeded&#x27; }, { status: 429 })
+  }
+
+  return new Response(null, { status: 204 })
+}</code></pre><pre class="v-js" hidden><code class="language-javascript">import { NextResponse } from &#x27;next/server&#x27;
+import { checkRateLimit } from &#x27;@/lib/rate-limit&#x27;
+
+export async function POST(request) {
+  const { rateLimited } = await checkRateLimit(request)
+
+  if (rateLimited) {
+    return NextResponse.json({ error: &#x27;Rate limit exceeded&#x27; }, { status: 429 })
+  }
+
+  return new Response(null, { status: 204 })
+}</code></pre></div></div>
+<h3 class="sec" id="verify-payloads"><a class="anchor" href="#verify-payloads">Verify payloads<span class="ko">payload 검증하기</span></a></h3>
+<p>들어오는 request 데이터는 절대 신뢰하지 마세요. 사용하기 전에 content type과 크기를 검증하고, XSS에 대비해 sanitize하세요.</p><div class="en-orig"><p>Never trust incoming request data. Validate content type and size, and sanitize against XSS before use.</p></div>
+<p>timeout을 사용해 남용을 막고 server 리소스를 보호하세요.</p><div class="en-orig"><p>Use timeouts to prevent abuse and protect server resources.</p></div>
+<p>사용자가 생성한 static asset은 전용 service에 저장하세요. 가능하다면 브라우저에서 바로 upload하고, 반환된 URI를 database에 저장해 request 크기를 줄이세요.</p><div class="en-orig"><p>Store user-generated static assets in dedicated services. When possible, upload them from the browser and store the returned URI in your database to reduce request size.</p></div>
+<h3 class="sec" id="access-to-protected-resources"><a class="anchor" href="#access-to-protected-resources">Access to protected resources<span class="ko">보호된 리소스에 대한 접근</span></a></h3>
+<p>접근을 허용하기 전에 항상 credential을 검증하세요. authentication과 authorization을 proxy에만 의존하지 마세요.</p><div class="en-orig"><p>Always verify credentials before granting access. Do not rely on proxy alone for authentication and authorization.</p></div>
+<p>response와 backend log에서 민감하거나 불필요한 데이터를 제거하세요.</p><div class="en-orig"><p>Remove sensitive or unnecessary data from responses and backend logs.</p></div>
+<p>credential과 API key는 정기적으로 교체(rotate)하세요.</p><div class="en-orig"><p>Rotate credentials and API keys regularly.</p></div>
+<h2 class="sec" id="preflight-requests"><a class="anchor" href="#preflight-requests">Preflight Requests<span class="ko">Preflight request</span></a></h2>
+<p>preflight request는 <code>OPTIONS</code> method를 사용해 origin, method, header를 기준으로 request가 허용되는지 server에 묻습니다.</p><div class="en-orig"><p>Preflight requests use the <code>OPTIONS</code> method to ask the server if a request is allowed based on origin, method, and headers.</p></div>
+<p><code>OPTIONS</code>가 정의되어 있지 않으면 Next.js가 자동으로 추가하고, 정의된 다른 method를 바탕으로 <code>Allow</code> header를 설정합니다.</p><div class="en-orig"><p>If <code>OPTIONS</code> is not defined, Next.js adds it automatically and sets the <code>Allow</code> header based on the other defined methods.</p></div>
+<ul>
+<li><a href="app-api-reference-file-conventions-route.html#cors">CORS</a></li>
+</ul><div class="en-orig"><ul>
+<li><a href="app-api-reference-file-conventions-route.html#cors">CORS</a></li>
+</ul></div>
+<h2 class="sec" id="library-patterns"><a class="anchor" href="#library-patterns">Library patterns<span class="ko">Library 패턴</span></a></h2>
+<p>community library는 Route Handler에 factory 패턴을 자주 사용합니다.</p><div class="en-orig"><p>Community libraries often use the factory pattern for Route Handlers.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">/app/api/[...path]/route.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { createHandler } from &#x27;third-party-library&#x27;
+
+const handler = createHandler({
+  /* library-specific options */
+})
+
+export const GET = handler
+// or
+export { handler as POST }</code></pre></div></div>
+<p>이는 <code>GET</code>과 <code>POST</code> request를 위한 공유 handler를 만듭니다. library는 request의 <code>method</code>와 <code>pathname</code>에 따라 동작을 customize합니다.</p><div class="en-orig"><p>This creates a shared handler for <code>GET</code> and <code>POST</code> requests. The library customizes behavior based on the <code>method</code> and <code>pathname</code> in the request.</p></div>
+<p>library는 <code>proxy</code> factory를 제공할 수도 있습니다.</p><div class="en-orig"><p>Libraries can also provide a <code>proxy</code> factory.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge ts">TS</span><span class="fname">proxy.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-typescript">import { createMiddleware } from &#x27;third-party-library&#x27;
+
+export default createMiddleware()</code></pre></div></div>
+<div class="callout info"><span class="c-ic"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6.25"/><path d="M8 7.25v3.5M8 5.2v.05"/></svg></span><div class="c-body"><div class="c-lbl">Good to know</div><p>third-party library에서는 여전히 <code>proxy</code>를 <code>middleware</code>라고 부를 수 있습니다.</p><div class="en-orig"><p>Third-party libraries may still refer to <code>proxy</code> as <code>middleware</code>.</p></div></div></div>
+<h2 class="sec" id="more-examples"><a class="anchor" href="#more-examples">More examples<span class="ko">더 많은 예제</span></a></h2>
+<p><a href="app-api-reference-file-conventions-route.html#examples">Router Handlers</a>와 <a href="app-api-reference-file-conventions-proxy.html#examples"><code>proxy</code></a> API reference에서 더 많은 사용 예제를 확인하세요.</p><div class="en-orig"><p>See more examples on using <a href="app-api-reference-file-conventions-route.html#examples">Router Handlers</a> and the <a href="app-api-reference-file-conventions-proxy.html#examples"><code>proxy</code></a> API references.</p></div>
+<p>이 예제에는 <a href="app-api-reference-file-conventions-route.html#cookies">Cookies</a>, <a href="app-api-reference-file-conventions-route.html#headers">Headers</a>, <a href="app-api-reference-file-conventions-route.html#streaming">Streaming</a> 다루기, Proxy <a href="app-api-reference-file-conventions-proxy.html#negative-matching">negative matching</a>, 그 밖의 유용한 code snippet이 포함되어 있습니다.</p><div class="en-orig"><p>These examples include, working with <a href="app-api-reference-file-conventions-route.html#cookies">Cookies</a>, <a href="app-api-reference-file-conventions-route.html#headers">Headers</a>, <a href="app-api-reference-file-conventions-route.html#streaming">Streaming</a>, Proxy <a href="app-api-reference-file-conventions-proxy.html#negative-matching">negative matching</a>, and other useful code snippets.</p></div>
+<h2 class="sec" id="caveats"><a class="anchor" href="#caveats">Caveats<span class="ko">주의 사항</span></a></h2>
+<h3 class="sec" id="server-components"><a class="anchor" href="#server-components">Server Components</a></h3>
+<p>Server Component에서는 Route Handler를 거치지 말고 source에서 직접 데이터를 fetch하세요.</p><div class="en-orig"><p>Fetch data in Server Components directly from its source, not via Route Handlers.</p></div>
+<p>build 시점에 prerender되는 Server Component에서 Route Handler를 사용하면 build 단계가 실패합니다. build 중에는 이런 request를 받을 server가 떠 있지 않기 때문입니다.</p><div class="en-orig"><p>For Server Components prerendered at build time, using Route Handlers will fail the build step. This is because, while building there is no server listening for these requests.</p></div>
+<p>on demand로 render되는 Server Component에서는 handler와 render process 사이에 추가 HTTP 왕복이 생기므로 Route Handler에서 fetch하는 것이 더 느립니다.</p><div class="en-orig"><p>For Server Components rendered on demand, fetching from Route Handlers is slower due to the extra HTTP round trip between the handler and the render process.</p></div>
+<blockquote><p>server side <code>fetch</code> request는 absolute URL을 사용합니다. 이는 외부 server로의 HTTP 왕복을 의미합니다. development 중에는 자신의 development server가 외부 server 역할을 합니다. build 시점에는 server가 없고, runtime에는 외부에 공개된 domain을 통해 server에 접근할 수 있습니다.</p><div class="en-orig"><p>A server side <code>fetch</code> request uses absolute URLs. This implies an HTTP round trip, to an external server. During development, your own development server acts as the external server. At build time there is no server, and at runtime, the server is available through your public facing domain.</p></div></blockquote>
+<p>Server Component는 대부분의 data-fetching 요구를 충족합니다. 하지만 다음과 같은 경우에는 client side에서 데이터를 fetch해야 할 수도 있습니다:</p><div class="en-orig"><p>Server Components cover most data-fetching needs. However, fetching data client side might be necessary for:</p></div>
+<ul>
+<li>client 전용 Web API에 의존하는 데이터:<ul>
+<li>Geo-location API</li>
+<li>Storage API</li>
+<li>Audio API</li>
+<li>File API</li>
+</ul></li>
+<li>자주 polling하는 데이터</li>
+</ul><div class="en-orig"><ul>
+<li>Data that depends on client-only Web APIs:<ul>
+<li>Geo-location API</li>
+<li>Storage API</li>
+<li>Audio API</li>
+<li>File API</li>
+</ul></li>
+<li>Frequently polled data</li>
+</ul></div>
+<p>이런 경우에는 <a href="https://swr.vercel.app/" target="_blank" rel="noopener"><code>swr</code></a>이나 <a href="https://tanstack.com/query/latest/docs/framework/react/overview" target="_blank" rel="noopener"><code>react-query</code></a> 같은 community library를 사용하세요.</p><div class="en-orig"><p>For these, use community libraries like <a href="https://swr.vercel.app/" target="_blank" rel="noopener"><code>swr</code></a> or <a href="https://tanstack.com/query/latest/docs/framework/react/overview" target="_blank" rel="noopener"><code>react-query</code></a>.</p></div>
+<h3 class="sec" id="server-actions"><a class="anchor" href="#server-actions">Server Actions</a></h3>
+<p><a href="app-guides-server-actions.html">Server Action</a>을 사용하면 client에서 server-side 코드를 실행할 수 있습니다. 주된 목적은 frontend client에서 데이터를 변경(mutate)하는 것입니다.</p><div class="en-orig"><p><a href="app-guides-server-actions.html">Server Actions</a> let you run server-side code from the client. Their primary purpose is to mutate data from your frontend client.</p></div>
+<p>Server Action은 queue에 쌓여 처리됩니다. data fetching에 사용하면 순차 실행이 발생합니다.</p><div class="en-orig"><p>Server Actions are queued. Using them for data fetching introduces sequential execution.</p></div>
+<h3 class="sec" id="export-mode"><a class="anchor" href="#export-mode"><code>export</code> mode</a></h3>
+<p><code>export</code> mode는 runtime server 없이 static site를 출력합니다. 이 mode는 static site만 만들고 runtime server가 없기 때문에, Next.js runtime이 필요한 기능은 <a href="app-guides-static-exports.html#unsupported-features">지원되지 않습니다</a>.</p><div class="en-orig"><p><code>export</code> mode outputs a static site without a runtime server. Features that require the Next.js runtime are <a href="app-guides-static-exports.html#unsupported-features">not supported</a>, because this mode produces a static site, and no runtime server.</p></div>
+<p><code>export mode</code>에서는 <a href="app-guides-caching-without-cache-components.html#dynamic"><code>dynamic</code></a> route segment config를 <code>&#x27;force-static&#x27;</code>으로 설정한 <code>GET</code> Route Handler만 지원됩니다.</p><div class="en-orig"><p>In <code>export mode</code>, only <code>GET</code> Route Handlers are supported, in combination with the <a href="app-guides-caching-without-cache-components.html#dynamic"><code>dynamic</code></a> route segment config, set to <code>&#x27;force-static&#x27;</code>.</p></div>
+<p>이를 사용해 static HTML, JSON, TXT 등의 파일을 생성할 수 있습니다.</p><div class="en-orig"><p>This can be used to generate static HTML, JSON, TXT, or other files.</p></div>
+<div class="code"><div class="code-box"><div class="code-head"><span class="fbadge js">JS</span><span class="fname">app/hello-world/route.ts</span><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button></div><pre class=""><code class="language-javascript">export const dynamic = &#x27;force-static&#x27;
+
+export function GET() {
+  return new Response(&#x27;Hello World&#x27;, { status: 200 })
+}</code></pre></div></div>
+<h3 class="sec" id="deployment-environment"><a class="anchor" href="#deployment-environment">Deployment environment<span class="ko">배포 환경</span></a></h3>
+<p>일부 host는 Route Handler를 lambda function으로 deploy합니다. 이는 다음을 의미합니다:</p><div class="en-orig"><p>Some hosts deploy Route Handlers as lambda functions. This means:</p></div>
+<ul>
+<li>Route Handler는 request 간에 데이터를 공유할 수 없습니다.</li>
+<li>환경에 따라 File System 쓰기를 지원하지 않을 수 있습니다.</li>
+<li>오래 실행되는 handler는 timeout으로 종료될 수 있습니다.</li>
+<li>WebSocket은 timeout 시점이나 response가 생성된 후 connection이 닫히므로 동작하지 않습니다.</li>
+</ul><div class="en-orig"><ul>
+<li>Route Handlers cannot share data between requests.</li>
+<li>The environment may not support writing to File System.</li>
+<li>Long-running handlers may be terminated due to timeouts.</li>
+<li>WebSockets won’t work because the connection closes on timeout, or after the response is generated.</li>
+</ul></div>
+    </article>
+
+<section class="related"><h2 class="sec" id="next-steps">API Reference</h2><p>Route Handler, Proxy, Rewrite에 대해 더 알아보세요.</p><div class="rgrid"><a class="rcard" href="app-api-reference-file-conventions-route.html"><div class="rt">route.js</div><div class="rk">route.js</div><div class="rd">route.js special file에 대한 API reference입니다.</div></a><a class="rcard" href="app-api-reference-file-conventions-proxy.html"><div class="rt">proxy.js</div><div class="rk">proxy.js</div><div class="rd">proxy.js 파일에 대한 API reference입니다.</div></a><a class="rcard" href="app-api-reference-config-next-config-js-rewrites.html"><div class="rt">rewrites</div><div class="rk">rewrites</div><div class="rd">Next.js 앱에 rewrite를 추가합니다.</div></a></div></section>
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/backend-for-frontend.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/backend-for-frontend" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-authentication.html" class="prev"><div class="dir">← 이전</div><div class="ttl">Authentication</div><div class="ttl-ko">Next.js에서 인증 구현하기</div></a>
+      <a href="app-guides-building.html" class="next"><div class="dir">다음 →</div><div class="ttl">Building</div><div class="ttl-ko">애플리케이션 build하기</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/backend-for-frontend" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#public-endpoints">Public Endpoints</a></li><li class="l2"><a href="#content-types">Content types</a></li><li class="l3"><a href="#content-negotiation">Content negotiation</a></li><li class="l3"><a href="#consuming-request-payloads">Consuming request payloads</a></li><li class="l2"><a href="#manipulating-data">Manipulating data</a></li><li class="l2"><a href="#proxying-to-a-backend">Proxying to a backend</a></li><li class="l2"><a href="#nextrequest-and-nextresponse">NextRequest and NextResponse</a></li><li class="l2"><a href="#webhooks-and-callback-urls">Webhooks and callback URLs</a></li><li class="l2"><a href="#redirects">Redirects</a></li><li class="l2"><a href="#proxy">Proxy</a></li><li class="l2"><a href="#security">Security</a></li><li class="l3"><a href="#working-with-headers">Working with headers</a></li><li class="l3"><a href="#rate-limiting">Rate limiting</a></li><li class="l3"><a href="#verify-payloads">Verify payloads</a></li><li class="l3"><a href="#access-to-protected-resources">Access to protected resources</a></li><li class="l2"><a href="#preflight-requests">Preflight Requests</a></li><li class="l2"><a href="#library-patterns">Library patterns</a></li><li class="l2"><a href="#more-examples">More examples</a></li><li class="l2"><a href="#caveats">Caveats</a></li><li class="l3"><a href="#server-components">Server Components</a></li><li class="l3"><a href="#server-actions">Server Actions</a></li><li class="l3"><a href="#export-mode"><code>export</code> mode</a></li><li class="l3"><a href="#deployment-environment">Deployment environment</a></li><li class="l2"><a href="#next-steps">API Reference</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+Next.js는 &quot;Backend for Frontend&quot; 패턴을 지원합니다. 이를 통해 HTTP request를 처리하고 HTML뿐 아니라 어떤 content type이든 반환하는 public endpoint를 만들 수 있습니다. 또한 데이터 source에 접근하고 원격 데이터를 업데이트하는 것 같은 side effect를 수행할 수도 있습니다.
+
+새 프로젝트를 시작한다면 `create-next-app`에 `--api` flag를 사용하세요. 그러면 새 프로젝트의 `app/` 폴더에 API endpoint를 만드는 방법을 보여 주는 예제 `route.ts`가 자동으로 포함됩니다.
+
+[[CODE 1]]
+
+&gt; **Good to know**: Next.js의 backend 기능은 완전한 backend를 대체하지 않습니다. 이는 다음과 같은 API layer 역할을 합니다:
+&gt;
+&gt; - 외부에서 공개적으로 접근 가능하고
+&gt; - 모든 HTTP request를 처리하며
+&gt; - 어떤 content type이든 반환할 수 있습니다
+
+이 패턴을 구현하려면 다음을 사용하세요:
+
+- [Route Handlers](/docs/app/api-reference/file-conventions/route)
+- [`proxy`](/docs/app/api-reference/file-conventions/proxy)
+- Pages Router에서는 [API Routes](/docs/pages/building-your-application/routing/api-routes)
+
+## Public Endpoints || Public endpoint
+
+Route Handler는 public HTTP endpoint입니다. 어떤 client든 접근할 수 있습니다.
+
+`route.ts` 또는 `route.js` file convention을 사용해 Route Handler를 만드세요:
+
+[[CODE 2]]
+
+이는 `/api`로 보낸 `GET` request를 처리합니다.
+
+exception을 throw할 수 있는 작업에는 `try/catch` block을 사용하세요:
+
+[[CODE 3]]
+
+client로 보내는 error message에 민감한 정보를 노출하지 마세요.
+
+접근을 제한하려면 authentication과 authorization을 구현하세요. [Authentication](/docs/app/guides/authentication)을 참고하세요.
+
+## Content types
+
+Route Handler를 사용하면 JSON, XML, 이미지, 파일, plain text 등 UI가 아닌 response를 제공할 수 있습니다.
+
+Next.js는 흔히 쓰이는 endpoint에 대해 file convention을 사용합니다:
+
+- [`sitemap.xml`](/docs/app/api-reference/file-conventions/metadata/sitemap)
+- [`opengraph-image.jpg`, `twitter-image`](/docs/app/api-reference/file-conventions/metadata/opengraph-image)
+- [favicon, app icon, apple-icon](/docs/app/api-reference/file-conventions/metadata/app-icons)
+- [`manifest.json`](/docs/app/api-reference/file-conventions/metadata/manifest)
+- [`robots.txt`](/docs/app/api-reference/file-conventions/metadata/robots)
+
+다음과 같은 custom endpoint를 정의할 수도 있습니다:
+
+- `llms.txt`
+- `rss.xml`
+- `.well-known`
+
+예를 들어 `app/rss.xml/route.ts`는 `rss.xml`에 대한 Route Handler를 만듭니다.
+
+[[CODE 4]]
+
+markup을 생성하는 데 사용하는 입력은 모두 sanitize하세요.
+
+### Content negotiation
+
+header matching과 함께 [rewrites](/docs/app/api-reference/config/next-config-js/rewrites)를 사용하면 request의 `Accept` header에 따라 같은 URL에서 서로 다른 content type을 제공할 수 있습니다. 이를 [content negotiation](https://developer.mozilla.org/en-US/docs/Web/HTTP/Content_negotiation)이라고 합니다.
+
+예를 들어 문서 사이트는 같은 `/docs/…` URL에서 브라우저에는 HTML 페이지를, AI agent에는 raw Markdown을 제공할 수 있습니다.
+
+**1. `Accept` header와 match되는 rewrite 설정하기:**
+
+[[CODE 5]]
+
+`/docs/getting-started`로 가는 request에 `Accept: text/markdown`이 포함되어 있으면, rewrite가 이를 `/docs/md/getting-started`로 route합니다. 해당 경로의 Route Handler가 Markdown response를 반환합니다. `Accept` header에 `text/markdown`을 보내지 않는 client는 계속 일반 HTML 페이지를 받습니다.
+
+**2. Markdown response를 위한 Route Handler 만들기:**
+
+[[CODE 6]]
+
+[`Vary: Accept`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Vary) response header는 response body가 `Accept` request header에 따라 달라진다는 것을 cache에 알려 줍니다. 이 header가 없으면 공유 cache가 cache된 Markdown response를 브라우저에 제공할 수 있습니다(반대의 경우도 마찬가지입니다). 대부분의 hosting provider는 이미 `Accept` header를 cache key에 포함하지만, `Vary`를 명시적으로 설정하면 모든 CDN과 proxy cache에서 올바르게 동작하도록 보장할 수 있습니다.
+
+`generateStaticParams`를 사용하면 build 시점에 Markdown 버전을 pre-render할 수 있어서, request마다 origin server에 가지 않고 edge에서 제공할 수 있습니다.
+
+**3. `curl`로 테스트하기:**
+
+[[CODE 7]]
+
+&gt; **Good to know:**
+&gt;
+&gt; - `/docs/md/...` route는 rewrite 없이도 여전히 직접 접근할 수 있습니다. rewrite를 통해서만 제공되도록 제한하려면 [`proxy`](/docs/app/api-reference/file-conventions/proxy)를 사용해 예상한 `Accept` header가 없는 직접 request를 차단하세요.
+&gt; - 더 고급 negotiation 로직이 필요하다면, 더 유연하게 rewrites 대신 [`proxy`](/docs/app/api-reference/file-conventions/proxy)를 사용할 수 있습니다.
+
+### Consuming request payloads || request payload 사용하기
+
+request body에 접근하려면 `.json()`, `.formData()`, `.text()` 같은 Request [instance method](https://developer.mozilla.org/en-US/docs/Web/API/Request#instance_methods)를 사용하세요.
+
+`GET`과 `HEAD` request에는 body가 없습니다.
+
+[[CODE 8]]
+
+&gt; **Good to know**: 데이터를 다른 시스템에 전달하기 전에 검증하세요
+
+[[CODE 9]]
+
+request body는 한 번만 읽을 수 있습니다. 다시 읽어야 한다면 request를 clone하세요:
+
+[[CODE 10]]
+
+## Manipulating data || 데이터 가공하기
+
+Route Handler는 하나 이상의 source에서 가져온 데이터를 변환, 필터링, 집계할 수 있습니다. 이렇게 하면 로직을 frontend 밖에 두고 내부 시스템이 노출되는 것을 피할 수 있습니다.
+
+무거운 연산을 server로 넘겨 client의 배터리와 데이터 사용량을 줄일 수도 있습니다.
+
+[[CODE 11]]
+
+&gt; **Good to know**: 이 예제는 URL에 위치 정보 데이터를 넣지 않기 위해 `POST`를 사용합니다. `GET` request는 cache되거나 log에 남을 수 있어서 민감한 정보가 노출될 수 있습니다.
+
+## Proxying to a backend || backend로 proxy하기
+
+Route Handler를 다른 backend에 대한 `proxy`로 사용할 수 있습니다. request를 전달하기 전에 validation 로직을 추가하세요.
+
+[[CODE 12]]
+
+또는 다음을 사용하세요:
+
+- `proxy` [rewrites](#proxy)
+- `next.config.js`의 [`rewrites`](/docs/app/api-reference/config/next-config-js/rewrites).
+
+## NextRequest and NextResponse || NextRequest와 NextResponse
+
+Next.js는 [`Request`](https://developer.mozilla.org/en-US/docs/Web/API/Request)와 [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response) Web API를 확장해 흔한 작업을 단순화하는 method를 제공합니다. 이 확장 기능은 Route Handler와 Proxy 모두에서 사용할 수 있습니다.
+
+둘 다 cookie를 읽고 조작하는 method를 제공합니다.
+
+`NextRequest`에는 [`nextUrl`](/docs/app/api-reference/functions/next-request#nexturl) property가 있어 들어오는 request에서 parse된 값을 노출합니다. 예를 들어 request pathname과 search params에 더 쉽게 접근할 수 있습니다.
+
+`NextResponse`는 `next()`, `json()`, `redirect()`, `rewrite()` 같은 helper를 제공합니다.
+
+`Request`를 기대하는 어떤 함수에든 `NextRequest`를 전달할 수 있습니다. 마찬가지로 `Response`가 기대되는 곳에서 `NextResponse`를 반환할 수 있습니다.
+
+[[CODE 13]]
+
+[`NextRequest`](/docs/app/api-reference/functions/next-request)와 [`NextResponse`](/docs/app/api-reference/functions/next-response)에 대해 더 알아보세요.
+
+## Webhooks and callback URLs || Webhook과 callback URL
+
+Route Handler를 사용해 third-party 애플리케이션으로부터 event 알림을 받으세요.
+
+예를 들어 CMS에서 콘텐츠가 바뀌면 route를 revalidate할 수 있습니다. 변경이 있을 때 특정 endpoint를 호출하도록 CMS를 설정하세요.
+
+[[CODE 14]]
+
+callback URL도 또 다른 use case입니다. 사용자가 third-party 흐름을 완료하면, third party는 사용자를 callback URL로 보냅니다. Route Handler를 사용해 response를 검증하고 사용자를 어디로 redirect할지 결정하세요.
+
+[[CODE 15]]
+
+## Redirects
+
+[[CODE 16]]
+
+redirect에 대해서는 [`redirect`](/docs/app/api-reference/functions/redirect)와 [`permanentRedirect`](/docs/app/api-reference/functions/permanentRedirect)에서 더 알아보세요
+
+## Proxy
+
+프로젝트당 `proxy` 파일은 하나만 허용됩니다. 특정 경로를 대상으로 하려면 `config.matcher`를 사용하세요. [`proxy`](/docs/app/api-reference/file-conventions/proxy)에 대해 더 알아보세요.
+
+request가 route 경로에 도달하기 전에 response를 생성하려면 `proxy`를 사용하세요.
+
+[[CODE 17]]
+
+`proxy`를 사용해 request를 proxy할 수도 있습니다. 이 예제는 `request.nextUrl`을 읽으므로 `request`의 type은 [`NextRequest`](#nextrequest-and-nextresponse)입니다:
+
+[[CODE 18]]
+
+`proxy`가 만들어 낼 수 있는 또 다른 response 유형은 redirect입니다:
+
+[[CODE 19]]
+
+## Security || 보안
+
+### Working with headers || header 다루기
+
+header가 어디로 가는지 신중하게 다루고, 들어오는 request header를 나가는 response에 그대로 전달하지 마세요.
+
+- **Upstream request headers**: Proxy에서 `NextResponse.next({ request: { headers } })`는 server가 받는 header를 수정하며, 이를 client에 노출하지 않습니다.
+- **Response headers**: `new Response(..., { headers })`, `NextResponse.json(..., { headers })`, `NextResponse.next({ headers })`, `response.headers.set(...)`은 header를 client로 돌려보냅니다. 이런 header에 민감한 값이 추가되었다면 client에게 보이게 됩니다.
+
+자세한 내용은 [NextResponse headers in Proxy](/docs/app/api-reference/functions/next-response#next)를 참고하세요.
+
+### Rate limiting
+
+Next.js backend에서 rate limiting을 구현할 수 있습니다. 코드 기반 check 외에도, host가 제공하는 rate limiting 기능이 있다면 활성화하세요.
+
+[[CODE 20]]
+
+### Verify payloads || payload 검증하기
+
+들어오는 request 데이터는 절대 신뢰하지 마세요. 사용하기 전에 content type과 크기를 검증하고, XSS에 대비해 sanitize하세요.
+
+timeout을 사용해 남용을 막고 server 리소스를 보호하세요.
+
+사용자가 생성한 static asset은 전용 service에 저장하세요. 가능하다면 브라우저에서 바로 upload하고, 반환된 URI를 database에 저장해 request 크기를 줄이세요.
+
+### Access to protected resources || 보호된 리소스에 대한 접근
+
+접근을 허용하기 전에 항상 credential을 검증하세요. authentication과 authorization을 proxy에만 의존하지 마세요.
+
+response와 backend log에서 민감하거나 불필요한 데이터를 제거하세요.
+
+credential과 API key는 정기적으로 교체(rotate)하세요.
+
+## Preflight Requests || Preflight request
+
+preflight request는 `OPTIONS` method를 사용해 origin, method, header를 기준으로 request가 허용되는지 server에 묻습니다.
+
+`OPTIONS`가 정의되어 있지 않으면 Next.js가 자동으로 추가하고, 정의된 다른 method를 바탕으로 `Allow` header를 설정합니다.
+
+- [CORS](/docs/app/api-reference/file-conventions/route#cors)
+
+## Library patterns || Library 패턴
+
+community library는 Route Handler에 factory 패턴을 자주 사용합니다.
+
+[[CODE 21]]
+
+이는 `GET`과 `POST` request를 위한 공유 handler를 만듭니다. library는 request의 `method`와 `pathname`에 따라 동작을 customize합니다.
+
+library는 `proxy` factory를 제공할 수도 있습니다.
+
+[[CODE 22]]
+
+&gt; **Good to know**: third-party library에서는 여전히 `proxy`를 `middleware`라고 부를 수 있습니다.
+
+## More examples || 더 많은 예제
+
+[Router Handlers](/docs/app/api-reference/file-conventions/route#examples)와 [`proxy`](/docs/app/api-reference/file-conventions/proxy#examples) API reference에서 더 많은 사용 예제를 확인하세요.
+
+이 예제에는 [Cookies](/docs/app/api-reference/file-conventions/route#cookies), [Headers](/docs/app/api-reference/file-conventions/route#headers), [Streaming](/docs/app/api-reference/file-conventions/route#streaming) 다루기, Proxy [negative matching](/docs/app/api-reference/file-conventions/proxy#negative-matching), 그 밖의 유용한 code snippet이 포함되어 있습니다.
+
+## Caveats || 주의 사항
+
+### Server Components
+
+Server Component에서는 Route Handler를 거치지 말고 source에서 직접 데이터를 fetch하세요.
+
+build 시점에 prerender되는 Server Component에서 Route Handler를 사용하면 build 단계가 실패합니다. build 중에는 이런 request를 받을 server가 떠 있지 않기 때문입니다.
+
+on demand로 render되는 Server Component에서는 handler와 render process 사이에 추가 HTTP 왕복이 생기므로 Route Handler에서 fetch하는 것이 더 느립니다.
+
+&gt; server side `fetch` request는 absolute URL을 사용합니다. 이는 외부 server로의 HTTP 왕복을 의미합니다. development 중에는 자신의 development server가 외부 server 역할을 합니다. build 시점에는 server가 없고, runtime에는 외부에 공개된 domain을 통해 server에 접근할 수 있습니다.
+
+Server Component는 대부분의 data-fetching 요구를 충족합니다. 하지만 다음과 같은 경우에는 client side에서 데이터를 fetch해야 할 수도 있습니다:
+
+- client 전용 Web API에 의존하는 데이터:
+  - Geo-location API
+  - Storage API
+  - Audio API
+  - File API
+- 자주 polling하는 데이터
+
+이런 경우에는 [`swr`](https://swr.vercel.app/)이나 [`react-query`](https://tanstack.com/query/latest/docs/framework/react/overview) 같은 community library를 사용하세요.
+
+### Server Actions
+
+[Server Action](/docs/app/guides/server-actions)을 사용하면 client에서 server-side 코드를 실행할 수 있습니다. 주된 목적은 frontend client에서 데이터를 변경(mutate)하는 것입니다.
+
+Server Action은 queue에 쌓여 처리됩니다. data fetching에 사용하면 순차 실행이 발생합니다.
+
+### `export` mode
+
+`export` mode는 runtime server 없이 static site를 출력합니다. 이 mode는 static site만 만들고 runtime server가 없기 때문에, Next.js runtime이 필요한 기능은 [지원되지 않습니다](/docs/app/guides/static-exports#unsupported-features).
+
+`export mode`에서는 [`dynamic`](/docs/app/guides/caching-without-cache-components#dynamic) route segment config를 `&#x27;force-static&#x27;`으로 설정한 `GET` Route Handler만 지원됩니다.
+
+이를 사용해 static HTML, JSON, TXT 등의 파일을 생성할 수 있습니다.
+
+[[CODE 23]]
+
+### Deployment environment || 배포 환경
+
+일부 host는 Route Handler를 lambda function으로 deploy합니다. 이는 다음을 의미합니다:
+
+- Route Handler는 request 간에 데이터를 공유할 수 없습니다.
+- 환경에 따라 File System 쓰기를 지원하지 않을 수 있습니다.
+- 오래 실행되는 handler는 timeout으로 종료될 수 있습니다.
+- WebSocket은 timeout 시점이나 response가 생성된 후 connection이 닫히므로 동작하지 않습니다.
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to configure Continuous Integration (CI) build caching (CI build caching 설정하기) | Next.js 한국어 학습 문서</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<link rel="stylesheet" href="assets/style.css">
+<script>try{var p=JSON.parse(localStorage.getItem('nxko-pref')||'{}');if(p.dark)document.documentElement.classList.add('dark');}catch(e){}</script>
+</head>
+<body data-route="/docs/app/guides/ci-build-caching" data-router="app">
+
+<header class="top">
+  <button class="burger" id="burger" aria-label="메뉴"><svg width="20" height="20" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4h12M2 8h12M2 12h12"/></svg></button>
+  <a class="brand" href="docs.html" title="Next.js 한국어 학습 문서">
+    <span class="mark">N</span><span class="bname">Next.js <b>한국어 문서</b></span>
+  </a>
+  <nav class="topnav"><a class="on" href="docs.html">Docs</a><a href="https://nextjs.org/learn" target="_blank" rel="noopener">Learn ↗</a></nav>
+  <div class="grow"></div>
+  <label class="search">
+    <input id="search" type="text" placeholder="목차 검색..." autocomplete="off">
+    <kbd>Ctrl K</kbd>
+  </label>
+  <button class="tbtn" id="btnEn" title="각 문단 아래에 영어 원문 표시">원문 병기</button>
+  <a class="tbtn dark-btn" href="https://nextjs.org/docs/app/guides/ci-build-caching" target="_blank" rel="noopener">원문 보기</a>
+  <button class="icon-btn" id="theme" aria-label="다크 모드"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13.5 9.5A5.5 5.5 0 0 1 6.5 2.5a5.5 5.5 0 1 0 7 7z" stroke-linejoin="round"/></svg></button>
+  <a class="icon-btn" href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/ci-build-caching.mdx" target="_blank" rel="noopener" aria-label="GitHub 원문"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.53-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.56-.29-5.25-1.28-5.25-5.69 0-1.26.45-2.29 1.19-3.1-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.84 1.19 3.1 0 4.42-2.7 5.39-5.27 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"/></svg></a>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <div class="switch" id="routerSwitch">
+      <button class="scard" id="routerBtn">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 1.75 13.75 5v6L8 14.25 2.25 11V5z" stroke-linejoin="round"/><path d="M2.5 5.2 8 8.3l5.5-3.1M8 8.3v5.7"/></svg></span>
+        <span class="stext"><span class="st" id="routerTitle">Using App Router</span><span class="ss" id="routerSub">Features available in /app</span></span>
+        <svg class="updown" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m5 6 3-3 3 3M5 10l3 3 3-3"/></svg>
+      </button>
+      <div class="smenu" id="routerMenu" hidden>
+        <button data-router="app"><b>App Router</b><span>Features available in /app</span></button>
+        <button data-router="pages"><b>Pages Router</b><span>Features available in /pages</span></button>
+      </div>
+      <div class="scard static">
+        <span class="sicon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2.25 2.25h5.5l6 6-5.5 5.5-6-6z" stroke-linejoin="round"/><circle cx="5.25" cy="5.25" r=".9" fill="currentColor"/></svg></span>
+        <span class="stext"><span class="st">Latest</span><span class="ss" id="verText"></span></span>
+      </div>
+    </div>
+    <nav id="nav" aria-label="문서 목차"></nav>
+  </aside>
+
+  <main class="content">
+    <div class="crumb"><span>App Router</span><svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m6 4 4 4-4 4"/></svg><a href="app-guides.html">Guides</a></div>
+    <div class="title-row">
+      <h1 class="page-title">How to configure Continuous Integration (CI) build caching<span class="sub">CI build caching 설정하기</span></h1>
+      <button class="tbtn" id="copyPage" title="이 페이지 번역문을 마크다운으로 복사">
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg>마크다운 복사
+      </button>
+    </div>
+
+    <article class="prose">
+<p>build 성능을 높이기 위해 Next.js는 build 간에 공유되는 cache를 <code>.next/cache</code>에 저장합니다.</p><div class="en-orig"><p>To improve build performance, Next.js saves a cache to <code>.next/cache</code> that is shared between builds.</p></div>
+<p>Continuous Integration(CI) 환경에서 이 cache를 활용하려면, build 간에 cache가 올바르게 유지되도록 CI workflow를 설정해야 합니다.</p><div class="en-orig"><p>To take advantage of this cache in Continuous Integration (CI) environments, your CI workflow will need to be configured to correctly persist the cache between builds.</p></div>
+<blockquote><p>CI가 build 간에 <code>.next/cache</code>를 유지하도록 설정되어 있지 않으면 <a href="https://nextjs.org/docs/messages/no-cache" target="_blank" rel="noopener">No Cache Detected</a> error가 나타날 수 있습니다.</p><div class="en-orig"><p>If your CI is not configured to persist <code>.next/cache</code> between builds, you may see a <a href="https://nextjs.org/docs/messages/no-cache" target="_blank" rel="noopener">No Cache Detected</a> error.</p></div></blockquote>
+<p>다음은 자주 쓰이는 CI provider별 cache 설정 예시입니다:</p><div class="en-orig"><p>Here are some example cache configurations for common CI providers:</p></div>
+<h2 class="sec" id="vercel"><a class="anchor" href="#vercel">Vercel</a></h2>
+<p>Next.js caching이 자동으로 설정되므로 따로 할 일이 없습니다. Vercel에서 Turborepo를 사용한다면 <a href="https://vercel.com/docs/monorepos/turborepo" target="_blank" rel="noopener">여기에서 더 알아보세요</a>.</p><div class="en-orig"><p>Next.js caching is automatically configured for you. There's no action required on your part. If you are using Turborepo on Vercel, <a href="https://vercel.com/docs/monorepos/turborepo" target="_blank" rel="noopener">learn more here</a>.</p></div>
+<h2 class="sec" id="circleci"><a class="anchor" href="#circleci">CircleCI</a></h2>
+<p><code>.circleci/config.yml</code>의 <code>save_cache</code> step에 <code>.next/cache</code>를 포함하도록 수정하세요:</p><div class="en-orig"><p>Edit your <code>save_cache</code> step in <code>.circleci/config.yml</code> to include <code>.next/cache</code>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-yaml">steps:
+  - save_cache:
+      key: dependency-cache-{{ checksum &quot;yarn.lock&quot; }}
+      paths:
+        - ./node_modules
+        - ./.next/cache</code></pre></div></div>
+<p><code>save_cache</code> key가 없다면 CircleCI의 <a href="https://circleci.com/docs/2.0/caching/" target="_blank" rel="noopener">build caching 설정 문서</a>를 따르세요.</p><div class="en-orig"><p>If you do not have a <code>save_cache</code> key, please follow CircleCI's <a href="https://circleci.com/docs/2.0/caching/" target="_blank" rel="noopener">documentation on setting up build caching</a>.</p></div>
+<h2 class="sec" id="travis-ci"><a class="anchor" href="#travis-ci">Travis CI</a></h2>
+<p><code>.travis.yml</code>에 다음 내용을 추가하거나 병합하세요:</p><div class="en-orig"><p>Add or merge the following into your <code>.travis.yml</code>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-yaml">cache:
+  directories:
+    - $HOME/.cache/yarn
+    - node_modules
+    - .next/cache</code></pre></div></div>
+<h2 class="sec" id="gitlab-ci"><a class="anchor" href="#gitlab-ci">GitLab CI</a></h2>
+<p><code>.gitlab-ci.yml</code>에 다음 내용을 추가하거나 병합하세요:</p><div class="en-orig"><p>Add or merge the following into your <code>.gitlab-ci.yml</code>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-yaml">cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+    - .next/cache/</code></pre></div></div>
+<h2 class="sec" id="netlify-ci"><a class="anchor" href="#netlify-ci">Netlify CI</a></h2>
+<p><a href="https://www.npmjs.com/package/@netlify/plugin-nextjs" target="_blank" rel="noopener"><code>@netlify/plugin-nextjs</code></a>와 함께 <a href="https://www.netlify.com/products/build/plugins/" target="_blank" rel="noopener">Netlify Plugins</a>를 사용하세요.</p><div class="en-orig"><p>Use <a href="https://www.netlify.com/products/build/plugins/" target="_blank" rel="noopener">Netlify Plugins</a> with <a href="https://www.npmjs.com/package/@netlify/plugin-nextjs" target="_blank" rel="noopener"><code>@netlify/plugin-nextjs</code></a>.</p></div>
+<h2 class="sec" id="aws-codebuild"><a class="anchor" href="#aws-codebuild">AWS CodeBuild</a></h2>
+<p><code>buildspec.yml</code>에 다음 내용을 추가(또는 병합)하세요:</p><div class="en-orig"><p>Add (or merge in) the following to your <code>buildspec.yml</code>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-yaml">cache:
+  paths:
+    - &#x27;node_modules/**/*&#x27; # Cache `node_modules` for faster `yarn` or `npm i`
+    - &#x27;.next/cache/**/*&#x27; # Cache Next.js for faster application rebuilds</code></pre></div></div>
+<h2 class="sec" id="github-actions"><a class="anchor" href="#github-actions">GitHub Actions</a></h2>
+<p>GitHub의 <a href="https://github.com/actions/cache" target="_blank" rel="noopener">actions/cache</a>를 사용해 workflow 파일에 다음 step을 추가하세요:</p><div class="en-orig"><p>Using GitHub's <a href="https://github.com/actions/cache" target="_blank" rel="noopener">actions/cache</a>, add the following step in your workflow file:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-yaml">uses: actions/cache@v4
+with:
+  # See here for caching with `yarn`, `bun` or other package managers https://github.com/actions/cache/blob/main/examples.md or you can leverage caching with actions/setup-node https://github.com/actions/setup-node
+  path: |
+    ~/.npm
+    ${{ github.workspace }}/.next/cache
+  # Generate a new cache whenever packages or source files change.
+  key: ${{ runner.os }}-nextjs-${{ hashFiles(&#x27;**/package-lock.json&#x27;) }}-${{ hashFiles(&#x27;**/*.js&#x27;, &#x27;**/*.jsx&#x27;, &#x27;**/*.ts&#x27;, &#x27;**/*.tsx&#x27;) }}
+  # If source files changed but packages didn&#x27;t, rebuild from a prior cache.
+  restore-keys: |
+    ${{ runner.os }}-nextjs-${{ hashFiles(&#x27;**/package-lock.json&#x27;) }}-</code></pre></div></div>
+<h2 class="sec" id="bitbucket-pipelines"><a class="anchor" href="#bitbucket-pipelines">Bitbucket Pipelines</a></h2>
+<p><code>bitbucket-pipelines.yml</code>의 최상위 수준(<code>pipelines</code>와 같은 수준)에 다음 내용을 추가하거나 병합하세요:</p><div class="en-orig"><p>Add or merge the following into your <code>bitbucket-pipelines.yml</code> at the top level (same level as <code>pipelines</code>):</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-yaml">definitions:
+  caches:
+    nextcache: .next/cache</code></pre></div></div>
+<p>그런 다음 pipeline <code>step</code>의 <code>caches</code> section에서 이를 참조하세요:</p><div class="en-orig"><p>Then reference it in the <code>caches</code> section of your pipeline's <code>step</code>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-yaml">- step:
+    name: your_step_name
+    caches:
+      - node
+      - nextcache</code></pre></div></div>
+<h2 class="sec" id="heroku"><a class="anchor" href="#heroku">Heroku</a></h2>
+<p>Heroku의 <a href="https://devcenter.heroku.com/articles/nodejs-support#custom-caching" target="_blank" rel="noopener">custom cache</a>를 사용해 최상위 package.json에 <code>cacheDirectories</code> 배열을 추가하세요:</p><div class="en-orig"><p>Using Heroku's <a href="https://devcenter.heroku.com/articles/nodejs-support#custom-caching" target="_blank" rel="noopener">custom cache</a>, add a <code>cacheDirectories</code> array in your top-level package.json:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-javascript">&quot;cacheDirectories&quot;: [&quot;.next/cache&quot;]</code></pre></div></div>
+<h2 class="sec" id="azure-pipelines"><a class="anchor" href="#azure-pipelines">Azure Pipelines</a></h2>
+<p>Azure Pipelines의 <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/cache" target="_blank" rel="noopener">Cache task</a>를 사용해, pipeline yaml 파일에서 <code>next build</code>를 실행하는 task보다 앞쪽 어딘가에 다음 task를 추가하세요:</p><div class="en-orig"><p>Using Azure Pipelines' <a href="https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/cache" target="_blank" rel="noopener">Cache task</a>, add the following task to your pipeline yaml file somewhere prior to the task that executes <code>next build</code>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-yaml">- task: Cache@2
+  displayName: &#x27;Cache .next/cache&#x27;
+  inputs:
+    key: next | $(Agent.OS) | yarn.lock
+    path: &#x27;$(System.DefaultWorkingDirectory)/.next/cache&#x27;</code></pre></div></div>
+<h2 class="sec" id="jenkins-pipeline"><a class="anchor" href="#jenkins-pipeline">Jenkins (Pipeline)</a></h2>
+<p>Jenkins의 <a href="https://www.jenkins.io/doc/pipeline/steps/jobcacher/" target="_blank" rel="noopener">Job Cacher</a> plugin을 사용해, 평소 <code>next build</code>나 <code>npm install</code>을 실행하는 위치의 <code>Jenkinsfile</code>에 다음 build step을 추가하세요:</p><div class="en-orig"><p>Using Jenkins' <a href="https://www.jenkins.io/doc/pipeline/steps/jobcacher/" target="_blank" rel="noopener">Job Cacher</a> plugin, add the following build step to your <code>Jenkinsfile</code> where you would normally run <code>next build</code> or <code>npm install</code>:</p></div>
+<div class="code"><div class="code-box nohead"><button class="copy" aria-label="복사"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5"/><path d="M10.5 3.5v-.5a1 1 0 0 0-1-1h-6a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h.5"/></svg></button><pre class=""><code class="language-yaml">stage(&quot;Restore npm packages&quot;) {
+    steps {
+        // Writes lock-file to cache based on the GIT_COMMIT hash
+        writeFile file: &quot;next-lock.cache&quot;, text: &quot;$GIT_COMMIT&quot;
+
+        cache(caches: [
+            arbitraryFileCache(
+                path: &quot;node_modules&quot;,
+                includes: &quot;**/*&quot;,
+                cacheValidityDecidingFile: &quot;package-lock.json&quot;
+            )
+        ]) {
+            sh &quot;npm install&quot;
+        }
+    }
+}
+stage(&quot;Build&quot;) {
+    steps {
+        // Writes lock-file to cache based on the GIT_COMMIT hash
+        writeFile file: &quot;next-lock.cache&quot;, text: &quot;$GIT_COMMIT&quot;
+
+        cache(caches: [
+            arbitraryFileCache(
+                path: &quot;.next/cache&quot;,
+                includes: &quot;**/*&quot;,
+                cacheValidityDecidingFile: &quot;next-lock.cache&quot;
+            )
+        ]) {
+            // aka `next build`
+            sh &quot;npm run build&quot;
+        }
+    }
+}</code></pre></div></div>
+    </article>
+
+
+
+    <div class="page-actions">
+      <a href="https://github.com/vercel/next.js/blob/canary/docs/01-app/02-guides/ci-build-caching.mdx" target="_blank" rel="noopener">GitHub에서 원문 보기 ↗</a>
+      <a href="https://nextjs.org/docs/app/guides/ci-build-caching" target="_blank" rel="noopener">nextjs.org 원문 ↗</a>
+    </div>
+
+    <nav class="pager" aria-label="이전/다음 문서">
+      <a href="app-guides-cdn-caching.html" class="prev"><div class="dir">← 이전</div><div class="ttl">CDN Caching</div><div class="ttl-ko">Next.js에서 CDN 사용하기</div></a>
+      <a href="app-guides-client-side-data-fetching.html" class="next"><div class="dir">다음 →</div><div class="ttl">Client-side data fetching</div><div class="ttl-ko">Client-side data fetching</div></a>
+    </nav>
+
+    <div class="license">
+      <strong>출처 및 라이선스</strong><br>
+      이 문서는 Next.js 공식 문서(<a href="https://nextjs.org/docs/app/guides/ci-build-caching" target="_blank" rel="noopener">원문</a>, <a href="https://github.com/vercel/next.js/tree/canary/docs" target="_blank" rel="noopener">vercel/next.js/docs</a>)를 개인 학습용으로 한국어 번역한 비공식 번역본이며, Vercel 및 Next.js 팀과 무관합니다. 이미지는 원문 사이트의 것을 링크해 표시합니다.<br>
+      표기 원칙: Next.js·React 개념(Server Component, layout, route, prefetch 등), API·컴포넌트·함수 이름, 도구 이름, 개발 현장에서 영어로 통용되는 용어는 영어 그대로 두고, 설명 문장은 한국어로 씁니다.<br>
+      원문: Copyright (c) 2025 Vercel, Inc. The MIT License. 본 문서(사본 또는 상당 부분)에는 위 저작권 고지와 MIT 허가 고지가 포함되어야 하며, 원문은 "있는 그대로(AS IS)" 제공되고 어떠한 보증도 하지 않습니다.
+    </div>
+  </main>
+
+  <aside class="toc" id="toc">
+    <div class="toc-title">On this page <span>이 페이지 목차</span></div>
+    <ul><li class="l2"><a href="#vercel">Vercel</a></li><li class="l2"><a href="#circleci">CircleCI</a></li><li class="l2"><a href="#travis-ci">Travis CI</a></li><li class="l2"><a href="#gitlab-ci">GitLab CI</a></li><li class="l2"><a href="#netlify-ci">Netlify CI</a></li><li class="l2"><a href="#aws-codebuild">AWS CodeBuild</a></li><li class="l2"><a href="#github-actions">GitHub Actions</a></li><li class="l2"><a href="#bitbucket-pipelines">Bitbucket Pipelines</a></li><li class="l2"><a href="#heroku">Heroku</a></li><li class="l2"><a href="#azure-pipelines">Azure Pipelines</a></li><li class="l2"><a href="#jenkins-pipeline">Jenkins (Pipeline)</a></li></ul>
+  </aside>
+</div>
+
+<div class="toast" id="toast">복사했어요</div>
+<script type="text/markdown" id="md-src">
+build 성능을 높이기 위해 Next.js는 build 간에 공유되는 cache를 `.next/cache`에 저장합니다.
+
+Continuous Integration(CI) 환경에서 이 cache를 활용하려면, build 간에 cache가 올바르게 유지되도록 CI workflow를 설정해야 합니다.
+
+&gt; CI가 build 간에 `.next/cache`를 유지하도록 설정되어 있지 않으면 [No Cache Detected](/docs/messages/no-cache) error가 나타날 수 있습니다.
+
+다음은 자주 쓰이는 CI provider별 cache 설정 예시입니다:
+
+## Vercel
+
+Next.js caching이 자동으로 설정되므로 따로 할 일이 없습니다. Vercel에서 Turborepo를 사용한다면 [여기에서 더 알아보세요](https://vercel.com/docs/monorepos/turborepo).
+
+## CircleCI
+
+`.circleci/config.yml`의 `save_cache` step에 `.next/cache`를 포함하도록 수정하세요:
+
+[[CODE 1]]
+
+`save_cache` key가 없다면 CircleCI의 [build caching 설정 문서](https://circleci.com/docs/2.0/caching/)를 따르세요.
+
+## Travis CI
+
+`.travis.yml`에 다음 내용을 추가하거나 병합하세요:
+
+[[CODE 2]]
+
+## GitLab CI
+
+`.gitlab-ci.yml`에 다음 내용을 추가하거나 병합하세요:
+
+[[CODE 3]]
+
+## Netlify CI
+
+[`@netlify/plugin-nextjs`](https://www.npmjs.com/package/@netlify/plugin-nextjs)와 함께 [Netlify Plugins](https://www.netlify.com/products/build/plugins/)를 사용하세요.
+
+## AWS CodeBuild
+
+`buildspec.yml`에 다음 내용을 추가(또는 병합)하세요:
+
+[[CODE 4]]
+
+## GitHub Actions
+
+GitHub의 [actions/cache](https://github.com/actions/cache)를 사용해 workflow 파일에 다음 step을 추가하세요:
+
+[[CODE 5]]
+
+## Bitbucket Pipelines
+
+`bitbucket-pipelines.yml`의 최상위 수준(`pipelines`와 같은 수준)에 다음 내용을 추가하거나 병합하세요:
+
+[[CODE 6]]
+
+그런 다음 pipeline `step`의 `caches` section에서 이를 참조하세요:
+
+[[CODE 7]]
+
+## Heroku
+
+Heroku의 [custom cache](https://devcenter.heroku.com/articles/nodejs-support#custom-caching)를 사용해 최상위 package.json에 `cacheDirectories` 배열을 추가하세요:
+
+[[CODE 8]]
+
+## Azure Pipelines
+
+Azure Pipelines의 [Cache task](https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/cache)를 사용해, pipeline yaml 파일에서 `next build`를 실행하는 task보다 앞쪽 어딘가에 다음 task를 추가하세요:
+
+[[CODE 9]]
+
+## Jenkins (Pipeline)
+
+Jenkins의 [Job Cacher](https://www.jenkins.io/doc/pipeline/steps/jobcacher/) plugin을 사용해, 평소 `next build`나 `npm install`을 실행하는 위치의 `Jenkinsfile`에 다음 build step을 추가하세요:
+
+[[CODE 10]]
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="assets/nav.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>
